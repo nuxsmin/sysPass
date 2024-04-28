@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,7 +38,7 @@ final class Validator
 
     public static function hasNumbers(string $string): bool
     {
-        return preg_match('#[\d]+#', $string) === 1;
+        return preg_match('#\d+#', $string) === 1;
     }
 
     public static function hasUpper(string $string): bool

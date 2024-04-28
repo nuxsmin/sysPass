@@ -30,9 +30,9 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\RequestInterface;
+use SP\Domain\Providers\Browser\BrowserAuthService;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Mvc\View\TemplateInterface;
-use SP\Providers\Auth\Browser\BrowserAuthService;
 
 /**
  * Class WebControllerHelper

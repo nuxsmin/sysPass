@@ -37,11 +37,11 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Notification\Ports\MailService;
+use SP\Domain\Providers\Mail\MailParams;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
-use SP\Providers\Mail\MailParams;
 
 /**
  * Class CheckController

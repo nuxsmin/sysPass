@@ -26,7 +26,7 @@ namespace SP\Domain\Auth\Ports;
 
 
 use SP\Domain\Auth\Dtos\LdapCheckResults;
-use SP\Providers\Auth\Ldap\LdapException;
+use SP\Domain\Providers\Ldap\LdapException;
 
 /**
  * Class LdapCheckService

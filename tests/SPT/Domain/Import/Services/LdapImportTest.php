@@ -33,14 +33,14 @@ use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Services\LdapImport;
+use SP\Domain\Providers\Ldap\LdapException;
+use SP\Domain\Providers\Ldap\LdapParams;
+use SP\Domain\Providers\Ldap\LdapResults;
+use SP\Domain\Providers\Ldap\LdapTypeEnum;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
-use SP\Providers\Auth\Ldap\LdapException;
-use SP\Providers\Auth\Ldap\LdapParams;
-use SP\Providers\Auth\Ldap\LdapResults;
-use SP\Providers\Auth\Ldap\LdapTypeEnum;
 use SPT\UnitaryTestCase;
 
 /**

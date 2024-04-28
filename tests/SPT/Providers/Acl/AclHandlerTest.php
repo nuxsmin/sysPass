@@ -31,9 +31,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Providers\Acl\AclHandler;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Providers\Acl\AclHandler;
 use SPT\UnitaryTestCase;
 
 /**
@@ -43,9 +43,9 @@ use SPT\UnitaryTestCase;
 #[Group('unitary')]
 class AclHandlerTest extends UnitaryTestCase
 {
-    private MockObject|UserProfileService $userProfileService;
-    private UserGroupService|MockObject   $userGroupService;
-    private AclHandler                             $aclHandler;
+    private MockObject|UserProfileService       $userProfileService;
+    private UserGroupService|MockObject         $userGroupService;
+    private AclHandler $aclHandler;
 
     public static function userEventProvider(): array
     {
@@ -58,27 +58,24 @@ class AclHandlerTest extends UnitaryTestCase
 
     /**
      * @throws Exception
-     * @throws SPException
      */
     public function testUpdateWithUserProfileEvent()
     {
-        $event = $this->createMock(Event::class);
+        $eventMessage = $this->createMock(EventMessage::class);
 
-        $event->expects(self::once())
-              ->method('getEventMessage');
+        $eventMessage->expects($this->once())
+                     ->method('getExtra')
+                     ->with('userProfileId');
 
-        $this->aclHandler->update('edit.userProfile', $event);
+        $this->aclHandler->update('edit.userProfile', new Event($this, $eventMessage));
     }
 
     /**
      * @throws Exception
-     * @throws SPException
      */
     public function testUpdateWithUserProfileEventWithExtra()
     {
         $eventMessage = $this->createMock(EventMessage::class);
-
-        $event = new Event($this, $eventMessage);
 
         $eventMessage->expects(self::once())
                      ->method('getExtra')
@@ -90,18 +87,15 @@ class AclHandlerTest extends UnitaryTestCase
                                  ->with(1)
                                  ->willReturn([self::$faker->randomNumber()]);
 
-        $this->aclHandler->update('edit.userProfile', $event);
+        $this->aclHandler->update('edit.userProfile', new Event($this, $eventMessage));
     }
 
     /**
      * @throws Exception
-     * @throws SPException
      */
     public function testUpdateWithUserProfileEventWithoutExtra()
     {
         $eventMessage = $this->createMock(EventMessage::class);
-
-        $event = new Event($this, $eventMessage);
 
         $eventMessage->expects(self::once())
                      ->method('getExtra')
@@ -111,27 +105,26 @@ class AclHandlerTest extends UnitaryTestCase
         $this->userProfileService->expects(self::never())
                                  ->method('getUsersForProfile');
 
-        $this->aclHandler->update('edit.userProfile', $event);
+        $this->aclHandler->update('edit.userProfile', new Event($this, $eventMessage));
     }
 
     /**
      * @throws Exception
-     * @throws SPException
      */
     #[DataProvider('userEventProvider')]
     public function testUpdateWithUserEvent(string $userEvent)
     {
-        $event = $this->createMock(Event::class);
+        $eventMessage = $this->createMock(EventMessage::class);
 
-        $event->expects(self::once())
-              ->method('getEventMessage');
+        $eventMessage->expects($this->once())
+                     ->method('getExtra')
+                     ->with('userId');
 
-        $this->aclHandler->update($userEvent, $event);
+        $this->aclHandler->update($userEvent, new Event($this, $eventMessage));
     }
 
     /**
      * @throws Exception
-     * @throws SPException
      */
     #[DataProvider('userEventProvider')]
     public function testUpdateWithUserEventWithExtra(string $userEvent)
@@ -169,21 +162,20 @@ class AclHandlerTest extends UnitaryTestCase
 
     /**
      * @throws Exception
-     * @throws SPException
      */
     public function testUpdateWithUserGroupEvent()
     {
-        $event = $this->createMock(Event::class);
+        $eventMessage = $this->createMock(EventMessage::class);
 
-        $event->expects(self::once())
-              ->method('getEventMessage');
+        $eventMessage->expects($this->once())
+                     ->method('getExtra')
+                     ->with('userGroupId');
 
-        $this->aclHandler->update('edit.userGroup', $event);
+        $this->aclHandler->update('edit.userGroup', new Event($this, $eventMessage));
     }
 
     /**
      * @throws Exception
-     * @throws SPException
      */
     public function testUpdateWithUserGroupEventWithExtra()
     {
@@ -197,16 +189,15 @@ class AclHandlerTest extends UnitaryTestCase
                      ->willReturn([1]);
 
         $this->userGroupService->expects(self::once())
-                                 ->method('getUsageByUsers')
-                                 ->with(1)
-                                 ->willReturn([self::$faker->randomNumber()]);
+            ->method('getUsageByUsers')
+            ->with(1)
+            ->willReturn([self::$faker->randomNumber()]);
 
         $this->aclHandler->update('edit.userGroup', $event);
     }
 
     /**
      * @throws Exception
-     * @throws SPException
      */
     public function testUpdateWithUserGroupEventWithoutExtra()
     {
@@ -225,15 +216,6 @@ class AclHandlerTest extends UnitaryTestCase
         $this->aclHandler->update('edit.userGroup', $event);
     }
 
-    public function testInitialize()
-    {
-        $events = implode('|', array_map('preg_quote', AclHandler::EVENTS));
-        $this->aclHandler->initialize();
-
-        self::assertTrue($this->aclHandler->isInitialized());
-        self::assertEquals($events, $this->aclHandler->getEventsString());
-    }
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -241,7 +223,11 @@ class AclHandlerTest extends UnitaryTestCase
         $this->userProfileService = $this->createMock(UserProfileService::class);
         $this->userGroupService = $this->createMock(UserGroupService::class);
 
-        $this->aclHandler = new AclHandler($this->application, $this->userProfileService, $this->userGroupService);
+        $this->aclHandler = new AclHandler(
+            $this->application,
+            $this->userProfileService,
+            $this->userGroupService
+        );
     }
 
 }

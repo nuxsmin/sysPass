@@ -34,8 +34,8 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Notification\Services\Mail;
-use SP\Domain\Providers\MailerInterface;
-use SP\Providers\Mail\MailParams;
+use SP\Domain\Providers\Mail\MailParams;
+use SP\Domain\Providers\Ports\MailerInterface;
 use SPT\Generators\ConfigDataGenerator;
 use SPT\UnitaryTestCase;
 

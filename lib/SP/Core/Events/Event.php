@@ -25,32 +25,31 @@
 namespace SP\Core\Events;
 
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class Event
  */
-class Event
+readonly class Event
 {
     public function __construct(
-        private readonly object        $source,
-        private readonly ?EventMessage $eventMessage = null
+        private object        $source,
+        private ?EventMessage $eventMessage = null
     ) {
     }
 
     /**
+     * @template T of object
+     *
+     * @param class-string<T>|null $type
+     * @return T&object
      * @throws InvalidClassException
      */
     public function getSource(?string $type = null): object
     {
-        if ($type !== null
-            && ($source = get_class($this->source)) !== $type
-            && !is_subclass_of($this->source, $type)
-        ) {
-            throw new InvalidClassException(
+        if ($type !== null && !is_a($this->source, $type)) {
+            throw InvalidClassException::error(
                 'Source type mismatch',
-                SPException::ERROR,
-                sprintf('Source: %s - Expected: %s', $source, $type)
+                sprintf('Source: %s - Expected: %s', get_class($this->source), $type)
             );
         }
 

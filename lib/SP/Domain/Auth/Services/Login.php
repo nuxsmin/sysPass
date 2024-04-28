@@ -39,14 +39,14 @@ use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\RequestInterface;
+use SP\Domain\Providers\Auth\AuthProviderService;
+use SP\Domain\Providers\Auth\AuthResult;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Providers\Auth\AuthProviderService;
-use SP\Providers\Auth\AuthResult;
 
 use function SP\__u;
 
@@ -75,7 +75,6 @@ final class Login extends LoginBase implements LoginService
         parent::__construct($application, $trackService, $request);
 
         $this->userLoginDto = new UserLoginDto();
-        $this->authProviderService->initialize();
     }
 
     /**

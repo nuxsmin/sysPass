@@ -35,9 +35,9 @@ use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Providers\Auth\Ldap\AttributeCollection;
-use SP\Providers\Auth\Ldap\LdapAuth;
-use SP\Providers\Auth\Ldap\LdapException;
+use SP\Domain\Providers\Ldap\AttributeCollection;
+use SP\Domain\Providers\Ldap\LdapAuth;
+use SP\Domain\Providers\Ldap\LdapException;
 use SPT\UnitaryTestCase;
 
 /**

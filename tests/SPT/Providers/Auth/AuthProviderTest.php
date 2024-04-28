@@ -28,13 +28,13 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
-use SP\Providers\Auth\AuthProvider;
-use SP\Providers\Auth\AuthResult;
-use SP\Providers\Auth\AuthService;
-use SP\Providers\Auth\AuthType;
-use SP\Providers\Auth\Browser\BrowserAuthData;
-use SP\Providers\Auth\Database\DatabaseAuthData;
-use SP\Providers\Auth\Ldap\LdapAuthData;
+use SP\Domain\Providers\Auth\AuthProvider;
+use SP\Domain\Providers\Auth\AuthResult;
+use SP\Domain\Providers\Auth\AuthService;
+use SP\Domain\Providers\Auth\AuthType;
+use SP\Domain\Providers\Browser\BrowserAuthData;
+use SP\Domain\Providers\Database\DatabaseAuthData;
+use SP\Domain\Providers\Ldap\LdapAuthData;
 use SPT\UnitaryTestCase;
 
 /**

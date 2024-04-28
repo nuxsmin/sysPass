@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,10 +30,10 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
 use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Providers\Auth\Ldap\LdapConnection;
-use SP\Providers\Auth\Ldap\LdapException;
-use SP\Providers\Auth\Ldap\LdapParams;
-use SP\Providers\Auth\Ldap\LdapTypeEnum;
+use SP\Domain\Providers\Ldap\LdapConnection;
+use SP\Domain\Providers\Ldap\LdapException;
+use SP\Domain\Providers\Ldap\LdapParams;
+use SP\Domain\Providers\Ldap\LdapTypeEnum;
 use SPT\UnitaryTestCase;
 
 use function PHPUnit\Framework\once;

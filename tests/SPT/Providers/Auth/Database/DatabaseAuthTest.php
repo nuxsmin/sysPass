@@ -28,10 +28,10 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Auth\Dtos\UserLoginDto;
+use SP\Domain\Providers\Database\DatabaseAuth;
 use SP\Domain\User\Ports\UserPassService;
 use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Providers\Auth\Database\DatabaseAuth;
 use SPT\Generators\UserDataGenerator;
 use SPT\UnitaryTestCase;
 

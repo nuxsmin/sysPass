@@ -29,8 +29,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Http\RequestInterface;
-use SP\Providers\Auth\Browser\BrowserAuth;
-use SP\Providers\Auth\Browser\BrowserAuthData;
+use SP\Domain\Providers\Browser\BrowserAuth;
+use SP\Domain\Providers\Browser\BrowserAuthData;
 use SPT\UnitaryTestCase;
 
 /**

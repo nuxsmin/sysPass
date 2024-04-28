@@ -26,9 +26,9 @@ namespace SP\Domain\Auth\Ports;
 
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
-use SP\Providers\Auth\Browser\BrowserAuthData;
-use SP\Providers\Auth\Database\DatabaseAuthData;
-use SP\Providers\Auth\Ldap\LdapAuthData;
+use SP\Domain\Providers\Browser\BrowserAuthData;
+use SP\Domain\Providers\Database\DatabaseAuthData;
+use SP\Domain\Providers\Ldap\LdapAuthData;
 
 /**
  * Class LoginDatabase

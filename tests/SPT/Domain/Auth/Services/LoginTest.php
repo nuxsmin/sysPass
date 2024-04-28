@@ -44,20 +44,20 @@ use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\RequestInterface;
+use SP\Domain\Providers\Auth\AuthDataBase;
+use SP\Domain\Providers\Auth\AuthProviderService;
+use SP\Domain\Providers\Auth\AuthResult;
+use SP\Domain\Providers\Auth\AuthType;
+use SP\Domain\Providers\Browser\BrowserAuthData;
+use SP\Domain\Providers\Database\DatabaseAuthData;
+use SP\Domain\Providers\Ldap\LdapAuthData;
+use SP\Domain\Providers\Ports\ProviderInterface;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
-use SP\Providers\Auth\AuthDataBase;
-use SP\Providers\Auth\AuthProviderService;
-use SP\Providers\Auth\AuthResult;
-use SP\Providers\Auth\AuthType;
-use SP\Providers\Auth\Browser\BrowserAuthData;
-use SP\Providers\Auth\Database\DatabaseAuthData;
-use SP\Providers\Auth\Ldap\LdapAuthData;
-use SP\Providers\ProviderInterface;
 use SPT\Generators\UserDataGenerator;
 use SPT\Generators\UserProfileDataGenerator;
 use SPT\UnitaryTestCase;
@@ -512,9 +512,6 @@ class LoginTest extends UnitaryTestCase
         $this->authProviderService = $this->createMockForIntersectionOfInterfaces(
             [AuthProviderService::class, ProviderInterface::class]
         );
-        $this->authProviderService
-            ->expects($this->once())
-            ->method('initialize');
 
         $this->language = $this->createMock(LanguageInterface::class);
         $this->userService = $this->createMock(UserService::class);

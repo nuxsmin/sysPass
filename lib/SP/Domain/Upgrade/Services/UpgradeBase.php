@@ -29,7 +29,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Providers\FileLogHandlerProvider;
+use SP\Domain\Providers\Ports\FileLogHandlerProvider;
 use SP\Domain\Upgrade\Ports\UpgradeService;
 use SP\Infrastructure\File\FileException;
 use SP\Util\VersionUtil;

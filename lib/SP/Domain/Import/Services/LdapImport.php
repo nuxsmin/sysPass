@@ -35,14 +35,14 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Dtos\LdapImportResultsDto;
 use SP\Domain\Import\Ports\LdapImportService;
+use SP\Domain\Providers\Ldap\LdapBase;
+use SP\Domain\Providers\Ldap\LdapException;
+use SP\Domain\Providers\Ldap\LdapParams;
+use SP\Domain\Providers\Ldap\LdapResults;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
-use SP\Providers\Auth\Ldap\LdapBase;
-use SP\Providers\Auth\Ldap\LdapException;
-use SP\Providers\Auth\Ldap\LdapParams;
-use SP\Providers\Auth\Ldap\LdapResults;
 
 use function SP\__;
 use function SP\__u;

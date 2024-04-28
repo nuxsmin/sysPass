@@ -82,7 +82,6 @@ abstract class Service
 
     /**
      * @throws ServiceException
-     * @throws CryptException
      */
     final protected function setMasterKeyInContext(string $masterPass): void
     {
@@ -92,7 +91,7 @@ abstract class Service
             } else {
                 $this->context->setTrasientKey('_masterpass', $masterPass);
             }
-        } catch (ContextException|CryptoException $e) {
+        } catch (ContextException|CryptException $e) {
             logger($e->getMessage());
 
             throw new ServiceException(__u('Error while setting master password in context'));

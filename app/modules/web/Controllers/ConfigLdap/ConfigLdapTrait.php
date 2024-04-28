@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,8 +26,8 @@ namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Http\RequestInterface;
-use SP\Providers\Auth\Ldap\LdapParams;
-use SP\Providers\Auth\Ldap\LdapTypeEnum;
+use SP\Domain\Providers\Ldap\LdapParams;
+use SP\Domain\Providers\Ldap\LdapTypeEnum;
 
 use function SP\__u;
 

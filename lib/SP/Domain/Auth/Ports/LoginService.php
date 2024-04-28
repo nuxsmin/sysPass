@@ -26,7 +26,7 @@ namespace SP\Domain\Auth\Ports;
 
 use SP\Domain\Auth\Dtos\LoginResponseDto;
 use SP\Domain\Auth\Services\AuthException;
-use SP\Providers\Auth\AuthResult;
+use SP\Domain\Providers\Auth\AuthResult;
 
 /**
  * Interface LoginService

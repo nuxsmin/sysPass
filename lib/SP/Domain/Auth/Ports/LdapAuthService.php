@@ -24,8 +24,8 @@
 
 namespace SP\Domain\Auth\Ports;
 
-use SP\Providers\Auth\AuthService;
-use SP\Providers\Auth\Ldap\LdapAuthData;
+use SP\Domain\Providers\Auth\AuthService;
+use SP\Domain\Providers\Ldap\LdapAuthData;
 
 /**
  * Class LdapBase

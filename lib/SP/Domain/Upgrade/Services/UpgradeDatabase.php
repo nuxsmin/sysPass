@@ -29,10 +29,10 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Domain\Providers\Log\FileLogHandler;
 use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
-use SP\Providers\Log\FileLogHandler;
 
 use function SP\__;
 use function SP\__u;

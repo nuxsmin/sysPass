@@ -39,14 +39,14 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Http\RequestInterface;
+use SP\Domain\Providers\Browser\BrowserAuthData;
+use SP\Domain\Providers\Database\DatabaseAuthData;
+use SP\Domain\Providers\Ldap\LdapAuthData;
+use SP\Domain\Providers\Ldap\LdapCodeEnum;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserLoginRequest;
 use SP\Domain\User\Ports\UserService;
-use SP\Providers\Auth\Browser\BrowserAuthData;
-use SP\Providers\Auth\Database\DatabaseAuthData;
-use SP\Providers\Auth\Ldap\LdapAuthData;
-use SP\Providers\Auth\Ldap\LdapCodeEnum;
 use SPT\UnitaryTestCase;
 
 /**

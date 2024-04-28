@@ -43,13 +43,13 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\RequestInterface;
+use SP\Domain\Providers\Browser\BrowserAuthService;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\TemplateInterface;
-use SP\Providers\Auth\Browser\BrowserAuthService;
 
 use function SP\__;
 use function SP\logger;

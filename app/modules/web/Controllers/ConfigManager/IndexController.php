@@ -47,6 +47,11 @@ use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Crypt\Services\TemporaryMasterPass;
 use SP\Domain\Export\Services\BackupFileHelper;
 use SP\Domain\Export\Services\XmlExport;
+use SP\Domain\Providers\Ldap\LdapMsAds;
+use SP\Domain\Providers\Ldap\LdapStd;
+use SP\Domain\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Providers\Log\LogInterface;
+use SP\Domain\Providers\Mail\MailHandler;
 use SP\Domain\Task\Services\Task;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
@@ -61,11 +66,6 @@ use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Plugin\PluginManager;
-use SP\Providers\Auth\Ldap\LdapMsAds;
-use SP\Providers\Auth\Ldap\LdapStd;
-use SP\Providers\Auth\Ldap\LdapTypeEnum;
-use SP\Providers\Log\LogInterface;
-use SP\Providers\Mail\MailHandler;
 use SP\Util\Util;
 
 /**

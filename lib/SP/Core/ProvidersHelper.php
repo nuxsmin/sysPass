@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,14 +24,13 @@
 
 namespace SP\Core;
 
-use SP\Providers\Acl\AclHandler;
-use SP\Providers\Log\DatabaseLogHandler;
-use SP\Providers\Log\FileLogHandler;
-use SP\Providers\Log\RemoteSyslogHandler;
-use SP\Providers\Log\SyslogHandler;
-use SP\Providers\Mail\MailHandler;
-use SP\Providers\Notification\NotificationHandler;
-use SP\Providers\ProviderInterface;
+use SP\Domain\Providers\Acl\AclHandler;
+use SP\Domain\Providers\Log\DatabaseLogHandler;
+use SP\Domain\Providers\Log\FileLogHandler;
+use SP\Domain\Providers\Log\RemoteSyslogHandler;
+use SP\Domain\Providers\Log\SyslogHandler;
+use SP\Domain\Providers\Mail\MailHandler;
+use SP\Domain\Providers\Notification\NotificationHandler;
 
 /**
  * The Provider helper class will have oll the providers availabe in the application
@@ -52,57 +51,36 @@ final readonly class ProvidersHelper
 
     public function getFileLogHandler(): FileLogHandler
     {
-        self::ensureIsInitialized($this->fileLogHandler);
-
         return $this->fileLogHandler;
-    }
-
-    private static function ensureIsInitialized(?ProviderInterface $provider = null): void
-    {
-        if ($provider !== null && !$provider->isInitialized()) {
-            $provider->initialize();
-        }
     }
 
     public function getDatabaseLogHandler(): DatabaseLogHandler
     {
-        self::ensureIsInitialized($this->databaseLogHandler);
-
         return $this->databaseLogHandler;
     }
 
     public function getMailHandler(): MailHandler
     {
-        self::ensureIsInitialized($this->mailHandler);
-
         return $this->mailHandler;
     }
 
     public function getSyslogHandler(): SyslogHandler
     {
-        self::ensureIsInitialized($this->syslogHandler);
-
         return $this->syslogHandler;
     }
 
     public function getRemoteSyslogHandler(): RemoteSyslogHandler
     {
-        self::ensureIsInitialized($this->remoteSyslogHandler);
-
         return $this->remoteSyslogHandler;
     }
 
     public function getAclHandler(): AclHandler
     {
-        self::ensureIsInitialized($this->aclHandler);
-
         return $this->aclHandler;
     }
 
     public function getNotificationHandler(): NotificationHandler
     {
-        self::ensureIsInitialized($this->notificationHandler);
-
         return $this->notificationHandler;
     }
 }

@@ -31,9 +31,9 @@ use SP\Domain\Auth\Ports\LdapCheckService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Common\Services\Service;
-use SP\Providers\Auth\Ldap\LdapBase;
-use SP\Providers\Auth\Ldap\LdapException;
-use SP\Providers\Auth\Ldap\LdapParams;
+use SP\Domain\Providers\Ldap\LdapBase;
+use SP\Domain\Providers\Ldap\LdapException;
+use SP\Domain\Providers\Ldap\LdapParams;
 
 /**
  * Class LdapCheck

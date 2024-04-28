@@ -32,12 +32,12 @@ use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Providers\Auth\Ldap\LdapException;
-use SP\Providers\Auth\Ldap\LdapMsAds;
-use SP\Providers\Auth\Ldap\LdapParams;
-use SP\Providers\Auth\Ldap\LdapResults;
-use SP\Providers\Auth\Ldap\LdapTypeEnum;
-use SP\Providers\Auth\Ldap\LdapUtil;
+use SP\Domain\Providers\Ldap\LdapException;
+use SP\Domain\Providers\Ldap\LdapMsAds;
+use SP\Domain\Providers\Ldap\LdapParams;
+use SP\Domain\Providers\Ldap\LdapResults;
+use SP\Domain\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Providers\Ldap\LdapUtil;
 use SPT\UnitaryTestCase;
 
 /**

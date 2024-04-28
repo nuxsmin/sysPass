@@ -32,11 +32,11 @@ use SP\Domain\Core\Crypt\CryptPKIInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Services\ImportStrategy;
 use SP\Domain\Plugin\Ports\PluginManagerService;
+use SP\Domain\Providers\Browser\BrowserAuthService;
 use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
-use SP\Providers\Auth\Browser\BrowserAuthService;
 
 use function SP\logger;
 use function SP\processException;

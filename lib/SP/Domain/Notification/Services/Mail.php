@@ -35,9 +35,9 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Notification\Ports\MailService;
-use SP\Domain\Providers\MailerInterface;
+use SP\Domain\Providers\Mail\MailParams;
+use SP\Domain\Providers\Ports\MailerInterface;
 use SP\Html\Html;
-use SP\Providers\Mail\MailParams;
 
 use function SP\__u;
 use function SP\processException;
