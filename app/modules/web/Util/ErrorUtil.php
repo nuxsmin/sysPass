@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Util;
+namespace SP\Modules\Web\Util;
 
 use Exception;
 use SP\Domain\Core\Acl\AccountPermissionException;
@@ -33,12 +33,11 @@ use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Mvc\View\Template;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
 use function SP\processException;
 
 /**
  * Class ErrorUtil
- *
- * @package SP\Util
  */
 final class ErrorUtil
 {
@@ -76,7 +75,7 @@ final class ErrorUtil
             case AccountPermissionException::class:
                 self::showErrorInView($view, self::ERR_ACCOUNT_NO_PERMISSION, $render, $replace);
                 break;
-            default;
+            default:
                 self::showErrorInView($view, self::ERR_EXCEPTION, $render, $replace);
         }
     }

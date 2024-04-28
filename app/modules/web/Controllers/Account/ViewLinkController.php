@@ -40,8 +40,8 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Http\Uri;
+use SP\Modules\Web\Util\ErrorUtil;
 use SP\Mvc\Controller\WebControllerHelper;
-use SP\Util\ErrorUtil;
 use SP\Util\Image;
 use SP\Util\Serde;
 

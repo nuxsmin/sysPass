@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\UserPassReset;
 
 
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Util\ErrorUtil;
+use SP\Modules\Web\Util\ErrorUtil;
 
 /**
  * Class ResetController
