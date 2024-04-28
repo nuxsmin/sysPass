@@ -46,8 +46,6 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
 {
     use RepositoryItemTrait;
 
-    public const TABLE = 'CustomFieldDefinition';
-
     /**
      * Creates an item
      *
@@ -61,7 +59,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
     {
         $query = $this->queryFactory
             ->newInsert()
-            ->into(self::TABLE)
+            ->into(CustomFieldDefinitionModel::TABLE)
             ->cols(CustomFieldDefinitionModel::getCols(['id']))
             ->bindValues([
                              'name' => $customFieldDefinition->getName(),
@@ -91,7 +89,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
     {
         $query = $this->queryFactory
             ->newUpdate()
-            ->table(self::TABLE)
+            ->table(CustomFieldDefinitionModel::TABLE)
             ->cols($customFieldDefinition->toArray(null, ['id', 'moduleId']))
             ->where('id = :id')
             ->bindValues(['id' => $customFieldDefinition->getId()]);
@@ -113,7 +111,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(CustomFieldDefinitionModel::TABLE)
             ->cols(CustomFieldDefinitionModel::getCols())
             ->where('id = :id')
             ->bindValues(['id' => $id])
@@ -135,7 +133,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(CustomFieldDefinitionModel::TABLE)
             ->cols(CustomFieldDefinitionModel::getCols())
             ->orderBy(['moduleId ASC']);
 
@@ -159,7 +157,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
 
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(CustomFieldDefinitionModel::TABLE)
             ->where('id IN (:ids)')
             ->bindValues(['ids' => $ids]);
 
@@ -181,7 +179,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
     {
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(CustomFieldDefinitionModel::TABLE)
             ->where('id = :id')
             ->bindValues(['id' => $id]);
 
@@ -204,7 +202,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(sprintf('%s AS CF_Definition', self::TABLE))
+            ->from(sprintf('%s AS CF_Definition', CustomFieldDefinitionModel::TABLE))
             ->innerJoin('CustomFieldType AS CF_Type', 'CF_Type.id = CustomFieldDefinition.typeId')
             ->cols(CustomFieldDefinitionModel::getColsWithPreffix('CF_Definition'))
             ->orderBy(['CF_Definition.moduleId ASC'])

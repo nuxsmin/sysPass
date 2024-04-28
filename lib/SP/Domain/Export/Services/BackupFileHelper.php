@@ -33,7 +33,7 @@ use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileHandler;
-use SP\Util\FileSystem;
+use SP\Infrastructure\File\FileSystem;
 
 /**
  * BackupFileHelper

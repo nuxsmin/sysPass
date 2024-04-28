@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Language;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserPreferences;
@@ -42,7 +42,7 @@ class LanguageTest extends UnitaryTestCase
 {
 
     private ConfigDataInterface|MockObject $configData;
-    private RequestInterface|MockObject    $request;
+    private RequestService|MockObject $request;
     private Language                       $language;
 
     public function testSetLocales()
@@ -186,7 +186,7 @@ class LanguageTest extends UnitaryTestCase
         parent::setUp();
 
         $this->configData = $this->createMock(ConfigDataInterface::class);
-        $this->request = $this->createMock(RequestInterface::class);
+        $this->request = $this->createMock(RequestService::class);
 
         $this->language = new Language($this->context, $this->configData, $this->request);
     }

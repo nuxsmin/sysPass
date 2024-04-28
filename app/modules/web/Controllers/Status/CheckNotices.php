@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers\Status;
 use JsonException;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\CheckException;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use Throwable;
 

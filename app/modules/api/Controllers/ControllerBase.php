@@ -39,7 +39,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonResponse;
+use SP\Domain\Http\Services\JsonResponse;
 
 /**
  * Class ControllerBase

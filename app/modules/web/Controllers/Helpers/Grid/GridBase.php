@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Core\UI\ThemeIcons;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridInterface;
@@ -50,10 +50,10 @@ abstract class GridBase extends HelperBase implements GridInterface
     protected Acl        $acl;
 
     public function __construct(
-        Application $application,
+        Application    $application,
         TemplateInterface $template,
-        RequestInterface $request,
-        AclInterface $acl
+        RequestService $request,
+        AclInterface   $acl
     ) {
         parent::__construct($application, $template, $request);
 

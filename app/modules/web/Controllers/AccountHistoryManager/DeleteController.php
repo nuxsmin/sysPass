@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;

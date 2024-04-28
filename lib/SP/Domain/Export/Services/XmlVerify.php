@@ -29,12 +29,12 @@ use DOMElement;
 use DOMXPath;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Export\Ports\XmlVerifyService;
-use SP\Util\Version;
 
 use function SP\__u;
 

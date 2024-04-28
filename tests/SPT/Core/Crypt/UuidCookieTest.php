@@ -32,7 +32,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\UuidCookie;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SPT\UnitaryTestCase;
 
 /**
@@ -43,7 +43,7 @@ use SPT\UnitaryTestCase;
 class UuidCookieTest extends UnitaryTestCase
 {
 
-    private RequestInterface|MockObject    $requestInterface;
+    private RequestService|MockObject $requestInterface;
     private UriContextInterface|MockObject $uriContext;
 
 
@@ -187,7 +187,7 @@ class UuidCookieTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->requestInterface = $this->createMock(RequestInterface::class);
+        $this->requestInterface = $this->createMock(RequestService::class);
         $this->uriContext = $this->createMock(UriContextInterface::class);
     }
 }

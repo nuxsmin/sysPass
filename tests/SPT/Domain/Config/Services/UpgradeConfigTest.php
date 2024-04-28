@@ -32,7 +32,7 @@ use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Services\UpgradeConfig;
-use SP\Domain\Providers\Ports\FileLogHandlerProvider;
+use SP\Domain\Log\Ports\FileLogHandlerProvider;
 use SP\Domain\Upgrade\Services\UpgradeException;
 use SP\Infrastructure\File\FileException;
 use SPT\UnitaryTestCase;

@@ -49,6 +49,19 @@ use SP\Core\UI\ThemeIcons;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
+use SP\Domain\Auth\Providers\AclHandler;
+use SP\Domain\Auth\Providers\AuthProvider;
+use SP\Domain\Auth\Providers\AuthProviderService;
+use SP\Domain\Auth\Providers\AuthType;
+use SP\Domain\Auth\Providers\Browser\BrowserAuth;
+use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
+use SP\Domain\Auth\Providers\Database\DatabaseAuth;
+use SP\Domain\Auth\Providers\Database\DatabaseAuthService;
+use SP\Domain\Auth\Providers\Ldap\LdapActions;
+use SP\Domain\Auth\Providers\Ldap\LdapAuth;
+use SP\Domain\Auth\Providers\Ldap\LdapBase;
+use SP\Domain\Auth\Providers\Ldap\LdapConnection;
+use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Services\ConfigBackup;
@@ -69,37 +82,24 @@ use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Export\Ports\BackupFileHelperService;
 use SP\Domain\Export\Services\BackupFileHelper;
-use SP\Domain\Html\MinifyInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Html\Ports\MinifyService;
+use SP\Domain\Html\Services\Minify;
+use SP\Domain\Http\Client;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Services\Request;
 use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Services\DatabaseSetupInterface;
 use SP\Domain\Install\Services\MysqlSetupBuilder;
+use SP\Domain\Log\Providers\DatabaseHandler;
+use SP\Domain\Log\Providers\FileHandler;
+use SP\Domain\Log\Providers\RemoteSyslogHandler;
+use SP\Domain\Log\Providers\SyslogHandler;
+use SP\Domain\Notification\Ports\MailerInterface;
+use SP\Domain\Notification\Providers\MailHandler;
+use SP\Domain\Notification\Providers\NotificationHandler;
+use SP\Domain\Notification\Providers\PhpMailerWrapper;
 use SP\Domain\Notification\Services\Mail;
-use SP\Domain\Providers\Acl\AclHandler;
-use SP\Domain\Providers\Auth\AuthProvider;
-use SP\Domain\Providers\Auth\AuthProviderService;
-use SP\Domain\Providers\Auth\AuthType;
-use SP\Domain\Providers\Browser\BrowserAuth;
-use SP\Domain\Providers\Browser\BrowserAuthService;
-use SP\Domain\Providers\Database\DatabaseAuth;
-use SP\Domain\Providers\Database\DatabaseAuthService;
-use SP\Domain\Providers\Ldap\LdapActions;
-use SP\Domain\Providers\Ldap\LdapAuth;
-use SP\Domain\Providers\Ldap\LdapBase;
-use SP\Domain\Providers\Ldap\LdapConnection;
-use SP\Domain\Providers\Ldap\LdapParams;
-use SP\Domain\Providers\Log\DatabaseLogHandler;
-use SP\Domain\Providers\Log\FileLogHandler;
-use SP\Domain\Providers\Log\RemoteSyslogHandler;
-use SP\Domain\Providers\Log\SyslogHandler;
-use SP\Domain\Providers\Mail\MailHandler;
-use SP\Domain\Providers\Mail\PhpMailerWrapper;
-use SP\Domain\Providers\Notification\NotificationHandler;
-use SP\Domain\Providers\Ports\MailerInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Html\Minify;
-use SP\Http\Client;
-use SP\Http\Request;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlHandler;
@@ -127,7 +127,7 @@ final class CoreDefinitions
             Klein::class => autowire(Klein::class),
             KleinRequest::class => factory([KleinRequest::class, 'createFromGlobals']),
             KleinResponse::class => create(KleinResponse::class),
-            RequestInterface::class => autowire(Request::class),
+            RequestService::class => autowire(Request::class),
             UriContextInterface::class => autowire(UriContext::class),
             Context::class =>
                 static fn() => ContextFactory::getForModule(APP_MODULE),
@@ -211,7 +211,7 @@ final class CoreDefinitions
                     factory([Mail::class, 'getParamsFromConfig'])
                         ->parameter('configData', get(ConfigDataInterface::class))
                 ),
-            DatabaseSetupInterface::class => static function (RequestInterface $request) {
+            DatabaseSetupInterface::class => static function (RequestService $request) {
                 $installData = InstallDataFactory::buildFromRequest($request);
 
                 if ($installData->getBackendType() === 'mysql') {
@@ -224,12 +224,12 @@ final class CoreDefinitions
                 $configData = $c->get(ConfigDataInterface::class);
 
                 if (!$configData->isInstalled()) {
-                    return new ProvidersHelper($c->get(FileLogHandler::class));
+                    return new ProvidersHelper($c->get(FileHandler::class));
                 }
 
                 return new ProvidersHelper(
-                    $c->get(FileLogHandler::class),
-                    $c->get(DatabaseLogHandler::class),
+                    $c->get(FileHandler::class),
+                    $c->get(DatabaseHandler::class),
                     $c->get(MailHandler::class),
                     $c->get(SyslogHandler::class),
                     $c->get(RemoteSyslogHandler::class),
@@ -248,10 +248,10 @@ final class CoreDefinitions
             UuidCookie::class => factory([UuidCookie::class, 'factory'])
                 ->parameter(
                     'request',
-                    get(RequestInterface::class)
+                    get(RequestService::class)
                 ),
             RequestBasedPasswordInterface::class => autowire(RequestBasedPassword::class),
-            MinifyInterface::class => autowire(Minify::class),
+            MinifyService::class => autowire(Minify::class),
             BackupFileHelperService::class => autowire(BackupFileHelper::class)
                 ->constructorParameter('path', new DirectoryHandler(BACKUP_PATH))
         ];

@@ -27,7 +27,7 @@ namespace SPT\Core\Bootstrap;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\Bootstrap\UriContext;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SPT\UnitaryTestCase;
 
 /**
@@ -41,7 +41,7 @@ class UriContextTest extends UnitaryTestCase
      */
     public function testConstruct()
     {
-        $request = $this->createMock(RequestInterface::class);
+        $request = $this->createMock(RequestService::class);
         $request->expects(self::exactly(2))
                 ->method('getServer')
                 ->with(...$this->withConsecutive(['SCRIPT_FILENAME'], ['REQUEST_URI']))
@@ -65,7 +65,7 @@ class UriContextTest extends UnitaryTestCase
      */
     public function testConstructWithoutWebRoot()
     {
-        $request = $this->createMock(RequestInterface::class);
+        $request = $this->createMock(RequestService::class);
         $request->expects(self::exactly(2))
                 ->method('getServer')
                 ->with(...$this->withConsecutive(['SCRIPT_FILENAME'], ['REQUEST_URI']))

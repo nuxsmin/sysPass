@@ -27,10 +27,9 @@ namespace SP\Domain\Account\Adapters;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Common\Dtos\ItemDataTrait;
-use SP\Domain\Common\Models\Item;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Html\Html;
+use SP\Domain\Html\Html;
 
 /**
  * Class AccountSearchItem

@@ -29,8 +29,8 @@ use SP\Core\Events\EventDispatcher;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Context\Context;
-use SP\Domain\Http\RequestInterface;
-use SP\Http\Request;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Services\Request;
 use SP\Mvc\View\TemplateInterface;
 
 /**
@@ -52,12 +52,12 @@ abstract class HelperBase
      *
      * @param Application $application
      * @param TemplateInterface $template
-     * @param RequestInterface $request
+     * @param \SP\Domain\Http\Ports\RequestService $request
      */
     public function __construct(
         Application $application,
         TemplateInterface $template,
-        RequestInterface $request
+        RequestService $request
     ) {
         $this->config = $application->getConfig();
         $this->context = $application->getContext();

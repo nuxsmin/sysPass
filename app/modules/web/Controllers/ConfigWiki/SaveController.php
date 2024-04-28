@@ -30,7 +30,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 

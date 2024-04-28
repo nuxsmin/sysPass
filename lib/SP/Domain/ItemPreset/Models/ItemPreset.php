@@ -42,6 +42,8 @@ class ItemPreset extends Model implements HydratableModel
 {
     use SerializedModel;
 
+    public const TABLE = 'ItemPreset';
+
     protected ?int    $id            = null;
     protected ?string $type          = null;
     protected ?int    $userId        = null;

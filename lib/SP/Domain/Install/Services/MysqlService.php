@@ -26,6 +26,7 @@ namespace SP\Domain\Install\Services;
 
 use Exception;
 use PDOException;
+use SP\Domain\Common\Providers\Password;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
@@ -33,7 +34,6 @@ use SP\Domain\Install\Adapters\InstallData;
 use SP\Infrastructure\Database\DatabaseException;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
-use SP\Util\Password;
 
 use function SP\__;
 use function SP\__u;

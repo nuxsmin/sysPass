@@ -30,7 +30,7 @@ use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**

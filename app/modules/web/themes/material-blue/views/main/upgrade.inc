@@ -34,10 +34,10 @@
         <div id="page-title">
             <h1><?php
 
+                use SP\Domain\Common\Providers\Version;
                 use SP\Domain\Config\Ports\ConfigDataInterface;
                 use SP\Domain\Core\UI\ThemeIconsInterface;
                 use SP\Mvc\View\TemplateInterface;
-                use SP\Util\Version;
 
                 printf(__('Update %s'), $_getvar('upgradeVersion')); ?></h1>
         </div>

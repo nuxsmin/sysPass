@@ -34,7 +34,7 @@ use SP\Domain\Auth\Services\LoginUser;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDataDto;
@@ -48,8 +48,8 @@ use SPT\UnitaryTestCase;
 #[Group('unitary')]
 class LoginUserTest extends UnitaryTestCase
 {
-    private TrackService|MockObject     $trackService;
-    private RequestInterface|MockObject $request;
+    private TrackService|MockObject   $trackService;
+    private RequestService|MockObject $request;
 
     private LoginUser                         $loginUser;
     private MockObject|UserPassRecoverService $userPassRecoverService;
@@ -147,7 +147,7 @@ class LoginUserTest extends UnitaryTestCase
                 )
             );
 
-        $this->request = $this->createMock(RequestInterface::class);
+        $this->request = $this->createMock(RequestService::class);
         $this->userPassRecoverService = $this->createMock(UserPassRecoverService::class);
 
         $this->loginUser = new LoginUser(

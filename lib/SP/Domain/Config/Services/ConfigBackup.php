@@ -25,6 +25,7 @@
 namespace SP\Domain\Config\Services;
 
 use Exception;
+use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigBackupService;
@@ -34,7 +35,6 @@ use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\File\FileException;
-use SP\Util\Serde;
 
 use function SP\__u;
 use function SP\processException;

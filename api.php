@@ -25,8 +25,8 @@
 use Psr\Container\ContainerInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Api\Bootstrap;
-use SP\Util\FileSystem;
 
 use function SP\processException;
 

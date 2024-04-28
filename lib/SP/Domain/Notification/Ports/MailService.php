@@ -28,7 +28,7 @@ use PHPMailer\PHPMailer\Exception;
 use SP\Core\Messages\MailMessage;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Providers\Mail\MailParams;
+use SP\Domain\Notification\Dtos\MailParams;
 
 /**
  * Class MailService

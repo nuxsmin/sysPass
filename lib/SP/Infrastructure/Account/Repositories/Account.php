@@ -31,6 +31,7 @@ use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Account\Models\AccountView as AccountViewModel;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountRepository;
+use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Events\EventDispatcherInterface;
@@ -63,6 +64,10 @@ final class Account extends BaseRepository implements AccountRepository
 
     /**
      * Devolver el número total de cuentas
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getTotalNumAccounts(): QueryResult
     {
@@ -78,6 +83,8 @@ final class Account extends BaseRepository implements AccountRepository
      * @param int $accountId
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getPasswordForId(int $accountId): QueryResult
     {
@@ -102,6 +109,8 @@ final class Account extends BaseRepository implements AccountRepository
      * @param int $accountId
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getPasswordHistoryForId(int $accountId): QueryResult
     {
@@ -135,7 +144,7 @@ final class Account extends BaseRepository implements AccountRepository
     {
         $query = $this->queryFactory
             ->newUpdate()
-            ->table('Account')
+            ->table(AccountModel::TABLE)
             ->set('countDecrypt', '(countDecrypt + 1)')
             ->where('id = :id')
             ->bindValues(['id' => $accountId]);
@@ -156,7 +165,7 @@ final class Account extends BaseRepository implements AccountRepository
     {
         $query = $this->queryFactory
             ->newInsert()
-            ->into('Account')
+            ->into(AccountModel::TABLE)
             ->cols($account->toArray(null, ['countDecrypt', 'countView', 'dateAdd', 'dateEdit', 'id']))
             ->set('dateAdd', 'NOW()')
             ->set('passDate', 'UNIX_TIMESTAMP()');
@@ -179,7 +188,7 @@ final class Account extends BaseRepository implements AccountRepository
     {
         $query = $this->queryFactory
             ->newInsert()
-            ->into('Account')
+            ->into(AccountModel::TABLE)
             ->cols($account->toArray(null, ['id']));
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the account'));
@@ -201,7 +210,7 @@ final class Account extends BaseRepository implements AccountRepository
     {
         $query = $this->queryFactory
             ->newUpdate()
-            ->table('Account')
+            ->table(AccountModel::TABLE)
             ->cols($account->toArray(['pass', 'key', 'userEditId', 'passDateChange']))
             ->set('dateEdit', 'NOW()')
             ->set('passDate', 'UNIX_TIMESTAMP()')
@@ -227,7 +236,7 @@ final class Account extends BaseRepository implements AccountRepository
     {
         $query = $this->queryFactory
             ->newUpdate()
-            ->table('Account')
+            ->table(AccountModel::TABLE)
             ->cols(['pass' => $encryptedPassword->getPass(), 'key' => $encryptedPassword->getKey()])
             ->where('id = :id')
             ->bindValues(['id' => $accountId]);
@@ -251,7 +260,7 @@ final class Account extends BaseRepository implements AccountRepository
     {
         $query = $this->queryFactory
             ->newUpdate()
-            ->table('Account')
+            ->table(AccountModel::TABLE)
             ->cols(
                 $account->toArray(
                     null,
@@ -287,7 +296,7 @@ final class Account extends BaseRepository implements AccountRepository
     {
         $query = $this->queryFactory
             ->newDelete()
-            ->from('Account')
+            ->from(AccountModel::TABLE)
             ->where('id = :id')
             ->bindValues(['id' => $accountId]);
 
@@ -312,7 +321,7 @@ final class Account extends BaseRepository implements AccountRepository
     {
         $query = $this->queryFactory
             ->newUpdate()
-            ->table('Account')
+            ->table(AccountModel::TABLE)
             ->where('id = :id')
             ->cols(
                 $account->toArray(
@@ -383,7 +392,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $query = $this->queryFactory
             ->newUpdate()
-            ->table('Account')
+            ->table(AccountModel::TABLE)
             ->cols(
                 array_merge(
                     $cols,
@@ -405,12 +414,14 @@ final class Account extends BaseRepository implements AccountRepository
      * @param int $accountId
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdEnriched(int $accountId): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from('account_data_v')
+            ->from(AccountViewModel::TABLE)
             ->cols(AccountViewModel::getCols())
             ->where('id = :id')
             ->bindValues(['id' => $accountId])
@@ -428,12 +439,14 @@ final class Account extends BaseRepository implements AccountRepository
      * @param int $accountId
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $accountId): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from('Account')
+            ->from(AccountModel::TABLE)
             ->cols(AccountModel::getCols())
             ->where('id = :id')
             ->bindValues(['id' => $accountId])
@@ -449,12 +462,14 @@ final class Account extends BaseRepository implements AccountRepository
      * Returns all the items
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll(): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from('Account')
+            ->from(AccountModel::TABLE)
             ->cols(AccountModel::getCols(['pass', 'key']));
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, AccountModel::class));
@@ -477,7 +492,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $query = $this->queryFactory
             ->newDelete()
-            ->from('Account')
+            ->from(AccountModel::TABLE)
             ->where('id IN (:ids)', ['ids' => $accountsId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
@@ -491,12 +506,14 @@ final class Account extends BaseRepository implements AccountRepository
      * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from('account_search_v')
+            ->from(AccountSearchViewModel::TABLE)
             ->cols(AccountSearchViewModel::getCols())
             ->orderBy(['name ASC', 'clientName ASC'])
             ->limit($itemSearchData->getLimitCount())
@@ -536,7 +553,7 @@ final class Account extends BaseRepository implements AccountRepository
     {
         $query = $this->queryFactory
             ->newUpdate()
-            ->table('Account')
+            ->table(AccountModel::TABLE)
             ->set('countView', '(countView + 1)')
             ->where('id = :id')
             ->bindValues(['id' => $accountId]);
@@ -550,12 +567,14 @@ final class Account extends BaseRepository implements AccountRepository
      * @param int $accountId
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getDataForLink(int $accountId): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from('Account')
+            ->from(AccountModel::TABLE)
             ->cols([
                        'Account.name',
                        'Account.login',
@@ -580,6 +599,8 @@ final class Account extends BaseRepository implements AccountRepository
      * @param int|null $accountId
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUser(?int $accountId = null): QueryResult
     {
@@ -607,6 +628,8 @@ final class Account extends BaseRepository implements AccountRepository
      * @param int $accountId
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getLinked(int $accountId): QueryResult
     {
@@ -617,7 +640,7 @@ final class Account extends BaseRepository implements AccountRepository
                        'Account.name',
                        'Client.name AS clientName',
                    ])
-            ->join('INNER', 'Client', 'Account.clientId = Client.id')
+            ->join('INNER', ClientModel::TABLE, 'Account.clientId = Client.id')
             ->where('Account.parentId = :parentId')
             ->bindValues(['parentId' => $accountId])
             ->orderBy(['Account.name ASC']);
@@ -629,12 +652,14 @@ final class Account extends BaseRepository implements AccountRepository
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAccountsPassData(): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from('Account')
+            ->from(AccountModel::TABLE)
             ->cols([
                        'id',
                        'name',

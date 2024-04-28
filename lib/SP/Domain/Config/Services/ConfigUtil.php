@@ -24,9 +24,9 @@
 
 namespace SP\Domain\Config\Services;
 
+use SP\Domain\Common\Providers\Environment;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Util\Checks;
 
 use function SP\__;
 use function SP\__u;
@@ -83,7 +83,7 @@ final class ConfigUtil
             throw new ConfigException(__u('Unable to write into \'/app/config\' directory'), SPException::CRITICAL);
         }
 
-        if (!Checks::checkIsWindows()
+        if (!Environment::checkIsWindows()
             && ($configPerms = decoct(fileperms(CONFIG_PATH) & 0777)) !== '750'
         ) {
             clearstatcache();

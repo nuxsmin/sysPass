@@ -32,16 +32,16 @@ use SP\Core\Context\ContextException;
 use SP\Core\HttpModuleBase;
 use SP\Core\Language;
 use SP\Core\ProvidersHelper;
+use SP\Domain\Common\Providers\Http;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\LanguageInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Upgrade\Services\UpgradeAppService;
 use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
 use SP\Domain\Upgrade\Services\UpgradeUtil;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
-use SP\Util\Http;
 
 use function SP\logger;
 
@@ -54,12 +54,12 @@ final class Init extends HttpModuleBase
     private DatabaseUtil $databaseUtil;
 
     public function __construct(
-        Application      $application,
-        ProvidersHelper  $providersHelper,
-        RequestInterface $request,
-        Klein            $router,
+        Application     $application,
+        ProvidersHelper $providersHelper,
+        RequestService  $request,
+        Klein           $router,
         LanguageInterface $language,
-        DatabaseUtil     $databaseUtil
+        DatabaseUtil    $databaseUtil
     ) {
         parent::__construct(
             $application,

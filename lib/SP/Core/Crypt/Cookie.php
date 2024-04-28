@@ -25,7 +25,7 @@
 namespace SP\Core\Crypt;
 
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 
 use function SP\logger;
 
@@ -36,7 +36,7 @@ abstract class Cookie
 {
     protected function __construct(
         private readonly string              $cookieName,
-        protected readonly RequestInterface  $request,
+        protected readonly RequestService $request,
         private readonly UriContextInterface $uriContext
     ) {
     }

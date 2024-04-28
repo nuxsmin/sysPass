@@ -31,6 +31,7 @@ use DOMNode;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -46,8 +47,7 @@ use SP\Domain\Export\Ports\XmlTagExportService;
 use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileException;
-use SP\Util\FileSystem;
-use SP\Util\Version;
+use SP\Infrastructure\File\FileSystem;
 
 use function SP\__u;
 

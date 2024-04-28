@@ -29,8 +29,9 @@ use JsonException;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Http\JsonMessage;
-use SP\Util\Util;
+use SP\Domain\Http\Dtos\JsonMessage;
+
+use function SP\logger;
 
 /**
  * Trait ConfigTrait
@@ -59,7 +60,7 @@ trait ConfigTrait
             $config->save($configData);
 
             if (BootstrapBase::$LOCK !== false && $configData->isMaintenance() === false) {
-                Util::unlockApp();
+                self::unlockApp();
             }
 
             if ($onSuccess !== null) {
@@ -76,5 +77,15 @@ trait ConfigTrait
                 [$e]
             );
         }
+    }
+
+    /**
+     * Desbloquear la aplicación
+     */
+    private static function unlockApp(): bool
+    {
+        logger('Application unlocked');
+
+        return @unlink(LOCK_FILE);
     }
 }

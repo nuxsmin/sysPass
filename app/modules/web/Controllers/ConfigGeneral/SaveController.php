@@ -34,9 +34,10 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
-use SP\Util\Util;
 
 /**
  * Class ConfigGeneral
@@ -69,7 +70,7 @@ final class SaveController extends SimpleControllerBase
             $this->config,
             function () use ($eventMessage, $configData) {
                 if ($configData->isMaintenance()) {
-                    Util::lockApp($this->session->getUserData()->getId(), 'config');
+                    self::lockApp($this->session->getUserData()->getId(), 'config');
                 }
 
                 $this->eventDispatcher->notify('save.config.general', new Event($this, $eventMessage));
@@ -221,6 +222,22 @@ final class SaveController extends SimpleControllerBase
 
             $eventMessage->addDescription(__u('Auth Basic disabled'));
         }
+    }
+
+    /**
+     * Bloquear la aplicación
+     *
+     * @throws JsonException
+     * @throws FileException
+     */
+    private static function lockApp(int $userId, string $subject): void
+    {
+        $data = ['time' => time(), 'userId' => $userId, 'subject' => $subject];
+
+        $file = new FileHandler(LOCK_FILE);
+        $file->save(json_encode($data, JSON_THROW_ON_ERROR));
+
+        logger('Application locked out');
     }
 
     /**

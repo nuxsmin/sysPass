@@ -40,7 +40,6 @@ use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Task\Services\TaskFactory;
-use SP\Util\Util;
 
 use function SP\__;
 use function SP\__u;
@@ -58,6 +57,23 @@ final class AccountCrypt extends Service implements AccountCryptService
         private readonly CryptInterface        $crypt
     ) {
         parent::__construct($application);
+    }
+
+    /**
+     * Devolver el tiempo aproximado en segundos de una operación
+     *
+     * @return array Con el tiempo estimado y los elementos por segundo
+     */
+    public static function getETA(int $startTime, int $numItems, int $totalItems): array
+    {
+        if ($numItems > 0 && $totalItems > 0) {
+            $runtime = time() - $startTime;
+            $eta = (int)((($totalItems * $runtime) / $numItems) - $runtime);
+
+            return [$eta, $numItems / $runtime];
+        }
+
+        return [0, 0];
     }
 
     /**
@@ -157,7 +173,7 @@ final class AccountCrypt extends Service implements AccountCryptService
             }
 
             if ($counter % 100 === 0) {
-                $eta = Util::getETA($startTime, $counter, $numAccounts);
+                $eta = self::getETA($startTime, $counter, $numAccounts);
 
                 if (null !== $task) {
                     $taskMessage = TaskFactory::createMessage(

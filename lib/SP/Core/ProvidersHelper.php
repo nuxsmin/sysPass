@@ -24,13 +24,13 @@
 
 namespace SP\Core;
 
-use SP\Domain\Providers\Acl\AclHandler;
-use SP\Domain\Providers\Log\DatabaseLogHandler;
-use SP\Domain\Providers\Log\FileLogHandler;
-use SP\Domain\Providers\Log\RemoteSyslogHandler;
-use SP\Domain\Providers\Log\SyslogHandler;
-use SP\Domain\Providers\Mail\MailHandler;
-use SP\Domain\Providers\Notification\NotificationHandler;
+use SP\Domain\Auth\Providers\AclHandler;
+use SP\Domain\Log\Providers\DatabaseHandler;
+use SP\Domain\Log\Providers\FileHandler;
+use SP\Domain\Log\Providers\RemoteSyslogHandler;
+use SP\Domain\Log\Providers\SyslogHandler;
+use SP\Domain\Notification\Providers\MailHandler;
+use SP\Domain\Notification\Providers\NotificationHandler;
 
 /**
  * The Provider helper class will have oll the providers availabe in the application
@@ -39,8 +39,8 @@ final readonly class ProvidersHelper
 {
 
     public function __construct(
-        private FileLogHandler       $fileLogHandler,
-        private ?DatabaseLogHandler  $databaseLogHandler = null,
+        private FileHandler      $fileLogHandler,
+        private ?DatabaseHandler $databaseLogHandler = null,
         private ?MailHandler         $mailHandler = null,
         private ?SyslogHandler       $syslogHandler = null,
         private ?RemoteSyslogHandler $remoteSyslogHandler = null,
@@ -49,12 +49,12 @@ final readonly class ProvidersHelper
     ) {
     }
 
-    public function getFileLogHandler(): FileLogHandler
+    public function getFileLogHandler(): FileHandler
     {
         return $this->fileLogHandler;
     }
 
-    public function getDatabaseLogHandler(): DatabaseLogHandler
+    public function getDatabaseLogHandler(): DatabaseHandler
     {
         return $this->databaseLogHandler;
     }

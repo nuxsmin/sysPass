@@ -38,6 +38,7 @@ use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\HttpModuleBase;
 use SP\Core\Language;
 use SP\Core\ProvidersHelper;
+use SP\Domain\Common\Providers\Http;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Crypt\CsrfInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -50,15 +51,15 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Crypt\Services\SecureSession;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Adapters\Address;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Providers\Uri;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Services\ItemPreset;
 use SP\Domain\Upgrade\Services\UpgradeUtil;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Services\UserProfile;
-use SP\Http\Address;
-use SP\Http\Uri;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
@@ -80,7 +81,6 @@ use SP\Modules\Web\Controllers\Status\StatusController;
 use SP\Modules\Web\Controllers\Task\TrackStatusController;
 use SP\Modules\Web\Controllers\Upgrade\IndexController as UpgradeIndexController;
 use SP\Modules\Web\Controllers\Upgrade\UpgradeController;
-use SP\Util\Http;
 
 use function SP\logger;
 use function SP\processException;
@@ -145,7 +145,7 @@ final class Init extends HttpModuleBase
     public function __construct(
         Application                          $application,
         ProvidersHelper                      $providersHelper,
-        RequestInterface                     $request,
+        RequestService       $request,
         Klein                                $router,
         CsrfInterface                        $csrf,
         LanguageInterface                    $language,

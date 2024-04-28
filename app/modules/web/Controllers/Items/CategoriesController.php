@@ -29,7 +29,7 @@ use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonResponse;
+use SP\Domain\Http\Services\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
 use SP\Mvc\View\Components\SelectItemAdapter;

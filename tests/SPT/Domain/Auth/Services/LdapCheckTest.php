@@ -30,10 +30,10 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Auth\Services\LdapCheck;
-use SP\Domain\Providers\Ldap\LdapException;
-use SP\Domain\Providers\Ldap\LdapParams;
-use SP\Domain\Providers\Ldap\LdapResults;
-use SP\Domain\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Auth\Providers\Ldap\LdapException;
+use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Auth\Providers\Ldap\LdapResults;
+use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
 use SPT\UnitaryTestCase;
 
 /**

@@ -32,7 +32,7 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\MasterPassService;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
@@ -52,7 +52,7 @@ abstract class AccountHelperBase extends HelperBase
     public function __construct(
         Application          $application,
         TemplateInterface    $template,
-        RequestInterface     $request,
+        RequestService    $request,
         AclInterface         $acl,
         AccountActionsHelper $accountActionsHelper,
         MasterPassService $masterPassService

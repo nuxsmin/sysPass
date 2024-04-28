@@ -28,11 +28,10 @@ use SP\Core\Application;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Notification\Models\Notification;
+use SP\Domain\Html\Html;
+use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Http\Services\JsonResponse;
 use SP\Domain\Notification\Ports\NotificationService;
-use SP\Html\Html;
-use SP\Http\JsonMessage;
-use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
 

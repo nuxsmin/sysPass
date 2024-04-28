@@ -24,9 +24,9 @@
 
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
-use SP\Domain\Html\MinifyInterface;
-use SP\Html\MinifyCss;
-use SP\Html\MinifyJs;
+use SP\Domain\Html\Ports\MinifyService;
+use SP\Domain\Html\Services\MinifyCss;
+use SP\Domain\Html\Services\MinifyJs;
 use SP\Modules\Web\Bootstrap;
 use SP\Modules\Web\Controllers\Resource\CssController;
 use SP\Modules\Web\Controllers\Resource\JsController;
@@ -43,9 +43,9 @@ return [
     ModuleInterface::class => autowire(Init::class),
     CssController::class => autowire(
         CssController::class
-    )->constructorParameter(MinifyInterface::class, autowire(MinifyCss::class)),
+    )->constructorParameter(MinifyService::class, autowire(MinifyCss::class)),
     JsController::class => autowire(
         JsController::class
-    )->constructorParameter(MinifyInterface::class, autowire(MinifyJs::class))
+    )->constructorParameter(MinifyService::class, autowire(MinifyJs::class))
 
 ];

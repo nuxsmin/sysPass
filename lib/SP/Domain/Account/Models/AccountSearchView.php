@@ -31,6 +31,8 @@ use SP\Domain\Common\Models\Model;
  */
 final class AccountSearchView extends Model
 {
+    public const TABLE = 'account_search_v';
+
     protected ?int    $id                        = null;
     protected ?int    $clientId                  = null;
     protected ?int    $categoryId                = null;

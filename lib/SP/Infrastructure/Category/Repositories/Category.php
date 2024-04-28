@@ -47,8 +47,6 @@ final class Category extends BaseRepository implements CategoryRepository
 {
     use RepositoryItemTrait;
 
-    public const TABLE = 'Category';
-
     /**
      * Creates an item
      *
@@ -67,7 +65,7 @@ final class Category extends BaseRepository implements CategoryRepository
 
         $query = $this->queryFactory
             ->newInsert()
-            ->into(self::TABLE)
+            ->into(CategoryModel::TABLE)
             ->cols($category->toArray(null, ['id', 'hash']))
             ->col('hash', $this->makeItemHash($category->getName()));
 
@@ -90,7 +88,7 @@ final class Category extends BaseRepository implements CategoryRepository
         $query = $this->queryFactory
             ->newSelect()
             ->cols(['id'])
-            ->from(self::TABLE)
+            ->from(CategoryModel::TABLE)
             ->where('hash = :hash')
             ->orWhere('name = :name')
             ->bindValues(
@@ -121,7 +119,7 @@ final class Category extends BaseRepository implements CategoryRepository
 
         $query = $this->queryFactory
             ->newUpdate()
-            ->table(self::TABLE)
+            ->table(CategoryModel::TABLE)
             ->cols($category->toArray(null, ['id', 'hash']))
             ->where('id = :id')
             ->limit(1)
@@ -151,7 +149,7 @@ final class Category extends BaseRepository implements CategoryRepository
         $query = $this->queryFactory
             ->newSelect()
             ->cols(['id'])
-            ->from(self::TABLE)
+            ->from(CategoryModel::TABLE)
             ->where('(hash = :hash OR name = :name)')
             ->where('id <> :id')
             ->bindValues(
@@ -178,7 +176,7 @@ final class Category extends BaseRepository implements CategoryRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(CategoryModel::TABLE)
             ->cols(CategoryModel::getCols())
             ->where('id = :id')
             ->bindValues(['id' => $categoryId])
@@ -202,7 +200,7 @@ final class Category extends BaseRepository implements CategoryRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(CategoryModel::TABLE)
             ->cols(CategoryModel::getCols())
             ->where('(name = :name OR hash = :hash)')
             ->bindValues(['name' => $name, 'hash' => $this->makeItemHash($name)])
@@ -224,7 +222,7 @@ final class Category extends BaseRepository implements CategoryRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(CategoryModel::TABLE)
             ->cols(CategoryModel::getCols());
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, CategoryModel::class));
@@ -247,7 +245,7 @@ final class Category extends BaseRepository implements CategoryRepository
 
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(CategoryModel::TABLE)
             ->where('id IN (:ids)', ['ids' => $categoryIds]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the categories'));
@@ -268,7 +266,7 @@ final class Category extends BaseRepository implements CategoryRepository
     {
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(CategoryModel::TABLE)
             ->where('id = :id')
             ->bindValues(['id' => $id]);
 
@@ -289,7 +287,7 @@ final class Category extends BaseRepository implements CategoryRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(CategoryModel::TABLE)
             ->cols(CategoryModel::getCols(['hash']))
             ->orderBy(['name'])
             ->limit($itemSearchData->getLimitCount())

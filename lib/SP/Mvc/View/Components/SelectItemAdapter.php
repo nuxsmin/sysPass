@@ -27,7 +27,7 @@ namespace SP\Mvc\View\Components;
 use RuntimeException;
 use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonResponse;
+use SP\Domain\Http\Services\JsonResponse;
 
 use function SP\__u;
 

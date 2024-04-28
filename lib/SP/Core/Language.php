@@ -27,7 +27,7 @@ namespace SP\Core;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\LanguageInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 
 use function SP\logger;
 
@@ -79,7 +79,7 @@ final class Language implements LanguageInterface
     public function __construct(
         private readonly Context $context,
         private readonly ConfigDataInterface $configData,
-        private readonly RequestInterface    $request
+        private readonly RequestService $request
     ) {
         ksort(self::$langs);
     }

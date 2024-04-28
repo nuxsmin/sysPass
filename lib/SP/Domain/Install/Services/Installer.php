@@ -27,6 +27,7 @@ namespace SP\Domain\Install\Services;
 
 use Exception;
 use SP\Core\Crypt\Hash;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Models\Config;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -35,7 +36,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerService;
 use SP\Domain\User\Models\ProfileData;
@@ -47,7 +48,6 @@ use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\File\FileException;
-use SP\Util\Version;
 
 use function SP\__u;
 use function SP\processException;
@@ -64,11 +64,11 @@ final class Installer implements InstallerService
     public const VERSION_TEXT = '4.0';
     public const BUILD        = 21031301;
 
-    private RequestInterface $request;
-    private ?InstallData     $installData = null;
+    private RequestService $request;
+    private ?InstallData   $installData = null;
 
     public function __construct(
-        RequestInterface                        $request,
+        RequestService               $request,
         private readonly ConfigFileService      $config,
         private readonly UserService $userService,
         private readonly UserGroupService       $userGroupService,

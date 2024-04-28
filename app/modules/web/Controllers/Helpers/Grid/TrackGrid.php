@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Http\Adapters\Address;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -33,7 +34,6 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
-use SP\Http\Address;
 use SP\Infrastructure\Database\QueryResult;
 
 /**

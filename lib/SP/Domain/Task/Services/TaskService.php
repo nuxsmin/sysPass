@@ -31,7 +31,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Task\Ports\TaskServiceInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
-use SP\Util\FileSystem;
+use SP\Infrastructure\File\FileSystem;
 
 /**
  * Class TaskService

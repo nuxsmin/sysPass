@@ -25,9 +25,9 @@
 namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\RequestInterface;
-use SP\Domain\Providers\Ldap\LdapParams;
-use SP\Domain\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
 
 use function SP\__u;
 
@@ -37,12 +37,12 @@ use function SP\__u;
 trait ConfigLdapTrait
 {
     /**
-     * @param RequestInterface $request
+     * @param \SP\Domain\Http\Ports\RequestService $request
      *
      * @return LdapParams
      * @throws ValidationException
      */
-    protected function getLdapParamsFromRequest(RequestInterface $request): LdapParams
+    protected function getLdapParamsFromRequest(RequestService $request): LdapParams
     {
         $data = LdapParams::getServerAndPort($request->analyzeString('ldap_server'));
 

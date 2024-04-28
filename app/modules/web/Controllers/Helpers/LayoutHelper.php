@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers\Helpers;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Language;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\AppInfoInterface;
@@ -34,14 +35,13 @@ use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Crypt\CryptPKIInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Providers\Uri;
 use SP\Domain\Install\Services\Installer;
 use SP\Html\DataGrid\Action\DataGridAction;
-use SP\Http\Uri;
+use SP\Infrastructure\File\FileSystem;
 use SP\Mvc\View\TemplateInterface;
 use SP\Plugin\PluginManager;
-use SP\Util\FileSystem;
-use SP\Util\Version;
 
 use function SP\__;
 use function SP\processException;
@@ -60,7 +60,7 @@ final class LayoutHelper extends HelperBase
     public function __construct(
         Application                          $application,
         TemplateInterface                    $template,
-        RequestInterface                     $request,
+        RequestService $request,
         ThemeInterface                       $theme,
         CryptPKIInterface                    $cryptPKI,
         private readonly UriContextInterface $uriContext,

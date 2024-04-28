@@ -27,16 +27,16 @@ namespace SP\Domain\User\Services;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Core\Application;
 use SP\Core\Messages\MailMessage;
+use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Html\Html;
 use SP\Domain\User\Models\UserPassRecover as UserPassRecoverModel;
 use SP\Domain\User\Ports\UserPassRecoverRepository;
 use SP\Domain\User\Ports\UserPassRecoverService;
-use SP\Html\Html;
-use SP\Util\Password;
 
 use function SP\__;
 use function SP\__u;

@@ -35,6 +35,7 @@ use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Services\AuthToken;
+use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\Context;
@@ -51,7 +52,6 @@ use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Api\Controllers\Help\HelpInterface;
-use SP\Util\Filter;
 
 use function SP\__u;
 use function SP\logger;

@@ -45,8 +45,6 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
 {
     use RepositoryItemTrait;
 
-    public const TABLE = 'CustomFieldData';
-
     /**
      * Updates an item
      *
@@ -60,7 +58,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
     {
         $query = $this->queryFactory
             ->newUpdate()
-            ->table(self::TABLE)
+            ->table(CustomFieldDataModel::TABLE)
             ->cols($customFieldData->toArray(['data', 'key']))
             ->where('moduleId = :moduleId')
             ->where('itemId = :itemId')
@@ -91,7 +89,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
         $query = $this->queryFactory
             ->newSelect()
             ->cols(['itemId'])
-            ->from(self::TABLE)
+            ->from(CustomFieldDataModel::TABLE)
             ->where('moduleId = :moduleId')
             ->where('itemId = :itemId')
             ->where('definitionId = :definitionId')
@@ -119,7 +117,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
     {
         $query = $this->queryFactory
             ->newInsert()
-            ->into(self::TABLE)
+            ->into(CustomFieldDataModel::TABLE)
             ->cols(CustomFieldDataModel::getCols())
             ->bindValues([
                              'itemId' => $customFieldData->getItemId(),
@@ -150,7 +148,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
 
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(CustomFieldDataModel::TABLE)
             ->where('itemId IN (:itemIds)')
             ->where('moduleId = :moduleId')
             ->bindValues(['itemIds' => $itemIds, 'moduleId' => $moduleId]);
@@ -169,7 +167,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(CustomFieldDataModel::TABLE)
             ->cols(CustomFieldDataModel::getCols());
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, CustomFieldDataModel::class));
@@ -186,7 +184,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(CustomFieldDataModel::TABLE)
             ->cols(CustomFieldDataModel::getCols())
             ->where('key IS NOT NULL')
             ->orderBy(['definitionId ASC']);

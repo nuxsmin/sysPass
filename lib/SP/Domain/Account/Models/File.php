@@ -32,6 +32,8 @@ use SP\Domain\Common\Models\Model;
  */
 class File extends Model implements ItemWithIdAndNameModel
 {
+    public const TABLE = 'AccountFile';
+
     protected ?int    $id        = null;
     protected ?int    $accountId = null;
     protected ?string $name      = null;

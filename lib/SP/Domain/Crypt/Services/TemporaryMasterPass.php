@@ -30,6 +30,7 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Messages\MailMessage;
+use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Dtos\ConfigRequest;
@@ -43,7 +44,6 @@ use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Util\Password;
 
 use function SP\__;
 use function SP\__u;

@@ -33,14 +33,14 @@ use SP\Domain\Auth\Ports\LoginAuthHandlerService;
 use SP\Domain\Auth\Ports\LoginMasterPassService;
 use SP\Domain\Auth\Ports\LoginService;
 use SP\Domain\Auth\Ports\LoginUserService;
+use SP\Domain\Auth\Providers\AuthProviderService;
+use SP\Domain\Auth\Providers\AuthResult;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\LanguageInterface;
-use SP\Domain\Http\RequestInterface;
-use SP\Domain\Providers\Auth\AuthProviderService;
-use SP\Domain\Providers\Auth\AuthResult;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
@@ -63,7 +63,7 @@ final class Login extends LoginBase implements LoginService
     public function __construct(
         Application                              $application,
         TrackService                             $trackService,
-        RequestInterface                         $request,
+        RequestService $request,
         private readonly AuthProviderService     $authProviderService,
         private readonly LanguageInterface       $language,
         private readonly UserService             $userService,

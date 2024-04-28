@@ -30,15 +30,15 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Dtos\LoginResponseDto;
 use SP\Domain\Auth\Ports\LoginUserService;
+use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Ports\UserPassRecoverService;
-use SP\Util\Password;
 
 use function SP\__u;
 
@@ -50,7 +50,7 @@ final class LoginUser extends LoginBase implements LoginUserService
     public function __construct(
         Application                             $application,
         TrackService                            $trackService,
-        RequestInterface                        $request,
+        RequestService $request,
         private readonly UserPassRecoverService $userPassRecoverService
     ) {
         parent::__construct($application, $trackService, $request);

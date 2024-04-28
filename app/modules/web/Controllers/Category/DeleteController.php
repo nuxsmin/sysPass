@@ -30,7 +30,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
 
 /**
  * DeleteController

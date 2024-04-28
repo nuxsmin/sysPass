@@ -26,11 +26,11 @@ namespace SP\Mvc\Controller;
 
 use Klein\Klein;
 use SP\Core\PhpExtensionChecker;
+use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Domain\Http\RequestInterface;
-use SP\Domain\Providers\Browser\BrowserAuthService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Mvc\View\TemplateInterface;
 
@@ -42,7 +42,7 @@ final readonly class WebControllerHelper
     private ThemeInterface      $theme;
     private Klein               $router;
     private AclInterface        $acl;
-    private RequestInterface    $request;
+    private RequestService $request;
     private PhpExtensionChecker $extensionChecker;
     private UriContextInterface $uriContext;
 
@@ -75,7 +75,7 @@ final readonly class WebControllerHelper
         return $this->acl;
     }
 
-    public function getRequest(): RequestInterface
+    public function getRequest(): RequestService
     {
         return $this->request;
     }

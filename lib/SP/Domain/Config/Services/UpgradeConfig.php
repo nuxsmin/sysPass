@@ -26,7 +26,7 @@ namespace SP\Domain\Config\Services;
 
 use SP\Core\Application;
 use SP\Domain\Config\Ports\UpgradeConfigService;
-use SP\Domain\Providers\Ports\FileLogHandlerProvider;
+use SP\Domain\Log\Ports\FileLogHandlerProvider;
 use SP\Domain\Upgrade\Services\UpgradeBase;
 
 /**

@@ -27,12 +27,12 @@ namespace SP\Domain\Task\Services;
 use JsonException;
 use SP\Core\Context\Session;
 use SP\Core\Messages\TaskMessage;
+use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Task\Ports\TaskInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
-use SP\Util\FileSystem;
-use SP\Util\Serde;
+use SP\Infrastructure\File\FileSystem;
 
 use function SP\logger;
 use function SP\processException;

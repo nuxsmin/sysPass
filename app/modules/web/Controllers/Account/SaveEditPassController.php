@@ -35,7 +35,7 @@ use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AccountForm;
 use SP\Mvc\Controller\WebControllerHelper;

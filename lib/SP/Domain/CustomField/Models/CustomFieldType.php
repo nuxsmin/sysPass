@@ -32,6 +32,8 @@ use SP\Domain\Common\Models\Model;
  */
 class CustomFieldType extends Model implements ItemWithIdAndNameModel
 {
+    public const TABLE = 'CustomFieldType';
+
     protected ?int    $id   = null;
     protected ?string $name = null;
     protected ?string $text = null;

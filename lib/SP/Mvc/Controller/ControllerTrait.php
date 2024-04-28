@@ -25,14 +25,14 @@
 namespace SP\Mvc\Controller;
 
 use Closure;
+use JetBrains\PhpStorm\NoReturn;
 use Klein\Klein;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\RequestInterface;
-use SP\Http\JsonMessage;
-use SP\Http\JsonResponse;
-use SP\Http\Uri;
-use SP\Util\Util;
+use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Providers\Uri;
+use SP\Domain\Http\Services\JsonResponse;
 
 use function SP\__u;
 use function SP\processException;
@@ -62,16 +62,16 @@ trait ControllerTrait
     /**
      * Logout from current session
      *
-     * @param RequestInterface $request
+     * @param RequestService $request
      * @param ConfigDataInterface $configData
      * @param Closure $onRedirect
      *
      * @throws SPException
      */
     protected function sessionLogout(
-        RequestInterface $request,
+        RequestService $request,
         ConfigDataInterface $configData,
-        Closure          $onRedirect
+        Closure        $onRedirect
     ): void {
         if ($request->isJson()) {
             $jsonResponse = new JsonMessage(__u('Session not started or timed out'));
@@ -79,7 +79,7 @@ trait ControllerTrait
 
             JsonResponse::factory($this->router->response())->send($jsonResponse);
         } elseif ($request->isAjax()) {
-            Util::logout();
+            self::logout();
         } else {
             try {
                 // Analyzes if there is any direct route within the URL
@@ -108,6 +108,14 @@ trait ControllerTrait
     }
 
     /**
+     * Realiza el proceso de logout.
+     */
+    #[NoReturn] private static function logout(): void
+    {
+        exit('<script>sysPassApp.actions.main.logout();</script>');
+    }
+
+    /**
      * Acción no disponible
      *
      * @throws SPException
@@ -122,8 +130,8 @@ trait ControllerTrait
      * @deprecated
      */
     protected function checkSecurityToken(
-        string           $previousToken,
-        RequestInterface $request,
+        string         $previousToken,
+        RequestService $request,
         ConfigDataInterface $configData
     ): void {
         if ($request->analyzeString('h') !== null && $request->analyzeString('from') === null) {

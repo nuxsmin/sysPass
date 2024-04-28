@@ -26,7 +26,7 @@ namespace SP\Domain\Account\Services\Builders;
 
 use SP\Domain\Account\Dtos\AccountSearchTokensDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
-use SP\Util\Filter;
+use SP\Domain\Common\Providers\Filter;
 
 /**
  * Class AccountSearchTokenizer

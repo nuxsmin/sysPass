@@ -31,6 +31,8 @@ use SP\Domain\Common\Models\Model;
  */
 final class AccountHistory extends Model
 {
+    public const TABLE = 'AccountHistory';
+
     protected ?int    $id                 = null;
     protected ?int    $userId             = null;
     protected ?int    $userGroupId        = null;

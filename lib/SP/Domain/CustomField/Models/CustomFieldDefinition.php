@@ -31,6 +31,8 @@ use SP\Domain\Common\Models\Model;
  */
 class CustomFieldDefinition extends Model
 {
+    public const TABLE = 'CustomFieldDefinition';
+
     protected ?int    $id          = null;
     protected ?string $name        = null;
     protected ?int    $moduleId    = null;

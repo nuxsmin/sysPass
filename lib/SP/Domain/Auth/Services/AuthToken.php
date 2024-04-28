@@ -33,6 +33,8 @@ use SP\Core\Crypt\Vault;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenRepository;
 use SP\Domain\Auth\Ports\AuthTokenService;
+use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -46,8 +48,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Util\Password;
-use SP\Util\Serde;
 
 use function SP\__u;
 

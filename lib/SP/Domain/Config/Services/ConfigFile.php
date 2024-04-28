@@ -26,6 +26,7 @@ namespace SP\Domain\Config\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
+use SP\Domain\Common\Providers\Password;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigBackupService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -36,7 +37,6 @@ use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;
-use SP\Util\Password;
 
 use function SP\logger;
 use function SP\processException;

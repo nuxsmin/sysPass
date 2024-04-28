@@ -42,11 +42,8 @@
         <testsuite name="core">
             <directory suffix=".php">./SPT/Core</directory>
             <directory suffix=".php">./SPT/Domain</directory>
-            <directory suffix=".php">./SPT/Html</directory>
-            <directory suffix=".php">./SPT/Http</directory>
             <directory suffix=".php">./SPT/Infrastructure</directory>
             <directory suffix=".php">./SPT/Mvc</directory>
-            <directory suffix=".php">./SPT/Providers</directory>
             <directory suffix=".php">./SPT/Util</directory>
             <exclude>./SPT/Domain/Account/Services/Builders/AccountSearchTokenizerDataTrait.php</exclude>
             <exclude>./SPT/Domain/Export/Services/XmlTrait.php</exclude>
@@ -64,7 +61,6 @@
             <directory suffix=".php">../lib/SP</directory>
         </include>
         <exclude>
-            <directory suffix=".php">../lib/SP/DataModel</directory>
             <directory suffix=".php">../lib/SP/Html/Assets</directory>
             <directory suffix=".php">../lib/SP/Html/DataGrid</directory>
             <file>../lib/SP/Domain/Config/Adapters/ConfigData.php</file>

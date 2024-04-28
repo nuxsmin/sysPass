@@ -26,6 +26,8 @@ namespace SP\Infrastructure\Account\Repositories;
 
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\Account as AccountModel;
+use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Account\Ports\AccountHistoryRepository;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -54,7 +56,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from('AccountHistory AS Account')
+            ->from(sprintf('%s AS Account', AccountHistoryModel::TABLE))
             ->cols([
                        'Account.id',
                        'Account.dateEdit',
@@ -86,7 +88,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
 
         $query = $this->queryFactory
             ->newInsert()
-            ->into('Account')
+            ->into(AccountModel::TABLE)
             ->cols([
                        'accountId' => $accountData->getId(),
                        'clientId' => $accountData->getClientId(),
@@ -134,7 +136,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     {
         $query = $this->queryFactory
             ->newDelete()
-            ->from('AccountHistory')
+            ->from(AccountHistoryModel::TABLE)
             ->where('id = :id')
             ->bindValues(['id' => $id]);
 
@@ -156,7 +158,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from('AccountHistory AS Account')
+            ->from(sprintf('%s AS Account', AccountHistoryModel::TABLE))
             ->cols([
                        'Account.id',
                        'Account.accountId',
@@ -217,7 +219,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from('AccountHistory AS Account')
+            ->from(sprintf('%s AS Account', AccountHistoryModel::TABLE))
             ->cols([
                        'Account.id',
                        'Account.accountId',
@@ -280,7 +282,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
 
         $query = $this->queryFactory
             ->newDelete()
-            ->from('AccountHistory')
+            ->from(AccountHistoryModel::TABLE)
             ->where('id IN (:ids)', ['ids' => $ids]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
@@ -305,7 +307,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
 
         $query = $this->queryFactory
             ->newDelete()
-            ->from('AccountHistory')
+            ->from(AccountHistoryModel::TABLE)
             ->where('accountId IN (:accountIds)', ['accountIds' => $ids]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
@@ -326,7 +328,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from('AccountHistory AS Account')
+            ->from(sprintf('%s AS Account', AccountHistoryModel::TABLE))
             ->cols([
                        'Account.id',
                        'Account.name',
@@ -369,7 +371,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from('AccountHistory')
+            ->from(AccountHistoryModel::TABLE)
             ->cols(
                 [
                     'id',
@@ -399,7 +401,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     {
         $query = $this->queryFactory
             ->newUpdate()
-            ->table('AccountHistory')
+            ->table(AccountHistoryModel::TABLE)
             ->cols([
                        'pass' => $encryptedPassword->getPass(),
                        'key' => $encryptedPassword->getKey(),

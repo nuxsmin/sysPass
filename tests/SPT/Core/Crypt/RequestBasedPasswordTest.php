@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\Crypt\RequestBasedPassword;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SPT\UnitaryTestCase;
 
 /**
@@ -43,7 +43,7 @@ class RequestBasedPasswordTest extends UnitaryTestCase
      */
     public function testBuild()
     {
-        $request = $this->createMock(RequestInterface::class);
+        $request = $this->createMock(RequestService::class);
         $configData = $this->createMock(ConfigDataInterface::class);
 
         $request->expects($this->once())

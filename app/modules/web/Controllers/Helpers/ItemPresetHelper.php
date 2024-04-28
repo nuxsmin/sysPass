@@ -29,7 +29,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\ItemPreset\Models\AccountPermission;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Models\ItemPreset;
@@ -57,7 +57,7 @@ final class ItemPresetHelper extends HelperBase
     public function __construct(
         Application       $application,
         TemplateInterface $template,
-        RequestInterface  $request,
+        RequestService    $request,
         UserService       $userService,
         UserGroupService  $userGroupService,
         UserProfileService $userProfileService

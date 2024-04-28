@@ -33,18 +33,18 @@ use SP\Core\Application;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
+use SP\Domain\Common\Providers\Image;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Crypt\Ports\MasterPassService;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
 use SP\Mvc\View\TemplateInterface;
-use SP\Util\Image;
 
 /**
  * Class AccountPasswordHelper
@@ -60,7 +60,7 @@ final class AccountPasswordHelper extends HelperBase
     public function __construct(
         Application       $application,
         TemplateInterface $template,
-        RequestInterface  $request,
+        RequestService $request,
         AclInterface      $acl,
         ImageService      $imageUtil,
         MasterPassService $masterPassService

@@ -36,7 +36,7 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Http\Request;
+use SP\Domain\Http\Services\Request;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 

@@ -28,7 +28,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Http\Uri;
+use SP\Domain\Http\Providers\Uri;
 
 use function SP\__;
 use function SP\logger;

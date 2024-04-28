@@ -30,7 +30,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Models\Eventlog as EventlogModel;
 use SP\Domain\Security\Ports\EventlogRepository;
 use SP\Domain\Security\Ports\EventlogService;
@@ -45,7 +45,7 @@ final class Eventlog extends Service implements EventlogService
     public function __construct(
         Application                         $application,
         private readonly EventlogRepository $eventLogRepository,
-        private readonly RequestInterface   $request
+        private readonly RequestService $request
     ) {
         parent::__construct($application);
     }

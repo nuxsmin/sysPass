@@ -36,7 +36,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDataDto;
@@ -53,9 +53,9 @@ use SPT\UnitaryTestCase;
 class LoginMasterPassTest extends UnitaryTestCase
 {
 
-    private TrackService|MockObject               $trackService;
-    private RequestInterface|MockObject           $request;
-    private MockObject|UserMasterPassService      $userMasterPassService;
+    private TrackService|MockObject          $trackService;
+    private RequestService|MockObject        $request;
+    private MockObject|UserMasterPassService $userMasterPassService;
     private MockObject|TemporaryMasterPassService $temporaryMasterPassService;
     private LoginMasterPass                       $loginMasterPass;
 
@@ -405,7 +405,7 @@ class LoginMasterPassTest extends UnitaryTestCase
                 )
             );
 
-        $this->request = $this->createMock(RequestInterface::class);
+        $this->request = $this->createMock(RequestService::class);
         $this->userMasterPassService = $this->createMock(UserMasterPassService::class);
         $this->temporaryMasterPassService = $this->createMock(TemporaryMasterPassService::class);
 

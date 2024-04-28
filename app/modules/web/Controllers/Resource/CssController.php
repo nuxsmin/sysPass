@@ -24,9 +24,9 @@
 
 namespace SP\Modules\Web\Controllers\Resource;
 
-use SP\Http\Request as HttpRequest;
+use SP\Domain\Http\Services\Request as HttpRequest;
 use SP\Infrastructure\File\FileHandler;
-use SP\Util\FileSystem;
+use SP\Infrastructure\File\FileSystem;
 
 /**
  * Class CssController

@@ -210,7 +210,7 @@ abstract class ApiTestCase extends TestCase
         );
 
         $router = $dic->get(Klein::class);
-        $request = $dic->get(\SP\Http\Request::class);
+        $request = $dic->get(\SP\Domain\Http\Services\Request::class);
 
         $bs = new BootstrapApi(self::$configData, $router, $request);
         $router->dispatch($request, null, false);

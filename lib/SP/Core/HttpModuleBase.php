@@ -27,8 +27,11 @@ namespace SP\Core;
 use JsonException;
 use Klein\Klein;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Domain\Http\RequestInterface;
-use SP\Util\Util;
+use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileHandler;
 
 /**
  * Base module for HTTP based modules
@@ -36,10 +39,10 @@ use SP\Util\Util;
 abstract class HttpModuleBase extends ModuleBase
 {
     public function __construct(
-        Application                         $application,
-        ProvidersHelper                     $providersHelper,
-        protected readonly RequestInterface $request,
-        protected readonly Klein            $router
+        Application                       $application,
+        ProvidersHelper                   $providersHelper,
+        protected readonly RequestService $request,
+        protected readonly Klein          $router
     ) {
         parent::__construct($application, $providersHelper);
     }
@@ -53,7 +56,7 @@ abstract class HttpModuleBase extends ModuleBase
     protected function checkMaintenanceMode(): bool
     {
         if ($this->configData->isMaintenance()) {
-            BootstrapBase::$LOCK = Util::getAppLock();
+            BootstrapBase::$LOCK = self::getAppLock();
 
             return !$this->request->isAjax()
                    || !(BootstrapBase::$LOCK !== false
@@ -63,5 +66,22 @@ abstract class HttpModuleBase extends ModuleBase
         }
 
         return false;
+    }
+
+    /**
+     * Comprueba si la aplicación está bloqueada
+     *
+     * @return bool|string
+     * @throws SPException
+     */
+    private static function getAppLock(): bool|string
+    {
+        try {
+            $file = new FileHandler(LOCK_FILE);
+
+            return Serde::deserializeJson($file->readToString());
+        } catch (FileException) {
+            return false;
+        }
     }
 }

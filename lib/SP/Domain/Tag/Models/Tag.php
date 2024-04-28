@@ -32,6 +32,8 @@ use SP\Domain\Common\Models\Model;
  */
 class Tag extends Model implements ItemWithIdAndNameModel
 {
+    public const TABLE = 'Tag';
+
     protected ?int    $id   = null;
     protected ?string $name = null;
     protected ?string $hash = null;

@@ -24,14 +24,14 @@
 
 namespace SP\Domain\Install\Adapters;
 
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Class InstallDataAdapter
  */
 final class InstallDataFactory
 {
-    public static function buildFromRequest(RequestInterface $request): InstallData
+    public static function buildFromRequest(RequestService $request): InstallData
     {
         $installData = new InstallData();
         $installData->setSiteLang($request->analyzeString('sitelang', 'en_US'));

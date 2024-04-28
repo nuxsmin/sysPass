@@ -32,7 +32,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;

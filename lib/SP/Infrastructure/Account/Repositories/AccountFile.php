@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Account\Repositories;
 
-use SP\Domain\Account\Models\File;
+use SP\Domain\Account\Models\File as FileModel;
 use SP\Domain\Account\Ports\AccountFileRepository;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -46,17 +46,17 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
     /**
      * Creates an item
      *
-     * @param File $fileData
+     * @param FileModel $fileData
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(File $fileData): int
+    public function create(FileModel $fileData): int
     {
         $query = $this->queryFactory
             ->newInsert()
-            ->into('AccountFile')
+            ->into(FileModel::TABLE)
             ->cols([
                        'accountId' => $fileData->getAccountId(),
                        'name' => $fileData->getName(),
@@ -77,6 +77,8 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
      * @param int $id
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById(int $id): QueryResult
     {
@@ -94,7 +96,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
                        'Account.name AS accountName',
                        'Client.name AS clientName',
                    ])
-            ->from('AccountFile')
+            ->from(FileModel::TABLE)
             ->join('INNER', 'Account', 'Account.id = AccountFile.accountId')
             ->join('INNER', 'Client', 'Client.id = Account.clientId')
             ->where('AccountFile.id = :id')
@@ -110,6 +112,8 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
      * @param int $id
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByAccountId(int $id): QueryResult
     {
@@ -125,7 +129,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
                        'content',
                        'thumb',
                    ])
-            ->from('AccountFile')
+            ->from(FileModel::TABLE)
             ->where('accountId = :accountId')
             ->bindValues(['accountId' => $id])
             ->orderBy(['name ASC'])
@@ -147,7 +151,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
     {
         $query = $this->queryFactory
             ->newDelete()
-            ->from('AccountFile')
+            ->from(FileModel::TABLE)
             ->where('id = :id')
             ->bindValues(['id' => $id]);
 
@@ -173,7 +177,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
 
         $query = $this->queryFactory
             ->newDelete()
-            ->from('AccountFile')
+            ->from(FileModel::TABLE)
             ->where('AccountFile.id IN (:accountFileIds)', ['accountFileIds' => $ids]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the files'));
@@ -187,6 +191,8 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
      * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult
     {
@@ -203,7 +209,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
                        'Account.name AS accountName',
                        'Client.name AS clientName',
                    ])
-            ->from('AccountFile')
+            ->from(FileModel::TABLE)
             ->join('INNER', 'Account', 'Account.id = AccountFile.accountId')
             ->join('INNER', 'Client', 'Client.id = Account.clientId')
             ->orderBy(['AccountFile.name ASC'])

@@ -25,7 +25,7 @@
 namespace SP\Domain\Account\Dtos;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Util\Password;
+use SP\Domain\Common\Providers\Password;
 
 /**
  * Class PublicLinkKey

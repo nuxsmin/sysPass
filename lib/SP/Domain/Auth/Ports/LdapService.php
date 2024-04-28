@@ -25,12 +25,12 @@
 namespace SP\Domain\Auth\Ports;
 
 
-use SP\Domain\Providers\Ldap\LdapException;
+use SP\Domain\Auth\Providers\Ldap\LdapException;
 
 /**
  * Interface LdapInterface
  *
- * @package SP\Domain\Providers\Ldap
+ * @package SP\Domain\Auth\Providers\Ldap
  */
 interface LdapService
 {

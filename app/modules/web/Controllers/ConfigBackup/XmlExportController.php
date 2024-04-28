@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Ports\XmlExportService;
 use SP\Domain\Export\Ports\XmlVerifyService;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\DirectoryHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;

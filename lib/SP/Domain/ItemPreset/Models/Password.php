@@ -31,23 +31,24 @@ use SP\Domain\ItemPreset\Ports\PresetInterface;
  *
  * TODO: serde using JSON
  */
-class Password implements PresetInterface
+readonly class Password implements PresetInterface
 {
     private const PRESET_TYPE = 'password';
 
     public const EXPIRE_TIME_MULTIPLIER = 86400;
+    private int|float $expireTime;
 
     public function __construct(
-        private readonly int     $length,
-        private readonly bool    $useNumbers,
-        private readonly bool    $useLetters,
-        private readonly bool    $useSymbols,
-        private readonly bool    $useUpper,
-        private readonly bool    $useLower,
-        private readonly bool    $useImage,
-        private int              $expireTime,
-        private readonly int     $score,
-        private readonly ?string $regex = null
+        private int     $length,
+        private bool    $useNumbers,
+        private bool    $useLetters,
+        private bool    $useSymbols,
+        private bool    $useUpper,
+        private bool    $useLower,
+        private bool    $useImage,
+        int             $expireTime,
+        private int     $score,
+        private ?string $regex = null
     ) {
         $this->expireTime = $expireTime * self::EXPIRE_TIME_MULTIPLIER;
     }

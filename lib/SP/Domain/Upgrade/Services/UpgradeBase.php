@@ -27,12 +27,12 @@ namespace SP\Domain\Upgrade\Services;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Providers\Ports\FileLogHandlerProvider;
+use SP\Domain\Log\Ports\FileLogHandlerProvider;
 use SP\Domain\Upgrade\Ports\UpgradeService;
 use SP\Infrastructure\File\FileException;
-use SP\Util\Version;
 
 use function SP\__u;
 use function SP\logger;

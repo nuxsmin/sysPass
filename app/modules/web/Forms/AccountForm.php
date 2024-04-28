@@ -31,7 +31,7 @@ use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Util\Chainable;
 
 use function SP\__u;
@@ -46,7 +46,7 @@ final class AccountForm extends FormBase implements FormInterface
 
     public function __construct(
         Application          $application,
-        RequestInterface     $request,
+        RequestService $request,
         AccountPresetService $accountPresetService,
         ?int                 $itemId = null
     ) {

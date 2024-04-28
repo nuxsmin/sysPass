@@ -31,6 +31,8 @@ use SP\Domain\Common\Models\Model;
  */
 final class AccountView extends Model
 {
+    public const TABLE = 'account_data_v';
+
     protected ?int    $id                 = null;
     protected ?string $name               = null;
     protected ?int    $categoryId         = null;

@@ -36,9 +36,9 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Notification\Dtos\MailParams;
 use SP\Domain\Notification\Ports\MailService;
-use SP\Domain\Providers\Mail\MailParams;
-use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -101,7 +101,7 @@ final class CheckController extends SimpleControllerBase
     }
 
     /**
-     * @return MailParams
+     * @return \SP\Domain\Notification\Dtos\MailParams
      */
     private function handleMailConfig(): MailParams
     {

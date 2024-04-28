@@ -29,7 +29,7 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
 
 /**
  * Class SaveCreateController

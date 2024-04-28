@@ -27,6 +27,7 @@ namespace SP\Domain\Plugin\Services;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -34,7 +35,6 @@ use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Ports\PluginUpgraderInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Util\Version;
 
 use function SP\__;
 use function SP\__u;

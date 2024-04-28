@@ -36,6 +36,7 @@ use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
+use SP\Domain\Common\Providers\Link;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -48,7 +49,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\ItemPreset\Models\AccountPermission as AccountPermissionPreset;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
@@ -62,7 +63,6 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Mvc\View\TemplateInterface;
-use SP\Util\Link;
 
 /**
  * Class AccountHelper
@@ -89,19 +89,19 @@ final class AccountHelper extends AccountHelperBase
     private TagService             $tagService;
 
     public function __construct(
-        Application                          $application,
-        TemplateInterface                    $template,
-        RequestInterface                     $request,
-        AclInterface                         $acl,
-        AccountService                       $accountService,
-        AccountHistoryService                $accountHistoryService,
-        PublicLinkService                    $publicLinkService,
-        ItemPresetService                    $itemPresetService,
-        MasterPassService                    $masterPassService,
-        AccountActionsHelper                 $accountActionsHelper,
-        AccountAclService                    $accountAclService,
-        CategoryService                      $categoryService,
-        ClientService                        $clientService,
+        Application           $application,
+        TemplateInterface     $template,
+        RequestService        $request,
+        AclInterface          $acl,
+        AccountService        $accountService,
+        AccountHistoryService $accountHistoryService,
+        PublicLinkService     $publicLinkService,
+        ItemPresetService     $itemPresetService,
+        MasterPassService     $masterPassService,
+        AccountActionsHelper  $accountActionsHelper,
+        AccountAclService     $accountAclService,
+        CategoryService       $categoryService,
+        ClientService         $clientService,
         CustomFieldDataService               $customFieldService,
         UserService                          $userService,
         UserGroupService                     $userGroupService,

@@ -27,7 +27,7 @@ namespace SP\Domain\Api\Services;
 use Exception;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonResponse;
+use SP\Domain\Http\Services\JsonResponse;
 
 /**
  * Class JsonRpcResponse

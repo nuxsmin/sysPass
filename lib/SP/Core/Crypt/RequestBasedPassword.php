@@ -26,7 +26,7 @@ namespace SP\Core\Crypt;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Class RequestBasedPassword
@@ -34,7 +34,7 @@ use SP\Domain\Http\RequestInterface;
 final readonly class RequestBasedPassword implements RequestBasedPasswordInterface
 {
     public function __construct(
-        private RequestInterface    $request,
+        private RequestService $request,
         private ConfigDataInterface $configData
     ) {
     }

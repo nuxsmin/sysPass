@@ -24,9 +24,9 @@
 
 namespace SP\Infrastructure\File;
 
+use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Util\Serde;
 
 use function SP\__u;
 

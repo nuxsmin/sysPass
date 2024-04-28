@@ -33,10 +33,10 @@ use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Bootstrap\RouteContext;
+use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Util\Filter;
 
 use function SP\__;
 use function SP\logger;

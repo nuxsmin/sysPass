@@ -32,7 +32,7 @@ use SP\Core\Crypt\Hash;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Http\Method;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SPT\UnitaryTestCase;
 
 /**
@@ -43,9 +43,9 @@ use SPT\UnitaryTestCase;
 class CsrfTest extends UnitaryTestCase
 {
 
-    private SessionContext|MockObject   $sessionContext;
-    private RequestInterface|MockObject $requestInterface;
-    private ConfigDataInterface|MockObject     $configData;
+    private SessionContext|MockObject      $sessionContext;
+    private RequestService|MockObject      $requestInterface;
+    private ConfigDataInterface|MockObject $configData;
     private Csrf                               $csrf;
 
     public static function httpMethodDataProvider(): array
@@ -278,7 +278,7 @@ class CsrfTest extends UnitaryTestCase
         parent::setUp();
 
         $this->sessionContext = $this->createMock(SessionContext::class);
-        $this->requestInterface = $this->createMock(RequestInterface::class);
+        $this->requestInterface = $this->createMock(RequestService::class);
         $this->configData = $this->createMock(ConfigDataInterface::class);
 
         $this->csrf = new Csrf($this->sessionContext, $this->requestInterface, $this->configData);

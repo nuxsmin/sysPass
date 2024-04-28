@@ -24,28 +24,13 @@
 
 namespace SP\Util;
 
-use JetBrains\PhpStorm\NoReturn;
-use JsonException;
-use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
 
-use function SP\logger;
-
 /**
- * Clase con utilizades para la aplicación
+ * Class Util
  */
 final class Util
 {
-    /**
-     * Realiza el proceso de logout.
-     *
-     * FIXME
-     */
-    #[NoReturn] public static function logout(): void
-    {
-        exit('<script>sysPassApp.actions.main.logout();</script>');
-    }
-
     /**
      * Obtener el tamaño máximo de subida de PHP.
      */
@@ -107,71 +92,6 @@ final class Util
         // not strict? let the regular php bool check figure it out (will
         // largely default to true)
         return (bool)$in;
-    }
-
-    /**
-     * Bloquear la aplicación
-     *
-     * @throws JsonException
-     * @throws FileException
-     */
-    public static function lockApp(int $userId, string $subject): void
-    {
-        $data = ['time' => time(), 'userId' => $userId, 'subject' => $subject];
-
-        $file = new FileHandler(LOCK_FILE);
-        $file->save(json_encode($data, JSON_THROW_ON_ERROR));
-
-        logger('Application locked out');
-    }
-
-    /**
-     * Desbloquear la aplicación
-     */
-    public static function unlockApp(): bool
-    {
-        logger('Application unlocked');
-
-        return @unlink(LOCK_FILE);
-    }
-
-    /**
-     * Comprueba si la aplicación está bloqueada
-     *
-     * @return bool|string
-     * @throws JsonException
-     */
-    public static function getAppLock(): bool|string
-    {
-        try {
-            $file = new FileHandler(LOCK_FILE);
-
-            return json_decode(
-                $file->readToString(),
-                false,
-                512,
-                JSON_THROW_ON_ERROR
-            );
-        } catch (FileException) {
-            return false;
-        }
-    }
-
-    /**
-     * Devolver el tiempo aproximado en segundos de una operación
-     *
-     * @return array Con el tiempo estimado y los elementos por segundo
-     */
-    public static function getETA(int $startTime, int $numItems, int $totalItems): array
-    {
-        if ($numItems > 0 && $totalItems > 0) {
-            $runtime = time() - $startTime;
-            $eta = (int)((($totalItems * $runtime) / $numItems) - $runtime);
-
-            return [$eta, $numItems / $runtime];
-        }
-
-        return [0, 0];
     }
 
     /**

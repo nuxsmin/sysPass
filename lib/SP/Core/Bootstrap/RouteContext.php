@@ -25,8 +25,8 @@
 namespace SP\Core\Bootstrap;
 
 use RuntimeException;
+use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Bootstrap\RouteContextData;
-use SP\Util\Filter;
 
 use function SP\__u;
 

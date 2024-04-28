@@ -35,7 +35,7 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Ports\BackupFileService;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;

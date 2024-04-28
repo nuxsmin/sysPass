@@ -28,8 +28,8 @@ use Exception;
 use Klein\Klein;
 use SP\Core\Context\Session;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonMessage;
-use SP\Http\JsonResponse;
+use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Http\Services\JsonResponse;
 
 /**
  * Trait JsonTrait

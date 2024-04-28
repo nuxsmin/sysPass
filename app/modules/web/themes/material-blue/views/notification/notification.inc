@@ -30,12 +30,12 @@
  * @var TemplateInterface $this
  */
 
+use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Notification\Models\Notification;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
-use SP\Util\Date;
 
 $notification = $_getvar('notification');
 ?>

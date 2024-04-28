@@ -42,8 +42,6 @@ final class CustomFieldType extends BaseRepository implements CustomFieldTypeRep
 {
     use RepositoryItemTrait;
 
-    public const TABLE = 'CustomFieldType';
-
     /**
      * Returns all the items
      *
@@ -55,7 +53,7 @@ final class CustomFieldType extends BaseRepository implements CustomFieldTypeRep
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(CustomFieldTypeModel::TABLE)
             ->cols(CustomFieldTypeModel::getCols())
             ->orderBy(['name ASC']);
 

@@ -25,10 +25,10 @@
 namespace SP\Core\Crypt;
 
 use RuntimeException;
+use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\CryptException;
-use SP\Util\Serde;
 
 /**
  * Class Vault

@@ -26,8 +26,8 @@ namespace SP\Domain\Import\Ports;
 
 use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Dtos\LdapImportResultsDto;
-use SP\Domain\Providers\Ldap\LdapException;
-use SP\Domain\Providers\Ldap\LdapParams;
+use SP\Domain\Auth\Providers\Ldap\LdapException;
+use SP\Domain\Auth\Providers\Ldap\LdapParams;
 
 /**
  * Class UserLdapService

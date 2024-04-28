@@ -46,8 +46,6 @@ final class Tag extends BaseRepository implements TagRepository
 {
     use RepositoryItemTrait;
 
-    public const TABLE = 'Tag';
-
     /**
      * Creates an item
      *
@@ -66,7 +64,7 @@ final class Tag extends BaseRepository implements TagRepository
 
         $query = $this->queryFactory
             ->newInsert()
-            ->into(self::TABLE)
+            ->into(TagModel::TABLE)
             ->cols($tag->toArray(null, ['id', 'hash']))
             ->col('hash', $this->makeItemHash($tag->getName()));
 
@@ -88,7 +86,7 @@ final class Tag extends BaseRepository implements TagRepository
         $query = $this->queryFactory
             ->newSelect()
             ->cols(['id'])
-            ->from(self::TABLE)
+            ->from(TagModel::TABLE)
             ->where('hash = :hash')
             ->orWhere('name = :name')
             ->bindValues(
@@ -119,7 +117,7 @@ final class Tag extends BaseRepository implements TagRepository
 
         $query = $this->queryFactory
             ->newUpdate()
-            ->table(self::TABLE)
+            ->table(TagModel::TABLE)
             ->cols($tag->toArray(null, ['id', 'hash']))
             ->where('id = :id')
             ->limit(1)
@@ -149,7 +147,7 @@ final class Tag extends BaseRepository implements TagRepository
         $query = $this->queryFactory
             ->newSelect()
             ->cols(['id'])
-            ->from(self::TABLE)
+            ->from(TagModel::TABLE)
             ->where('(hash = :hash OR name = :name)')
             ->where('id <> :id')
             ->bindValues(
@@ -176,7 +174,7 @@ final class Tag extends BaseRepository implements TagRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(TagModel::TABLE)
             ->cols(TagModel::getCols())
             ->where('id = :id')
             ->bindValues(['id' => $tagId])
@@ -200,7 +198,7 @@ final class Tag extends BaseRepository implements TagRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(TagModel::TABLE)
             ->cols(TagModel::getCols())
             ->where('(name = :name OR hash = :hash)')
             ->bindValues(['name' => $name, 'hash' => $this->makeItemHash($name)])
@@ -222,7 +220,7 @@ final class Tag extends BaseRepository implements TagRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(TagModel::TABLE)
             ->cols(TagModel::getCols())
             ->orderBy(['name']);
 
@@ -246,7 +244,7 @@ final class Tag extends BaseRepository implements TagRepository
 
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(TagModel::TABLE)
             ->where('id IN (:ids)', ['ids' => $ids]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the tags'));
@@ -267,7 +265,7 @@ final class Tag extends BaseRepository implements TagRepository
     {
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(TagModel::TABLE)
             ->where('id = :id')
             ->bindValues(['id' => $id])
             ->limit(1);
@@ -290,7 +288,7 @@ final class Tag extends BaseRepository implements TagRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(TagModel::TABLE)
             ->cols(TagModel::getCols(['hash']))
             ->orderBy(['name'])
             ->limit($itemSearchData->getLimitCount())

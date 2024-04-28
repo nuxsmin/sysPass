@@ -32,6 +32,7 @@ use SP\Domain\Account\Ports\AccountSearchDataBuilder;
 use SP\Domain\Account\Ports\AccountSearchRepository;
 use SP\Domain\Account\Ports\AccountSearchService;
 use SP\Domain\Account\Services\Builders\AccountSearchTokenizer;
+use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -39,7 +40,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Util\Filter;
 
 use function SP\processException;
 

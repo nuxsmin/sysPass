@@ -26,7 +26,7 @@ namespace SP;
 
 use Exception;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Util\FileSystem;
+use SP\Infrastructure\File\FileSystem;
 use Throwable;
 
 /**

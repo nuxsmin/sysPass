@@ -24,10 +24,10 @@
 
 namespace SP\Domain\Upgrade\Services;
 
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Infrastructure\File\FileException;
-use SP\Util\Version;
 
 /**
  * Class UpgradeUtil

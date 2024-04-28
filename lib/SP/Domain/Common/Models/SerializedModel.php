@@ -25,9 +25,9 @@
 namespace SP\Domain\Common\Models;
 
 use ReflectionClass;
+use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Attributes\Hydratable;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Util\Serde;
 
 /**
  * Trait SerializedModel

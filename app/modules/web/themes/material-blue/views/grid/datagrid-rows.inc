@@ -5,8 +5,7 @@
  * @var callable $_getvar
  */
 
-use SP\Html\Html;
-use SP\Mvc\View\Template;
+use SP\Domain\Html\Html;
 
 if (!isset($data)) {
     $data = $_getvar('data');

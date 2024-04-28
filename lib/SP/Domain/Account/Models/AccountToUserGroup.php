@@ -31,6 +31,5 @@ use SP\Domain\Common\Models\Model;
  */
 final class AccountToUserGroup extends Model
 {
-
     public const TABLE = 'AccountToUserGroup';
 }

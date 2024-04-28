@@ -32,7 +32,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Models\Track as TrackModel;
 use SP\Domain\Security\Ports\TrackRepository;
@@ -48,9 +48,9 @@ use SPT\UnitaryTestCase;
 class TrackTest extends UnitaryTestCase
 {
 
-    private TrackRepository|MockObject  $trackRepository;
-    private RequestInterface|MockObject $request;
-    private Track                       $track;
+    private TrackRepository|MockObject $trackRepository;
+    private RequestService|MockObject  $request;
+    private Track                      $track;
 
     public function testSearch()
     {
@@ -259,7 +259,7 @@ class TrackTest extends UnitaryTestCase
         parent::setUp();
 
         $this->trackRepository = $this->createMock(TrackRepository::class);
-        $this->request = $this->createMock(RequestInterface::class);
+        $this->request = $this->createMock(RequestService::class);
 
         $this->track = new Track($this->application, $this->trackRepository, $this->request);
     }

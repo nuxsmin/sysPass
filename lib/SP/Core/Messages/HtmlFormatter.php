@@ -25,7 +25,7 @@
 namespace SP\Core\Messages;
 
 use SP\Domain\Core\Messages\FormatterInterface;
-use SP\Html\Html;
+use SP\Domain\Html\Html;
 
 use function SP\__;
 

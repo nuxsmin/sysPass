@@ -29,9 +29,9 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Util\FileSystem;
 
 /**
  * Class ViewController

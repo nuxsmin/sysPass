@@ -29,7 +29,7 @@ use SP\Core\PhpExtensionChecker;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Class SimpleControllerHelper
@@ -41,7 +41,7 @@ final readonly class SimpleControllerHelper
         private ThemeInterface      $theme,
         private Klein               $router,
         private AclInterface        $acl,
-        private RequestInterface    $request,
+        private RequestService $request,
         private PhpExtensionChecker $extensionChecker,
         private UriContextInterface $uriContext
     ) {
@@ -62,7 +62,7 @@ final readonly class SimpleControllerHelper
         return $this->acl;
     }
 
-    public function getRequest(): RequestInterface
+    public function getRequest(): RequestService
     {
         return $this->request;
     }

@@ -28,10 +28,10 @@ use Exception;
 use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Providers\Uri;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Http\Uri;
 
 use function SP\__u;
 
@@ -48,7 +48,7 @@ abstract class LoginBase extends Service
     public function __construct(
         Application                         $application,
         private readonly TrackService       $trackService,
-        protected readonly RequestInterface $request
+        protected readonly RequestService $request
     ) {
         parent::__construct($application);
 

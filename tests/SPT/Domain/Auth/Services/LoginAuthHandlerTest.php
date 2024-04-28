@@ -31,6 +31,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Application;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LdapAuthService;
+use SP\Domain\Auth\Providers\Browser\BrowserAuthData;
+use SP\Domain\Auth\Providers\Database\DatabaseAuthData;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Auth\Services\LoginAuthHandler;
 use SP\Domain\Config\Adapters\ConfigData;
@@ -38,11 +40,9 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\RequestInterface;
-use SP\Domain\Providers\Browser\BrowserAuthData;
-use SP\Domain\Providers\Database\DatabaseAuthData;
-use SP\Domain\Providers\Ldap\LdapAuthData;
-use SP\Domain\Providers\Ldap\LdapCodeEnum;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Auth\Providers\Ldap\LdapAuthData;
+use SP\Domain\Auth\Providers\Ldap\LdapCodeEnum;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserLoginRequest;
@@ -56,9 +56,9 @@ use SPT\UnitaryTestCase;
 class LoginAuthHandlerTest extends UnitaryTestCase
 {
 
-    private TrackService|MockObject     $trackService;
-    private RequestInterface|MockObject $request;
-    private UserService|MockObject      $userService;
+    private TrackService|MockObject   $trackService;
+    private RequestService|MockObject $request;
+    private UserService|MockObject    $userService;
     private LoginAuthHandler            $loginAuthHandler;
 
     public static function authLdapDataProvider(): array
@@ -528,7 +528,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
                 )
             );
 
-        $this->request = $this->createMock(RequestInterface::class);
+        $this->request = $this->createMock(RequestService::class);
         $this->userService = $this->createMock(UserService::class);
 
         $this->loginAuthHandler = new LoginAuthHandler(

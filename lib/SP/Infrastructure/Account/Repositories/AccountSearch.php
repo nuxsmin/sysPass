@@ -27,10 +27,11 @@ namespace SP\Infrastructure\Account\Repositories;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
-use SP\Domain\Account\Models\AccountSearchView;
+use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchRepository;
+use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -39,7 +40,6 @@ use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Util\Filter;
 
 /**
  * Class AccountSearch
@@ -94,7 +94,11 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
             'publicLinkDateExpire',
             'publicLinkTotalCountViews',
         ];
-        $this->query = $this->queryFactory->newSelect()->cols($cols)->from('account_search_v AS Account')->distinct();
+        $this->query = $this->queryFactory
+            ->newSelect()
+            ->cols($cols)
+            ->from(sprintf('%s AS Account', AccountSearchViewModel::TABLE))
+            ->distinct();
     }
 
     /**
@@ -122,7 +126,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
         }
 
         return $this->db->runQuery(
-            QueryData::build($this->query)->setMapClassName(AccountSearchView::class),
+            QueryData::build($this->query)->setMapClassName(AccountSearchViewModel::class),
             true
         );
     }

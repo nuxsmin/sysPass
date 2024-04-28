@@ -24,7 +24,7 @@
 
 namespace SP\Domain\Core\Dtos;
 
-use SP\Util\Filter;
+use SP\Domain\Common\Providers\Filter;
 
 /**
  * Class ItemSearchDto

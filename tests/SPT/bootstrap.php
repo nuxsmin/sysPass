@@ -36,7 +36,7 @@ use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlHandler;
-use SP\Util\FileSystem;
+use SP\Infrastructure\File\FileSystem;
 
 use function SP\logger;
 use function SP\processException;

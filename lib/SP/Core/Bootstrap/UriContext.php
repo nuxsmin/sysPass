@@ -25,7 +25,7 @@
 namespace SP\Core\Bootstrap;
 
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Class UriContext
@@ -36,19 +36,19 @@ final readonly class UriContext implements UriContextInterface
     private string $webRoot;
     private string $webUri;
 
-    public function __construct(RequestInterface $request)
+    public function __construct(RequestService $request)
     {
         $this->subUri = $this->buildSubUri($request);
         $this->webRoot = $this->buildWebRoot($request);
         $this->webUri = $request->getHttpHost() . $this->webRoot;
     }
 
-    private function buildSubUri(RequestInterface $request): string
+    private function buildSubUri(RequestService $request): string
     {
         return '/' . basename($request->getServer('SCRIPT_FILENAME'));
     }
 
-    private function buildWebRoot(RequestInterface $request): string
+    private function buildWebRoot(RequestService $request): string
     {
         $uri = $request->getServer('REQUEST_URI');
 

@@ -28,10 +28,11 @@ use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerService;
 use SP\Domain\Install\Services\DatabaseSetupInterface;
@@ -41,7 +42,6 @@ use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\User\Services\User;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Util\Version;
 use SPT\UnitaryTestCase;
 
 /**
@@ -60,7 +60,7 @@ class InstallerTest extends UnitaryTestCase
      */
     private $userService;
     /**
-     * @var Stub|RequestInterface
+     * @var Stub|\SP\Domain\Http\Ports\RequestService
      */
     private $request;
     /**
@@ -440,7 +440,7 @@ class InstallerTest extends UnitaryTestCase
     {
         $this->databaseSetup = $this->createMock(DatabaseSetupInterface::class);
         $this->userService = $this->createMock(UserService::class);
-        $this->request = $this->createStub(RequestInterface::class);
+        $this->request = $this->createStub(RequestService::class);
         $this->configService = $this->createMock(ConfigService::class);
         $this->userGroupService = $this->createMock(UserGroupService::class);
         $this->userProfileService = $this->createMock(UserProfileService::class);

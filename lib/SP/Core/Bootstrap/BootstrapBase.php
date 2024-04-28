@@ -34,6 +34,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
+use SP\Domain\Common\Providers\Environment;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigUtil;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
@@ -42,9 +43,8 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\InitializationException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\File\FileException;
-use SP\Util\Checks;
 use Symfony\Component\Debug\Debug;
 use Throwable;
 
@@ -67,10 +67,10 @@ abstract class BootstrapBase implements BootstrapInterface
     final public function __construct(
         protected readonly ConfigDataInterface $configData,
         protected readonly Klein               $router,
-        protected readonly RequestInterface    $request,
+        protected readonly RequestService $request,
         private readonly UpgradeConfigChecker  $upgradeConfigChecker,
         protected readonly PhpExtensionChecker $extensionChecker,
-        protected readonly Context $context,
+        protected readonly Context        $context,
         private readonly ContainerInterface    $container,
         protected readonly Response            $response,
     ) {
@@ -151,7 +151,7 @@ abstract class BootstrapBase implements BootstrapInterface
     {
         logger(__FUNCTION__);
 
-        self::$checkPhpVersion = Checks::checkPhpVersion();
+        self::$checkPhpVersion = Environment::checkPhpVersion();
 
         // Initialize authentication variables
         $this->initAuthVariables();

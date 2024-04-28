@@ -28,7 +28,7 @@ use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Context\Context;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Class FormBase
@@ -45,13 +45,13 @@ abstract class FormBase
      * FormBase constructor.
      *
      * @param Application $application
-     * @param RequestInterface $request
+     * @param RequestService $request
      * @param  int|null  $itemId
      */
     public function __construct(
-        Application $application,
-        protected RequestInterface $request,
-        protected ?int $itemId = null
+        Application              $application,
+        protected RequestService $request,
+        protected ?int           $itemId = null
     ) {
         $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();

@@ -34,12 +34,12 @@
     <i class="material-icons">info</i>
     <?php
 
+    use SP\Domain\Common\Providers\Version;
     use SP\Domain\Config\Ports\ConfigDataInterface;
     use SP\Domain\Core\UI\ThemeIconsInterface;
     use SP\Domain\Install\Services\Installer;
     use SP\Domain\Plugin\Ports\Plugin;
     use SP\Mvc\View\TemplateInterface;
-    use SP\Util\Version;
 
     use function SP\__;
 

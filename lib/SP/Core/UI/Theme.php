@@ -31,7 +31,7 @@ use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Infrastructure\File\FileException;
-use SP\Util\FileSystem;
+use SP\Infrastructure\File\FileSystem;
 
 use function SP\processException;
 

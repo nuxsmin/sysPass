@@ -30,7 +30,7 @@ use SP\Core\UI\ThemeIcons;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionType;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
@@ -45,7 +45,7 @@ final class AccountActionsHelper extends HelperBase
 {
     protected ThemeIcons $icons;
 
-    public function __construct(Application $application, TemplateInterface $template, RequestInterface $request)
+    public function __construct(Application $application, TemplateInterface $template, RequestService $request)
     {
         parent::__construct($application, $template, $request);
 

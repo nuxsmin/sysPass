@@ -31,7 +31,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Ports\LoginService;
 use SP\Domain\Auth\Services\Login;
-use SP\Http\Uri;
+use SP\Domain\Http\Providers\Uri;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;

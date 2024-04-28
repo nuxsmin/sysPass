@@ -32,6 +32,8 @@ use SP\Domain\Common\Models\Model;
  */
 class Category extends Model implements ItemWithIdAndNameModel
 {
+    public const TABLE = 'Category';
+
     protected ?int    $id          = null;
     protected ?string $name        = null;
     protected ?string $description = null;

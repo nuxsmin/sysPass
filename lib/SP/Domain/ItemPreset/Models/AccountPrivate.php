@@ -29,7 +29,7 @@ namespace SP\Domain\ItemPreset\Models;
  *
  * TODO: serde using JSON
  */
-final readonly class AccountPrivate
+readonly class AccountPrivate
 {
     public function __construct(
         private ?bool $privateUser = false,

@@ -46,8 +46,6 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
 {
     use RepositoryItemTrait;
 
-    public const TABLE = 'ItemPreset';
-
     /**
      * Creates an item
      *
@@ -58,7 +56,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
     {
         $query = $this->queryFactory
             ->newInsert()
-            ->into(self::TABLE)
+            ->into(ItemPresetModel::TABLE)
             ->cols($itemPreset->toArray(null, ['id']));
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the permission'));
@@ -76,7 +74,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
     {
         $query = $this->queryFactory
             ->newUpdate()
-            ->table(self::TABLE)
+            ->table(ItemPresetModel::TABLE)
             ->cols($itemPreset->toArray(null, ['id']))
             ->where('id = :id')
             ->limit(1)
@@ -101,7 +99,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
     {
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(ItemPresetModel::TABLE)
             ->where('id = :id')
             ->bindValues(['id' => $id]);
 
@@ -123,7 +121,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(ItemPresetModel::TABLE)
             ->cols(ItemPresetModel::getCols())
             ->where('id = :id')
             ->bindValues(['id' => $itemPresetId])
@@ -150,7 +148,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(ItemPresetModel::TABLE)
             ->cols(ItemPresetModel::getCols())
             ->cols(
                 [
@@ -191,7 +189,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(ItemPresetModel::TABLE)
             ->cols(ItemPresetModel::getCols());
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, ItemPresetModel::class));
@@ -211,7 +209,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
 
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(ItemPresetModel::TABLE)
             ->where('id IN (:ids)', ['ids' => $itemPresetIds]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the permissions'));
@@ -235,7 +233,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(ItemPresetModel::TABLE)
             ->cols(ItemPresetModel::getColsWithPreffix('ItemPreset'))
             ->cols([
                        'IF(userId IS NOT NULL, priority + 3, 

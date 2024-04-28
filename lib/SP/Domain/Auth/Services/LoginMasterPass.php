@@ -33,7 +33,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Ports\UserMasterPassService;
@@ -50,7 +50,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
     public function __construct(
         Application                                 $application,
         TrackService                                $trackService,
-        RequestInterface                            $request,
+        RequestService $request,
         private readonly UserMasterPassService      $userMasterPassService,
         private readonly TemporaryMasterPassService $temporaryMasterPassService,
     ) {

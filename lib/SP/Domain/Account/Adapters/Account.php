@@ -29,6 +29,7 @@ use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Ports\AccountAdapter;
 use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Common\Dtos\Dto;
+use SP\Domain\Common\Providers\Link;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -41,7 +42,6 @@ use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Util\Link;
 
 /**
  * Class Account

@@ -26,6 +26,8 @@ namespace SP\Domain\Account\Services\Builders;
 
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
+use SP\Domain\Account\Models\Account as AccountModel;
+use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -55,7 +57,7 @@ final class AccountFilter implements AccountFilterBuilder
         $userProfile = $this->context->getUserProfile();
 
         if ($query === null) {
-            $query = $this->queryFactory->newSelect()->from('AccountHistory');
+            $query = $this->queryFactory->newSelect()->from(AccountHistoryModel::TABLE);
         }
 
         if ($this->isFilterWithoutGlobalSearch($userData, $useGlobalSearch, $userProfile)) {
@@ -93,7 +95,7 @@ final class AccountFilter implements AccountFilterBuilder
     /**
      * @param UserDataDto $userData
      * @param bool $useGlobalSearch
-     * @param \SP\Domain\User\Models\ProfileData|null $userProfile
+     * @param ProfileData|null $userProfile
      *
      * @return bool
      */
@@ -116,7 +118,7 @@ final class AccountFilter implements AccountFilterBuilder
         $userProfile = $this->context->getUserProfile();
 
         if ($query === null) {
-            $query = $this->queryFactory->newSelect()->from('Account');
+            $query = $this->queryFactory->newSelect()->from(AccountModel::TABLE);
         }
 
         if ($this->isFilterWithoutGlobalSearch($userData, $useGlobalSearch, $userProfile)) {

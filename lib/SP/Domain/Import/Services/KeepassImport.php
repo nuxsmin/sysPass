@@ -32,11 +32,11 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
+use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Util\Filter;
 use SplObjectStorage;
 
 use function SP\__u;

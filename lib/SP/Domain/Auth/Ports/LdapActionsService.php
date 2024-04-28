@@ -24,15 +24,15 @@
 
 namespace SP\Domain\Auth\Ports;
 
-use SP\Domain\Providers\Ldap\AttributeCollection;
-use SP\Domain\Providers\Ldap\LdapException;
-use SP\Domain\Providers\Ldap\LdapParams;
-use SP\Domain\Providers\Ldap\LdapResults;
+use SP\Domain\Auth\Providers\Ldap\AttributeCollection;
+use SP\Domain\Auth\Providers\Ldap\LdapException;
+use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Auth\Providers\Ldap\LdapResults;
 
 /**
  * Class LdapActions
  *
- * @package SP\Domain\Providers\Ldap
+ * @package SP\Domain\Auth\Providers\Ldap
  */
 interface LdapActionsService
 {

@@ -38,7 +38,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Tag\Ports\TagService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserPreferences;
@@ -77,10 +77,10 @@ final class AccountSearchHelper extends HelperBase
     public function __construct(
         Application          $application,
         TemplateInterface    $template,
-        RequestInterface     $request,
+        RequestService $request,
         ClientService        $clientService,
         CategoryService      $categoryService,
-        TagService $tagService,
+        TagService     $tagService,
         AccountSearchService $accountSearchService,
         AccountActionsHelper $accountActionsHelper
     ) {

@@ -29,6 +29,7 @@ use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Category\Ports\CategoryAdapter;
 use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Common\Models\Model;
+use SP\Domain\Common\Providers\Link;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -40,7 +41,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Mvc\Controller\ItemTrait;
-use SP\Util\Link;
 
 /**
  * Class Category

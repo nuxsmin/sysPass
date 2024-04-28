@@ -32,7 +32,7 @@ use SP\Core\Context\ContextException;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Auth\Services\LoginBase;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SPT\UnitaryTestCase;
@@ -43,9 +43,9 @@ use SPT\UnitaryTestCase;
 #[Group('unitary')]
 class LoginBaseTest extends UnitaryTestCase
 {
-    private LoginBase                   $loginBase;
-    private RequestInterface|MockObject $request;
-    private TrackService|MockObject     $trackService;
+    private LoginBase                 $loginBase;
+    private RequestService|MockObject $request;
+    private TrackService|MockObject   $trackService;
 
     public function testCheckTracking()
     {
@@ -118,7 +118,7 @@ class LoginBaseTest extends UnitaryTestCase
                 )
             );
 
-        $this->request = $this->createMock(RequestInterface::class);
+        $this->request = $this->createMock(RequestService::class);
 
         $this->loginBase = new class($this->application, $this->trackService, $this->request) extends LoginBase {
             public function check(): void

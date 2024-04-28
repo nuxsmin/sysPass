@@ -37,12 +37,12 @@ use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Export\Services\XmlVerify;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Domain\Tag\Models\Tag;
-use SP\Util\Version;
 
 use function SP\__;
 use function SP\__u;

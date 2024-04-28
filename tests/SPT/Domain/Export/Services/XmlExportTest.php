@@ -36,6 +36,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Core\Context\ContextException;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CheckException;
@@ -49,7 +50,6 @@ use SP\Domain\Export\Services\XmlExport;
 use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Infrastructure\File\FileException;
-use SP\Util\Version;
 use SPT\Generators\UserDataGenerator;
 use SPT\UnitaryTestCase;
 

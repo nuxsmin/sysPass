@@ -34,6 +34,7 @@ use SP\Domain\Account\Models\PublicLinkList;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkRepository;
 use SP\Domain\Account\Ports\PublicLinkService;
+use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -44,11 +45,10 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\RequestInterface;
-use SP\Http\Uri;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Providers\Uri;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Util\Serde;
 
 use function SP\__u;
 
@@ -65,7 +65,7 @@ final class PublicLink extends Service implements PublicLinkService
     public function __construct(
         Application                           $application,
         private readonly PublicLinkRepository $publicLinkRepository,
-        private readonly RequestInterface     $request,
+        private readonly RequestService $request,
         private readonly AccountService       $accountService,
         private readonly CryptInterface       $crypt
     ) {
@@ -299,7 +299,7 @@ final class PublicLink extends Service implements PublicLinkService
     /**
      * Actualizar la información de uso
      */
-    public static function getUseInfo(string $hash, RequestInterface $request): array
+    public static function getUseInfo(string $hash, RequestService $request): array
     {
         return [
             'who' => $request->getClientAddress(true),

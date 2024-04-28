@@ -24,7 +24,7 @@
 
 use Psr\Container\ContainerInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
-use SP\Util\FileSystem;
+use SP\Infrastructure\File\FileSystem;
 
 use function SP\logger;
 use function SP\processException;

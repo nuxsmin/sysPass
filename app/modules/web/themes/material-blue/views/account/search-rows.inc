@@ -34,12 +34,12 @@
  */
 
 use SP\Domain\Account\Adapters\AccountSearchItem;
+use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Html\DataGrid\Action\DataGridActionBase;
 use SP\Html\DataGrid\DataGridTab;
-use SP\Util\Date;
 
 if (!isset($data)) {
     $data = $_getvar('data');

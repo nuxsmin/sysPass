@@ -32,6 +32,8 @@ use SP\Domain\Common\Models\Model;
  */
 class Notification extends Model implements ItemWithIdAndNameModel
 {
+    public const TABLE = 'Notification';
+
     protected ?int    $id          = null;
     protected ?string $type        = null;
     protected ?string $component   = null;

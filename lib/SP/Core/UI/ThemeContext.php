@@ -26,7 +26,7 @@ namespace SP\Core\UI;
 
 use Directory;
 use SP\Domain\Core\UI\ThemeContextInterface;
-use SP\Util\FileSystem;
+use SP\Infrastructure\File\FileSystem;
 
 /**
  * Class ThemeContext

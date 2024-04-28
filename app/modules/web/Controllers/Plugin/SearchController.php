@@ -29,7 +29,7 @@ use JsonException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
 
 /**
  * Class SearchController

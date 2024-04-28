@@ -46,8 +46,6 @@ final class Notification extends BaseRepository implements NotificationRepositor
 {
     use RepositoryItemTrait;
 
-    public const TABLE = 'Notification';
-
     /**
      * Creates an item
      *
@@ -60,7 +58,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newInsert()
-            ->into(self::TABLE)
+            ->into(NotificationModel::TABLE)
             ->cols($notification->toArray(null, ['id', 'date']))
             ->set('date', 'UNIX_TIMESTAMP()');
 
@@ -82,7 +80,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newUpdate()
-            ->table(self::TABLE)
+            ->table(NotificationModel::TABLE)
             ->cols($notification->toArray(null, ['id']))
             ->set('date', 'UNIX_TIMESTAMP()')
             ->where('id = :id', ['id' => $notification->getId()])
@@ -106,7 +104,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(NotificationModel::TABLE)
             ->where('id = :id AND sticky = 0', ['id' => $id])
             ->limit(1);
 
@@ -128,7 +126,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(NotificationModel::TABLE)
             ->where('id = :id', ['id' => $id])
             ->limit(1);
 
@@ -154,7 +152,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(NotificationModel::TABLE)
             ->where('id IN (:ids)', ['ids' => $notificationsId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the notifications'));
@@ -175,7 +173,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(NotificationModel::TABLE)
             ->cols(NotificationModel::getCols())
             ->where('id = :id')
             ->bindValues(['id' => $notificationId])
@@ -197,7 +195,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(NotificationModel::TABLE)
             ->cols(NotificationModel::getCols())
             ->orderBy(['id']);
 
@@ -217,7 +215,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(NotificationModel::TABLE)
             ->cols(NotificationModel::getCols())
             ->where('id IN (:ids)', ['ids' => $notificationsId]);
 
@@ -242,7 +240,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
 
         $query = $this->queryFactory
             ->newDelete()
-            ->from(self::TABLE)
+            ->from(NotificationModel::TABLE)
             ->where('id IN (:ids) AND sticky = 0', ['ids' => $notificationsId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the notifications'));
@@ -277,7 +275,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(NotificationModel::TABLE)
             ->cols(NotificationModel::getCols())
             ->orderBy(['date DESC'])
             ->limit($itemSearchData->getLimitCount())
@@ -327,7 +325,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newUpdate()
-            ->table(self::TABLE)
+            ->table(NotificationModel::TABLE)
             ->cols(['checked' => 1])
             ->where('id = :id', ['id' => $id])
             ->limit(1);
@@ -351,7 +349,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(NotificationModel::TABLE)
             ->cols(NotificationModel::getCols())
             ->where('userId = :userId AND component = :component AND (UNIX_TIMESTAMP() - date) <= 86400')
             ->bindValues([
@@ -376,7 +374,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(NotificationModel::TABLE)
             ->cols(NotificationModel::getCols())
             ->where('(userId = :userId OR (userId IS NULL AND sticky = 1)) AND onlyAdmin = 0')
             ->bindValues(['userId' => $userId])
@@ -397,7 +395,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(NotificationModel::TABLE)
             ->cols(NotificationModel::getCols())
             ->where('(userId = :userId OR sticky = 1) AND onlyAdmin = 0 AND checked = 0')
             ->bindValues(['userId' => $userId])
@@ -419,7 +417,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(self::TABLE)
+            ->from(NotificationModel::TABLE)
             ->cols(NotificationModel::getCols())
             ->where('(userId = :userId OR sticky = 1 OR userId IS NULL) AND checked = 0')
             ->bindValues(['userId' => $userId])

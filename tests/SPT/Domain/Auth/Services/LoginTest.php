@@ -35,6 +35,13 @@ use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LoginAuthHandlerService;
 use SP\Domain\Auth\Ports\LoginMasterPassService;
 use SP\Domain\Auth\Ports\LoginUserService;
+use SP\Domain\Auth\Providers\AuthDataBase;
+use SP\Domain\Auth\Providers\AuthProviderService;
+use SP\Domain\Auth\Providers\AuthResult;
+use SP\Domain\Auth\Providers\AuthType;
+use SP\Domain\Auth\Providers\Browser\BrowserAuthData;
+use SP\Domain\Auth\Providers\Database\DatabaseAuthData;
+use SP\Domain\Auth\Providers\Ldap\LdapAuthData;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Auth\Services\Login;
 use SP\Domain\Auth\Services\LoginStatus;
@@ -43,15 +50,8 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\LanguageInterface;
-use SP\Domain\Http\RequestInterface;
-use SP\Domain\Providers\Auth\AuthDataBase;
-use SP\Domain\Providers\Auth\AuthProviderService;
-use SP\Domain\Providers\Auth\AuthResult;
-use SP\Domain\Providers\Auth\AuthType;
-use SP\Domain\Providers\Browser\BrowserAuthData;
-use SP\Domain\Providers\Database\DatabaseAuthData;
-use SP\Domain\Providers\Ldap\LdapAuthData;
-use SP\Domain\Providers\Ports\ProviderInterface;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Log\Ports\ProviderInterface;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDataDto;
@@ -72,7 +72,7 @@ class LoginTest extends UnitaryTestCase
 {
 
     private TrackService|MockObject                          $trackService;
-    private RequestInterface|MockObject                      $request;
+    private RequestService|MockObject $request;
     private MockObject|AuthProviderService|ProviderInterface $authProviderService;
     private MockObject|LanguageInterface                     $language;
     private UserService|MockObject                           $userService;
@@ -508,7 +508,7 @@ class LoginTest extends UnitaryTestCase
                 )
             );
 
-        $this->request = $this->createMock(RequestInterface::class);
+        $this->request = $this->createMock(RequestService::class);
         $this->authProviderService = $this->createMockForIntersectionOfInterfaces(
             [AuthProviderService::class, ProviderInterface::class]
         );

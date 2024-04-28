@@ -41,7 +41,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SPT\Generators\PublicLinkDataGenerator;
@@ -474,7 +474,7 @@ class PublicLinkTest extends UnitaryTestCase
         $who = self::$faker->ipv4;
         $userAgent = self::$faker->userAgent;
 
-        $request = $this->createMock(RequestInterface::class);
+        $request = $this->createMock(RequestService::class);
 
         $request->expects(self::once())
                 ->method('getClientAddress')
@@ -566,7 +566,7 @@ class PublicLinkTest extends UnitaryTestCase
         parent::setUp();
 
         $this->publicLinkRepository = $this->createMock(PublicLinkRepository::class);
-        $request = $this->createMock(RequestInterface::class);
+        $request = $this->createMock(RequestService::class);
         $request->method('getClientAddress')
                 ->willReturn(self::$faker->ipv4);
         $request->method('getHeader')

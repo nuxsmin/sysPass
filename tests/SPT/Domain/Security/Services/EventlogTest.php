@@ -30,7 +30,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\RequestInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Models\Eventlog as EventlogModel;
 use SP\Domain\Security\Ports\EventlogRepository;
 use SP\Domain\Security\Services\Eventlog;
@@ -45,7 +45,7 @@ class EventlogTest extends UnitaryTestCase
 {
 
     private EventlogRepository|MockObject $eventlogRepository;
-    private RequestInterface|MockObject   $request;
+    private RequestService|MockObject $request;
     private Eventlog                      $eventlog;
 
     /**
@@ -124,7 +124,7 @@ class EventlogTest extends UnitaryTestCase
         parent::setUp();
 
         $this->eventlogRepository = $this->createMock(EventlogRepository::class);
-        $this->request = $this->createMock(RequestInterface::class);
+        $this->request = $this->createMock(RequestService::class);
 
         $this->eventlog = new Eventlog($this->application, $this->eventlogRepository, $this->request);
     }

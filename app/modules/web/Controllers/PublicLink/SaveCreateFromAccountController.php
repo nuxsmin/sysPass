@@ -29,10 +29,10 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Account\Services\PublicLink;
+use SP\Domain\Common\Providers\Password;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Http\JsonMessage;
+use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Util\Password;
 
 /**
  * Class SaveCreateFromAccountController

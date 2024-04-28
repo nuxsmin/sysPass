@@ -24,14 +24,14 @@
 
 namespace SP\Mvc\Controller;
 
+use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\CustomField\Services\CustomFieldItem;
-use SP\Domain\Http\RequestInterface;
-use SP\Util\Filter;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Trait ItemTrait
@@ -108,7 +108,7 @@ trait ItemTrait
      *
      * @param int $moduleId
      * @param int|int[] $itemId
-     * @param RequestInterface $request
+     * @param RequestService $request
      * @param CustomFieldDataService $customFieldDataService
      *
      * @throws SPException
@@ -117,7 +117,7 @@ trait ItemTrait
     protected function addCustomFieldsForItem(
         int                    $moduleId,
         int|array              $itemId,
-        RequestInterface       $request,
+        RequestService $request,
         CustomFieldDataService $customFieldDataService
     ): void {
         $customFields = self::getCustomFieldsFromRequest($request);
@@ -141,11 +141,11 @@ trait ItemTrait
     }
 
     /**
-     * @param RequestInterface $request
+     * @param RequestService $request
      *
      * @return array|null
      */
-    private static function getCustomFieldsFromRequest(RequestInterface $request): ?array
+    private static function getCustomFieldsFromRequest(RequestService $request): ?array
     {
         return $request->analyzeArray(
             'customfield',
@@ -175,7 +175,7 @@ trait ItemTrait
      *
      * @param int $moduleId
      * @param int|int[] $itemId
-     * @param RequestInterface $request
+     * @param RequestService $request
      * @param CustomFieldDataService $customFieldDataService
      *
      * @throws ServiceException
@@ -184,7 +184,7 @@ trait ItemTrait
     protected function updateCustomFieldsForItem(
         int                    $moduleId,
         int|array              $itemId,
-        RequestInterface       $request,
+        RequestService $request,
         CustomFieldDataService $customFieldDataService
     ): void {
         $customFields = self::getCustomFieldsFromRequest($request);
@@ -212,7 +212,7 @@ trait ItemTrait
     /**
      * Returns search data object for the current request
      */
-    protected function getSearchData(int $limitCount, RequestInterface $request): ItemSearchDto
+    protected function getSearchData(int $limitCount, RequestService $request): ItemSearchDto
     {
         return new ItemSearchDto(
             $request->analyzeString('search'),
@@ -221,7 +221,7 @@ trait ItemTrait
         );
     }
 
-    protected function getItemsIdFromRequest(RequestInterface $request): ?array
+    protected function getItemsIdFromRequest(RequestService $request): ?array
     {
         return $request->analyzeArray('items');
     }

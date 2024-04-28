@@ -30,8 +30,8 @@ use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\User\Services\UserPassRecover;
-use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**

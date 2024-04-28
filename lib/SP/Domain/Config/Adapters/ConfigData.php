@@ -25,9 +25,9 @@
 namespace SP\Domain\Config\Adapters;
 
 use SP\Core\DataCollection;
+use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Util\Serde;
-use SP\Util\Version;
 
 /**
  * Class ConfigData

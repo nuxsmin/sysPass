@@ -39,7 +39,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Util\FileSystem;
+use SP\Infrastructure\File\FileSystem;
 
 use function SP\__u;
 

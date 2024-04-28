@@ -36,14 +36,14 @@ use SP\DataModel\AccountExtData;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\Services\PublicLink;
+use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Common\Providers\Image;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
+use SP\Domain\Http\Providers\Uri;
 use SP\Domain\Image\Ports\ImageService;
-use SP\Http\Uri;
 use SP\Modules\Web\Util\ErrorUtil;
 use SP\Mvc\Controller\WebControllerHelper;
-use SP\Util\Image;
-use SP\Util\Serde;
 
 /**
  * Class ViewLinkController
