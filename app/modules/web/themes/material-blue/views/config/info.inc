@@ -39,7 +39,7 @@
     use SP\Domain\Install\Services\Installer;
     use SP\Domain\Plugin\Ports\Plugin;
     use SP\Mvc\View\TemplateInterface;
-    use SP\Util\VersionUtil;
+    use SP\Util\Version;
 
     use function SP\__;
 
@@ -60,7 +60,7 @@
             printf(
                 '%s (<b>%s</b>)',
                 Installer::VERSION_TEXT,
-                VersionUtil::getVersionStringNormalized()
+                Version::getVersionStringNormalized()
             ); ?>
             <br>
             <?php

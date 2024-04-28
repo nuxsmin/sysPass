@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;
-use SP\Util\PasswordUtil;
+use SP\Util\Password;
 
 use function SP\logger;
 use function SP\processException;
@@ -187,7 +187,7 @@ class ConfigFile implements ConfigFileService
         $configData = new ConfigData();
 
         // Generate a random salt that is used to add more seed to some passwords
-        $configData->setPasswordSalt(PasswordUtil::generateRandomBytes());
+        $configData->setPasswordSalt(Password::generateRandomBytes());
 
         $this->save($configData, false);
 
@@ -227,7 +227,7 @@ class ConfigFile implements ConfigFileService
         if (empty($this->configData->getUpgradeKey())) {
             logger('Generating upgrade key');
 
-            return $this->save($this->configData->setUpgradeKey(PasswordUtil::generateRandomBytes(16)), false);
+            return $this->save($this->configData->setUpgradeKey(Password::generateRandomBytes(16)), false);
         }
 
         return $this;

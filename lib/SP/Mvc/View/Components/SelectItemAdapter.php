@@ -33,16 +33,12 @@ use function SP\__u;
 
 /**
  * Class SelectItemAdapter
- *
- * @package SP\Mvc\View\Components
  */
-final class SelectItemAdapter implements ItemAdapterInterface
+final readonly class SelectItemAdapter implements ItemAdapterInterface
 {
-    protected array $items;
 
-    public function __construct(array $items)
+    public function __construct(protected array $items)
     {
-        $this->items = $items;
     }
 
     public static function factory(array $items): SelectItemAdapter
@@ -55,15 +51,10 @@ final class SelectItemAdapter implements ItemAdapterInterface
      */
     public static function getIdFromArrayOfObjects(array $items): array
     {
-        $ids = [];
-
-        foreach ($items as $item) {
-            if (is_object($item) && null !== $item->id) {
-                $ids[] = $item->id;
-            }
-        }
-
-        return $ids;
+        return array_map(
+            static fn(object $item) => $item->id,
+            array_filter($items, static fn(mixed $item) => is_object($item) && isset($item->id))
+        );
     }
 
     /**
@@ -73,17 +64,12 @@ final class SelectItemAdapter implements ItemAdapterInterface
      */
     public function getJsonItemsFromModel(): string
     {
-        $out = [];
-
-        foreach ($this->items as $item) {
-            if (!$item instanceof ItemWithIdAndNameModel) {
-                throw new RuntimeException(__u('Wrong object type'));
-            }
-
-            $out[] = ['id' => $item->getId(), 'name' => $item->getName()];
-        }
-
-        return JsonResponse::buildJsonFrom($out);
+        return JsonResponse::buildJsonFrom(
+            array_map(
+                static fn(ItemWithIdAndNameModel $item) => ['id' => $item->getId(), 'name' => $item->getName()],
+                array_filter($this->items, static fn(mixed $item) => $item instanceof ItemWithIdAndNameModel)
+            )
+        );
     }
 
     /**
@@ -105,15 +91,13 @@ final class SelectItemAdapter implements ItemAdapterInterface
     /**
      * Returns a collection of items for a select component and set selected ones from an array
      *
-     * @param  array  $selected
-     * @param  string|int|null  $skip
+     * @param array $selected
+     * @param string|int|null $skip
      *
      * @return SelectItem[]
      */
-    public function getItemsFromModelSelected(
-        array $selected,
-        mixed $skip = null
-    ): array {
+    public function getItemsFromModelSelected(array $selected, mixed $skip = null): array
+    {
         $items = $this->getItemsFromModel();
 
         array_walk(

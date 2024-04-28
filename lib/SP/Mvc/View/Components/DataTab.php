@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,30 +29,17 @@ use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class DataTab
- *
- * @package SP\Mvc\View\Components
  */
-final class DataTab
+final readonly class DataTab
 {
-    protected string            $title;
-    protected TemplateInterface $template;
 
-    public function __construct(string $title, TemplateInterface $template)
+    public function __construct(protected string $title, protected TemplateInterface $template)
     {
-        $this->title = $title;
-        $this->template = $template;
     }
 
     public function getTitle(): string
     {
         return $this->title;
-    }
-
-    public function setTitle(string $title): DataTab
-    {
-        $this->title = $title;
-
-        return $this;
     }
 
     public function render(): string
@@ -63,5 +50,4 @@ final class DataTab
             return $e->getMessage();
         }
     }
-
 }

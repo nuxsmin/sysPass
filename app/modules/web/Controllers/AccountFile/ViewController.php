@@ -31,7 +31,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 
 /**
  * Class ViewController
@@ -61,7 +61,7 @@ final class ViewController extends AccountFileBase
 
             $this->view->addTemplate('file', 'itemshow');
 
-            if (FileSystemUtil::isImage($fileData)) {
+            if (FileSystem::isImage($fileData)) {
                 $this->view->assign('data', chunk_split(base64_encode($fileData->getContent())));
                 $this->view->assign('fileData', $fileData);
                 $this->view->assign('isImage', 1);

@@ -27,7 +27,7 @@ namespace SP\Domain\Upgrade\Services;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Infrastructure\File\FileException;
-use SP\Util\VersionUtil;
+use SP\Util\Version;
 
 /**
  * Class UpgradeUtil
@@ -59,7 +59,7 @@ final class UpgradeUtil
         // when upgrading from v2
         // $dbVersion is always '' when upgrading from v2
         if (!empty($configData->getDatabaseVersion()) && empty($configData->getAppVersion())) {
-            $configData->setAppVersion(VersionUtil::getVersionStringNormalized());
+            $configData->setAppVersion(Version::getVersionStringNormalized());
             $config->save($configData, false);
         }
     }

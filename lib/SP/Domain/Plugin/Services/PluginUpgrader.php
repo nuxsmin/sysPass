@@ -34,7 +34,7 @@ use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Ports\PluginUpgraderInterface;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Util\VersionUtil;
+use SP\Util\Version;
 
 use function SP\__;
 use function SP\__u;
@@ -75,7 +75,7 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
         }
 
         if ($pluginModel->getVersionLevel() === null
-            || VersionUtil::checkVersion($pluginModel->getVersionLevel(), $version)
+            || Version::checkVersion($pluginModel->getVersionLevel(), $version)
         ) {
             $this->eventDispatcher->notify(
                 'plugin.upgrade.process',

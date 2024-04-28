@@ -31,7 +31,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Task\Ports\TaskServiceInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 
 /**
  * Class TaskService
@@ -64,7 +64,7 @@ final class TaskService extends Service implements TaskServiceInterface
     public function trackStatus(string $taskId, Closure $messagePusher): void
     {
         $this->taskId = $taskId;
-        $this->taskDirectory = FileSystemUtil::getTempDir();
+        $this->taskDirectory = FileSystem::getTempDir();
         $this->messagePusher = $messagePusher;
 
         if ($this->taskDirectory === false || !$this->getLock()) {

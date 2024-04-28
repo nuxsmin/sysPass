@@ -35,7 +35,7 @@ use SP\Domain\Providers\EventsTrait;
 use SP\Domain\Providers\Provider;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 
 use function SP\__u;
 use function SP\logger;
@@ -140,7 +140,7 @@ final class AclHandler extends Provider implements EventReceiver
         logger(sprintf('Clearing ACL for user ID: %d', $userId));
 
         try {
-            if (FileSystemUtil::rmdirRecursive(AccountAcl::ACL_PATH . $userId) === false) {
+            if (FileSystem::rmdirRecursive(AccountAcl::ACL_PATH . $userId) === false) {
                 logger(sprintf('Unable to delete %s directory', AccountAcl::ACL_PATH . $userId));
 
                 return false;

@@ -43,7 +43,7 @@ use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Util\PasswordUtil;
+use SP\Util\Password;
 
 use function SP\__;
 use function SP\__u;
@@ -95,7 +95,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
             $this->maxTime = time() + $maxTime;
 
             // Encriptar la clave maestra con hash aleatorio generado
-            $randomKey = PasswordUtil::generateRandomBytes(32);
+            $randomKey = Password::generateRandomBytes(32);
             $secureKey = $this->crypt->makeSecuredKey($randomKey);
 
             $configRequest = new ConfigRequest();

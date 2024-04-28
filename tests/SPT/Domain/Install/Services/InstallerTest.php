@@ -41,7 +41,7 @@ use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\User\Services\User;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Util\VersionUtil;
+use SP\Util\Version;
 use SPT\UnitaryTestCase;
 
 /**
@@ -108,8 +108,8 @@ class InstallerTest extends UnitaryTestCase
         $this->assertEquals($expectedDbSetup[0], $configData->getDbUser());
         $this->assertEquals($expectedDbSetup[1], $configData->getDbPass());
         $this->assertEquals($params->getSiteLang(), $configData->getSiteLang());
-        $this->assertEquals(VersionUtil::getVersionStringNormalized(), $configData->getConfigVersion());
-        $this->assertEquals(VersionUtil::getVersionStringNormalized(), $configData->getDatabaseVersion());
+        $this->assertEquals(Version::getVersionStringNormalized(), $configData->getConfigVersion());
+        $this->assertEquals(Version::getVersionStringNormalized(), $configData->getDatabaseVersion());
         $this->assertEquals(SELF_IP_ADDRESS, $params->getDbAuthHost());
         $this->assertNull($configData->getUpgradeKey());
         $this->assertNull($configData->getDbSocket());

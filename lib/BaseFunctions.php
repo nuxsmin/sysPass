@@ -26,7 +26,7 @@ namespace SP;
 
 use Exception;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 use Throwable;
 
 /**
@@ -252,7 +252,7 @@ function initModule(string $module): array
     logger(sprintf('Initializing module: %s', $module));
 
     try {
-        $definitions = FileSystemUtil::require(FileSystemUtil::buildPath(MODULES_PATH, $module, 'module.php'));
+        $definitions = FileSystem::require(FileSystem::buildPath(MODULES_PATH, $module, 'module.php'));
 
         if (is_array($definitions)) {
             return $definitions;

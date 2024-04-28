@@ -31,7 +31,7 @@ use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Infrastructure\File\FileException;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 
 use function SP\processException;
 
@@ -70,8 +70,8 @@ final class Theme implements ThemeInterface
         while (false !== ($themeDir = $directory->read())) {
             if (is_dir($themeDir) && $themeDir !== '.' && $themeDir !== '..') {
                 try {
-                    $themeInfo = FileSystemUtil::require(
-                        FileSystemUtil::buildPath($this->themeContext->getViewsPath(), $themeDir, 'index.php')
+                    $themeInfo = FileSystem::require(
+                        FileSystem::buildPath($this->themeContext->getViewsPath(), $themeDir, 'index.php')
                     );
 
                     if (is_array($themeInfo) && isset($themeInfo['name'])) {
@@ -107,8 +107,8 @@ final class Theme implements ThemeInterface
     public function getInfo(): array
     {
         try {
-            $themeInfo = FileSystemUtil::require(
-                FileSystemUtil::buildPath($this->themeContext->getFullPath(), 'index.php')
+            $themeInfo = FileSystem::require(
+                FileSystem::buildPath($this->themeContext->getFullPath(), 'index.php')
             );
 
             if (is_array($themeInfo)) {

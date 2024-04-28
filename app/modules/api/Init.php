@@ -41,7 +41,7 @@ use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
 use SP\Domain\Upgrade\Services\UpgradeUtil;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
-use SP\Util\HttpUtil;
+use SP\Util\Http;
 
 use function SP\logger;
 
@@ -91,7 +91,7 @@ final class Init extends HttpModuleBase
         $this->language->setLanguage();
 
         // Checks if it needs to switch the request over HTTPS
-        HttpUtil::checkHttps($this->configData, $this->request);
+        Http::checkHttps($this->configData, $this->request);
 
         // Checks if sysPass is installed
         $this->checkInstalled();

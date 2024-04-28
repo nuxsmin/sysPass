@@ -38,7 +38,7 @@ use SP\Domain\Http\RequestInterface;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Ports\UserPassRecoverService;
-use SP\Util\PasswordUtil;
+use SP\Util\Password;
 
 use function SP\__u;
 
@@ -89,7 +89,7 @@ final class LoginUser extends LoginBase implements LoginUserService
                     new Event($this, EventMessage::factory()->addDetail(__u('User'), $userDataDto->getLogin()))
                 );
 
-                $hash = PasswordUtil::generateRandomBytes(16);
+                $hash = Password::generateRandomBytes(16);
 
                 $this->userPassRecoverService->add($userDataDto->getId(), $hash);
 

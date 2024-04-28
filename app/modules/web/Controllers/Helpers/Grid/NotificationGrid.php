@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -37,7 +37,7 @@ use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Html\Html;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Util\DateUtil;
+use SP\Util\Date;
 
 use function SP\__;
 
@@ -143,7 +143,7 @@ final class NotificationGrid extends GridBase
             'date',
             false,
             function ($value) {
-                return DateUtil::getDateFromUnix($value);
+                return Date::getDateFromUnix($value);
             }
         );
         $gridData->addDataRowSource('type');

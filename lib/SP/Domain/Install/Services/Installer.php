@@ -47,7 +47,7 @@ use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\File\FileException;
-use SP\Util\VersionUtil;
+use SP\Util\Version;
 
 use function SP\__u;
 use function SP\processException;
@@ -192,7 +192,7 @@ final class Installer implements InstallerService
         $this->configService->create(
             new Config([
                            'parameter' => 'version',
-                           'value' => VersionUtil::getVersionStringNormalized()
+                           'value' => Version::getVersionStringNormalized()
                        ])
         );
 
@@ -258,9 +258,9 @@ final class Installer implements InstallerService
     private function setupConfig(): ConfigDataInterface
     {
         $configData = $this->config->getConfigData()
-                                   ->setConfigVersion(VersionUtil::getVersionStringNormalized())
-                                   ->setDatabaseVersion(VersionUtil::getVersionStringNormalized())
-                                   ->setAppVersion(VersionUtil::getVersionStringNormalized())
+            ->setConfigVersion(Version::getVersionStringNormalized())
+            ->setDatabaseVersion(Version::getVersionStringNormalized())
+            ->setAppVersion(Version::getVersionStringNormalized())
                                    ->setUpgradeKey(null)
                                    ->setDbHost($this->installData->getDbHost())
                                    ->setDbSocket($this->installData->getDbSocket())

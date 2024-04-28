@@ -46,7 +46,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Util\PasswordUtil;
+use SP\Util\Password;
 use SP\Util\Serde;
 
 use function SP\__u;
@@ -218,7 +218,7 @@ final class AuthToken extends Service implements AuthTokenService
      */
     private function generateToken(): string
     {
-        return PasswordUtil::generateRandomBytes(32);
+        return Password::generateRandomBytes(32);
     }
 
     /**

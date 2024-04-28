@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Resource;
 
 use SP\Http\Request as HttpRequest;
 use SP\Infrastructure\File\FileHandler;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 
 /**
  * Class CssController
@@ -57,11 +57,11 @@ final class CssController extends ResourceBase
                          ->addFiles($files)
                          ->getMinified();
         } else {
-            $files = $this->buildFiles(FileSystemUtil::buildPath(PUBLIC_PATH, 'vendor', 'css'), self::CSS_MIN_FILES);
+            $files = $this->buildFiles(FileSystem::buildPath(PUBLIC_PATH, 'vendor', 'css'), self::CSS_MIN_FILES);
 
             $this->minify->builder()
                          ->addFiles($files, false)
-                ->addFile(new FileHandler(FileSystemUtil::buildPath(PUBLIC_PATH, 'css', 'fonts.min.css')), false)
+                ->addFile(new FileHandler(FileSystem::buildPath(PUBLIC_PATH, 'css', 'fonts.min.css')), false)
                          ->getMinified();
         }
     }
@@ -77,7 +77,7 @@ final class CssController extends ResourceBase
         $base = $insecure ? HttpRequest::getSecureAppPath($base) : $base;
 
         return array_map(
-            fn(string $file) => new FileHandler(FileSystemUtil::buildPath($base, $file)),
+            fn(string $file) => new FileHandler(FileSystem::buildPath($base, $file)),
             $files
         );
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,7 @@ use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Util\VersionUtil;
+use SP\Util\Version;
 use Throwable;
 
 /**
@@ -69,7 +69,7 @@ final class StatusController extends StatusBase
                                   '.'.
                                   $matches['build'];
 
-                    if (VersionUtil::checkVersion(VersionUtil::getVersionStringNormalized(), $pubVersion)) {
+                    if (Version::checkVersion(Version::getVersionStringNormalized(), $pubVersion)) {
                         return $this->returnJsonResponseData([
                             'version'     => $requestData->tag_name,
                             'url'         => $requestData->html_url,

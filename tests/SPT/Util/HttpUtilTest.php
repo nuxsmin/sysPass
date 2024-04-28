@@ -29,7 +29,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Http\RequestInterface;
-use SP\Util\HttpUtil;
+use SP\Util\Http;
 
 /**
  * Class HttpUtilTest
@@ -62,7 +62,7 @@ class HttpUtilTest extends TestCase
                 ->method('getHttpHost')
                 ->willReturn('localhost');
 
-        HttpUtil::checkHttps($configData, $request);
+        Http::checkHttps($configData, $request);
     }
 
     /**
@@ -86,7 +86,7 @@ class HttpUtilTest extends TestCase
         $request->expects($this->never())
                 ->method('getHttpHost');
 
-        HttpUtil::checkHttps($configData, $request);
+        Http::checkHttps($configData, $request);
     }
 
     /**
@@ -111,6 +111,6 @@ class HttpUtilTest extends TestCase
         $request->expects($this->never())
                 ->method('getHttpHost');
 
-        HttpUtil::checkHttps($configData, $request);
+        Http::checkHttps($configData, $request);
     }
 }

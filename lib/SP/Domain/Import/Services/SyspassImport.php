@@ -42,7 +42,7 @@ use SP\Domain\Export\Services\XmlVerify;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Domain\Tag\Models\Tag;
-use SP\Util\VersionUtil;
+use SP\Util\Version;
 
 use function SP\__;
 use function SP\__u;
@@ -97,7 +97,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
      */
     private function getXmlVersion(): float|int
     {
-        return VersionUtil::versionToInteger(
+        return Version::versionToInteger(
             (new DOMXPath($this->document))->query('/Root/Meta/Version')->item(0)?->nodeValue ?? 0
         );
     }

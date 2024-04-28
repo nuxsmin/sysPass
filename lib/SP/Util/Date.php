@@ -27,13 +27,13 @@ namespace SP\Util;
 /**
  * Class DateUtil
  */
-final class DateUtil
+final class Date
 {
     /**
      * Returns date string from UNIX timestamp
      *
-     * @param  int|string  $date
-     * @param  string  $format
+     * @param int|string $date
+     * @param string $format
      *
      * @return int|string
      */

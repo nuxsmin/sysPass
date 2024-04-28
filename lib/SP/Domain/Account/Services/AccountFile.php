@@ -39,7 +39,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 
 use function SP\__u;
 
@@ -69,7 +69,7 @@ final class AccountFile extends Service implements AccountFileService
      */
     public function create(File $itemData): int
     {
-        if (FileSystemUtil::isImage($itemData)) {
+        if (FileSystem::isImage($itemData)) {
             $itemData->setThumb($this->imageUtil->createThumbnail($itemData->getContent()));
         } else {
             $itemData->setThumb('no_thumb');

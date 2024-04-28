@@ -31,7 +31,7 @@ use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\ProvidersHelper;
 use SP\Domain\Core\LanguageInterface;
-use SP\Util\VersionUtil;
+use SP\Util\Version;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -96,7 +96,7 @@ final class Init extends ModuleBase
     private function initCli(): void
     {
         $this->consoleApplication->setName('sysPass CLI');
-        $this->consoleApplication->setVersion(implode('.', VersionUtil::getVersionArray()));
+        $this->consoleApplication->setVersion(implode('.', Version::getVersionArray()));
         $this->consoleApplication->addCommands($this->cliCommandHelper->getCommands());
 
         $this->consoleApplication->run(

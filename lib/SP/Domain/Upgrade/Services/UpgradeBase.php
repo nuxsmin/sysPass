@@ -32,7 +32,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Providers\Ports\FileLogHandlerProvider;
 use SP\Domain\Upgrade\Ports\UpgradeService;
 use SP\Infrastructure\File\FileException;
-use SP\Util\VersionUtil;
+use SP\Util\Version;
 
 use function SP\__u;
 use function SP\logger;
@@ -56,7 +56,7 @@ abstract class UpgradeBase extends Service implements UpgradeService
      */
     final public static function needsUpgrade(string $version): bool
     {
-        return !empty($version) && VersionUtil::checkVersion($version, static::getUpgrades());
+        return !empty($version) && Version::checkVersion($version, static::getUpgrades());
     }
 
     abstract protected static function getUpgrades(): array;
@@ -82,7 +82,7 @@ abstract class UpgradeBase extends Service implements UpgradeService
 
         $upgradeVersions = array_filter(
             static::getUpgrades(),
-            static fn(string $appVersion) => VersionUtil::checkVersion($version, $appVersion)
+            static fn(string $appVersion) => Version::checkVersion($version, $appVersion)
         );
 
         foreach ($upgradeVersions as $upgradeVersion) {

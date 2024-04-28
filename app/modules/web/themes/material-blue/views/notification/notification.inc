@@ -35,7 +35,7 @@ use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Notification\Models\Notification;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
-use SP\Util\DateUtil;
+use SP\Util\Date;
 
 $notification = $_getvar('notification');
 ?>
@@ -98,7 +98,7 @@ $notification = $_getvar('notification');
                                    name="notification_date" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php
-                                   echo DateUtil::getDateFromUnix($notification->getDate()); ?>"
+                                   echo Date::getDateFromUnix($notification->getDate()); ?>"
                                 <?php
                                 echo $_getvar('disabled'); ?>>
                             <label class="mdl-textfield__label"

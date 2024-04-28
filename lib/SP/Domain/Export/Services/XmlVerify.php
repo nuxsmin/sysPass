@@ -34,7 +34,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Export\Ports\XmlVerifyService;
-use SP\Util\VersionUtil;
+use SP\Util\Version;
 
 use function SP\__u;
 
@@ -125,7 +125,7 @@ final class XmlVerify extends Service implements XmlVerifyService
      */
     private static function checkVersion(string $version): void
     {
-        if (VersionUtil::checkVersion($version, [self::XML_MIN_VERSION])) {
+        if (Version::checkVersion($version, [self::XML_MIN_VERSION])) {
             throw ServiceException::error(
                 sprintf(
                     'Sorry, this XML version is not compatible. Please use >= %s',
@@ -177,7 +177,7 @@ final class XmlVerify extends Service implements XmlVerifyService
     {
         $dataNodes = (new DOMXPath($this->document))->query('/Root/Encrypted/Data');
 
-        $decode = VersionUtil::checkVersion($this->getXmlVersion(), '320.0');
+        $decode = Version::checkVersion($this->getXmlVersion(), '320.0');
 
         /** @var $node DOMElement */
         foreach ($dataNodes as $node) {

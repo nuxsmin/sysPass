@@ -26,8 +26,6 @@ namespace SP\Mvc\Controller\Validators;
 
 /**
  * Class Validator
- *
- * @package SP\Util
  */
 final class Validator
 {

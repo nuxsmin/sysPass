@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,7 +32,7 @@ use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Util\PasswordUtil;
+use SP\Util\Password;
 
 /**
  * Class SaveCreateFromAccountController
@@ -65,7 +65,7 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
                     'id' => PublicLink::TYPE_ACCOUNT,
                     'itemId' => $accountId,
                     'notify' => (bool)$notify,
-                    'hash' => PasswordUtil::generateRandomBytes()
+                    'hash' => Password::generateRandomBytes()
                 ]
             );
 

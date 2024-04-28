@@ -31,11 +31,9 @@ use Exception;
 use Random\RandomException;
 
 /**
- * Class PasswordUtil
- *
- * @package SP\Util
+ * Class Password
  */
-final class PasswordUtil
+final class Password
 {
     private const CHARS                  = 'abcdefghijklmnopqrstuwxyz';
     private const CHARS_SPECIAL          = '@$%&/()!_:.;{}^-';

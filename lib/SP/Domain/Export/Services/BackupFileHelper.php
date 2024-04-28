@@ -33,7 +33,7 @@ use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileHandler;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 
 /**
  * BackupFileHelper
@@ -73,7 +73,7 @@ final class BackupFileHelper implements BackupFileHelperService
         string $hash,
         bool   $compressed = false
     ): string {
-        $file = sprintf('%s_app-%s', FileSystemUtil::buildPath($path, AppInfoInterface::APP_NAME), $hash);
+        $file = sprintf('%s_app-%s', FileSystem::buildPath($path, AppInfoInterface::APP_NAME), $hash);
 
         if ($compressed) {
             return $file . ArchiveHandler::COMPRESS_EXTENSION;
@@ -87,7 +87,7 @@ final class BackupFileHelper implements BackupFileHelperService
         string $hash,
         bool   $compressed = false
     ): string {
-        $file = sprintf('%s_db-%s', FileSystemUtil::buildPath($path, AppInfoInterface::APP_NAME), $hash);
+        $file = sprintf('%s_db-%s', FileSystem::buildPath($path, AppInfoInterface::APP_NAME), $hash);
 
         if ($compressed) {
             return $file . ArchiveHandler::COMPRESS_EXTENSION;

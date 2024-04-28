@@ -33,7 +33,7 @@ use SP\Domain\Install\Adapters\InstallData;
 use SP\Infrastructure\Database\DatabaseException;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
-use SP\Util\PasswordUtil;
+use SP\Util\Password;
 
 use function SP\__;
 use function SP\__u;
@@ -87,7 +87,7 @@ final readonly class MysqlService implements DatabaseSetupInterface
     public function setupDbUser(): array
     {
         $user = substr(uniqid('sp_', true), 0, 16);
-        $pass = PasswordUtil::randomPassword();
+        $pass = Password::randomPassword();
 
         try {
             // Comprobar si el usuario proporcionado existe

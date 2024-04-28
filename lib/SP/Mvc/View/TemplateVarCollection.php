@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,8 +28,6 @@ use SP\Core\DataCollection;
 
 /**
  * Class TemplateVarCollection
- *
- * @package SP\Mvc\View
  */
 final class TemplateVarCollection extends DataCollection
 {

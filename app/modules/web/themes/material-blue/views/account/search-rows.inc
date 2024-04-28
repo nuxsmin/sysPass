@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@
  * @var ThemeIconsInterface $icons
  * @var callable $_getvar
  * @var ConfigDataInterface $configData
- * @var \SP\Domain\Account\Adapters\AccountSearchItem $account
+ * @var AccountSearchItem $account
  * @var DataGridTab $data
  * @var DataGridActionBase $actionMenu
  * @var DataGridActionBase $action
@@ -39,7 +39,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Html\DataGrid\Action\DataGridActionBase;
 use SP\Html\DataGrid\DataGridTab;
-use SP\Util\DateUtil;
+use SP\Util\Date;
 
 if (!isset($data)) {
     $data = $_getvar('data');
@@ -373,7 +373,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                         printf(
                                             '%s: %s',
                                             __('Expiry Date'),
-                                            DateUtil::getDateFromUnix($accountSearchData->getPublicLinkDateExpire())
+                                            Date::getDateFromUnix($accountSearchData->getPublicLinkDateExpire())
                                         ); ?>
                                         <br>
                                         <?php

@@ -25,7 +25,7 @@
 namespace SPT\Util;
 
 use PHPUnit\Framework\Attributes\Group;
-use SP\Util\DateUtil;
+use SP\Util\Date;
 use SPT\UnitaryTestCase;
 
 /**
@@ -36,7 +36,7 @@ class DateUtilTest extends UnitaryTestCase
 {
     public function testGetDateFromUnix()
     {
-        $out = DateUtil::getDateFromUnix(self::$faker->unixTime());
+        $out = Date::getDateFromUnix(self::$faker->unixTime());
 
         $this->assertMatchesRegularExpression('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}/', $out);
     }
@@ -44,7 +44,7 @@ class DateUtilTest extends UnitaryTestCase
     public function testGetDateFromUnixFromString()
     {
         $date = self::$faker->date();
-        $out = DateUtil::getDateFromUnix($date);
+        $out = Date::getDateFromUnix($date);
 
         $this->assertEquals($date, $out);
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,7 +23,7 @@
  */
 
 /**
- * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
+ * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
  * @var TemplateInterface $this
@@ -35,8 +35,9 @@
             <h1><?php
 
                 use SP\Domain\Config\Ports\ConfigDataInterface;
+                use SP\Domain\Core\UI\ThemeIconsInterface;
                 use SP\Mvc\View\TemplateInterface;
-                use SP\Util\VersionUtil;
+                use SP\Util\Version;
 
                 printf(__('Update %s'), $_getvar('upgradeVersion')); ?></h1>
         </div>
@@ -76,7 +77,7 @@
                 </div>
 
                 <?php
-                if (VersionUtil::checkVersion($_getvar('version'), '130.16011001')
+                if (Version::checkVersion($_getvar('version'), '130.16011001')
                     && count($_getvar('constraints')) > 0
                 ):
                     ?>
@@ -189,7 +190,7 @@
                 endif; ?>
 
                 <?php
-                if (VersionUtil::checkVersion($_getvar('version'), '210.17022601')): ?>
+                if (Version::checkVersion($_getvar('version'), '210.17022601')): ?>
                     <div>
                         <ul class="errors">
                             <li class="msg-warning">

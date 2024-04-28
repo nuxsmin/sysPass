@@ -80,7 +80,7 @@ use SP\Modules\Web\Controllers\Status\StatusController;
 use SP\Modules\Web\Controllers\Task\TrackStatusController;
 use SP\Modules\Web\Controllers\Upgrade\IndexController as UpgradeIndexController;
 use SP\Modules\Web\Controllers\Upgrade\UpgradeController;
-use SP\Util\HttpUtil;
+use SP\Util\Http;
 
 use function SP\logger;
 use function SP\processException;
@@ -211,7 +211,7 @@ final class Init extends HttpModuleBase
         $this->language->setLanguage($isReload);
 
         // Comprobar si es necesario cambiar a HTTPS
-        HttpUtil::checkHttps($this->configData, $this->request);
+        Http::checkHttps($this->configData, $this->request);
 
         $partialInit = in_array($controller, self::PARTIAL_INIT, true);
 

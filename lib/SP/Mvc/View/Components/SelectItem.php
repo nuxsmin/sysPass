@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,32 +25,21 @@
 namespace SP\Mvc\View\Components;
 
 use JsonSerializable;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 
 /**
  * Class SelectItem
- *
- * @package SP\Mvc\View\Components
  */
 final class SelectItem implements JsonSerializable
 {
-    protected int|string $id;
-    protected string     $name;
-    protected mixed      $item;
-    protected bool       $selected = false;
-    protected bool       $skip     = false;
+    protected bool $selected = false;
+    protected bool $skip     = false;
 
-    /**
-     * SelectItem constructor.
-     *
-     * @param  int|string  $id
-     * @param  string  $name
-     * @param  mixed  $item
-     */
-    public function __construct(int|string $id, string $name, mixed $item = null)
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->item = $item;
+    public function __construct(
+        protected readonly int|string              $id,
+        protected readonly string                  $name,
+        protected readonly ?ItemWithIdAndNameModel $item = null
+    ) {
     }
 
     /**
@@ -77,17 +66,13 @@ final class SelectItem implements JsonSerializable
     }
 
     /**
-     * @param  string  $property
+     * @param string $property
      *
      * @return mixed
      */
     public function getItemProperty(string $property): mixed
     {
-        if (null !== $this->item) {
-            return $this->item->{$property} ?? null;
-        }
-
-        return null;
+        return $this->item?->{$property};
     }
 
     public function isSkip(): bool

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -47,14 +47,8 @@ final class Template implements TemplateInterface
     private const TEMPLATE_EXTENSION = '.inc';
     public const  PARTIALS_DIR       = '_partials';
 
-    /**
-     * @var array List of templates to load into the view
-     */
-    private array                 $templates = [];
+    private array  $templates        = [];
     private TemplateVarCollection $vars;
-    /**
-     * @var string Base path for imcluding templates
-     */
     private string $base;
     private array  $contentTemplates = [];
     private bool   $upgraded         = false;

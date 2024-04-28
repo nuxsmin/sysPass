@@ -26,7 +26,7 @@ use Psr\Container\ContainerInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Modules\Api\Bootstrap;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 
 use function SP\processException;
 
@@ -34,7 +34,7 @@ const APP_ROOT = __DIR__;
 const APP_MODULE = 'api';
 
 try {
-    $dic = FileSystemUtil::require(FileSystemUtil::buildPath(APP_ROOT, 'lib', 'Base.php'), ContainerInterface::class);
+    $dic = FileSystem::require(FileSystem::buildPath(APP_ROOT, 'lib', 'Base.php'), ContainerInterface::class);
 
     Bootstrap::run($dic->get(BootstrapInterface::class), $dic->get(ModuleInterface::class));
 } catch (Throwable $e) {

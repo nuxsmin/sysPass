@@ -36,9 +36,9 @@ use function SP\__;
 use function SP\__u;
 
 /**
- * Class FilesystemUtil
+ * Class FileSystem
  */
-class FileSystemUtil
+class FileSystem
 {
     private const IMAGE_MIME = [
         'image/jpeg',
@@ -117,7 +117,7 @@ class FileSystemUtil
         $sysTmp = sys_get_temp_dir();
 
         $checkDir = static function ($dir) {
-            $path = FileSystemUtil::buildPath($dir, 'syspass.test');
+            $path = self::buildPath($dir, 'syspass.test');
 
             if (file_exists($path)) {
                 return $dir;

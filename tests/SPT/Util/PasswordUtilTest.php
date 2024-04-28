@@ -28,7 +28,7 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
-use SP\Util\PasswordUtil;
+use SP\Util\Password;
 
 /**
  * Class PasswordUtilTest
@@ -44,15 +44,15 @@ class PasswordUtilTest extends TestCase
         $passwordSpecial = str_split('%._-$&/()');
         $passwordNumber = str_split('18675249');
 
-        $this->assertEquals(count($passwordLower), PasswordUtil::checkStrength($passwordLower)['lower']);
-        $this->assertEquals(count($passwordUpper), PasswordUtil::checkStrength($passwordUpper)['upper']);
-        $this->assertEquals(count($passwordSpecial), PasswordUtil::checkStrength($passwordSpecial)['special']);
-        $this->assertEquals(count($passwordNumber), PasswordUtil::checkStrength($passwordNumber)['number']);
+        $this->assertEquals(count($passwordLower), Password::checkStrength($passwordLower)['lower']);
+        $this->assertEquals(count($passwordUpper), Password::checkStrength($passwordUpper)['upper']);
+        $this->assertEquals(count($passwordSpecial), Password::checkStrength($passwordSpecial)['special']);
+        $this->assertEquals(count($passwordNumber), Password::checkStrength($passwordNumber)['number']);
 
         $passwordMixed = array_merge($passwordLower, $passwordUpper, $passwordSpecial, $passwordNumber);
         shuffle($passwordMixed);
 
-        foreach (PasswordUtil::checkStrength($passwordMixed) as $count) {
+        foreach (Password::checkStrength($passwordMixed) as $count) {
             $this->assertGreaterThan(0, $count);
         }
     }
@@ -65,11 +65,11 @@ class PasswordUtilTest extends TestCase
         $lengths = [16, 32, 64];
 
         foreach ($lengths as $length) {
-            $pass = PasswordUtil::randomPassword($length);
+            $pass = Password::randomPassword($length);
 
             $this->assertEquals($length, strlen($pass));
 
-            foreach (PasswordUtil::checkStrength(str_split($pass)) as $type => $count) {
+            foreach (Password::checkStrength(str_split($pass)) as $type => $count) {
                 $this->assertGreaterThan(0, $count);
             }
         }
@@ -80,8 +80,8 @@ class PasswordUtilTest extends TestCase
      */
     public function testRandomPasswordNoFlags()
     {
-        $pass = PasswordUtil::randomPassword(16, 0);
-        $strength = PasswordUtil::checkStrength(str_split($pass));
+        $pass = Password::randomPassword(16, 0);
+        $strength = Password::checkStrength(str_split($pass));
 
         $this->assertGreaterThan(0, $strength['lower']);
         $this->assertGreaterThan(0, $strength['upper']);
@@ -94,9 +94,9 @@ class PasswordUtilTest extends TestCase
      */
     public function testRandomPasswordSpecial()
     {
-        $flags = PasswordUtil::FLAG_PASSWORD_SPECIAL | PasswordUtil::FLAG_PASSWORD_STRENGTH;
-        $pass = PasswordUtil::randomPassword(16, $flags);
-        $strength = PasswordUtil::checkStrength(str_split($pass));
+        $flags = Password::FLAG_PASSWORD_SPECIAL | Password::FLAG_PASSWORD_STRENGTH;
+        $pass = Password::randomPassword(16, $flags);
+        $strength = Password::checkStrength(str_split($pass));
 
         $this->assertGreaterThan(0, $strength['lower']);
         $this->assertGreaterThan(0, $strength['upper']);
@@ -109,9 +109,9 @@ class PasswordUtilTest extends TestCase
      */
     public function testRandomPasswordNumbers()
     {
-        $flags = PasswordUtil::FLAG_PASSWORD_NUMBER | PasswordUtil::FLAG_PASSWORD_STRENGTH;
-        $pass = PasswordUtil::randomPassword(16, $flags);
-        $strength = PasswordUtil::checkStrength(str_split($pass));
+        $flags = Password::FLAG_PASSWORD_NUMBER | Password::FLAG_PASSWORD_STRENGTH;
+        $pass = Password::randomPassword(16, $flags);
+        $strength = Password::checkStrength(str_split($pass));
 
         $this->assertGreaterThan(0, $strength['lower']);
         $this->assertGreaterThan(0, $strength['upper']);
@@ -125,10 +125,10 @@ class PasswordUtilTest extends TestCase
      */
     public function testRandomPasswordAll()
     {
-        $flags = PasswordUtil::FLAG_PASSWORD_NUMBER | PasswordUtil::FLAG_PASSWORD_SPECIAL |
-                 PasswordUtil::FLAG_PASSWORD_STRENGTH;
-        $pass = PasswordUtil::randomPassword(16, $flags);
-        $strength = PasswordUtil::checkStrength(str_split($pass));
+        $flags = Password::FLAG_PASSWORD_NUMBER | Password::FLAG_PASSWORD_SPECIAL |
+                 Password::FLAG_PASSWORD_STRENGTH;
+        $pass = Password::randomPassword(16, $flags);
+        $strength = Password::checkStrength(str_split($pass));
 
         $this->assertGreaterThan(0, $strength['lower']);
         $this->assertGreaterThan(0, $strength['upper']);
@@ -141,15 +141,15 @@ class PasswordUtilTest extends TestCase
      */
     public function testGenerateRandomBytes()
     {
-        $bytesHex = PasswordUtil::generateRandomBytes(16);
+        $bytesHex = Password::generateRandomBytes(16);
 
         $this->assertEquals(32, strlen($bytesHex));
 
-        $bytesHex = PasswordUtil::generateRandomBytes(32);
+        $bytesHex = Password::generateRandomBytes(32);
 
         $this->assertEquals(64, strlen($bytesHex));
 
-        $bytesHex = PasswordUtil::generateRandomBytes(64);
+        $bytesHex = Password::generateRandomBytes(64);
 
         $this->assertEquals(128, strlen($bytesHex));
     }

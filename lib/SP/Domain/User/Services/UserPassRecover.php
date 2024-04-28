@@ -36,7 +36,7 @@ use SP\Domain\User\Models\UserPassRecover as UserPassRecoverModel;
 use SP\Domain\User\Ports\UserPassRecoverRepository;
 use SP\Domain\User\Ports\UserPassRecoverService;
 use SP\Html\Html;
-use SP\Util\PasswordUtil;
+use SP\Util\Password;
 
 use function SP\__;
 use function SP\__u;
@@ -104,7 +104,7 @@ final class UserPassRecover extends Service implements UserPassRecoverService
             throw ServiceException::warning(__u('Attempts exceeded'));
         }
 
-        $hash = PasswordUtil::generateRandomBytes(16);
+        $hash = Password::generateRandomBytes(16);
 
         $this->add($id, $hash);
 

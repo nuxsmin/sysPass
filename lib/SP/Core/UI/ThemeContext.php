@@ -26,7 +26,7 @@ namespace SP\Core\UI;
 
 use Directory;
 use SP\Domain\Core\UI\ThemeContextInterface;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 
 /**
  * Class ThemeContext
@@ -45,9 +45,9 @@ final class ThemeContext implements ThemeContextInterface
         private readonly string $module,
         private readonly string $name
     ) {
-        $this->fullPath = FileSystemUtil::buildPath($basePath, $name);
-        $this->path = FileSystemUtil::buildPath(str_replace(APP_ROOT, '', $basePath), $name);
-        $this->viewsPath = FileSystemUtil::buildPath($this->fullPath, 'views');
+        $this->fullPath = FileSystem::buildPath($basePath, $name);
+        $this->path = FileSystem::buildPath(str_replace(APP_ROOT, '', $basePath), $name);
+        $this->viewsPath = FileSystem::buildPath($this->fullPath, 'views');
         $this->uri = sprintf(
             '%s/app/modules/%s/themes/%s',
             $baseUri,

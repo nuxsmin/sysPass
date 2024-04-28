@@ -28,9 +28,9 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Http\RequestInterface;
 
 /**
- * Class HttpUtil
+ * Class Http
  */
-final class HttpUtil
+final class Http
 {
     /**
      * Comprobar y forzar (si es necesario) la conexión HTTPS

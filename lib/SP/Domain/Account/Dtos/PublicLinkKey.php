@@ -25,7 +25,7 @@
 namespace SP\Domain\Account\Dtos;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Util\PasswordUtil;
+use SP\Util\Password;
 
 /**
  * Class PublicLinkKey
@@ -45,7 +45,7 @@ final class PublicLinkKey
         $this->salt = $salt;
 
         if ($hash === null) {
-            $this->hash = PasswordUtil::generateRandomBytes();
+            $this->hash = Password::generateRandomBytes();
         } else {
             $this->hash = $hash;
         }

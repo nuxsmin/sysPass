@@ -36,7 +36,7 @@ use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlHandler;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 
 use function SP\logger;
 use function SP\processException;
@@ -174,7 +174,7 @@ function recreateDir(string $dir): void
     if (is_dir($dir)) {
         logger('Deleting ' . $dir);
 
-        FileSystemUtil::rmdirRecursive($dir);
+        FileSystem::rmdirRecursive($dir);
     }
 
     logger('Creating ' . $dir);

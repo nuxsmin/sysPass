@@ -27,7 +27,7 @@ namespace SP\Domain\Config\Adapters;
 use SP\Core\DataCollection;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Util\Serde;
-use SP\Util\VersionUtil;
+use SP\Util\Version;
 
 /**
  * Class ConfigData
@@ -1142,7 +1142,7 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
 
     public function getAppVersion(): string
     {
-        return $this->get(ConfigDataInterface::APP_VERSION, VersionUtil::getVersionStringNormalized());
+        return $this->get(ConfigDataInterface::APP_VERSION, Version::getVersionStringNormalized());
     }
 
     public function setAppVersion(?string $appVersion): ConfigDataInterface

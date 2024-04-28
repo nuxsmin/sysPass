@@ -33,7 +33,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Html\Header;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\RequestInterface;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 use SP\Util\Filter;
 use SP\Util\Util;
 
@@ -110,7 +110,7 @@ class Request implements RequestInterface
             return '';
         }
 
-        $realPath = realpath(FileSystemUtil::buildPath($base, $path));
+        $realPath = realpath(FileSystem::buildPath($base, $path));
 
         if ($realPath === false || !str_starts_with($realPath, $base)) {
             return '';

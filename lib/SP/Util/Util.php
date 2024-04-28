@@ -180,9 +180,7 @@ final class Util
     public static function itemsIdAdapter(string $itemsId, string $delimiter = ','): array
     {
         return array_map(
-            static function ($value) {
-                return (int)$value;
-            },
+            static fn(string|int $value) => (int)$value,
             explode($delimiter, $itemsId)
         );
     }

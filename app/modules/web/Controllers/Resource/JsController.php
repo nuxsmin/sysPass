@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Resource;
 
 use SP\Http\Request as HttpRequest;
 use SP\Infrastructure\File\FileHandler;
-use SP\Util\FileSystemUtil;
+use SP\Util\FileSystem;
 
 /**
  * Class JsController
@@ -80,7 +80,7 @@ final class JsController extends ResourceBase
                 $this->minify
                     ->builder()
                     ->addFiles(
-                        $this->buildFiles(FileSystemUtil::buildPath(PUBLIC_PATH, 'vendor', 'js'), self::JS_MIN_FILES),
+                        $this->buildFiles(FileSystem::buildPath(PUBLIC_PATH, 'vendor', 'js'), self::JS_MIN_FILES),
                         false
                     )
                     ->getMinified();
@@ -88,7 +88,7 @@ final class JsController extends ResourceBase
                 $this->minify
                     ->builder()
                     ->addFiles(
-                        $this->buildFiles(FileSystemUtil::buildPath(PUBLIC_PATH, 'js'), self::JS_APP_MIN_FILES),
+                        $this->buildFiles(FileSystem::buildPath(PUBLIC_PATH, 'js'), self::JS_APP_MIN_FILES),
                         false
                     )
                     ->getMinified();
@@ -107,7 +107,7 @@ final class JsController extends ResourceBase
         $base = $insecure ? HttpRequest::getSecureAppPath($base) : $base;
 
         return array_map(
-            fn(string $file) => new FileHandler(FileSystemUtil::buildPath($base, $file)),
+            fn(string $file) => new FileHandler(FileSystem::buildPath($base, $file)),
             $files
         );
     }
