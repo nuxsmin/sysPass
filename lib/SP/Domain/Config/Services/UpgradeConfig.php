@@ -26,7 +26,7 @@ namespace SP\Domain\Config\Services;
 
 use SP\Core\Application;
 use SP\Domain\Config\Ports\UpgradeConfigService;
-use SP\Domain\Log\Ports\FileLogHandlerProvider;
+use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Upgrade\Services\UpgradeBase;
 
 /**
@@ -36,7 +36,7 @@ final class UpgradeConfig extends UpgradeBase implements UpgradeConfigService
 {
     public function __construct(
         Application            $application,
-        FileLogHandlerProvider $fileLogHandlerProvider
+        FileHandlerProvider $fileLogHandlerProvider
     ) {
         parent::__construct($application, $fileLogHandlerProvider);
 

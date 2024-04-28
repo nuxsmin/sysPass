@@ -26,12 +26,12 @@ namespace SP\Domain\Log\Providers;
 
 use Monolog\Handler\StreamHandler;
 use SP\Domain\Common\Providers\EventsTrait;
-use SP\Domain\Log\Ports\FileLogHandlerProvider;
+use SP\Domain\Log\Ports\FileHandlerProvider;
 
 /**
  * Class FileHandler
  */
-final class FileHandler extends LoggerBase implements FileLogHandlerProvider
+final class FileHandler extends LoggerBase implements FileHandlerProvider
 {
     use EventsTrait;
 

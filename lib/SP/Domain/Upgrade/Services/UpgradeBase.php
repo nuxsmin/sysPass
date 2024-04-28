@@ -30,7 +30,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Log\Ports\FileLogHandlerProvider;
+use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Upgrade\Ports\UpgradeService;
 use SP\Infrastructure\File\FileException;
 
@@ -44,11 +44,11 @@ abstract class UpgradeBase extends Service implements UpgradeService
 {
     protected ?ConfigDataInterface $configData = null;
 
-    public function __construct(Application $application, FileLogHandlerProvider $fileLogHandler)
+    public function __construct(Application $application, FileHandlerProvider $fileHandlerProvider)
     {
         parent::__construct($application);
 
-        $this->eventDispatcher->attach($fileLogHandler);
+        $this->eventDispatcher->attach($fileHandlerProvider);
     }
 
     /**

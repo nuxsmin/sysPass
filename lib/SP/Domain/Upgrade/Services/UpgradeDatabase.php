@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Database\Ports\DatabaseInterface;
-use SP\Domain\Log\Providers\FileHandler;
+use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
@@ -46,10 +46,10 @@ final class UpgradeDatabase extends UpgradeBase
 {
     public function __construct(
         Application                        $application,
-        FileHandler $fileLogHandler,
+        FileHandlerProvider $fileHandlerProvider,
         private readonly DatabaseInterface $database,
     ) {
-        parent::__construct($application, $fileLogHandler);
+        parent::__construct($application, $fileHandlerProvider);
     }
 
     protected static function getUpgrades(): array

@@ -27,9 +27,9 @@ namespace SP\Domain\Log\Ports;
 use SP\Domain\Core\Events\EventReceiver;
 
 /**
- * Interface FileLogHandlerProvider
+ * Interface FileHandlerProvider
  */
-interface FileLogHandlerProvider extends EventReceiver
+interface FileHandlerProvider extends EventReceiver
 {
 
 }

@@ -32,7 +32,7 @@ use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Services\UpgradeConfig;
-use SP\Domain\Log\Ports\FileLogHandlerProvider;
+use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Upgrade\Services\UpgradeException;
 use SP\Infrastructure\File\FileException;
 use SPT\UnitaryTestCase;
@@ -44,7 +44,7 @@ use SPT\UnitaryTestCase;
 #[Group('unitary')]
 class UpgradeConfigTest extends UnitaryTestCase
 {
-    private FileLogHandlerProvider|MockObject $fileLogHandlerProvider;
+    private FileHandlerProvider|MockObject $fileLogHandlerProvider;
 
     public static function versionDataProvider(): array
     {
@@ -95,6 +95,6 @@ class UpgradeConfigTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->fileLogHandlerProvider = $this->createMock(FileLogHandlerProvider::class);
+        $this->fileLogHandlerProvider = $this->createMock(FileHandlerProvider::class);
     }
 }
