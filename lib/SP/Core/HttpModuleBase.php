@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,6 @@
 
 namespace SP\Core;
 
-use JsonException;
 use Klein\Klein;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Common\Adapters\Serde;
@@ -51,7 +50,8 @@ abstract class HttpModuleBase extends ModuleBase
      * Comprobar si el modo mantenimiento está activado
      * Esta función comprueba si el modo mantenimiento está activado.
      *
-     * @throws JsonException
+     * @return bool
+     * @throws SPException
      */
     protected function checkMaintenanceMode(): bool
     {
