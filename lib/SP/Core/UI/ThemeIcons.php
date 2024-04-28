@@ -33,7 +33,7 @@ use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Html\Assets\FontIcon;
 use SP\Html\Assets\IconInterface;
 use SP\Infrastructure\File\FileException;
-use SP\Util\FileUtil;
+use SP\Util\FileSystemUtil;
 
 use function SP\logger;
 use function SP\processException;
@@ -73,8 +73,8 @@ final class ThemeIcons implements ThemeIconsInterface
                 // logger('Loaded icons cache', 'INFO');
             }
 
-            $icons = FileUtil::require(
-                FileUtil::buildPath($themeContext->getFullPath(), 'inc', 'Icons.php'),
+            $icons = FileSystemUtil::require(
+                FileSystemUtil::buildPath($themeContext->getFullPath(), 'inc', 'Icons.php'),
                 ThemeIconsInterface::class
             );
 

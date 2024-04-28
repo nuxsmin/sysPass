@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Core\UI;
 
 use Directory;
 use SP\Domain\Core\UI\ThemeContextInterface;
-use SP\Util\FileUtil;
+use SP\Util\FileSystemUtil;
 
 /**
  * Class ThemeContext
@@ -45,9 +45,9 @@ final class ThemeContext implements ThemeContextInterface
         private readonly string $module,
         private readonly string $name
     ) {
-        $this->fullPath = FileUtil::buildPath($basePath, $name);
-        $this->path = FileUtil::buildPath(str_replace(APP_ROOT, '', $basePath), $name);
-        $this->viewsPath = FileUtil::buildPath($this->fullPath, 'views');
+        $this->fullPath = FileSystemUtil::buildPath($basePath, $name);
+        $this->path = FileSystemUtil::buildPath(str_replace(APP_ROOT, '', $basePath), $name);
+        $this->viewsPath = FileSystemUtil::buildPath($this->fullPath, 'views');
         $this->uri = sprintf(
             '%s/app/modules/%s/themes/%s',
             $baseUri,

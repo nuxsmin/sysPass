@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP;
 
 use Exception;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Util\FileUtil;
+use SP\Util\FileSystemUtil;
 use Throwable;
 
 /**
@@ -252,7 +252,7 @@ function initModule(string $module): array
     logger(sprintf('Initializing module: %s', $module));
 
     try {
-        $definitions = FileUtil::require(FileUtil::buildPath(MODULES_PATH, $module, 'module.php'));
+        $definitions = FileSystemUtil::require(FileSystemUtil::buildPath(MODULES_PATH, $module, 'module.php'));
 
         if (is_array($definitions)) {
             return $definitions;

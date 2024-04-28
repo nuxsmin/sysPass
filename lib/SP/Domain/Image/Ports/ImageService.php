@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,30 +22,30 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Util;
+namespace SP\Domain\Image\Ports;
 
 use SP\Domain\Core\Exceptions\InvalidImageException;
 
 /**
- * Class ImageUtil para la manipulación de imágenes
- *
- * @package SP
+ * Interface ImageService
  */
-interface ImageUtilInterface
+interface ImageService
 {
     /**
-     * Crear miniatura de una imagen
+     * Build a thumbnail form an image
      *
+     * @param string $image A raw image
+     * @return string A base64 encode image string
      * @throws InvalidImageException
      */
     public function createThumbnail(string $image): string;
 
     /**
-     * Convertir un texto a imagen
+     * Convert a test into an image
      *
-     * @param  string  $text
+     * @param string $text
      *
-     * @return bool|string
+     * @return false|string
      */
     public function convertText(string $text): bool|string;
 }

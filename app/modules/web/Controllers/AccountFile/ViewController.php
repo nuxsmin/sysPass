@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -31,7 +31,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Http\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Util\FileUtil;
+use SP\Util\FileSystemUtil;
 
 /**
  * Class ViewController
@@ -61,7 +61,7 @@ final class ViewController extends AccountFileBase
 
             $this->view->addTemplate('file', 'itemshow');
 
-            if (FileUtil::isImage($fileData)) {
+            if (FileSystemUtil::isImage($fileData)) {
                 $this->view->assign('data', chunk_split(base64_encode($fileData->getContent())));
                 $this->view->assign('fileData', $fileData);
                 $this->view->assign('isImage', 1);

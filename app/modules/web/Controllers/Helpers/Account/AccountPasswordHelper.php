@@ -39,12 +39,12 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\RequestInterface;
+use SP\Domain\Image\Ports\ImageService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
 use SP\Mvc\View\TemplateInterface;
-use SP\Util\ImageUtil;
-use SP\Util\ImageUtilInterface;
+use SP\Util\Image;
 
 /**
  * Class AccountPasswordHelper
@@ -53,16 +53,16 @@ use SP\Util\ImageUtilInterface;
  */
 final class AccountPasswordHelper extends HelperBase
 {
-    private Acl                        $acl;
-    private ImageUtil         $imageUtil;
+    private Acl   $acl;
+    private Image $imageUtil;
     private MasterPassService $masterPassService;
 
     public function __construct(
-        Application        $application,
-        TemplateInterface  $template,
-        RequestInterface   $request,
-        AclInterface       $acl,
-        ImageUtilInterface $imageUtil,
+        Application       $application,
+        TemplateInterface $template,
+        RequestInterface  $request,
+        AclInterface      $acl,
+        ImageService      $imageUtil,
         MasterPassService $masterPassService
     ) {
         parent::__construct($application, $template, $request);

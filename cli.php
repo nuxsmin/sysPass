@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,7 @@
 
 use Psr\Container\ContainerInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
-use SP\Util\FileUtil;
+use SP\Util\FileSystemUtil;
 
 use function SP\logger;
 use function SP\processException;
@@ -33,7 +33,7 @@ const APP_ROOT = __DIR__;
 const APP_MODULE = 'cli';
 
 try {
-    $dic = FileUtil::require(FileUtil::buildPath(APP_ROOT, 'lib', 'Base.php'), ContainerInterface::class);
+    $dic = FileSystemUtil::require(FileSystemUtil::buildPath(APP_ROOT, 'lib', 'Base.php'), ContainerInterface::class);
 
     logger('------------');
     logger('Boostrap:cli');

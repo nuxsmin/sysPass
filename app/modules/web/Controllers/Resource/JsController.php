@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\Resource;
 
 use SP\Http\Request as HttpRequest;
 use SP\Infrastructure\File\FileHandler;
-use SP\Util\FileUtil;
+use SP\Util\FileSystemUtil;
 
 /**
  * Class JsController
@@ -80,14 +80,17 @@ final class JsController extends ResourceBase
                 $this->minify
                     ->builder()
                     ->addFiles(
-                        $this->buildFiles(FileUtil::buildPath(PUBLIC_PATH, 'vendor', 'js'), self::JS_MIN_FILES),
+                        $this->buildFiles(FileSystemUtil::buildPath(PUBLIC_PATH, 'vendor', 'js'), self::JS_MIN_FILES),
                         false
                     )
                     ->getMinified();
             } elseif ($group === 1) {
                 $this->minify
                     ->builder()
-                    ->addFiles($this->buildFiles(FileUtil::buildPath(PUBLIC_PATH, 'js'), self::JS_APP_MIN_FILES), false)
+                    ->addFiles(
+                        $this->buildFiles(FileSystemUtil::buildPath(PUBLIC_PATH, 'js'), self::JS_APP_MIN_FILES),
+                        false
+                    )
                     ->getMinified();
             }
         }
@@ -104,7 +107,7 @@ final class JsController extends ResourceBase
         $base = $insecure ? HttpRequest::getSecureAppPath($base) : $base;
 
         return array_map(
-            fn(string $file) => new FileHandler(FileUtil::buildPath($base, $file)),
+            fn(string $file) => new FileHandler(FileSystemUtil::buildPath($base, $file)),
             $files
         );
     }

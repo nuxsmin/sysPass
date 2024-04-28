@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,12 +25,13 @@
 namespace SP\Domain\Task\Services;
 
 use Closure;
+use JsonException;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Task\Ports\TaskServiceInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
-use SP\Util\Util;
+use SP\Util\FileSystemUtil;
 
 /**
  * Class TaskService
@@ -57,13 +58,13 @@ final class TaskService extends Service implements TaskServiceInterface
     /**
      * Track task status
      *
-     * @throws \JsonException
-     * @throws \SP\Domain\Common\Services\ServiceException
+     * @throws JsonException
+     * @throws ServiceException
      */
     public function trackStatus(string $taskId, Closure $messagePusher): void
     {
         $this->taskId = $taskId;
-        $this->taskDirectory = Util::getTempDir();
+        $this->taskDirectory = FileSystemUtil::getTempDir();
         $this->messagePusher = $messagePusher;
 
         if ($this->taskDirectory === false || !$this->getLock()) {
@@ -146,7 +147,7 @@ final class TaskService extends Service implements TaskServiceInterface
     /**
      * Read a task status and send it back to the browser (messagePusher)
      *
-     * @throws \JsonException
+     * @throws JsonException
      */
     private function readTaskStatus(): void
     {

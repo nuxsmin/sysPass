@@ -24,7 +24,6 @@
 
 namespace SP\Util;
 
-
 use Defuse\Crypto\Core;
 use Defuse\Crypto\Encoding;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;

@@ -46,7 +46,7 @@ use SP\Domain\Export\Ports\XmlTagExportService;
 use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileException;
-use SP\Util\FileUtil;
+use SP\Util\FileSystemUtil;
 use SP\Util\VersionUtil;
 
 use function SP\__u;
@@ -116,7 +116,7 @@ final class XmlExport extends Service implements XmlExportService
 
     private static function deleteExportFiles(string $path): void
     {
-        $path = FileUtil::buildPath($path, AppInfoInterface::APP_NAME);
+        $path = FileSystemUtil::buildPath($path, AppInfoInterface::APP_NAME);
 
         array_map(
             static fn($file) => @unlink($file),

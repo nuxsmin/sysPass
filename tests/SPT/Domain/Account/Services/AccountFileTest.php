@@ -34,9 +34,9 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidImageException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Image\Ports\ImageService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Util\ImageUtilInterface;
 use SPT\Generators\FileDataGenerator;
 use SPT\Generators\ItemSearchDataGenerator;
 use SPT\UnitaryTestCase;
@@ -50,7 +50,7 @@ class AccountFileTest extends UnitaryTestCase
 {
 
     private MockObject|AccountFileRepository $accountFileRepository;
-    private ImageUtilInterface|MockObject    $imageUtil;
+    private ImageService|MockObject $imageUtil;
     private AccountFile                      $accountFile;
 
     /**
@@ -242,7 +242,7 @@ class AccountFileTest extends UnitaryTestCase
         parent::setUp();
 
         $this->accountFileRepository = $this->createMock(AccountFileRepository::class);
-        $this->imageUtil = $this->createMock(ImageUtilInterface::class);
+        $this->imageUtil = $this->createMock(ImageService::class);
 
         $this->accountFile =
             new AccountFile($this->application, $this->accountFileRepository, $this->imageUtil);

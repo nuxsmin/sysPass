@@ -37,38 +37,6 @@ use function SP\logger;
 final class Util
 {
     /**
-     * Comprueba y devuelve un directorio temporal válido
-     *
-     * @return bool|string
-     */
-    public static function getTempDir(): bool|string
-    {
-        $sysTmp = sys_get_temp_dir();
-
-        $checkDir = static function ($dir) {
-            $file = 'syspass.test';
-
-            if (file_exists($dir . DIRECTORY_SEPARATOR . $file)) {
-                return $dir;
-            }
-
-            if (is_dir($dir) || mkdir($dir) || is_dir($dir)) {
-                if (touch($dir . DIRECTORY_SEPARATOR . $file)) {
-                    return $dir;
-                }
-            }
-
-            return false;
-        };
-
-        if ($checkDir(TMP_PATH)) {
-            return TMP_PATH;
-        }
-
-        return $checkDir($sysTmp);
-    }
-
-    /**
      * Realiza el proceso de logout.
      *
      * FIXME

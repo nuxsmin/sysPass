@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,7 +33,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Html\Header;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\RequestInterface;
-use SP\Util\FileUtil;
+use SP\Util\FileSystemUtil;
 use SP\Util\Filter;
 use SP\Util\Util;
 
@@ -110,7 +110,7 @@ class Request implements RequestInterface
             return '';
         }
 
-        $realPath = realpath(FileUtil::buildPath($base, $path));
+        $realPath = realpath(FileSystemUtil::buildPath($base, $path));
 
         if ($realPath === false || !str_starts_with($realPath, $base)) {
             return '';

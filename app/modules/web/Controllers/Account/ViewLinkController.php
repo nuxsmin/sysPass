@@ -38,11 +38,11 @@ use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
+use SP\Domain\Image\Ports\ImageService;
 use SP\Http\Uri;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\ErrorUtil;
-use SP\Util\ImageUtil;
-use SP\Util\ImageUtilInterface;
+use SP\Util\Image;
 use SP\Util\Serde;
 
 /**
@@ -52,15 +52,15 @@ final class ViewLinkController extends AccountControllerBase
 {
     private AccountService $accountService;
     private ThemeIcons     $icons;
-    private PublicLink     $publicLinkService;
-    private ImageUtil      $imageUtil;
+    private PublicLink $publicLinkService;
+    private Image      $imageUtil;
 
     public function __construct(
         Application       $application,
         WebControllerHelper $webControllerHelper,
         AccountService    $accountService,
         PublicLinkService $publicLinkService,
-        ImageUtilInterface $imageUtil
+        ImageService $imageUtil
     ) {
         parent::__construct(
             $application,

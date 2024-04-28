@@ -40,7 +40,7 @@ use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Http\Uri;
 use SP\Mvc\View\TemplateInterface;
 use SP\Plugin\PluginManager;
-use SP\Util\FileUtil;
+use SP\Util\FileSystemUtil;
 use SP\Util\VersionUtil;
 
 use function SP\__;
@@ -171,7 +171,7 @@ final class LayoutHelper extends HelperBase
             $jsUriTheme = new Uri($baseUrl);
             $jsUriTheme->addParams(
                 [
-                    'b' => FileUtil::buildPath($this->theme->getPath(), 'js'),
+                    'b' => FileSystemUtil::buildPath($this->theme->getPath(), 'js'),
                     'f' => implode(',', $themeInfo['js'])
                 ]
             );
@@ -207,7 +207,7 @@ final class LayoutHelper extends HelperBase
             $cssUriTheme = new Uri($baseUrl);
             $cssUriTheme->addParams(
                 [
-                    'b' => FileUtil::buildPath($this->theme->getPath(), 'css'),
+                    'b' => FileSystemUtil::buildPath($this->theme->getPath(), 'css'),
                     'f' => implode(',', $themeInfo['css'])
                 ]
             );
@@ -228,7 +228,7 @@ final class LayoutHelper extends HelperBase
             if (count($jsResources) > 0) {
                 $jsUriPlugin = new Uri($baseUrl);
                 $jsUriPlugin->addParams([
-                                            'b' => FileUtil::buildPath($base, 'js'),
+                                            'b' => FileSystemUtil::buildPath($base, 'js'),
                                             'f' => implode(',', $jsResources)
                                         ]);
 
@@ -239,7 +239,7 @@ final class LayoutHelper extends HelperBase
                 $cssUriPlugin = new Uri($baseUrl);
                 $cssUriPlugin->addParams(
                     [
-                        'b' => FileUtil::buildPath($base, 'css'),
+                        'b' => FileSystemUtil::buildPath($base, 'css'),
                         'f' => implode(',', $cssResources)
                     ]
                 );

@@ -36,11 +36,9 @@ use function SP\__;
 use function SP\__u;
 
 /**
- * Class FileUtil
- *
- * @package SP\Util
+ * Class FilesystemUtil
  */
-class FileUtil
+class FileSystemUtil
 {
     private const IMAGE_MIME = [
         'image/jpeg',
@@ -86,17 +84,6 @@ class FileUtil
     }
 
     /**
-     * Return a well-formed path
-     *
-     * @param string ...$parts
-     * @return string
-     */
-    public static function buildPath(string ...$parts): string
-    {
-        return implode(DIRECTORY_SEPARATOR, $parts);
-    }
-
-    /**
      * @template T
      * @param string $file
      * @param class-string<T>|null $class
@@ -118,5 +105,48 @@ class FileUtil
         } else {
             throw new FileException(sprintf(__('File not found: %s'), $file));
         }
+    }
+
+    /**
+     * Comprueba y devuelve un directorio temporal válido
+     *
+     * @return bool|string
+     */
+    public static function getTempDir(): bool|string
+    {
+        $sysTmp = sys_get_temp_dir();
+
+        $checkDir = static function ($dir) {
+            $path = FileSystemUtil::buildPath($dir, 'syspass.test');
+
+            if (file_exists($path)) {
+                return $dir;
+            }
+
+            if (is_dir($dir) || mkdir($dir) || is_dir($dir)) {
+                if (touch($path)) {
+                    return $dir;
+                }
+            }
+
+            return false;
+        };
+
+        if ($checkDir(TMP_PATH)) {
+            return TMP_PATH;
+        }
+
+        return $checkDir($sysTmp);
+    }
+
+    /**
+     * Return a well-formed path
+     *
+     * @param string ...$parts
+     * @return string
+     */
+    public static function buildPath(string ...$parts): string
+    {
+        return implode(DIRECTORY_SEPARATOR, $parts);
     }
 }

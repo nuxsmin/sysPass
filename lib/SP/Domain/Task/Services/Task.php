@@ -31,8 +31,8 @@ use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Task\Ports\TaskInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
+use SP\Util\FileSystemUtil;
 use SP\Util\Serde;
-use SP\Util\Util;
 
 use function SP\logger;
 use function SP\processException;
@@ -73,7 +73,7 @@ final class Task implements TaskInterface
      */
     private function checkFile(): bool
     {
-        $tempDir = Util::getTempDir();
+        $tempDir = FileSystemUtil::getTempDir();
 
         if ($tempDir !== false) {
             $this->fileOut = new FileHandler(
