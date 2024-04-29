@@ -41,20 +41,22 @@ final class CustomFieldGenerator extends DataGenerator
             $key = $this->faker->sha1();
         }
 
-        return new Simple([
-                              'required' => $this->faker->boolean(),
-                              'showInList' => $this->faker->boolean(),
-                              'help' => $this->faker->text(),
-                              'definitionId' => $this->faker->randomNumber(3),
-                              'definitionName' => $this->faker->name(),
-                              'typeId' => $this->faker->randomNumber(3),
-                              'typeName' => $this->faker->name(),
-                              'typeText' => $this->faker->text(),
-                              'moduleId' => $this->faker->randomNumber(3),
-                              'formId' => $this->faker->randomNumber(3),
-                              'isEncrypted' => $this->faker->boolean(),
-            'data'           => $data,
-            'key'            => $key,
-        ]);
+        return new Simple(
+            [
+                'required' => $this->faker->boolean(),
+                'showInList' => $this->faker->boolean(),
+                'help' => $this->faker->text(),
+                'definitionId' => $this->faker->randomNumber(3),
+                'definitionName' => $this->faker->name(),
+                'typeId' => $this->faker->randomNumber(3),
+                'typeName' => $this->faker->name(),
+                'typeText' => $this->faker->text(),
+                'moduleId' => $this->faker->randomNumber(3),
+                'formId' => $this->faker->randomNumber(3),
+                'isEncrypted' => $this->faker->boolean(),
+                'data' => $data,
+                'key' => $key,
+            ]
+        );
     }
 }

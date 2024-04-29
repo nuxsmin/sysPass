@@ -40,11 +40,11 @@ use SPT\Generators\CustomFieldGenerator;
 use SPT\UnitaryTestCase;
 
 /**
- * Class AccountAdapterTest
+ * Class AccountTest
  *
  */
 #[Group('unitary')]
-class AccountAdapterTest extends UnitaryTestCase
+class AccountTest extends UnitaryTestCase
 {
     /**
      * @throws Exception

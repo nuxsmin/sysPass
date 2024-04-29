@@ -91,7 +91,7 @@ use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Services\DatabaseSetupInterface;
 use SP\Domain\Install\Services\MysqlSetupBuilder;
 use SP\Domain\Log\Providers\DatabaseHandler;
-use SP\Domain\Log\Providers\FileHandler;
+use SP\Domain\Log\Providers\FileHandler as LogFileHandler;
 use SP\Domain\Log\Providers\RemoteSyslogHandler;
 use SP\Domain\Log\Providers\SyslogHandler;
 use SP\Domain\Notification\Ports\MailerInterface;
@@ -134,7 +134,7 @@ final class CoreDefinitions
             ConfigFileService::class => create(ConfigFile::class)
                 ->constructor(
                     create(XmlFileStorage::class)
-                        ->constructor(create(FileHandler::class)->constructor(CONFIG_FILE)),
+                        ->constructor(create(LogFileHandler::class)->constructor(CONFIG_FILE)),
                     create(FileCache::class)->constructor(ConfigFile::CONFIG_CACHE_FILE),
                     get(Context::class),
                     autowire(ConfigBackup::class)
@@ -218,17 +218,17 @@ final class CoreDefinitions
                     return MysqlSetupBuilder::build($installData);
                 }
 
-                throw new SPException(__u('Unimplemented'), SPException::ERROR, __u('Wrong backend type'));
+                throw SPException::error(__u('Unimplemented'), __u('Wrong backend type'));
             },
             ProvidersHelper::class => factory(static function (ContainerInterface $c) {
                 $configData = $c->get(ConfigDataInterface::class);
 
                 if (!$configData->isInstalled()) {
-                    return new ProvidersHelper($c->get(FileHandler::class));
+                    return new ProvidersHelper($c->get(LogFileHandler::class));
                 }
 
                 return new ProvidersHelper(
-                    $c->get(FileHandler::class),
+                    $c->get(LogFileHandler::class),
                     $c->get(DatabaseHandler::class),
                     $c->get(MailHandler::class),
                     $c->get(SyslogHandler::class),

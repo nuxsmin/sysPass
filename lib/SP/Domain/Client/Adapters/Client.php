@@ -31,7 +31,10 @@ use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Common\Models\Model;
 use SP\Domain\Common\Providers\Link;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\ActionNotFoundException;
+use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -48,22 +51,36 @@ final class Client extends Adapter implements ClientAdapter
 
     protected array $availableIncludes = ['customFields'];
 
+    public function __construct(
+        ConfigDataInterface                     $configData,
+        string                                  $baseUrl,
+        private readonly CustomFieldDataService $customFieldDataService,
+        private readonly ActionsInterface       $actions
+    ) {
+        parent::__construct($configData, $baseUrl);
+    }
+
     /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      * @throws ServiceException
      */
-    public function includeCustomFields(ClientModel $client, CustomFieldDataService $customFieldService): Collection
+    public function includeCustomFields(ClientModel $client): Collection
     {
         return $this->collection(
-            $this->getCustomFieldsForItem(AclActionsInterface::CLIENT, $client->getId(), $customFieldService),
+            $this->getCustomFieldsForItem(AclActionsInterface::CLIENT, $client->getId(), $this->customFieldDataService),
             new CustomField($this->configData, $this->baseUrl)
         );
     }
 
+    /**
+     * @throws ActionNotFoundException
+     */
     public function transform(Model|ClientModel $data): array
     {
+        $actionRoute = $this->actions->getActionById(AclActionsInterface::CLIENT_VIEW)->getRoute();
+
         return [
             'id' => $data->getId(),
             'name' => $data->getName(),
@@ -75,7 +92,7 @@ final class Client extends Adapter implements ClientAdapter
                     'rel' => 'self',
                     'uri' => Link::getDeepLink(
                         $data->getId(),
-                        AclActionsInterface::CLIENT_VIEW,
+                        $actionRoute,
                         $this->configData,
                         $this->baseUrl
                     ),

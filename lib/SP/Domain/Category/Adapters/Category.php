@@ -53,8 +53,8 @@ final class Category extends Adapter implements CategoryAdapter
 
     public function __construct(
         ConfigDataInterface                     $configData,
-        string $baseUrl,
-        private readonly CustomFieldDataService $customFieldService,
+        string                                  $baseUrl,
+        private readonly CustomFieldDataService $customFieldDataService,
         private readonly ActionsInterface       $actions
     ) {
         parent::__construct($configData, $baseUrl);
@@ -69,7 +69,7 @@ final class Category extends Adapter implements CategoryAdapter
     public function includeCustomFields(CategoryModel $data): Collection
     {
         return $this->collection(
-            $this->getCustomFieldsForItem(AclActionsInterface::CATEGORY, $data->id, $this->customFieldService),
+            $this->getCustomFieldsForItem(AclActionsInterface::CATEGORY, $data->getId(), $this->customFieldDataService),
             new CustomField($this->configData, $this->baseUrl)
         );
     }

@@ -33,8 +33,6 @@ use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class CategoryAdapter
- *
- * @package SP\Adapters
  */
 interface CategoryAdapter
 {
