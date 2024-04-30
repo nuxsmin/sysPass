@@ -38,7 +38,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Task\Ports\TaskInterface;
 use SP\Domain\Task\Services\TaskFactory;
-use SP\Infrastructure\File\FileException;
 use SPT\Generators\AccountDataGenerator;
 use SPT\UnitaryTestCase;
 
@@ -57,25 +56,14 @@ class AccountCryptTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
-     * @throws FileException
-     * @throws Exception
      */
     public function testUpdateMasterPassword(): void
     {
-        $task = $this->createMock(TaskInterface::class);
-        $task->method('getUid')
-             ->willReturn(self::$faker->uuid);
-        $task->method('getTaskId')
-             ->willReturn((string)self::$faker->randomNumber());
-        $task->method('registerSession')
-             ->willReturnSelf();
-
         $request =
             new UpdateMasterPassRequest(
                 self::$faker->password,
                 self::$faker->password,
-                self::$faker->sha1,
-                TaskFactory::register($task)
+                self::$faker->sha1
             );
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
@@ -92,8 +80,6 @@ class AccountCryptTest extends UnitaryTestCase
         $this->crypt->expects(self::exactly(10))
                     ->method('encrypt')
                     ->willReturn(self::$faker->password);
-        $task->expects(self::exactly(2))
-             ->method('writeJsonStatusAndFlush');
 
         $this->accountCrypt->updateMasterPassword($request);
     }
@@ -161,24 +147,15 @@ class AccountCryptTest extends UnitaryTestCase
     }
 
     /**
+     * @throws Exception
      * @throws ServiceException
-     * @throws FileException
      */
     public function testUpdateHistoryMasterPassword(): void
     {
-        $task = $this->createMock(TaskInterface::class);
-        $task->method('getUid')
-             ->willReturn(self::$faker->uuid);
-        $task->method('getTaskId')
-             ->willReturn((string)self::$faker->randomNumber());
-        $task->method('registerSession')
-             ->willReturnSelf();
-
         $request = new UpdateMasterPassRequest(
             self::$faker->password,
             self::$faker->password,
-            self::$faker->sha1,
-            TaskFactory::register($task)
+            self::$faker->sha1
         );
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
@@ -189,8 +166,6 @@ class AccountCryptTest extends UnitaryTestCase
                              ->method('updatePasswordMasterPass');
         $this->crypt->expects(self::exactly(10))
                     ->method('decrypt');
-        $task->expects(self::exactly(2))
-             ->method('writeJsonStatusAndFlush');
 
         $this->accountCrypt->updateHistoryMasterPassword($request);
     }

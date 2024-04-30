@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,8 +24,9 @@
 
 namespace SP\Core\Messages;
 
-use JsonException;
 use JsonSerializable;
+use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Messages\MessageInterface;
 
 /**
@@ -40,7 +41,9 @@ final class TaskMessage implements MessageInterface, JsonSerializable
     protected int     $progress = 0;
     protected int     $end      = 0;
 
-    public function __construct(private string $taskId, private string $task) {}
+    public function __construct(private string $taskId, private string $task)
+    {
+    }
 
     public function getTask(): string
     {
@@ -116,23 +119,23 @@ final class TaskMessage implements MessageInterface, JsonSerializable
     public function composeText(string $delimiter = ';'): string
     {
         return implode($delimiter, [
-            'taskId'   => $this->taskId,
-            'task'     => $this->task,
-            'message'  => $this->message,
-            'time'     => $this->time,
+            'taskId' => $this->taskId,
+            'task' => $this->task,
+            'message' => $this->message,
+            'time' => $this->time,
             'progress' => $this->progress,
-            'end'      => $this->end,
+            'end' => $this->end,
         ]);
     }
 
     /**
      * Componer un mensaje en formato JSON
      *
-     * @throws JsonException
+     * @throws SPException
      */
     public function composeJson(): bool|string
     {
-        return json_encode($this, JSON_THROW_ON_ERROR);
+        return Serde::serializeJson($this);
     }
 
     /**

@@ -37,7 +37,6 @@ use SP\Domain\CustomField\Ports\CustomFieldCryptService;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Task\Services\TaskFactory;
 
-use function SP\__;
 use function SP\__u;
 use function SP\processException;
 
@@ -116,18 +115,6 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
                             ->addDescription(__u('Updating encrypted data'))
             )
         );
-
-        if ($request->useTask()) {
-            $task = $request->getTask();
-
-            TaskFactory::update(
-                $task,
-                TaskFactory::createMessage(
-                    $task->getTaskId(),
-                    __('Update Master Password')
-                )->setMessage(__('Updating encrypted data'))
-            );
-        }
 
         $errors = [];
         $success = [];

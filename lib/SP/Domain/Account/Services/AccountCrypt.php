@@ -39,7 +39,6 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
-use SP\Domain\Task\Services\TaskFactory;
 
 use function SP\__;
 use function SP\__u;
@@ -60,23 +59,6 @@ final class AccountCrypt extends Service implements AccountCryptService
     }
 
     /**
-     * Devolver el tiempo aproximado en segundos de una operación
-     *
-     * @return array Con el tiempo estimado y los elementos por segundo
-     */
-    public static function getETA(int $startTime, int $numItems, int $totalItems): array
-    {
-        if ($numItems > 0 && $totalItems > 0) {
-            $runtime = time() - $startTime;
-            $eta = (int)((($totalItems * $runtime) / $numItems) - $runtime);
-
-            return [$eta, $numItems / $runtime];
-        }
-
-        return [0, 0];
-    }
-
-    /**
      * Actualiza las claves de todas las cuentas con la nueva clave maestra.
      *
      * @throws ServiceException
@@ -92,18 +74,6 @@ final class AccountCrypt extends Service implements AccountCryptService
                                 ->addDescription(__u('Update Master Password'))
                 )
             );
-
-            $task = $updateMasterPassRequest->getTask();
-
-            if (null !== $task) {
-                TaskFactory::update(
-                    $task,
-                    TaskFactory::createMessage(
-                        $task->getTaskId(),
-                        __u('Update Master Password')
-                    )
-                );
-            }
 
             $eventMessage = $this->processAccounts(
                 $this->accountService->getAccountsPassData(),
@@ -163,8 +133,6 @@ final class AccountCrypt extends Service implements AccountCryptService
         $configData = $this->config->getConfigData();
         $currentMasterPassHash = $updateMasterPassRequest->getCurrentHash();
 
-        $task = $updateMasterPassRequest->getTask();
-
         foreach ($accounts as $account) {
             // No realizar cambios si está en modo demo
             if ($configData->isDemoEnabled()) {
@@ -175,29 +143,16 @@ final class AccountCrypt extends Service implements AccountCryptService
             if ($counter % 100 === 0) {
                 $eta = self::getETA($startTime, $counter, $numAccounts);
 
-                if (null !== $task) {
-                    $taskMessage = TaskFactory::createMessage(
-                        $task->getTaskId(),
-                        __('Update Master Password')
-                    )->setMessage(
-                        sprintf(__('Accounts updated: %d / %d - ETA: %ds (%.2f/s)'), $counter, $numAccounts, ...$eta)
-                    )->setProgress(round(($counter * 100) / $numAccounts, 2));
-
-                    TaskFactory::update($task, $taskMessage);
-
-                    logger($taskMessage->composeText());
-                } else {
-                    logger(
-                        sprintf(
-                            __('Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
-                            $counter,
-                            $numAccounts,
-                            round(($counter * 100) / $numAccounts, 2),
-                            $eta[0],
-                            $eta[1]
-                        )
-                    );
-                }
+                logger(
+                    sprintf(
+                        __('Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
+                        $counter,
+                        $numAccounts,
+                        round(($counter * 100) / $numAccounts, 2),
+                        $eta[0],
+                        $eta[1]
+                    )
+                );
             }
 
             if (isset($account->mPassHash) && $account->mPassHash !== $currentMasterPassHash) {
@@ -235,6 +190,23 @@ final class AccountCrypt extends Service implements AccountCryptService
         $eventMessage->addDetail(__u('Errors'), $errorCount);
 
         return $eventMessage;
+    }
+
+    /**
+     * Devolver el tiempo aproximado en segundos de una operación
+     *
+     * @return array Con el tiempo estimado y los elementos por segundo
+     */
+    public static function getETA(int $startTime, int $numItems, int $totalItems): array
+    {
+        if ($numItems > 0 && $totalItems > 0) {
+            $runtime = time() - $startTime;
+            $eta = (int)((($totalItems * $runtime) / $numItems) - $runtime);
+
+            return [$eta, $numItems / $runtime];
+        }
+
+        return [0, 0];
     }
 
     /**
@@ -287,18 +259,6 @@ final class AccountCrypt extends Service implements AccountCryptService
                                 ->addDescription(__u('Update Master Password (H)'))
                 )
             );
-
-            $task = $updateMasterPassRequest->getTask();
-
-            if (null !== $task) {
-                TaskFactory::update(
-                    $task,
-                    TaskFactory::createMessage(
-                        $task->getTaskId(),
-                        __u('Update Master Password (H)')
-                    )
-                );
-            }
 
             $eventMessage = $this->processAccounts(
                 $this->accountHistoryService->getAccountsPassData(),

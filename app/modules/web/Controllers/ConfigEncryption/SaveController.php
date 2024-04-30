@@ -59,10 +59,10 @@ final class SaveController extends SimpleControllerBase
     private ConfigService     $configService;
 
     public function __construct(
-        Application       $application,
+        Application   $application,
         SimpleControllerHelper $simpleControllerHelper,
         MasterPassService $masterPassService,
-        ConfigService     $configService
+        ConfigService $configService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 
@@ -145,13 +145,10 @@ final class SaveController extends SimpleControllerBase
 
         if (!$noAccountPassChange) {
             try {
-                $task = $this->getTask();
-
                 $request = new UpdateMasterPassRequest(
                     $currentMasterPass,
                     $newMasterPass,
                     $this->configService->getByParam(MasterPass::PARAM_MASTER_PASS_HASH),
-                    $task
                 );
 
                 $this->eventDispatcher->notify('update.masterPassword.start', new Event($this));
@@ -165,10 +162,6 @@ final class SaveController extends SimpleControllerBase
                 $this->eventDispatcher->notify('exception', new Event($e));
 
                 return $this->returnJsonResponseException($e);
-            } finally {
-                if (isset($task)) {
-                    TaskFactory::end($task);
-                }
             }
         } else {
             try {
@@ -195,18 +188,6 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @throws FileException
-     */
-    private function getTask(): ?TaskInterface
-    {
-        $taskId = $this->request->analyzeString('taskId');
-
-        return $taskId !== null
-            ? TaskFactory::register(new Task(__FUNCTION__, $taskId))
-            : null;
-    }
-
-    /**
      * @return void
      * @throws JsonException
      * @throws SessionTimeout
@@ -221,5 +202,17 @@ final class SaveController extends SimpleControllerBase
 
             $this->returnJsonResponseException($e);
         }
+    }
+
+    /**
+     * @throws FileException
+     */
+    private function getTask(): ?TaskInterface
+    {
+        $taskId = $this->request->analyzeString('taskId');
+
+        return $taskId !== null
+            ? TaskFactory::register(new Task(__FUNCTION__, $taskId))
+            : null;
     }
 }

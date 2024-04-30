@@ -109,9 +109,9 @@ class FileSystem
     /**
      * Comprueba y devuelve un directorio temporal válido
      *
-     * @return bool|string
+     * @return false|string
      */
-    public static function getTempDir(): bool|string
+    public static function getTempDir(): false|string
     {
         $sysTmp = sys_get_temp_dir();
 

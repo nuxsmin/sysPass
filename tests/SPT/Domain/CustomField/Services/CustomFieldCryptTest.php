@@ -36,8 +36,6 @@ use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\CustomField\Services\CustomFieldCrypt;
 use SP\Domain\Task\Ports\TaskInterface;
-use SP\Domain\Task\Services\TaskFactory;
-use SP\Infrastructure\File\FileException;
 use SPT\Generators\CustomFieldDataGenerator;
 use SPT\UnitaryTestCase;
 
@@ -51,7 +49,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
 
     private CustomFieldDataService|MockObject $customFieldService;
     private CryptInterface|MockObject         $crypt;
-    private CustomFieldCrypt              $customFieldCrypt;
+    private CustomFieldCrypt $customFieldCrypt;
 
     /**
      * @throws ServiceException
@@ -101,8 +99,6 @@ class CustomFieldCryptTest extends UnitaryTestCase
             ->method('getAllEncrypted')
             ->willReturn([]);
 
-        $data = self::$faker->text();
-
         $this->crypt
             ->expects(self::never())
             ->method('decrypt');
@@ -115,20 +111,13 @@ class CustomFieldCryptTest extends UnitaryTestCase
     }
 
     /**
-     * @throws ServiceException
      * @throws Exception
-     * @throws FileException
+     * @throws ServiceException
      */
     public function testUpdateMasterPasswordWithTask()
     {
-        $task = $this->createStub(TaskInterface::class);
-        $task->method('getTaskId')->willReturn(self::$faker->colorName());
-        $task->method('getUid')->willReturn(self::$faker->uuid());
-
-        TaskFactory::register($task);
-
         $hash = self::$faker->sha1;
-        $request = new UpdateMasterPassRequest('secret', 'test_secret', $hash, $task);
+        $request = new UpdateMasterPassRequest('secret', 'test_secret', $hash);
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
 
         $this->customFieldService
@@ -187,7 +176,6 @@ class CustomFieldCryptTest extends UnitaryTestCase
     {
         $hash = self::$faker->sha1;
         $request = new UpdateMasterPassRequest('secret', 'test_secret', $hash);
-        $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
 
         $this->customFieldService
             ->expects(self::once())

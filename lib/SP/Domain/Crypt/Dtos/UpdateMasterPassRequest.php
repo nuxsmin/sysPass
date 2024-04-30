@@ -25,7 +25,6 @@
 namespace SP\Domain\Crypt\Dtos;
 
 use SP\Core\Crypt\Hash;
-use SP\Domain\Task\Ports\TaskInterface;
 
 /**
  * Class UpdateMasterPassRequest
@@ -35,10 +34,9 @@ final class UpdateMasterPassRequest
     private string $hash;
 
     public function __construct(
-        private readonly string         $currentMasterPass,
-        private readonly string         $newMasterPass,
-        private readonly string         $currentHash,
-        private readonly ?TaskInterface $task = null
+        private readonly string $currentMasterPass,
+        private readonly string $newMasterPass,
+        private readonly string $currentHash
     ) {
         $this->hash = Hash::hashKey($newMasterPass);
     }
@@ -51,16 +49,6 @@ final class UpdateMasterPassRequest
     public function getNewMasterPass(): string
     {
         return $this->newMasterPass;
-    }
-
-    public function getTask(): ?TaskInterface
-    {
-        return $this->task;
-    }
-
-    public function useTask(): bool
-    {
-        return $this->task !== null;
     }
 
     public function getHash(): string
