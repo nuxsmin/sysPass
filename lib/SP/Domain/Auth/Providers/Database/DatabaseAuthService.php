@@ -28,9 +28,7 @@ use SP\Domain\Auth\Providers\AuthService;
 
 /**
  * Class Database
- *
- * Autentificación basada en base de datos
- *
+ **
  * @extends AuthService<DatabaseAuthData>
  */
 interface DatabaseAuthService extends AuthService

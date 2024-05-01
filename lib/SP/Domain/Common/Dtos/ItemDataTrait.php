@@ -32,7 +32,7 @@ use SP\Domain\Common\Models\Item;
 trait ItemDataTrait
 {
     /**
-     * @param \SP\Domain\Common\Models\Item[] $items
+     * @param Item[] $items
      *
      * @return array
      */

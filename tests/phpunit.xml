@@ -25,7 +25,7 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
          backupGlobals="false"
-         bootstrap="./SPT/bootstrap.php"
+         bootstrap="./SP/bootstrap.php"
          colors="true"
          processIsolation="false"
          stopOnFailure="false"
@@ -40,19 +40,19 @@
     </coverage>
     <testsuites>
         <testsuite name="core">
-            <directory suffix=".php">./SPT/Core</directory>
-            <directory suffix=".php">./SPT/Domain</directory>
-            <directory suffix=".php">./SPT/Infrastructure</directory>
-            <directory suffix=".php">./SPT/Mvc</directory>
-            <directory suffix=".php">./SPT/Util</directory>
-            <exclude>./SPT/Domain/Account/Services/Builders/AccountSearchTokenizerDataTrait.php</exclude>
-            <exclude>./SPT/Domain/Export/Services/XmlTrait.php</exclude>
+            <directory suffix=".php">./SP/Core</directory>
+            <directory suffix=".php">./SP/Domain</directory>
+            <directory suffix=".php">./SP/Infrastructure</directory>
+            <directory suffix=".php">./SP/Mvc</directory>
+            <directory suffix=".php">./SP/Util</directory>
+            <exclude>./SP/Domain/Account/Services/Builders/AccountSearchTokenizerDataTrait.php</exclude>
+            <exclude>./SP/Domain/Export/Services/XmlTrait.php</exclude>
         </testsuite>
         <testsuite name="api">
-            <directory suffix=".php">./SPT/Modules/Api</directory>
+            <directory suffix=".php">./SP/Modules/Api</directory>
         </testsuite>
         <testsuite name="cli">
-            <directory suffix=".php">./SPT/Modules/Cli</directory>
+            <directory suffix=".php">./SP/Modules/Cli</directory>
         </testsuite>
     </testsuites>
     <logging/>

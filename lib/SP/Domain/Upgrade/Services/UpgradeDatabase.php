@@ -33,6 +33,7 @@ use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
+use SP\Infrastructure\File\FileSystem;
 
 use function SP\__;
 use function SP\__u;
@@ -121,10 +122,7 @@ final class UpgradeDatabase extends UpgradeBase
      */
     private function getQueriesFromFile(string $filename): iterable
     {
-        $fileName = SQL_PATH .
-                    DIRECTORY_SEPARATOR .
-                    str_replace('.', '', $filename) .
-                    '.sql';
+        $fileName = FileSystem::buildPath(SQL_PATH, str_replace('.', '', $filename), '.sql');
 
         try {
             return (new MysqlFileParser(new FileHandler($fileName)))->parse('$$');
