@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -219,7 +220,7 @@ final class Account extends Service implements AccountService
                         $changeUserGroup
                     );
 
-                    $this->accountItemsService->updateItems($accountId, $userCanChangePermissions, $accountUpdateDto);
+                    $this->accountItemsService->updateItems($userCanChangePermissions, $accountId, $accountUpdateDto);
                 }
             },
             $this
@@ -518,7 +519,7 @@ final class Account extends Service implements AccountService
     {
         $this->accountRepository->transactionAware(
             function () use ($id) {
-                $this->addHistory($id, 1);
+                $this->addHistory($id, true);
 
                 if ($this->accountRepository->delete($id)->getAffectedNumRows() === 0) {
                     throw new NoSuchItemException(__u('Account not found'));

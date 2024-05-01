@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -59,9 +61,9 @@ final class UserPass extends Service implements UserPassService
             [
                 'id' => $id,
                 'pass' => Hash::hashKey($userPass),
-                'isChangePass' => 0,
-                'isChangedPass' => 1,
-                'isMigrate' => 0
+                'isChangePass' => false,
+                'isChangedPass' => true,
+                'isMigrate' => false
             ]
         );
 

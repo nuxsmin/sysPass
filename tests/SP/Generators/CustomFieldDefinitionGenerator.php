@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -43,11 +44,11 @@ final class CustomFieldDefinitionGenerator extends DataGenerator
             'id' => $this->faker->randomNumber(3),
             'name' => $this->faker->colorName(),
             'moduleId' => $this->faker->randomNumber(3),
-            'required' => $this->faker->boolean(),
+            'required' => (int)$this->faker->boolean(),
             'help' => $this->faker->text(),
-            'showInList' => $this->faker->boolean(),
+            'showInList' => (int)$this->faker->boolean(),
             'typeId' => $this->faker->randomNumber(3),
-            'isEncrypted' => $this->faker->boolean(),
+            'isEncrypted' => (int)$this->faker->boolean(),
         ];
     }
 }

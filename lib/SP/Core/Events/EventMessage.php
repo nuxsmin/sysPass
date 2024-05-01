@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -56,13 +58,13 @@ class EventMessage implements MessageInterface
     /**
      * Establece los detalles de la acción realizada
      */
-    public function addDetail(string $key, ?string $value): EventMessage
+    public function addDetail(string $key, string|int|null $value): EventMessage
     {
         if (empty($value) || empty($key)) {
             return $this;
         }
 
-        $this->details[] = [$this->formatString($key), $this->formatString($value)];
+        $this->details[] = [$this->formatString($key), $this->formatString((string)$value)];
 
         $this->detailsCounter++;
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -75,7 +76,7 @@ final class XmlCategoryExport extends XmlExportEntityBase
                 $nodeCategory = $this->document->createElement('Category');
                 $nodeCategories->appendChild($nodeCategory);
 
-                $nodeCategory->setAttribute('id', $category->getId());
+                $nodeCategory->setAttribute('id', (string)$category->getId());
                 $nodeCategory->appendChild(
                     $this->document->createElement(
                         'name',

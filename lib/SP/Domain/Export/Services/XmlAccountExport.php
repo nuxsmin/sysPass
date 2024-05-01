@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -80,8 +82,8 @@ final class XmlAccountExport extends XmlExportEntityBase
                     'name',
                     $this->document->createTextNode($account->getName())->nodeValue
                 );
-                $accountCustomerId = $this->document->createElement('clientId', $account->getClientId());
-                $accountCategoryId = $this->document->createElement('categoryId', $account->getCategoryId());
+                $accountCustomerId = $this->document->createElement('clientId', (string)$account->getClientId());
+                $accountCategoryId = $this->document->createElement('categoryId', (string)$account->getCategoryId());
                 $accountLogin = $this->document->createElement(
                     'login',
                     $this->document->createTextNode($account->getLogin())->nodeValue
@@ -110,12 +112,12 @@ final class XmlAccountExport extends XmlExportEntityBase
                     $tag = $this->document->createElement('tag');
                     $tags->appendChild($tag);
 
-                    $tag->setAttribute('id', $itemData->getId());
+                    $tag->setAttribute('id', (string)$itemData->getId());
                 }
 
                 // Crear el nodo de cuenta
                 $nodeAccount = $this->document->createElement('Account');
-                $nodeAccount->setAttribute('id', $account->getId());
+                $nodeAccount->setAttribute('id', (string)$account->getId());
                 $nodeAccount->appendChild($accountName);
                 $nodeAccount->appendChild($accountCustomerId);
                 $nodeAccount->appendChild($accountCategoryId);

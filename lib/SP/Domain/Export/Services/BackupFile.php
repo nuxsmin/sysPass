@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /*
  * sysPass
@@ -228,7 +229,7 @@ final class BackupFile implements BackupFileService
                         if (is_numeric($value)) {
                             return $value;
                         } elseif ($value) {
-                            return $this->databaseUtil->escape($value);
+                            return $this->databaseUtil->escape((string)$value);
                         }
 
                         return null;

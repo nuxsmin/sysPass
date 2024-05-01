@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -57,7 +58,7 @@ final class LdapUtil
      */
     public static function getAttributesForFilter(array $attributes, string $value): string
     {
-        $value = ldap_escape($value, null, LDAP_ESCAPE_FILTER);
+        $value = ldap_escape($value, '', LDAP_ESCAPE_FILTER);
 
         return implode(
             '',

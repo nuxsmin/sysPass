@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -56,9 +58,9 @@ final class Track extends Service implements TrackService
     private const TIME_SLEEP                 = 0.25;
 
     public function __construct(
-        Application                       $application,
-        private readonly TrackRepository  $trackRepository,
-        private readonly RequestService $request
+        Application                      $application,
+        private readonly TrackRepository $trackRepository,
+        private readonly RequestService  $request
     ) {
         parent::__construct($application);
     }
@@ -107,7 +109,7 @@ final class Track extends Service implements TrackService
                                               ->getNumRows();
 
             if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
-                $delaySeconds = self::TIME_SLEEP * $attempts;
+                $delaySeconds = (int)(self::TIME_SLEEP * $attempts);
 
                 $this->eventDispatcher->notify(
                     'track.delay',
@@ -121,7 +123,7 @@ final class Track extends Service implements TrackService
                                     self::TIME_TRACKING_MAX_ATTEMPTS
                                 )
                             )
-                            ->addDetail(__u('Seconds'), $delaySeconds)
+                            ->addDetail(__u('Seconds'), (string)$delaySeconds)
                     )
                 );
 

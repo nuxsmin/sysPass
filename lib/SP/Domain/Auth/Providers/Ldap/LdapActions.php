@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -96,11 +98,7 @@ final class LdapActions implements LdapActionsService
         /** @noinspection PhpComposerExtensionStubsInspection */
         $filter = sprintf(
             '(&(cn=%s)%s)',
-            ldap_escape(
-                $group,
-                null,
-                LDAP_ESCAPE_FILTER
-            ),
+            ldap_escape($group, '', LDAP_ESCAPE_FILTER),
             $groupFilter
         );
 
@@ -144,11 +142,17 @@ final class LdapActions implements LdapActionsService
 
     private function getGroupFromParams(): string
     {
-        if (stripos($this->ldapParams->getGroup(), 'cn') === 0) {
-            return LdapUtil::getGroupName($this->ldapParams->getGroup()) ?: '';
+        $group = $this->ldapParams->getGroup();
+
+        if ($group === null) {
+            return '*';
         }
 
-        return $this->ldapParams->getGroup() ?: '*';
+        if (stripos($group, 'cn') === 0) {
+            return LdapUtil::getGroupName($group) ?: '';
+        }
+
+        return $group;
     }
 
     /**
@@ -187,8 +191,7 @@ final class LdapActions implements LdapActionsService
      */
     public function getAttributes(string $filter): AttributeCollection
     {
-        $searchResults = $this->getResults($filter)
-                              ->getFirst();
+        $searchResults = $this->getResults($filter)->getFirst();
 
         if ($searchResults === null) {
             return new AttributeCollection();
@@ -201,7 +204,7 @@ final class LdapActions implements LdapActionsService
 
         $attributes = array_filter(
             self::ATTRIBUTES_MAPPING,
-            fn($attribute) => isset($results[$attribute]),
+            static fn(string $attribute) => isset($results[$attribute]),
             ARRAY_FILTER_USE_KEY
         );
 
@@ -215,16 +218,10 @@ final class LdapActions implements LdapActionsService
                     );
                 } else {
                     // Store first value
-                    $attributeCollection->set(
-                        $map,
-                        trim($results[$attribute][0])
-                    );
+                    $attributeCollection->set($map, trim($results[$attribute][0]));
                 }
             } else {
-                $attributeCollection->set(
-                    $map,
-                    trim($results[$attribute])
-                );
+                $attributeCollection->set($map, trim((string)$results[$attribute]));
             }
         }
 

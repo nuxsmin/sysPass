@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -50,7 +52,7 @@ final class AccountSearchView extends Model
     protected ?int    $passDateChange            = null;
     protected ?int    $parentId                  = null;
     protected ?int    $countView                 = null;
-    protected ?int    $dateEdit                  = null;
+    protected ?string $dateEdit                  = null;
     protected ?string $userName                  = null;
     protected ?string $userLogin                 = null;
     protected ?string $userGroupName             = null;
@@ -58,8 +60,8 @@ final class AccountSearchView extends Model
     protected ?string $clientName                = null;
     protected ?int    $num_files                 = null;
     protected ?string $publicLinkHash            = null;
-    protected ?string $publicLinkDateExpire      = null;
-    protected ?string $publicLinkTotalCountViews = null;
+    protected ?int    $publicLinkDateExpire      = null;
+    protected ?int    $publicLinkTotalCountViews = null;
 
     public function getClientId(): ?int
     {
@@ -136,7 +138,7 @@ final class AccountSearchView extends Model
         return $this->countView;
     }
 
-    public function getDateEdit(): ?int
+    public function getDateEdit(): ?string
     {
         return $this->dateEdit;
     }
@@ -156,12 +158,12 @@ final class AccountSearchView extends Model
         return $this->publicLinkHash;
     }
 
-    public function getPublicLinkDateExpire(): ?string
+    public function getPublicLinkDateExpire(): ?int
     {
         return $this->publicLinkDateExpire;
     }
 
-    public function getPublicLinkTotalCountViews(): ?string
+    public function getPublicLinkTotalCountViews(): ?int
     {
         return $this->publicLinkTotalCountViews;
     }

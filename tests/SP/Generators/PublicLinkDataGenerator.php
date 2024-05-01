@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -43,17 +44,17 @@ final class PublicLinkDataGenerator extends DataGenerator
         return [
             'id' => $this->faker->randomNumber(3),
             'itemId' => $this->faker->randomNumber(3),
-            'hash' => $this->faker->randomNumber(3),
+            'hash' => $this->faker->sha1(),
             'userId' => $this->faker->randomNumber(3),
             'typeId' => $this->faker->randomNumber(3),
             'notify' => $this->faker->boolean(),
-            'dateAdd'         => $this->faker->unixTime(),
-            'dateUpdate'      => $this->faker->unixTime(),
-            'dateExpire'      => $this->faker->unixTime(),
+            'dateAdd' => $this->faker->unixTime(),
+            'dateUpdate' => $this->faker->unixTime(),
+            'dateExpire' => $this->faker->unixTime(),
             'countViews' => $this->faker->randomNumber(3),
             'totalCountViews' => $this->faker->randomNumber(3),
             'maxCountViews' => $this->faker->randomNumber(3),
-            'useInfo'         => serialize($this->getUseInfo()),
+            'useInfo' => serialize($this->getUseInfo()),
             'data' => $this->faker->text(),
         ];
     }

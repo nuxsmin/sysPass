@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -582,12 +583,13 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
-        $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
+        $this->accountItemsService->expects(self::exactly(count($accountsId)))
+                                  ->method('updateItems')
                                   ->with(
                                       ...
                                       self::withConsecutive(
                                           ...
-                                          array_map(fn($v) => [$v, true, $accounts[$v]], $accountsId)
+                                          array_map(fn($v) => [true, $v, $accounts[$v]], $accountsId)
                                       )
                                   );
 
@@ -627,7 +629,7 @@ class AccountTest extends UnitaryTestCase
                                       ...
                                       self::withConsecutive(
                                           ...
-                                          array_map(fn($v) => [$v, false, $accounts[$v]], $accountsId)
+                                          array_map(fn($v) => [false, $v, $accounts[$v]], $accountsId)
                                       )
                                   );
 
@@ -672,7 +674,7 @@ class AccountTest extends UnitaryTestCase
                                       ...
                                       self::withConsecutive(
                                           ...
-                                          array_map(fn($v) => [$v, true, $accounts[$v]], $accountsId)
+                                          array_map(fn($v) => [true, $v, $accounts[$v]], $accountsId)
                                       )
                                   );
 
@@ -716,7 +718,7 @@ class AccountTest extends UnitaryTestCase
                                   ->with(
                                       ...self::withConsecutive(
                                       ...array_map(
-                                             fn($v) => [$v, true, $accounts[$v]],
+                                             fn($v) => [true, $v, $accounts[$v]],
                                              $accountsId
                                          )
                                   )
@@ -755,17 +757,22 @@ class AccountTest extends UnitaryTestCase
         $account = AccountDataGenerator::factory()->buildAccount();
         $accountHistoryCreateDto = new AccountHistoryCreateDto($account, false, true, $password);
 
-        $this->configService->expects(self::once())->method('getByParam')
-                            ->with('masterPwd')->willReturn($password);
+        $this->configService->expects(self::once())
+                            ->method('getByParam')
+                            ->with('masterPwd')
+                            ->willReturn($password);
 
-        $this->accountRepository->expects(self::once())->method('getById')
-                                ->with($id)->willReturn(new QueryResult([$account]));
+        $this->accountRepository->expects(self::once())
+                                ->method('getById')
+                                ->with($id)
+                                ->willReturn(new QueryResult([$account]));
         $this->accountHistoryService->expects(self::once())->method('create')
                                     ->with($accountHistoryCreateDto);
 
-        $this->accountRepository->expects(self::once())->method('delete')
-            ->with($id)
-            ->willReturn(new QueryResult(null, 1));
+        $this->accountRepository->expects(self::once())
+                                ->method('delete')
+                                ->with($id)
+                                ->willReturn(new QueryResult(null, 1));
 
         $this->account->delete($id);
     }

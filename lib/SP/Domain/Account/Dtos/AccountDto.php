@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -71,13 +73,13 @@ abstract class AccountDto extends Dto
             url:                $account->getUrl(),
             notes:              $account->getNotes(),
             userEditId:         $account->getUserEditId(),
-            isPrivate:          $account->getIsPrivate(),
-            isPrivateGroup:     $account->getIsPrivateGroup(),
+            isPrivate:          (bool)$account->getIsPrivate(),
+            isPrivateGroup:     (bool)$account->getIsPrivateGroup(),
             passDateChange:     $account->getPassDateChange(),
             parentId:           $account->getParentId(),
             userGroupId:        $account->getUserGroupId(),
-            otherUserEdit:      $account->getOtherUserEdit(),
-            otherUserGroupEdit: $account->getOtherUserGroupEdit(),
+            otherUserEdit:      (bool)$account->getOtherUserEdit(),
+            otherUserGroupEdit: (bool)$account->getOtherUserGroupEdit(),
         );
     }
 
@@ -185,7 +187,7 @@ abstract class AccountDto extends Dto
     public function withPrivate(bool $isPrivate): static
     {
         $self = clone $this;
-        $self->isPrivate = (int)$isPrivate;
+        $self->isPrivate = $isPrivate;
 
         return $self;
     }
@@ -193,7 +195,7 @@ abstract class AccountDto extends Dto
     public function withPrivateGroup(bool $isPrivateGroup): static
     {
         $self = clone $this;
-        $self->isPrivateGroup = (int)$isPrivateGroup;
+        $self->isPrivateGroup = $isPrivateGroup;
 
         return $self;
     }

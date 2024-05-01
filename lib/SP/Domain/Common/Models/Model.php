@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -27,6 +29,8 @@ namespace SP\Domain\Common\Models;
 use ArrayAccess;
 use JsonException;
 use JsonSerializable;
+use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class Model
@@ -150,11 +154,11 @@ abstract class Model implements JsonSerializable, ArrayAccess
      * @param int $options
      *
      * @return string
-     * @throws JsonException
+     * @throws SPException
      */
     public function toJson(int $options = 0): string
     {
-        return json_encode($this->jsonSerialize(), $options & JSON_THROW_ON_ERROR);
+        return Serde::serializeJson($this, $options);
     }
 
     /**

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -95,9 +97,9 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
     /**
      * Obtener la versión del XML
      */
-    private function getXmlVersion(): float|int
+    private function getXmlVersion(): int
     {
-        return Version::versionToInteger(
+        return (int)Version::versionToInteger(
             (new DOMXPath($this->document))->query('/Root/Meta/Version')->item(0)?->nodeValue ?? 0
         );
     }
@@ -213,7 +215,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                     static fn(DOMElement $element) => isset($element->tagName)
                 );
 
-                $data = ['id' => $category->getAttribute('id')];
+                $data = ['id' => (int)$category->getAttribute('id')];
 
                 /** @var DOMElement $node */
                 foreach ($nodesIterator as $node) {
@@ -256,7 +258,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                     static fn(DOMElement $element) => isset($element->tagName)
                 );
 
-                $data = ['id' => $client->getAttribute('id')];
+                $data = ['id' => (int)$client->getAttribute('id')];
 
                 /** @var DOMElement $node */
                 foreach ($nodesIterator as $node) {

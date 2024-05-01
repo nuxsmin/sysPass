@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -187,7 +188,7 @@ final class XmlExport extends Service implements XmlExportService
             $nodeMeta->append(
                 $this->document->createElement('Generator', 'sysPass'),
                 $this->document->createElement('Version', Version::getVersionStringNormalized()),
-                $this->document->createElement('Time', time()),
+                $this->document->createElement('Time', (string)time()),
                 $this->document->createElement(
                     'User',
                     $this->document->createTextNode($userData->getLogin())->nodeValue

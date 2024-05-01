@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -64,7 +66,7 @@ readonly class ConfigBackup implements ConfigBackupService
     {
         try {
             $this->configService->save('config_backup', $this->packConfigData($configData));
-            $this->configService->save('config_backup_date', time());
+            $this->configService->save('config_backup_date', (string)time());
         } catch (Exception $e) {
             processException($e);
         }

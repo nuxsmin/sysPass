@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -27,6 +29,7 @@ namespace SP\Domain\Account\Adapters;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Common\Dtos\ItemDataTrait;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Html\Html;
@@ -54,12 +57,12 @@ final class AccountSearchItem
         private readonly ConfigDataInterface $configData,
         private readonly UriContextInterface $uriContext,
         private array                        $tags,
-        private int                          $textMaxLength = 0,
-        private bool                         $favorite = false,
+        private readonly int     $textMaxLength = 0,
+        private readonly bool    $favorite = false,
         private readonly ?array              $users = null,
         private readonly ?array              $userGroups = null,
-        private ?string                      $color = null,
-        private ?string                      $link = null,
+        private readonly ?string $color = null,
+        private readonly ?bool   $link = null,
     ) {
         $this->tags = self::buildFromItemData($this->tags);
     }
@@ -67,11 +70,6 @@ final class AccountSearchItem
     public function isFavorite(): bool
     {
         return $this->favorite;
-    }
-
-    public function setFavorite(bool $favorite): void
-    {
-        $this->favorite = $favorite;
     }
 
     public function isShowRequest(): bool
@@ -98,11 +96,6 @@ final class AccountSearchItem
     public function isShowOptional(): bool
     {
         return ($this->accountAcl->isShow() && !self::$optionalActions);
-    }
-
-    public function setTextMaxLength(int $textMaxLength): void
-    {
-        $this->textMaxLength = $textMaxLength;
     }
 
     public function getShortUrl(): string
@@ -151,19 +144,9 @@ final class AccountSearchItem
         return $this->color;
     }
 
-    public function setColor(string $color): void
-    {
-        $this->color = $color;
-    }
-
-    public function getLink(): ?string
+    public function getLink(): ?bool
     {
         return $this->link;
-    }
-
-    public function setLink(string $link): void
-    {
-        $this->link = $link;
     }
 
     public function getAccesses(): array
@@ -247,7 +230,7 @@ final class AccountSearchItem
     }
 
     /**
-     * @return \SP\Domain\Common\Models\Item[]
+     * @return Item[]
      */
     public function getTags(): array
     {

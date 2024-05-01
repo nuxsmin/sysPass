@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -168,8 +169,8 @@ final class LdapStd extends LdapBase
      */
     public function getGroupMembershipDirectFilter(?string $userDn = null): string
     {
-        $groupName = ldap_escape($this->getGroupFromParams(), null, LDAP_ESCAPE_FILTER);
-        $member = $userDn !== null ? ldap_escape($userDn, null, LDAP_ESCAPE_FILTER) : '*';
+        $groupName = ldap_escape($this->getGroupFromParams(), '', LDAP_ESCAPE_FILTER);
+        $member = $userDn !== null ? ldap_escape($userDn, '', LDAP_ESCAPE_FILTER) : '*';
 
         if (empty($groupName)) {
             return $this->getUserObjectFilter();

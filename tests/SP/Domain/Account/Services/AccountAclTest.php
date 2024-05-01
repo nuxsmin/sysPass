@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -25,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Account\Services;
 
+use DateTime;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -67,7 +69,7 @@ class AccountAclTest extends UnitaryTestCase
         AclActionsInterface::ACCOUNT_COPY_PASS,
         AclActionsInterface::ACCOUNT_DELETE,
     ];
-    private static array                               $accounts;
+    private static array $accounts;
     private Acl                               $acl;
     private UserToUserGroupService|MockObject $userToUserGroupService;
 
@@ -338,8 +340,8 @@ class AccountAclTest extends UnitaryTestCase
                     [
                         'id' => $userId,
                         'userGroupId' => $groupId,
-                        'isAdminApp' => (int)$isAdminApp,
-                        'isAdminAcc' => (int)$isAdminAcc
+                        'isAdminApp' => $isAdminApp,
+                        'isAdminAcc' => $isAdminAcc
                     ]
                 )
             )
@@ -690,9 +692,13 @@ class AccountAclTest extends UnitaryTestCase
         $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
 
+        $lastUpdate = DateTime::createFromFormat('U', (string)($dto->getDateEdit() + 10))->format('Y-m-d H:i:s');
+
         $this->context->setUserData(
             new UserDataDto(
-                UserDataGenerator::factory()->buildUserData()->mutate(['lastUpdate' => $dto->getDateEdit() + 10])
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(['lastUpdate' => $lastUpdate])
             )
         );
 

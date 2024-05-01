@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -77,14 +78,14 @@ final class AccountDataGenerator extends DataGenerator
             'login' => $this->faker->name(),
             'url' => $this->faker->url(),
             'notes' => $this->faker->text(),
-            'otherUserEdit' => $this->faker->boolean(),
-            'otherUserGroupEdit' => $this->faker->boolean(),
-            'dateAdd' => $this->faker->unixTime(),
-            'dateEdit' => $this->faker->unixTime(),
+            'otherUserEdit' => (int)$this->faker->boolean(),
+            'otherUserGroupEdit' => (int)$this->faker->boolean(),
+            'dateAdd' => $this->faker->dateTime()->format('Y-m-d H:i:s'),
+            'dateEdit' => $this->faker->dateTime()->format('Y-m-d H:i:s'),
             'countView' => $this->faker->randomNumber(3),
             'countDecrypt' => $this->faker->randomNumber(3),
-            'isPrivate' => $this->faker->boolean(),
-            'isPrivateGroup' => $this->faker->boolean(),
+            'isPrivate' => (int)$this->faker->boolean(),
+            'isPrivateGroup' => (int)$this->faker->boolean(),
             'passDate' => $this->faker->unixTime(),
             'passDateChange' => $this->faker->unixTime(),
             'parentId' => $this->faker->randomNumber(3),
@@ -208,8 +209,8 @@ final class AccountDataGenerator extends DataGenerator
             accountId:          $this->faker->randomNumber(3),
             isDelete:           (int)$this->faker->boolean(),
             isModify:           (int)$this->faker->boolean(),
-            dateAdd:            $this->faker->unixTime(),
-            dateEdit:           $this->faker->unixTime(),
+            dateAdd:            $this->faker->dateTime()->format('Y-m-d H:i:s'),
+            dateEdit:           $this->faker->dateTime()->format('Y-m-d H:i:s'),
             passDate:           $this->faker->unixTime(),
             countView:          $this->faker->randomNumber(3),
             countDecrypt:       $this->faker->randomNumber(3),

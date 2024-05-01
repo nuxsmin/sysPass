@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -47,8 +49,8 @@ final class Account extends Model
     protected ?string $pass               = null;
     protected ?string $key                = null;
     protected ?string $notes              = null;
-    protected ?int    $dateAdd            = null;
-    protected ?int    $dateEdit           = null;
+    protected ?string $dateAdd  = null;
+    protected ?string $dateEdit = null;
     protected ?int    $countView          = null;
     protected ?int    $countDecrypt       = null;
     protected ?int    $isPrivate          = null;
@@ -149,12 +151,12 @@ final class Account extends Model
         return $this->categoryId;
     }
 
-    public function getDateAdd(): ?int
+    public function getDateAdd(): ?string
     {
         return $this->dateAdd;
     }
 
-    public function getDateEdit(): ?int
+    public function getDateEdit(): ?string
     {
         return $this->dateEdit;
     }

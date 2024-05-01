@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * sysPass
  *
@@ -216,7 +218,7 @@ final class Installer implements InstallerService
                 $this->installData->setDbSocket($match['socket']);
             } else {
                 $this->installData->setDbHost($match['host']);
-                $this->installData->setDbPort($match['port']);
+                $this->installData->setDbPort((int)$match['port']);
             }
         } else {
             $this->installData->setDbPort(3306);
@@ -320,7 +322,7 @@ final class Installer implements InstallerService
                 )
             );
             $this->configService->create(
-                new Config(['parameter' => 'lastupdatempass', 'value' => time()])
+                new Config(['parameter' => 'lastupdatempass', 'value' => (string)time()])
             );
         } catch (Exception $e) {
             processException($e);
@@ -344,14 +346,14 @@ final class Installer implements InstallerService
                 ]
             );
 
-            $userProfile = new UserProfile(['name' => 'Admin', 'profile' => new ProfileData()]);
+            $userProfile = new UserProfile(['name' => 'Admin', 'profile' => (new ProfileData())->toJson()]);
 
             $userData = new User([
                                      'userGroupId' => $this->userGroupService->create($userGroup),
                                      'userProfileId' => $this->userProfileService->create($userProfile),
                                      'login' => $this->installData->getAdminLogin(),
                                      'name' => 'sysPass Admin',
-                                     'isAdminApp' => 1,
+                                     'isAdminApp' => true,
                                  ]);
 
             $id = $this->userService->createWithMasterPass(

@@ -45,7 +45,7 @@ final class ClientGenerator extends DataGenerator
             'name' => $this->faker->colorName(),
             'description' => $this->faker->text(),
             'hash' => $this->faker->sha1(),
-            'isGlobal' => $this->faker->boolean()
+            'isGlobal' => (int)$this->faker->boolean()
         ];
     }
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -64,7 +65,7 @@ final class Image implements ImageService
         $width = imagesx($im) ?: self::IMAGE_WIDTH;
         $height = imagesy($im) ?: self::IMAGE_WIDTH;
 
-        $newHeight = floor($height * (self::IMAGE_WIDTH / $width));
+        $newHeight = (int)floor($height * (self::IMAGE_WIDTH / $width));
 
         if (($tempImage = imagecreatetruecolor(self::IMAGE_WIDTH, $newHeight)) === false
             || !imagecopyresized($tempImage, $im, 0, 0, 0, 0, self::IMAGE_WIDTH, $newHeight, $width, $height)

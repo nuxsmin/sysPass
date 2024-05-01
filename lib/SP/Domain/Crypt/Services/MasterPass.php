@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -114,6 +115,6 @@ final class MasterPass extends Service implements MasterPassService
     public function updateConfig($hash): void
     {
         $this->configService->save(self::PARAM_MASTER_PASS_HASH, $hash);
-        $this->configService->save(self::PARAM_MASTER_PASS_TIME, time());
+        $this->configService->save(self::PARAM_MASTER_PASS_TIME, (string)time());
     }
 }

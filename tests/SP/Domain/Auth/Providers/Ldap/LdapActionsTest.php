@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -119,14 +120,13 @@ class LdapActionsTest extends UnitaryTestCase
      */
     public function testGetAttributes(): void
     {
-        $filter = 'test';
         $collection = $this->createMock(Collection::class);
         $attributes = $this->buildAttributes();
 
         $this->ldap->expects(self::once())
                    ->method('search')
                    ->with(
-                       $filter,
+                       'a_filter',
                        null,
                        Ldap::SEARCH_SCOPE_SUB,
                        [],
@@ -135,13 +135,13 @@ class LdapActionsTest extends UnitaryTestCase
 
         $collection->expects(self::once())->method('getFirst')->willReturn($attributes);
 
-        $out = $this->ldapActions->getAttributes($filter);
+        $out = $this->ldapActions->getAttributes('a_filter');
 
         $expected = new AttributeCollection([
                                                 'dn' => $attributes['dn'],
                                                 'group' => array_filter(
                                                     $attributes['memberof'],
-                                                    fn($key) => $key !== 'count',
+                                                    static fn($key) => $key !== 'count',
                                                     ARRAY_FILTER_USE_KEY
                                                 ),
                                                 'fullname' => $attributes['displayname'],
@@ -160,18 +160,18 @@ class LdapActionsTest extends UnitaryTestCase
     private function buildAttributes(): array
     {
         return [
-            'dn' => self::$faker->userName,
+            'dn' => self::$faker->userName(),
             'memberof' => [
                 'count' => 3,
-                self::$faker->company,
-                self::$faker->company,
-                self::$faker->company,
+                self::$faker->company(),
+                self::$faker->company(),
+                self::$faker->company(),
             ],
-            'displayname' => self::$faker->name,
-            'givenname' => self::$faker->firstName,
-            'sn' => self::$faker->lastName,
-            'mail' => self::$faker->email,
-            'lockouttime' => self::$faker->unixTime,
+            'displayname' => self::$faker->name(),
+            'givenname' => self::$faker->firstName(),
+            'sn' => self::$faker->lastName(),
+            'mail' => self::$faker->email(),
+            'lockouttime' => self::$faker->unixTime(),
         ];
     }
 

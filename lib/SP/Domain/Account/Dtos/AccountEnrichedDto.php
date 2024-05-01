@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -38,15 +39,15 @@ class AccountEnrichedDto extends Dto
 
     private readonly int $id;
     /**
-     * @var \SP\Domain\Common\Models\Item[] Los usuarios secundarios de la cuenta.
+     * @var Item[] Los usuarios secundarios de la cuenta.
      */
     private array $users = [];
     /**
-     * @var \SP\Domain\Common\Models\Item[] Los grupos secundarios de la cuenta.
+     * @var Item[] Los grupos secundarios de la cuenta.
      */
     private array $userGroups = [];
     /**
-     * @var \SP\Domain\Common\Models\Item[] Las etiquetas de la cuenta.
+     * @var Item[] Las etiquetas de la cuenta.
      */
     private array $tags = [];
 
@@ -69,7 +70,7 @@ class AccountEnrichedDto extends Dto
     }
 
     /**
-     * @param \SP\Domain\Common\Models\Item[] $users
+     * @param Item[] $users
      *
      * @return AccountEnrichedDto
      */
@@ -82,7 +83,7 @@ class AccountEnrichedDto extends Dto
     }
 
     /**
-     * @param \SP\Domain\Common\Models\Item[] $groups
+     * @param Item[] $groups
      *
      * @return AccountEnrichedDto
      */
@@ -95,7 +96,7 @@ class AccountEnrichedDto extends Dto
     }
 
     /**
-     * @param \SP\Domain\Common\Models\Item[] $tags
+     * @param Item[] $tags
      *
      * @return AccountEnrichedDto
      */
@@ -108,7 +109,7 @@ class AccountEnrichedDto extends Dto
     }
 
     /**
-     * @return \SP\Domain\Common\Models\Item[]
+     * @return Item[]
      */
     public function getUsers(): array
     {
@@ -116,7 +117,7 @@ class AccountEnrichedDto extends Dto
     }
 
     /**
-     * @return \SP\Domain\Common\Models\Item[]
+     * @return Item[]
      */
     public function getUserGroups(): array
     {
@@ -124,7 +125,7 @@ class AccountEnrichedDto extends Dto
     }
 
     /**
-     * @return \SP\Domain\Common\Models\Item[]
+     * @return Item[]
      */
     public function getTags(): array
     {

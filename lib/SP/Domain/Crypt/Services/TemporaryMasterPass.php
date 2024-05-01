@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -105,9 +107,9 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
             );
             $configRequest->add(self::PARAM_KEY, $secureKey);
             $configRequest->add(self::PARAM_HASH, Hash::hashKey($randomKey));
-            $configRequest->add(self::PARAM_TIME, time());
-            $configRequest->add(self::PARAM_MAX_TIME, $this->maxTime);
-            $configRequest->add(self::PARAM_ATTEMPTS, 0);
+            $configRequest->add(self::PARAM_TIME, (string)time());
+            $configRequest->add(self::PARAM_MAX_TIME, (string)$this->maxTime);
+            $configRequest->add(self::PARAM_ATTEMPTS, '0');
 
             $this->configService->saveBatch($configRequest);
 
@@ -174,7 +176,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
             );
 
             if (!$isValid) {
-                $this->configService->save(self::PARAM_ATTEMPTS, $attempts + 1);
+                $this->configService->save(self::PARAM_ATTEMPTS, (string)($attempts + 1));
             }
 
             return $isValid;
@@ -196,9 +198,9 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
         $configRequest->add(self::PARAM_PASS, '');
         $configRequest->add(self::PARAM_KEY, '');
         $configRequest->add(self::PARAM_HASH, '');
-        $configRequest->add(self::PARAM_TIME, 0);
-        $configRequest->add(self::PARAM_MAX_TIME, 0);
-        $configRequest->add(self::PARAM_ATTEMPTS, 0);
+        $configRequest->add(self::PARAM_TIME, '0');
+        $configRequest->add(self::PARAM_MAX_TIME, '0');
+        $configRequest->add(self::PARAM_ATTEMPTS, '0');
 
         $this->configService->saveBatch($configRequest);
 

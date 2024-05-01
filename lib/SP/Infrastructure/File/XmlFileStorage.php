@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -93,7 +95,7 @@ final readonly class XmlFileStorage implements XmlFileStorageService
                 $newNode->setAttribute('class', get_class($value));
                 $this->serializeItems($value, $newNode, $key);
             } else {
-                $newNode->appendChild($this->document->createTextNode(trim($value)));
+                $newNode->appendChild($this->document->createTextNode(trim((string)$value)));
             }
 
             $currentNode->appendChild($newNode);
@@ -120,7 +122,7 @@ final readonly class XmlFileStorage implements XmlFileStorageService
             $value = $property->getValue($object);
 
             $items[$property->getName()] = match (true) {
-                is_bool($value) || (is_numeric($value) && !str_contains($value, '.')) => (int)$value,
+                is_bool($value) || (is_numeric($value) && !str_contains((string)$value, '.')) => (int)$value,
                 default => $value
             };
         }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -118,11 +120,17 @@ abstract class LdapBase implements LdapService
      */
     protected function getGroupFromParams(): string
     {
-        if (stripos($this->ldapParams->getGroup(), 'cn') === 0) {
-            return LdapUtil::getGroupName($this->ldapParams->getGroup()) ?: '';
+        $group = $this->ldapParams->getGroup();
+
+        if ($group === null) {
+            return '';
         }
 
-        return $this->ldapParams->getGroup() ?? '';
+        if (stripos($group, 'cn') === 0) {
+            return LdapUtil::getGroupName($group) ?: '';
+        }
+
+        return $group;
     }
 
     /**

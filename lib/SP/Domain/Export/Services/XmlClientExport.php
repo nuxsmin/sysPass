@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -76,7 +77,7 @@ final class XmlClientExport extends XmlExportEntityBase
                 $nodeClient = $this->document->createElement('Client');
                 $nodeClients->appendChild($nodeClient);
 
-                $nodeClient->setAttribute('id', $client->getId());
+                $nodeClient->setAttribute('id', (string)$client->getId());
                 $nodeClient->appendChild(
                     $this->document->createElement(
                         'name',

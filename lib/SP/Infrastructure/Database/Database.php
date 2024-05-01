@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -132,7 +134,7 @@ final class Database implements DatabaseInterface
 
             $stmt->execute();
 
-            $this->lastId = $connection->lastInsertId();
+            $this->lastId = (int)$connection->lastInsertId();
 
             return $stmt;
         } catch (Exception $e) {
@@ -142,7 +144,7 @@ final class Database implements DatabaseInterface
                 throw ConstraintException::error(__u('Integrity constraint'), $e->getMessage(), $e->getCode(), $e);
             }
 
-            throw QueryException::critical($e->getMessage(), $e->getCode(), 0, $e);
+            throw QueryException::critical($e->getMessage(), (string)$e->getCode(), $e->getCode(), $e);
         }
     }
 

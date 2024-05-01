@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -134,7 +136,7 @@ final class AccountSearchData extends Service implements AccountSearchDataBuilde
             function (AccountSearchView $accountSearchView) use ($maxTextLength, $accountLinkEnabled, $favorites) {
                 $cache = $this->accountCacheService->getCacheForAccount(
                     $accountSearchView->getId(),
-                    (int)strtotime($accountSearchView->getDateEdit())
+                    strtotime($accountSearchView->getDateEdit())
                 );
 
                 // Obtener la ACL de la cuenta

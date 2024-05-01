@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -30,31 +32,31 @@ namespace SP\Domain\Account\Dtos;
 final class AccountHistoryDto extends AccountDto
 {
     public function __construct(
-        protected ?int $accountId = null,
-        protected ?int $isDelete = null,
-        protected ?int $isModify = null,
-        protected ?int $dateAdd = null,
-        protected ?int $dateEdit = null,
-        protected ?int $passDate = null,
-        protected ?int $countView = null,
-        protected ?int $countDecrypt = null,
-        ?string $name = null,
-        ?string $login = null,
-        ?int    $clientId = null,
-        ?int    $categoryId = null,
-        ?string $pass = null,
-        ?int    $userId = null,
-        ?string $key = null,
-        ?string $url = null,
-        ?string $notes = null,
-        ?int    $userEditId = null,
-        ?bool   $isPrivate = null,
-        ?bool   $isPrivateGroup = null,
-        ?int    $passDateChange = null,
-        ?int    $parentId = null,
-        ?int    $userGroupId = null,
-        ?bool   $otherUserEdit = null,
-        ?bool   $otherUserGroupEdit = null
+        protected ?int    $accountId = null,
+        protected ?int    $isDelete = null,
+        protected ?int    $isModify = null,
+        protected ?string $dateAdd = null,
+        protected ?string $dateEdit = null,
+        protected ?int    $passDate = null,
+        protected ?int    $countView = null,
+        protected ?int    $countDecrypt = null,
+        ?string           $name = null,
+        ?string           $login = null,
+        ?int              $clientId = null,
+        ?int              $categoryId = null,
+        ?string           $pass = null,
+        ?int              $userId = null,
+        ?string           $key = null,
+        ?string           $url = null,
+        ?string           $notes = null,
+        ?int              $userEditId = null,
+        ?bool             $isPrivate = null,
+        ?bool             $isPrivateGroup = null,
+        ?int              $passDateChange = null,
+        ?int              $parentId = null,
+        ?int              $userGroupId = null,
+        ?bool             $otherUserEdit = null,
+        ?bool             $otherUserGroupEdit = null
     ) {
         parent::__construct(
             $name,
@@ -92,12 +94,12 @@ final class AccountHistoryDto extends AccountDto
         return $this->isModify;
     }
 
-    public function getDateAdd(): ?int
+    public function getDateAdd(): ?string
     {
         return $this->dateAdd;
     }
 
-    public function getDateEdit(): ?int
+    public function getDateEdit(): ?string
     {
         return $this->dateEdit;
     }

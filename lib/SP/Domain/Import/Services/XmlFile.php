@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -97,7 +99,7 @@ final readonly class XmlFile implements XmlFileService
         $nodes = $this->document->getElementsByTagName('Generator');
 
         try {
-            return XmlFormat::from(strtolower($nodes->item(0)?->nodeValue));
+            return XmlFormat::from(strtolower($nodes->item(0)?->nodeValue ?? ''));
         } catch (ValueError $e) {
             throw ImportException::error(
                 __u('XML file not supported'),

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -75,7 +76,7 @@ final class XmlTagExport extends XmlExportEntityBase
                 $nodeTag = $this->document->createElement('Tag');
                 $nodeTags->appendChild($nodeTag);
 
-                $nodeTag->setAttribute('id', $tag->getId());
+                $nodeTag->setAttribute('id', (string)$tag->getId());
                 $nodeTag->appendChild(
                     $this->document->createElement('name', $this->document->createTextNode($tag->getName())->nodeValue)
                 );

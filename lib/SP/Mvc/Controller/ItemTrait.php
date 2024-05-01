@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /*
  * sysPass
  *
@@ -69,7 +71,7 @@ trait ItemTrait
                 moduleId:         (int)$item['moduleId'],
                 formId:           self::getFormIdForName($item['definitionName']),
                 value:            $value,
-                isEncrypted:      (int)$item['isEncrypted'],
+                isEncrypted:      (bool)$item['isEncrypted'],
                 isValueEncrypted: $valueEncrypted
             );
 
