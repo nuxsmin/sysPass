@@ -21,8 +21,10 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-alter table CustomFieldData
-    drop column id;
+DELIMITER $$
 
 alter table CustomFieldData
-    add primary key (moduleId, itemId, definitionId);
+    drop column id$$
+
+alter table CustomFieldData
+    add primary key (moduleId, itemId, definitionId)$$

@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -22,6 +21,8 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+declare(strict_types=1);
 
 namespace SP\Domain\Upgrade\Services;
 
@@ -71,22 +72,17 @@ final class UpgradeDatabase extends UpgradeBase
      */
     protected function applyUpgrade(string $version): bool
     {
-        $queries = $this->getQueriesFromFile($version);
+        $count = 0;
 
-        if (count($queries) === 0) {
-            logger(__('Update file does not contain data'), 'ERROR');
+        foreach ($this->getQueriesFromFile($version) as $query) {
+            $count++;
 
-            throw UpgradeException::error(__u('Update file does not contain data'), $version);
-        }
-
-        foreach ($queries as $query) {
             try {
                 $this->eventDispatcher->notify(
                     'upgrade.db.process',
                     new Event($this, EventMessage::factory()->addDetail(__u('Version'), $version))
                 );
 
-                // Direct PDO handling
                 $this->database->runQueryRaw($query);
             } catch (Exception $e) {
                 processException($e);
@@ -107,6 +103,12 @@ final class UpgradeDatabase extends UpgradeBase
             }
         }
 
+        if ($count === 0) {
+            logger(__('Update file does not contain data'), 'ERROR');
+
+            throw UpgradeException::error(__u('Update file does not contain data'), $version);
+        }
+
         $this->eventDispatcher->notify(
             'upgrade.db.process',
             new Event(
@@ -123,7 +125,7 @@ final class UpgradeDatabase extends UpgradeBase
      */
     private function getQueriesFromFile(string $filename): iterable
     {
-        $fileName = FileSystem::buildPath(SQL_PATH, str_replace('.', '', $filename), '.sql');
+        $fileName = FileSystem::buildPath(SQL_PATH, str_replace('.', '', $filename) . '.sql');
 
         try {
             return (new MysqlFileParser(new FileHandler($fileName)))->parse('$$');
