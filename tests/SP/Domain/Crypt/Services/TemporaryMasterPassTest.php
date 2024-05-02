@@ -213,8 +213,8 @@ class TemporaryMasterPassTest extends UnitaryTestCase
                 )
             )
             ->willReturn(
-                (string)$now,
                 (string)($now + 3600),
+                (string)$now,
                 (string)$attempts,
                 $hash
             );
