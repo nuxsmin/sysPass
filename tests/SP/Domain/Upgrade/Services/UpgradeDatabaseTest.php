@@ -68,6 +68,10 @@ class UpgradeDatabaseTest extends UnitaryTestCase
                    ->method('setDatabaseVersion')
                    ->with('400.24210101');
 
+        $this->config->expects($this->once())
+                     ->method('save')
+                     ->with($configData);
+
         $upgradeDatabase = new UpgradeDatabase($this->application, $fileHandlerProvider, $database);
         $upgradeDatabase->upgrade('400.00000000', $configData);
     }
