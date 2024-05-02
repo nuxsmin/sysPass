@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -86,5 +87,10 @@ abstract class ModuleBase implements ModuleInterface
 
         $this->eventDispatcher->attach($this->providersHelper->getAclHandler());
         $this->eventDispatcher->attach($this->providersHelper->getNotificationHandler());
+    }
+
+    protected function checkUpgradeNeeded(): bool
+    {
+        return false;
     }
 }

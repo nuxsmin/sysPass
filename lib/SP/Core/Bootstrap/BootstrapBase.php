@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -45,6 +46,7 @@ use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Upgrade\Services\UpgradeConfig;
 use SP\Infrastructure\File\FileException;
 use Symfony\Component\Debug\Debug;
 use Throwable;
@@ -69,7 +71,6 @@ abstract class BootstrapBase implements BootstrapInterface
         protected readonly ConfigDataInterface $configData,
         protected readonly Klein               $router,
         protected readonly RequestService $request,
-        private readonly UpgradeConfigChecker  $upgradeConfigChecker,
         protected readonly PhpExtensionChecker $extensionChecker,
         protected readonly Context        $context,
         private readonly ContainerInterface    $container,
@@ -238,7 +239,7 @@ abstract class BootstrapBase implements BootstrapInterface
      */
     private function initConfig(): void
     {
-        $this->upgradeConfigChecker->checkConfigVersion();
+        UpgradeConfig::needsUpgrade($this->configData->getConfigVersion());
 
         ConfigUtil::checkConfigDir();
     }

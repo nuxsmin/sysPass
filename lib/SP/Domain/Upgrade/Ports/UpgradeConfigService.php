@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -23,9 +22,9 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Config\Ports;
+declare(strict_types=1);
 
-use SP\Domain\Upgrade\Ports\UpgradeService;
+namespace SP\Domain\Upgrade\Ports;
 
 /**
  * Interface UpgradeConfigService

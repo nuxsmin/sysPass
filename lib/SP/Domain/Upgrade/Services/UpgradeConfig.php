@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -23,12 +22,13 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Config\Services;
+declare(strict_types=1);
+
+namespace SP\Domain\Upgrade\Services;
 
 use SP\Core\Application;
-use SP\Domain\Config\Ports\UpgradeConfigService;
 use SP\Domain\Log\Ports\FileHandlerProvider;
-use SP\Domain\Upgrade\Services\UpgradeBase;
+use SP\Domain\Upgrade\Ports\UpgradeConfigService;
 
 /**
  * Class UpgradeConfig

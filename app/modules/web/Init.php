@@ -57,7 +57,6 @@ use SP\Domain\Http\Providers\Uri;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Services\ItemPreset;
-use SP\Domain\Upgrade\Services\UpgradeUtil;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Services\UserProfile;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -246,14 +245,7 @@ final class Init extends HttpModuleBase
                 throw new InitializationException('Maintenance mode');
             }
 
-            // Checks if upgrade is needed
-            if ($this->checkUpgrade()) {
-                logger('Upgrade needed', 'ERROR');
-
-                $this->config->generateUpgradeKey();
-
-                $this->router->response()->redirect($this->getUriFor(self::ROUTE_UPGRADE))->send();
-
+            if ($this->checkUpgradeNeeded()) {
                 throw new InitializationException('Upgrade needed');
             }
 
@@ -336,20 +328,6 @@ final class Init extends HttpModuleBase
     private function getUriFor(string $route): string
     {
         return (new Uri($this->uriContext->getWebRoot()))->addParam('r', $route)->getUri();
-    }
-
-    /**
-     * Comprobar si es necesario actualizar componentes
-     *
-     * @throws FileException
-     */
-    private function checkUpgrade(): bool
-    {
-        UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
-
-        return $this->configData->getUpgradeKey()
-               || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion())
-                   || UpgradeAppService::needsUpgrade($this->configData->getAppVersion()));
     }
 
     /**

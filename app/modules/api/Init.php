@@ -24,8 +24,6 @@
 
 namespace SP\Modules\Api;
 
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use JsonException;
 use Klein\Klein;
 use SP\Core\Application;
 use SP\Core\Context\ContextException;
@@ -33,15 +31,11 @@ use SP\Core\HttpModuleBase;
 use SP\Core\Language;
 use SP\Core\ProvidersHelper;
 use SP\Domain\Common\Providers\Http;
-use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\InitializationException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\Upgrade\Services\UpgradeAppService;
-use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
-use SP\Domain\Upgrade\Services\UpgradeUtil;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\File\FileException;
 
 use function SP\logger;
 
@@ -73,12 +67,10 @@ final class Init extends HttpModuleBase
     }
 
     /**
-     * @throws EnvironmentIsBrokenException
-     * @throws JsonException
+     * @param string $controller
      * @throws ContextException
      * @throws InitializationException
-     * @throws FileException
-     * @throws ConfigException
+     * @throws SPException
      */
     public function initialize(string $controller): void
     {
@@ -102,7 +94,9 @@ final class Init extends HttpModuleBase
         }
 
         // Checks if upgrade is needed
-        $this->checkUpgrade();
+        if ($this->checkUpgradeNeeded()) {
+            throw new InitializationException('Upgrade needed');
+        }
 
         // Checks if the database is set up
         if (!$this->databaseUtil->checkDatabaseConnection()) {
@@ -127,31 +121,6 @@ final class Init extends HttpModuleBase
     {
         if (!$this->configData->isInstalled()) {
             throw new InitializationException('Not installed');
-        }
-    }
-
-    /**
-     * Comprobar si es necesario actualizar componentes
-     *
-     * @throws EnvironmentIsBrokenException
-     * @throws FileException
-     * @throws InitializationException
-     */
-    private function checkUpgrade(): void
-    {
-        if (IS_TESTING) {
-            return;
-        }
-
-        UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
-
-        if ($this->configData->getUpgradeKey()
-            || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion())
-                || UpgradeAppService::needsUpgrade($this->configData->getAppVersion()))
-        ) {
-            $this->config->generateUpgradeKey();
-
-            throw new InitializationException(__u('Updating needed'));
         }
     }
 }
