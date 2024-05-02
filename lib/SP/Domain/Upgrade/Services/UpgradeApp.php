@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -25,10 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Upgrade\Services;
 
-use Exception;
-
-use function SP\processException;
-
 /**
  * Class UpgradeApp
  */
@@ -41,13 +38,7 @@ final class UpgradeApp extends UpgradeBase
 
     protected function applyUpgrade(string $version): bool
     {
-        try {
-            return true;
-        } catch (Exception $e) {
-            processException($e);
-        }
-
-        return false;
+        return true;
     }
 
     protected function commitVersion(string $version): void
