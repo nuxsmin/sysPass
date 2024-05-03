@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -28,7 +29,6 @@ namespace SP\Domain\Common\Models;
 use ReflectionClass;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Attributes\Hydratable;
-use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Trait SerializedModel
@@ -36,30 +36,34 @@ use SP\Domain\Core\Exceptions\SPException;
 trait SerializedModel
 {
     /**
-     * @template THydrate
-     * @param class-string<THydrate> $class
-     *
-     * @return THydrate|null
-     * @throws SPException
+     * @inheritDoc
      */
     public function hydrate(string $class): ?object
+    {
+        return $this->parseAttribute(
+            function (Hydratable $hydratable) use ($class) {
+                $valid = array_filter(
+                    $hydratable->getTargetClass(),
+                    static fn(string $targetClass) => is_a($class, $targetClass, true)
+                );
+
+                $property = $this->{$hydratable->getSourceProperty()};
+
+                if (count($valid) > 0 && $property !== null) {
+                    return Serde::deserialize($property, $class) ?: null;
+                }
+
+                return null;
+            }
+        );
+    }
+
+    private function parseAttribute(callable $callback): mixed
     {
         $reflectionClass = new ReflectionClass($this);
 
         foreach ($reflectionClass->getAttributes(Hydratable::class) as $attribute) {
-            /** @var Hydratable $instance */
-            $instance = $attribute->newInstance();
-
-            $valid = array_filter(
-                $instance->getTargetClass(),
-                static fn(string $targetClass) => is_a($class, $targetClass, true)
-            );
-
-            $property = $this->{$instance->getSourceProperty()};
-
-            if (count($valid) > 0 && $property !== null) {
-                return Serde::deserialize($property, $class) ?: null;
-            }
+            return $callback($attribute->newInstance());
         }
 
         return null;
@@ -68,24 +72,21 @@ trait SerializedModel
     /**
      * @inheritDoc
      */
-    public function dehydrate(object $object): static
+    public function dehydrate(object $object): static|null
     {
-        $reflectionClass = new ReflectionClass($this);
+        return $this->parseAttribute(
+            function (Hydratable $hydratable) use ($object) {
+                $valid = array_filter(
+                    $hydratable->getTargetClass(),
+                    static fn(string $targetClass) => is_a($object, $targetClass)
+                );
 
-        foreach ($reflectionClass->getAttributes(Hydratable::class) as $attribute) {
-            /** @var Hydratable $instance */
-            $instance = $attribute->newInstance();
+                if (count($valid) > 0) {
+                    return $this->mutate([$hydratable->getSourceProperty() => Serde::serialize($object)]);
+                }
 
-            $valid = array_filter(
-                $instance->getTargetClass(),
-                static fn(string $targetClass) => is_a($object, $targetClass, true)
-            );
-
-            if (count($valid) > 0) {
-                return $this->mutate([$instance->getSourceProperty() => Serde::serialize($object)]);
+                return $this;
             }
-        }
-
-        return $this;
+        );
     }
 }

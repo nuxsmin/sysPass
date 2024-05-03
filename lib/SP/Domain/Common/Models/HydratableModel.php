@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -25,6 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Domain\Common\Models;
 
+use SP\Domain\Core\Exceptions\SPException;
+
 /**
  * Interface HydratableModel
  */
@@ -33,18 +36,20 @@ interface HydratableModel
     /**
      * Deserialize the hydratable property and returns the object.
      *
-     * @template T
-     * @param class-string<T> $class
+     * @template THydrate
+     * @param class-string<THydrate> $class
      *
-     * @return T|null
+     * @return THydrate|null
+     * @throws SPException
      */
     public function hydrate(string $class): ?object;
 
     /**
      * Serialize the object in the hydratable property
-     * @param object $object
      *
-     * @return static A new instance of the model with the serialized property
+     * @param object $object
+     * @return static|null A new instance of the model with the serialized property or null if the property
+     * couldn't be serialized
      */
-    public function dehydrate(object $object): static;
+    public function dehydrate(object $object): static|null;
 }

@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
@@ -24,25 +22,16 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Upgrade\Ports;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 
 /**
- * Interface UpgradeService
+ * Interface UpgradeHandler
  */
-interface UpgradeService
+interface UpgradeHandlerService
 {
-    /**
-     * Performs the upgrading process
-     */
-    public function upgrade(string $version, ConfigDataInterface $configData);
-
-    /**
-     * Register an upgrade class to run upgrade tasks.
-     *
-     * @param string $class
-     * @return void
-     */
-    public function registerUpgradeHandler(string $class): void;
+    public function apply(string $version, ConfigDataInterface $configData): bool;
 }

@@ -28,13 +28,12 @@ namespace SP\Tests\Domain\Upgrade\Services;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
-use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Domain\Upgrade\Services\UpgradeException;
-use SP\Infrastructure\File\FileException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -43,83 +42,80 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class UpgradeDatabaseTest extends UnitaryTestCase
 {
+    private UpgradeDatabase $upgradeDatabase;
+    private DatabaseInterface|MockObject $database;
+
     /**
      * @throws Exception
      * @throws UpgradeException
-     * @throws FileException
      */
     public function testUpgrade()
     {
-        $fileHandlerProvider = $this->createMock(FileHandlerProvider::class);
-        $database = $this->createMock(DatabaseInterface::class);
         $configData = $this->createMock(ConfigDataInterface::class);
 
-        $database->expects($this->exactly(2))
-                 ->method('runQueryRaw')
-                 ->with(
-                     ...
-                     self::withConsecutive(
-                         ['alter table CustomFieldData drop column id'],
-                         ['alter table CustomFieldData add primary key (moduleId, itemId, definitionId)']
-                     )
-                 );
+        $this->database->expects($this->exactly(2))
+                       ->method('runQueryRaw')
+                       ->with(
+                           ...
+                           self::withConsecutive(
+                               ['alter table CustomFieldData drop column id'],
+                               ['alter table CustomFieldData add primary key (moduleId, itemId, definitionId)']
+                           )
+                       );
 
         $configData->expects($this->once())
                    ->method('setDatabaseVersion')
                    ->with('400.24210101');
 
-        $this->config->expects($this->once())
-                     ->method('save')
-                     ->with($configData);
-
-        $upgradeDatabase = new UpgradeDatabase($this->application, $fileHandlerProvider, $database);
-        $upgradeDatabase->upgrade('400.00000000', $configData);
+        $this->upgradeDatabase->apply('400.24210101', $configData);
     }
 
     /**
      * @throws Exception
      * @throws UpgradeException
-     * @throws FileException
      */
     public function testUpgradeWithException()
     {
-        $fileHandlerProvider = $this->createMock(FileHandlerProvider::class);
-        $database = $this->createMock(DatabaseInterface::class);
         $configData = $this->createMock(ConfigDataInterface::class);
 
-        $database->expects($this->once())
-                 ->method('runQueryRaw')
-                 ->willThrowException(new RuntimeException('test'));
+        $this->database->expects($this->once())
+                       ->method('runQueryRaw')
+                       ->willThrowException(new RuntimeException('test'));
 
         $configData->expects($this->never())
                    ->method('setDatabaseVersion');
-
-        $upgradeDatabase = new UpgradeDatabase($this->application, $fileHandlerProvider, $database);
 
         $this->expectException(UpgradeException::class);
         $this->expectExceptionMessage('Error while updating the database');
 
-        $upgradeDatabase->upgrade('400.00000000', $configData);
+        $this->upgradeDatabase->apply('400.24210101', $configData);
     }
 
     /**
      * @throws Exception
      * @throws UpgradeException
-     * @throws FileException
      */
-    public function testUpgradeWithNoUpgrades()
+    public function testUpgradeWithFileException()
     {
-        $fileHandlerProvider = $this->createMock(FileHandlerProvider::class);
-        $database = $this->createMock(DatabaseInterface::class);
         $configData = $this->createMock(ConfigDataInterface::class);
 
-        $database->expects($this->never())
-                 ->method('runQueryRaw');
+        $this->database->expects($this->never())
+                       ->method('runQueryRaw');
 
         $configData->expects($this->never())
                    ->method('setDatabaseVersion');
 
-        $upgradeDatabase = new UpgradeDatabase($this->application, $fileHandlerProvider, $database);
-        $upgradeDatabase->upgrade('400.24210101', $configData);
+        $this->expectException(UpgradeException::class);
+        $this->expectExceptionMessage('Failed to open stream: No such file or directory');
+
+        $this->upgradeDatabase->apply('400.00000000', $configData);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->database = $this->createMock(DatabaseInterface::class);
+        $this->upgradeDatabase = new UpgradeDatabase($this->application, $this->database);
     }
 }

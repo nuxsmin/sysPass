@@ -35,6 +35,7 @@ use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Domain\Http\Code;
 
 use function SP\logger;
 use function SP\processException;
@@ -73,18 +74,17 @@ final class Bootstrap extends BootstrapBase
             try {
                 logger('API route');
 
-                $apiRequest = $this->createObjectFor(ApiRequestService::class);
+                $response->headers()->set('Content-type', 'application/json; charset=utf-8');
 
+                $apiRequest = $this->buildInstanceFor(ApiRequestService::class);
                 [$controllerName, $actionName] = explode('/', $apiRequest->getMethod());
-
                 $controllerClass = self::getClassFor($controllerName, $actionName);
-
                 $method = $actionName . 'Action';
 
                 if (!method_exists($controllerClass, $method)) {
                     logger($controllerClass . '::' . $method);
 
-                    $response->headers()->set('Content-type', 'application/json; charset=utf-8');
+                    $response->code(Code::NOT_FOUND->value);
 
                     return $response->body(
                         JsonRpcResponse::getResponseError(
@@ -103,11 +103,11 @@ final class Bootstrap extends BootstrapBase
 
                 logger('Routing call: ' . $controllerClass . '::' . $method);
 
-                return call_user_func([$this->createObjectFor($controllerClass), $method]);
+                return call_user_func([$this->buildInstanceFor($controllerClass), $method]);
             } catch (Exception $e) {
                 processException($e);
 
-                $response->headers()->set('Content-type', 'application/json; charset=utf-8');
+                $response->code(Code::INTERNAL_SERVER_ERROR->value);
 
                 return $response->body(JsonRpcResponse::getResponseException($e, 0));
             } finally {

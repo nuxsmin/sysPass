@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -24,25 +22,23 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Upgrade\Services;
+namespace SP\Domain\Http;
 
 /**
- * Class UpgradeApp
+ * Enum Code
  */
-final class UpgradeApp extends UpgradeBase
+enum Code: int
 {
-    protected static function getUpgrades(): array
-    {
-        return [];
-    }
-
-    protected function applyUpgrade(string $version): bool
-    {
-        return true;
-    }
-
-    protected function commitVersion(string $version): void
-    {
-        $this->configData->setAppVersion($version);
-    }
+    case INTERNAL_SERVER_ERROR = 500;
+    case SERVICE_UNAVALIABLE   = 503;
+    case BAD_REQUEST           = 400;
+    case UNAUTHORIZED          = 401;
+    case FORBIDDEN             = 403;
+    case NOT_FOUND             = 404;
+    case OK                    = 200;
+    case CREATED               = 201;
+    case NO_CONTENT            = 204;
+    case MOVED_PERMANENTLY     = 301;
+    case FOUND                 = 302;
+    case NOT_MODIFIED          = 304;
 }

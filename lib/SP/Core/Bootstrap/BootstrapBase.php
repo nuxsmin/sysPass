@@ -46,8 +46,6 @@ use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\Upgrade\Services\UpgradeConfig;
-use SP\Infrastructure\File\FileException;
 use Symfony\Component\Debug\Debug;
 use Throwable;
 
@@ -61,9 +59,9 @@ use function SP\processException;
  */
 abstract class BootstrapBase implements BootstrapInterface
 {
-    public const CONTEXT_ACTION_NAME = "_actionName";
+    public const CONTEXT_ACTION_NAME = '_actionName';
 
-    protected const OOPS_MESSAGE = "Oops, it looks like this content does not exist...";
+    protected const OOPS_MESSAGE = 'Oops, it looks like this content does not exist...';
     public static mixed $LOCK;
     public static bool  $checkPhpVersion = false;
 
@@ -146,7 +144,6 @@ abstract class BootstrapBase implements BootstrapInterface
     /**
      * @throws CheckException
      * @throws ConfigException
-     * @throws FileException
      * @throws InitializationException
      */
     final protected function initializeCommon(): void
@@ -239,23 +236,22 @@ abstract class BootstrapBase implements BootstrapInterface
      */
     private function initConfig(): void
     {
-        UpgradeConfig::needsUpgrade($this->configData->getConfigVersion());
-
         ConfigUtil::checkConfigDir();
     }
 
     /**
-     * @deprecated
-     * FIXME: delete
+     * @template T of object
+     * @param class-string<T> $class
+     * @return T&object
      */
-    final protected function createObjectFor(string $class): object
+    final protected function buildInstanceFor(string $class): object
     {
         try {
             return $this->container->get($class);
         } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
             processException($e);
 
-            throw new RuntimeException($e);
+            throw new RuntimeException($e->getMessage());
         }
     }
 }

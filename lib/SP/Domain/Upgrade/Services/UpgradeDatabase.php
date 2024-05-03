@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -30,10 +30,12 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\UpgradeVersion;
+use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
-use SP\Domain\Log\Ports\FileHandlerProvider;
+use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
 use SP\Infrastructure\Database\MysqlFileParser;
-use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileSystem;
 
@@ -45,44 +47,32 @@ use function SP\processException;
 /**
  * Class UpgradeDatabase
  */
-final class UpgradeDatabase extends UpgradeBase
+#[UpgradeVersion('400.24210101')]
+final class UpgradeDatabase extends Service implements UpgradeHandlerService
 {
     public function __construct(
         Application                        $application,
-        FileHandlerProvider $fileHandlerProvider,
         private readonly DatabaseInterface $database,
     ) {
-        parent::__construct($application, $fileHandlerProvider);
-    }
-
-    protected static function getUpgrades(): array
-    {
-        return [
-            '400.24210101',
-        ];
-    }
-
-    protected function commitVersion(string $version): void
-    {
-        $this->configData->setDatabaseVersion($version);
+        parent::__construct($application);
     }
 
     /**
      * @throws UpgradeException
      */
-    protected function applyUpgrade(string $version): bool
+    public function apply(string $version, ConfigDataInterface $configData): bool
     {
         $count = 0;
 
         foreach ($this->getQueriesFromFile($version) as $query) {
             $count++;
 
-            try {
-                $this->eventDispatcher->notify(
-                    'upgrade.db.process',
-                    new Event($this, EventMessage::factory()->addDetail(__u('Version'), $version))
-                );
+            $this->eventDispatcher->notify(
+                'upgrade.db.process',
+                new Event($this, EventMessage::factory()->addDetail(__u('Version'), $version))
+            );
 
+            try {
                 $this->database->runQueryRaw($query);
             } catch (Exception $e) {
                 processException($e);
@@ -109,6 +99,8 @@ final class UpgradeDatabase extends UpgradeBase
             throw UpgradeException::error(__u('Update file does not contain data'), $version);
         }
 
+        $configData->setDatabaseVersion($version);
+
         $this->eventDispatcher->notify(
             'upgrade.db.process',
             new Event(
@@ -123,13 +115,13 @@ final class UpgradeDatabase extends UpgradeBase
     /**
      * @throws UpgradeException
      */
-    private function getQueriesFromFile(string $filename): iterable
+    private function getQueriesFromFile(string $version): iterable
     {
-        $fileName = FileSystem::buildPath(SQL_PATH, str_replace('.', '', $filename) . '.sql');
+        $filename = FileSystem::buildPath(SQL_PATH, str_replace('.', '', $version) . '.sql');
 
         try {
-            return (new MysqlFileParser(new FileHandler($fileName)))->parse('$$');
-        } catch (FileException $e) {
+            return (new MysqlFileParser(new FileHandler($filename)))->parse('$$');
+        } catch (Exception $e) {
             processException($e);
 
             throw UpgradeException::error($e->getMessage());

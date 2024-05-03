@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -88,7 +89,7 @@ class FileSystem
      * @param string $file
      * @param class-string<T>|null $class
      *
-     * @return null|T
+     * @return mixed|T
      * @throws FileException
      * @throws InvalidClassException
      */
@@ -98,13 +99,13 @@ class FileSystem
             $out = require $file;
 
             if ($class && class_exists($class) && !$out instanceof $class) {
-                throw new InvalidClassException(__u('Invalid class for loaded file data'));
+                throw InvalidClassException::error(__u('Invalid class for loaded file data'));
             }
 
             return $out;
-        } else {
-            throw new FileException(sprintf(__('File not found: %s'), $file));
         }
+
+        throw FileException::error(sprintf(__('File not found: %s'), $file));
     }
 
     /**

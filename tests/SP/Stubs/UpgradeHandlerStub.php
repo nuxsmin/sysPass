@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -24,38 +24,21 @@
 
 declare(strict_types=1);
 
-namespace SP\Domain\Upgrade\Services;
+namespace SP\Tests\Stubs;
 
-use SP\Core\Application;
-use SP\Domain\Log\Ports\FileHandlerProvider;
-use SP\Domain\Upgrade\Ports\UpgradeConfigService;
+use SP\Domain\Common\Attributes\UpgradeVersion;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
 
 /**
- * Class UpgradeConfig
+ * Class UpgradeHandlerStub
  */
-final class UpgradeConfig extends UpgradeBase implements UpgradeConfigService
+#[UpgradeVersion('400.00000002')]
+#[UpgradeVersion('400.00000001')]
+#[UpgradeVersion('400.00000000')]
+class UpgradeHandlerStub implements UpgradeHandlerService
 {
-    public function __construct(
-        Application            $application,
-        FileHandlerProvider $fileLogHandlerProvider
-    ) {
-        parent::__construct($application, $fileLogHandlerProvider);
-
-        $this->eventDispatcher->attach($fileLogHandlerProvider);
-    }
-
-
-    protected static function getUpgrades(): array
-    {
-        return [];
-    }
-
-    protected function commitVersion(string $version): void
-    {
-        $this->configData->setConfigVersion($version);
-    }
-
-    protected function applyUpgrade(string $version): bool
+    public function apply(string $version, ConfigDataInterface $configData): bool
     {
         return true;
     }
