@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -130,7 +130,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
     /**
      * Searches for items by a given filter
      *
-     * @param \SP\Domain\Core\Dtos\ItemSearchDto $itemSearchData
+     * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult
      * @throws ConstraintException

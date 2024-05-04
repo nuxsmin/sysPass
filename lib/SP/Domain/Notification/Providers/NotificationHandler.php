@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -28,6 +28,8 @@ namespace SP\Domain\Notification\Providers;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
+use SP\Domain\Common\Providers\EventsTrait;
+use SP\Domain\Common\Providers\Provider;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Notification\Models\Notification;
 use SP\Domain\Notification\Ports\NotificationService;
@@ -40,9 +42,9 @@ use function SP\processException;
  *
  * @package SP\Domain\Providers\Notification
  */
-final class NotificationHandler extends \SP\Domain\Common\Providers\Provider implements EventReceiver
+final class NotificationHandler extends Provider implements EventReceiver
 {
-    use \SP\Domain\Common\Providers\EventsTrait;
+    use EventsTrait;
 
     public const EVENTS = [
         'request.account',

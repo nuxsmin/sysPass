@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -32,14 +32,14 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Auth\Ports\LdapService;
-use SP\Domain\Common\Services\Service;
-use SP\Domain\Import\Dtos\LdapImportParamsDto;
-use SP\Domain\Import\Dtos\LdapImportResultsDto;
-use SP\Domain\Import\Ports\LdapImportService;
 use SP\Domain\Auth\Providers\Ldap\LdapBase;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Auth\Providers\Ldap\LdapResults;
+use SP\Domain\Common\Services\Service;
+use SP\Domain\Import\Dtos\LdapImportParamsDto;
+use SP\Domain\Import\Dtos\LdapImportResultsDto;
+use SP\Domain\Import\Ports\LdapImportService;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;

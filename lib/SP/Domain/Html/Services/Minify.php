@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -133,7 +133,7 @@ abstract class Minify implements MinifyService
     /**
      * @param FileHandlerInterface[] $files
      * @param bool $minify
-     * @return \SP\Domain\Html\Ports\MinifyService
+     * @return MinifyService
      * @throws FileException
      */
     public function addFiles(array $files, bool $minify = true): MinifyService
@@ -149,7 +149,7 @@ abstract class Minify implements MinifyService
      * @param FileHandlerInterface $fileHandler
      * @param bool $minify Si es necesario reducir
      *
-     * @return \SP\Domain\Html\Ports\MinifyService
+     * @return MinifyService
      * @throws FileException
      */
     public function addFile(FileHandlerInterface $fileHandler, bool $minify = true): MinifyService

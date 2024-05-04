@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -31,10 +31,10 @@ use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapCheckService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Auth\Ports\LdapService;
-use SP\Domain\Common\Services\Service;
 use SP\Domain\Auth\Providers\Ldap\LdapBase;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Common\Services\Service;
 
 /**
  * Class LdapCheck

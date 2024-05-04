@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -23,7 +23,7 @@
  */
 
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin

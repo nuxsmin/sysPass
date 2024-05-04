@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -25,10 +25,10 @@ declare(strict_types=1);
 
 namespace SP\Domain\Import\Ports;
 
-use SP\Domain\Import\Dtos\LdapImportParamsDto;
-use SP\Domain\Import\Dtos\LdapImportResultsDto;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Import\Dtos\LdapImportParamsDto;
+use SP\Domain\Import\Dtos\LdapImportResultsDto;
 
 /**
  * Class UserLdapService

@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -28,6 +28,7 @@ namespace SP\Domain\Auth\Providers;
 use SP\Core\Application;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Common\Providers\Provider;
 use SP\Domain\User\Dtos\UserDataDto;
 use SplObjectStorage;
 
@@ -40,7 +41,7 @@ defined('APP_ROOT') || die();
  *
  * Esta clase es la encargada de realizar la autentificación de usuarios de sysPass.
  */
-final class AuthProvider extends \SP\Domain\Common\Providers\Provider implements AuthProviderService
+final class AuthProvider extends Provider implements AuthProviderService
 {
     /**
      * @var SplObjectStorage<AuthService,AuthType>

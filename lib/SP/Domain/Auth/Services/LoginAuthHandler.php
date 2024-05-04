@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -34,14 +34,14 @@ use SP\Domain\Auth\Ports\LoginAuthHandlerService;
 use SP\Domain\Auth\Providers\AuthType;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthData;
 use SP\Domain\Auth\Providers\Database\DatabaseAuthData;
+use SP\Domain\Auth\Providers\Ldap\LdapAuthData;
+use SP\Domain\Auth\Providers\Ldap\LdapCodeEnum;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\Auth\Providers\Ldap\LdapAuthData;
-use SP\Domain\Auth\Providers\Ldap\LdapCodeEnum;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserLoginRequest;
 use SP\Domain\User\Ports\UserService;

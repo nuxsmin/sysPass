@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -30,6 +30,8 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Messages\MailMessage;
 use SP\Core\Messages\TextFormatter;
+use SP\Domain\Common\Providers\EventsTrait;
+use SP\Domain\Common\Providers\Provider;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Notification\Ports\MailService;
@@ -40,9 +42,9 @@ use function SP\processException;
 /**
  * Class MailHandler
  */
-final class MailHandler extends \SP\Domain\Common\Providers\Provider implements EventReceiver
+final class MailHandler extends Provider implements EventReceiver
 {
-    use \SP\Domain\Common\Providers\EventsTrait;
+    use EventsTrait;
 
     public const EVENTS = [
         'create.',

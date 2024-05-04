@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -110,7 +110,7 @@ final class AccountSearchData extends Service implements AccountSearchDataBuilde
     /**
      * @param QueryResult $queryResult
      *
-     * @return \SP\Domain\Account\Adapters\AccountSearchItem[]
+     * @return AccountSearchItem[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
