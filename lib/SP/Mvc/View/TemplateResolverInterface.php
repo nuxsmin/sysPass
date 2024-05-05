@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,36 +22,17 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core;
+namespace SP\Mvc\View;
 
-use ArrayObject;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
 
 /**
- * Class DataCollection
- *
- * @template TKey
- * @template TValue
- * @template-extends ArrayObject<TKey, TValue>
+ * Interface TemplateResolver
  */
-abstract class DataCollection extends ArrayObject
+interface TemplateResolverInterface
 {
-
-    public function get(string $key, mixed $default = null): mixed
-    {
-        if ($this->offsetExists($key)) {
-            return $this->offsetGet($key);
-        }
-
-        return $default;
-    }
-
-    public function set(string $key, mixed $value): void
-    {
-        $this->offsetSet($key, $value);
-    }
-
-    public function exists(string $key): bool
-    {
-        return $this->offsetExists($key);
-    }
+    /**
+     * @throws FileNotFoundException
+     */
+    public function getTemplateFor(string $base, string $name): string;
 }

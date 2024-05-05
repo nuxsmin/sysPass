@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -55,9 +56,7 @@ trait ControllerTrait
 
     protected function getViewBaseName(): string
     {
-        $parts = explode('\\', static::class);
-
-        return strtolower($parts[count($parts) - 2]);
+        return strtolower(array_slice(explode('\\', static::class), -2, 1)[0]);
     }
 
     /**

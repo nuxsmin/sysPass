@@ -96,7 +96,6 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
     private function getUserPreferences(): DataTab
     {
         $template = clone $this->view;
-        $template->setBase('usersettings');
         $template->addTemplate('general');
 
         $userData = $this->session->getUserData();

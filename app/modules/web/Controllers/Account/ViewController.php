@@ -78,7 +78,7 @@ final class ViewController extends AccountViewBase
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            if ($this->isAjax === false && !$this->view->isUpgraded()) {
+            if ($this->isAjax === false) {
                 $this->upgradeView();
             }
 

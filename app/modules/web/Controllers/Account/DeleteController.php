@@ -101,7 +101,7 @@ final class DeleteController extends AccountControllerBase
                 new Event($e)
             );
 
-            if ($this->isAjax === false && !$this->view->isUpgraded()) {
+            if ($this->isAjax === false) {
                 $this->upgradeView();
             }
 

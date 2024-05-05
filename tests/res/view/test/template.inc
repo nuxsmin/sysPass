@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
@@ -23,14 +22,4 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Mvc\View;
-
-use SP\Core\DataCollection;
-
-/**
- * Class TemplateVarCollection
- */
-final class TemplateVarCollection extends DataCollection
-{
-
-}
+echo 'test_template';

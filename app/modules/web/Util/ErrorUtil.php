@@ -30,7 +30,6 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Services\UpdatedMasterPassException;
-use SP\Mvc\View\Template;
 use SP\Mvc\View\TemplateInterface;
 
 use function SP\__;
@@ -121,21 +120,12 @@ final class ErrorUtil
     private static function addErrorTemplate(TemplateInterface $view, string $replace = null): void
     {
         if ($replace === null) {
-            $view->resetTemplates();
-
-            if ($view->hasContentTemplates()) {
-                $view->resetContentTemplates();
-                $view->addContentTemplate('error', Template::PARTIALS_DIR);
-            } else {
-                $view->addTemplate('error', Template::PARTIALS_DIR);
-            }
-        } elseif ($view->hasContentTemplates()) {
-            $view->removeContentTemplate($replace);
-            $view->addContentTemplate('error', Template::PARTIALS_DIR);
+            $view->reset();
         } else {
-            $view->removeTemplate($replace);
-            $view->addTemplate('error', Template::PARTIALS_DIR);
+            $view->remove($replace);
         }
+
+        $view->addPartial('error');
     }
 
     /**

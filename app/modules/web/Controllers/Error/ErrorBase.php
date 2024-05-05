@@ -47,8 +47,6 @@ abstract class ErrorBase
     {
         $this->view = $template;
         $this->layoutHelper = $layoutHelper;
-
-        $this->view->setBase('error');
     }
 
     /**

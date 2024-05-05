@@ -63,7 +63,7 @@ final class CreateController extends AccountViewBase
         } catch (Exception $e) {
             processException($e);
 
-            if ($this->isAjax === false && !$this->view->isUpgraded()) {
+            if ($this->isAjax === false) {
                 $this->upgradeView();
             }
 

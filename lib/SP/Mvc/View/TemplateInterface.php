@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,126 +26,104 @@ declare(strict_types=1);
 
 namespace SP\Mvc\View;
 
-
-use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Domain\Core\UI\ThemeInterface;
-
 /**
- * Class Template
- *
- * A very basic template engine...
- *
- * Idea original de http://www.sitepoint.com/author/agervasio/
- * publicada en http://www.sitepoint.com/flexible-view-manipulation-1/
- *
+ * Interface TemplateInterface
  */
 interface TemplateInterface
 {
     /**
-     * Añadir una nueva plantilla al array de plantillas de la clase
+     * Add a new content template
      *
-     * @param  string  $name  Con el nombre del archivo de plantilla
-     * @param  string|null  $base  Directorio base para la plantilla
+     * @param string $name Template file name
+     * @param string|null $base Template base directory
      */
-    public function addContentTemplate(string $name, ?string $base = null): string;
+    public function addContentTemplate(string $name, ?string $base = null): void;
 
     /**
      * Removes a template from the stack
      */
-    public function removeTemplate(string $name): TemplateInterface;
+    public function remove(string $name): void;
 
     /**
-     * Removes a template from the stack
+     * Add a new template
+     *
+     * @param string $name Template file name
+     * @param string|null $base Template base directory
      */
-    public function removeContentTemplate(string $name): TemplateInterface;
+    public function addTemplate(string $name, ?string $base = null): void;
 
     /**
-     * Añadir una nueva plantilla al array de plantillas de la clase
+     * Add a new partial template
      *
-     * @param  string  $name  Con el nombre del archivo de plantilla
-     * @param  string|null  $base  Directorio base para la plantilla
-     *
-     * @return string
+     * @param string $name Template file name
      */
-    public function addTemplate(string $name, ?string $base = null): string;
+    public function includePartial(string $name): string;
 
     /**
-     * Añadir una nueva plantilla dentro de una plantilla
+     * Include a new template without adding to the templates list
      *
-     * @param  string  $file  Con el nombre del archivo de plantilla
-     *
-     * @return bool
+     * @param string $name Template file name
+     * @param string|null $base Template base directory
      */
-    public function includePartial(string $file);
+    public function includeTemplate(string $name, ?string $base = null): string;
 
     /**
-     * Añadir una nueva plantilla dentro de una plantilla
+     * Render the current templates. The output is buffered and then the content is returned
      *
-     * @param  string  $file  Con el nombre del archivo de plantilla
-     * @param  string|null  $base  Directorio base para la plantilla
-     *
-     * @return bool
-     */
-    public function includeTemplate(string $file, ?string $base = null);
-
-    /**
-     * Returns a variable value
-     */
-    public function get(string $name);
-
-    /**
-     * Mostrar la plantilla solicitada.
-     * La salida se almacena en buffer y se devuelve el contenido
-     *
-     * @return string Con el contenido del buffer de salida
-     * @throws FileNotFoundException
+     * @return string the templates content
      */
     public function render(): string;
 
     /**
-     * Anexar el valor de la variable al array de la misma en el array de variables
+     * Append the value to an existing array variable
      *
-     * @param  string  $name  nombre de la variable
-     * @param  mixed  $value  valor de la variable
-     * @param  string|null  $scope  string ámbito de la variable
-     * @param  int|null  $index  string índice del array
+     * @param string $name
+     * @param mixed $value
      */
-    public function append(string $name, $value, ?string $scope = null, int $index = null): void;
+    public function append(string $name, mixed $value): void;
 
     /**
-     * Reset de las plantillas añadidas
+     * Reset all the added templates
      */
-    public function resetTemplates(): TemplateInterface;
-
-    /**
-     * Reset de las plantillas añadidas
-     */
-    public function resetContentTemplates(): TemplateInterface;
+    public function reset(): void;
 
     public function getBase(): string;
-
-    public function setBase(string $base): void;
-
-    public function getTheme(): ThemeInterface;
 
 
     public function getContentTemplates(): array;
 
-    public function hasContentTemplates(): bool;
-
     /**
      * Assigns the current templates to contentTemplates
      */
-    public function upgrade(): TemplateInterface;
+    public function upgrade(): void;
 
     /**
-     * Crear la variable y asignarle un valor en el array de variables
+     * Create a template var.
      *
-     * @param  string  $name  nombre de la variable
-     * @param  mixed  $value  valor de la variable
-     * @param  string|null  $scope  string ámbito de la variable
+     * @param string $name variable name
+     * @param mixed $value variable value
      */
-    public function assign(string $name, $value = '', ?string $scope = null): void;
+    public function assign(string $name, mixed $value): void;
 
-    public function isUpgraded(): bool;
+    /**
+     * @param string $name
+     * @return void
+     */
+    public function setLayout(string $name): void;
+
+    /**
+     * Add a new partial template
+     *
+     * @param string $name Template file name
+     */
+    public function addPartial(string $name): void;
+
+    /**
+     * Create a template var with a scope. It will preffix the variable name with the scope set.
+     *
+     * @param string $name variable name
+     * @param mixed $value variable value
+     * @param string $scope variable scope
+     */
+    public function assignWithScope(string $name, mixed $value, string $scope): void;
 }

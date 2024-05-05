@@ -31,8 +31,6 @@ use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Core\Bootstrap\RouteContext;
-use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -75,17 +73,13 @@ final class Bootstrap extends BootstrapBase
             try {
                 logger('WEB route');
 
-                $route = Filter::getString($request->param('r', 'index/index'));
-
-                $routeContextData = RouteContext::getRouteContextData($route);
-
                 $controllerClass = self::getClassFor(
-                    $routeContextData->getController(),
-                    $routeContextData->getActionName()
+                    $this->routeContextData->getController(),
+                    $this->routeContextData->getActionName()
                 );
 
-                if (!method_exists($controllerClass, $routeContextData->getMethodName())) {
-                    logger($controllerClass . '::' . $routeContextData->getMethodName());
+                if (!method_exists($controllerClass, $this->routeContextData->getMethodName())) {
+                    logger($controllerClass . '::' . $this->routeContextData->getMethodName());
 
                     $response->code(Code::NOT_FOUND->value);
                     $response->append(self::OOPS_MESSAGE);
@@ -93,7 +87,7 @@ final class Bootstrap extends BootstrapBase
                     return $response;
                 }
 
-                $this->context->setTrasientKey(self::CONTEXT_ACTION_NAME, $routeContextData->getActionName());
+                $this->context->setTrasientKey(self::CONTEXT_ACTION_NAME, $this->routeContextData->getActionName());
 
                 $this->setCors($response);
 
@@ -105,14 +99,14 @@ final class Bootstrap extends BootstrapBase
                     sprintf(
                         'Routing call: %s::%s::%s',
                         $controllerClass,
-                        $routeContextData->getMethodName(),
-                        print_r($routeContextData->getMethodParams(), true)
+                        $this->routeContextData->getMethodName(),
+                        print_r($this->routeContextData->getMethodParams(), true)
                     )
                 );
 
                 return call_user_func_array(
-                    [$this->buildInstanceFor($controllerClass), $routeContextData->getMethodName()],
-                    $routeContextData->getMethodParams()
+                    [$this->buildInstanceFor($controllerClass), $this->routeContextData->getMethodName()],
+                    $this->routeContextData->getMethodParams()
                 );
             } catch (SessionTimeout) {
                 logger('Session timeout');

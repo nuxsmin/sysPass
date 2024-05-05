@@ -100,7 +100,6 @@ abstract class ControllerBase
         $this->view = $webControllerHelper->getTemplate();
         $this->uriContext = $webControllerHelper->getUriContext();
 
-        $this->view->setBase($this->getViewBaseName());
         $this->isAjax = $this->request->isAjax();
         $this->actionName = $this->session->getTrasientKey(BootstrapBase::CONTEXT_ACTION_NAME);
 
@@ -130,10 +129,10 @@ abstract class ControllerBase
         $this->view->assign('configData', $this->configData);
 
         if ($loggedIn) {
-            $this->view->assign('ctx_userId', $this->userData->getId());
-            $this->view->assign('ctx_userGroupId', $this->userData->getUserGroupId());
-            $this->view->assign('ctx_userIsAdminApp', $this->userData->getIsAdminApp());
-            $this->view->assign('ctx_userIsAdminAcc', $this->userData->getIsAdminAcc());
+            $this->view->assignWithScope('userId', $this->userData->getId(), 'ctx');
+            $this->view->assignWithScope('userGroupId', $this->userData->getUserGroupId(), 'ctx');
+            $this->view->assignWithScope('userIsAdminApp', $this->userData->getIsAdminApp(), 'ctx');
+            $this->view->assignWithScope('userIsAdminAcc', $this->userData->getIsAdminAcc(), 'ctx');
         }
 
         $this->view->assign('action', $this->actionName);
@@ -158,13 +157,7 @@ abstract class ControllerBase
      */
     protected function render(): string
     {
-        try {
-            return $this->view->render();
-        } catch (FileNotFoundException $e) {
-            processException($e);
-
-            return $e->getMessage();
-        }
+        return $this->view->render();
     }
 
     /**
@@ -173,11 +166,6 @@ abstract class ControllerBase
     protected function upgradeView(?string $page = null): void
     {
         $this->view->upgrade();
-
-        if ($this->view->isUpgraded() === false) {
-            return;
-        }
-
         $this->view->assign('contentPage', $page ?: strtolower($this->getViewBaseName()));
 
         try {

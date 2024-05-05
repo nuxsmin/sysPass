@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -34,6 +35,7 @@ use Psr\Container\ContainerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
 use SP\Core\Application;
+use SP\Core\Bootstrap\RouteContext;
 use SP\Core\Bootstrap\UriContext;
 use SP\Core\Context\ContextFactory;
 use SP\Core\Crypt\Crypt;
@@ -63,11 +65,13 @@ use SP\Domain\Auth\Providers\Ldap\LdapAuth;
 use SP\Domain\Auth\Providers\Ldap\LdapBase;
 use SP\Domain\Auth\Providers\Ldap\LdapConnection;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Services\ConfigBackup;
 use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
@@ -166,7 +170,8 @@ final class CoreDefinitions
                     create(FileCache::class)->constructor(ThemeIcons::ICONS_CACHE_FILE)
                 ),
             ThemeInterface::class => autowire(Theme::class),
-            TemplateInterface::class => autowire(Template::class),
+            TemplateInterface::class => autowire(Template::class)
+                ->constructorParameter('base', factory([RouteContextData::class, 'getController'])),
             DatabaseAuthService::class => autowire(DatabaseAuth::class),
             BrowserAuthService::class => autowire(BrowserAuth::class),
             LdapParams::class => factory([LdapParams::class, 'getFrom']),
@@ -254,7 +259,10 @@ final class CoreDefinitions
             RequestBasedPasswordInterface::class => autowire(RequestBasedPassword::class),
             MinifyService::class => autowire(Minify::class),
             BackupFileHelperService::class => autowire(BackupFileHelper::class)
-                ->constructorParameter('path', new DirectoryHandler(BACKUP_PATH))
+                ->constructorParameter('path', new DirectoryHandler(BACKUP_PATH)),
+            RouteContextData::class => factory(static function (KleinRequest $request) {
+                return RouteContext::getRouteContextData(Filter::getString($request->param('r', 'index/index')));
+            })
         ];
     }
 }

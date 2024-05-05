@@ -41,6 +41,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigUtil;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\ConfigException;
@@ -68,11 +69,12 @@ abstract class BootstrapBase implements BootstrapInterface
     final public function __construct(
         protected readonly ConfigDataInterface $configData,
         protected readonly Klein               $router,
-        protected readonly RequestService $request,
+        protected readonly RequestService   $request,
         protected readonly PhpExtensionChecker $extensionChecker,
-        protected readonly Context        $context,
+        protected readonly Context          $context,
         private readonly ContainerInterface    $container,
         protected readonly Response            $response,
+        protected readonly RouteContextData $routeContextData
     ) {
         // Set the default language
         Language::setLocales('en_US');

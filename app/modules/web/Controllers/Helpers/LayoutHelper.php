@@ -405,7 +405,7 @@ final class LayoutHelper extends HelperBase
      */
     public function getPublicLayout(string $template, string $page = ''): LayoutHelper
     {
-        $this->view->addTemplate('main', '_layouts');
+        $this->view->setLayout('main');
         $this->view->addContentTemplate($template);
         $this->view->assign('useFixedHeader', true);
 
@@ -425,7 +425,7 @@ final class LayoutHelper extends HelperBase
      */
     public function getCustomLayout(string $template, string $page = ''): LayoutHelper
     {
-        $this->view->addTemplate('main', '_layouts');
+        $this->view->setLayout('main');
         $this->view->addContentTemplate($template);
 
         $this->setPage($page);

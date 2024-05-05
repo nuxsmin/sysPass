@@ -190,7 +190,6 @@ final class IndexController extends ControllerBase
     protected function getConfigGeneral(): DataTab
     {
         $template = clone $this->view;
-        $template->setBase('config');
         $template->addTemplate('general');
 
         $template->assign(
@@ -253,7 +252,6 @@ final class IndexController extends ControllerBase
     protected function getAccountConfig(): DataTab
     {
         $template = clone $this->view;
-        $template->setBase('config');
         $template->addTemplate('accounts');
         $template->assign('gdIsAvailable', $this->extensionChecker->checkGd());
 
@@ -284,7 +282,6 @@ final class IndexController extends ControllerBase
     protected function getWikiConfig(): DataTab
     {
         $template = clone $this->view;
-        $template->setBase('config');
         $template->addTemplate('wiki');
 
         $template->assign(
@@ -304,7 +301,6 @@ final class IndexController extends ControllerBase
     protected function getLdapConfig(): DataTab
     {
         $template = clone $this->view;
-        $template->setBase('config');
         $template->addTemplate('ldap');
 
         $template->assign(
@@ -366,7 +362,6 @@ final class IndexController extends ControllerBase
     protected function getMailConfig(): DataTab
     {
         $template = clone $this->view;
-        $template->setBase('config');
         $template->addTemplate('mail');
 
         $template->assign('mailSecurity', ['SSL', 'TLS']);
@@ -408,7 +403,6 @@ final class IndexController extends ControllerBase
     protected function getEncryptionConfig(): DataTab
     {
         $template = clone $this->view;
-        $template->setBase('config');
         $template->addTemplate('encryption');
 
         $numAccounts = $this->accountService->getTotalNumAccounts();
@@ -455,7 +449,6 @@ final class IndexController extends ControllerBase
     protected function getBackupConfig(): DataTab
     {
         $template = clone $this->view;
-        $template->setBase('config');
         $template->addTemplate('backup');
         $template->assign(
             'pharIsAvailable',
@@ -530,7 +523,6 @@ final class IndexController extends ControllerBase
     protected function getImportConfig(): DataTab
     {
         $template = clone $this->view;
-        $template->setBase('config');
         $template->addTemplate('import');
 
         $template->assign(
@@ -555,7 +547,6 @@ final class IndexController extends ControllerBase
     protected function getInfo(): DataTab
     {
         $template = clone $this->view;
-        $template->setBase('config');
         $template->addTemplate('info');
 
         $template->assign('dbInfo', $this->databaseUtil->getDBinfo());
