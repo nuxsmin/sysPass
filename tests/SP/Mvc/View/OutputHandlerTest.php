@@ -22,19 +22,31 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Mvc\View;
+declare(strict_types=1);
+
+namespace SP\Tests\Mvc\View;
+
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
+use SP\Mvc\View\OutputHandler;
 
 /**
- * Interface OutputHandler
+ * Class OutputHandlerTest
  */
-interface OutputHandlerInterface
+#[Group('unitary')]
+class OutputHandlerTest extends TestCase
 {
-    /**
-     * Capture the output buffer and return the evaluated content.
-     *
-     * @param callable $callback A callable that implements the content evaluated
-     * (eg. {@link https://www.php.net/manual/en/function.include.php})
-     * @return string The parsed content
-     */
-    public function bufferedContent(callable $callback): string;
+
+    public function testBufferedContent()
+    {
+        $callback = function () {
+            echo 'Hello world';
+            echo 'test_output';
+        };
+
+        $outputHandler = new OutputHandler();
+        $out = $outputHandler->bufferedContent($callback);
+
+        $this->assertEquals('Hello worldtest_output', $out);
+    }
 }

@@ -53,6 +53,7 @@ final class Template implements TemplateInterface
     private TemplateCollection $contentTemplates;
     private TemplateCollection $vars;
     private bool               $upgraded = false;
+    private readonly string $baseUrl;
 
     public function __construct(
         private readonly OutputHandlerInterface    $outputHandler,
@@ -65,6 +66,8 @@ final class Template implements TemplateInterface
         $this->vars = new TemplateCollection();
         $this->templates = new TemplateCollection();
         $this->contentTemplates = new TemplateCollection();
+        $this->baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
+                         $this->uriContext->getSubUri();
     }
 
     /**
@@ -172,6 +175,9 @@ final class Template implements TemplateInterface
         $this->contentTemplates->exchangeArray([]);
     }
 
+    /**
+     * TODO: remove
+     */
     public function getBase(): string
     {
         return $this->base;
@@ -228,7 +234,7 @@ final class Template implements TemplateInterface
 
     protected function includeTemplates(): void
     {
-        // This variables will be included in the same scope as included files
+        // These variables will be included in the same scope as included files
         $icons = $this->themeIcons;
         $_getvar = $this->vars->get(...);
         $_getRoute = $this->getRoute(...);
@@ -240,12 +246,6 @@ final class Template implements TemplateInterface
 
     protected function getRoute(string $path): string
     {
-        $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
-                   $this->uriContext->getSubUri();
-
-        $uri = new Uri($baseUrl);
-        $uri->addParam('r', $path);
-
-        return $uri->getUri();
+        return (new Uri($this->baseUrl))->addParam('r', $path)->getUri();
     }
 }
