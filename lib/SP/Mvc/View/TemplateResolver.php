@@ -31,7 +31,6 @@ use SP\Domain\Core\UI\ThemeInterface;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\__;
-use function SP\logger;
 
 /**
  * Class TemplateResolver
@@ -57,8 +56,6 @@ final readonly class TemplateResolver implements TemplateResolverInterface
 
         if (!is_readable($template)) {
             $msg = sprintf(__('Unable to retrieve "%s" template: %s'), $template, $name);
-
-            logger($msg);
 
             throw FileNotFoundException::warning($msg);
         }

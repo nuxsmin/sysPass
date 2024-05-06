@@ -65,7 +65,8 @@
     "fabpot/goutte": "^v3.2",
     "nikic/php-parser": "^v5",
     "squizlabs/php_codesniffer": "^3",
-    "phpstan/phpstan": "^1.9"
+    "phpstan/phpstan": "^1.9",
+    "mikey179/vfsstream": "@stable"
   },
   "scripts": {
     "phpcs": "phpcs --standard=PSR2 lib",
