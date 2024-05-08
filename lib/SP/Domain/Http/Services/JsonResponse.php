@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,14 +26,12 @@ declare(strict_types=1);
 
 namespace SP\Domain\Http\Services;
 
-use JsonException;
 use Klein\Response;
+use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Http\Header;
 use SP\Domain\Http\Ports\JsonResponseService;
-
-use function SP\__u;
 
 /**
  * Class JsonResponse
@@ -52,11 +51,7 @@ final readonly class JsonResponse implements JsonResponseService
     }
 
     /**
-     * Devuelve una respuesta en formato JSON
-     *
-     * @param string $data JSON string
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function sendRaw(string $data): bool
     {
@@ -68,44 +63,24 @@ final readonly class JsonResponse implements JsonResponseService
     }
 
     /**
-     * Devuelve una respuesta en formato JSON con el estado y el mensaje.
-     *
-     * @param JsonMessage $jsonMessage
-     *
-     * @return bool
-     * @throws SPException
+     * @inheritDoc
      */
     public function send(JsonMessage $jsonMessage): bool
     {
         $this->response->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_JSON->value);
 
         try {
-            $this->response->body(self::buildJsonFrom($jsonMessage));
+            $this->response->body(Serde::serializeJson($jsonMessage));
         } catch (SPException $e) {
             $jsonMessage = new JsonMessage($e->getMessage());
-            $jsonMessage->addMessage($e->getHint());
 
-            $this->response->body(self::buildJsonFrom($jsonMessage));
+            if ($e->getHint()) {
+                $jsonMessage->addMessage($e->getHint());
+            }
+
+            $this->response->body(Serde::serializeJson($jsonMessage));
         }
 
         return $this->response->send(true)->isSent();
-    }
-
-    /**
-     * Devuelve una cadena en formato JSON
-     *
-     * @param mixed $data
-     * @param int $flags JSON_* flags
-     *
-     * @return string
-     * @throws SPException
-     */
-    public static function buildJsonFrom(mixed $data, int $flags = 0): string
-    {
-        try {
-            return json_encode($data, JSON_THROW_ON_ERROR | $flags);
-        } catch (JsonException $e) {
-            throw new SPException(__u('Encoding error'), SPException::ERROR, $e->getMessage());
-        }
     }
 }

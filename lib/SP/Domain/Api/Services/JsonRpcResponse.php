@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -27,8 +28,8 @@ namespace SP\Domain\Api\Services;
 
 use Exception;
 use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Services\JsonResponse;
 
 /**
  * Class JsonRpcResponse
@@ -53,11 +54,14 @@ final class JsonRpcResponse
         ApiResponse $apiResponse,
         int $id
     ): string {
-        return JsonResponse::buildJsonFrom([
-                                               'jsonrpc' => '2.0',
-                                               'result' => $apiResponse->getResponse(),
-                                               'id' => $id,
-                                           ], JSON_UNESCAPED_SLASHES);
+        return Serde::serializeJson(
+            [
+                'jsonrpc' => '2.0',
+                'result' => $apiResponse->getResponse(),
+                'id' => $id,
+            ],
+            JSON_UNESCAPED_SLASHES
+        );
     }
 
     public static function getResponseException(Exception $e, int $id): string

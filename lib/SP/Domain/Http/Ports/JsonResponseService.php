@@ -34,7 +34,7 @@ use SP\Domain\Http\Dtos\JsonMessage;
 interface JsonResponseService
 {
     /**
-     * Devuelve una respuesta en formato JSON
+     * Return a response with JSON headers
      *
      * @param string $data JSON string
      *
@@ -43,7 +43,7 @@ interface JsonResponseService
     public function sendRaw(string $data): bool;
 
     /**
-     * Devuelve una respuesta en formato JSON con el estado y el mensaje.
+     * Return a JSON formatted response
      *
      * @param JsonMessage $jsonMessage
      *

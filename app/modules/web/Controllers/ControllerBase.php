@@ -24,8 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-defined('APP_ROOT') || die();
-
 use Exception;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
@@ -36,9 +34,9 @@ use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\SessionContext;
-use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
@@ -51,7 +49,6 @@ use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\TemplateInterface;
 
-use function SP\__;
 use function SP\logger;
 use function SP\processException;
 
@@ -70,22 +67,23 @@ abstract class ControllerBase
     protected readonly ThemeInterface             $theme;
     protected readonly AclInterface               $acl;
     protected readonly ConfigDataInterface        $configData;
-    protected readonly RequestService $request;
+    protected readonly RequestService   $request;
     protected readonly PhpExtensionCheckerService $extensionChecker;
     protected readonly TemplateInterface          $view;
     protected readonly LayoutHelper               $layoutHelper;
     protected readonly UriContextInterface        $uriContext;
-    protected ?UserDataDto                        $userData        = null;
-    protected ?ProfileData                        $userProfileData = null;
-    protected bool                                $isAjax;
-    protected string                              $actionName;
+    protected readonly ?UserDataDto     $userData;
+    protected readonly ProfileData      $userProfileData;
+    protected readonly bool             $isAjax;
+    protected readonly string           $actionName;
+    protected readonly RouteContextData $routeContextData;
+    protected readonly string           $controllerName;
     private readonly BrowserAuthService           $browser;
 
-    public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper
-    ) {
-        $this->controllerName = $this->getControllerName();
+    public function __construct(Application $application, WebControllerHelper $webControllerHelper)
+    {
+        $this->routeContextData = $webControllerHelper->getRouteContextData();
+        $this->controllerName = $this->routeContextData->getController();
         $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();
         $this->eventDispatcher = $application->getEventDispatcher();
@@ -125,8 +123,9 @@ abstract class ControllerBase
         $this->view->assign('timeStart', $this->request->getServer('REQUEST_TIME_FLOAT'));
         $this->view->assign('queryTimeStart', microtime());
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
-        $this->view->assign('themeUri', $this->view->getTheme()->getUri());
+        $this->view->assign('themeUri', $this->theme->getUri());
         $this->view->assign('configData', $this->configData);
+        $this->view->assign('action', $this->actionName);
 
         if ($loggedIn) {
             $this->view->assignWithScope('userId', $this->userData->getId(), 'ctx');
@@ -134,8 +133,6 @@ abstract class ControllerBase
             $this->view->assignWithScope('userIsAdminApp', $this->userData->getIsAdminApp(), 'ctx');
             $this->view->assignWithScope('userIsAdminAcc', $this->userData->getIsAdminAcc(), 'ctx');
         }
-
-        $this->view->assign('action', $this->actionName);
     }
 
     /**
@@ -143,13 +140,7 @@ abstract class ControllerBase
      */
     protected function view(): void
     {
-        try {
-            $this->router->response()->body($this->view->render())->send();
-        } catch (FileNotFoundException $e) {
-            processException($e);
-
-            $this->router->response()->body(__($e->getMessage()))->send(true);
-        }
+        $this->router->response()->body($this->view->render())->send();
     }
 
     /**
@@ -166,7 +157,7 @@ abstract class ControllerBase
     protected function upgradeView(?string $page = null): void
     {
         $this->view->upgrade();
-        $this->view->assign('contentPage', $page ?: strtolower($this->getViewBaseName()));
+        $this->view->assign('contentPage', $page ?: strtolower($this->routeContextData->getActionName()));
 
         try {
             $this->layoutHelper->getFullLayout('main', $this->acl);

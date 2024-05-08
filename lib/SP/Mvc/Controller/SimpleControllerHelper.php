@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -28,6 +29,7 @@ namespace SP\Mvc\Controller;
 use Klein\Klein;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
@@ -42,9 +44,10 @@ final readonly class SimpleControllerHelper
         private ThemeInterface      $theme,
         private Klein               $router,
         private AclInterface        $acl,
-        private RequestService $request,
+        private RequestService      $request,
         private PhpExtensionChecker $extensionChecker,
-        private UriContextInterface $uriContext
+        private UriContextInterface $uriContext,
+        private RouteContextData    $routeContextData
     ) {
     }
 
@@ -76,5 +79,10 @@ final readonly class SimpleControllerHelper
     public function getUriContext(): UriContextInterface
     {
         return $this->uriContext;
+    }
+
+    public function getRouteContextData(): RouteContextData
+    {
+        return $this->routeContextData;
     }
 }

@@ -39,7 +39,7 @@ final class ResetController extends ControllerBase
      */
     public function resetAction(?string $hash = null): void
     {
-        $this->layoutHelper->getCustomLayout('reset', strtolower($this->getViewBaseName()));
+        $this->layoutHelper->getCustomLayout('reset', strtolower($this->routeContextData->getActionName()));
 
         if ($hash !== null && $this->configData->isMailEnabled()) {
             $this->view->assign('hash', $hash);

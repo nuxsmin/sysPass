@@ -36,7 +36,7 @@ final class IndexController extends ControllerBase
 {
     public function indexAction(): void
     {
-        $this->layoutHelper->getCustomLayout('request', strtolower($this->getViewBaseName()));
+        $this->layoutHelper->getCustomLayout('request', strtolower($this->routeContextData->getActionName()));
 
         if (!$this->configData->isMailEnabled()) {
             ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, true, 'request');

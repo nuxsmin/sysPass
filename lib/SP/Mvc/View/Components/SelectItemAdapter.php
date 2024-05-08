@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -26,9 +27,9 @@ declare(strict_types=1);
 namespace SP\Mvc\View\Components;
 
 use RuntimeException;
+use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Services\JsonResponse;
 
 use function SP\__u;
 
@@ -65,7 +66,7 @@ final readonly class SelectItemAdapter implements ItemAdapterInterface
      */
     public function getJsonItemsFromModel(): string
     {
-        return JsonResponse::buildJsonFrom(
+        return Serde::serializeJson(
             array_map(
                 static fn(ItemWithIdAndNameModel $item) => ['id' => $item->getId(), 'name' => $item->getName()],
                 array_filter($this->items, static fn(mixed $item) => $item instanceof ItemWithIdAndNameModel)
@@ -86,7 +87,7 @@ final readonly class SelectItemAdapter implements ItemAdapterInterface
             $out[] = ['id' => $key, 'name' => $value];
         }
 
-        return JsonResponse::buildJsonFrom($out);
+        return Serde::serializeJson($out);
     }
 
     /**

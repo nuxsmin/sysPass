@@ -27,7 +27,6 @@ declare(strict_types=1);
 namespace SP\Mvc\Controller;
 
 use Closure;
-use JetBrains\PhpStorm\NoReturn;
 use Klein\Klein;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -44,20 +43,7 @@ use function SP\processException;
  */
 trait ControllerTrait
 {
-    protected Klein  $router;
-    protected string $controllerName;
-
-    protected function getControllerName(): string
-    {
-        $class = static::class;
-
-        return substr($class, strrpos($class, '\\') + 1, -strlen('Controller')) ?: '';
-    }
-
-    protected function getViewBaseName(): string
-    {
-        return strtolower(array_slice(explode('\\', static::class), -2, 1)[0]);
-    }
+    protected Klein $router;
 
     /**
      * Logout from current session
@@ -110,7 +96,7 @@ trait ControllerTrait
     /**
      * Realiza el proceso de logout.
      */
-    #[NoReturn] private static function logout(): void
+    private static function logout(): never
     {
         exit('<script>sysPassApp.actions.main.logout();</script>');
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -29,6 +30,7 @@ use Klein\Klein;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
@@ -40,55 +42,42 @@ use SP\Mvc\View\TemplateInterface;
  */
 final readonly class WebControllerHelper
 {
-    private ThemeInterface      $theme;
-    private Klein               $router;
-    private AclInterface        $acl;
-    private RequestService $request;
-    private PhpExtensionChecker $extensionChecker;
-    private UriContextInterface $uriContext;
-
     public function __construct(
-        SimpleControllerHelper     $simpleControllerHelper,
-        private TemplateInterface  $template,
-        private BrowserAuthService $browser,
-        private LayoutHelper       $layoutHelper
+        private SimpleControllerHelper $simpleControllerHelper,
+        private TemplateInterface      $template,
+        private BrowserAuthService     $browser,
+        private LayoutHelper           $layoutHelper
     ) {
-        $this->theme = $simpleControllerHelper->getTheme();
-        $this->router = $simpleControllerHelper->getRouter();
-        $this->acl = $simpleControllerHelper->getAcl();
-        $this->request = $simpleControllerHelper->getRequest();
-        $this->extensionChecker = $simpleControllerHelper->getExtensionChecker();
-        $this->uriContext = $simpleControllerHelper->getUriContext();
     }
 
     public function getTheme(): ThemeInterface
     {
-        return $this->theme;
+        return $this->simpleControllerHelper->getTheme();
     }
 
     public function getRouter(): Klein
     {
-        return $this->router;
+        return $this->simpleControllerHelper->getRouter();
     }
 
     public function getAcl(): AclInterface
     {
-        return $this->acl;
+        return $this->simpleControllerHelper->getAcl();
     }
 
     public function getRequest(): RequestService
     {
-        return $this->request;
+        return $this->simpleControllerHelper->getRequest();
     }
 
     public function getExtensionChecker(): PhpExtensionChecker
     {
-        return $this->extensionChecker;
+        return $this->simpleControllerHelper->getExtensionChecker();
     }
 
     public function getUriContext(): UriContextInterface
     {
-        return $this->uriContext;
+        return $this->simpleControllerHelper->getUriContext();
     }
 
     public function getTemplate(): TemplateInterface
@@ -104,5 +93,10 @@ final readonly class WebControllerHelper
     public function getLayoutHelper(): LayoutHelper
     {
         return $this->layoutHelper;
+    }
+
+    public function getRouteContextData(): RouteContextData
+    {
+        return $this->simpleControllerHelper->getRouteContextData();
     }
 }
