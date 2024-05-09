@@ -83,18 +83,11 @@ class UtilTest extends UnitaryTestCase
 
     public function testGetMaxUpload()
     {
-        $upload = ini_set('upload_max_filesize', '30M');
-        $post = ini_set('post_max_size', '10M');
-        $memory = ini_set('memory_limit', memory_get_usage() * 1.5);
+        $upload = ini_get('upload_max_filesize',);
+        $post = ini_get('post_max_size');
+        $memory = ini_get('memory_limit');
 
-        if ($upload !== false
-            && $post !== false
-            && $memory !== false
-        ) {
-            $this->assertEquals(10485760, Util::getMaxUpload());
-        } else {
-            self::markTestSkipped('Unable to set PHP\'s ini variables');
-        }
+        $this->assertEquals(min($upload, $post, $memory), Util::getMaxUpload());
     }
 
     /**
@@ -106,10 +99,5 @@ class UtilTest extends UnitaryTestCase
     {
         $this->assertEquals($expected, Util::boolval($value));
         $this->assertEquals($expected, Util::boolval($value, true));
-    }
-
-    public function testGetTempDir()
-    {
-        self::markTestIncomplete();
     }
 }

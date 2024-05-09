@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -46,15 +47,12 @@ final class Util
 
     public static function convertShortUnit(string $value): int
     {
-        if (preg_match('/(\d+)(\w+)/', $value, $match)) {
-            switch (strtoupper($match[2])) {
-                case 'K':
-                    return (int)$match[1] * 1024;
-                case 'M':
-                    return (int)$match[1] * (1024 ** 2);
-                case 'G':
-                    return (int)$match[1] * (1024 ** 3);
-            }
+        if (preg_match('/(\d+)([KMGkmg])/', $value, $match)) {
+            return match (strtoupper($match[2])) {
+                'K' => (int)$match[1] * 1024,
+                'M' => (int)$match[1] * (1024 ** 2),
+                'G' => (int)$match[1] * (1024 ** 3)
+            };
         }
 
         return (int)$value;
