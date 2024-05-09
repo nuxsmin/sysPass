@@ -1,4 +1,26 @@
 <?php
+/**
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 declare(strict_types=1);
 /**
@@ -24,24 +46,21 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Services\Builders;
+namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use SP\Core\Application;
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountCacheService;
-use SP\Domain\Account\Ports\AccountSearchDataBuilder;
 use SP\Domain\Account\Ports\AccountToFavoriteService;
 use SP\Domain\Account\Ports\AccountToTagRepository;
-use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
@@ -50,9 +69,9 @@ use function SP\logger;
 use function SP\processException;
 
 /**
- * Class AccountSearchDataBuilder
+ * Class AccountSearchData
  */
-final class AccountSearchData extends Service implements AccountSearchDataBuilder
+final class AccountSearchData
 {
     private const COLORS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'colors.cache';
     private const COLORS             = [
@@ -79,7 +98,7 @@ final class AccountSearchData extends Service implements AccountSearchDataBuilde
     private ?array $accountColor = null;
 
     public function __construct(
-        Application                               $application,
+        private readonly Context             $context,
         private readonly AccountAclService        $accountAclService,
         private readonly AccountToTagRepository   $accountToTagRepository,
         private readonly AccountToFavoriteService $accountToFavoriteService,
@@ -88,8 +107,6 @@ final class AccountSearchData extends Service implements AccountSearchDataBuilde
         private readonly ConfigDataInterface $configData,
         private readonly UriContextInterface $uriContext,
     ) {
-        parent::__construct($application);
-
         $this->loadColors();
     }
 
@@ -108,14 +125,13 @@ final class AccountSearchData extends Service implements AccountSearchDataBuilde
     }
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<AccountSearchView> $queryResult
      *
-     * @return AccountSearchItem[]
+     * @return QueryResult<AccountSearchItem>
      * @throws ConstraintException
      * @throws QueryException
-     * @throws SPException
      */
-    public function buildFrom(QueryResult $queryResult): array
+    public function buildFrom(QueryResult $queryResult): QueryResult
     {
         $maxTextLength = $this->configData->isResultsAsCards() ? self::TEXT_LENGTH_CARDS : self::TEXT_LENGTH_NORMAL;
         $userPreferencesData = $this->context->getUserData()->getPreferences();
@@ -124,16 +140,12 @@ final class AccountSearchData extends Service implements AccountSearchDataBuilde
                               || $this->configData->isAccountLink();
         $favorites = $this->accountToFavoriteService->getForUserId($this->context->getUserData()->getId());
 
-        return array_map(
-        /**
-         * @param AccountSearchView $accountSearchView
-         *
-         * @return AccountSearchItem
-         * @throws ConstraintException
-         * @throws QueryException
-         * @throws SPException
-         */
-            function (AccountSearchView $accountSearchView) use ($maxTextLength, $accountLinkEnabled, $favorites) {
+        return $queryResult->mutateWithCallback(
+            function (AccountSearchView $accountSearchView) use (
+                $maxTextLength,
+                $accountLinkEnabled,
+                $favorites
+            ): AccountSearchItem {
                 $cache = $this->accountCacheService->getCacheForAccount(
                     $accountSearchView->getId(),
                     strtotime($accountSearchView->getDateEdit())
@@ -169,8 +181,7 @@ final class AccountSearchData extends Service implements AccountSearchDataBuilde
                     $this->pickAccountColor($accountSearchView->getClientId()),
                     $accountLinkEnabled
                 );
-            },
-            $queryResult->getDataAsArray(AccountSearchView::class)
+            }
         );
     }
 

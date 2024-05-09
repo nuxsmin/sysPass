@@ -53,6 +53,8 @@ use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\getElapsedTime;
+
 /**
  * Class AccountSearch
  *
@@ -63,26 +65,27 @@ final class AccountSearchHelper extends HelperBase
     /**
      * @var bool Indica si el filtrado de cuentas está activo
      */
-    private bool                          $filterOn            = false;
-    private bool                          $isAjax              = false;
-    private int                           $queryTimeStart;
+    private bool                 $filterOn = false;
+    private bool                 $isAjax   = false;
+    private int                  $queryTimeStart;
     private bool                    $isIndex;
     private ?AccountSearchFilterDto $accountSearchFilter = null;
-    private ClientService $clientService;
+    private ClientService        $clientService;
     private AccountSearchService    $accountSearchService;
     private AccountActionsHelper $accountActionsHelper;
-    private CategoryService $categoryService;
-    private TagService      $tagService;
+    private CategoryService      $categoryService;
+    private TagService           $tagService;
 
     public function __construct(
-        Application          $application,
-        TemplateInterface    $template,
-        RequestService $request,
-        ClientService        $clientService,
-        CategoryService      $categoryService,
-        TagService     $tagService,
-        AccountSearchService $accountSearchService,
-        AccountActionsHelper $accountActionsHelper
+        Application                        $application,
+        TemplateInterface                  $template,
+        RequestService                     $request,
+        ClientService                      $clientService,
+        CategoryService                    $categoryService,
+        TagService                         $tagService,
+        AccountSearchService               $accountSearchService,
+        AccountActionsHelper               $accountActionsHelper,
+        private readonly AccountSearchData $accountSearchData
     ) {
         parent::__construct($application, $template, $request);
 
@@ -243,8 +246,11 @@ final class AccountSearchHelper extends HelperBase
             );
         }
 
+        $accountSearchData = $this->accountSearchData->buildFrom(
+            $this->accountSearchService->getByFilter($this->accountSearchFilter)
+        );
         $dataGrid = $this->getGrid();
-        $dataGrid->getData()->setData($this->accountSearchService->getByFilter($this->accountSearchFilter));
+        $dataGrid->getData()->setData($accountSearchData);
         $dataGrid->updatePager();
         $dataGrid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 

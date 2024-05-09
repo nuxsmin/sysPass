@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -28,16 +29,13 @@ namespace SP\Domain\Account\Services;
 use Exception;
 use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Account\Ports\AccountSearchConstants;
-use SP\Domain\Account\Ports\AccountSearchDataBuilder;
 use SP\Domain\Account\Ports\AccountSearchRepository;
 use SP\Domain\Account\Ports\AccountSearchService;
 use SP\Domain\Account\Services\Builders\AccountSearchTokenizer;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\Service;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Database\QueryResult;
@@ -50,11 +48,10 @@ use function SP\processException;
 final class AccountSearch extends Service implements AccountSearchService
 {
     public function __construct(
-        Application                               $application,
-        private readonly UserService $userService,
-        private readonly UserGroupService         $userGroupService,
-        private readonly AccountSearchRepository  $accountSearchRepository,
-        private readonly AccountSearchDataBuilder $accountSearchDataBuilder
+        Application                              $application,
+        private readonly UserService             $userService,
+        private readonly UserGroupService        $userGroupService,
+        private readonly AccountSearchRepository $accountSearchRepository
     ) {
         parent::__construct($application);
     }
@@ -62,9 +59,9 @@ final class AccountSearch extends Service implements AccountSearchService
     /**
      * Procesar los resultados de la búsqueda
      *
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @template T of AccountSearchViewModel
+     * @param AccountSearchFilterDto $accountSearchFilter
+     * @return QueryResult<T>
      */
     public function getByFilter(AccountSearchFilterDto $accountSearchFilter): QueryResult
     {
@@ -80,12 +77,7 @@ final class AccountSearch extends Service implements AccountSearchService
             }
         }
 
-        $queryResult = $this->accountSearchRepository->getByFilter($accountSearchFilter);
-
-        return QueryResult::withTotalNumRows(
-            $this->accountSearchDataBuilder->buildFrom($queryResult),
-            $queryResult->getTotalNumRows()
-        );
+        return $this->accountSearchRepository->getByFilter($accountSearchFilter);
     }
 
     private function processFilterItems(array $filters): void

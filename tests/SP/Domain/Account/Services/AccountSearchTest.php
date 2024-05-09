@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -32,12 +33,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
-use SP\Domain\Account\Ports\AccountSearchDataBuilder;
 use SP\Domain\Account\Ports\AccountSearchRepository;
 use SP\Domain\Account\Services\AccountSearch;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
@@ -47,7 +44,7 @@ use SP\Tests\Domain\Account\Services\Builders\AccountSearchTokenizerDataTrait;
 use SP\Tests\UnitaryTestCase;
 
 /**
- * Class AccountSearchServiceTest
+ * Class AccountSearchTest
  *
  */
 #[Group('unitary')]
@@ -55,14 +52,11 @@ class AccountSearchTest extends UnitaryTestCase
 {
     use AccountSearchTokenizerDataTrait;
 
-    private AccountSearchRepository|MockObject  $accountSearchRepository;
-    private AccountSearch                       $accountSearch;
-    private AccountSearchDataBuilder|MockObject $accountSearchDataBuilder;
+    private AccountSearchRepository|MockObject $accountSearchRepository;
+    private AccountSearch                      $accountSearch;
 
     /**
-     * @throws QueryException
-     * @throws ConstraintException
-     * @throws SPException
+     * @param string $search
      */
     #[DataProvider('searchUsingStringDataProvider')]
     public function testGetByFilter(string $search)
@@ -76,17 +70,14 @@ class AccountSearchTest extends UnitaryTestCase
             ->with($accountSearchFilter)
             ->willReturn($queryResult);
 
-        $this->accountSearchDataBuilder
-            ->expects(self::once())
-            ->method('buildFrom');
+        $out = $this->accountSearch->getByFilter($accountSearchFilter);
 
-        $this->accountSearch->getByFilter($accountSearchFilter);
+        $this->assertSame($queryResult, $out);
     }
 
     /**
-     * @throws QueryException
-     * @throws ConstraintException
-     * @throws SPException
+     * @param string $search
+     * @param array $expected
      */
     #[DataProvider('searchByItemDataProvider')]
     public function testGetByFilterUsingItems(string $search, array $expected)
@@ -99,10 +90,6 @@ class AccountSearchTest extends UnitaryTestCase
             ->method('getByFilter')
             ->with($accountSearchFilter)
             ->willReturn($queryResult);
-
-        $this->accountSearchDataBuilder
-            ->expects(self::once())
-            ->method('buildFrom');
 
         $this->buildExpectationForFilter(array_keys($expected)[0]);
 
@@ -154,9 +141,8 @@ class AccountSearchTest extends UnitaryTestCase
     }
 
     /**
-     * @throws QueryException
-     * @throws ConstraintException
-     * @throws SPException
+     * @param string $search
+     * @param array $expected
      */
     #[DataProvider('searchByItemDataProvider')]
     public function testGetByFilterUsingItemsDoesNotThrowException(string $search, array $expected)
@@ -170,10 +156,6 @@ class AccountSearchTest extends UnitaryTestCase
             ->with($accountSearchFilter)
             ->willReturn($queryResult);
 
-        $this->accountSearchDataBuilder
-            ->expects(self::once())
-            ->method('buildFrom');
-
         $mock = $this->buildExpectationForFilter(array_keys($expected)[0]);
         $mock->willThrowException(new RuntimeException('test'));
 
@@ -181,9 +163,8 @@ class AccountSearchTest extends UnitaryTestCase
     }
 
     /**
-     * @throws QueryException
-     * @throws ConstraintException
-     * @throws SPException
+     * @param string $search
+     * @param array $expected
      */
     #[DataProvider('searchByConditionDataProvider')]
     public function testGetByFilterUsingConditions(string $search, array $expected)
@@ -196,10 +177,6 @@ class AccountSearchTest extends UnitaryTestCase
             ->method('getByFilter')
             ->with($accountSearchFilter)
             ->willReturn($queryResult);
-
-        $this->accountSearchDataBuilder
-            ->expects(self::once())
-            ->method('buildFrom');
 
         $this->buildExpectationForCondition($expected[0]);
 
@@ -242,9 +219,9 @@ class AccountSearchTest extends UnitaryTestCase
             ->method('getByLogin')
             ->willReturn(
                 new User([
-                                 'id' => self::$faker->randomNumber(),
-                                 'userGroupId' => self::$faker->randomNumber(),
-                             ])
+                             'id' => self::$faker->randomNumber(),
+                             'userGroupId' => self::$faker->randomNumber(),
+                         ])
             );
 
         $userGroupService = $this->createMock(UserGroupService::class);
@@ -252,19 +229,17 @@ class AccountSearchTest extends UnitaryTestCase
             ->method('getByName')
             ->willReturn(
                 new UserGroup([
-                                      'id' => self::$faker->randomNumber(),
-                                  ])
+                                  'id' => self::$faker->randomNumber(),
+                              ])
             );
 
         $this->accountSearchRepository = $this->createMock(AccountSearchRepository::class);
-        $this->accountSearchDataBuilder = $this->createMock(AccountSearchDataBuilder::class);
 
         $this->accountSearch = new AccountSearch(
             $this->application,
             $userService,
             $userGroupService,
-            $this->accountSearchRepository,
-            $this->accountSearchDataBuilder
+            $this->accountSearchRepository
         );
     }
 }

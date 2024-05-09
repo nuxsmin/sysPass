@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -107,7 +108,8 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
      *
      * @param AccountSearchFilterDto $accountSearchFilter
      *
-     * @return QueryResult
+     * @template T of AccountSearchViewModel
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */

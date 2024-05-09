@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -29,8 +30,6 @@ use Psr\Container\ContainerInterface;
 use SP\Core\Application;
 use SP\Core\Crypt\RequestBasedPassword;
 use SP\Core\Crypt\UuidCookie;
-use SP\Domain\Account\Ports\AccountSearchDataBuilder;
-use SP\Domain\Account\Services\Builders\AccountSearchData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Crypt\Ports\SecureSessionService;
@@ -84,7 +83,6 @@ final class DomainDefinitions
 
         return [
             ...$sources,
-            AccountSearchDataBuilder::class => autowire(AccountSearchData::class),
             SecureSessionService::class => factory(
                 static function (ContainerInterface $c) {
                     $fileCache = new FileCache(

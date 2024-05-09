@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -27,6 +28,7 @@ namespace SP\Domain\Account\Ports;
 
 use Aura\SqlQuery\Common\SelectInterface;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Common\Ports\Repository;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -38,9 +40,9 @@ interface AccountSearchRepository extends Repository
     /**
      * Obtener las cuentas de una búsqueda.
      *
+     * @template T of AccountSearchViewModel
      * @param AccountSearchFilterDto $accountSearchFilter
-     *
-     * @return QueryResult
+     * @return QueryResult<T>
      */
     public function getByFilter(AccountSearchFilterDto $accountSearchFilter): QueryResult;
 

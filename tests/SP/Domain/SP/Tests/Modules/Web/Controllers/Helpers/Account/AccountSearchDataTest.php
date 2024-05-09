@@ -1,6 +1,5 @@
 <?php
-declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -23,7 +22,9 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Domain\Account\Services\Builders;
+declare(strict_types=1);
+
+namespace SP\Tests\Modules\Web\Controllers\Helpers\Account;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -35,7 +36,6 @@ use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountCacheService;
 use SP\Domain\Account\Ports\AccountToFavoriteService;
 use SP\Domain\Account\Ports\AccountToTagRepository;
-use SP\Domain\Account\Services\Builders\AccountSearchData;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
@@ -45,6 +45,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
+use SP\Modules\Web\Controllers\Helpers\Account\AccountSearchData;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -52,7 +53,7 @@ use function PHPUnit\Framework\exactly;
 use function PHPUnit\Framework\once;
 
 /**
- * Class AccountSearchDataBuilderTest
+ * Class AccountSearchDataTest
  *
  */
 #[Group('unitary')]
@@ -168,7 +169,7 @@ class AccountSearchDataTest extends UnitaryTestCase
             ->willThrowException(new FileException('test'));
 
         new AccountSearchData(
-            $this->application,
+            $this->context,
             $this->accountAclService,
             $this->accountToTagRepository,
             $this->accountToFavoriteService,
@@ -196,7 +197,7 @@ class AccountSearchDataTest extends UnitaryTestCase
 
         $this->accountSearchDataBuilder =
             new AccountSearchData(
-                $this->application,
+                $this->context,
                 $this->accountAclService,
                 $this->accountToTagRepository,
                 $this->accountToFavoriteService,
@@ -206,5 +207,4 @@ class AccountSearchDataTest extends UnitaryTestCase
                 $uriContext
             );
     }
-
 }

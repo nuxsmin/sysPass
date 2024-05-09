@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -46,23 +47,21 @@ class QueryResult
      * QueryResult constructor.
      */
     public function __construct(
-        ?array               $data = null,
-        private readonly int $affectedNumRows = 0,
-        private readonly int $lastId = 0
+        array|SplFixedArray|null $data = null,
+        private readonly int     $affectedNumRows = 0,
+        private readonly int     $lastId = 0
     ) {
-        if (null !== $data) {
-            $this->data = SplFixedArray::fromArray($data);
-            $this->numRows = $this->data->count();
+        if ($data instanceof SplFixedArray) {
+            $this->data = $data;
         } else {
-            $this->data = new SplFixedArray();
-            $this->numRows = 0;
+            $this->data = SplFixedArray::fromArray($data ?? []);
         }
+
+        $this->numRows = $this->data->count();
     }
 
-    public static function withTotalNumRows(
-        array $data,
-        ?int  $totalNumRows = null
-    ): QueryResult {
+    public static function withTotalNumRows(array $data, ?int $totalNumRows = null): QueryResult
+    {
         $result = new self($data);
         $result->totalNumRows = (int)$totalNumRows;
 
@@ -92,9 +91,7 @@ class QueryResult
             && (!is_object($this->data->offsetGet(0))
                 || !is_a($this->data->offsetGet(0), $dataType))
         ) {
-            throw new TypeError(
-                sprintf(__u('Invalid data\'s type. Expected: %s'), $dataType)
-            );
+            throw new TypeError(sprintf(__u('Invalid data\'s type. Expected: %s'), $dataType));
         }
     }
 
@@ -109,7 +106,7 @@ class QueryResult
             $this->checkDataType($dataType);
         }
 
-        return $this->data->toArray();
+        return $this->data?->toArray();
     }
 
     public function getNumRows(): int
@@ -130,5 +127,16 @@ class QueryResult
     public function getLastId(): int
     {
         return $this->lastId;
+    }
+
+    /**
+     * Mutate the current data into another {@link QueryResult} by applying the given callback function
+     *
+     * @param callable $callable
+     * @return QueryResult
+     */
+    public function mutateWithCallback(callable $callable): QueryResult
+    {
+        return new self(SplFixedArray::fromArray(array_map($callable, $this->data->toArray())));
     }
 }
