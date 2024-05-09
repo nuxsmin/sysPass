@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,25 +26,12 @@ declare(strict_types=1);
 
 namespace SP\Domain\Common\Providers;
 
-use SP\Core\Application;
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Common\Services\Service;
 use SP\Domain\Log\Ports\ProviderInterface;
 
 /**
  * Class Provider
  */
-abstract class Provider implements ProviderInterface
+abstract class Provider extends Service implements ProviderInterface
 {
-    protected readonly ConfigFileService $config;
-    protected readonly Context           $context;
-    protected readonly EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(Application $application)
-    {
-        $this->config = $application->getConfig();
-        $this->context = $application->getContext();
-        $this->eventDispatcher = $application->getEventDispatcher();
-    }
 }

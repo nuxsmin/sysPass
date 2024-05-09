@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -32,12 +33,11 @@ use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Security\Models\Eventlog;
 use SP\Domain\Security\Ports\EventlogService;
+use Throwable;
 
-use function SP\__;
 use function SP\processException;
 
 /**
@@ -55,6 +55,14 @@ final class DatabaseHandler extends Provider implements EventReceiver
         private readonly LanguageInterface $language
     ) {
         parent::__construct($application);
+
+        $configEvents = $this->config->getConfigData()->getLogEvents();
+
+        if (count($configEvents) === 0) {
+            $this->events = $this->parseEventsToRegex(LogInterface::EVENTS_FIXED);
+        } else {
+            $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));
+        }
     }
 
 
@@ -78,21 +86,11 @@ final class DatabaseHandler extends Provider implements EventReceiver
 
         $source = $event->getSource();
 
-        if ($source instanceof SPException) {
+        if ($source instanceof Throwable) {
             $properties['level'] = 'ERROR';
-
-            $hint = $source->getHint();
-
-            if ($hint !== null) {
-                $properties['description'] = __($source->getMessage()) . PHP_EOL . $hint;
-            } else {
-                $properties['description'] = __($source->getMessage());
-            }
-        } elseif ($source instanceof Exception) {
-            $properties['level'] = 'ERROR';
-            $properties['description'] = __($source->getMessage());
-        } elseif (($eventMessage = $event->getEventMessage()) !== null) {
-            $properties['description'] = $eventMessage->composeText();
+            $properties['description'] = (string)$source;
+        } else {
+            $properties['description'] = $event->getEventMessage()?->composeText();
         }
 
         try {

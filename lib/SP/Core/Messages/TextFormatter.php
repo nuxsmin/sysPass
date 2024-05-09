@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -27,6 +28,8 @@ namespace SP\Core\Messages;
 
 use SP\Domain\Core\Messages\FormatterInterface;
 
+use function SP\__;
+
 /**
  * Class TextFormatter
  *
@@ -49,22 +52,19 @@ final class TextFormatter implements FormatterInterface
                 static function ($value) use ($translate) {
                     return sprintf(
                         '%s: %s',
-                        $translate ? __($value[0]) : $value[0]
-                        , $translate ? __($value[1]) : $value[1]
+                        $translate ? __($value[0]) : $value[0],
+                        $translate ? __($value[1]) : $value[1]
                     );
                 },
-                $text)
+                $text
+            )
         );
-
     }
 
-    public function formatDescription(
-        array $text,
-        bool  $translate = false
-    ): string
+    public function formatDescription(array $text, bool $translate = false): string
     {
         if ($translate === true) {
-            return implode($this->delimiter, array_map('__', $text));
+            return implode($this->delimiter, array_map(__(...), $text));
         }
 
         return implode($this->delimiter, $text);

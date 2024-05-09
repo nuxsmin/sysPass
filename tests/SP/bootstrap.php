@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -25,16 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Tests;
 
-use DI\Container;
-use DI\ContainerBuilder;
-use Exception;
 use RuntimeException;
-use SP\Core\Context\ContextException;
-use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Domain\Database\Ports\DbStorageHandler;
-use SP\Domain\User\Dtos\UserDataDto;
-use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\FileSystem;
@@ -106,45 +99,6 @@ if (!function_exists('\gettext')) {
 function getRealIpAddress(): string
 {
     return trim(shell_exec('ip a s eth0 | awk \'$1 == "inet" {print $2}\' | cut -d"/" -f1')) ?: '127.0.0.1';
-}
-
-/**
- * Configura el contexto de la aplicación para los tests
- *
- * @return Container
- * @throws ContextException
- * @throws Exception
- */
-function setupContext(): Container
-{
-    // Instancia del contenedor de dependencias con las definiciones de los objetos necesarios
-    // para la aplicación
-    $dic = (new ContainerBuilder())
-        ->addDefinitions(APP_DEFINITIONS_FILE)
-        ->build();
-
-    // Inicializar el contexto
-    $context = $dic->get(Context::class);
-    $context->initialize();
-
-    $context->setTrasientKey('_masterpass', '12345678900');
-
-    $userData = new UserDataDto();
-    $userData->setId(1);
-    $userData->setLogin('Admin');
-    $userData->setUserGroupName('Admins');
-    $userData->setUserGroupId(1);
-    $userData->setIsAdminApp(true);
-    $userData->setLastUpdate(time());
-
-    $context->setUserData($userData);
-
-    $context->setUserProfile(new ProfileData());
-
-    // Inicializar los datos de conexión a la BBDD
-    $dic->set(DbStorageHandler::class, getDbHandler());
-
-    return $dic;
 }
 
 function getDbHandler(?DatabaseConnectionData $connectionData = null): MysqlHandler
