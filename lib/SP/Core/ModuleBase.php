@@ -61,9 +61,7 @@ abstract class ModuleBase implements ModuleInterface
      */
     protected function initEventHandlers(bool $partialInit = false): void
     {
-        if (DEBUG || $this->configData->isDebug() || !$this->configData->isInstalled()) {
-            $this->eventDispatcher->attach($this->providersHelper->getFileLogHandler());
-        }
+        $this->eventDispatcher->attach($this->providersHelper->getLogHandler());
 
         if ($partialInit || !$this->configData->isInstalled()) {
             return;
@@ -75,14 +73,6 @@ abstract class ModuleBase implements ModuleInterface
 
         if ($this->configData->isMailEnabled()) {
             $this->eventDispatcher->attach($this->providersHelper->getMailHandler());
-        }
-
-        if ($this->configData->isSyslogEnabled()) {
-            $this->eventDispatcher->attach($this->providersHelper->getSyslogHandler());
-        }
-
-        if ($this->configData->isSyslogRemoteEnabled()) {
-            $this->eventDispatcher->attach($this->providersHelper->getRemoteSyslogHandler());
         }
 
         $this->eventDispatcher->attach($this->providersHelper->getAclHandler());

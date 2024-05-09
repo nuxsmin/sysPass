@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
@@ -23,29 +22,25 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Log\Providers;
 
-use Monolog\Handler\StreamHandler;
-use SP\Domain\Common\Providers\EventsTrait;
-use SP\Domain\Log\Ports\FileHandlerProvider;
-
 /**
- * Class FileHandler
+ * Class LogHandler
  */
-final class FileHandler extends LoggerBase implements FileHandlerProvider
+final class LogHandler extends LoggerBase
 {
-    use EventsTrait;
 
     /**
      * @inheritDoc
      */
-    public function getEventsString(): string
+    public function getEventsString(): ?string
     {
         return $this->events;
     }
 
     protected function setup(): void
     {
-        $this->logger->pushHandler(new StreamHandler(LOG_FILE));
     }
 }

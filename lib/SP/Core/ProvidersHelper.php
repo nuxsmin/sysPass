@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -27,9 +28,7 @@ namespace SP\Core;
 
 use SP\Domain\Auth\Providers\AclHandler;
 use SP\Domain\Log\Providers\DatabaseHandler;
-use SP\Domain\Log\Providers\FileHandler;
-use SP\Domain\Log\Providers\RemoteSyslogHandler;
-use SP\Domain\Log\Providers\SyslogHandler;
+use SP\Domain\Log\Providers\LogHandler;
 use SP\Domain\Notification\Providers\MailHandler;
 use SP\Domain\Notification\Providers\NotificationHandler;
 
@@ -40,19 +39,17 @@ final readonly class ProvidersHelper
 {
 
     public function __construct(
-        private FileHandler      $fileLogHandler,
+        private LogHandler       $logHandler,
         private ?DatabaseHandler $databaseLogHandler = null,
         private ?MailHandler         $mailHandler = null,
-        private ?SyslogHandler       $syslogHandler = null,
-        private ?RemoteSyslogHandler $remoteSyslogHandler = null,
         private ?AclHandler          $aclHandler = null,
         private ?NotificationHandler $notificationHandler = null
     ) {
     }
 
-    public function getFileLogHandler(): FileHandler
+    public function getLogHandler(): LogHandler
     {
-        return $this->fileLogHandler;
+        return $this->logHandler;
     }
 
     public function getDatabaseLogHandler(): DatabaseHandler
@@ -63,16 +60,6 @@ final readonly class ProvidersHelper
     public function getMailHandler(): MailHandler
     {
         return $this->mailHandler;
-    }
-
-    public function getSyslogHandler(): SyslogHandler
-    {
-        return $this->syslogHandler;
-    }
-
-    public function getRemoteSyslogHandler(): RemoteSyslogHandler
-    {
-        return $this->remoteSyslogHandler;
     }
 
     public function getAclHandler(): AclHandler

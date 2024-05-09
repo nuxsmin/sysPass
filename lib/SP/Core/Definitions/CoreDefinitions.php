@@ -30,8 +30,12 @@ use Aura\SqlQuery\QueryFactory;
 use Klein\Klein;
 use Klein\Request as KleinRequest;
 use Klein\Response as KleinResponse;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogHandler as MSyslogHandler;
+use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
 use SP\Core\Application;
@@ -96,9 +100,7 @@ use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Services\DatabaseSetupInterface;
 use SP\Domain\Install\Services\MysqlSetupBuilder;
 use SP\Domain\Log\Providers\DatabaseHandler;
-use SP\Domain\Log\Providers\FileHandler as LogFileHandler;
-use SP\Domain\Log\Providers\RemoteSyslogHandler;
-use SP\Domain\Log\Providers\SyslogHandler;
+use SP\Domain\Log\Providers\LogHandler;
 use SP\Domain\Notification\Ports\MailerInterface;
 use SP\Domain\Notification\Providers\MailHandler;
 use SP\Domain\Notification\Providers\NotificationHandler;
@@ -203,8 +205,32 @@ final class CoreDefinitions
                     return $authProvider;
                 }
             )->parameter('authProvider', autowire(AuthProvider::class)),
-            Logger::class => create(Logger::class)
-                ->constructor('syspass'),
+            LoggerInterface::class => factory(function (ConfigDataInterface $configData) {
+                $handlers = [];
+                $handlers[] = new StreamHandler(LOG_FILE);
+
+                if ($configData->isInstalled()) {
+                    if ($configData->isSyslogRemoteEnabled()
+                        && $configData->getSyslogServer()
+                        && $configData->getSyslogPort()
+                    ) {
+                        $handlers[] = new SyslogUdpHandler(
+                            $configData->getSyslogServer(),
+                            $configData->getSyslogPort(),
+                            LOG_USER,
+                            Logger::DEBUG,
+                            true,
+                            'syspass'
+                        );
+                    }
+
+                    if ($configData->isSyslogEnabled()) {
+                        $handlers[] = new MSyslogHandler('syspass');
+                    }
+                }
+
+                return new Logger('syspass', $handlers);
+            }),
             \GuzzleHttp\Client::class => create(\GuzzleHttp\Client::class)
                 ->constructor(factory([Client::class, 'getOptions'])),
             Csrf::class => autowire(Csrf::class),
@@ -230,15 +256,13 @@ final class CoreDefinitions
                 $configData = $c->get(ConfigDataInterface::class);
 
                 if (!$configData->isInstalled()) {
-                    return new ProvidersHelper($c->get(LogFileHandler::class));
+                    return new ProvidersHelper($c->get(LogHandler::class));
                 }
 
                 return new ProvidersHelper(
-                    $c->get(LogFileHandler::class),
+                    $c->get(LogHandler::class),
                     $c->get(DatabaseHandler::class),
                     $c->get(MailHandler::class),
-                    $c->get(SyslogHandler::class),
-                    $c->get(RemoteSyslogHandler::class),
                     $c->get(AclHandler::class),
                     $c->get(NotificationHandler::class)
                 );

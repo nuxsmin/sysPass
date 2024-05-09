@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -26,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Log\Providers;
 
 use Exception;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Common\Providers\EventsTrait;
@@ -50,9 +51,9 @@ abstract class LoggerBase extends Provider implements EventReceiver
 
     public function __construct(
         Application                          $application,
-        protected readonly Logger            $logger,
+        protected readonly LoggerInterface $logger,
         protected readonly LanguageInterface $language,
-        protected readonly RequestService $request
+        protected readonly RequestService  $request
     ) {
         parent::__construct($application);
 
