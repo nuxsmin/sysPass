@@ -31,22 +31,12 @@ namespace SP\Domain\Common\Attributes;
 use Attribute;
 
 /**
- * Class Encryptable
+ * Class Receiver
  */
-#[Attribute(Attribute::TARGET_CLASS)]
-final readonly class Encryptable
+#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
+final readonly class EventReceiver
 {
-    public function __construct(private string $dataProperty, private string $keyProperty)
+    public function __construct(public string $eventName)
     {
-    }
-
-    public function getDataProperty(): string
-    {
-        return $this->dataProperty;
-    }
-
-    public function getKeyProperty(): string
-    {
-        return $this->keyProperty;
     }
 }

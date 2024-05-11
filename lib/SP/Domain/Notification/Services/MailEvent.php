@@ -31,7 +31,8 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Messages\MailMessage;
 use SP\Core\Messages\TextFormatter;
-use SP\Domain\Common\Providers\EventsTrait;
+use SP\Domain\Common\Attributes\EventReceiver as EventReceiverAttribute;
+use SP\Domain\Common\Services\EventReceiver as EventReceiverTrait;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Http\Ports\RequestService;
@@ -43,9 +44,17 @@ use function SP\processException;
 /**
  * Class MailEvent
  */
+#[EventReceiverAttribute('clear.eventlog')]
+#[EventReceiverAttribute('refresh.masterPassword')]
+#[EventReceiverAttribute('update.masterPassword.start')]
+#[EventReceiverAttribute('update.masterPassword.end')]
+#[EventReceiverAttribute('request.account')]
+#[EventReceiverAttribute('edit.user.password')]
+#[EventReceiverAttribute('save.config.')]
+#[EventReceiverAttribute('create.tempMasterPassword')]
 final class MailEvent extends Service implements EventReceiver
 {
-    use EventsTrait;
+    use EventReceiverTrait;
 
     public const EVENTS = [
         'create.',
@@ -57,19 +66,6 @@ final class MailEvent extends Service implements EventReceiver
         'run.import.end',
     ];
 
-    public const EVENTS_FIXED = [
-        'clear.eventlog',
-        'refresh.masterPassword',
-        'update.masterPassword.start',
-        'update.masterPassword.end',
-        'request.account',
-        'edit.user.password',
-        'save.config.',
-        'create.tempMasterPassword',
-    ];
-
-    private readonly string $events;
-
     public function __construct(
         Application                  $application,
         private readonly MailService $mailService,
@@ -77,18 +73,7 @@ final class MailEvent extends Service implements EventReceiver
     ) {
         parent::__construct($application);
 
-        $this->setup();
-    }
-
-    private function setup(): void
-    {
-        $configEvents = $this->config->getConfigData()->getMailEvents();
-
-        if (count($configEvents) === 0) {
-            $this->events = $this->parseEventsToRegex(self::EVENTS_FIXED);
-        } else {
-            $this->events = $this->parseEventsToRegex(array_merge($configEvents, self::EVENTS_FIXED));
-        }
+        $this->setupEvents($this->config->getConfigData()->getMailEvents() ?? []);
     }
 
     /**

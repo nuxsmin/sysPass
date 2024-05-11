@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -26,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Export\Services;
 
 use DOMDocument;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -34,7 +36,6 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Export\Services\XmlCategoryExport;
 use SP\Tests\Generators\CategoryGenerator;
 use SP\Tests\UnitaryTestCase;
-use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class XmlCategoryExportTest
@@ -55,8 +56,6 @@ class XmlCategoryExportTest extends UnitaryTestCase
     public function testExport()
     {
         $category = CategoryGenerator::factory()->buildCategory();
-
-        $document = new DOMDocument();
 
         $this->categoryService
             ->expects(self::once())
