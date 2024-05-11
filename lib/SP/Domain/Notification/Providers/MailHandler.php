@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -70,8 +71,8 @@ final class MailHandler extends Provider implements EventReceiver
     private readonly string $events;
 
     public function __construct(
-        Application                       $application,
-        private readonly MailService      $mailService,
+        Application                  $application,
+        private readonly MailService $mailService,
         private readonly RequestService $request
     ) {
         parent::__construct($application);
@@ -110,14 +111,9 @@ final class MailHandler extends Provider implements EventReceiver
     {
         if (($eventMessage = $event->getEventMessage()) !== null) {
             try {
-                $configData = $this->config->getConfigData();
-                $emails = $eventMessage->getExtra('email');
-
-                if ($emails && count($emails) > 0) {
-                    $recipients = $emails;
-                } else {
-                    $recipients = $configData->getMailRecipients();
-                }
+                $recipients = $eventMessage->getExtra('email')
+                              ?? $this->config->getConfigData()->getMailRecipients()
+                                 ?? [];
 
                 $to = array_filter($recipients);
 
@@ -139,23 +135,13 @@ final class MailHandler extends Provider implements EventReceiver
 
                 $mailMessage->addDescriptionLine();
 
-                if ($userData->getId() !== null) {
-                    $mailMessage->addDescription(
-                        sprintf(
-                            __('Performed by: %s (%s)'),
-                            $userData->getName(),
-                            $userData->getLogin()
-                        )
-                    );
-                } else {
-                    $mailMessage->addDescription(
-                        sprintf(
-                            __('Performed by: %s (%s)'),
-                            'sysPass',
-                            'APP'
-                        )
-                    );
-                }
+                $mailMessage->addDescription(
+                    sprintf(
+                        __('Performed by: %s (%s)'),
+                        $userData->getName() ?? 'sysPass',
+                        $userData->getLogin() ?? 'APP'
+                    )
+                );
 
                 $mailMessage->addDescription(
                     sprintf(

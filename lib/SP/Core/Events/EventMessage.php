@@ -165,17 +165,18 @@ class EventMessage implements MessageInterface
     }
 
     /**
-     * @param string|class-string<T> $type
-     * @return array<T>|string|int|bool|null
+     * @param string $type
+     * @return array|null
      */
-    public function getExtra(string $type): array|string|int|bool|null
+    public function getExtra(string $type): array|null
     {
         return $this->extra[$type] ?? null;
     }
 
     /**
-     * @param class-string<T> $type
-     * @param array<T> $data
+     * @param string $type
+     * @param array $data
+     * @return EventMessage
      */
     public function setExtra(string $type, array $data): EventMessage
     {

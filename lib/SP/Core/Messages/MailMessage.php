@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -74,9 +75,9 @@ final class MailMessage extends MessageBase
         $formatter = new TextFormatter($delimiter);
 
         return $this->title
-            . $delimiter
-            . $this->getDescription($formatter, true)
-            . $delimiter
-            . implode($delimiter, $this->footer);
+               . $delimiter
+               . $this->getDescription($formatter, true)
+               . $delimiter
+               . implode($delimiter, $this->footer);
     }
 }
