@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Notification\Services;
 
-use PHPMailer\PHPMailer\Exception;
+use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Notification\Dtos\MailParams;
@@ -55,14 +55,14 @@ final readonly class PhpMailerService implements MailerInterface
     }
 
     /**
-     * @throws \SP\Domain\Notification\MailerException
+     * @throws MailerException
      */
     public function addAddress(string $address): MailerInterface
     {
         try {
             $this->mailer->addAddress($address);
         } catch (Exception $e) {
-            throw new MailerException($e);
+            throw MailerException::from($e);
         }
 
         return $this;
@@ -90,7 +90,7 @@ final readonly class PhpMailerService implements MailerInterface
         try {
             return $this->mailer->send();
         } catch (Exception $e) {
-            throw new MailerException($e);
+            throw MailerException::from($e);
         }
     }
 
@@ -102,38 +102,38 @@ final readonly class PhpMailerService implements MailerInterface
     /**
      * Configure the mailer with the configuration settings
      *
-     * @throws \SP\Domain\Notification\MailerException
+     * @throws MailerException
      */
     public function configure(MailParams $mailParams): MailerInterface
     {
-        $instance = clone $this;
+        $mailer = clone $this->mailer;
 
         $appName = AppInfoInterface::APP_NAME;
 
         try {
-            $instance->mailer->SMTPAutoTLS = false;
-            $instance->mailer->isSMTP();
-            $instance->mailer->CharSet = 'utf-8';
-            $instance->mailer->Host = $mailParams->getServer();
-            $instance->mailer->Port = $mailParams->getPort();
-            $instance->mailer->SMTPSecure = strtolower($mailParams->getSecurity());
+            $mailer->SMTPAutoTLS = false;
+            $mailer->isSMTP();
+            $mailer->CharSet = 'utf-8';
+            $mailer->Host = $mailParams->getServer();
+            $mailer->Port = $mailParams->getPort();
+            $mailer->SMTPSecure = strtolower($mailParams->getSecurity());
 
             if ($mailParams->isMailAuthenabled()) {
-                $instance->mailer->SMTPAuth = true;
-                $instance->mailer->Username = $mailParams->getUser();
-                $instance->mailer->Password = $mailParams->getPass();
+                $mailer->SMTPAuth = true;
+                $mailer->Username = $mailParams->getUser();
+                $mailer->Password = $mailParams->getPass();
             }
 
-            if ($instance->debug) {
-                $instance->mailer->SMTPDebug = 2;
-                $instance->mailer->Debugoutput = static fn($str, $level) => logger($str, strtoupper($level));
+            if ($this->debug) {
+                $mailer->SMTPDebug = 2;
+                $mailer->Debugoutput = static fn($str, $level) => logger($str, strtoupper($level));
             }
 
-            $instance->mailer->setFrom($mailParams->getFrom(), $appName);
-            $instance->mailer->addReplyTo($mailParams->getFrom(), $appName);
-            $instance->mailer->WordWrap = 100;
+            $mailer->setFrom($mailParams->getFrom(), $appName);
+            $mailer->addReplyTo($mailParams->getFrom(), $appName);
+            $mailer->WordWrap = 100;
 
-            return $instance;
+            return new self($mailer, $this->debug);
         } catch (Exception $e) {
             processException($e);
 
