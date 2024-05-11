@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
@@ -23,13 +22,15 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Notification\Providers;
+declare(strict_types=1);
+
+namespace SP\Domain\Notification\Services;
 
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Common\Providers\EventsTrait;
-use SP\Domain\Common\Providers\Provider;
+use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Notification\Models\Notification;
 use SP\Domain\Notification\Ports\NotificationService;
@@ -38,11 +39,9 @@ use function SP\__;
 use function SP\processException;
 
 /**
- * Class NotificationHandler
- *
- * @package SP\Domain\Providers\Notification
+ * Class NotificationEvent
  */
-final class NotificationHandler extends Provider implements EventReceiver
+final class NotificationEvent extends Service implements EventReceiver
 {
     use EventsTrait;
 

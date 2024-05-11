@@ -51,7 +51,7 @@ use SP\Domain\Crypt\Services\TemporaryMasterPass;
 use SP\Domain\Export\Services\BackupFileHelper;
 use SP\Domain\Export\Services\XmlExport;
 use SP\Domain\Log\Providers\LogInterface;
-use SP\Domain\Notification\Providers\MailHandler;
+use SP\Domain\Notification\Services\MailEvent;
 use SP\Domain\Task\Services\Task;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
@@ -376,7 +376,7 @@ final class IndexController extends ControllerBase
 
         $mailEvents = $this->configData->getMailEvents();
 
-        $events = array_merge(MailHandler::EVENTS, $mailEvents);
+        $events = array_merge(MailEvent::EVENTS, $mailEvents);
 
         sort($events, SORT_STRING);
 

@@ -36,7 +36,7 @@ use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Notification\Ports\MailService;
-use SP\Domain\Notification\Providers\MailHandler;
+use SP\Domain\Notification\Services\MailEvent;
 use SP\Tests\Generators\ConfigDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -49,7 +49,7 @@ class MailHandlerTest extends UnitaryTestCase
 
     private MockObject|MailService    $mailService;
     private RequestService|MockObject $requestService;
-    private MailHandler               $mailHandler;
+    private MailEvent $mailHandler;
     private ConfigData                $configData;
 
     public function testUpdate()
@@ -240,7 +240,7 @@ class MailHandlerTest extends UnitaryTestCase
 
         $this->configData->setMailEvents([]);
 
-        $databaseHandler = new MailHandler($this->application, $this->mailService, $this->requestService);
+        $databaseHandler = new MailEvent($this->application, $this->mailService, $this->requestService);
         $out = $databaseHandler->getEventsString();
 
         $this->assertEquals($expected, $out);
@@ -264,6 +264,6 @@ class MailHandlerTest extends UnitaryTestCase
         $this->mailService = $this->createMock(MailService::class);
         $this->requestService = $this->createMock(RequestService::class);
 
-        $this->mailHandler = new MailHandler($this->application, $this->mailService, $this->requestService);
+        $this->mailHandler = new MailEvent($this->application, $this->mailService, $this->requestService);
     }
 }

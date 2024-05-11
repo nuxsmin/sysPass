@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
@@ -24,7 +22,9 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Notification\Providers;
+declare(strict_types=1);
+
+namespace SP\Domain\Notification\Services;
 
 use Exception;
 use SP\Core\Application;
@@ -32,7 +32,7 @@ use SP\Core\Events\Event;
 use SP\Core\Messages\MailMessage;
 use SP\Core\Messages\TextFormatter;
 use SP\Domain\Common\Providers\EventsTrait;
-use SP\Domain\Common\Providers\Provider;
+use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Notification\Ports\MailService;
@@ -41,9 +41,9 @@ use function SP\__;
 use function SP\processException;
 
 /**
- * Class MailHandler
+ * Class MailEvent
  */
-final class MailHandler extends Provider implements EventReceiver
+final class MailEvent extends Service implements EventReceiver
 {
     use EventsTrait;
 
@@ -152,11 +152,7 @@ final class MailHandler extends Provider implements EventReceiver
 
                 $subject = $eventMessage->getDescription(new TextFormatter(), true) ?: $eventType;
 
-                $this->mailService->send(
-                    $subject,
-                    $to,
-                    $mailMessage
-                );
+                $this->mailService->send($subject, $to, $mailMessage);
             } catch (Exception $e) {
                 processException($e);
             }

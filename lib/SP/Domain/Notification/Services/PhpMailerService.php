@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
@@ -23,12 +22,15 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Notification\Providers;
+declare(strict_types=1);
+
+namespace SP\Domain\Notification\Services;
 
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Notification\Dtos\MailParams;
+use SP\Domain\Notification\MailerException;
 use SP\Domain\Notification\Ports\MailerInterface;
 
 use function SP\__u;
@@ -38,7 +40,7 @@ use function SP\processException;
 /**
  * A wrapper for PHPMailer
  */
-final readonly class PhpMailerWrapper implements MailerInterface
+final readonly class PhpMailerService implements MailerInterface
 {
 
     public function __construct(private PHPMailer $mailer, private bool $debug = false)
@@ -53,14 +55,14 @@ final readonly class PhpMailerWrapper implements MailerInterface
     }
 
     /**
-     * @throws MailProviderException
+     * @throws \SP\Domain\Notification\MailerException
      */
     public function addAddress(string $address): MailerInterface
     {
         try {
             $this->mailer->addAddress($address);
         } catch (Exception $e) {
-            throw new MailProviderException($e);
+            throw new MailerException($e);
         }
 
         return $this;
@@ -81,14 +83,14 @@ final readonly class PhpMailerWrapper implements MailerInterface
     }
 
     /**
-     * @throws MailProviderException
+     * @throws MailerException
      */
     public function send(): bool
     {
         try {
             return $this->mailer->send();
         } catch (Exception $e) {
-            throw new MailProviderException($e);
+            throw new MailerException($e);
         }
     }
 
@@ -100,7 +102,7 @@ final readonly class PhpMailerWrapper implements MailerInterface
     /**
      * Configure the mailer with the configuration settings
      *
-     * @throws MailProviderException
+     * @throws \SP\Domain\Notification\MailerException
      */
     public function configure(MailParams $mailParams): MailerInterface
     {
@@ -135,7 +137,7 @@ final readonly class PhpMailerWrapper implements MailerInterface
         } catch (Exception $e) {
             processException($e);
 
-            throw MailProviderException::error(__u('Unable to initialize'), $e->getMessage(), $e->getCode(), $e);
+            throw MailerException::error(__u('Unable to initialize'), $e->getMessage(), $e->getCode(), $e);
         }
     }
 }

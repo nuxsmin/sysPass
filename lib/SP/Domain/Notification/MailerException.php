@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
@@ -23,14 +22,16 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Notification\Providers;
+declare(strict_types=1);
+
+namespace SP\Domain\Notification;
 
 use SP\Domain\Core\Exceptions\SPException;
 
 /**
- * Class MailProviderException
+ * Class MailerException
  */
-final class MailProviderException extends SPException
+final class MailerException extends SPException
 {
 
 }

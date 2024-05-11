@@ -29,8 +29,8 @@ namespace SP\Core;
 use SP\Domain\Auth\Providers\AclHandler;
 use SP\Domain\Log\Providers\DatabaseHandler;
 use SP\Domain\Log\Providers\LogHandler;
-use SP\Domain\Notification\Providers\MailHandler;
-use SP\Domain\Notification\Providers\NotificationHandler;
+use SP\Domain\Notification\Services\MailEvent;
+use SP\Domain\Notification\Services\NotificationEvent;
 
 /**
  * The Provider helper class will have oll the providers availabe in the application
@@ -39,11 +39,11 @@ final readonly class ProvidersHelper
 {
 
     public function __construct(
-        private LogHandler       $logHandler,
-        private ?DatabaseHandler $databaseLogHandler = null,
-        private ?MailHandler         $mailHandler = null,
+        private LogHandler         $logHandler,
+        private ?DatabaseHandler   $databaseLogHandler = null,
+        private ?MailEvent         $mailHandler = null,
         private ?AclHandler          $aclHandler = null,
-        private ?NotificationHandler $notificationHandler = null
+        private ?NotificationEvent $notificationHandler = null
     ) {
     }
 
@@ -57,7 +57,7 @@ final readonly class ProvidersHelper
         return $this->databaseLogHandler;
     }
 
-    public function getMailHandler(): MailHandler
+    public function getMailHandler(): MailEvent
     {
         return $this->mailHandler;
     }
@@ -67,7 +67,7 @@ final readonly class ProvidersHelper
         return $this->aclHandler;
     }
 
-    public function getNotificationHandler(): NotificationHandler
+    public function getNotificationHandler(): NotificationEvent
     {
         return $this->notificationHandler;
     }

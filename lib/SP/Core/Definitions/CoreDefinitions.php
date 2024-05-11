@@ -102,10 +102,10 @@ use SP\Domain\Install\Services\MysqlSetupBuilder;
 use SP\Domain\Log\Providers\DatabaseHandler;
 use SP\Domain\Log\Providers\LogHandler;
 use SP\Domain\Notification\Ports\MailerInterface;
-use SP\Domain\Notification\Providers\MailHandler;
-use SP\Domain\Notification\Providers\NotificationHandler;
-use SP\Domain\Notification\Providers\PhpMailerWrapper;
 use SP\Domain\Notification\Services\Mail;
+use SP\Domain\Notification\Services\MailEvent;
+use SP\Domain\Notification\Services\NotificationEvent;
+use SP\Domain\Notification\Services\PhpMailerService;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\DatabaseConnectionData;
@@ -236,8 +236,8 @@ final class CoreDefinitions
             Csrf::class => autowire(Csrf::class),
             LanguageInterface::class => autowire(Language::class),
             DatabaseInterface::class => autowire(Database::class),
-            PhpMailerWrapper::class => autowire(PhpMailerWrapper::class),
-            MailerInterface::class => factory([PhpMailerWrapper::class, 'configure'])
+            PhpMailerService::class => autowire(PhpMailerService::class),
+            MailerInterface::class => factory([PhpMailerService::class, 'configure'])
                 ->parameter(
                     'mailParams',
                     factory([Mail::class, 'getParamsFromConfig'])
@@ -262,9 +262,9 @@ final class CoreDefinitions
                 return new ProvidersHelper(
                     $c->get(LogHandler::class),
                     $c->get(DatabaseHandler::class),
-                    $c->get(MailHandler::class),
+                    $c->get(MailEvent::class),
                     $c->get(AclHandler::class),
-                    $c->get(NotificationHandler::class)
+                    $c->get(NotificationEvent::class)
                 );
             }),
             QueryFactory::class => create(QueryFactory::class)
