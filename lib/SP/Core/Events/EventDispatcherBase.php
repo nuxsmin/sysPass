@@ -94,7 +94,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
     {
         /** @var EventReceiver $receiver */
         foreach ($this->receivers as $receiver) {
-            $events = $receiver->getEventsString();
+            $events = $receiver->getEvents();
 
             if ($events === '*' || preg_match(sprintf('/%s/i', $events), $eventName)) {
                 $receiver->update($eventName, $event);

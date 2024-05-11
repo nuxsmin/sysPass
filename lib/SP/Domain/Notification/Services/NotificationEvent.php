@@ -29,7 +29,8 @@ namespace SP\Domain\Notification\Services;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Domain\Common\Providers\EventsTrait;
+use SP\Domain\Common\Attributes\EventReceiver as EventReceiverAttribute;
+use SP\Domain\Common\Services\EventReceiver as EventReceiverTrait;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Notification\Models\Notification;
@@ -41,16 +42,11 @@ use function SP\processException;
 /**
  * Class NotificationEvent
  */
+#[EventReceiverAttribute('request.account')]
+#[EventReceiverAttribute('show.account.link')]
 final class NotificationEvent extends Service implements EventReceiver
 {
-    use EventsTrait;
-
-    public const EVENTS = [
-        'request.account',
-        'show.account.link',
-    ];
-
-    private readonly string $events;
+    use EventReceiverTrait;
 
     public function __construct(
         Application $application,
@@ -58,22 +54,7 @@ final class NotificationEvent extends Service implements EventReceiver
     ) {
         parent::__construct($application);
 
-        $this->setup();
-    }
-
-    private function setup(): void
-    {
-        $this->events = $this->parseEventsToRegex(self::EVENTS);
-    }
-
-    /**
-     * Devuelve los eventos que implementa el observador en formato cadena
-     *
-     * @return string
-     */
-    public function getEventsString(): string
-    {
-        return $this->events;
+        $this->setupEvents();
     }
 
     /**
@@ -100,7 +81,7 @@ final class NotificationEvent extends Service implements EventReceiver
     private function requestAccountNotification(Event $event): void
     {
         $eventMessage = $event->getEventMessage();
-        $userIds = $eventMessage !== null ? $eventMessage->getExtra('userId') : [];
+        $userIds = $eventMessage?->getExtra('userId') ?? [];
 
         foreach ($userIds as $userId) {
             $notification = new Notification(
@@ -134,11 +115,10 @@ final class NotificationEvent extends Service implements EventReceiver
     private function showAccountLinkNotification(Event $event): void
     {
         $eventMessage = $event->getEventMessage();
-        $notify = $eventMessage !== null ? $eventMessage->getExtra('notify') : [];
+        $notify = $eventMessage?->getExtra('notify')[0] ?? null;
+        $userId = $eventMessage?->getExtra('userId')[0] ?? null;
 
-        if ($notify[0] === true) {
-            $userId = $eventMessage->getExtra('userId')[0];
-
+        if ($notify === true && $userId) {
             $notification = new Notification(
                 [
                     'type' => __('Notification'),

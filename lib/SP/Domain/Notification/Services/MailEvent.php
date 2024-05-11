@@ -81,7 +81,7 @@ final class MailEvent extends Service implements EventReceiver
      *
      * @return string
      */
-    public function getEventsString(): string
+    public function getEvents(): string
     {
         return $this->events;
     }

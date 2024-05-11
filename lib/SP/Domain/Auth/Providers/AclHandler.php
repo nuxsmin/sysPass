@@ -82,7 +82,7 @@ final class AclHandler extends Provider implements EventReceiver
      *
      * @return string
      */
-    public function getEventsString(): string
+    public function getEvents(): string
     {
         return $this->events;
     }

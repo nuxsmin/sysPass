@@ -37,6 +37,11 @@ trait EventReceiver
 {
     private readonly string $events;
 
+    public function getEvents(): string
+    {
+        return $this->events;
+    }
+
     private function setupEvents(array $userEvents = []): void
     {
         $reflectionClass = new ReflectionClass($this);

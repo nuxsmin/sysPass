@@ -35,7 +35,7 @@ final class LogHandler extends LoggerBase
     /**
      * @inheritDoc
      */
-    public function getEventsString(): ?string
+    public function getEvents(): ?string
     {
         return $this->events;
     }

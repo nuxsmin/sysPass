@@ -24,7 +24,7 @@
 
 declare(strict_types=1);
 
-namespace SP\Tests\Domain\Notification\Providers;
+namespace SP\Tests\Domain\Notification\Services;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -44,12 +44,12 @@ use SP\Tests\UnitaryTestCase;
  * Class MailHandlerTest
  */
 #[Group('unitary')]
-class MailHandlerTest extends UnitaryTestCase
+class MailEventTest extends UnitaryTestCase
 {
 
     private MockObject|MailService    $mailService;
     private RequestService|MockObject $requestService;
-    private MailEvent $mailHandler;
+    private MailEvent $mailEvent;
     private ConfigData                $configData;
 
     public function testUpdate()
@@ -85,7 +85,7 @@ class MailHandlerTest extends UnitaryTestCase
                 })
             );
 
-        $this->mailHandler->update('test_a.update', $event);
+        $this->mailEvent->update('test_a.update', $event);
     }
 
     public function testUpdateWithConfiguredEmail()
@@ -122,7 +122,7 @@ class MailHandlerTest extends UnitaryTestCase
                 })
             );
 
-        $this->mailHandler->update('test_a.update', $event);
+        $this->mailEvent->update('test_a.update', $event);
     }
 
     public function testUpdateWithNoEmail()
@@ -137,7 +137,7 @@ class MailHandlerTest extends UnitaryTestCase
             ->expects($this->never())
             ->method('send');
 
-        $this->mailHandler->update('test_a.update', $event);
+        $this->mailEvent->update('test_a.update', $event);
     }
 
     public function testUpdateWithNoDescriptionAndDetails()
@@ -170,7 +170,7 @@ class MailHandlerTest extends UnitaryTestCase
                 })
             );
 
-        $this->mailHandler->update('test_a.update', $event);
+        $this->mailEvent->update('test_a.update', $event);
     }
 
     public function testUpdateWithEmptyRecipients()
@@ -206,7 +206,7 @@ class MailHandlerTest extends UnitaryTestCase
                 })
             );
 
-        $this->mailHandler->update('test_a.update', $event);
+        $this->mailEvent->update('test_a.update', $event);
     }
 
     public function testUpdateWithException()
@@ -223,13 +223,13 @@ class MailHandlerTest extends UnitaryTestCase
             ->method('send')
             ->willThrowException(new RuntimeException('test'));
 
-        $this->mailHandler->update('test_a.update', $event);
+        $this->mailEvent->update('test_a.update', $event);
     }
 
     public function testGetEventsString()
     {
         $expected = 'test_a\.|test_b\.|clear\.eventlog|refresh\.masterPassword|update\.masterPassword\.start|update\.masterPassword\.end|request\.account|edit\.user\.password|save\.config\.|create\.tempMasterPassword';
-        $out = $this->mailHandler->getEventsString();
+        $out = $this->mailEvent->getEvents();
 
         $this->assertEquals($expected, $out);
     }
@@ -241,7 +241,7 @@ class MailHandlerTest extends UnitaryTestCase
         $this->configData->setMailEvents([]);
 
         $databaseHandler = new MailEvent($this->application, $this->mailService, $this->requestService);
-        $out = $databaseHandler->getEventsString();
+        $out = $databaseHandler->getEvents();
 
         $this->assertEquals($expected, $out);
     }
@@ -264,6 +264,6 @@ class MailHandlerTest extends UnitaryTestCase
         $this->mailService = $this->createMock(MailService::class);
         $this->requestService = $this->createMock(RequestService::class);
 
-        $this->mailHandler = new MailEvent($this->application, $this->mailService, $this->requestService);
+        $this->mailEvent = new MailEvent($this->application, $this->mailService, $this->requestService);
     }
 }

@@ -56,7 +56,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
     public function testGetEventsString()
     {
         $expected = 'test_a\.|test_b\.|upgrade\.|acl\.deny|plugin\.load\.error|show\.authToken|clear\.eventlog|clear\.track|refresh\.masterPassword|update\.masterPassword\.start|update\.masterPassword\.end|request\.account|edit\.user\.password|save\.config\.|create\.tempMasterPassword|run\.import\.start|run\.import\.end';
-        $out = $this->databaseHandler->getEventsString();
+        $out = $this->databaseHandler->getEvents();
 
         $this->assertEquals($expected, $out);
     }
@@ -68,7 +68,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
         $this->configData->setLogEvents([]);
 
         $databaseHandler = new DatabaseHandler($this->application, $this->eventLogService, $this->language);
-        $out = $databaseHandler->getEventsString();
+        $out = $databaseHandler->getEvents();
 
         $this->assertEquals($expected, $out);
     }

@@ -45,5 +45,5 @@ interface EventReceiver
      *
      * @return string|null
      */
-    public function getEventsString(): ?string;
+    public function getEvents(): ?string;
 }

@@ -107,7 +107,7 @@ final class DatabaseHandler extends Provider implements EventReceiver
      *
      * @return string|null
      */
-    public function getEventsString(): ?string
+    public function getEvents(): ?string
     {
         return $this->events;
     }

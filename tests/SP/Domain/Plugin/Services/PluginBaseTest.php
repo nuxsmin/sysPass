@@ -147,7 +147,7 @@ class PluginBaseTest extends UnitaryTestCase
                 // TODO: Implement update() method.
             }
 
-            public function getEventsString(): ?string
+            public function getEvents(): ?string
             {
                 // TODO: Implement getEventsString() method.
             }

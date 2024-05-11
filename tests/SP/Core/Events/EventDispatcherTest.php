@@ -76,7 +76,7 @@ class EventDispatcherTest extends UnitaryTestCase
         $event = new Event($this);
 
         $this->eventReceiver->expects(self::once())
-                            ->method('getEventsString')
+            ->method('getEvents')
                             ->willReturn(self::VALID_EVENTS);
 
         $this->eventReceiver->expects(self::once())
@@ -92,7 +92,7 @@ class EventDispatcherTest extends UnitaryTestCase
         $event = new Event($this);
 
         $this->eventReceiver->expects(self::once())
-                            ->method('getEventsString')
+            ->method('getEvents')
                             ->willReturn('*');
 
         $this->eventReceiver->expects(self::once())
@@ -106,7 +106,7 @@ class EventDispatcherTest extends UnitaryTestCase
     public function testNotifyWithInvalidEvent()
     {
         $this->eventReceiver->expects(self::once())
-                            ->method('getEventsString')
+            ->method('getEvents')
                             ->willReturn('anotherEvent');
 
         $this->eventReceiver->expects(self::never())
