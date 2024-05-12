@@ -37,7 +37,7 @@ use function SP\__u;
 final class RouteContext
 {
     private const ROUTE_REGEX = /** @lang RegExp */
-        '#(?P<controller>[a-zA-Z]+)(?:/(?P<actions>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d.]+)+)?#';
+        '#^(?P<controller>[a-zA-Z]+)(?:/(?P<actions>[a-zA-Z]+))?(?P<params>(?:/[a-zA-Z\d.]+)+)?$#';
 
 
     public static function getRouteContextData(string $route): RouteContextData
