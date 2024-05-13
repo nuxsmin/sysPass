@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -32,6 +33,7 @@ use SP\Core\Crypt\Session;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -52,7 +54,7 @@ class SessionTest extends UnitaryTestCase
     {
         $sidStartTime = self::$faker->unixTime;
 
-        $key = session_id() . $sidStartTime;
+        $key = sha1(session_id() . $sidStartTime);
 
         $vault = $this->createMock(VaultInterface::class);
         $vault->expects(self::once())
@@ -74,14 +76,15 @@ class SessionTest extends UnitaryTestCase
     }
 
     /**
-     * @throws Exception
      * @throws CryptException
+     * @throws Exception
+     * @throws SPException
      */
     public function testReKey()
     {
         $sidStartTime = self::$faker->unixTime;
 
-        $key = session_id() . $sidStartTime;
+        $key = sha1(session_id() . $sidStartTime);
 
         $vault = $this->createMock(VaultInterface::class);
         $vault->expects(self::once())
