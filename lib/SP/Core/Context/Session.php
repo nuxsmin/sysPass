@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,14 +26,15 @@ declare(strict_types=1);
 
 namespace SP\Core\Context;
 
+use Exception;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\VaultInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
 
-use function SP\__u;
 use function SP\getLastCaller;
 use function SP\logger;
 use function SP\processException;
@@ -42,9 +44,6 @@ use function SP\processException;
  */
 class Session extends ContextBase implements SessionContext
 {
-    public const MAX_SID_TIME = 120;
-
-    private static bool $isReset  = false;
     private static bool $isLocked = false;
 
     /**
@@ -57,18 +56,6 @@ class Session extends ContextBase implements SessionContext
 
             logger(sprintf('Session close value=%s caller=%s', self::$isLocked, getLastCaller()));
         }
-    }
-
-    /**
-     * Destruir la sesión y reiniciar
-     */
-    public static function restart(): void
-    {
-        self::$isReset = true;
-
-        session_unset();
-        session_destroy();
-        session_start();
     }
 
     /**
@@ -185,8 +172,7 @@ class Session extends ContextBase implements SessionContext
      */
     public function isLoggedIn(): bool
     {
-        return self::$isReset === false && $this->getUserData()->getLogin()
-               && is_object($this->getUserData()->getPreferences());
+        return $this->getUserData()->getLogin() && $this->getUserData()->getPreferences() !== null;
     }
 
     /**
@@ -395,16 +381,14 @@ class Session extends ContextBase implements SessionContext
 
     /**
      * @throws ContextException
+     * @throws SPException
      */
     public function initialize(): void
     {
-        // Si la sesión no puede ser iniciada, devolver un error 500
-        if (headers_sent($filename, $line)
-            || @session_start() === false
-        ) {
-            logger(sprintf('Headers sent in %s:%d file', $filename, $line));
-
-            throw new ContextException(__u('Session cannot be initialized'));
+        try {
+            SessionLifecycleHandler::start();
+        } catch (Exception $e) {
+            throw ContextException::from($e);
         }
 
         $this->setContextReference($_SESSION);
@@ -412,6 +396,8 @@ class Session extends ContextBase implements SessionContext
         if ($this->getSidStartTime() === 0) {
             $this->setSidStartTime(time());
             $this->setStartActivity(time());
+        } elseif (SessionLifecycleHandler::needsRegenerate($this->getSidStartTime())) {
+            SessionLifecycleHandler::regenerate();
         }
     }
 

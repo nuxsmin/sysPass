@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Login;
 
 use SP\Core\Context\ContextBase;
-use SP\Core\Context\SessionUtil;
+use SP\Core\Context\SessionLifecycleHandler;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -58,7 +58,7 @@ final class LogoutController extends ControllerBase
                 )
             );
 
-            SessionUtil::cleanSession();
+            SessionLifecycleHandler::clean();
 
             $this->session->setAppStatus(ContextBase::APP_STATUS_LOGGEDOUT);
 

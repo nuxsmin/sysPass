@@ -55,7 +55,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Application;
 use SP\Core\Context\ContextException;
-use SP\Core\Context\StatelessContext;
+use SP\Core\Context\Stateless;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
@@ -137,7 +137,7 @@ abstract class UnitaryTestCase extends TestCase
      */
     protected function buildContext(): Context
     {
-        $context = new StatelessContext();
+        $context = new Stateless();
         $context->initialize();
         $context->setUserData($this->buildUserDataDto());
         $context->setUserProfile(new ProfileData());

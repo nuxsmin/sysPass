@@ -28,7 +28,7 @@ namespace SP\Tests\Core\Context;
 use PHPUnit\Framework\Attributes\Group;
 use SP\Core\Context\ContextFactory;
 use SP\Core\Context\Session;
-use SP\Core\Context\StatelessContext;
+use SP\Core\Context\Stateless;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -48,6 +48,6 @@ class ContextFactoryTest extends UnitaryTestCase
     {
         $out = ContextFactory::getForModule(self::$faker->colorName);
 
-        $this->assertInstanceOf(StatelessContext::class, $out);
+        $this->assertInstanceOf(Stateless::class, $out);
     }
 }

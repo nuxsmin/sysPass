@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -31,11 +32,9 @@ use SP\Domain\User\Models\ProfileData;
 use function SP\processException;
 
 /**
- * Class ApiContext
- *
- * @package SP\Core\Context
+ * Class Stateless
  */
-class StatelessContext extends ContextBase
+class Stateless extends ContextBase
 {
     /**
      * Establece los datos del usuario en la sesión.

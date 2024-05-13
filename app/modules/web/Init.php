@@ -32,6 +32,7 @@ use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextBase;
 use SP\Core\Context\Session;
+use SP\Core\Context\SessionLifecycleHandler;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\Session as CryptSession;
@@ -333,6 +334,7 @@ final class Init extends HttpModuleBase
     /**
      * Inicializar la sesión de usuario
      *
+     * @throws SPException
      */
     private function initUserSession(): void
     {
@@ -342,13 +344,9 @@ final class Init extends HttpModuleBase
         // Session timeout
         if ($lastActivity > 0
             && !$inMaintenance
-            && time() > ($lastActivity + $this->getSessionLifeTime())
+            && time() > $lastActivity + $this->getSessionLifeTime()
         ) {
-            if ($this->router->request()->cookies()->get(session_name()) !== null) {
-                $this->router->response()->cookie(session_name(), '', time() - 42000);
-            }
-
-            Session::restart();
+            SessionLifecycleHandler::restart();
         } else {
             $sidStartTime = $this->context->getSidStartTime();
 
@@ -357,7 +355,7 @@ final class Init extends HttpModuleBase
                 // Try to set PHP's session lifetime
                 @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
             } elseif (!$inMaintenance
-                      && time() > ($sidStartTime + Session::MAX_SID_TIME)
+                      && SessionLifecycleHandler::needsRegenerate($sidStartTime)
                       && $this->context->isLoggedIn()
             ) {
                 try {
@@ -365,7 +363,7 @@ final class Init extends HttpModuleBase
                 } catch (CryptException $e) {
                     logger($e->getMessage());
 
-                    Session::restart();
+                    SessionLifecycleHandler::restart();
 
                     return;
                 }

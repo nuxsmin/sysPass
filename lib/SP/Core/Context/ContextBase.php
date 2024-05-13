@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -90,7 +91,7 @@ abstract class ContextBase implements Context
     /**
      * @throws ContextException
      */
-    final protected function setContextReference(&$context): void
+    final protected function setContextReference(array &$context): void
     {
         if ($this->context !== null) {
             throw new ContextException(__u('Context already initialized'));
@@ -131,7 +132,6 @@ abstract class ContextBase implements Context
     protected function getContextKey(string $key, mixed $default = null)
     {
         $this->checkContext();
-
 
         return is_numeric($default)
             ? (int)$this->context->get($key, $default)

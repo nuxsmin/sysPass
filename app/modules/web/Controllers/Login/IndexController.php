@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Login;
 
-use SP\Core\Context\SessionUtil;
+use SP\Core\Context\SessionLifecycleHandler;
 use SP\Modules\Web\Controllers\ControllerBase;
 
 final class IndexController extends ControllerBase
@@ -34,7 +34,7 @@ final class IndexController extends ControllerBase
      */
     public function indexAction(): void
     {
-        SessionUtil::cleanSession();
+        SessionLifecycleHandler::clean();
 
         $this->layoutHelper->getCustomLayout('index', 'login');
 

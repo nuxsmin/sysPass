@@ -39,6 +39,6 @@ final class ContextFactory
             return new Session();
         }
 
-        return new StatelessContext();
+        return new Stateless();
     }
 }

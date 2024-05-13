@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -40,6 +41,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Ports\TrackService;
@@ -128,6 +130,7 @@ final class Login extends LoginBase implements LoginService
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     private function setUserSession(UserDataDto $userDataDto): void
     {

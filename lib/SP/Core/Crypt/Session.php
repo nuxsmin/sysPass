@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,8 +26,10 @@ declare(strict_types=1);
 
 namespace SP\Core\Crypt;
 
+use SP\Core\Context\SessionLifecycleHandler;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\logger;
 
@@ -49,7 +52,12 @@ class Session
 
     private static function getKey(SessionContext $sessionContext): string
     {
-        return session_id() . $sessionContext->getSidStartTime();
+        return self::buildSeed(session_id(), (string)$sessionContext->getSidStartTime());
+    }
+
+    private static function buildSeed(string ...$parts): string
+    {
+        return sha1(implode('', $parts));
     }
 
     /**
@@ -66,16 +74,17 @@ class Session
      * Regenerar la clave de sesión
      *
      * @throws CryptException
+     * @throws SPException
      */
     public static function reKey(SessionContext $sessionContext): void
     {
         logger(__METHOD__);
 
-        $oldSeed = sprintf("%s%s", session_id(), $sessionContext->getSidStartTime());
+        $oldSeed = self::getKey($sessionContext);
 
-        session_regenerate_id(true);
+        SessionLifecycleHandler::regenerate();
 
-        $newSeed = sprintf("%s%s", session_id(), $sessionContext->setSidStartTime(time()));
+        $newSeed = self::buildSeed(session_id(), (string)$sessionContext->setSidStartTime(time()));
 
         $sessionContext->setVault($sessionContext->getVault()->reKey($newSeed, $oldSeed));
     }
