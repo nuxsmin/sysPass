@@ -32,7 +32,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Core\Crypt\Hash;
-use SP\Domain\Core\Crypt\CryptPKIInterface;
+use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\Services\Request;
@@ -49,7 +49,7 @@ class RequestTest extends UnitaryTestCase
 {
 
     private \Klein\Request|MockObject       $kleinRequest;
-    private CryptPKIInterface|MockObject    $cryptPKI;
+    private CryptPKIHandler|MockObject $cryptPKI;
     private HeaderDataCollection|MockObject $headers;
     private DataCollection                  $paramsGet;
     private DataCollection                  $server;
@@ -67,7 +67,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertTrue($request->isJson());
     }
@@ -103,7 +103,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->paramsGet->set('test', 'a_value');
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
         $out = $request->analyzeString('test');
 
         $this->assertEquals('a_value', $out);
@@ -125,7 +125,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->server->set('SERVER_PORT', 1080);
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertEquals(1080, $request->getServerPort());
     }
@@ -145,7 +145,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->paramsGet->set('test', 'True');
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
         $out = $request->analyzeBool('test');
 
         $this->assertTrue($out);
@@ -179,7 +179,7 @@ class RequestTest extends UnitaryTestCase
                       )
                       ->willReturn($host, $proto, null, null);
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
         $expected = [
             'host' => $host,
             'proto' => $proto,
@@ -202,7 +202,7 @@ class RequestTest extends UnitaryTestCase
                       )
                       ->willReturn('', '');
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertNull($request->getXForwardedData());
     }
@@ -235,7 +235,7 @@ class RequestTest extends UnitaryTestCase
     public function testGetMethodWithGet()
     {
         $this->ensureGet();
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertEquals(Method::GET, $request->getMethod());
     }
@@ -243,7 +243,7 @@ class RequestTest extends UnitaryTestCase
     public function testGetMethodWithPost()
     {
         $this->ensurePost();
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertEquals(Method::POST, $request->getMethod());
     }
@@ -272,7 +272,7 @@ class RequestTest extends UnitaryTestCase
                       )
                       ->willReturn(null, null);
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
         $this->assertEquals($address, $request->getClientAddress());
     }
 
@@ -290,7 +290,7 @@ class RequestTest extends UnitaryTestCase
                       ->with('Http-Forwarded')
                       ->willReturn(sprintf('for=%s;host=%s;proto=https', $address, $domain));
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertEquals($address, $request->getClientAddress());
     }
@@ -311,7 +311,7 @@ class RequestTest extends UnitaryTestCase
                       )
                       ->willReturn(null, sprintf('%s,', $address));
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertEquals($address, $request->getClientAddress());
     }
@@ -330,7 +330,7 @@ class RequestTest extends UnitaryTestCase
                       )
                       ->willReturn(null, $addresses);
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertEquals($addresses, $request->getClientAddress(true));
     }
@@ -387,7 +387,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->paramsGet->set('test', ['a' => 'a_test', 'b' => 1]);
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
         $out = $request->analyzeArray('test', $mapper);
 
         $this->assertEquals(['a' => 'A_TEST', 'b' => 1], $out);
@@ -429,7 +429,7 @@ class RequestTest extends UnitaryTestCase
                       ->with('Http-Forwarded')
                       ->willReturn(sprintf('for=%s;proto=https', self::$faker->ipv4));
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertNull($request->getForwardedData());
     }
@@ -445,7 +445,7 @@ class RequestTest extends UnitaryTestCase
                       ->with('Http-Forwarded')
                       ->willReturn(sprintf('host=%s;for=192.168.0.1', self::$faker->domainName));
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertNull($request->getForwardedData());
     }
@@ -484,7 +484,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->paramsGet->set('test', 'me@email.com');
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
         $out = $request->analyzeEmail('test');
 
         $this->assertEquals('me@email.com', $out);
@@ -506,7 +506,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->paramsGet->set('test', 123);
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
         $out = $request->analyzeInt('test');
 
         $this->assertEquals(123, $out);
@@ -584,7 +584,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->paramsGet->set('isAjax', 0);
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertFalse($request->isAjax());
     }
@@ -601,7 +601,7 @@ class RequestTest extends UnitaryTestCase
             ->with('value_encrypted')
             ->willReturn('value');
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $out = $request->analyzeEncrypted('test');
 
@@ -633,7 +633,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->cryptPKI->expects(self::never())->method('decryptRSA');
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $out = $request->analyzeEncrypted('test');
 
@@ -651,7 +651,7 @@ class RequestTest extends UnitaryTestCase
             ->method('decryptRSA')
             ->willThrowException(new RuntimeException());
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $out = $request->analyzeEncrypted('test');
 
@@ -680,7 +680,7 @@ class RequestTest extends UnitaryTestCase
             ->with('h')
             ->willReturn($params);
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $request->verifySignature('a_key');
     }
@@ -697,7 +697,7 @@ class RequestTest extends UnitaryTestCase
         $this->paramsGet->set('h', $signature);
         $this->paramsGet->set('test', 'a_value');
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $request->verifySignature('a_key', 'test');
     }
@@ -711,7 +711,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->kleinRequest->expects(self::never())->method('params');
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->expectException(SPException::class);
         $this->expectExceptionMessage('URI string altered');
@@ -733,7 +733,7 @@ class RequestTest extends UnitaryTestCase
                       ->with('Http-Forwarded')
                       ->willReturn(sprintf('for=%s,for=%s', $addresses[0], $addresses[1]));
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertEquals($addresses, $request->getForwardedFor());
     }
@@ -755,7 +755,7 @@ class RequestTest extends UnitaryTestCase
                       )
                       ->willReturn(null, sprintf('%s,%s', $addresses[0], $addresses[1]));
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertEquals($addresses, $request->getForwardedFor());
     }
@@ -772,7 +772,7 @@ class RequestTest extends UnitaryTestCase
                       )
                       ->willReturn(null, null);
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertNull($request->getForwardedFor());
     }
@@ -783,7 +783,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->paramsGet->set('test', 'me@email.com');
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
         $out = $request->analyzeUnsafeString('test');
 
         $this->assertEquals('me@email.com', $out);
@@ -825,7 +825,7 @@ class RequestTest extends UnitaryTestCase
     {
         $path = '../../opt/project/index.test';
 
-        $out = \SP\Domain\Http\Services\Request::getSecureAppPath($path, '/tmp');
+        $out = Request::getSecureAppPath($path, '/tmp');
 
         $this->assertEmpty($out);
     }
@@ -842,7 +842,7 @@ class RequestTest extends UnitaryTestCase
                       ->with('Http-Forwarded')
                       ->willReturn(sprintf('for=%s;host=%s;proto=https', $address, $domain));
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         $this->assertEquals(sprintf('https://%s', $domain), $request->getHttpHost());
     }
@@ -891,7 +891,7 @@ class RequestTest extends UnitaryTestCase
                       )
                       ->willReturn('', '', '');
 
-        $request = new \SP\Domain\Http\Services\Request($this->kleinRequest, $this->cryptPKI);
+        $request = new Request($this->kleinRequest, $this->cryptPKI);
 
         /** @noinspection HttpUrlsUsage */
         $this->assertEquals(sprintf('http://%s', $domain), $request->getHttpHost());
@@ -939,7 +939,7 @@ class RequestTest extends UnitaryTestCase
     {
         $path = '../../opt/project/index.php';
 
-        $out = \SP\Domain\Http\Services\Request::getSecureAppFile($path, '/tmp');
+        $out = Request::getSecureAppFile($path, '/tmp');
 
         $this->assertEquals('', $out);
     }
@@ -949,7 +949,7 @@ class RequestTest extends UnitaryTestCase
         parent::setUp();
 
         $this->kleinRequest = $this->createMock(\Klein\Request::class);
-        $this->cryptPKI = $this->createMock(CryptPKIInterface::class);
+        $this->cryptPKI = $this->createMock(CryptPKIHandler::class);
         $this->headers = $this->createMock(HeaderDataCollection::class);
 
         $this->kleinRequest

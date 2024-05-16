@@ -32,16 +32,14 @@ use function SP\__u;
 
 /**
  * Class ContextBase
- *
- * @package SP\Core\Session
  */
 abstract class ContextBase implements Context
 {
     public const APP_STATUS_RELOADED  = 'reloaded';
     public const APP_STATUS_LOGGEDOUT = 'loggedout';
 
-    private ?ContextCollection $context = null;
-    private ContextCollection  $trasient;
+    private ?ContextCollection         $context = null;
+    private readonly ContextCollection $trasient;
 
     /**
      * ContextBase constructor.
@@ -57,14 +55,14 @@ abstract class ContextBase implements Context
      *
      * @throws ContextException
      */
-    public function setTrasientKey(string $key, mixed $value)
+    public function setTrasientKey(string $key, mixed $value): mixed
     {
         // If the key starts with "_" it's a protected key, thus cannot be overwritten
         if (str_starts_with($key, '_')
             && $this->trasient->exists($key)
             && $this->trasient->get($key) !== $value
         ) {
-            throw new ContextException(__u('Unable to change password value'));
+            throw ContextException::error(__u('Unable to change password value'));
         }
 
         $this->trasient->set($key, $value);
@@ -94,7 +92,7 @@ abstract class ContextBase implements Context
     final protected function setContextReference(array &$context): void
     {
         if ($this->context !== null) {
-            throw new ContextException(__u('Context already initialized'));
+            throw ContextException::error(__u('Context already initialized'));
         }
 
         if (isset($context['context'])
@@ -118,7 +116,7 @@ abstract class ContextBase implements Context
     final protected function setContext(ContextCollection $contextCollection): void
     {
         if ($this->context !== null) {
-            throw new ContextException(__u('Context already initialized'));
+            throw ContextException::error(__u('Context already initialized'));
         }
 
         $this->context = $contextCollection;
@@ -129,7 +127,7 @@ abstract class ContextBase implements Context
      *
      * @throws ContextException
      */
-    protected function getContextKey(string $key, mixed $default = null)
+    protected function getContextKey(string $key, mixed $default = null): mixed
     {
         $this->checkContext();
 
@@ -144,16 +142,16 @@ abstract class ContextBase implements Context
     private function checkContext(): void
     {
         if ($this->context === null) {
-            throw new ContextException(__u('Context not initialized'));
+            throw ContextException::error(__u('Context not initialized'));
         }
     }
 
     /**
-     * Establecer una variable de contexto
+     * Set a context variable and its value
      *
-     * @param string $key El nombre de la variable
-     * @param mixed $value El valor de la variable
-     *
+     * @template T
+     * @param T $value
+     * @return T
      * @throws ContextException
      */
     protected function setContextKey(string $key, mixed $value): mixed

@@ -31,7 +31,7 @@ use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
 
 /**
- * Class Context
+ * Interface Context
  */
 interface Context
 {

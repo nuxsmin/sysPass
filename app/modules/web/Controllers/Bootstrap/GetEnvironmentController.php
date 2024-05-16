@@ -29,7 +29,7 @@ use JsonException;
 use SP\Core\Application;
 use SP\Core\Crypt\CryptPKI;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
-use SP\Domain\Core\Crypt\CryptPKIInterface;
+use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Services\ImportStrategy;
 use SP\Domain\Plugin\Ports\PluginManagerService;
@@ -53,7 +53,7 @@ final class GetEnvironmentController extends SimpleControllerBase
     public function __construct(
         Application                           $application,
         SimpleControllerHelper                $simpleControllerHelper,
-        private readonly CryptPKIInterface    $cryptPKI,
+        private readonly CryptPKIHandler $cryptPKI,
         private readonly BrowserAuthService   $browser,
         private readonly PluginManagerService $pluginManagerService
     ) {

@@ -22,8 +22,11 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use SP\Core\Context\Session;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Html\Ports\MinifyService;
 use SP\Domain\Html\Services\MinifyCss;
 use SP\Domain\Html\Services\MinifyJs;
@@ -33,6 +36,7 @@ use SP\Modules\Web\Controllers\Resource\JsController;
 use SP\Modules\Web\Init;
 
 use function DI\autowire;
+use function DI\factory;
 
 const MODULE_PATH = __DIR__;
 const VIEW_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'themes';
@@ -46,6 +50,14 @@ return [
     )->constructorParameter(MinifyService::class, autowire(MinifyCss::class)),
     JsController::class => autowire(
         JsController::class
-    )->constructorParameter(MinifyService::class, autowire(MinifyJs::class))
+    )->constructorParameter(MinifyService::class, autowire(MinifyJs::class)),
+    Context::class => factory(
+        static function (ConfigDataInterface $configData, SessionHandlerInterface $sessionHandler) {
+            if ($configData->isEncryptSession()) {
+                return new Session($sessionHandler);
+            }
 
+            return new Session();
+        }
+    )
 ];

@@ -26,18 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Core\Definitions;
 
-use Psr\Container\ContainerInterface;
-use SP\Core\Application;
-use SP\Core\Crypt\RequestBasedPassword;
-use SP\Core\Crypt\UuidCookie;
-use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Crypt\Ports\SecureSessionService;
-use SP\Domain\Crypt\Services\SecureSession;
-use SP\Infrastructure\File\FileCache;
-
 use function DI\autowire;
-use function DI\factory;
 
 /**
  * Class DomainDefinitions
@@ -82,24 +71,7 @@ final class DomainDefinitions
         }
 
         return [
-            ...$sources,
-            SecureSessionService::class => factory(
-                static function (ContainerInterface $c) {
-                    $fileCache = new FileCache(
-                        SecureSession::getFileNameFrom(
-                            $c->get(UuidCookie::class),
-                            $c->get(ConfigDataInterface::class)->getPasswordSalt()
-                        )
-                    );
-
-                    return new SecureSession(
-                        $c->get(Application::class),
-                        $c->get(CryptInterface::class),
-                        $fileCache,
-                        $c->get(RequestBasedPassword::class)
-                    );
-                }
-            ),
+            ...$sources
         ];
     }
 }

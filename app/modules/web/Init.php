@@ -29,11 +29,9 @@ use Exception;
 use JsonException;
 use Klein\Klein;
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Context\ContextBase;
 use SP\Core\Context\Session;
 use SP\Core\Context\SessionLifecycleHandler;
-use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\HttpModuleBase;
@@ -41,7 +39,7 @@ use SP\Core\Language;
 use SP\Core\ProvidersHelper;
 use SP\Domain\Common\Providers\Http;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Domain\Core\Crypt\CsrfInterface;
+use SP\Domain\Core\Crypt\CsrfHandler;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InitializationException;
@@ -147,7 +145,7 @@ final class Init extends HttpModuleBase
         ProvidersHelper                      $providersHelper,
         RequestService       $request,
         Klein                                $router,
-        CsrfInterface                        $csrf,
+        CsrfHandler          $csrf,
         LanguageInterface                    $language,
         SecureSessionService $secureSessionService,
         PluginManager                        $pluginManager,
@@ -193,8 +191,7 @@ final class Init extends HttpModuleBase
 
         $this->isIndex = $controller === 'index';
 
-        // Iniciar la sesión de PHP
-        $this->initSession($this->configData->isEncryptSession());
+        $this->context->initialize();
 
         $isReload = $this->request->checkReload();
 
@@ -203,7 +200,6 @@ final class Init extends HttpModuleBase
             logger('Browser reload');
 
             $this->context->setAppStatus(ContextBase::APP_STATUS_RELOADED);
-
             $this->config->reload();
         }
 
@@ -289,30 +285,6 @@ final class Init extends HttpModuleBase
         // Do not keep the PHP's session opened
         if (!in_array($controller, self::NO_SESSION_CLOSE, true)) {
             Session::close();
-        }
-    }
-
-    /**
-     * Iniciar la sesión PHP
-     *
-     * @throws Exception
-     */
-    private function initSession(bool $encrypt = false): void
-    {
-        if ($encrypt === true
-            && BootstrapBase::$checkPhpVersion
-            && ($key = $this->secureSessionService->getKey()) !== false
-        ) {
-            session_set_save_handler(new CryptSessionHandler($key), true);
-        }
-
-
-        try {
-            $this->context->initialize();
-        } catch (Exception $e) {
-            $this->router->response()->header('HTTP/1.1', '500 Internal Server Error');
-
-            throw $e;
         }
     }
 

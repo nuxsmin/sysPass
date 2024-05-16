@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -23,31 +23,20 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Core\Context;
-
-use PHPUnit\Framework\Attributes\Group;
-use SP\Core\Context\ContextFactory;
-use SP\Core\Context\Session;
-use SP\Core\Context\Stateless;
-use SP\Tests\UnitaryTestCase;
+namespace SP\Domain\Core\Crypt;
 
 /**
- * Class ContextFactoryTest
+ * Interface CsrfHandler
  */
-#[Group('unitary')]
-class ContextFactoryTest extends UnitaryTestCase
+interface CsrfHandler
 {
-    public function testGetForModuleWithWeb()
-    {
-        $out = ContextFactory::getForModule('web');
+    /**
+     * Check for CSRF token on POST requests
+     */
+    public function check(): bool;
 
-        $this->assertInstanceOf(Session::class, $out);
-    }
-
-    public function testGetForModuleWithOther()
-    {
-        $out = ContextFactory::getForModule(self::$faker->colorName);
-
-        $this->assertInstanceOf(Stateless::class, $out);
-    }
+    /**
+     * Initialize the CSRF key
+     */
+    public function initialize(): void;
 }

@@ -46,7 +46,6 @@ interface SecureSessionService
     /**
      * Returns the encryption key
      *
-     *
      * @return Key|false
      */
     public function getKey(): Key|bool;

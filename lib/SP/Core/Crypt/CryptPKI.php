@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -26,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Core\Crypt;
 
 use phpseclib\Crypt\RSA;
-use SP\Domain\Core\Crypt\CryptPKIInterface;
+use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\File\FileException;
@@ -35,22 +36,20 @@ use function SP\processException;
 
 /**
  * Class CryptPKI para el manejo de las funciones para PKI
- *
- * @package SP
  */
-final class CryptPKI implements CryptPKIInterface
+final class CryptPKI implements CryptPKIHandler
 {
     public const KEY_SIZE         = 1024;
-    public const PUBLIC_KEY_FILE  = CONFIG_PATH.DIRECTORY_SEPARATOR.'pubkey.pem';
-    public const PRIVATE_KEY_FILE = CONFIG_PATH.DIRECTORY_SEPARATOR.'key.pem';
+    public const PUBLIC_KEY_FILE  = CONFIG_PATH . DIRECTORY_SEPARATOR . 'pubkey.pem';
+    public const PRIVATE_KEY_FILE = CONFIG_PATH . DIRECTORY_SEPARATOR . 'key.pem';
 
     /**
      * @throws SPException
      */
     public function __construct(
-        private RSA $rsa,
-        private FileHandlerInterface $publicKeyFile,
-        private FileHandlerInterface $privateKeyFile
+        private readonly RSA                  $rsa,
+        private readonly FileHandlerInterface $publicKeyFile,
+        private readonly FileHandlerInterface $privateKeyFile
     ) {
         $this->setUp();
     }

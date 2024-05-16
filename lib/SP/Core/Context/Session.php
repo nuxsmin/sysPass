@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Core\Context;
 
 use Exception;
+use SessionHandlerInterface;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Core\Context\SessionContext;
@@ -44,17 +45,24 @@ use function SP\processException;
  */
 class Session extends ContextBase implements SessionContext
 {
-    private static bool $isLocked = false;
+    public function __construct(?SessionHandlerInterface $sessionHandler = null)
+    {
+        parent::__construct();
+
+        if ($sessionHandler) {
+            session_set_save_handler($sessionHandler);
+        }
+    }
 
     /**
      * Closes session
      */
     public static function close(): void
     {
-        if (!self::$isLocked) {
-            self::$isLocked = session_write_close();
+        if (PHP_SESSION_ACTIVE === session_status()) {
+            session_commit();
 
-            logger(sprintf('Session close value=%s caller=%s', self::$isLocked, getLastCaller()));
+            logger(sprintf('Session close: caller=%s', getLastCaller()));
         }
     }
 
@@ -88,23 +96,22 @@ class Session extends ContextBase implements SessionContext
         $this->setContextKey('theme', $theme);
     }
 
+
     /**
      * Set a context variable and its value
      *
      * @template T
      * @param T $value
-     * @return T|null
+     * @return T
      */
     protected function setContextKey(string $key, mixed $value): mixed
     {
         try {
-            if (self::$isLocked) {
+            if (PHP_SESSION_ACTIVE !== session_status()) {
                 logger('Session locked; key=' . $key);
-            } else {
-                parent::setContextKey($key, $value);
             }
 
-            return $value;
+            return parent::setContextKey($key, $value);
         } catch (ContextException $e) {
             processException($e);
         }

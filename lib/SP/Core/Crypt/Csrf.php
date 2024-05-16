@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -27,7 +28,7 @@ namespace SP\Core\Crypt;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\SessionContext;
-use SP\Domain\Core\Crypt\CsrfInterface;
+use SP\Domain\Core\Crypt\CsrfHandler;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\Ports\RequestService;
 
@@ -35,16 +36,14 @@ use function SP\logger;
 
 /**
  * Class Csrf
- *
- * @package SP\Core\Crypt
  */
-class Csrf implements CsrfInterface
+final readonly class Csrf implements CsrfHandler
 {
 
     public function __construct(
-        private readonly SessionContext      $context,
-        private readonly RequestService $request,
-        private readonly ConfigDataInterface $configData
+        private SessionContext      $context,
+        private RequestService      $request,
+        private ConfigDataInterface $configData
     ) {
     }
 

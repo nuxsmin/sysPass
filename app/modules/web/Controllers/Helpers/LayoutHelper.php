@@ -32,7 +32,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Domain\Core\Crypt\CryptPKIInterface;
+use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
@@ -53,16 +53,16 @@ use function SP\processException;
  */
 final class LayoutHelper extends HelperBase
 {
-    private ThemeInterface    $theme;
-    private CryptPKIInterface $cryptPKI;
-    private bool              $loggedIn;
+    private ThemeInterface  $theme;
+    private CryptPKIHandler $cryptPKI;
+    private bool            $loggedIn;
 
     public function __construct(
         Application                          $application,
         TemplateInterface                    $template,
-        RequestService $request,
+        RequestService  $request,
         ThemeInterface                       $theme,
-        CryptPKIInterface                    $cryptPKI,
+        CryptPKIHandler $cryptPKI,
         private readonly UriContextInterface $uriContext,
         private readonly AclInterface        $acl
     ) {

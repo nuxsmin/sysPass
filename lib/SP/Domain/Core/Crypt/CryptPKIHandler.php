@@ -23,22 +23,33 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Context;
+namespace SP\Domain\Core\Crypt;
 
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Context\SessionContext;
+use SP\Infrastructure\File\FileException;
 
 /**
- * ContextFactory
+ * Interface CryptPKIHandler
  */
-final class ContextFactory
+interface CryptPKIHandler
 {
-    public static function getForModule(string $module): Context|SessionContext
-    {
-        if ($module === 'web') {
-            return new Session();
-        }
+    /**
+     * Crea el par de claves pública y privada
+     *
+     * @throws FileException
+     */
+    public function createKeys(): void;
 
-        return new Stateless();
-    }
+    /**
+     * Devuelve la clave pública desde el archivo
+     *
+     * @throws FileException
+     */
+    public function getPublicKey(): string;
+
+    /**
+     * Desencriptar datos cifrados con la clave pública
+     *
+     * @throws FileException
+     */
+    public function decryptRSA(string $data): ?string;
 }

@@ -30,7 +30,7 @@ use Klein\DataCollection\DataCollection;
 use Klein\DataCollection\HeaderDataCollection;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Common\Providers\Filter;
-use SP\Domain\Core\Crypt\CryptPKIInterface;
+use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Header;
 use SP\Domain\Http\Method;
@@ -59,7 +59,7 @@ class Request implements RequestService
     /**
      * Request constructor.
      */
-    public function __construct(private readonly \Klein\Request $request, private readonly CryptPKIInterface $cryptPKI)
+    public function __construct(private readonly \Klein\Request $request, private readonly CryptPKIHandler $cryptPKI)
     {
         $this->headers = $this->request->headers();
         $this->method = Method::from($this->request->method());

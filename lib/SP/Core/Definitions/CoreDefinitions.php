@@ -27,23 +27,22 @@ declare(strict_types=1);
 namespace SP\Core\Definitions;
 
 use Aura\SqlQuery\QueryFactory;
-use Klein\Klein;
 use Klein\Request as KleinRequest;
-use Klein\Response as KleinResponse;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler as MSyslogHandler;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use SessionHandlerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
-use SP\Core\Application;
 use SP\Core\Bootstrap\RouteContext;
 use SP\Core\Bootstrap\UriContext;
-use SP\Core\Context\ContextFactory;
+use SP\Core\Context\Stateless;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\CryptPKI;
+use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\RequestBasedPassword;
 use SP\Core\Crypt\UuidCookie;
@@ -70,27 +69,33 @@ use SP\Domain\Auth\Providers\Ldap\LdapBase;
 use SP\Domain\Auth\Providers\Ldap\LdapConnection;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Common\Providers\Filter;
+use SP\Domain\Config\Ports\ConfigBackupService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Config\Services\ConfigBackup;
 use SP\Domain\Config\Services\ConfigFile;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Core\Crypt\CryptPKIInterface;
+use SP\Domain\Core\Crypt\CryptPKIHandler;
+use SP\Domain\Core\Crypt\CsrfHandler;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
+use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Crypt\Ports\SecureSessionService;
+use SP\Domain\Crypt\Services\SecureSession;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Export\Ports\BackupFileHelperService;
 use SP\Domain\Export\Services\BackupFileHelper;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Html\Ports\MinifyService;
 use SP\Domain\Html\Services\Minify;
 use SP\Domain\Http\Client;
@@ -131,20 +136,17 @@ final class CoreDefinitions
     public static function getDefinitions(): array
     {
         return [
-            Klein::class => autowire(Klein::class),
             KleinRequest::class => factory([KleinRequest::class, 'createFromGlobals']),
-            KleinResponse::class => create(KleinResponse::class),
             RequestService::class => autowire(Request::class),
             UriContextInterface::class => autowire(UriContext::class),
-            Context::class =>
-                static fn() => ContextFactory::getForModule(APP_MODULE),
+            Context::class => create(Stateless::class),
             ConfigFileService::class => create(ConfigFile::class)
                 ->constructor(
                     create(XmlFileStorage::class)
-                        ->constructor(create(LogFileHandler::class)->constructor(CONFIG_FILE)),
-                    create(FileCache::class)->constructor(ConfigFile::CONFIG_CACHE_FILE),
+                        ->constructor(create(FileHandlerInterface::class)->constructor(CONFIG_FILE)),
+                    create(FileCacheService::class)->constructor(ConfigFile::CONFIG_CACHE_FILE),
                     get(Context::class),
-                    autowire(ConfigBackup::class)
+                    autowire(ConfigBackupService::class)
                 ),
             ConfigDataInterface::class => factory([ConfigFileService::class, 'getConfigData']),
             DatabaseConnectionData::class => factory([DatabaseConnectionData::class, 'getFromConfig']),
@@ -159,7 +161,7 @@ final class CoreDefinitions
                     new FileCache(MimeTypes::MIME_CACHE_FILE),
                     new XmlFileStorage(new FileHandler(MIMETYPES_FILE))
                 ),
-            Acl::class => autowire(Acl::class)
+            AclInterface::class => autowire(Acl::class)
                 ->constructorParameter('actions', get(ActionsInterface::class)),
             ThemeContextInterface::class => autowire(ThemeContext::class)
                 ->constructorParameter('basePath', VIEW_PATH)
@@ -180,10 +182,7 @@ final class CoreDefinitions
             LdapConnectionInterface::class => autowire(LdapConnection::class),
             LdapActionsService::class => autowire(LdapActions::class),
             LdapAuthService::class => autowire(LdapAuth::class)
-                ->constructorParameter(
-                    'ldap',
-                    factory([LdapBase::class, 'factory'])
-                ),
+                ->constructorParameter('ldap', factory([LdapBase::class, 'factory'])),
             AuthProviderService::class => factory(
                 static function (
                     AuthProvider        $authProvider,
@@ -204,7 +203,7 @@ final class CoreDefinitions
 
                     return $authProvider;
                 }
-            )->parameter('authProvider', autowire(AuthProvider::class)),
+            ),
             LoggerInterface::class => factory(function (ConfigDataInterface $configData) {
                 $handlers = [];
                 $handlers[] = new StreamHandler(LOG_FILE);
@@ -233,7 +232,7 @@ final class CoreDefinitions
             }),
             \GuzzleHttp\Client::class => create(\GuzzleHttp\Client::class)
                 ->constructor(factory([Client::class, 'getOptions'])),
-            Csrf::class => autowire(Csrf::class),
+            CsrfHandler::class => autowire(Csrf::class),
             LanguageInterface::class => autowire(Language::class),
             DatabaseInterface::class => autowire(Database::class),
             PhpMailerService::class => autowire(PhpMailerService::class),
@@ -270,23 +269,30 @@ final class CoreDefinitions
             QueryFactory::class => create(QueryFactory::class)
                 ->constructor('mysql', QueryFactory::COMMON),
             CryptInterface::class => create(Crypt::class),
-            CryptPKIInterface::class => autowire(CryptPKI::class)
+            CryptPKIHandler::class => autowire(CryptPKI::class)
                 ->constructorParameter('publicKeyFile', new FileHandler(CryptPKI::PUBLIC_KEY_FILE))
                 ->constructorParameter('privateKeyFile', new FileHandler(CryptPKI::PRIVATE_KEY_FILE)),
             FileCacheService::class => create(FileCache::class),
-            Application::class => autowire(Application::class),
-            UuidCookie::class => factory([UuidCookie::class, 'factory'])
-                ->parameter(
-                    'request',
-                    get(RequestService::class)
-                ),
             RequestBasedPasswordInterface::class => autowire(RequestBasedPassword::class),
             MinifyService::class => autowire(Minify::class),
             BackupFileHelperService::class => autowire(BackupFileHelper::class)
                 ->constructorParameter('path', new DirectoryHandler(BACKUP_PATH)),
             RouteContextData::class => factory(static function (KleinRequest $request) {
                 return RouteContext::getRouteContextData(Filter::getString($request->param('r', 'index/index')));
-            })
+            }),
+            SecureSessionService::class => autowire(SecureSession::class)
+                ->constructorParameter(
+                    'fileCache',
+                    factory(
+                        static function (UuidCookieInterface $uuidCookie, ConfigDataInterface $configData) {
+                            return new FileCache(
+                                SecureSession::getFileNameFrom($uuidCookie, $configData->getPasswordSalt())
+                            );
+                        }
+                    )->parameter('uuidCookie', factory([UuidCookie::class, 'factory']))
+                ),
+            SessionHandlerInterface::class => autowire(CryptSessionHandler::class)
+                ->constructorParameter('key', [SecureSessionService::class, 'getKey'])
         ];
     }
 }
