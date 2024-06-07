@@ -499,20 +499,6 @@ class XmlExportTest extends UnitaryTestCase
         $this->xmlExport->export($exportPath, $password);
     }
 
-    public function testBuildFilename()
-    {
-        $out = XmlExport::buildFilename('test', 'a_hash');
-
-        $this->assertEquals('test/sysPass_export-a_hash.xml', $out);
-    }
-
-    public function testBuildFilenameCompressed()
-    {
-        $out = XmlExport::buildFilename('test', 'a_hash', true);
-
-        $this->assertEquals('test/sysPass_export-a_hash.tar.gz', $out);
-    }
-
     /**
      * @throws Exception
      * @throws ServiceException

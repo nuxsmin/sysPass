@@ -75,7 +75,7 @@ final class UpgradeController extends ControllerBase
             $this->handleApplication();
 
             $this->configData->setUpgradeKey(null);
-            $this->config->save($this->configData, false);
+            $this->config->save($this->configData);
 
             return $this->returnJsonResponse(
                 JsonMessage::JSON_SUCCESS,

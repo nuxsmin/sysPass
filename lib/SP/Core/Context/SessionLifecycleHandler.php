@@ -73,7 +73,7 @@ final class SessionLifecycleHandler
     {
         if (session_status() != PHP_SESSION_ACTIVE
             && (headers_sent($filename, $line)
-                || session_start(self::SESSION_OPTIONS)) === false
+                || !session_start(self::SESSION_OPTIONS))
         ) {
             logger(sprintf('Headers sent in %s:%d file', $filename, $line));
 

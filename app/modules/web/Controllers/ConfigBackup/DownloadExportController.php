@@ -33,7 +33,8 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Export\Services\XmlExport;
+use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
+use SP\Domain\Export\Dtos\BackupType;
 use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -53,10 +54,11 @@ final class DownloadExportController extends SimpleControllerBase
         try {
             Session::close();
 
-            $filePath = XmlExport::buildFilename(
+            $filePath = (string)new BackupFileDto(
+                BackupType::export,
+                $this->configData->getExportHash() ?: '',
                 BACKUP_PATH,
-                $this->configData->getExportHash(),
-                true
+                'gz'
             );
 
             $file = new FileHandler($filePath);
@@ -79,7 +81,7 @@ final class DownloadExportController extends SimpleControllerBase
                 ->header('Content-type', $file->getFileType())
                 ->header('Content-Description', ' sysPass file')
                 ->header('Content-transfer-encoding', 'chunked')
-                ->header('Content-Disposition', 'attachment; filename="'.basename($file->getFile()).'"')
+                ->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"')
                 ->header('Set-Cookie', 'fileDownload=true; path=/')
                 ->send();
 

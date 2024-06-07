@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -26,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Database;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Install\Adapters\InstallData;
 
 /**
  * Class DatabaseConnectionData
@@ -101,6 +103,19 @@ class DatabaseConnectionData
         $self->dbName = getenv('DB_NAME');
         $self->dbUser = getenv('DB_USER');
         $self->dbPass = getenv('DB_PASS');
+
+        return $self;
+    }
+
+    public static function getFromInstallData(InstallData $installData): DatabaseConnectionData
+    {
+        $self = new self();
+        $self->dbSocket = $installData->getDbSocket();
+        $self->dbHost = $installData->getDbHost();
+        $self->dbPort = $installData->getDbPort();
+        $self->dbName = $installData->getDbName();
+        $self->dbUser = $installData->getDbAdminUser();
+        $self->dbPass = $installData->getDbAdminPass();
 
         return $self;
     }

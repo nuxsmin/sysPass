@@ -42,67 +42,67 @@ final readonly class UserDataDto
 
     public function getLogin(): ?string
     {
-        return $this->user->getLogin();
+        return $this->user?->getLogin();
     }
 
     public function getSsoLogin(): ?string
     {
-        return $this->user->getSsoLogin();
+        return $this->user?->getSsoLogin();
     }
 
     public function getName(): ?string
     {
-        return $this->user->getName();
+        return $this->user?->getName();
     }
 
     public function getEmail(): ?string
     {
-        return $this->user->getEmail();
+        return $this->user?->getEmail();
     }
 
     public function getUserGroupId(): int
     {
-        return (int)$this->user->getUserGroupId();
+        return (int)$this->user?->getUserGroupId();
     }
 
     public function getUserProfileId(): int
     {
-        return (int)$this->user->getUserProfileId();
+        return (int)$this->user?->getUserProfileId();
     }
 
     public function getIsAdminApp(): bool
     {
-        return (bool)$this->user->isAdminApp();
+        return (bool)$this->user?->isAdminApp();
     }
 
     public function getIsAdminAcc(): bool
     {
-        return (bool)$this->user->isAdminAcc();
+        return (bool)$this->user?->isAdminAcc();
     }
 
     public function getIsDisabled(): bool
     {
-        return (bool)$this->user->isDisabled();
+        return (bool)$this->user?->isDisabled();
     }
 
     public function getIsChangePass(): bool
     {
-        return (bool)$this->user->isChangePass();
+        return (bool)$this->user?->isChangePass();
     }
 
     public function getIsChangedPass(): bool
     {
-        return (bool)$this->user->isChangedPass();
+        return (bool)$this->user?->isChangedPass();
     }
 
     public function getIsLdap(): bool
     {
-        return (bool)$this->user->isLdap();
+        return (bool)$this->user?->isLdap();
     }
 
     public function getIsMigrate(): bool
     {
-        return (bool)$this->user->isMigrate();
+        return (bool)$this->user?->isMigrate();
     }
 
     public function getPreferences(): ?UserPreferences
@@ -112,41 +112,41 @@ final readonly class UserDataDto
 
     public function getPass(): ?string
     {
-        return $this->user->getPass();
+        return $this->user?->getPass();
     }
 
     public function getMPass(): ?string
     {
-        return $this->user->getMPass();
+        return $this->user?->getMPass();
     }
 
     public function getMKey(): ?string
     {
-        return $this->user->getMKey();
+        return $this->user?->getMKey();
     }
 
     public function getLastUpdateMPass(): int
     {
-        return $this->user->getLastUpdateMPass();
+        return $this->user?->getLastUpdateMPass();
     }
 
     public function getHashSalt(): ?string
     {
-        return $this->user->getHashSalt();
+        return $this->user?->getHashSalt();
     }
 
     public function getId(): ?int
     {
-        return $this->user->getId();
+        return $this->user?->getId();
     }
 
     public function getUserGroupName(): ?string
     {
-        return $this->user->offsetGet('userGroup.name');
+        return $this->user?->offsetGet('userGroup.name');
     }
 
     public function getLastUpdate(): int
     {
-        return (int)strtotime($this->user->getLastUpdate());
+        return (int)strtotime($this->user?->getLastUpdate());
     }
 }

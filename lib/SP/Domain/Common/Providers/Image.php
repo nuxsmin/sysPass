@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -44,7 +45,7 @@ final class Image implements ImageService
     private const IMAGE_FONT  = PUBLIC_PATH . '/vendor/fonts/NotoSans-Regular-webfont.ttf';
     private const TMP_PREFFIX = 'syspass';
 
-    public function __construct(PhpExtensionCheckerService $checker)
+    public function __construct(PhpExtensionCheckerService $checker, private readonly string $font = self::IMAGE_FONT)
     {
         $checker->checkCurl(true);
     }
@@ -106,7 +107,7 @@ final class Image implements ImageService
                 || ($bgColor = imagecolorallocate($im, 245, 245, 245)) === false
                 || ($fgColor = imagecolorallocate($im, 128, 128, 128)) === false
                 || !imagefilledrectangle($im, 0, 0, $width, 30, $bgColor) ||
-                !imagefttext($im, 10, 0, 10, 20, $fgColor, self::IMAGE_FONT, $text)
+                !imagefttext($im, 10, 0, 10, 20, $fgColor, $this->font, $text)
             ) {
                 throw SPException::error(__u('Unable to create image'));
             }

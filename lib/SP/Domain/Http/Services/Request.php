@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -89,20 +90,16 @@ class Request implements RequestService
     /**
      * Devuelve un nombre de archivo seguro
      */
-    public static function getSecureAppFile(
-        string $file,
-        ?string $base = null
-    ): string {
+    public static function getSecureAppFile(string $file, ?string $base = null): string
+    {
         return basename(self::getSecureAppPath($file, $base));
     }
 
     /**
      * Devolver una ruta segura para
      */
-    public static function getSecureAppPath(
-        string $path,
-        ?string $base = null
-    ): string {
+    public static function getSecureAppPath(string $path, ?string $base = null): string
+    {
         if ($base === null) {
             $base = APP_ROOT;
         } elseif (!in_array(basename($base), self::SECURE_DIRS, true)) {

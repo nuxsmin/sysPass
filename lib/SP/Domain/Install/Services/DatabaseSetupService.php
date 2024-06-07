@@ -26,11 +26,9 @@ declare(strict_types=1);
 namespace SP\Domain\Install\Services;
 
 /**
- * Interface DatabaseInterface
- *
- * @package SP\Domain\Install\Services
+ * Interface DatabaseSetupService
  */
-interface DatabaseSetupInterface
+interface DatabaseSetupService
 {
     /**
      * Conectar con la BBDD

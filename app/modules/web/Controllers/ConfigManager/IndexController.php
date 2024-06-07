@@ -48,8 +48,9 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\File\MimeType;
 use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Crypt\Services\TemporaryMasterPass;
-use SP\Domain\Export\Services\BackupFileHelper;
-use SP\Domain\Export\Services\XmlExport;
+use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
+use SP\Domain\Export\Dtos\BackupFiles;
+use SP\Domain\Export\Dtos\BackupType;
 use SP\Domain\Log\Providers\LogInterface;
 use SP\Domain\Notification\Services\MailEvent;
 use SP\Domain\Task\Services\Task;
@@ -84,17 +85,18 @@ final class IndexController extends ControllerBase
     private PluginManager  $pluginManager;
 
     public function __construct(
-        Application         $application,
-        WebControllerHelper $webControllerHelper,
-        TabsHelper          $tabsHelper,
-        UserService         $userService,
-        UserGroupService    $userGroupService,
-        UserProfileService  $userProfileService,
-        MimeTypesService    $mimeTypes,
-        DatabaseUtil        $databaseUtil,
-        ConfigService       $configService,
-        AccountService      $accountService,
-        PluginManager       $pluginManager
+        Application                  $application,
+        WebControllerHelper          $webControllerHelper,
+        TabsHelper                   $tabsHelper,
+        UserService                  $userService,
+        UserGroupService             $userGroupService,
+        UserProfileService           $userProfileService,
+        MimeTypesService             $mimeTypes,
+        DatabaseUtil                 $databaseUtil,
+        ConfigService                $configService,
+        AccountService               $accountService,
+        PluginManager                $pluginManager,
+        private readonly BackupFiles $backupFiles
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -457,25 +459,17 @@ final class IndexController extends ControllerBase
 
         $template->assign('siteName', AppInfoInterface::APP_NAME);
 
-        $backupAppFile = new FileHandler(
-            BackupFileHelper::getAppBackupFilename(
-                BACKUP_PATH,
-                $this->configData->getBackupHash() ?: '',
-                true
-            )
-        );
-        $backupDbFile = new FileHandler(
-            BackupFileHelper::getDbBackupFilename(
-                BACKUP_PATH,
-                $this->configData->getBackupHash() ?: '',
-                true
-            )
-        );
+        $backupFiles = $this->backupFiles->withHash($this->configData->getBackupHash() ?? '');
+
+        $backupAppFile = new FileHandler((string)$backupFiles->getAppBackupFile());
+        $backupDbFile = new FileHandler((string)$backupFiles->getDbBackupFile());
+
         $exportFile = new FileHandler(
-            XmlExport::buildFilename(
-                BACKUP_PATH,
+            (string)new BackupFileDto(
+                BackupType::export,
                 $this->configData->getExportHash() ?: '',
-                true
+                BACKUP_PATH,
+                'gz'
             )
         );
 

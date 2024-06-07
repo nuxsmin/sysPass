@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -42,11 +43,9 @@ use function SP\logger;
 use function SP\processException;
 
 /**
- * Class MySQL
- *
- * @package SP\Domain\Install\Services
+ * Class MysqlSetupService
  */
-final readonly class MysqlService implements DatabaseSetupInterface
+final readonly class MysqlSetup implements DatabaseSetupService
 {
     public function __construct(
         private DbStorageHandler      $dbStorage,

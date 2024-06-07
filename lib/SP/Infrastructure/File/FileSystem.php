@@ -150,4 +150,19 @@ class FileSystem
     {
         return implode(DIRECTORY_SEPARATOR, $parts);
     }
+
+    /**
+     * Delete files using {@link glob()} patterns
+     *
+     * @param string $path
+     * @param string ...$patterns
+     * @return void
+     */
+    public static function deleteByPattern(string $path, string...$patterns): void
+    {
+        array_map(
+            static fn(string $file) => @unlink($file),
+            array_merge(...array_map(static fn(string $pattern) => glob(self::buildPath($path, $pattern)), $patterns))
+        );
+    }
 }

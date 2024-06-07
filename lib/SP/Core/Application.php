@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -40,12 +41,12 @@ final readonly class Application
      *
      * @param ConfigFileService $config
      * @param EventDispatcherInterface $eventDispatcher
-     * @param SessionContext|Context $context
+     * @param Context $context
      */
     public function __construct(
         private ConfigFileService        $config,
         private EventDispatcherInterface $eventDispatcher,
-        private SessionContext|Context   $context
+        private Context $context
     ) {
     }
 

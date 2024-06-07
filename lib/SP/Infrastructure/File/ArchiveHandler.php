@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -33,10 +34,8 @@ use SP\Domain\File\Ports\ArchiveHandlerInterface;
 /**
  * Class ArchiveHandler
  */
-final class ArchiveHandler implements ArchiveHandlerInterface
+class ArchiveHandler implements ArchiveHandlerInterface
 {
-    public const COMPRESS_EXTENSION = '.tar.gz';
-
     private readonly PharData $archive;
 
     public function __construct(string $archive, PhpExtensionCheckerService $phpExtensionCheckerService)
@@ -48,21 +47,7 @@ final class ArchiveHandler implements ArchiveHandlerInterface
 
     private static function makeArchiveName(string $archive): string
     {
-        $archiveExtension = substr(
-            self::COMPRESS_EXTENSION,
-            0,
-            strrpos(self::COMPRESS_EXTENSION, '.')
-        );
-
-        if (is_file($archive)) {
-            return substr(
-                       $archive,
-                       0,
-                       strrpos($archive, '.') ?: strlen($archive)
-                   ) . $archiveExtension;
-        }
-
-        return $archive . $archiveExtension;
+        return preg_replace('/\.gz$/', '', $archive);
     }
 
     /**
@@ -70,13 +55,15 @@ final class ArchiveHandler implements ArchiveHandlerInterface
      *
      * @throws FileException
      */
-    public function compressDirectory(string $directory, ?string $regex = null): void
+    public function compressDirectory(string $directory, ?string $regex = null): string
     {
         $this->archive->buildFromDirectory($directory, $regex);
-        $this->archive->compress(Phar::GZ);
+        $packed = $this->archive->compress(Phar::GZ);
 
         // Delete the non-compressed archive
         (new FileHandler($this->archive->getPath()))->delete();
+
+        return $packed->getFileInfo()->getPathname();
     }
 
     /**
@@ -87,11 +74,11 @@ final class ArchiveHandler implements ArchiveHandlerInterface
     public function compressFile(string $file): string
     {
         $this->archive->addFile($file, basename($file));
-        $this->archive->compress(Phar::GZ);
+        $packed = $this->archive->compress(Phar::GZ);
 
         // Delete the non-compressed archive
-        (new FileHandler($this->archive->getPath()))->delete();
+        (new FileHandler($this->archive->getPathname()))->delete();
 
-        return $this->archive->getFileInfo()->getPathname();
+        return $packed->getFileInfo()->getPathname();
     }
 }

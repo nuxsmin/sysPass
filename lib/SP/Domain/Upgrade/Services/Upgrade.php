@@ -99,7 +99,7 @@ final class Upgrade extends Service implements UpgradeService
 
             logger('Upgrade: ' . $upgradeHandler::class);
 
-            $this->config->save($configData, false);
+            $this->config->save($configData);
         }
 
         $this->eventDispatcher->notify(

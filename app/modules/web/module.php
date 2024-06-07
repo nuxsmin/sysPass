@@ -23,11 +23,12 @@
  */
 
 use SP\Core\Context\Session;
+use SP\Core\Crypt\Csrf;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
-use SP\Domain\Html\Ports\MinifyService;
+use SP\Domain\Core\Crypt\CsrfHandler;
 use SP\Domain\Html\Services\MinifyCss;
 use SP\Domain\Html\Services\MinifyJs;
 use SP\Modules\Web\Bootstrap;
@@ -47,10 +48,10 @@ return [
     ModuleInterface::class => autowire(Init::class),
     CssController::class => autowire(
         CssController::class
-    )->constructorParameter(MinifyService::class, autowire(MinifyCss::class)),
+    )->constructorParameter('minify', autowire(MinifyCss::class)),
     JsController::class => autowire(
         JsController::class
-    )->constructorParameter(MinifyService::class, autowire(MinifyJs::class)),
+    )->constructorParameter('minify', autowire(MinifyJs::class)),
     Context::class => factory(
         static function (ConfigDataInterface $configData, SessionHandlerInterface $sessionHandler) {
             if ($configData->isEncryptSession()) {
@@ -59,5 +60,6 @@ return [
 
             return new Session();
         }
-    )
+    ),
+    CsrfHandler::class => autowire(Csrf::class),
 ];

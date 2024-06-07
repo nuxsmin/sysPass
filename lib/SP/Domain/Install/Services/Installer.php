@@ -77,7 +77,7 @@ final class Installer implements InstallerService
         private readonly UserProfileService     $userProfileService,
         private readonly ConfigService          $configService,
         private readonly DatabaseConnectionData $databaseConnectionData,
-        private readonly DatabaseSetupInterface $databaseSetup
+        private readonly DatabaseSetupService $databaseSetup
     ) {
         $this->request = $request;
     }
@@ -200,7 +200,7 @@ final class Installer implements InstallerService
 
         $configData->setInstalled(true);
 
-        $this->config->save($configData, false);
+        $this->config->save($configData);
     }
 
     /**
@@ -270,7 +270,7 @@ final class Installer implements InstallerService
                                    ->setDbName($this->installData->getDbName())
                                    ->setSiteLang($this->installData->getSiteLang());
 
-        $this->config->save($configData, false, false);
+        $this->config->save($configData, false);
 
         return $configData;
     }
@@ -296,7 +296,7 @@ final class Installer implements InstallerService
             $configData->setDbPass($pass);
         }
 
-        $this->config->save($configData, false, false);
+        $this->config->save($configData, false);
 
         $this->databaseSetup->createDatabase($user);
         $this->databaseSetup->createDBStructure();

@@ -34,8 +34,8 @@ use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Ports\BackupFileService;
-use SP\Domain\Export\Services\BackupFileHelper;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
 
@@ -46,21 +46,18 @@ use SP\Modules\Api\Controllers\Help\ConfigHelp;
  */
 final class BackupController extends ControllerBase
 {
-    private BackupFileService $fileBackupService;
-
     /**
      * @throws InvalidClassException
      */
     public function __construct(
-        Application  $application,
-        Klein        $router,
-        ApiService   $apiService,
-        AclInterface $acl,
-        BackupFileService $fileBackupService
+        Application                        $application,
+        Klein                              $router,
+        ApiService                         $apiService,
+        AclInterface                       $acl,
+        private readonly BackupFileService $fileBackupService,
+        private readonly BackupFiles       $backupFiles
     ) {
         parent::__construct($application, $router, $apiService, $acl);
-
-        $this->fileBackupService = $fileBackupService;
 
         $this->apiService->setHelpClass(ConfigHelp::class);
     }
@@ -98,24 +95,18 @@ final class BackupController extends ControllerBase
     }
 
     /**
-     * @param  string|null  $path
+     * @param string|null $path
      *
      * @return array[]
      */
     private function buildBackupFiles(?string $path): array
     {
+        $backupFiles = $this->backupFiles->withPath($path);
+
         return [
             'files' => [
-                'app' => BackupFileHelper::getAppBackupFilename(
-                    $path,
-                    $this->fileBackupService->getHash(),
-                    true
-                ),
-                'db' => BackupFileHelper::getDbBackupFilename(
-                    $path,
-                    $this->fileBackupService->getHash(),
-                    true
-                ),
+                'app' => (string)$backupFiles->getAppBackupFile(),
+                'db' => (string)$backupFiles->getDbBackupFile(),
             ],
         ];
     }

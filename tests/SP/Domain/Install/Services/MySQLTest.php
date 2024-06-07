@@ -37,7 +37,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Install\Adapters\InstallData;
-use SP\Domain\Install\Services\MysqlService;
+use SP\Domain\Install\Services\MysqlSetup;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\UnitaryTestCase;
@@ -53,8 +53,8 @@ use function SP\__u;
 class MySQLTest extends UnitaryTestCase
 {
     private DbStorageHandler|MockObject $dbStorage;
-    private MysqlService                $mysqlService;
-    private PDO|MockObject                   $pdo;
+    private MysqlSetup     $mysqlService;
+    private PDO|MockObject $pdo;
     private InstallData                      $installData;
     private ConfigDataInterface              $configData;
     private DatabaseFileInterface|MockObject $databaseFile;
@@ -828,7 +828,7 @@ class MySQLTest extends UnitaryTestCase
         $this->installData = $this->getInstallData();
         $this->configData = $this->config->getConfigData();
         $this->databaseUtil = $this->createMock(DatabaseUtil::class);
-        $this->mysqlService = new MysqlService(
+        $this->mysqlService = new MysqlSetup(
             $this->dbStorage,
             $this->installData,
             $this->databaseFile,

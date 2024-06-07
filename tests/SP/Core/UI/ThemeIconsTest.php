@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -89,6 +90,8 @@ class ThemeIconsTest extends UnitaryTestCase
         $context = $this->createMock(Context::class);
         $fileCache = $this->createMock(FileCacheService::class);
         $themeContext = $this->createMock(ThemeContextInterface::class);
+        $themeContext->expects($this->never())
+                     ->method('getFullPath');
 
         $context->expects(self::once())
                 ->method('getAppStatus')
@@ -96,7 +99,7 @@ class ThemeIconsTest extends UnitaryTestCase
 
         $fileCache->expects(self::once())
                   ->method('isExpired')
-                  ->willReturn(true);
+            ->willReturn(false);
 
         $fileCache->expects(self::once())
                   ->method('load')

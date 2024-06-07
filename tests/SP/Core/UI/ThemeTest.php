@@ -140,8 +140,6 @@ class ThemeTest extends UnitaryTestCase
      */
     public function testGetAvailable()
     {
-        $dirname = self::$faker->filePath();
-
         $dir = $this->createMock(Directory::class);
         $dir->expects(self::exactly(2))
             ->method('read')

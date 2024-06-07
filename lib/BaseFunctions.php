@@ -66,9 +66,8 @@ function logger(mixed $data, string $type = 'DEBUG'): void
         $caller
     );
 
-    /** @noinspection ForgottenDebugOutputInspection */
     $useOwn = (!defined('LOG_FILE')
-               || !@error_log($line, 3, LOG_FILE)
+               || !@file_put_contents(LOG_FILE, $line, FILE_APPEND)
     );
 
     if ($useOwn === false) {
@@ -79,8 +78,7 @@ function logger(mixed $data, string $type = 'DEBUG'): void
             $caller
         );
 
-        /** @noinspection ForgottenDebugOutputInspection */
-        @error_log($line);
+        @file_put_contents(LOG_FILE, $line, FILE_APPEND);
     }
 }
 

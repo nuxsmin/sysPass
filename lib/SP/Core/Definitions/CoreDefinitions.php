@@ -43,11 +43,12 @@ use SP\Core\Context\Stateless;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\CryptSessionHandler;
-use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\RequestBasedPassword;
 use SP\Core\Crypt\UuidCookie;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Language;
 use SP\Core\MimeTypes;
+use SP\Core\PhpExtensionChecker;
 use SP\Core\ProvidersHelper;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeContext;
@@ -69,7 +70,6 @@ use SP\Domain\Auth\Providers\Ldap\LdapBase;
 use SP\Domain\Auth\Providers\Ldap\LdapConnection;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Common\Providers\Filter;
-use SP\Domain\Config\Ports\ConfigBackupService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Services\ConfigFile;
@@ -80,30 +80,32 @@ use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
-use SP\Domain\Core\Crypt\CsrfHandler;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Crypt\UuidCookieInterface;
-use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Crypt\Services\SecureSession;
+use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
-use SP\Domain\Export\Ports\BackupFileHelperService;
-use SP\Domain\Export\Services\BackupFileHelper;
-use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Domain\Html\Ports\MinifyService;
-use SP\Domain\Html\Services\Minify;
+use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
+use SP\Domain\Export\Dtos\BackupFiles;
+use SP\Domain\Export\Dtos\BackupType;
+use SP\Domain\Export\Ports\BackupFileService;
+use SP\Domain\Export\Services\BackupFile;
 use SP\Domain\Http\Client;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Services\Request;
+use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Adapters\InstallDataFactory;
-use SP\Domain\Install\Services\DatabaseSetupInterface;
-use SP\Domain\Install\Services\MysqlSetupBuilder;
+use SP\Domain\Install\Services\DatabaseSetupService;
+use SP\Domain\Install\Services\MysqlSetup;
 use SP\Domain\Log\Providers\DatabaseHandler;
 use SP\Domain\Log\Providers\LogHandler;
 use SP\Domain\Notification\Ports\MailerInterface;
@@ -114,19 +116,24 @@ use SP\Domain\Notification\Services\PhpMailerService;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\Database\MysqlHandler;
-use SP\Infrastructure\File\DirectoryHandler;
+use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileHandler;
+use SP\Infrastructure\File\FileSystem;
 use SP\Infrastructure\File\XmlFileStorage;
+use SP\Mvc\View\OutputHandler;
+use SP\Mvc\View\OutputHandlerInterface;
 use SP\Mvc\View\Template;
 use SP\Mvc\View\TemplateInterface;
+use SP\Mvc\View\TemplateResolver;
+use SP\Mvc\View\TemplateResolverInterface;
 
 use function DI\autowire;
 use function DI\create;
 use function DI\factory;
 use function DI\get;
-use function SP\__u;
 
 /**
  * Class CoreDefinitions
@@ -140,17 +147,33 @@ final class CoreDefinitions
             RequestService::class => autowire(Request::class),
             UriContextInterface::class => autowire(UriContext::class),
             Context::class => create(Stateless::class),
+            EventDispatcherInterface::class => create(EventDispatcher::class),
             ConfigFileService::class => create(ConfigFile::class)
                 ->constructor(
                     create(XmlFileStorage::class)
-                        ->constructor(create(FileHandlerInterface::class)->constructor(CONFIG_FILE)),
-                    create(FileCacheService::class)->constructor(ConfigFile::CONFIG_CACHE_FILE),
-                    get(Context::class),
-                    autowire(ConfigBackupService::class)
+                        ->constructor(create(FileHandler::class)->constructor(CONFIG_FILE)),
+                    create(FileCache::class)->constructor(ConfigFile::CONFIG_CACHE_FILE),
+                    get(Context::class)
                 ),
             ConfigDataInterface::class => factory([ConfigFileService::class, 'getConfigData']),
-            DatabaseConnectionData::class => factory([DatabaseConnectionData::class, 'getFromConfig']),
+            InstallData::class => factory([InstallDataFactory::class, 'buildFromRequest']),
+            DatabaseConnectionData::class => factory(
+                static function (ConfigDataInterface $configData, InstallData $installData) {
+                    if (!$configData->isInstalled()) {
+                        return DatabaseConnectionData::getFromInstallData($installData);
+                    }
+
+                    // TODO: get from env vars
+                    return DatabaseConnectionData::getFromConfig($configData);
+                }
+            ),
+            DatabaseFileInterface::class => create(MysqlFileParser::class)
+                ->constructor(
+                    create(FileHandler::class)
+                        ->constructor(FileSystem::buildPath(SQL_PATH, 'dbstructure.sql'))
+                ),
             DbStorageHandler::class => autowire(MysqlHandler::class),
+            DatabaseSetupService::class => autowire(MysqlSetup::class),
             ActionsInterface::class =>
                 static fn() => new Actions(
                     new FileCache(Actions::ACTIONS_CACHE_FILE),
@@ -170,8 +193,9 @@ final class CoreDefinitions
                 ->constructorParameter('name', factory([Theme::class, 'getThemeName'])),
             ThemeIconsInterface::class => factory([ThemeIcons::class, 'loadIcons'])
                 ->parameter(
-                    'iconsCache',
-                    create(FileCache::class)->constructor(ThemeIcons::ICONS_CACHE_FILE)
+                    'cache',
+                    create(FileCache::class)
+                        ->constructor(FileSystem::buildPath(CACHE_PATH, ThemeIcons::ICONS_CACHE_FILE))
                 ),
             ThemeInterface::class => autowire(Theme::class),
             TemplateInterface::class => autowire(Template::class)
@@ -232,7 +256,6 @@ final class CoreDefinitions
             }),
             \GuzzleHttp\Client::class => create(\GuzzleHttp\Client::class)
                 ->constructor(factory([Client::class, 'getOptions'])),
-            CsrfHandler::class => autowire(Csrf::class),
             LanguageInterface::class => autowire(Language::class),
             DatabaseInterface::class => autowire(Database::class),
             PhpMailerService::class => autowire(PhpMailerService::class),
@@ -240,17 +263,7 @@ final class CoreDefinitions
                 ->parameter(
                     'mailParams',
                     factory([Mail::class, 'getParamsFromConfig'])
-                        ->parameter('configData', get(ConfigDataInterface::class))
                 ),
-            DatabaseSetupInterface::class => static function (RequestService $request) {
-                $installData = InstallDataFactory::buildFromRequest($request);
-
-                if ($installData->getBackendType() === 'mysql') {
-                    return MysqlSetupBuilder::build($installData);
-                }
-
-                throw SPException::error(__u('Unimplemented'), __u('Wrong backend type'));
-            },
             ProvidersHelper::class => factory(static function (ContainerInterface $c) {
                 $configData = $c->get(ConfigDataInterface::class);
 
@@ -270,13 +283,47 @@ final class CoreDefinitions
                 ->constructor('mysql', QueryFactory::COMMON),
             CryptInterface::class => create(Crypt::class),
             CryptPKIHandler::class => autowire(CryptPKI::class)
-                ->constructorParameter('publicKeyFile', new FileHandler(CryptPKI::PUBLIC_KEY_FILE))
-                ->constructorParameter('privateKeyFile', new FileHandler(CryptPKI::PRIVATE_KEY_FILE)),
+                ->constructorParameter(
+                    'publicKeyFile',
+                    create(FileHandler::class)->constructor(CryptPKI::PUBLIC_KEY_FILE, 'w')
+                )
+                ->constructorParameter(
+                    'privateKeyFile',
+                    create(FileHandler::class)->constructor(CryptPKI::PRIVATE_KEY_FILE, 'w')
+                ),
             FileCacheService::class => create(FileCache::class),
             RequestBasedPasswordInterface::class => autowire(RequestBasedPassword::class),
-            MinifyService::class => autowire(Minify::class),
-            BackupFileHelperService::class => autowire(BackupFileHelper::class)
-                ->constructorParameter('path', new DirectoryHandler(BACKUP_PATH)),
+            PhpExtensionCheckerService::class => create(PhpExtensionChecker::class),
+            BackupFiles::class => factory(static function () {
+                $hash = BackupFiles::buildHash();
+                $appBackupFile = new BackupFileDto(BackupType::app, $hash, BACKUP_PATH, 'tar');
+                $dbBackupFile = new BackupFileDto(BackupType::db, $hash, BACKUP_PATH, 'sql');
+
+                return new BackupFiles($appBackupFile, $dbBackupFile);
+            }),
+            'backup.dbArchiveHandler' => autowire(ArchiveHandler::class)
+                ->constructorParameter(
+                    'archive',
+                    factory(
+                        static fn(BackupFiles $backupFiles) => (string)$backupFiles->getDbBackupFile()
+                    )
+                ),
+            'backup.appArchiveHandler' => autowire(ArchiveHandler::class)
+                ->constructorParameter(
+                    'archive',
+                    factory(
+                        static fn(BackupFiles $backupFiles) => (string)$backupFiles->getAppBackupFile()
+                    )
+                )
+            ,
+            BackupFileService::class => autowire(BackupFile::class)
+                ->constructorParameter(
+                    'dbBackupFile',
+                    create(FileHandler::class)
+                        ->constructor(FileSystem::buildPath(BACKUP_PATH, 'database.sql'), 'wb+')
+                )
+                ->constructorParameter('dbArchiveHandler', get('backup.dbArchiveHandler'))
+                ->constructorParameter('appArchiveHandler', get('backup.appArchiveHandler')),
             RouteContextData::class => factory(static function (KleinRequest $request) {
                 return RouteContext::getRouteContextData(Filter::getString($request->param('r', 'index/index')));
             }),
@@ -292,7 +339,9 @@ final class CoreDefinitions
                     )->parameter('uuidCookie', factory([UuidCookie::class, 'factory']))
                 ),
             SessionHandlerInterface::class => autowire(CryptSessionHandler::class)
-                ->constructorParameter('key', [SecureSessionService::class, 'getKey'])
+                ->constructorParameter('key', factory([SecureSessionService::class, 'getKey'])),
+            OutputHandlerInterface::class => create(OutputHandler::class),
+            TemplateResolverInterface::class => autowire(TemplateResolver::class)
         ];
     }
 }

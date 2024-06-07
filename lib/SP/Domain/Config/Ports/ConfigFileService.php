@@ -37,14 +37,12 @@ interface ConfigFileService
      * Guardar la configuración
      *
      * @param ConfigDataInterface $configData
-     * @param bool|null $backup Whether to back up the configuration
      * @param bool|null $commit Whether to save the configuration into the file
      * @return ConfigFileService
      * @throws FileException
      */
     public function save(
         ConfigDataInterface $configData,
-        ?bool $backup = true,
         ?bool $commit = true
     ): ConfigFileService;
 

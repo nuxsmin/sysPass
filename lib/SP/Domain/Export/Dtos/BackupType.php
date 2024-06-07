@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
@@ -24,19 +22,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Export\Ports;
-
-use SP\Domain\Common\Services\ServiceException;
+namespace SP\Domain\Export\Dtos;
 
 /**
- * Esta clase es la encargada de realizar la copia de sysPass.
+ * Enum BackupType
  */
-interface BackupFileService
+enum BackupType
 {
-    /**
-     * Realizar backup de la BBDD y aplicación.
-     *
-     * @throws ServiceException
-     */
-    public function doBackup(string $backupPath = BACKUP_PATH, string $applicationPath = APP_ROOT): void;
+    case db;
+    case app;
+    case export;
 }

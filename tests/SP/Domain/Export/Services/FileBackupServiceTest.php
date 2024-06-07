@@ -56,6 +56,9 @@ class FileBackupServiceTest extends UnitaryTestCase
     private BackupFile                         $fileBackupService;
     private BackupFileHelperService|MockObject $backupFiles;
     private DatabaseInterface|MockObject       $database;
+    private MockObject|FileHandlerInterface    $dbFileHandler;
+    private ArchiveHandlerInterface|MockObject $dbArchiveHandler;
+    private ArchiveHandlerInterface|MockObject $appArchiveHandler;
 
     /**
      * @throws ServiceException
@@ -63,7 +66,7 @@ class FileBackupServiceTest extends UnitaryTestCase
      */
     public function testDoBackup(): void
     {
-        $this->setupBackupFiles();
+        $this->config->getConfigData()->setDbName('a_db');
 
         $tablesCount = count(DatabaseUtil::TABLES);
         $tablesType = ['table', 'view'];
@@ -101,50 +104,32 @@ class FileBackupServiceTest extends UnitaryTestCase
             )
             ->willReturnCallback($rows);
 
+        $this->dbFileHandler
+            ->expects($this->exactly(79))
+            ->method('write');
+
+        $this->dbFileHandler
+            ->expects($this->once())
+            ->method('delete');
+
+        $file = self::$faker->colorName();
+
+        $this->dbFileHandler
+            ->expects($this->once())
+            ->method('getFile')
+            ->willReturn($file);
+
+        $this->dbArchiveHandler
+            ->expects($this->once())
+            ->method('compressFile')
+            ->with($file);
+
+        $this->appArchiveHandler
+            ->expects($this->once())
+            ->method('compressDirectory')
+            ->with(APP_ROOT, BackupFile::BACKUP_INCLUDE_REGEX);
+
         $this->fileBackupService->doBackup(TMP_PATH);
-    }
-
-    /**
-     * @return void
-     * @throws Exception
-     */
-    private function setupBackupFiles(): void
-    {
-        $archiveHandler = $this->createMock(ArchiveHandlerInterface::class);
-        $archiveHandler->expects(self::once())
-                       ->method('compressFile')
-                       ->withAnyParameters();
-        $archiveHandler->expects(self::once())
-                       ->method('compressDirectory')
-                       ->with(
-                           APP_ROOT,
-                           BackupFile::BACKUP_INCLUDE_REGEX
-                       );
-
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-        $fileHandler->expects(self::once())
-                    ->method('open')
-                    ->with('w');
-        $fileHandler->expects(self::atLeast(5))
-                    ->method('write')
-                    ->with(self::anything());
-        $fileHandler->expects(self::once())
-                    ->method('getFile');
-        $fileHandler->expects(self::once())
-                    ->method('delete');
-
-        $this->backupFiles
-            ->expects(self::once())
-            ->method('getDbBackupFileHandler')
-            ->willReturn($fileHandler);
-        $this->backupFiles
-            ->expects(self::once())
-            ->method('getDbBackupArchiveHandler')
-            ->willReturn($archiveHandler);
-        $this->backupFiles
-            ->expects(self::once())
-            ->method('getAppBackupArchiveHandler')
-            ->willReturn($archiveHandler);
     }
 
     private function buildCreateResult(string $type): QueryResult
@@ -169,16 +154,12 @@ class FileBackupServiceTest extends UnitaryTestCase
      */
     public function testDoBackupWithException(): void
     {
-        $fileHandler = $this->createMock(FileHandlerInterface::class);
-        $fileHandler->expects(self::once())
-                    ->method('open')
-                    ->with('w')
-                    ->willThrowException(new FileException('Filexception'));
+        $this->config->getConfigData()->setDbName('a_db');
 
-        $this->backupFiles
-            ->expects(self::once())
-            ->method('getDbBackupFileHandler')
-            ->willReturn($fileHandler);
+        $this->dbFileHandler
+            ->expects(self::any())
+            ->method('write')
+            ->willThrowException(FileException::error('Filexception'));
 
         $exception = new ServiceException(
             'Error while doing the backup',
@@ -194,18 +175,6 @@ class FileBackupServiceTest extends UnitaryTestCase
         $this->fileBackupService->doBackup();
     }
 
-    public function testGetHash(): void
-    {
-        $hash = self::$faker->sha1;
-
-        $this->backupFiles
-            ->expects(self::once())
-            ->method('getHash')
-            ->willReturn($hash);
-
-        self::assertEquals($hash, $this->fileBackupService->getHash());
-    }
-
     /**
      * @throws Exception
      * @throws ContextException
@@ -216,12 +185,17 @@ class FileBackupServiceTest extends UnitaryTestCase
 
         $this->database = $this->createMock(DatabaseInterface::class);
         $this->backupFiles = $this->createMock(BackupFileHelperService::class);
+        $this->dbFileHandler = $this->createMock(FileHandlerInterface::class);
+        $this->dbArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);
+        $this->appArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);
 
         $this->fileBackupService = new BackupFile(
             $this->application,
             $this->database,
             $this->createStub(DatabaseUtil::class),
-            $this->backupFiles
+            $this->dbFileHandler,
+            $this->dbArchiveHandler,
+            $this->appArchiveHandler
         );
     }
 }

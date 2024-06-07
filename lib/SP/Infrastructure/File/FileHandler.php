@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -44,9 +45,9 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     /**
      * FileHandler constructor.
      */
-    public function __construct(private readonly string $file, private readonly string $mode = 'r')
+    public function __construct(private readonly string $file, string $mode = 'r')
     {
-        parent::__construct($this->file, $this->mode);
+        parent::__construct($this->file, $mode);
     }
 
     /**
@@ -79,6 +80,14 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
         }
 
         return $data;
+    }
+
+    /**
+     * @return void
+     */
+    private function autoDetectEOL(): void
+    {
+        ini_set('auto_detect_line_endings', true);
     }
 
     /**
@@ -342,13 +351,5 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     public function getHash(): string
     {
         return sha1_file($this->file);
-    }
-
-    /**
-     * @return void
-     */
-    private function autoDetectEOL(): void
-    {
-        ini_set('auto_detect_line_endings', true);
     }
 }

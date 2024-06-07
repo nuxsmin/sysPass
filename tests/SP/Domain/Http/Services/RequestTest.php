@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -801,15 +802,13 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetSecureAppPath()
     {
-        $path = sprintf(
-            '%s%s/index.php',
-            implode('', array_fill(0, count(explode('/', APP_ROOT)) - 1, '../')),
-            APP_ROOT
-        );
+        $appRoot = preg_replace('#\w+://#', '', REAL_APP_ROOT) . '/public/js';
 
-        $out = Request::getSecureAppPath($path);
+        $path = '/../../public/js/app.js';
 
-        $this->assertEquals(sprintf('%s/index.php', APP_ROOT), $out);
+        $out = Request::getSecureAppPath($path, $appRoot);
+
+        $this->assertEquals($appRoot . '/app.js', $out);
     }
 
     public function testGetSecureAppPathWithUnknownFile()
@@ -915,15 +914,13 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetSecureAppFile()
     {
-        $path = sprintf(
-            '%s%s/index.php',
-            implode('', array_fill(0, count(explode('/', APP_ROOT)) - 1, '../')),
-            APP_ROOT
-        );
+        $appRoot = preg_replace('#\w+://#', '', REAL_APP_ROOT) . '/public/js';
 
-        $out = Request::getSecureAppFile($path);
+        $path = '/../../public/js/app.js';
 
-        $this->assertEquals('index.php', $out);
+        $out = Request::getSecureAppFile($path, $appRoot);
+
+        $this->assertEquals('app.js', $out);
     }
 
     public function testGetSecureAppFileWithUnknownFile()

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -31,7 +32,6 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
 use SP\Domain\Config\Adapters\ConfigData;
-use SP\Domain\Config\Ports\ConfigBackupService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Exceptions\ConfigException;
@@ -49,7 +49,6 @@ class ConfigFileTest extends UnitaryTestCase
 {
     private XmlFileStorageService|MockObject $fileStorageService;
     private FileCacheService|MockObject      $fileCacheService;
-    private ConfigBackupService|MockObject   $configBackupService;
 
     /**
      * @throws ConfigException
@@ -77,7 +76,6 @@ class ConfigFileTest extends UnitaryTestCase
             $this->fileStorageService,
             $this->fileCacheService,
             $this->context,
-            $this->configBackupService,
             new ConfigData()
         );
     }
@@ -115,8 +113,7 @@ class ConfigFileTest extends UnitaryTestCase
         new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
-            $this->context,
-            $this->configBackupService
+            $this->context
         );
     }
 
@@ -159,8 +156,7 @@ class ConfigFileTest extends UnitaryTestCase
         new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
-            $this->context,
-            $this->configBackupService
+            $this->context
         );
     }
 
@@ -169,7 +165,7 @@ class ConfigFileTest extends UnitaryTestCase
      */
     private function ensureConfigFileIsUsed(): void
     {
-        $configData = $this->config->getConfigData();
+        $configData = new ConfigData();
 
         $this->fileStorageService
             ->expects(self::once())
@@ -199,8 +195,7 @@ class ConfigFileTest extends UnitaryTestCase
         new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
-            $this->context,
-            $this->configBackupService
+            $this->context
         );
     }
 
@@ -225,10 +220,6 @@ class ConfigFileTest extends UnitaryTestCase
             ->with('config')
             ->willThrowException(FileException::error('test'));
 
-        $this->configBackupService
-            ->expects(self::never())
-            ->method('backup');
-
         $this->fileStorageService
             ->expects(self::once())
             ->method('save')
@@ -242,8 +233,7 @@ class ConfigFileTest extends UnitaryTestCase
         new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
-            $this->context,
-            $this->configBackupService
+            $this->context
         );
     }
 
@@ -283,8 +273,7 @@ class ConfigFileTest extends UnitaryTestCase
         new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
-            $this->context,
-            $this->configBackupService
+            $this->context
         );
     }
 
@@ -321,8 +310,7 @@ class ConfigFileTest extends UnitaryTestCase
         new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
-            $this->context,
-            $this->configBackupService
+            $this->context
         );
     }
 
@@ -367,8 +355,7 @@ class ConfigFileTest extends UnitaryTestCase
         new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
-            $this->context,
-            $this->configBackupService
+            $this->context
         );
     }
 
@@ -395,11 +382,6 @@ class ConfigFileTest extends UnitaryTestCase
 
         $configData = $this->createMock(ConfigDataInterface::class);
 
-        $this->configBackupService
-            ->expects(self::once())
-            ->method('backup')
-            ->with($configData);
-
         $this->fileStorageService
             ->expects(self::exactly(2))
             ->method('save')
@@ -413,8 +395,7 @@ class ConfigFileTest extends UnitaryTestCase
         $configFile = new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
-            $this->context,
-            $this->configBackupService
+            $this->context
         );
 
         $configData->expects(self::once())
@@ -428,61 +409,6 @@ class ConfigFileTest extends UnitaryTestCase
                    ->willReturn([]);
 
         $configFile->save($configData);
-
-        $this->assertEquals($configData, $configFile->getConfigData());
-    }
-
-    /**
-     * @throws ConfigException
-     * @throws Exception
-     * @throws FileException
-     */
-    public function testSaveWithoutBackup()
-    {
-        $this->fileCacheService
-            ->expects(self::once())
-            ->method('exists')
-            ->willReturn(false);
-
-        $this->fileStorageService
-            ->expects(self::once())
-            ->method('load')
-            ->willThrowException(FileException::error('test'));
-
-        $configData = $this->createMock(ConfigDataInterface::class);
-
-        $this->configBackupService
-            ->expects(self::never())
-            ->method('backup');
-
-        $this->fileStorageService
-            ->expects(self::exactly(2))
-            ->method('save')
-            ->with(self::isType('array'), 'config');
-
-        $this->fileCacheService
-            ->expects(self::exactly(2))
-            ->method('save')
-            ->with(self::anything());
-
-        $configFile = new ConfigFile(
-            $this->fileStorageService,
-            $this->fileCacheService,
-            $this->context,
-            $this->configBackupService
-        );
-
-        $configData->expects(self::once())
-                   ->method('setConfigDate');
-        $configData->expects(self::once())
-                   ->method('setConfigSaver');
-        $configData->expects(self::once())
-                   ->method('setConfigHash');
-        $configData->expects(self::once())
-                   ->method('getAttributes')
-                   ->willReturn([]);
-
-        $configFile->save($configData, false, true);
 
         $this->assertEquals($configData, $configFile->getConfigData());
     }
@@ -506,10 +432,6 @@ class ConfigFileTest extends UnitaryTestCase
 
         $configData = $this->createMock(ConfigDataInterface::class);
 
-        $this->configBackupService
-            ->expects(self::never())
-            ->method('backup');
-
         $this->fileStorageService
             ->expects(self::exactly(1))
             ->method('save')
@@ -523,8 +445,7 @@ class ConfigFileTest extends UnitaryTestCase
         $configFile = new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
-            $this->context,
-            $this->configBackupService
+            $this->context
         );
 
         $configData->expects(self::once())
@@ -536,7 +457,7 @@ class ConfigFileTest extends UnitaryTestCase
         $configData->expects(self::never())
                    ->method('getAttributes');
 
-        $configFile->save($configData, false, false);
+        $configFile->save($configData, false);
 
         $this->assertEquals($configData, $configFile->getConfigData());
     }
@@ -559,10 +480,6 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('load')
             ->willThrowException(FileException::error('test'));
 
-        $this->configBackupService
-            ->expects(self::never())
-            ->method('backup');
-
         $this->fileStorageService
             ->expects(self::exactly(2))
             ->method('save')
@@ -576,8 +493,7 @@ class ConfigFileTest extends UnitaryTestCase
         $configFile = new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
-            $this->context,
-            $this->configBackupService
+            $this->context
         );
 
         $configFile->generateUpgradeKey();
@@ -605,7 +521,6 @@ class ConfigFileTest extends UnitaryTestCase
             $this->fileStorageService,
             $this->fileCacheService,
             $this->context,
-            $this->configBackupService,
             $configData
         );
 
@@ -627,7 +542,7 @@ class ConfigFileTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('getFileTime');
 
-        $configData = $this->config->getConfigData();
+        $configData = new ConfigData();
 
         $this->fileStorageService
             ->expects(self::exactly(2))
@@ -643,8 +558,7 @@ class ConfigFileTest extends UnitaryTestCase
         $configFile = new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
-            $this->context,
-            $this->configBackupService
+            $this->context
         );
 
         $configFile->reload();
@@ -660,6 +574,5 @@ class ConfigFileTest extends UnitaryTestCase
 
         $this->fileStorageService = $this->createMock(XmlFileStorageService::class);
         $this->fileCacheService = $this->createMock(FileCacheService::class);
-        $this->configBackupService = $this->createMock(ConfigBackupService::class);
     }
 }

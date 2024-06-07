@@ -106,7 +106,7 @@ class UpgradeDatabaseTest extends UnitaryTestCase
                    ->method('setDatabaseVersion');
 
         $this->expectException(UpgradeException::class);
-        $this->expectExceptionMessage('Failed to open stream: No such file or directory');
+        $this->expectExceptionMessageMatches('/Failed to open stream: .*/');
 
         $this->upgradeDatabase->apply('400.00000000', $configData);
     }

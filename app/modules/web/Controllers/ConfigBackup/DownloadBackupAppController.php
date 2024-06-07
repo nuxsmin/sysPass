@@ -33,7 +33,8 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Export\Services\BackupFileHelper;
+use SP\Domain\Export\Dtos\BackupFile;
+use SP\Domain\Export\Dtos\BackupType;
 use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -57,13 +58,9 @@ final class DownloadBackupAppController extends SimpleControllerBase
         try {
             Session::close();
 
-            $filePath = BackupFileHelper::getAppBackupFilename(
-                BACKUP_PATH,
-                $this->configData->getBackupHash(),
-                true
-            );
+            $filePath = new BackupFile(BackupType::app, $this->configData->getBackupHash(), BACKUP_PATH, 'gz');
 
-            $file = new FileHandler($filePath);
+            $file = new FileHandler((string)$filePath);
             $file->checkFileExists();
 
             $this->eventDispatcher->notify(
@@ -83,7 +80,7 @@ final class DownloadBackupAppController extends SimpleControllerBase
                 ->header('Content-type', $file->getFileType())
                 ->header('Content-Description', ' sysPass file')
                 ->header('Content-transfer-encoding', 'chunked')
-                ->header('Content-Disposition', 'attachment; filename="'.basename($file->getFile()).'"')
+                ->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"')
                 ->header('Set-Cookie', 'fileDownload=true; path=/')
                 ->send();
 

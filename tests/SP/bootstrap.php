@@ -26,35 +26,67 @@ declare(strict_types=1);
 
 namespace SP\Tests;
 
+use org\bovigo\vfs\vfsStream;
 use RuntimeException;
+use SP\Core\UI\ThemeIcons;
+use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\logger;
-use function SP\processException;
 
 define('DEBUG', true);
 define('IS_TESTING', true);
-define('APP_ROOT', dirname(__DIR__, 2));
-define('TEST_ROOT', dirname(__DIR__));
+define('REAL_APP_ROOT', dirname(__DIR__, 2));
 
-const APP_DEFINITIONS_FILE = APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Definitions.php';
+$testDirectory = vfsStream::setup(
+    'test',
+    755,
+    [
+        'res' => [
+            'cache' => [
+                'secure_session' => [],
+                'icons.cache' => serialize(new ThemeIcons()),
+                'config.cache' => serialize(new ConfigData())
+            ]
+        ],
+        'tmp' => [
+            'test.log' => ''
+        ],
+        'schemas' => [],
+        'app' => [
+            'locales' => [],
+            'modules' => [],
+            'resources' => []
+        ]
+    ]
+);
 
-define('RESOURCE_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'res');
-define('CONFIG_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'config');
-define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
-define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
-define('LOCALES_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'locales');
-define('MODULES_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'modules');
-define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
+vfsStream::copyFromFileSystem(dirname(__DIR__) . '/res', $testDirectory->getChild('res'));
+vfsStream::copyFromFileSystem(REAL_APP_ROOT . '/schemas', $testDirectory->getChild('schemas'));
+vfsStream::copyFromFileSystem(REAL_APP_ROOT . '/app/resources', $testDirectory->getChild('app/resources'));
+
+define('TEST_ROOT', $testDirectory->url());
+define('APP_ROOT', $testDirectory->getChild('app')->url());
+define('RESOURCE_PATH', $testDirectory->getChild('res')->url());
+define('TMP_PATH', $testDirectory->getChild('tmp')->url());
+
+define('VIEW_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'view');
 define('CACHE_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'cache');
-define('TMP_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
-define('PUBLIC_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'public');
+define('CONFIG_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'config');
+define('LOCALES_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'locales');
+define('MODULES_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'modules');
 define('BACKUP_PATH', TMP_PATH);
 define('PLUGINS_PATH', TMP_PATH);
-define('XML_SCHEMA', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas' . DIRECTORY_SEPARATOR . 'syspass.xsd');
+
+define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
+define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
+define('MIMETYPES_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'mime.xml');
+define('SQL_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'schemas');
+define('PUBLIC_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'public');
+define('XML_SCHEMA', TEST_ROOT . DIRECTORY_SEPARATOR . 'schemas' . DIRECTORY_SEPARATOR . 'syspass.xsd');
 define('LOG_FILE', TMP_PATH . DIRECTORY_SEPARATOR . 'test.log');
 define('FIXTURE_FILES', [
     RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'truncate.sql',
@@ -63,20 +95,12 @@ define('FIXTURE_FILES', [
 define('SELF_IP_ADDRESS', getRealIpAddress());
 define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
+require_once REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+require_once REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
 logger('APP_ROOT=' . APP_ROOT);
 logger('TEST_ROOT=' . TEST_ROOT);
 logger('SELF_IP_ADDRESS=' . SELF_IP_ADDRESS);
-
-// Setup directories
-try {
-    recreateDir(TMP_PATH);
-    recreateDir(CACHE_PATH);
-} catch (FileNotFoundException $e) {
-    processException($e);
-}
 
 if (is_dir(CONFIG_PATH)
     && decoct(fileperms(CONFIG_PATH) & 0777) !== '750'

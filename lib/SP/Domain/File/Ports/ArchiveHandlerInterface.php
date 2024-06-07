@@ -37,7 +37,7 @@ interface ArchiveHandlerInterface
      *
      * @throws FileException
      */
-    public function compressDirectory(string $directory, ?string $regex = null): void;
+    public function compressDirectory(string $directory, ?string $regex = null): string;
 
     /**
      * Realizar un backup de la aplicación y comprimirlo.

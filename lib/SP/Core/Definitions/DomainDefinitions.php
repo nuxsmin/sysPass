@@ -54,9 +54,9 @@ final class DomainDefinitions
     ];
 
     private const PORTS = [
-        'Service' => 'SP\Domain\%s\Services',
-        'Repository' => 'SP\Infrastructure\%s\Repositories',
-        'Adapter' => 'SP\Domain\%s\Adapters'
+        'Service' => 'SP\Domain\%s\Services\*',
+        'Repository' => 'SP\Infrastructure\%s\Repositories\*',
+        'Adapter' => 'SP\Domain\%s\Adapters\*'
     ];
 
     public static function getDefinitions(): array

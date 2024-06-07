@@ -1,11 +1,10 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,21 +22,4 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Install\Services;
-
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Install\Adapters\InstallData;
-
-/**
- * Class DatabaseSetupBuilder
- */
-interface MysqlSetupBuilderInterface
-{
-    /**
-     * @param InstallData $installData
-     *
-     * @return DatabaseSetupInterface
-     * @throws SPException
-     */
-    public static function build(InstallData $installData): DatabaseSetupInterface;
-}
+return new SP\Core\UI\ThemeIcons();

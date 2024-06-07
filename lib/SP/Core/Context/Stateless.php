@@ -37,6 +37,16 @@ use function SP\processException;
 class Stateless extends ContextBase
 {
     /**
+     * @throws ContextException
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->setContext(new ContextCollection());
+    }
+
+    /**
      * Establece los datos del usuario en la sesión.
      */
     public function setUserData(?UserDataDto $userDataDto = null): void
@@ -146,12 +156,8 @@ class Stateless extends ContextBase
         return $this->setContextKey('status', null);
     }
 
-    /**
-     * @throws ContextException
-     */
     public function initialize(): void
     {
-        $this->setContext(new ContextCollection());
     }
 
     /**

@@ -135,7 +135,7 @@ class UpgradeTest extends UnitaryTestCase
 
         $this->config->expects($this->exactly(2))
                      ->method('save')
-                     ->with($configData, false);
+            ->with($configData, true);
 
         $this->upgrade->registerUpgradeHandler(UpgradeHandlerStub::class);
         $this->upgrade->upgrade('400.00000000', $configData);

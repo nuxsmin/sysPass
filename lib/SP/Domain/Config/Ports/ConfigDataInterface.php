@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -415,7 +416,7 @@ interface ConfigDataInterface extends JsonSerializable
 
     public function setPublinksEnabled(?bool $publinksEnabled): ConfigDataInterface;
 
-    public function jsonSerialize();
+    public function jsonSerialize(): mixed;
 
     public function getConfigSaver(): ?string;
 

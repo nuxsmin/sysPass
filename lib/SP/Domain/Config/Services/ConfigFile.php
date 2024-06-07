@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -27,9 +28,12 @@ namespace SP\Domain\Config\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
+use ReflectionException;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionObject;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Config\Adapters\ConfigData;
-use SP\Domain\Config\Ports\ConfigBackupService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
@@ -59,10 +63,9 @@ class ConfigFile implements ConfigFileService
         private readonly XmlFileStorageService $fileStorage,
         private readonly FileCacheService      $fileCache,
         private readonly Context $context,
-        private readonly ConfigBackupService   $configBackupService,
         private ?ConfigDataInterface           $configData = null
     ) {
-        $this->configData = $this->configData ?? $this->initialize();
+        $this->configData = $configData ?? $this->initialize();
     }
 
     /**
@@ -114,14 +117,14 @@ class ConfigFile implements ConfigFileService
         }
     }
 
-    private function loadFromFile(): ConfigData|null
+    private function loadFromFile(): ?ConfigDataInterface
     {
         try {
             $configData = $this->configMapper($this->fileStorage->load('config'));
             $this->fileCache->save($configData);
 
             return $configData;
-        } catch (FileException $e) {
+        } catch (ReflectionException|FileException $e) {
             processException($e);
         }
 
@@ -130,16 +133,35 @@ class ConfigFile implements ConfigFileService
 
     /**
      * Map the config array keys with ConfigData class setters
+     * @throws ReflectionException
      */
     private function configMapper(array $items): ConfigDataInterface
     {
         $configData = new ConfigData();
 
+        $reflectionObject = new ReflectionObject($configData);
+
+        $methods = array_filter(
+            $reflectionObject->getMethods(ReflectionMethod::IS_PUBLIC),
+            static fn(ReflectionMethod $method) => str_starts_with($method->getName(), 'set')
+        );
+
         foreach ($items as $item => $value) {
             $methodName = sprintf("set%s", ucfirst($item));
 
-            if (method_exists($configData, $methodName)) {
-                $configData->{$methodName}($value);
+            if (isset($methods[$methodName])) {
+                foreach ($methods[$methodName]->getParameters() as $parameter) {
+                    $type = $parameter->getType();
+
+                    if ($type instanceof ReflectionNamedType && $type->isBuiltin()) {
+                        $value = match ($type->getName()) {
+                            'int' => (int)$value,
+                            'bool' => (bool)$value,
+                            default => (string)$value
+                        };
+                        $methods[$methodName]->invoke($configData, $value);
+                    }
+                }
             }
         }
 
@@ -150,17 +172,14 @@ class ConfigFile implements ConfigFileService
      * Guardar la configuración
      *
      * @param ConfigDataInterface $configData
-     * @param bool|null $backup
      * @param bool|null $commit
      * @return ConfigFileService
      * @throws FileException
      */
-    public function save(ConfigDataInterface $configData, ?bool $backup = true, ?bool $commit = true): ConfigFileService
-    {
-        if ($backup) {
-            $this->configBackupService->backup($configData);
-        }
-
+    public function save(
+        ConfigDataInterface $configData,
+        ?bool               $commit = true
+    ): ConfigFileService {
         $configSaver = $this->context->getUserData()->getLogin() ?: AppInfoInterface::APP_NAME;
 
         $configData->setConfigDate(time());
@@ -190,7 +209,7 @@ class ConfigFile implements ConfigFileService
         // Generate a random salt that is used to add more seed to some passwords
         $configData->setPasswordSalt(Password::generateRandomBytes());
 
-        $this->save($configData, false);
+        $this->save($configData);
 
         logger('Config file created', 'INFO');
 
@@ -228,7 +247,7 @@ class ConfigFile implements ConfigFileService
         if (empty($this->configData->getUpgradeKey())) {
             logger('Generating upgrade key');
 
-            return $this->save($this->configData->setUpgradeKey(Password::generateRandomBytes(16)), false);
+            return $this->save($this->configData->setUpgradeKey(Password::generateRandomBytes(16)));
         }
 
         return $this;

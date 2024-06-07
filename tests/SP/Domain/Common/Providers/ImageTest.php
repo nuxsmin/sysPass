@@ -29,6 +29,7 @@ use GdImage;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use SP\Domain\Common\Providers\Image;
 use SP\Domain\Core\Exceptions\InvalidImageException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Tests\Stubs\PhpExtensionCheckerStub;
@@ -39,7 +40,7 @@ use SP\Tests\Stubs\PhpExtensionCheckerStub;
 #[Group('unitary')]
 class ImageTest extends TestCase
 {
-    private \SP\Domain\Common\Providers\Image $imageUtil;
+    private Image $imageUtil;
 
     /**
      * @throws InvalidImageException
@@ -88,6 +89,6 @@ class ImageTest extends TestCase
                                    ->method('checkCurl')
                                    ->with(true);
 
-        $this->imageUtil = new \SP\Domain\Common\Providers\Image($phpExtensionCheckerService);
+        $this->imageUtil = new Image($phpExtensionCheckerService, '/usr/share/fonts/freefont/FreeSans.otf');
     }
 }

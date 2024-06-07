@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -38,10 +39,10 @@ interface FileCacheService
     public function load(?string $path = null): mixed;
 
     /**
-     * @template T
+     * @template T of object
      *
      * @param class-string<T> $class
-     * @return T
+     * @return T&object
      * @throws FileException
      */
     public function loadWith(string $class): object;

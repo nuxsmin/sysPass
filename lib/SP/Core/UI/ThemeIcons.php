@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -46,7 +47,7 @@ use function SP\processException;
 final class ThemeIcons implements ThemeIconsInterface
 {
     public const CACHE_EXPIRE     = 86400;
-    public const ICONS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'icons.cache';
+    public const ICONS_CACHE_FILE = 'icons.cache';
 
     /**
      * @var IconInterface[]
@@ -68,7 +69,7 @@ final class ThemeIcons implements ThemeIconsInterface
     ): ThemeIconsInterface {
         try {
             if ($context->getAppStatus() !== ContextBase::APP_STATUS_RELOADED
-                && $cache->isExpired(self::CACHE_EXPIRE)
+                && !$cache->isExpired(self::CACHE_EXPIRE)
             ) {
                 return $cache->load();
                 // logger('Loaded icons cache', 'INFO');

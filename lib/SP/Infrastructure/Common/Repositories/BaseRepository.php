@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -34,6 +35,8 @@ use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
@@ -100,6 +103,8 @@ abstract class BaseRepository implements Repository
      * @param array|null $bindValues
      *
      * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     final public function getAny(
         array  $columns,

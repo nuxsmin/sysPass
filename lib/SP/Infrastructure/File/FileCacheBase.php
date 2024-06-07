@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -39,7 +40,7 @@ abstract class FileCacheBase implements FileCacheService
     public function __construct(?string $path = null)
     {
         if (null !== $path) {
-            $this->path = new FileHandler($path, 'rwb');
+            $this->path = new FileHandler($path, 'c+b');
         }
     }
 
@@ -57,7 +58,7 @@ abstract class FileCacheBase implements FileCacheService
     {
         $this->path->checkFileExists();
 
-        return time() > $this->path->getFileTime() + $time;
+        return $this->path->getSize() === 0 || time() > $this->path->getFileTime() + $time;
     }
 
     /**
@@ -69,7 +70,7 @@ abstract class FileCacheBase implements FileCacheService
     {
         $this->path->checkFileExists();
 
-        return $date > $this->path->getFileTime();
+        return $this->path->getSize() === 0 || $date > $this->path->getFileTime();
     }
 
     /**
@@ -111,7 +112,7 @@ abstract class FileCacheBase implements FileCacheService
             throw new FileException(__('Path is needed'));
         }
 
-        if (null === $this->path || $this->path->getFile() !== $path) {
+        if (null === $this->path) {
             $this->path = new FileHandler($path);
         }
     }

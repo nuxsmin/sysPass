@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -49,25 +50,25 @@ final class MysqlHandler implements DbStorageHandler
         private readonly DatabaseConnectionData $connectionData,
         private readonly PDOWrapper             $PDOWrapper
     ) {
-        $this->connectionUri = $this->getConnectionUri();
+        $this->connectionUri = self::getConnectionUri($connectionData);
     }
 
-    private function getConnectionUri(): string
+    public static function getConnectionUri(DatabaseConnectionData $connectionData): string
     {
         $dsn = ['charset=utf8'];
 
-        if (empty($this->connectionData->getDbSocket())) {
-            $dsn[] = sprintf('host=%s', $this->connectionData->getDbHost());
+        if (empty($connectionData->getDbSocket())) {
+            $dsn[] = sprintf('host=%s', $connectionData->getDbHost());
 
-            if (null !== $this->connectionData->getDbPort()) {
-                $dsn[] = sprintf('port=%s', $this->connectionData->getDbPort());
+            if (null !== $connectionData->getDbPort()) {
+                $dsn[] = sprintf('port=%s', $connectionData->getDbPort());
             }
         } else {
-            $dsn[] = sprintf('unix_socket=%s', $this->connectionData->getDbSocket());
+            $dsn[] = sprintf('unix_socket=%s', $connectionData->getDbSocket());
         }
 
-        if (!empty($this->connectionData->getDbName())) {
-            $dsn[] = sprintf('dbname=%s', $this->connectionData->getDbName());
+        if (!empty($connectionData->getDbName())) {
+            $dsn[] = sprintf('dbname=%s', $connectionData->getDbName());
         }
 
         return sprintf('mysql:%s', implode(';', $dsn));

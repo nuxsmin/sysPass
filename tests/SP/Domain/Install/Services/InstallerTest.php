@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerService;
-use SP\Domain\Install\Services\DatabaseSetupInterface;
+use SP\Domain\Install\Services\DatabaseSetupService;
 use SP\Domain\Install\Services\Installer;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
@@ -53,7 +53,7 @@ use SP\Tests\UnitaryTestCase;
 class InstallerTest extends UnitaryTestCase
 {
     /**
-     * @var MockObject|DatabaseSetupInterface
+     * @var MockObject|DatabaseSetupService
      */
     private $databaseSetup;
     /**
@@ -61,7 +61,7 @@ class InstallerTest extends UnitaryTestCase
      */
     private $userService;
     /**
-     * @var Stub|\SP\Domain\Http\Ports\RequestService
+     * @var Stub|RequestService
      */
     private $request;
     /**
@@ -439,7 +439,7 @@ class InstallerTest extends UnitaryTestCase
 
     protected function setUp(): void
     {
-        $this->databaseSetup = $this->createMock(DatabaseSetupInterface::class);
+        $this->databaseSetup = $this->createMock(DatabaseSetupService::class);
         $this->userService = $this->createMock(UserService::class);
         $this->request = $this->createStub(RequestService::class);
         $this->configService = $this->createMock(ConfigService::class);

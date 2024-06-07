@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -40,13 +41,14 @@ use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\PhpExtensionCheckerService;
+use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
+use SP\Domain\Export\Dtos\BackupType;
 use SP\Domain\Export\Ports\XmlAccountExportService;
 use SP\Domain\Export\Ports\XmlCategoryExportService;
 use SP\Domain\Export\Ports\XmlClientExportService;
 use SP\Domain\Export\Ports\XmlExportService;
 use SP\Domain\Export\Ports\XmlTagExportService;
 use SP\Domain\File\Ports\DirectoryHandlerService;
-use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileSystem;
 
@@ -109,10 +111,16 @@ final class XmlExport extends Service implements XmlExportService
 
         self::deleteExportFiles($exportPath->getPath());
 
-        $file = self::buildFilename($exportPath->getPath(), $this->buildAndSaveHashForFile());
-        $this->buildAndSaveXml($file, $password);
+        $file = new BackupFileDto(
+            BackupType::export,
+            $this->buildAndSaveHashForFile(),
+            $exportPath->getPath(),
+            'xml'
+        );
 
-        return $file;
+        $this->buildAndSaveXml((string)$file, $password);
+
+        return (string)$file;
     }
 
     private static function deleteExportFiles(string $path): void
@@ -123,17 +131,6 @@ final class XmlExport extends Service implements XmlExportService
             static fn($file) => @unlink($file),
             array_merge(glob($path . '_export-*'), glob($path . '*.xml'))
         );
-    }
-
-    public static function buildFilename(string $path, string $hash, bool $compressed = false): string
-    {
-        $file = sprintf('%s%s%s_export-%s', $path, DIRECTORY_SEPARATOR, AppInfoInterface::APP_NAME, $hash);
-
-        if ($compressed) {
-            return $file . ArchiveHandler::COMPRESS_EXTENSION;
-        }
-
-        return sprintf('%s.xml', $file);
     }
 
     /**

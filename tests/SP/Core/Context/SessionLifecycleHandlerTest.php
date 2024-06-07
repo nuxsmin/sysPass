@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Core\Context;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunClassInSeparateProcess;
 use SP\Core\Context\SessionLifecycleHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Tests\UnitaryTestCase;
@@ -35,6 +36,7 @@ use SP\Tests\UnitaryTestCase;
  * Class SessionUtilTest
  */
 #[Group('unitary')]
+#[RunClassInSeparateProcess]
 class SessionLifecycleHandlerTest extends UnitaryTestCase
 {
 
@@ -63,6 +65,22 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
 
         $this->assertEquals(PHP_SESSION_ACTIVE, session_status());
         $this->assertEquals('1', ini_get('session.use_strict_mode'));
+    }
+
+    /**
+     * @throws SPException
+     */
+    public function testStartWithHeadersSent()
+    {
+        $this->assertEquals(PHP_SESSION_NONE, session_status());
+
+        echo "Test";
+        ob_flush();
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('Session cannot be initialized');
+
+        SessionLifecycleHandler::start();
     }
 
     /**
