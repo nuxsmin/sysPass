@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -26,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Domain\Account\Ports\AccountToUserRepository;
@@ -33,6 +35,7 @@ use SP\Domain\Account\Services\AccountPreset;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
@@ -50,15 +53,18 @@ use SP\Tests\UnitaryTestCase;
 class AccountPresetTest extends UnitaryTestCase
 {
 
-    private ItemPresetService|MockObject $itemPresetService;
-    private AccountPreset                $accountPreset;
-    private ValidatorInterface|MockObject         $passwordValidator;
+    private ItemPresetService|MockObject            $itemPresetService;
+    private AccountPreset                           $accountPreset;
+    private ValidatorInterface|MockObject           $passwordValidator;
+    private MockObject|AccountToUserGroupRepository $accountToUserGroupRepository;
+    private AccountToUserRepository|MockObject      $accountToUserRepository;
 
     /**
      * @throws QueryException
      * @throws ConstraintException
      * @throws ValidationException
      * @throws NoSuchPropertyException
+     * @throws SPException
      */
     public function testCheckPasswordPreset(): void
     {
@@ -82,10 +88,9 @@ class AccountPresetTest extends UnitaryTestCase
     }
 
     /**
-     * @throws QueryException
      * @throws ConstraintException
-     * @throws ValidationException
-     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testCheckPasswordPresetThrowsValidatorException(): void
     {
@@ -112,10 +117,9 @@ class AccountPresetTest extends UnitaryTestCase
     }
 
     /**
-     * @throws QueryException
      * @throws ConstraintException
-     * @throws ValidationException
-     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testCheckPasswordPresetWithoutFixed(): void
     {
@@ -136,10 +140,9 @@ class AccountPresetTest extends UnitaryTestCase
     }
 
     /**
-     * @throws QueryException
      * @throws ConstraintException
-     * @throws ValidationException
-     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws SPException
      */
     public function testCheckPasswordPresetWithPassDateChangeModified(): void
     {
@@ -163,6 +166,81 @@ class AccountPresetTest extends UnitaryTestCase
         $out = $this->accountPreset->checkPasswordPreset($accountDto);
 
         $this->assertGreaterThan(0, $out->getPassDateChange());
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws SPException
+     * @throws QueryException
+     */
+    #[TestWith([0])]
+    #[TestWith([1])]
+    public function testAddPresetPermissions(int $fixed)
+    {
+        $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
+        $accountPermission = $itemPresetDataGenerator->buildAccountPermission();
+
+        $itemPreset = $itemPresetDataGenerator->buildItemPresetData($accountPermission)->mutate(['fixed' => $fixed]);
+
+        $this->itemPresetService->expects($this->once())
+                                ->method('getForCurrentUser')
+                                ->with('account.permission')
+                                ->willReturn($itemPreset);
+
+        if ($fixed === 1) {
+            $this->accountToUserRepository
+                ->expects($this->exactly(2))
+                ->method('addByType')
+                ->with(
+                    ...self::withConsecutive(
+                    [100, $accountPermission->getUsersView(), false],
+                    [100, $accountPermission->getUsersEdit(), true]
+                )
+                );
+
+            $this->accountToUserGroupRepository
+                ->expects($this->exactly(2))
+                ->method('addByType')
+                ->with(
+                    ...self::withConsecutive(
+                    [100, $accountPermission->getUserGroupsView(), false],
+                    [100, $accountPermission->getUserGroupsEdit(), true]
+                )
+                );
+        } else {
+            $this->accountToUserRepository
+                ->expects($this->never())
+                ->method('addByType');
+
+            $this->accountToUserGroupRepository
+                ->expects($this->never())
+                ->method('addByType');
+        }
+
+        $this->accountPreset->addPresetPermissions(100);
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws SPException
+     * @throws QueryException
+     */
+    public function testAddPresetPermissionsWithNull()
+    {
+        $this->itemPresetService->expects($this->once())
+                                ->method('getForCurrentUser')
+                                ->with('account.permission')
+                                ->willReturn(null);
+
+        $this->accountToUserRepository
+            ->expects($this->never())
+            ->method('addByType');
+
+        $this->accountToUserGroupRepository
+            ->expects($this->never())
+            ->method('addByType');
+
+        $this->accountPreset->addPresetPermissions(100);
     }
 
     protected function setUp(): void

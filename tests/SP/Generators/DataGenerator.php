@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -43,5 +44,10 @@ abstract class DataGenerator
     public static function factory(): static
     {
         return new static();
+    }
+
+    protected function getRandomIdList(): array
+    {
+        return array_map(fn() => $this->faker->randomNumber(3), range(0, 4));
     }
 }

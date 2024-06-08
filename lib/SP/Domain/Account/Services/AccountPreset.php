@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -33,9 +34,8 @@ use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Models\AccountPermission;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
@@ -59,10 +59,11 @@ final class AccountPreset extends Service implements AccountPresetService
     }
 
     /**
-     * @throws ValidationException
+     * @param AccountDto $accountDto
+     * @return AccountDto
      * @throws ConstraintException
-     * @throws NoSuchPropertyException
      * @throws QueryException
+     * @throws SPException
      */
     public function checkPasswordPreset(AccountDto $accountDto): AccountDto
     {
@@ -89,16 +90,17 @@ final class AccountPreset extends Service implements AccountPresetService
     }
 
     /**
-     * @throws QueryException
+     * @param int $accountId
      * @throws ConstraintException
-     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws SPException
      */
     public function addPresetPermissions(int $accountId): void
     {
         $itemPresetData =
             $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION);
 
-        if ($itemPresetData !== null && $itemPresetData->getFixed()) {
+        if ($itemPresetData?->getFixed()) {
             $userData = $this->context->getUserData();
             $accountPermission = $itemPresetData->hydrate(AccountPermission::class);
 

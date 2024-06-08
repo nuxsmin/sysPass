@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -25,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Generators;
 
+use SP\Domain\ItemPreset\Models\AccountPermission;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Models\Password;
@@ -36,16 +38,15 @@ final class ItemPresetDataGenerator extends DataGenerator
 {
     public function buildItemPresetData(object $data): ItemPreset
     {
-        return new ItemPreset([
-                                  'id' => $this->faker->randomNumber(3),
-                                  'type' => $this->faker->colorName(),
-                                  'userId' => $this->faker->randomNumber(3),
-                                  'userGroupId' => $this->faker->randomNumber(3),
-                                  'userProfileId' => $this->faker->randomNumber(3),
-                                  'fixed' => (int)$this->faker->boolean(),
-                                  'priority' => $this->faker->randomNumber(3),
-                                  'data' => serialize($data),
-                              ]);
+        return (new ItemPreset([
+                                   'id' => $this->faker->randomNumber(3),
+                                   'type' => $this->faker->colorName(),
+                                   'userId' => $this->faker->randomNumber(3),
+                                   'userGroupId' => $this->faker->randomNumber(3),
+                                   'userProfileId' => $this->faker->randomNumber(3),
+                                   'fixed' => (int)$this->faker->boolean(),
+                                   'priority' => $this->faker->randomNumber(3)
+                               ]))->dehydrate($data);
     }
 
     public function buildPassword(): Password
@@ -61,6 +62,16 @@ final class ItemPresetDataGenerator extends DataGenerator
             $this->faker->unixTime(),
             $this->faker->randomNumber(3),
             $this->faker->regexify('abc123')
+        );
+    }
+
+    public function buildAccountPermission(): AccountPermission
+    {
+        return new AccountPermission(
+            $this->getRandomIdList(),
+            $this->getRandomIdList(),
+            $this->getRandomIdList(),
+            $this->getRandomIdList(),
         );
     }
 
