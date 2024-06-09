@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -61,5 +62,4 @@ readonly class Event
     {
         return $this->eventMessage;
     }
-
 }
