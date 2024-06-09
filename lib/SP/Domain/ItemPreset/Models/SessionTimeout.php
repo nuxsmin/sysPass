@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -51,21 +52,17 @@ readonly class SessionTimeout
         $parse = Address::parse4($address);
 
         $this->address = $parse['address'];
-
-        $this->setMask($parse);
+        $this->mask = $this->parseMask($parse);
     }
 
-    /**
-     * @param array $parse
-     */
-    private function setMask(array $parse): void
+    private function parseMask(array $parse): string
     {
         if (isset($parse['cidr'])) {
-            $this->mask = Address::cidrToDec($parse['cidr']);
+            return Address::cidrToDec($parse['cidr']);
         } elseif (isset($parse['mask'])) {
-            $this->mask = $parse['mask'];
+            return $parse['mask'];
         } else {
-            $this->mask = '255.255.255.255';
+            return '255.255.255.255';
         }
     }
 
