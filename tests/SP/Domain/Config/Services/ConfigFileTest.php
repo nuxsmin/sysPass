@@ -72,11 +72,17 @@ class ConfigFileTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('save');
 
+        $attributes = [
+            ConfigDataInterface::CONFIG_HASH => self::$faker->sha1(),
+            ConfigDataInterface::LOG_EVENTS => self::$faker->boolean(),
+            ConfigDataInterface::CONFIG_DATE => self::$faker->unixTime()
+        ];
+
         new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
             $this->context,
-            new ConfigData()
+            new ConfigData($attributes)
         );
     }
 
@@ -542,13 +548,19 @@ class ConfigFileTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('getFileTime');
 
-        $configData = new ConfigData();
+        $attributes = [
+            ConfigDataInterface::CONFIG_VERSION => self::$faker->colorName(),
+            ConfigDataInterface::INSTALLED => self::$faker->boolean(),
+            ConfigDataInterface::CONFIG_DATE => self::$faker->unixTime()
+        ];
+
+        $configData = new ConfigData($attributes);
 
         $this->fileStorageService
             ->expects(self::exactly(2))
             ->method('load')
             ->with('config')
-            ->willReturn($configData->getAttributes());
+            ->willReturn($attributes);
 
         $this->fileCacheService
             ->expects(self::exactly(2))

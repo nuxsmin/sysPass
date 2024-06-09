@@ -146,20 +146,21 @@ class ConfigFile implements ConfigFileService
             static fn(ReflectionMethod $method) => str_starts_with($method->getName(), 'set')
         );
 
-        foreach ($items as $item => $value) {
-            $methodName = sprintf("set%s", ucfirst($item));
+        foreach ($methods as $method) {
+            $propertyName = lcfirst(substr_replace($method->getName(), '', 0, 3));
 
-            if (isset($methods[$methodName])) {
-                foreach ($methods[$methodName]->getParameters() as $parameter) {
+            if (array_key_exists($propertyName, $items)) {
+                foreach ($method->getParameters() as $parameter) {
                     $type = $parameter->getType();
 
                     if ($type instanceof ReflectionNamedType && $type->isBuiltin()) {
                         $value = match ($type->getName()) {
-                            'int' => (int)$value,
-                            'bool' => (bool)$value,
-                            default => (string)$value
+                            'int' => (int)$items[$propertyName],
+                            'bool' => (bool)$items[$propertyName],
+                            'array' => (array)$items[$propertyName],
+                            default => (string)$items[$propertyName]
                         };
-                        $methods[$methodName]->invoke($configData, $value);
+                        $method->invoke($configData, $value);
                     }
                 }
             }
