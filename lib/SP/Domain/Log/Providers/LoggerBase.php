@@ -64,11 +64,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
         } else {
             $this->events = $this->parseEventsToRegex(array_merge($configEvents, LogInterface::EVENTS_FIXED));
         }
-
-        $this->setup();
     }
-
-    abstract protected function setup(): void;
 
     /**
      * Evento de actualización
@@ -129,16 +125,21 @@ abstract class LoggerBase extends Provider implements EventReceiver
      *
      * @return array
      */
-    final protected function formatContext(
-        string $message,
-        string $address,
-        string $user
-    ): array {
+    final protected function formatContext(string $message, string $address, string $user): array
+    {
         return [
             'message' => trim($message),
             'user' => trim($user),
             'address' => trim($address),
             'caller' => getLastCaller(4),
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEvents(): ?string
+    {
+        return $this->events;
     }
 }

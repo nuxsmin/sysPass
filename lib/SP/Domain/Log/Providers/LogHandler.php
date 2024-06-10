@@ -31,16 +31,4 @@ namespace SP\Domain\Log\Providers;
  */
 final class LogHandler extends LoggerBase
 {
-
-    /**
-     * @inheritDoc
-     */
-    public function getEvents(): ?string
-    {
-        return $this->events;
-    }
-
-    protected function setup(): void
-    {
-    }
 }
