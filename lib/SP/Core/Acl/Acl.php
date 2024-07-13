@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -64,7 +65,7 @@ final class Acl implements AclActionsInterface, AclInterface
      *
      * @deprecated Use {@link Acl::getRouteFor()} instead
      */
-    public static function getActionRoute(string $actionId): string
+    public static function getActionRoute(int $actionId): string
     {
         try {
             return self::$actionsStatic?->getActionById($actionId)->getRoute();
@@ -123,7 +124,7 @@ final class Acl implements AclActionsInterface, AclInterface
     /**
      * Returns action route
      */
-    public function getRouteFor(string $actionId): string
+    public function getRouteFor(int $actionId): string
     {
         try {
             return $this->actions->getActionById($actionId)->getRoute();
@@ -137,9 +138,11 @@ final class Acl implements AclActionsInterface, AclInterface
     /**
      * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
      */
-    public function checkUserAccess(int $action, int $userId = 0): bool
+    public function checkUserAccess(int $actionId, int $userId = 0): bool
     {
-        if (!($userProfile = $this->context->getUserProfile())) {
+        $userProfile = $this->context->getUserProfile();
+
+        if (!$userProfile) {
             return false;
         }
 
@@ -149,39 +152,39 @@ final class Acl implements AclActionsInterface, AclInterface
             return true;
         }
 
-        switch ($action) {
+        switch ($actionId) {
             case self::ACCOUNT_VIEW:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccView() || $userProfile->isAccEdit());
+                return $userData->getIsAdminAcc() || $userProfile->isAccView() || $userProfile->isAccEdit();
             case self::ACCOUNT_VIEW_PASS:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccViewPass());
+                return $userData->getIsAdminAcc() || $userProfile->isAccViewPass();
             case self::ACCOUNT_HISTORY_VIEW:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccViewHistory());
+                return $userData->getIsAdminAcc() || $userProfile->isAccViewHistory();
             case self::ACCOUNT_EDIT:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccEdit());
+                return $userData->getIsAdminAcc() || $userProfile->isAccEdit();
             case self::ACCOUNT_EDIT_PASS:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccEditPass());
+                return $userData->getIsAdminAcc() || $userProfile->isAccEditPass();
             case self::ACCOUNT_CREATE:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccAdd());
+                return $userData->getIsAdminAcc() || $userProfile->isAccAdd();
             case self::ACCOUNT_COPY:
-                return ($userData->getIsAdminAcc() || ($userProfile->isAccAdd() && $userProfile->isAccView()));
+                return $userData->getIsAdminAcc() || ($userProfile->isAccAdd() && $userProfile->isAccView());
             case self::ACCOUNT_DELETE:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccDelete());
+                return $userData->getIsAdminAcc() || $userProfile->isAccDelete();
             case self::ACCOUNT_FILE:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccFiles());
+                return $userData->getIsAdminAcc() || $userProfile->isAccFiles();
             case self::ITEMS_MANAGE:
-                return ($userData->getIsAdminAcc()
-                        || $userProfile->isMgmCategories()
-                        || $userProfile->isMgmCustomers()
-                        || $userProfile->isMgmAccounts()
-                        || $userProfile->isMgmFiles()
-                        || $userProfile->isMgmTags()
-                        || $userProfile->isMgmCustomFields()
-                        || $userProfile->isMgmPublicLinks());
+                return $userData->getIsAdminAcc()
+                       || $userProfile->isMgmCategories()
+                       || $userProfile->isMgmCustomers()
+                       || $userProfile->isMgmAccounts()
+                       || $userProfile->isMgmFiles()
+                       || $userProfile->isMgmTags()
+                       || $userProfile->isMgmCustomFields()
+                       || $userProfile->isMgmPublicLinks();
             case self::CONFIG:
-                return ($userProfile->isConfigGeneral()
-                        || $userProfile->isConfigEncryption()
-                        || $userProfile->isConfigBackup()
-                        || $userProfile->isConfigImport());
+                return $userProfile->isConfigGeneral()
+                       || $userProfile->isConfigEncryption()
+                       || $userProfile->isConfigBackup()
+                       || $userProfile->isConfigImport();
             case self::CONFIG_GENERAL:
             case self::CONFIG_ACCOUNT:
             case self::CONFIG_WIKI:
@@ -225,12 +228,12 @@ final class Acl implements AclActionsInterface, AclInterface
                 return $userProfile->isMgmPublicLinks();
             case self::PUBLICLINK_CREATE:
             case self::PUBLICLINK_REFRESH:
-                return ($userProfile->isMgmPublicLinks() || $userProfile->isAccPublicLinks());
+            return $userProfile->isMgmPublicLinks() || $userProfile->isAccPublicLinks();
             case self::ACCOUNTMGR:
             case self::ACCOUNTMGR_SEARCH:
             case self::ACCOUNTMGR_HISTORY:
             case self::ACCOUNTMGR_HISTORY_SEARCH:
-                return ($userData->getIsAdminAcc() || $userProfile->isMgmAccounts());
+            return $userData->getIsAdminAcc() || $userProfile->isMgmAccounts();
             case self::FILE:
             case self::FILE_SEARCH:
             case self::FILE_DELETE:
@@ -249,10 +252,10 @@ final class Acl implements AclActionsInterface, AclInterface
             case self::CONFIG_BACKUP:
                 return $userProfile->isConfigBackup();
             case self::ACCESS_MANAGE:
-                return ($userProfile->isMgmUsers()
-                        || $userProfile->isMgmGroups()
-                        || $userProfile->isMgmProfiles()
-                        || $userProfile->isMgmApiTokens());
+                return $userProfile->isMgmUsers()
+                       || $userProfile->isMgmGroups()
+                       || $userProfile->isMgmProfiles()
+                       || $userProfile->isMgmApiTokens();
             case self::SECURITY_MANAGE:
                 return $userProfile->isEvl()
                        || $userProfile->isMgmUsers();
@@ -269,7 +272,7 @@ final class Acl implements AclActionsInterface, AclInterface
                 return $userProfile->isMgmUsers();
             case self::USER_EDIT_PASS:
                 // Comprobar si el usuario es distinto al de la sesión
-                return ($userId === $userData->getId() || $userProfile->isMgmUsers());
+                return $userId === $userData->getId() || $userProfile->isMgmUsers();
             case self::GROUP:
             case self::GROUP_SEARCH:
             case self::GROUP_VIEW:
@@ -313,7 +316,7 @@ final class Acl implements AclActionsInterface, AclInterface
         }
 
         try {
-            $actionName = $this->actions->getActionById($action)->getName();
+            $actionName = $this->actions->getActionById($actionId)->getName();
         } catch (ActionNotFoundException) {
             $actionName = __u('N/A');
         }

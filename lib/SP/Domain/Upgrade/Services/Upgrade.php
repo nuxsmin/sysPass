@@ -52,8 +52,6 @@ use function SP\logger;
  */
 final class Upgrade extends Service implements UpgradeService
 {
-    protected ?ConfigDataInterface $configData = null;
-
     /**
      * @var array<string> $upgradeHandlers
      */
@@ -77,8 +75,6 @@ final class Upgrade extends Service implements UpgradeService
      */
     public function upgrade(string $version, ConfigDataInterface $configData): void
     {
-        $this->configData = $configData;
-
         $class = get_class();
 
         $this->eventDispatcher->notify(

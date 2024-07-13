@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -28,7 +29,7 @@ namespace SP\Core;
 use SP\Domain\Core\File\MimeType;
 use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Domain\Storage\Ports\XmlFileStorageService;
+use SP\Domain\Storage\Ports\YamlFileStorageService;
 use SP\Infrastructure\File\FileException;
 
 use function SP\logger;
@@ -61,8 +62,8 @@ final class MimeTypes implements MimeTypesService
      * @throws FileException
      */
     public function __construct(
-        private readonly FileCacheService      $fileCache,
-        private readonly XmlFileStorageService $xmlFileStorage
+        private readonly FileCacheService       $fileCache,
+        private readonly YamlFileStorageService $yamlFileStorageService
     ) {
         $this->loadCache();
     }
@@ -76,7 +77,7 @@ final class MimeTypes implements MimeTypesService
     {
         if (!$this->fileCache->exists()
             || $this->fileCache->isExpired(self::CACHE_EXPIRE)
-            || $this->fileCache->isExpiredDate($this->xmlFileStorage->getFileTime())
+            || $this->fileCache->isExpiredDate($this->yamlFileStorageService->getFileTime())
         ) {
             $this->mapAndSave();
         } else {
@@ -107,7 +108,7 @@ final class MimeTypes implements MimeTypesService
     {
         $this->mimeTypes = array_map(
             static fn($item) => new MimeType($item['type'], $item['description'], $item['extension']),
-            $this->xmlFileStorage->load('mimetypes')
+            $this->yamlFileStorageService->load()
         );
     }
 

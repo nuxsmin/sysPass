@@ -123,6 +123,7 @@ use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileSystem;
 use SP\Infrastructure\File\XmlFileStorage;
+use SP\Infrastructure\File\YamlFileStorage;
 use SP\Mvc\View\OutputHandler;
 use SP\Mvc\View\OutputHandlerInterface;
 use SP\Mvc\View\Template;
@@ -177,7 +178,7 @@ final class CoreDefinitions
             ActionsInterface::class =>
                 static fn() => new Actions(
                     new FileCache(Actions::ACTIONS_CACHE_FILE),
-                    new XmlFileStorage(new FileHandler(ACTIONS_FILE))
+                    new YamlFileStorage(new FileHandler(ACTIONS_FILE))
                 ),
             MimeTypesService::class =>
                 static fn() => new MimeTypes(

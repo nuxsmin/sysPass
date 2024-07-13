@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -23,15 +24,26 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Persistence\Ports;
+namespace SP\Domain\Storage\Ports;
 
-use SP\Domain\Upgrade\Ports\UpgradeService;
+use SP\Infrastructure\File\FileException;
 
 /**
- * Class UpgradeDatabaseService
- *
- * @package SP\Domain\Upgrade\Services
+ * Interface YamlFileStorageService
  */
-interface UpgradeServiceDatabaseService extends UpgradeService
+interface YamlFileStorageService
 {
+    /**
+     * @throws FileException
+     */
+    public function load(): array;
+
+    /**
+     * @param array $data Data to be saved
+     *
+     * @throws FileException
+     */
+    public function save(array $data): YamlFileStorageService;
+
+    public function getFileTime(): int;
 }

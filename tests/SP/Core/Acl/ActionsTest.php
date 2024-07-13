@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -34,7 +35,7 @@ use SP\Core\Context\ContextException;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Models\Action;
 use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Domain\Storage\Ports\XmlFileStorageService;
+use SP\Domain\Storage\Ports\YamlFileStorageService;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\UnitaryTestCase;
 
@@ -47,9 +48,9 @@ use function PHPUnit\Framework\once;
 class ActionsTest extends UnitaryTestCase
 {
 
-    private FileCacheService|MockObject      $fileCache;
-    private XmlFileStorageService|MockObject $xmlFileStorage;
-    private Actions                          $actions;
+    private FileCacheService|MockObject       $fileCache;
+    private YamlFileStorageService|MockObject $yamlFileStorage;
+    private Actions                           $actions;
 
     public static function expirationDataProvider(): array
     {
@@ -77,7 +78,7 @@ class ActionsTest extends UnitaryTestCase
             ->willReturn($expiredCache);
 
         if (!$expiredCache) {
-            $this->xmlFileStorage
+            $this->yamlFileStorage
                 ->expects(self::once())
                 ->method('getFileTime')
                 ->willReturn($fileTime);
@@ -107,10 +108,9 @@ class ActionsTest extends UnitaryTestCase
     {
         $actions = $this->getActions();
 
-        $this->xmlFileStorage
+        $this->yamlFileStorage
             ->expects(once())
             ->method('load')
-            ->with('actions')
             ->willReturn($actions);
 
         $actionsMapped = array_map(
@@ -216,7 +216,7 @@ class ActionsTest extends UnitaryTestCase
             ->with(Actions::CACHE_EXPIRE)
             ->willReturn(false);
 
-        $this->xmlFileStorage
+        $this->yamlFileStorage
             ->expects(self::once())
             ->method('getFileTime')
             ->willThrowException(new FileException('TestException'));
@@ -245,10 +245,9 @@ class ActionsTest extends UnitaryTestCase
 
         $actions = $this->getActions();
 
-        $this->xmlFileStorage
+        $this->yamlFileStorage
             ->expects(once())
             ->method('load')
-            ->with('actions')
             ->willReturn($actions);
 
         $actionsMapped = array_map(
@@ -281,7 +280,7 @@ class ActionsTest extends UnitaryTestCase
             ->method('load')
             ->willReturn($actionsMapped);
 
-        $actions = new Actions($this->fileCache, $this->xmlFileStorage);
+        $actions = new Actions($this->fileCache, $this->yamlFileStorage);
 
         $out = $actions->getActionById(array_key_first($actionsMapped));
 
@@ -309,9 +308,9 @@ class ActionsTest extends UnitaryTestCase
         parent::setUp();
 
         $this->fileCache = $this->createMock(FileCacheService::class);
-        $this->xmlFileStorage = $this->createMock(XmlFileStorageService::class);
+        $this->yamlFileStorage = $this->createMock(YamlFileStorageService::class);
 
-        $this->actions = new Actions($this->fileCache, $this->xmlFileStorage);
+        $this->actions = new Actions($this->fileCache, $this->yamlFileStorage);
     }
 
 }

@@ -25,19 +25,17 @@
 namespace SP\Modules\Web\Controllers\Upgrade;
 
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Persistence\Ports\UpgradeServiceDatabaseService;
-use SP\Domain\Upgrade\Services\UpgradeAppService;
-use SP\Domain\Upgrade\Services\UpgradeDatabaseService;
-use SP\Domain\Upgrade\Services\UpgradeException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Upgrade\Ports\UpgradeService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class UpgradeController
@@ -48,31 +46,23 @@ final class UpgradeController extends ControllerBase
 {
     use JsonTrait;
 
-    private UpgradeServiceDatabaseService $upgradeDatabaseService;
-    private UpgradeAppService             $upgradeAppService;
-
     public function __construct(
-        Application                   $application,
-        WebControllerHelper           $webControllerHelper,
-        UpgradeServiceDatabaseService $upgradeDatabaseService,
-        UpgradeAppService             $upgradeAppService
+        Application                     $application,
+        WebControllerHelper             $webControllerHelper,
+        private readonly UpgradeService $upgradeService,
     ) {
         parent::__construct($application, $webControllerHelper);
-
-        $this->upgradeDatabaseService = $upgradeDatabaseService;
-        $this->upgradeAppService = $upgradeAppService;
     }
 
     /**
      * @return bool
-     * @throws JsonException
+     * @throws SPException
      */
     public function upgradeAction(): bool
     {
         try {
             $this->checkEnvironment();
-            $this->handleDatabase();
-            $this->handleApplication();
+            $this->upgradeService->upgrade($this->configData->getAppVersion(), $this->configData);
 
             $this->configData->setUpgradeKey(null);
             $this->config->save($this->configData);
@@ -103,34 +93,6 @@ final class UpgradeController extends ControllerBase
 
         if ($this->request->analyzeString('key') !== $this->configData->getUpgradeKey()) {
             throw new ValidationException(SPException::ERROR, __u('Wrong security code'));
-        }
-    }
-
-    /**
-     * @return void
-     */
-    private function handleDatabase(): void
-    {
-        $dbVersion = $this->configData->getDatabaseVersion();
-        $dbVersion = empty($dbVersion) ? '0.0' : $dbVersion;
-
-        if (UpgradeServiceDatabaseService::needsUpgrade($dbVersion)) {
-            $this->upgradeDatabaseService->upgrade($dbVersion, $this->configData);
-        }
-    }
-
-    /**
-     * @return void
-     * @throws UpgradeException
-     * @throws FileException
-     */
-    private function handleApplication(): void
-    {
-        $appVersion = $this->configData->getAppVersion();
-        $appVersion = empty($appVersion) ? '0.0' : $appVersion;
-
-        if (UpgradeAppService::needsUpgrade($appVersion)) {
-            $this->upgradeAppService->upgrade($appVersion, $this->configData);
         }
     }
 }

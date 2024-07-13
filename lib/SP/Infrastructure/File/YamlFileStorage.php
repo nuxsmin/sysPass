@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
@@ -23,27 +22,46 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Storage\Ports;
+declare(strict_types=1);
 
-use SP\Infrastructure\File\FileException;
+namespace SP\Infrastructure\File;
+
+use SP\Domain\File\Ports\FileHandlerInterface;
+use SP\Domain\Storage\Ports\YamlFileStorageService;
+use Symfony\Component\Yaml\Yaml;
 
 /**
- * Interface XmlFileStorageService
+ * Class YamlFileStorage
  */
-interface XmlFileStorageService
+final readonly class YamlFileStorage implements YamlFileStorageService
 {
+    public function __construct(private FileHandlerInterface $fileHandler)
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function load(): array
+    {
+        return Yaml::parseFile($this->fileHandler->getFile());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function save(array $data): YamlFileStorageService
+    {
+        $this->fileHandler->save(Yaml::dump($data, 3, 2, Yaml::DUMP_OBJECT_AS_MAP));
+
+        return $this;
+    }
+
     /**
      * @throws FileException
      */
-    public function load(string $node = 'root'): array;
-
-    /**
-     * @param array|object $data Data to be saved
-     * @param string $node
-     *
-     * @throws FileException
-     */
-    public function save(array|object $data, string $node = 'root'): XmlFileStorageService;
-
-    public function getFileTime(): int;
+    public function getFileTime(): int
+    {
+        return $this->fileHandler->getFileTime();
+    }
 }

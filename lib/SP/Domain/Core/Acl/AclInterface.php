@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -44,10 +45,10 @@ interface AclInterface
     /**
      * Returns action route
      */
-    public function getRouteFor(string $actionId): string;
+    public function getRouteFor(int $actionId): string;
 
     /**
      * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
      */
-    public function checkUserAccess(int $action, int $userId = 0): bool;
+    public function checkUserAccess(int $actionId, int $userId = 0): bool;
 }

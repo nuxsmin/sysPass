@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -33,6 +34,7 @@ use SP\Core\MimeTypes;
 use SP\Domain\Core\File\MimeType;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
+use SP\Domain\Storage\Ports\YamlFileStorageService;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\UnitaryTestCase;
 
@@ -44,8 +46,7 @@ class MimeTypesTest extends UnitaryTestCase
 {
 
     private FileCacheService|MockObject      $fileCache;
-    private XmlFileStorageService|MockObject $xmlFileStorage;
-    private MimeTypes                        $mimeTypes;
+    private XmlFileStorageService|MockObject $yamlFileStorage;
 
     /**
      * @throws FileException
@@ -57,7 +58,7 @@ class MimeTypesTest extends UnitaryTestCase
             ->method('exists')
             ->willReturn(true);
 
-        $mimeTypes = new MimeTypes($this->fileCache, $this->xmlFileStorage);
+        $mimeTypes = new MimeTypes($this->fileCache, $this->yamlFileStorage);
         $out = $mimeTypes->getMimeTypes();
 
         $this->assertCount(10, $out);
@@ -89,7 +90,7 @@ class MimeTypesTest extends UnitaryTestCase
 
         $this->checkBuildCache();
 
-        $mimeTypes = new MimeTypes($this->fileCache, $this->xmlFileStorage);
+        $mimeTypes = new MimeTypes($this->fileCache, $this->yamlFileStorage);
         $mimeTypes->reset();
     }
 
@@ -104,10 +105,9 @@ class MimeTypesTest extends UnitaryTestCase
             range(0, 9)
         );
 
-        $this->xmlFileStorage
+        $this->yamlFileStorage
             ->expects(self::once())
             ->method('load')
-            ->with('mimetypes')
             ->willReturn($mimeTypes);
 
         $this->fileCache
@@ -136,7 +136,7 @@ class MimeTypesTest extends UnitaryTestCase
             ->with(MimeTypes::CACHE_EXPIRE)
             ->willReturn(false, false);
 
-        $this->xmlFileStorage
+        $this->yamlFileStorage
             ->expects(self::exactly(2))
             ->method('getFileTime')
             ->willReturn(0);
@@ -149,7 +149,7 @@ class MimeTypesTest extends UnitaryTestCase
 
         $this->checkBuildCache();
 
-        $mimeTypes = new MimeTypes($this->fileCache, $this->xmlFileStorage);
+        $mimeTypes = new MimeTypes($this->fileCache, $this->yamlFileStorage);
         $mimeTypes->reset();
     }
 
@@ -172,16 +172,15 @@ class MimeTypesTest extends UnitaryTestCase
             ->with(MimeTypes::CACHE_EXPIRE)
             ->willReturn(false, true);
 
-        $this->xmlFileStorage
+        $this->yamlFileStorage
             ->expects(self::once())
             ->method('load')
-            ->with('mimetypes')
             ->willThrowException(new FileException('test'));
 
         $this->expectException(FileException::class);
         $this->expectExceptionMessage('test');
 
-        $mimeTypes = new MimeTypes($this->fileCache, $this->xmlFileStorage);
+        $mimeTypes = new MimeTypes($this->fileCache, $this->yamlFileStorage);
         $mimeTypes->reset();
     }
 
@@ -211,7 +210,7 @@ class MimeTypesTest extends UnitaryTestCase
             ->method('save')
             ->willThrowException(new FileException('test'));
 
-        $mimeTypes = new MimeTypes($this->fileCache, $this->xmlFileStorage);
+        $mimeTypes = new MimeTypes($this->fileCache, $this->yamlFileStorage);
         $mimeTypes->reset();
     }
 
@@ -242,7 +241,7 @@ class MimeTypesTest extends UnitaryTestCase
 
         $this->checkBuildCache();
 
-        $mimeTypes = new MimeTypes($this->fileCache, $this->xmlFileStorage);
+        $mimeTypes = new MimeTypes($this->fileCache, $this->yamlFileStorage);
         $mimeTypes->reset();
     }
 
@@ -263,6 +262,6 @@ class MimeTypesTest extends UnitaryTestCase
             ->expects(self::any())
             ->method('load')
             ->willReturn($mimeTypes);
-        $this->xmlFileStorage = $this->createMock(XmlFileStorageService::class);
+        $this->yamlFileStorage = $this->createMock(YamlFileStorageService::class);
     }
 }

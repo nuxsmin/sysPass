@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -29,7 +30,7 @@ use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Models\Action;
 use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Domain\Storage\Ports\XmlFileStorageService;
+use SP\Domain\Storage\Ports\YamlFileStorageService;
 use SP\Infrastructure\File\FileException;
 
 use function SP\__u;
@@ -55,16 +56,11 @@ class Actions implements ActionsInterface
     protected ?array $actions = null;
 
     /**
-     * Action constructor.
-     *
-     * @param FileCacheService $fileCache
-     * @param XmlFileStorageService $xmlFileStorage
-     *
      * @throws FileException
      */
     public function __construct(
-        private readonly FileCacheService      $fileCache,
-        private readonly XmlFileStorageService $xmlFileStorage
+        private readonly FileCacheService       $fileCache,
+        private readonly YamlFileStorageService $yamlFileStorage
     ) {
         $this->loadCache();
     }
@@ -74,11 +70,11 @@ class Actions implements ActionsInterface
      *
      * @throws FileException
      */
-    protected function loadCache(): void
+    private function loadCache(): void
     {
         try {
             if ($this->fileCache->isExpired(self::CACHE_EXPIRE)
-                || $this->fileCache->isExpiredDate($this->xmlFileStorage->getFileTime())
+                || $this->fileCache->isExpiredDate($this->yamlFileStorage->getFileTime())
             ) {
                 $this->mapAndSave();
             } else {
@@ -96,7 +92,7 @@ class Actions implements ActionsInterface
     /**
      * @throws FileException
      */
-    protected function mapAndSave(): void
+    private function mapAndSave(): void
     {
         logger('ACTION CACHE MISS', 'INFO');
 
@@ -109,30 +105,19 @@ class Actions implements ActionsInterface
      *
      * @throws FileException
      */
-    protected function map(): void
+    private function map(): void
     {
         $this->actions = [];
 
-        foreach ($this->load() as $a) {
+        foreach ($this->yamlFileStorage->load() as $a) {
             $this->actions[$a['id']] = new Action($a['id'], $a['name'], $a['text'], $a['route']);
         }
     }
 
     /**
-     * Loads actions from DB
-     *
-     * @return Action[]
-     * @throws FileException
-     */
-    protected function load(): array
-    {
-        return $this->xmlFileStorage->load('actions');
-    }
-
-    /**
      * Saves actions into cache file
      */
-    protected function saveCache(): void
+    private function saveCache(): void
     {
         try {
             $this->fileCache->save($this->actions);

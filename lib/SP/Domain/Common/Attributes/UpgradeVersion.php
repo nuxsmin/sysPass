@@ -32,9 +32,9 @@ use Attribute;
  * Class UpgradeHandler
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
-final class UpgradeVersion
+final readonly class UpgradeVersion
 {
-    public function __construct(public readonly string $version)
+    public function __construct(public string $version)
     {
     }
 }

@@ -62,8 +62,8 @@ define('DEBUG', getFromEnv('DEBUG', false));
 define('IS_TESTING', getFromEnv('IS_TESTING', defined('TEST_ROOT')));
 define('CONFIG_PATH', getFromEnv('CONFIG_PATH', APP_PATH . DS . 'config'));
 define('CONFIG_FILE', getFromEnv('CONFIG_FILE', CONFIG_PATH . DS . 'config.xml'));
-define('ACTIONS_FILE', getFromEnv('ACTIONS_FILE', RESOURCES_PATH . DS . 'actions.xml'));
-define('MIMETYPES_FILE', getFromEnv('MIMETYPES_FILE', RESOURCES_PATH . DS . 'mime.xml'));
+define('ACTIONS_FILE', getFromEnv('ACTIONS_FILE', RESOURCES_PATH . DS . 'actions.yaml'));
+define('MIMETYPES_FILE', getFromEnv('MIMETYPES_FILE', RESOURCES_PATH . DS . 'mimetypes.yaml'));
 define('LOG_FILE', getFromEnv('LOG_FILE', CONFIG_PATH . DS . 'syspass.log'));
 
 const LOCK_FILE = CONFIG_PATH . DS . '.lock';
