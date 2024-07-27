@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -50,7 +51,7 @@ class LanguageTest extends UnitaryTestCase
     {
         $locale = 'es_ES';
 
-        Language::setLocales($locale);
+        $this->language->setLocales($locale);
 
         $this->assertEquals($locale . '.utf8', Language::$localeStatus);
         $this->assertEquals($locale . '.utf8', getenv('LANG'));
@@ -189,6 +190,6 @@ class LanguageTest extends UnitaryTestCase
         $this->configData = $this->createMock(ConfigDataInterface::class);
         $this->request = $this->createMock(RequestService::class);
 
-        $this->language = new Language($this->context, $this->configData, $this->request);
+        $this->language = new Language($this->context, $this->configData, $this->request, RESOURCE_PATH);
     }
 }

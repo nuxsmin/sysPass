@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -27,29 +28,12 @@ namespace SP\Domain\Account\Ports;
 
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 
 /**
  * Class AccountCryptService
- *
- * @package SP\Domain\Account\Services
  */
 interface AccountCryptService
 {
-    /**
-     * Actualiza las claves de todas las cuentas con la nueva clave maestra.
-     *
-     * @throws ServiceException
-     */
-    public function updateMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest): void;
-
-    /**
-     * Actualiza las claves de todas las cuentas con la nueva clave maestra.
-     *
-     * @throws ServiceException
-     */
-    public function updateHistoryMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest): void;
-
     /**
      * Devolver los datos de la clave encriptados
      *

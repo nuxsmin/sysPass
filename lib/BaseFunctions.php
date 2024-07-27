@@ -38,6 +38,10 @@ const LOG_FORMAT = "[%s] [%s] %s";
  */
 const LOG_FORMAT_OWN = '[%s] syspass.%s: logger {"message":"%s","caller":"%s"}' . PHP_EOL;
 
+define('MODULES_PATH', FileSystem::buildPath(APP_PATH, 'modules'));
+
+define('LOG_FILE', getFromEnv('LOG_FILE', FileSystem::buildPath(APP_PATH, 'config', 'syspass.log')));
+
 /**
  * Basic logger to handle some debugging and exception messages.
  *

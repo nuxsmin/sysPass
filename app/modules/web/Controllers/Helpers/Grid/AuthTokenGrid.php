@@ -36,6 +36,9 @@ use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Infrastructure\Database\QueryResult;
 
+use function SP\__;
+use function SP\getElapsedTime;
+
 /**
  * Class AuthTokenGrid
  *
@@ -78,13 +81,10 @@ final class AuthTokenGrid extends GridBase
         return $grid;
     }
 
-    /**
-     * @return DataGridInterface
-     */
     protected function getGridLayout(): DataGridInterface
     {
         // Grid
-        $gridTab = new DataGridTab($this->view->getTheme());
+        $gridTab = new DataGridTab($this->theme);
         $gridTab->setId('tblTokens');
         $gridTab->setDataRowTemplate('datagrid-rows', 'grid');
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -95,9 +95,6 @@ final class AuthTokenGrid extends GridBase
         return $gridTab;
     }
 
-    /**
-     * @return DataGridHeader
-     */
     protected function getHeader(): DataGridHeader
     {
         // Grid Header
@@ -108,9 +105,6 @@ final class AuthTokenGrid extends GridBase
         return $gridHeader;
     }
 
-    /**
-     * @return DataGridData
-     */
     protected function getData(): DataGridData
     {
         // Grid Data

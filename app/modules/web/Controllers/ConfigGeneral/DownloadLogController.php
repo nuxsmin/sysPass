@@ -26,16 +26,23 @@ namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
 
 use Exception;
-use JsonException;
+use SP\Core\Application;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class DownloadLogController
@@ -43,6 +50,14 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 final class DownloadLogController extends SimpleControllerBase
 {
     use JsonTrait;
+
+    public function __construct(
+        Application                   $application,
+        SimpleControllerHelper        $simpleControllerHelper,
+        private readonly PathsContext $pathsContext
+    ) {
+        parent::__construct($application, $simpleControllerHelper);
+    }
 
     public function downloadLogAction(): string
     {
@@ -53,7 +68,7 @@ final class DownloadLogController extends SimpleControllerBase
         try {
             Session::close();
 
-            $file = new FileHandler(LOG_FILE);
+            $file = new FileHandler($this->pathsContext[Path::LOG_FILE]);
             $file->checkFileExists();
 
             $this->eventDispatcher->notify(
@@ -62,7 +77,14 @@ final class DownloadLogController extends SimpleControllerBase
                     $this,
                     EventMessage::factory()
                         ->addDescription(__u('File downloaded'))
-                        ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile()))
+                        ->addDetail(
+                            __u('File'),
+                            str_replace(
+                                $this->pathsContext[Path::APP],
+                                '',
+                                $file->getFile()
+                            )
+                        )
                 )
             );
 
@@ -72,7 +94,7 @@ final class DownloadLogController extends SimpleControllerBase
             $response->header('Content-type', $file->getFileType());
             $response->header('Content-Description', ' sysPass file');
             $response->header('Content-transfer-encoding', 'chunked');
-            $response->header('Content-Disposition', 'attachment; filename="'.basename($file->getFile()).'"');
+            $response->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"');
             $response->header('Set-Cookie', 'fileDownload=true; path=/');
             $response->send();
 
@@ -87,8 +109,8 @@ final class DownloadLogController extends SimpleControllerBase
     }
 
     /**
-     * @throws JsonException
      * @throws SessionTimeout
+     * @throws SPException
      */
     protected function initialize(): void
     {

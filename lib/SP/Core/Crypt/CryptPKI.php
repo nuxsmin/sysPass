@@ -40,8 +40,8 @@ use function SP\processException;
 final class CryptPKI implements CryptPKIHandler
 {
     public const KEY_SIZE         = 1024;
-    public const PUBLIC_KEY_FILE  = CONFIG_PATH . DIRECTORY_SEPARATOR . 'pubkey.pem';
-    public const PRIVATE_KEY_FILE = CONFIG_PATH . DIRECTORY_SEPARATOR . 'key.pem';
+    public const PUBLIC_KEY_FILE  = 'pubkey.pem';
+    public const PRIVATE_KEY_FILE = 'key.pem';
 
     /**
      * @throws SPException

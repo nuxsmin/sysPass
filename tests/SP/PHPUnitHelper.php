@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -27,6 +28,9 @@ namespace SP\Tests;
 
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\Constraint\Constraint;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
+use SP\Infrastructure\File\FileSystem;
 
 /**
  * Trait PHPUnitHelper
@@ -34,6 +38,7 @@ use PHPUnit\Framework\Constraint\Constraint;
  * @method static assertSameSize(array $firstCallArguments, array $consecutiveCallArguments, string $string)
  * @method static assertThat(mixed $actualArgument, Constraint $expected)
  * @method static assertEquals(mixed $expected, mixed $actualArgument)
+ * @property PathsContext $pathsContext
  */
 trait PHPUnitHelper
 {
@@ -118,5 +123,24 @@ trait PHPUnitHelper
             get_class_methods($class),
             static fn(string $method) => $method != 'transactionAware'
         );
+    }
+
+    /**
+     * @return PathsContext
+     */
+    protected function getPathsContext(): PathsContext
+    {
+        $pathsContext = new PathsContext();
+        $pathsContext->addPath(Path::TMP, TMP_PATH);
+        $pathsContext->addPath(Path::APP, APP_PATH);
+        $pathsContext->addPath(Path::RESOURCES, RESOURCE_PATH);
+        $pathsContext->addPath(Path::CACHE, FileSystem::buildPath(RESOURCE_PATH, 'cache'));
+        $pathsContext->addPath(Path::SQL, FileSystem::buildPath(TEST_ROOT, 'schemas'));
+        $pathsContext->addPath(Path::CONFIG, FileSystem::buildPath(RESOURCE_PATH, 'config'));
+        $pathsContext->addPath(Path::XML_SCHEMA, FileSystem::buildPath(TEST_ROOT, 'schemas', 'syspass.xsd'));
+
+        $this->pathsContext = $pathsContext;
+
+        return $pathsContext;
     }
 }

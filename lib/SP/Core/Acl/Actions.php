@@ -43,10 +43,6 @@ use function SP\processException;
 class Actions implements ActionsInterface
 {
     /**
-     * Cache file name
-     */
-    public const ACTIONS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'actions.cache';
-    /**
      * Cache expire time
      */
     public const CACHE_EXPIRE = 86400;
@@ -109,7 +105,9 @@ class Actions implements ActionsInterface
     {
         $this->actions = [];
 
-        foreach ($this->yamlFileStorage->load() as $a) {
+        $yaml = $this->yamlFileStorage->load();
+
+        foreach ($yaml['actions'] as $a) {
             $this->actions[$a['id']] = new Action($a['id'], $a['name'], $a['text'], $a['route']);
         }
     }
@@ -147,7 +145,7 @@ class Actions implements ActionsInterface
      */
     public function reset(): void
     {
-        @unlink(self::ACTIONS_CACHE_FILE);
+        $this->fileCache->delete();
 
         $this->loadCache();
     }

@@ -48,11 +48,12 @@
             <exclude>./SP/Domain/Account/Services/Builders/AccountSearchTokenizerDataTrait.php</exclude>
             <exclude>./SP/Domain/Export/Services/XmlTrait.php</exclude>
         </testsuite>
-        <testsuite name="api">
+        <testsuite name="modules">
+            <directory suffix=".php">./SP/Modules/Web</directory>
             <directory suffix=".php">./SP/Modules/Api</directory>
-        </testsuite>
-        <testsuite name="cli">
             <directory suffix=".php">./SP/Modules/Cli</directory>
+            <exclude>./SP/Modules/Api</exclude>
+            <exclude>./SP/Modules/Cli</exclude>
         </testsuite>
     </testsuites>
     <logging/>

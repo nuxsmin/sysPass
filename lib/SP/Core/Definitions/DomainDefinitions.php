@@ -26,7 +26,14 @@ declare(strict_types=1);
 
 namespace SP\Core\Definitions;
 
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
+use SP\Domain\Common\Providers\Image;
+use SP\Domain\Image\Ports\ImageService;
+use SP\Infrastructure\File\FileSystem;
+
 use function DI\autowire;
+use function DI\factory;
 
 /**
  * Class DomainDefinitions
@@ -56,17 +63,38 @@ final class DomainDefinitions
     private const PORTS = [
         'Service' => 'SP\Domain\%s\Services\*',
         'Repository' => 'SP\Infrastructure\%s\Repositories\*',
-        'Adapter' => 'SP\Domain\%s\Adapters\*'
+        'Adapter' => 'SP\Domain\%s\Adapters\*',
+        'Builder' => 'SP\Domain\%s\Services\Builders\*'
     ];
 
     public static function getDefinitions(): array
     {
-        $sources = [];
+        $sources = [
+            ImageService::class => autowire(Image::class)
+                ->constructorParameter(
+                    'font',
+                    factory(
+                        static fn(PathsContext $p) => FileSystem::buildPath(
+                            $p[Path::PUBLIC],
+                            'vendor',
+                            'fonts',
+                            'NotoSans-Regular-webfont.ttf'
+                        )
+                    )
+                )
+                ->constructorParameter(
+                    'tempPath',
+                    factory(static fn(PathsContext $p) => $p[Path::TMP])
+                )
+        ];
 
         foreach (self::DOMAINS as $domain) {
             foreach (self::PORTS as $suffix => $target) {
                 $key = sprintf('SP\Domain\%s\Ports\*%s', $domain, $suffix);
-                $sources[$key] = autowire(sprintf($target, $domain));
+
+                if (!array_key_exists($key, $sources)) {
+                    $sources[$key] = autowire(sprintf($target, $domain));
+                }
             }
         }
 

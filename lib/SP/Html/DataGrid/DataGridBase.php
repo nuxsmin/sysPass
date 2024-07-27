@@ -329,7 +329,7 @@ abstract class DataGridBase implements DataGridInterface
 
     public function setTime(int|float $time): DataGridInterface
     {
-        $this->time = $time;
+        $this->time = (int)$time;
 
         return $this;
     }

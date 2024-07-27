@@ -25,6 +25,9 @@
 namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
 use JsonException;
+use SP\Core\Application;
+use SP\Core\AppLock;
+use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -34,10 +37,12 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
+
+use function SP\__u;
+use function SP\logger;
 
 /**
  * Class ConfigGeneral
@@ -48,8 +53,18 @@ final class SaveController extends SimpleControllerBase
 {
     use ConfigTrait;
 
+    public function __construct(
+        Application              $application,
+        SimpleControllerHelper   $simpleControllerHelper,
+        private readonly AppLock $appLock
+    ) {
+        parent::__construct($application, $simpleControllerHelper);
+    }
+
+
     /**
      * @throws JsonException
+     * @throws SPException
      */
     public function saveAction(): bool
     {
@@ -70,7 +85,12 @@ final class SaveController extends SimpleControllerBase
             $this->config,
             function () use ($eventMessage, $configData) {
                 if ($configData->isMaintenance()) {
-                    self::lockApp($this->session->getUserData()->getId(), 'config');
+                    $this->appLock->lock($this->session->getUserData()->getId(), 'config');
+                }
+
+                if (BootstrapBase::$LOCK !== false && $configData->isMaintenance() === false) {
+                    $this->appLock->unlock();
+                    logger('Application unlocked');
                 }
 
                 $this->eventDispatcher->notify('save.config.general', new Event($this, $eventMessage));
@@ -225,23 +245,7 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * Bloquear la aplicación
-     *
-     * @throws JsonException
-     * @throws FileException
-     */
-    private static function lockApp(int $userId, string $subject): void
-    {
-        $data = ['time' => time(), 'userId' => $userId, 'subject' => $subject];
-
-        $file = new FileHandler(LOCK_FILE);
-        $file->save(json_encode($data, JSON_THROW_ON_ERROR));
-
-        logger('Application locked out');
-    }
-
-    /**
-     * @throws JsonException
+     * @throws SPException
      * @throws SessionTimeout
      */
     protected function initialize(): void

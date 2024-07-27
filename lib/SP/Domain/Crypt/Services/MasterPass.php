@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -28,7 +29,7 @@ namespace SP\Domain\Crypt\Services;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
-use SP\Domain\Account\Ports\AccountCryptService;
+use SP\Domain\Account\Ports\AccountMasterPasswordService;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -51,11 +52,11 @@ final class MasterPass extends Service implements MasterPassService
     public const PARAM_MASTER_PASS_HASH = 'masterPwd';
 
     public function __construct(
-        Application                              $application,
-        private readonly ConfigService           $configService,
-        private readonly AccountCryptService     $accountCryptService,
-        private readonly CustomFieldCryptService $customFieldCryptService,
-        private readonly Repository              $repository
+        Application                                   $application,
+        private readonly ConfigService                $configService,
+        private readonly AccountMasterPasswordService $accountMasterPasswordService,
+        private readonly CustomFieldCryptService      $customFieldCryptService,
+        private readonly Repository                   $repository
     ) {
         parent::__construct($application);
     }
@@ -98,8 +99,8 @@ final class MasterPass extends Service implements MasterPassService
     {
         $this->repository->transactionAware(
             function () use ($request) {
-                $this->accountCryptService->updateMasterPassword($request);
-                $this->accountCryptService->updateHistoryMasterPassword($request);
+                $this->accountMasterPasswordService->updateMasterPassword($request);
+                $this->accountMasterPasswordService->updateHistoryMasterPassword($request);
                 $this->customFieldCryptService->updateMasterPassword($request);
             },
             $this

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -29,9 +30,12 @@ use GdImage;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Common\Providers\Image;
 use SP\Domain\Core\Exceptions\InvalidImageException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Tests\PHPUnitHelper;
 use SP\Tests\Stubs\PhpExtensionCheckerStub;
 
 /**
@@ -40,7 +44,10 @@ use SP\Tests\Stubs\PhpExtensionCheckerStub;
 #[Group('unitary')]
 class ImageTest extends TestCase
 {
-    private Image $imageUtil;
+    use PHPUnitHelper;
+
+    private Image        $imageUtil;
+    private PathsContext $pathsContext;
 
     /**
      * @throws InvalidImageException
@@ -84,11 +91,17 @@ class ImageTest extends TestCase
     {
         parent::setUp();
 
+        $this->getPathsContext();
+
         $phpExtensionCheckerService = $this->createMock(PhpExtensionCheckerStub::class);
         $phpExtensionCheckerService->expects($this->once())
                                    ->method('checkCurl')
                                    ->with(true);
 
-        $this->imageUtil = new Image($phpExtensionCheckerService, '/usr/share/fonts/freefont/FreeSans.otf');
+        $this->imageUtil = new Image(
+            $phpExtensionCheckerService,
+            '/usr/share/fonts/freefont/FreeSans.otf',
+            $this->pathsContext[Path::TMP]
+        );
     }
 }

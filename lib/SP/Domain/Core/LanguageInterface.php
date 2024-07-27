@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -41,14 +42,14 @@ interface LanguageInterface
     /**
      * Establecer el lenguaje a utilizar
      *
-     * @param  bool  $force  Forzar la detección del lenguaje para los inicios de sesión
+     * @param bool $force Forzar la detección del lenguaje para los inicios de sesión
      */
     public function setLanguage(bool $force = false): void;
 
     /**
      * Establecer las locales de gettext
      */
-    public static function setLocales(string $lang): void;
+    public function setLocales(string $lang): void;
 
     /**
      * Establecer el lenguaje global para las traducciones

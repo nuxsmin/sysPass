@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionHelp;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
@@ -35,6 +36,8 @@ use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Infrastructure\Database\QueryResult;
+
+use function SP\__;
 
 /**
  * Class AccountGrid
@@ -91,7 +94,7 @@ final class AccountGrid extends GridBase
     protected function getGridLayout(): DataGridInterface
     {
         // Grid
-        $gridTab = new DataGridTab($this->view->getTheme());
+        $gridTab = new DataGridTab($this->theme);
         $gridTab->setId('tblAccounts');
         $gridTab->setDataRowTemplate('datagrid-rows', 'grid');
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -102,9 +105,6 @@ final class AccountGrid extends GridBase
         return $gridTab;
     }
 
-    /**
-     * @return DataGridHeader
-     */
     protected function getHeader(): DataGridHeader
     {
         // Grid Header
@@ -119,7 +119,7 @@ final class AccountGrid extends GridBase
     }
 
     /**
-     * @return DataGridData
+     * @throws SPException
      */
     protected function getData(): DataGridData
     {
@@ -136,9 +136,6 @@ final class AccountGrid extends GridBase
         return $gridData;
     }
 
-    /**
-     * @return DataGridActionSearch
-     */
     private function getSearchAction(): DataGridActionSearch
     {
         $gridActionSearch = new DataGridActionSearch();
@@ -175,9 +172,6 @@ final class AccountGrid extends GridBase
         return $gridAction;
     }
 
-    /**
-     * @return DataGridAction
-     */
     private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();

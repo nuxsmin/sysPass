@@ -26,32 +26,20 @@ use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
+use SP\Infrastructure\File\FileSystem;
 
 use function SP\getFromEnv;
 use function SP\initModule;
 use function SP\processException;
 
-// Core PATHS
-const DS = DIRECTORY_SEPARATOR;
-
 if (!defined('APP_ROOT')) {
-    define('APP_ROOT', realpath(__DIR__ . DS . '..'));
+    define('APP_ROOT', realpath(__DIR__ . DIRECTORY_SEPARATOR . '..'));
 }
 
-const APP_PATH = APP_ROOT . DS . 'app';
-const VENDOR_PATH = APP_ROOT . DS . 'vendor';
-const SQL_PATH = APP_ROOT . DS . 'schemas';
-const PUBLIC_PATH = APP_ROOT . DS . 'public';
-const XML_SCHEMA = SQL_PATH . DS . 'syspass.xsd';
-const RESOURCES_PATH = APP_PATH . DS . 'resources';
-const MODULES_PATH = APP_PATH . DS . 'modules';
-const LOCALES_PATH = APP_PATH . DS . 'locales';
+require 'BaseFunctions.php';
+require FileSystem::buildPath(APP_ROOT, 'vendor', 'autoload.php');
 
-// Start tracking the memory used
-$memInit = memory_get_usage();
-
-require __DIR__ . DS . 'BaseFunctions.php';
-require VENDOR_PATH . DS . 'autoload.php';
+define('APP_PATH', FileSystem::buildPath(APP_ROOT, 'app'));
 
 $dotenv = Dotenv::createImmutable(APP_ROOT);
 $dotenv->load();
@@ -59,19 +47,6 @@ $dotenv->load();
 defined('APP_MODULE') || define('APP_MODULE', 'web');
 
 define('DEBUG', getFromEnv('DEBUG', false));
-define('IS_TESTING', getFromEnv('IS_TESTING', defined('TEST_ROOT')));
-define('CONFIG_PATH', getFromEnv('CONFIG_PATH', APP_PATH . DS . 'config'));
-define('CONFIG_FILE', getFromEnv('CONFIG_FILE', CONFIG_PATH . DS . 'config.xml'));
-define('ACTIONS_FILE', getFromEnv('ACTIONS_FILE', RESOURCES_PATH . DS . 'actions.yaml'));
-define('MIMETYPES_FILE', getFromEnv('MIMETYPES_FILE', RESOURCES_PATH . DS . 'mimetypes.yaml'));
-define('LOG_FILE', getFromEnv('LOG_FILE', CONFIG_PATH . DS . 'syspass.log'));
-
-const LOCK_FILE = CONFIG_PATH . DS . '.lock';
-
-// Setup application paths
-define('BACKUP_PATH', getFromEnv('BACKUP_PATH', APP_PATH . DS . 'backup'));
-define('CACHE_PATH', getFromEnv('CACHE_PATH', APP_PATH . DS . 'cache'));
-define('TMP_PATH', getFromEnv('TMP_PATH', APP_PATH . DS . 'temp'));
 
 try {
     $moduleDefinitions = initModule(APP_MODULE);
@@ -79,12 +54,17 @@ try {
     $containerBuilder = new ContainerBuilder();
 
     if (!DEBUG) {
-        $containerBuilder->enableCompilation(CACHE_PATH);
-        $containerBuilder->writeProxiesToFile(true, CACHE_PATH . DS . 'proxies');
+        $cachePath = getFromEnv('CACHE_PATH', FileSystem::buildPath(APP_PATH, 'cache'));
+        $containerBuilder->enableCompilation($cachePath);
+        $containerBuilder->writeProxiesToFile(true, FileSystem::buildPath($cachePath, 'proxies'));
     }
 
     return $containerBuilder
-        ->addDefinitions(CoreDefinitions::getDefinitions(), DomainDefinitions::getDefinitions(), $moduleDefinitions)
+        ->addDefinitions(
+            CoreDefinitions::getDefinitions(APP_ROOT, APP_MODULE),
+            DomainDefinitions::getDefinitions(),
+            $moduleDefinitions
+        )
         ->build();
 } catch (Exception $e) {
     processException($e);

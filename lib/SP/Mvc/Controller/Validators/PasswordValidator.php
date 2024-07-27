@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -38,7 +39,7 @@ use function SP\__u;
  *
  * @package SP\Mvc\Controller
  */
-final class PasswordValidator implements ValidatorInterface
+class PasswordValidator implements ValidatorInterface
 {
     /**
      * @throws ValidationException

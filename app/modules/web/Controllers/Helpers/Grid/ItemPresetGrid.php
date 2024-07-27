@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
@@ -37,6 +38,7 @@ use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Infrastructure\Database\QueryResult;
 
 use function SP\__;
+use function SP\getElapsedTime;
 
 /**
  * Class AccountDefaultPermissionGrid
@@ -82,13 +84,10 @@ final class ItemPresetGrid extends GridBase
         return $grid;
     }
 
-    /**
-     * @return DataGridInterface
-     */
     protected function getGridLayout(): DataGridInterface
     {
         // Grid
-        $gridTab = new DataGridTab($this->view->getTheme());
+        $gridTab = new DataGridTab($this->theme);
         $gridTab->setId('tblItemPreset');
         $gridTab->setDataRowTemplate('datagrid-rows', 'grid');
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -99,9 +98,6 @@ final class ItemPresetGrid extends GridBase
         return $gridTab;
     }
 
-    /**
-     * @return DataGridHeader
-     */
     protected function getHeader(): DataGridHeader
     {
         // Grid Header
@@ -117,7 +113,7 @@ final class ItemPresetGrid extends GridBase
     }
 
     /**
-     * @return DataGridData
+     * @throws SPException
      */
     protected function getData(): DataGridData
     {
@@ -135,9 +131,6 @@ final class ItemPresetGrid extends GridBase
         return $gridData;
     }
 
-    /**
-     * @return DataGridActionSearch
-     */
     private function getSearchAction(): DataGridActionSearch
     {
         // Grid Actions
@@ -155,9 +148,6 @@ final class ItemPresetGrid extends GridBase
         return $gridActionSearch;
     }
 
-    /**
-     * @return DataGridAction
-     */
     private function getCreatePermissionAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
@@ -180,9 +170,6 @@ final class ItemPresetGrid extends GridBase
         return $gridAction;
     }
 
-    /**
-     * @return DataGridAction
-     */
     private function getCreatePrivateAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
@@ -205,9 +192,6 @@ final class ItemPresetGrid extends GridBase
         return $gridAction;
     }
 
-    /**
-     * @return DataGridAction
-     */
     private function getCreateSessionTimeoutAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
@@ -230,9 +214,6 @@ final class ItemPresetGrid extends GridBase
         return $gridAction;
     }
 
-    /**
-     * @return DataGridAction
-     */
     private function getCreateAccountPasswordAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
@@ -255,9 +236,6 @@ final class ItemPresetGrid extends GridBase
         return $gridAction;
     }
 
-    /**
-     * @return DataGridAction
-     */
     private function getEditAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
@@ -275,9 +253,6 @@ final class ItemPresetGrid extends GridBase
         return $gridAction;
     }
 
-    /**
-     * @return DataGridAction
-     */
     private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();

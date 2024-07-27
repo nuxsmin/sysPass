@@ -27,13 +27,17 @@ namespace SP\Modules\Web\Controllers\Bootstrap;
 use Exception;
 use JsonException;
 use SP\Core\Application;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Crypt\CryptPKI;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Services\ImportStrategy;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -53,9 +57,10 @@ final class GetEnvironmentController extends SimpleControllerBase
     public function __construct(
         Application                           $application,
         SimpleControllerHelper                $simpleControllerHelper,
-        private readonly CryptPKIHandler $cryptPKI,
+        private readonly CryptPKIHandler      $cryptPKI,
         private readonly BrowserAuthService   $browser,
-        private readonly PluginManagerService $pluginManagerService
+        private readonly PluginManagerService $pluginManagerService,
+        private readonly PathsContext         $pathsContext
     ) {
         parent::__construct($application, $simpleControllerHelper);
     }
@@ -100,10 +105,12 @@ final class GetEnvironmentController extends SimpleControllerBase
 
     /**
      * @return array
+     * @throws FileException
+     * @throws InvalidClassException
      */
     private function getJsLang(): array
     {
-        return require RESOURCES_PATH . DIRECTORY_SEPARATOR . 'strings.js.inc';
+        return FileSystem::require(FileSystem::buildPath($this->pathsContext[Path::RESOURCES], 'strings.js.inc'));
     }
 
     /**

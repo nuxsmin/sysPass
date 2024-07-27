@@ -38,10 +38,8 @@ use Klein\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use SP\Core\Bootstrap\BootstrapApi;
 use SP\Domain\Api\Services\ApiRequest;
 use SP\Domain\Auth\Models\AuthToken;
-use SP\Domain\Auth\Services\AuthToken;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -56,8 +54,6 @@ use SP\Tests\DatabaseTrait;
 use stdClass;
 
 use function DI\create;
-
-use const SP\Tests\APP_DEFINITIONS_FILE;
 
 define('APP_MODULE', 'api');
 

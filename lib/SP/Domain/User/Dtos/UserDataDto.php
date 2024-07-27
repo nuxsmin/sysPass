@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\User\Dtos;
 
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserPreferences;
 
@@ -35,6 +37,9 @@ final readonly class UserDataDto
 {
     private ?UserPreferences $preferences;
 
+    /**
+     * @throws SPException
+     */
     public function __construct(private ?User $user = null)
     {
         $this->preferences = $this->user?->hydrate(UserPreferences::class);

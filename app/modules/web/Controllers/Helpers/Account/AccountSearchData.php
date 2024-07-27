@@ -73,7 +73,6 @@ use function SP\processException;
  */
 final class AccountSearchData
 {
-    private const COLORS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'colors.cache';
     private const COLORS             = [
         '2196F3',
         '03A9F4',
@@ -116,7 +115,7 @@ final class AccountSearchData
     private function loadColors(): void
     {
         try {
-            $this->accountColor = $this->fileCache->load(self::COLORS_CACHE_FILE);
+            $this->accountColor = $this->fileCache->load();
 
             logger('Loaded accounts color cache');
         } catch (FileException $e) {
@@ -195,7 +194,7 @@ final class AccountSearchData
         $this->accountColor[$id] = '#' . self::COLORS[array_rand(self::COLORS)];
 
         try {
-            $this->fileCache->save($this->accountColor, self::COLORS_CACHE_FILE);
+            $this->fileCache->save($this->accountColor);
 
             logger('Saved accounts color cache');
 

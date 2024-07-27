@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -58,11 +59,11 @@ final class Serde
      *
      * @param string $data
      * @param class-string<T>|null $class
-     * @return T&object
+     * @return T&object|array
      *
      * @throws SPException
      */
-    public static function deserialize(string $data, ?string $class = null): object
+    public static function deserialize(string $data, ?string $class = null): object|array
     {
         $value = unserialize($data);
 

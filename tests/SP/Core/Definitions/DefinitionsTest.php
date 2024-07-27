@@ -98,10 +98,10 @@ class DefinitionsTest extends TestCase
             ConfigDataInterface::class => $configData,
             LdapConnectionInterface::class => $this->createStub(LdapConnectionInterface::class),
             'backup.dbArchiveHandler' => $this->createStub(ArchiveHandler::class),
-            'backup.appArchiveHandler' => $this->createStub(ArchiveHandler::class),
+            'backup.appArchiveHandler' => $this->createStub(ArchiveHandler::class)
         ];
 
-        $definitions = CoreDefinitions::getDefinitions();
+        $definitions = CoreDefinitions::getDefinitions(TEST_ROOT, 'test');
 
         $containerBuilder = new ContainerBuilder();
         $containerBuilder->addDefinitions(DomainDefinitions::getDefinitions(), $definitions, $mockedDefinitions);

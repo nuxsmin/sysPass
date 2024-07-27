@@ -26,6 +26,8 @@ namespace SP\Modules\Web\Controllers\ConfigBackup;
 
 use Exception;
 use SP\Core\Application;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -42,6 +44,9 @@ use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
+use function SP\__u;
+use function SP\processException;
+
 /**
  * Class XmlExportController
  */
@@ -49,19 +54,14 @@ final class XmlExportController extends SimpleControllerBase
 {
     use JsonTrait;
 
-    private XmlExportService $xmlExportService;
-    private XmlVerifyService $xmlVerifyService;
-
     public function __construct(
-        Application            $application,
-        SimpleControllerHelper $simpleControllerHelper,
-        XmlExportService       $xmlExportService,
-        XmlVerifyService $xmlVerifyService
+        Application                       $application,
+        SimpleControllerHelper            $simpleControllerHelper,
+        private readonly XmlExportService $xmlExportService,
+        private readonly XmlVerifyService $xmlVerifyService,
+        private readonly PathsContext     $pathsContext
     ) {
         parent::__construct($application, $simpleControllerHelper);
-
-        $this->xmlExportService = $xmlExportService;
-        $this->xmlVerifyService = $xmlVerifyService;
     }
 
     /**
@@ -85,7 +85,10 @@ final class XmlExportController extends SimpleControllerBase
 
             Session::close();
 
-            $file = $this->xmlExportService->export(new DirectoryHandler(BACKUP_PATH), $exportPassword);
+            $file = $this->xmlExportService->export(
+                new DirectoryHandler($this->pathsContext[Path::BACKUP]),
+                $exportPassword
+            );
 
             $this->eventDispatcher->notify(
                 'run.export.end',

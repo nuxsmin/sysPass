@@ -38,5 +38,5 @@ interface BackupFileService
      *
      * @throws ServiceException
      */
-    public function doBackup(string $backupPath = BACKUP_PATH, string $applicationPath = APP_ROOT): void;
+    public function doBackup(string $backupPath, string $applicationPath): void;
 }

@@ -40,6 +40,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
+use SP\Mvc\Controller\Validators\PasswordValidator;
 use SP\Mvc\Controller\Validators\ValidatorInterface;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\ItemPresetDataGenerator;
@@ -251,7 +252,7 @@ class AccountPresetTest extends UnitaryTestCase
         $configData->setAccountExpireEnabled(true);
 
         $this->itemPresetService = $this->createMock(ItemPresetService::class);
-        $this->passwordValidator = $this->createMock(ValidatorInterface::class);
+        $this->passwordValidator = $this->createMock(PasswordValidator::class);
         $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
         $this->accountToUserRepository = $this->createMock(AccountToUserRepository::class);
 

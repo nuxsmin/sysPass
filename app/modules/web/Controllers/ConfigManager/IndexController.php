@@ -30,6 +30,8 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Events\Event;
 use SP\Core\Language;
@@ -37,6 +39,7 @@ use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Auth\Providers\Ldap\LdapMsAds;
 use SP\Domain\Auth\Providers\Ldap\LdapStd;
 use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -44,6 +47,7 @@ use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\File\MimeType;
 use SP\Domain\Core\File\MimeTypesService;
@@ -53,7 +57,6 @@ use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Dtos\BackupType;
 use SP\Domain\Log\Providers\LogInterface;
 use SP\Domain\Notification\Services\MailEvent;
-use SP\Domain\Task\Services\Task;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
@@ -66,8 +69,9 @@ use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Plugin\PluginManager;
 use SP\Util\Util;
+
+use function SP\__;
 
 /**
  * Class ConfigManagerController
@@ -82,21 +86,24 @@ final class IndexController extends ControllerBase
     private DatabaseUtil     $databaseUtil;
     private ConfigService  $configService;
     private AccountService $accountService;
-    private PluginManager  $pluginManager;
 
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application                  $application,
-        WebControllerHelper          $webControllerHelper,
-        TabsHelper                   $tabsHelper,
-        UserService                  $userService,
-        UserGroupService             $userGroupService,
-        UserProfileService           $userProfileService,
-        MimeTypesService             $mimeTypes,
-        DatabaseUtil                 $databaseUtil,
-        ConfigService                $configService,
-        AccountService               $accountService,
-        PluginManager                $pluginManager,
-        private readonly BackupFiles $backupFiles
+        Application                   $application,
+        WebControllerHelper           $webControllerHelper,
+        TabsHelper                    $tabsHelper,
+        UserService                   $userService,
+        UserGroupService              $userGroupService,
+        UserProfileService            $userProfileService,
+        MimeTypesService              $mimeTypes,
+        DatabaseUtil                  $databaseUtil,
+        ConfigService                 $configService,
+        AccountService                $accountService,
+        private readonly BackupFiles  $backupFiles,
+        private readonly PathsContext $pathsContext
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -110,7 +117,6 @@ final class IndexController extends ControllerBase
         $this->databaseUtil = $databaseUtil;
         $this->configService = $configService;
         $this->accountService = $accountService;
-        $this->pluginManager = $pluginManager;
     }
 
 
@@ -468,7 +474,7 @@ final class IndexController extends ControllerBase
             (string)new BackupFileDto(
                 BackupType::export,
                 $this->configData->getExportHash() ?: '',
-                BACKUP_PATH,
+                $this->pathsContext[Path::BACKUP],
                 'gz'
             )
         );
@@ -569,7 +575,7 @@ final class IndexController extends ControllerBase
         );
         $template->assign(
             'downloadLog',
-            !$isDemo && is_readable(LOG_FILE) && $this->userData->getIsAdminApp()
+            !$isDemo && is_readable($this->pathsContext[Path::LOG_FILE]) && $this->userData->getIsAdminApp()
         );
 
         return new DataTab(__('Information'), $template);

@@ -25,6 +25,9 @@
 namespace SP\Modules\Web\Controllers\ConfigBackup;
 
 use Exception;
+use SP\Core\Application;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -37,6 +40,10 @@ use SP\Domain\Export\Dtos\BackupType;
 use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class ConfigBackupController
@@ -46,6 +53,14 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 final class DownloadBackupDbController extends SimpleControllerBase
 {
     use JsonTrait;
+
+    public function __construct(
+        Application                   $application,
+        SimpleControllerHelper        $simpleControllerHelper,
+        private readonly PathsContext $pathsContext
+    ) {
+        parent::__construct($application, $simpleControllerHelper);
+    }
 
     /**
      * @return string
@@ -59,7 +74,12 @@ final class DownloadBackupDbController extends SimpleControllerBase
         try {
             Session::close();
 
-            $filePath = new BackupFile(BackupType::db, $this->configData->getBackupHash(), BACKUP_PATH, 'gz');
+            $filePath = new BackupFile(
+                BackupType::db,
+                $this->configData->getBackupHash(),
+                $this->pathsContext[Path::BACKUP],
+                'gz'
+            );
 
             $file = new FileHandler((string)$filePath);
             $file->checkFileExists();

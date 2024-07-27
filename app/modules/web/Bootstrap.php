@@ -74,6 +74,7 @@ final class Bootstrap extends BootstrapBase
                 logger('WEB route');
 
                 $controllerClass = self::getClassFor(
+                    $this->module->getName(),
                     $this->routeContextData->getController(),
                     $this->routeContextData->getActionName()
                 );
@@ -86,8 +87,6 @@ final class Bootstrap extends BootstrapBase
 
                     return $response;
                 }
-
-                $this->context->setTrasientKey(self::CONTEXT_ACTION_NAME, $this->routeContextData->getActionName());
 
                 $this->setCors($response);
 

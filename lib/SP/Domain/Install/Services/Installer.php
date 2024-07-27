@@ -141,9 +141,7 @@ final class Installer implements InstallerService
             );
         }
 
-        if (IS_TESTING
-            && empty($this->installData->getDbAdminPass())
-        ) {
+        if (empty($this->installData->getDbAdminPass())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the database password'),
                 SPException::ERROR,

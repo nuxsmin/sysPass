@@ -60,14 +60,14 @@
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
-    "symfony/debug": "^v3.4",
+    "symfony/error-handler": "@stable",
     "phpunit/phpunit": "^11",
     "fakerphp/faker": "^v1.23",
-    "fabpot/goutte": "^v3.2",
     "nikic/php-parser": "^v5",
     "squizlabs/php_codesniffer": "^3",
     "phpstan/phpstan": "^1.9",
-    "mikey179/vfsstream": "@stable"
+    "mikey179/vfsstream": "@stable",
+    "symfony/dom-crawler": "@stable"
   },
   "scripts": {
     "phpcs": "phpcs --standard=PSR2 lib",

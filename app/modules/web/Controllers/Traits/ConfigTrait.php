@@ -26,12 +26,13 @@ namespace SP\Modules\Web\Controllers\Traits;
 
 use Exception;
 use JsonException;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
 
-use function SP\logger;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Trait ConfigTrait
@@ -46,6 +47,7 @@ trait ConfigTrait
      * Guardar la configuración
      *
      * @throws JsonException
+     * @throws SPException
      */
     protected function saveConfig(
         ConfigDataInterface $configData,
@@ -58,10 +60,6 @@ trait ConfigTrait
             }
 
             $config->save($configData);
-
-            if (BootstrapBase::$LOCK !== false && $configData->isMaintenance() === false) {
-                self::unlockApp();
-            }
 
             if ($onSuccess !== null) {
                 $onSuccess();
@@ -77,15 +75,5 @@ trait ConfigTrait
                 [$e]
             );
         }
-    }
-
-    /**
-     * Desbloquear la aplicación
-     */
-    private static function unlockApp(): bool
-    {
-        logger('Application unlocked');
-
-        return @unlink(LOCK_FILE);
     }
 }

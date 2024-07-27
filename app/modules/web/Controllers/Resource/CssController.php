@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Resource;
 
+use SP\Core\Bootstrap\Path;
 use SP\Domain\Http\Services\Request as HttpRequest;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileSystem;
@@ -57,11 +58,19 @@ final class CssController extends ResourceBase
                          ->addFiles($files)
                          ->getMinified();
         } else {
-            $files = $this->buildFiles(FileSystem::buildPath(PUBLIC_PATH, 'vendor', 'css'), self::CSS_MIN_FILES);
+            $files = $this->buildFiles(
+                FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'vendor', 'css'),
+                self::CSS_MIN_FILES
+            );
 
             $this->minify->builder()
                          ->addFiles($files, false)
-                ->addFile(new FileHandler(FileSystem::buildPath(PUBLIC_PATH, 'css', 'fonts.min.css')), false)
+                ->addFile(
+                    new FileHandler(
+                        FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'css', 'fonts.min.css')
+                    ),
+                    false
+                )
                          ->getMinified();
         }
     }

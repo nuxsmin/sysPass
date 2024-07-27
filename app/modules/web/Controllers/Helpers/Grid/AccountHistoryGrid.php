@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -83,7 +84,7 @@ final class AccountHistoryGrid extends GridBase
     protected function getGridLayout(): DataGridInterface
     {
         // Grid
-        $gridTab = new DataGridTab($this->view->getTheme());
+        $gridTab = new DataGridTab($this->theme);
         $gridTab->setId('tblAccountsHistory');
         $gridTab->setDataRowTemplate('datagrid-rows', 'grid');
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -111,7 +112,7 @@ final class AccountHistoryGrid extends GridBase
     }
 
     /**
-     * @return DataGridData
+     * @throws SPException
      */
     protected function getData(): DataGridData
     {

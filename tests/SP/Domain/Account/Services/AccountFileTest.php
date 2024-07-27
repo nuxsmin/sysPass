@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -62,9 +63,7 @@ class AccountFileTest extends UnitaryTestCase
     public function testCreate(): void
     {
         $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())
-                        ->mutate(
-                                ['type' => self::$faker->mimeType()]
-                            );
+            ->mutate(['type' => self::$faker->mimeType()]);
 
         $this->imageUtil
             ->expects(self::never())

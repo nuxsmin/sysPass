@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -28,9 +29,11 @@ namespace SP\Domain\Config\Services;
 use SP\Domain\Common\Providers\Environment;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Infrastructure\File\FileSystem;
 
 use function SP\__;
 use function SP\__u;
+use function SP\getFromEnv;
 
 /**
  * Class ConfigUtil
@@ -72,20 +75,22 @@ final class ConfigUtil
      */
     public static function checkConfigDir(): void
     {
-        if (!is_dir(CONFIG_PATH)) {
+        $configPath = getFromEnv('CONFIG_PATH', FileSystem::buildPath(APP_PATH, 'config'));
+
+        if (!is_dir($configPath)) {
             clearstatcache();
 
             throw new ConfigException(__u('\'/app/config\' directory does not exist.'), SPException::CRITICAL);
         }
 
-        if (!is_writable(CONFIG_PATH)) {
+        if (!is_writable($configPath)) {
             clearstatcache();
 
             throw new ConfigException(__u('Unable to write into \'/app/config\' directory'), SPException::CRITICAL);
         }
 
         if (!Environment::checkIsWindows()
-            && ($configPerms = decoct(fileperms(CONFIG_PATH) & 0777)) !== '750'
+            && (($configPerms = decoct(fileperms($configPath) & 0777)) !== '750' && !chmod($configPath, 0750))
         ) {
             clearstatcache();
 

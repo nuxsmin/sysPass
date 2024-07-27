@@ -147,7 +147,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     public function getId(): string
     {
-        return $this->id;
+        return (string)$this->id;
     }
 
     public function setId(int $id): DataGridActionBase

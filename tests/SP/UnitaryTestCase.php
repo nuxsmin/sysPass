@@ -54,11 +54,13 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Application;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\Stateless;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User;
@@ -76,6 +78,7 @@ abstract class UnitaryTestCase extends TestCase
     protected readonly ConfigFileService|MockObject $config;
     protected readonly Application                  $application;
     protected readonly Context                      $context;
+    protected readonly PathsContext $pathsContext;
 
     public static function setUpBeforeClass(): void
     {
@@ -94,7 +97,7 @@ abstract class UnitaryTestCase extends TestCase
         setlocale(LC_MESSAGES, $lang);
         setlocale(LC_ALL, $lang);
 
-        bindtextdomain('messages', LOCALES_PATH);
+        bindtextdomain('messages', APP_PATH . DIRECTORY_SEPARATOR . 'locales');
         textdomain('messages');
         bind_textdomain_codeset('messages', 'UTF-8');
     }
@@ -107,18 +110,22 @@ abstract class UnitaryTestCase extends TestCase
     /**
      * @throws Exception
      * @throws ContextException
+     * @throws SPException
      */
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->application = $this->buildApplication();
+
+        $this->getPathsContext();
     }
 
     /**
      * @return Application
      * @throws Exception
      * @throws ContextException
+     * @throws SPException
      */
     private function buildApplication(): Application
     {
@@ -134,6 +141,7 @@ abstract class UnitaryTestCase extends TestCase
 
     /**
      * @throws ContextException
+     * @throws SPException
      */
     protected function buildContext(): Context
     {
@@ -147,6 +155,7 @@ abstract class UnitaryTestCase extends TestCase
 
     /**
      * @return UserDataDto
+     * @throws SPException
      */
     private function buildUserDataDto(): UserDataDto
     {

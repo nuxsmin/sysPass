@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -31,6 +32,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Auth\Providers\AclHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
@@ -43,9 +45,9 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class AclHandlerTest extends UnitaryTestCase
 {
-    private MockObject|UserProfileService        $userProfileService;
-    private UserGroupService|MockObject          $userGroupService;
-    private \SP\Domain\Auth\Providers\AclHandler $aclHandler;
+    private MockObject|UserProfileService $userProfileService;
+    private UserGroupService|MockObject   $userGroupService;
+    private AclHandler                    $aclHandler;
 
     public static function userEventProvider(): array
     {
@@ -223,10 +225,11 @@ class AclHandlerTest extends UnitaryTestCase
         $this->userProfileService = $this->createMock(UserProfileService::class);
         $this->userGroupService = $this->createMock(UserGroupService::class);
 
-        $this->aclHandler = new \SP\Domain\Auth\Providers\AclHandler(
+        $this->aclHandler = new AclHandler(
             $this->application,
             $this->userProfileService,
-            $this->userGroupService
+            $this->userGroupService,
+            $this->pathsContext
         );
     }
 

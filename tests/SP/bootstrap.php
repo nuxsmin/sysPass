@@ -37,13 +37,13 @@ use SP\Infrastructure\File\FileSystem;
 
 use function SP\logger;
 
-define('DEBUG', true);
-define('IS_TESTING', true);
+define('DEBUG', false);
 define('REAL_APP_ROOT', dirname(__DIR__, 2));
+define('APP_ROOT', REAL_APP_ROOT);
 
 $testDirectory = vfsStream::setup(
     'test',
-    755,
+    750,
     [
         'res' => [
             'cache' => [
@@ -59,35 +59,35 @@ $testDirectory = vfsStream::setup(
         'app' => [
             'locales' => [],
             'modules' => [],
-            'resources' => []
+            'resources' => [],
+            'config' => [],
+            'cache' => [
+                'secure_session' => []
+            ]
         ]
     ]
 );
 
-vfsStream::copyFromFileSystem(dirname(__DIR__) . '/res', $testDirectory->getChild('res'));
+$testResources = vfsStream::copyFromFileSystem(dirname(__DIR__) . '/res', $testDirectory->getChild('res'));
 vfsStream::copyFromFileSystem(REAL_APP_ROOT . '/schemas', $testDirectory->getChild('schemas'));
-vfsStream::copyFromFileSystem(REAL_APP_ROOT . '/app/resources', $testDirectory->getChild('app/resources'));
+$appResources = vfsStream::copyFromFileSystem(
+    REAL_APP_ROOT . '/app/resources',
+    $testDirectory->getChild('app/resources')
+);
+vfsStream::copyFromFileSystem(
+    REAL_APP_ROOT . '/app/config',
+    $testDirectory->getChild('app/config')
+);
+vfsStream::copyFromFileSystem(
+    REAL_APP_ROOT . '/app/locales',
+    $testDirectory->getChild('app/locales')
+);
 
 define('TEST_ROOT', $testDirectory->url());
-define('APP_ROOT', $testDirectory->getChild('app')->url());
-define('RESOURCE_PATH', $testDirectory->getChild('res')->url());
+define('APP_PATH', $testDirectory->getChild('app')->url());
+define('RESOURCE_PATH', $testResources->url());
 define('TMP_PATH', $testDirectory->getChild('tmp')->url());
 
-define('VIEW_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'view');
-define('CACHE_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'cache');
-define('CONFIG_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'config');
-define('LOCALES_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'locales');
-define('MODULES_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'modules');
-define('BACKUP_PATH', TMP_PATH);
-define('PLUGINS_PATH', TMP_PATH);
-
-define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
-define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
-define('MIMETYPES_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'mime.xml');
-define('SQL_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'schemas');
-define('PUBLIC_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'public');
-define('XML_SCHEMA', TEST_ROOT . DIRECTORY_SEPARATOR . 'schemas' . DIRECTORY_SEPARATOR . 'syspass.xsd');
-define('LOG_FILE', TMP_PATH . DIRECTORY_SEPARATOR . 'test.log');
 define('FIXTURE_FILES', [
     RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'truncate.sql',
     RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass.sql',
@@ -98,17 +98,9 @@ define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 require_once REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 require_once REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
-logger('APP_ROOT=' . APP_ROOT);
+logger('APP_PATH=' . APP_PATH);
 logger('TEST_ROOT=' . TEST_ROOT);
 logger('SELF_IP_ADDRESS=' . SELF_IP_ADDRESS);
-
-if (is_dir(CONFIG_PATH)
-    && decoct(fileperms(CONFIG_PATH) & 0777) !== '750'
-) {
-    print 'Setting permissions for ' . CONFIG_PATH . PHP_EOL;
-
-    chmod(CONFIG_PATH, 0750);
-}
 
 /**
  * Función para llamadas a gettext

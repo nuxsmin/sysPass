@@ -27,10 +27,8 @@ namespace SP\Modules\Api\Controllers;
 use Exception;
 use Klein\Klein;
 use League\Fractal\Manager;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Core\Events\EventDispatcher;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Api\Services\JsonRpcResponse;
@@ -38,6 +36,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Services\JsonResponse;
 
@@ -50,29 +49,23 @@ abstract class ControllerBase
 {
     protected const SEARCH_COUNT_ITEMS = 25;
 
-    protected string  $controllerName;
-    protected Context $context;
-    protected EventDispatcher $eventDispatcher;
-    protected ApiService      $apiService;
-    protected Klein           $router;
-    protected ConfigDataInterface $configData;
-    protected Manager             $fractal;
-    protected Acl                 $acl;
-    protected string              $actionName;
-    private bool                  $isAuthenticated = false;
+    protected string                   $controllerName;
+    protected Context                  $context;
+    protected EventDispatcherInterface $eventDispatcher;
+    protected ConfigDataInterface      $configData;
+    protected Manager                  $fractal;
+    protected string                   $actionName;
+    private bool                       $isAuthenticated = false;
 
     public function __construct(
-        Application $application,
-        Klein       $router,
-        ApiService  $apiService,
-        AclInterface $acl
+        Application                     $application,
+        protected readonly Klein        $router,
+        protected readonly ApiService   $apiService,
+        protected readonly AclInterface $acl
     ) {
         $this->context = $application->getContext();
         $this->configData = $application->getConfig()->getConfigData();
         $this->eventDispatcher = $application->getEventDispatcher();
-        $this->router = $router;
-        $this->apiService = $apiService;
-        $this->acl = $acl;
 
         $this->fractal = new Manager();
         $this->controllerName = $this->getControllerName();

@@ -25,12 +25,11 @@
 namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Core\Application;
-use SP\Core\Events\EventDispatcher;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Services\ConfigFile;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\Http\Services\Request;
 use SP\Mvc\View\TemplateInterface;
 
 /**
@@ -40,29 +39,20 @@ use SP\Mvc\View\TemplateInterface;
  */
 abstract class HelperBase
 {
-    protected TemplateInterface   $view;
-    protected ConfigDataInterface $configData;
-    protected Context         $context;
-    protected EventDispatcher $eventDispatcher;
-    protected ConfigFile      $config;
-    protected Request         $request;
+    protected TemplateInterface        $view;
+    protected ConfigDataInterface      $configData;
+    protected Context                  $context;
+    protected EventDispatcherInterface $eventDispatcher;
+    protected ConfigFileService        $config;
 
-    /**
-     * Constructor
-     *
-     * @param Application $application
-     * @param TemplateInterface $template
-     * @param \SP\Domain\Http\Ports\RequestService $request
-     */
     public function __construct(
-        Application $application,
-        TemplateInterface $template,
-        RequestService $request
+        Application              $application,
+        TemplateInterface        $template,
+        protected RequestService $request
     ) {
         $this->config = $application->getConfig();
         $this->context = $application->getContext();
         $this->eventDispatcher = $application->getEventDispatcher();
-        $this->request = $request;
         $this->configData = $this->config->getConfigData();
         $this->view = $template;
     }

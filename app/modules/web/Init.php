@@ -24,22 +24,21 @@
 
 namespace SP\Modules\Web;
 
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use JsonException;
 use Klein\Klein;
 use SP\Core\Application;
+use SP\Core\AppLock;
 use SP\Core\Context\ContextBase;
+use SP\Core\Context\ContextException;
 use SP\Core\Context\Session;
 use SP\Core\Context\SessionLifecycleHandler;
-use SP\Core\Crypt\Csrf;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\HttpModuleBase;
-use SP\Core\Language;
 use SP\Core\ProvidersHelper;
 use SP\Domain\Common\Providers\Http;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Crypt\CsrfHandler;
+use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InitializationException;
@@ -48,19 +47,15 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
-use SP\Domain\Crypt\Ports\SecureSessionService;
-use SP\Domain\Crypt\Services\SecureSession;
 use SP\Domain\Http\Adapters\Address;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Providers\Uri;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
-use SP\Domain\ItemPreset\Services\ItemPreset;
+use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Domain\User\Services\UserProfile;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\Bootstrap\GetEnvironmentController;
 use SP\Modules\Web\Controllers\Error\DatabaseConnectionController;
 use SP\Modules\Web\Controllers\Error\DatabaseErrorController;
@@ -131,43 +126,29 @@ final class Init extends HttpModuleBase
     public const  ROUTE_UPGRADE                   = 'upgrade';
 
 
-    private Csrf         $csrf;
-    private Language      $language;
-    private SecureSession $secureSessionService;
-    private PluginManager $pluginManager;
-    private ItemPreset   $itemPresetService;
-    private DatabaseUtil $databaseUtil;
-    private UserProfile  $userProfileService;
-    private bool         $isIndex = false;
+    private bool $isIndex = false;
 
     public function __construct(
         Application                          $application,
         ProvidersHelper                      $providersHelper,
-        RequestService       $request,
+        RequestService                       $request,
         Klein                                $router,
-        CsrfHandler          $csrf,
-        LanguageInterface                    $language,
-        SecureSessionService $secureSessionService,
-        PluginManager                        $pluginManager,
-        ItemPreset           $itemPresetService,
-        DatabaseUtil                         $databaseUtil,
-        UserProfileService   $userProfileService,
-        private readonly UriContextInterface $uriContext
+        AppLock                              $appLock,
+        private readonly CsrfHandler         $csrf,
+        private readonly LanguageInterface   $language,
+        private readonly ItemPresetService   $itemPresetService,
+        private readonly DatabaseUtil        $databaseUtil,
+        private readonly UserProfileService  $userProfileService,
+        private readonly UriContextInterface $uriContext,
+
     ) {
         parent::__construct(
             $application,
             $providersHelper,
             $request,
-            $router
+            $router,
+            $appLock
         );
-
-        $this->csrf = $csrf;
-        $this->language = $language;
-        $this->secureSessionService = $secureSessionService;
-        $this->pluginManager = $pluginManager;
-        $this->itemPresetService = $itemPresetService;
-        $this->databaseUtil = $databaseUtil;
-        $this->userProfileService = $userProfileService;
     }
 
     /**
@@ -175,15 +156,13 @@ final class Init extends HttpModuleBase
      *
      * @param string $controller
      *
-     * @throws EnvironmentIsBrokenException
-     * @throws JsonException
      * @throws ConstraintException
      * @throws InitializationException
+     * @throws NoSuchItemException
      * @throws QueryException
      * @throws SPException
-     * @throws NoSuchItemException
-     * @throws FileException
-     * @throws Exception
+     * @throws ContextException
+     * @throws ConfigException
      */
     public function initialize(string $controller): void
     {
@@ -260,8 +239,7 @@ final class Init extends HttpModuleBase
                 $this->initUserSession();
             }
 
-            // Load plugins
-            $this->pluginManager->loadPlugins();
+            //TODO:Load plugins
 
             if ($this->context->isLoggedIn()
                 && $this->context->getAppStatus() === ContextBase::APP_STATUS_RELOADED
@@ -395,5 +373,10 @@ final class Init extends HttpModuleBase
         }
 
         return $default;
+    }
+
+    public function getName(): string
+    {
+        return 'web';
     }
 }

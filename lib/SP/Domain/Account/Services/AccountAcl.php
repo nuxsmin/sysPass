@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -26,6 +27,8 @@ declare(strict_types=1);
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Adapters\AccountPermission;
@@ -41,6 +44,7 @@ use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserToUserGroupService;
 use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileSystem;
 
 use function SP\processException;
 
@@ -49,11 +53,6 @@ use function SP\processException;
  */
 final class AccountAcl extends Service implements AccountAclService
 {
-    /**
-     * ACL's file base path
-     */
-    public const ACL_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'accountAcl' . DIRECTORY_SEPARATOR;
-
     private ?AccountAclDto     $accountAclDto = null;
     private ?AccountPermission $accountAcl    = null;
     private UserDataDto        $userData;
@@ -62,6 +61,7 @@ final class AccountAcl extends Service implements AccountAclService
         Application                             $application,
         private readonly AclInterface           $acl,
         private readonly UserToUserGroupService $userToUserGroupService,
+        private readonly PathsContext $pathsContext,
         private readonly ?FileCacheService      $fileCache = null
     ) {
         parent::__construct($application);
@@ -167,13 +167,14 @@ final class AccountAcl extends Service implements AccountAclService
     {
         $userId = $this->context->getUserData()->getId();
 
-        return self::ACL_PATH
-               . $userId
-               . DIRECTORY_SEPARATOR
-               . $accountId
-               . DIRECTORY_SEPARATOR
-               . md5($userId . $accountId . $actionId)
-               . '.cache';
+        return FileSystem::buildPath(
+            $this->pathsContext[Path::CACHE],
+            'accountAcl',
+            (string)$userId,
+            (string)$accountId,
+            md5($userId . $accountId . $actionId),
+            '.cache'
+        );
     }
 
     /**

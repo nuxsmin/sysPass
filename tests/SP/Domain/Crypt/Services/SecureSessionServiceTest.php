@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -30,6 +31,7 @@ use Defuse\Crypto\Key;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Core\Bootstrap\Path;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\UuidCookie;
@@ -152,7 +154,9 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $uuidCookie->method('create')
                    ->willReturn(uniqid('', true));
 
-        $this->assertNotEmpty(SecureSession::getFileNameFrom($uuidCookie, self::$faker->password));
+        $this->assertNotEmpty(
+            SecureSession::getFileNameFrom($uuidCookie, self::$faker->password, $this->pathsContext[Path::CACHE])
+        );
     }
 
     /**
@@ -168,7 +172,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Unable to get UUID for filename');
 
-        SecureSession::getFileNameFrom($uuidCookie, self::$faker->password);
+        SecureSession::getFileNameFrom($uuidCookie, self::$faker->password, $this->pathsContext[Path::CACHE]);
     }
 
     /**
@@ -184,7 +188,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Unable to get UUID for filename');
 
-        SecureSession::getFileNameFrom($uuidCookie, self::$faker->password);
+        SecureSession::getFileNameFrom($uuidCookie, self::$faker->password, $this->pathsContext[Path::CACHE]);
     }
 
     /**

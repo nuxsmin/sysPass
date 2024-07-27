@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -41,11 +42,11 @@ use function SP\processException;
  *
  * @package SP
  */
-final class Theme implements ThemeInterface
+final readonly class Theme implements ThemeInterface
 {
     public function __construct(
-        private readonly ThemeContextInterface $themeContext,
-        private readonly ThemeIconsInterface   $icons
+        private ThemeContextInterface $themeContext,
+        private ThemeIconsInterface   $icons
     ) {
     }
 

@@ -53,6 +53,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
     public function __construct(
         Application                        $application,
         private readonly DatabaseInterface $database,
+        private readonly string $sqlPath
     ) {
         parent::__construct($application);
     }
@@ -117,7 +118,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
      */
     private function getQueriesFromFile(string $version): iterable
     {
-        $filename = FileSystem::buildPath(SQL_PATH, str_replace('.', '', $version) . '.sql');
+        $filename = FileSystem::buildPath($this->sqlPath, str_replace('.', '', $version) . '.sql');
 
         try {
             return (new MysqlFileParser(new FileHandler($filename)))->parse('$$');

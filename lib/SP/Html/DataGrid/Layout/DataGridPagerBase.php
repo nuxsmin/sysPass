@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -166,7 +167,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      */
     public function getFirstPage(): int
     {
-        return ceil(($this->limitStart + 1) / $this->limitCount);
+        return $this->limitCount > 0 ? (int)ceil(($this->limitStart + 1) / $this->limitCount) : 1;
     }
 
     /**
@@ -174,7 +175,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
      */
     public function getLastPage(): int
     {
-        return ceil($this->totalRows / $this->limitCount);
+        return $this->limitCount > 0 ? (int)ceil($this->totalRows / $this->limitCount) : 1;
     }
 
     /**

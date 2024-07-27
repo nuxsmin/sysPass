@@ -109,49 +109,6 @@ class FileSystem
     }
 
     /**
-     * Comprueba y devuelve un directorio temporal válido
-     *
-     * @return false|string
-     */
-    public static function getTempDir(): false|string
-    {
-        $sysTmp = sys_get_temp_dir();
-
-        $checkDir = static function ($dir) {
-            $path = self::buildPath($dir, 'syspass.test');
-
-            if (file_exists($path)) {
-                return $dir;
-            }
-
-            if (is_dir($dir) || mkdir($dir) || is_dir($dir)) {
-                if (touch($path)) {
-                    return $dir;
-                }
-            }
-
-            return false;
-        };
-
-        if ($checkDir(TMP_PATH)) {
-            return TMP_PATH;
-        }
-
-        return $checkDir($sysTmp);
-    }
-
-    /**
-     * Return a well-formed path
-     *
-     * @param string ...$parts
-     * @return string
-     */
-    public static function buildPath(string ...$parts): string
-    {
-        return implode(DIRECTORY_SEPARATOR, $parts);
-    }
-
-    /**
      * Delete files using {@link glob()} patterns
      *
      * @param string $path
@@ -164,5 +121,16 @@ class FileSystem
             static fn(string $file) => @unlink($file),
             array_merge(...array_map(static fn(string $pattern) => glob(self::buildPath($path, $pattern)), $patterns))
         );
+    }
+
+    /**
+     * Return a well-formed path
+     *
+     * @param string ...$parts
+     * @return string
+     */
+    public static function buildPath(string ...$parts): string
+    {
+        return implode(DIRECTORY_SEPARATOR, $parts);
     }
 }

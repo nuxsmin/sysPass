@@ -91,11 +91,6 @@ abstract class Cookie
      */
     protected function setCookie(string $data): bool
     {
-        // Do not try to set cookies when testing
-        if (IS_TESTING) {
-            return true;
-        }
-
         if (headers_sent()) {
             logger('Headers already sent', 'ERROR');
 

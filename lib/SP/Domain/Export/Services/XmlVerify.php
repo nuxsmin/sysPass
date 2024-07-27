@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -55,7 +56,7 @@ final class XmlVerify extends Service implements XmlVerifyService
     public function __construct(
         Application                     $application,
         private readonly CryptInterface $crypt,
-        private readonly string         $schema = XML_SCHEMA
+        private readonly string $schema
     ) {
         parent::__construct($application);
 

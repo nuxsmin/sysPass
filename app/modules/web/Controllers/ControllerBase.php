@@ -25,10 +25,9 @@
 namespace SP\Modules\Web\Controllers;
 
 use Exception;
+use SebastianBergmann\RecursionContext\Context;
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Crypt\Hash;
-use SP\Core\Events\EventDispatcher;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -37,6 +36,7 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
@@ -61,23 +61,23 @@ abstract class ControllerBase
 
     protected const ERR_UNAVAILABLE = 0;
 
-    protected readonly EventDispatcher            $eventDispatcher;
+    protected readonly EventDispatcherInterface $eventDispatcher;
     protected readonly ConfigFileService          $config;
-    protected readonly SessionContext             $session;
+    protected readonly Context|SessionContext   $session;
     protected readonly ThemeInterface             $theme;
     protected readonly AclInterface               $acl;
     protected readonly ConfigDataInterface        $configData;
-    protected readonly RequestService   $request;
+    protected readonly RequestService           $request;
     protected readonly PhpExtensionCheckerService $extensionChecker;
     protected readonly TemplateInterface          $view;
     protected readonly LayoutHelper               $layoutHelper;
     protected readonly UriContextInterface        $uriContext;
-    protected readonly ?UserDataDto     $userData;
-    protected readonly ProfileData      $userProfileData;
-    protected readonly bool             $isAjax;
-    protected readonly string           $actionName;
-    protected readonly RouteContextData $routeContextData;
-    protected readonly string           $controllerName;
+    protected ?UserDataDto                      $userData        = null;
+    protected ?ProfileData                      $userProfileData = null;
+    protected readonly bool                     $isAjax;
+    protected readonly string                   $actionName;
+    protected readonly RouteContextData         $routeContextData;
+    protected readonly string                   $controllerName;
     private readonly BrowserAuthService           $browser;
 
     public function __construct(Application $application, WebControllerHelper $webControllerHelper)
@@ -99,7 +99,7 @@ abstract class ControllerBase
         $this->uriContext = $webControllerHelper->getUriContext();
 
         $this->isAjax = $this->request->isAjax();
-        $this->actionName = $this->session->getTrasientKey(BootstrapBase::CONTEXT_ACTION_NAME);
+        $this->actionName = $this->routeContextData->getActionName();
 
         $loggedIn = $this->session->isLoggedIn();
 

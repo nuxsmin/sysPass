@@ -115,7 +115,7 @@ class ActionsTest extends UnitaryTestCase
 
         $actionsMapped = array_map(
             static fn(array $a) => new Action($a['id'], $a['name'], $a['text'], $a['route']),
-            $actions
+            $actions['actions']
         );
 
         $this->fileCache
@@ -143,7 +143,7 @@ class ActionsTest extends UnitaryTestCase
             $actionsId
         );
 
-        return array_combine($actionsId, $actions);
+        return ['actions' => array_combine($actionsId, $actions)];
     }
 
     /**
@@ -159,7 +159,7 @@ class ActionsTest extends UnitaryTestCase
             ->with(Actions::CACHE_EXPIRE)
             ->willReturn(false);
 
-        $actions = $this->getActions();
+        $actions = $this->getActions()['actions'];
 
         $actionsMapped = array_map(
             static fn(array $a) => new Action($a['id'], $a['name'], $a['text'], $a['route']),
@@ -208,7 +208,7 @@ class ActionsTest extends UnitaryTestCase
      * @throws FileException
      * @throws Exception
      */
-    public function testResetWithXmlFileException()
+    public function testResetWithFileException()
     {
         $this->fileCache
             ->expects(self::once())
@@ -252,7 +252,7 @@ class ActionsTest extends UnitaryTestCase
 
         $actionsMapped = array_map(
             static fn(array $a) => new Action($a['id'], $a['name'], $a['text'], $a['route']),
-            $actions
+            $actions['actions']
         );
 
         $this->fileCache
@@ -272,7 +272,7 @@ class ActionsTest extends UnitaryTestCase
     {
         $actionsMapped = array_map(
             static fn(array $a) => new Action($a['id'], $a['name'], $a['text'], $a['route']),
-            $this->getActions()
+            $this->getActions()['actions']
         );
 
         $this->fileCache

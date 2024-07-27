@@ -38,6 +38,7 @@ use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileSystem;
 
 use function SP\logger;
 use function SP\processException;
@@ -48,7 +49,6 @@ use function SP\processException;
 final class SecureSession extends Service implements SecureSessionService
 {
     private const CACHE_EXPIRE_TIME = 86400;
-    private const CACHE_PATH = CACHE_PATH . DIRECTORY_SEPARATOR . 'secure_session';
 
     public function __construct(
         Application                       $application,
@@ -64,7 +64,7 @@ final class SecureSession extends Service implements SecureSessionService
      *
      * @throws ServiceException
      */
-    public static function getFileNameFrom(UuidCookieInterface $cookie, string $seed): string
+    public static function getFileNameFrom(UuidCookieInterface $cookie, string $seed, string $cachePath): string
     {
         if (($uuid = $cookie->load($seed)) === false
             && ($uuid = $cookie->create($seed)) === false
@@ -72,7 +72,7 @@ final class SecureSession extends Service implements SecureSessionService
             throw new ServiceException('Unable to get UUID for filename');
         }
 
-        return self::CACHE_PATH . DIRECTORY_SEPARATOR . $uuid;
+        return FileSystem::buildPath($cachePath, 'secure_session', $uuid);
     }
 
     /**

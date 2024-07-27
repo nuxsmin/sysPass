@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -46,7 +47,7 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
         $this->headers[] = $header;
 
         $numHeaders = count($this->headers);
-        $this->width = ($numHeaders > 0) ? floor(65 / $numHeaders) : 65;
+        $this->width = $numHeaders > 0 ? (int)floor(65 / $numHeaders) : 65;
     }
 
     public function getWidth(): int

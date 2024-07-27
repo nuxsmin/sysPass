@@ -31,6 +31,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Core\Bootstrap\Path;
 use SP\Core\Context\ContextException;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
@@ -127,9 +128,9 @@ class FileBackupServiceTest extends UnitaryTestCase
         $this->appArchiveHandler
             ->expects($this->once())
             ->method('compressDirectory')
-            ->with(APP_ROOT, BackupFile::BACKUP_INCLUDE_REGEX);
+            ->with(APP_PATH, BackupFile::BACKUP_INCLUDE_REGEX);
 
-        $this->fileBackupService->doBackup(TMP_PATH);
+        $this->fileBackupService->doBackup(TMP_PATH, APP_PATH);
     }
 
     private function buildCreateResult(string $type): QueryResult
@@ -172,7 +173,7 @@ class FileBackupServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionObject($exception);
 
-        $this->fileBackupService->doBackup();
+        $this->fileBackupService->doBackup($this->pathsContext[Path::TMP], $this->pathsContext[Path::APP]);
     }
 
     /**

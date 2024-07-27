@@ -28,6 +28,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 use SP\Core\Acl\Acl;
 use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Html\Html;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionInterface;
@@ -40,6 +41,7 @@ use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Infrastructure\Database\QueryResult;
 
 use function SP\__;
+use function SP\getElapsedTime;
 
 /**
  * Class NotificationGrid
@@ -103,7 +105,7 @@ final class NotificationGrid extends GridBase
     protected function getGridLayout(): DataGridInterface
     {
         // Grid
-        $dataGrid = new DataGrid($this->view->getTheme());
+        $dataGrid = new DataGrid($this->theme);
         $dataGrid->setId('tblNotifications');
         $dataGrid->setDataRowTemplate('datagrid-rows', 'grid');
         $dataGrid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -133,6 +135,7 @@ final class NotificationGrid extends GridBase
 
     /**
      * @return DataGridData
+     * @throws SPException
      */
     protected function getData(): DataGridData
     {

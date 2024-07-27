@@ -34,7 +34,6 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
-use SP\Core\Language;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Common\Providers\Environment;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -46,8 +45,9 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\InitializationException;
+use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\Ports\RequestService;
-use Symfony\Component\Debug\Debug;
+use Symfony\Component\ErrorHandler\Debug;
 use Throwable;
 
 use function SP\__;
@@ -74,10 +74,12 @@ abstract class BootstrapBase implements BootstrapInterface
         protected readonly Context          $context,
         private readonly ContainerInterface    $container,
         protected readonly Response            $response,
-        protected readonly RouteContextData $routeContextData
+        protected readonly RouteContextData $routeContextData,
+        LanguageInterface                   $language,
+        protected readonly PathsContext     $pathsContext
     ) {
         // Set the default language
-        Language::setLocales('en_US');
+        $language->setLocales('en_US');
 
         $this->initRouter();
         $this->configureRouter();
@@ -123,11 +125,11 @@ abstract class BootstrapBase implements BootstrapInterface
 
     abstract public static function run(BootstrapInterface $bootstrap, ModuleInterface $initModule): void;
 
-    final protected static function getClassFor(string $controllerName, string $actionName): string
+    final protected static function getClassFor(string $module, string $controllerName, string $actionName): string
     {
         return sprintf(
             'SP\Modules\%s\Controllers\%s\%sController',
-            ucfirst(APP_MODULE),
+            ucfirst($module),
             ucfirst($controllerName),
             ucfirst($actionName)
         );
@@ -203,7 +205,6 @@ abstract class BootstrapBase implements BootstrapInterface
     private function initPHPVars(): void
     {
         if (DEBUG) {
-            /** @noinspection ForgottenDebugOutputInspection */
             Debug::enable();
         } else {
             error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
@@ -213,11 +214,13 @@ abstract class BootstrapBase implements BootstrapInterface
             }
         }
 
-        if (!file_exists(LOG_FILE)
-            && touch(LOG_FILE)
-            && chmod(LOG_FILE, 0600)
+        $logFile = $this->pathsContext[Path::LOG_FILE];
+
+        if (!file_exists($logFile)
+            && touch($logFile)
+            && chmod($logFile, 0600)
         ) {
-            logger('Setup log file: ' . LOG_FILE);
+            logger('Setup log file: ' . $logFile);
         }
 
         if (date_default_timezone_get() === 'UTC') {

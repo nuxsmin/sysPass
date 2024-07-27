@@ -30,6 +30,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
+use SP\Core\Bootstrap\Path;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
@@ -116,6 +117,8 @@ class UpgradeDatabaseTest extends UnitaryTestCase
         parent::setUp();
 
         $this->database = $this->createMock(DatabaseInterface::class);
-        $this->upgradeDatabase = new UpgradeDatabase($this->application, $this->database);
+        $this->upgradeDatabase = new UpgradeDatabase(
+            $this->application, $this->database, $this->pathsContext[Path::SQL]
+        );
     }
 }

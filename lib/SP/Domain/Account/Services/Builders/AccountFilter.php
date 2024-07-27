@@ -37,15 +37,15 @@ use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
 
 /**
- * Class AccountFilterUser
+ * Class AccountFilter
  */
-final class AccountFilter implements AccountFilterBuilder
+final readonly class AccountFilter implements AccountFilterBuilder
 {
 
     public function __construct(
-        private readonly Context $context,
-        private readonly ConfigDataInterface $configData,
-        private readonly QueryFactory        $queryFactory
+        private Context             $context,
+        private ConfigDataInterface $configData,
+        private QueryFactory        $queryFactory
     ) {
     }
 

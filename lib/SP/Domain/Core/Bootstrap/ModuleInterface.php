@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -31,4 +32,6 @@ namespace SP\Domain\Core\Bootstrap;
 interface ModuleInterface
 {
     public function initialize(string $controller): void;
+
+    public function getName(): string;
 }

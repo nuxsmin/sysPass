@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Export\Services;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Core\Bootstrap\Path;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Adapters\ConfigData;
@@ -248,6 +249,6 @@ class XmlVerifyTest extends UnitaryTestCase
 
         $this->crypt = $this->createMock(CryptInterface::class);
 
-        $this->xmlVerify = new XmlVerify($this->application, $this->crypt);
+        $this->xmlVerify = new XmlVerify($this->application, $this->crypt, $this->pathsContext[Path::XML_SCHEMA]);
     }
 }

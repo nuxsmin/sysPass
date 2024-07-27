@@ -22,6 +22,8 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\Session;
 use SP\Core\Crypt\Csrf;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -31,19 +33,24 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CsrfHandler;
 use SP\Domain\Html\Services\MinifyCss;
 use SP\Domain\Html\Services\MinifyJs;
+use SP\Infrastructure\File\FileCache;
+use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
+use SP\Modules\Web\Controllers\Helpers\Account\AccountSearchData;
 use SP\Modules\Web\Controllers\Resource\CssController;
 use SP\Modules\Web\Controllers\Resource\JsController;
 use SP\Modules\Web\Init;
 
+use function DI\add;
 use function DI\autowire;
 use function DI\factory;
-
-const MODULE_PATH = __DIR__;
-const VIEW_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'themes';
-const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
+use function DI\get;
 
 return [
+    'paths' => add([
+                       [Path::VIEW, FileSystem::buildPath(__DIR__, 'themes')],
+                       [Path::PLUGINS, FileSystem::buildPath(__DIR__, 'plugins')],
+                   ]),
     BootstrapInterface::class => autowire(Bootstrap::class),
     ModuleInterface::class => autowire(Init::class),
     CssController::class => autowire(
@@ -53,13 +60,19 @@ return [
         JsController::class
     )->constructorParameter('minify', autowire(MinifyJs::class)),
     Context::class => factory(
-        static function (ConfigDataInterface $configData, SessionHandlerInterface $sessionHandler) {
-            if ($configData->isEncryptSession()) {
-                return new Session($sessionHandler);
-            }
-
-            return new Session();
+        static function (ConfigDataInterface $configData, SessionHandlerInterface $sessionHandler = null) {
+            return new Session($sessionHandler);
         }
     ),
-    CsrfHandler::class => autowire(Csrf::class),
+    CsrfHandler::class => autowire(Csrf::class)
+        ->constructorParameter('context', get(Context::class)),
+    AccountSearchData::class => autowire(AccountSearchData::class)
+        ->constructorParameter(
+            'fileCache',
+            factory(static function (PathsContext $pathsContext) {
+                return new FileCache(
+                    FileSystem::buildPath($pathsContext[Path::CACHE], 'colors.cache')
+                );
+            })
+        )
 ];

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -78,9 +79,10 @@ final class Language implements LanguageInterface
     ];
 
     public function __construct(
-        private readonly Context $context,
+        private readonly Context        $context,
         private readonly ConfigDataInterface $configData,
-        private readonly RequestService $request
+        private readonly RequestService $request,
+        private readonly string         $localesPath
     ) {
         ksort(self::$langs);
     }
@@ -111,7 +113,7 @@ final class Language implements LanguageInterface
             $this->context->setLocale($lang);
         }
 
-        self::setLocales($lang);
+        $this->setLocales($lang);
     }
 
     /**
@@ -150,7 +152,7 @@ final class Language implements LanguageInterface
     /**
      * Establecer las locales de gettext
      */
-    public static function setLocales(string $lang): void
+    public function setLocales(string $lang): void
     {
         $lang .= '.utf8';
 
@@ -163,12 +165,12 @@ final class Language implements LanguageInterface
 
         if ($locale === false) {
             logger('Could not set locale to ' . $lang, 'ERROR');
-            logger('Domain path: ' . LOCALES_PATH);
+            logger('Domain path: ' . $this->localesPath);
         } else {
             logger('Locale set to: ' . $locale);
         }
 
-        bindtextdomain('messages', LOCALES_PATH);
+        bindtextdomain('messages', $this->localesPath);
         textdomain('messages');
         bind_textdomain_codeset('messages', 'UTF-8');
     }
@@ -183,7 +185,7 @@ final class Language implements LanguageInterface
         }
 
         if ($this->configData->getSiteLang() !== $this->context->getLocale()) {
-            self::setLocales($this->configData->getSiteLang());
+            $this->setLocales($this->configData->getSiteLang());
 
             self::$appSet = true;
         }
@@ -195,7 +197,7 @@ final class Language implements LanguageInterface
     public function unsetAppLocales(): void
     {
         if (self::$appSet === true) {
-            self::setLocales($this->context->getLocale());
+            $this->setLocales($this->context->getLocale());
 
             self::$appSet = false;
         }

@@ -78,7 +78,7 @@ final class Bootstrap extends BootstrapBase
 
                 $apiRequest = $this->buildInstanceFor(ApiRequestService::class);
                 [$controllerName, $actionName] = explode('/', $apiRequest->getMethod());
-                $controllerClass = self::getClassFor($controllerName, $actionName);
+                $controllerClass = self::getClassFor($this->module->getName(), $controllerName, $actionName);
                 $method = $actionName . 'Action';
 
                 if (!method_exists($controllerClass, $method)) {

@@ -36,13 +36,6 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
  */
 final readonly class Application
 {
-    /**
-     * Module constructor.
-     *
-     * @param ConfigFileService $config
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param Context $context
-     */
     public function __construct(
         private ConfigFileService        $config,
         private EventDispatcherInterface $eventDispatcher,

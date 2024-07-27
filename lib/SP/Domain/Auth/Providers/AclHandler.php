@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -27,8 +28,9 @@ namespace SP\Domain\Auth\Providers;
 
 use Exception;
 use SP\Core\Application;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Events\Event;
-use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;
 use SP\Domain\Core\Events\EventReceiver;
@@ -62,7 +64,8 @@ final class AclHandler extends Provider implements EventReceiver
     public function __construct(
         Application                         $application,
         private readonly UserProfileService $userProfileService,
-        private readonly UserGroupService   $userGroupService
+        private readonly UserGroupService $userGroupService,
+        private readonly PathsContext     $pathsContext
     ) {
         parent::__construct($application);
 
@@ -141,8 +144,10 @@ final class AclHandler extends Provider implements EventReceiver
         logger(sprintf('Clearing ACL for user ID: %d', $userId));
 
         try {
-            if (FileSystem::rmdirRecursive(AccountAcl::ACL_PATH . $userId) === false) {
-                logger(sprintf('Unable to delete %s directory', AccountAcl::ACL_PATH . $userId));
+            $path = FileSystem::buildPath($this->pathsContext[Path::CACHE], 'accountAcl', (string)$userId);
+
+            if (FileSystem::rmdirRecursive($path) === false) {
+                logger(sprintf('Unable to delete %s directory', $path));
 
                 return false;
             }

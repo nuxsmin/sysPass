@@ -32,11 +32,14 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler as MSyslogHandler;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Logger;
+use phpseclib\Crypt\RSA;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use SessionHandlerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Bootstrap\RouteContext;
 use SP\Core\Bootstrap\UriContext;
 use SP\Core\Context\Stateless;
@@ -114,6 +117,7 @@ use SP\Domain\Notification\Services\MailEvent;
 use SP\Domain\Notification\Services\NotificationEvent;
 use SP\Domain\Notification\Services\PhpMailerService;
 use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlFileParser;
@@ -135,15 +139,23 @@ use function DI\autowire;
 use function DI\create;
 use function DI\factory;
 use function DI\get;
+use function SP\getFromEnv;
 
 /**
  * Class CoreDefinitions
  */
 final class CoreDefinitions
 {
-    public static function getDefinitions(): array
+    public static function getDefinitions(string $rootPath, string $module): array
     {
         return [
+            'paths' => self::getPaths($rootPath),
+            PathsContext::class => factory(static function (ContainerInterface $container) {
+                $pathsContext = new PathsContext();
+                $pathsContext->addPaths($container->get('paths'));
+
+                return $pathsContext;
+            }),
             KleinRequest::class => factory([KleinRequest::class, 'createFromGlobals']),
             RequestService::class => autowire(Request::class),
             UriContextInterface::class => autowire(UriContext::class),
@@ -152,8 +164,18 @@ final class CoreDefinitions
             ConfigFileService::class => create(ConfigFile::class)
                 ->constructor(
                     create(XmlFileStorage::class)
-                        ->constructor(create(FileHandler::class)->constructor(CONFIG_FILE)),
-                    create(FileCache::class)->constructor(ConfigFile::CONFIG_CACHE_FILE),
+                        ->constructor(
+                            create(FileHandler::class)
+                                ->constructor(
+                                    factory(static fn(PathsContext $p) => $p[Path::CONFIG_FILE])
+                                )
+                        ),
+                    create(FileCache::class)
+                        ->constructor(
+                            factory(
+                                static fn(PathsContext $p) => FileSystem::buildPath($p[Path::CACHE], 'config.cache')
+                            )
+                        ),
                     get(Context::class)
                 ),
             ConfigDataInterface::class => factory([ConfigFileService::class, 'getConfigData']),
@@ -171,32 +193,42 @@ final class CoreDefinitions
             DatabaseFileInterface::class => create(MysqlFileParser::class)
                 ->constructor(
                     create(FileHandler::class)
-                        ->constructor(FileSystem::buildPath(SQL_PATH, 'dbstructure.sql'))
+                        ->constructor(factory(static fn(PathsContext $pathsContext) => $pathsContext[Path::SQL_FILE]))
                 ),
             DbStorageHandler::class => autowire(MysqlHandler::class),
             DatabaseSetupService::class => autowire(MysqlSetup::class),
             ActionsInterface::class =>
-                static fn() => new Actions(
-                    new FileCache(Actions::ACTIONS_CACHE_FILE),
-                    new YamlFileStorage(new FileHandler(ACTIONS_FILE))
+                static fn(PathsContext $pathsContext) => new Actions(
+                    new FileCache(FileSystem::buildPath($pathsContext[Path::CACHE], 'actions.cache')),
+                    new YamlFileStorage(new FileHandler($pathsContext[Path::ACTIONS_FILE]))
                 ),
             MimeTypesService::class =>
-                static fn() => new MimeTypes(
-                    new FileCache(MimeTypes::MIME_CACHE_FILE),
-                    new XmlFileStorage(new FileHandler(MIMETYPES_FILE))
+                static fn(PathsContext $pathsContext) => new MimeTypes(
+                    new FileCache(FileSystem::buildPath($pathsContext[Path::CACHE], 'mime.cache')),
+                    new YamlFileStorage(new FileHandler($pathsContext[Path::MIMETYPES_FILE]))
                 ),
             AclInterface::class => autowire(Acl::class)
                 ->constructorParameter('actions', get(ActionsInterface::class)),
             ThemeContextInterface::class => autowire(ThemeContext::class)
-                ->constructorParameter('basePath', VIEW_PATH)
+                ->constructorParameter(
+                    'basePath',
+                    factory(static fn(PathsContext $p) => $p[Path::VIEW])
+                )
                 ->constructorParameter('baseUri', factory([UriContextInterface::class, 'getWebRoot']))
-                ->constructorParameter('module', APP_MODULE)
+                ->constructorParameter('module', $module)
                 ->constructorParameter('name', factory([Theme::class, 'getThemeName'])),
             ThemeIconsInterface::class => factory([ThemeIcons::class, 'loadIcons'])
                 ->parameter(
                     'cache',
                     create(FileCache::class)
-                        ->constructor(FileSystem::buildPath(CACHE_PATH, ThemeIcons::ICONS_CACHE_FILE))
+                        ->constructor(
+                            factory(
+                                static fn(PathsContext $p) => FileSystem::buildPath(
+                                    $p[Path::CACHE],
+                                    ThemeIcons::ICONS_CACHE_FILE
+                                )
+                            )
+                        )
                 ),
             ThemeInterface::class => autowire(Theme::class),
             TemplateInterface::class => autowire(Template::class)
@@ -229,9 +261,9 @@ final class CoreDefinitions
                     return $authProvider;
                 }
             ),
-            LoggerInterface::class => factory(function (ConfigDataInterface $configData) {
+            LoggerInterface::class => factory(function (ConfigDataInterface $configData, PathsContext $pathsContext) {
                 $handlers = [];
-                $handlers[] = new StreamHandler(LOG_FILE);
+                $handlers[] = new StreamHandler($pathsContext[Path::LOG_FILE]);
 
                 if ($configData->isInstalled()) {
                     if ($configData->isSyslogRemoteEnabled()
@@ -257,7 +289,12 @@ final class CoreDefinitions
             }),
             \GuzzleHttp\Client::class => create(\GuzzleHttp\Client::class)
                 ->constructor(factory([Client::class, 'getOptions'])),
-            LanguageInterface::class => autowire(Language::class),
+            LanguageInterface::class => autowire(Language::class)->constructorParameter(
+                'localesPath',
+                factory(
+                    static fn(PathsContext $p) => $p[Path::LOCALES]
+                )
+            ),
             DatabaseInterface::class => autowire(Database::class),
             PhpMailerService::class => autowire(PhpMailerService::class),
             MailerInterface::class => factory([PhpMailerService::class, 'configure'])
@@ -283,22 +320,30 @@ final class CoreDefinitions
             QueryFactory::class => create(QueryFactory::class)
                 ->constructor('mysql', QueryFactory::COMMON),
             CryptInterface::class => create(Crypt::class),
-            CryptPKIHandler::class => autowire(CryptPKI::class)
-                ->constructorParameter(
-                    'publicKeyFile',
-                    create(FileHandler::class)->constructor(CryptPKI::PUBLIC_KEY_FILE, 'w')
-                )
-                ->constructorParameter(
-                    'privateKeyFile',
-                    create(FileHandler::class)->constructor(CryptPKI::PRIVATE_KEY_FILE, 'w')
-                ),
+            CryptPKIHandler::class => factory(static function (PathsContext $pathsContext) {
+                $publicKeyPath = FileSystem::buildPath(
+                    $pathsContext[Path::CONFIG],
+                    CryptPKI::PUBLIC_KEY_FILE
+                );
+
+                $privateKeyPath = FileSystem::buildPath(
+                    $pathsContext[Path::CONFIG],
+                    CryptPKI::PRIVATE_KEY_FILE
+                );
+
+                return new CryptPKI(
+                    new RSA(),
+                    new FileHandler($publicKeyPath, 'w'),
+                    new FileHandler($privateKeyPath, 'w')
+                );
+            }),
             FileCacheService::class => create(FileCache::class),
             RequestBasedPasswordInterface::class => autowire(RequestBasedPassword::class),
             PhpExtensionCheckerService::class => create(PhpExtensionChecker::class),
-            BackupFiles::class => factory(static function () {
+            BackupFiles::class => factory(static function (PathsContext $pathsContext) {
                 $hash = BackupFiles::buildHash();
-                $appBackupFile = new BackupFileDto(BackupType::app, $hash, BACKUP_PATH, 'tar');
-                $dbBackupFile = new BackupFileDto(BackupType::db, $hash, BACKUP_PATH, 'sql');
+                $appBackupFile = new BackupFileDto(BackupType::app, $hash, $pathsContext[Path::BACKUP], 'tar');
+                $dbBackupFile = new BackupFileDto(BackupType::db, $hash, $pathsContext[Path::BACKUP], 'sql');
 
                 return new BackupFiles($appBackupFile, $dbBackupFile);
             }),
@@ -321,7 +366,15 @@ final class CoreDefinitions
                 ->constructorParameter(
                     'dbBackupFile',
                     create(FileHandler::class)
-                        ->constructor(FileSystem::buildPath(BACKUP_PATH, 'database.sql'), 'wb+')
+                        ->constructor(
+                            factory(
+                                static fn(PathsContext $pathsContext) => FileSystem::buildPath(
+                                    $pathsContext[Path::BACKUP],
+                                    'database.sql'
+                                )
+                            ),
+                            'wb+'
+                        )
                 )
                 ->constructorParameter('dbArchiveHandler', get('backup.dbArchiveHandler'))
                 ->constructorParameter('appArchiveHandler', get('backup.appArchiveHandler')),
@@ -332,17 +385,78 @@ final class CoreDefinitions
                 ->constructorParameter(
                     'fileCache',
                     factory(
-                        static function (UuidCookieInterface $uuidCookie, ConfigDataInterface $configData) {
+                        static function (
+                            UuidCookieInterface $uuidCookie,
+                            ConfigDataInterface $configData,
+                            PathsContext        $pathsContext
+                        ) {
                             return new FileCache(
-                                SecureSession::getFileNameFrom($uuidCookie, $configData->getPasswordSalt())
+                                SecureSession::getFileNameFrom(
+                                    $uuidCookie,
+                                    $configData->getPasswordSalt(),
+                                    $pathsContext[Path::CACHE]
+                                )
                             );
                         }
                     )->parameter('uuidCookie', factory([UuidCookie::class, 'factory']))
                 ),
-            SessionHandlerInterface::class => autowire(CryptSessionHandler::class)
+            CryptSessionHandler::class => autowire(CryptSessionHandler::class)
                 ->constructorParameter('key', factory([SecureSessionService::class, 'getKey'])),
+            SessionHandlerInterface::class => factory(
+                function (ContainerInterface $c, ConfigDataInterface $configData) {
+                    if ($configData->isEncryptSession()) {
+                        return $c->get(CryptSessionHandler::class);
+                    }
+
+                    return null;
+                }
+            ),
             OutputHandlerInterface::class => create(OutputHandler::class),
-            TemplateResolverInterface::class => autowire(TemplateResolver::class)
+            TemplateResolverInterface::class => autowire(TemplateResolver::class),
+            UpgradeDatabase::class => autowire(UpgradeDatabase::class)->constructorParameter(
+                'sqlPath',
+                factory(static fn(PathsContext $p) => $p[Path::SQL])
+            )
+        ];
+    }
+
+    private static function getPaths(string $rootPath): array
+    {
+        $appPath = FileSystem::buildPath($rootPath, 'app');
+        $sqlPath = FileSystem::buildPath($rootPath, 'schemas');
+        $resourcesPath = FileSystem::buildPath($appPath, 'resources');
+        $configPath = getFromEnv('CONFIG_PATH', FileSystem::buildPath($appPath, 'config'));
+        $logFile = getFromEnv('LOG_FILE', FileSystem::buildPath($configPath, 'syspass.log'));
+
+        return [
+            [Path::APP, $appPath],
+            [Path::SQL, $sqlPath],
+            [Path::PUBLIC, FileSystem::buildPath($rootPath, 'public')],
+            [Path::XML_SCHEMA, FileSystem::buildPath($sqlPath, 'syspass.xsd')],
+            [Path::RESOURCES, $resourcesPath],
+            [Path::MODULES, FileSystem::buildPath($appPath, 'modules')],
+            [Path::LOCALES, FileSystem::buildPath($appPath, 'locales')],
+            [Path::BACKUP, FileSystem::buildPath($appPath, 'backup')],
+            [Path::CACHE, FileSystem::buildPath($appPath, 'cache')],
+            [Path::TMP, FileSystem::buildPath($appPath, 'temp')],
+            [Path::CONFIG, $configPath],
+            [Path::SQL_FILE, FileSystem::buildPath($sqlPath, 'dbstructure.sql')],
+            [Path::LOG_FILE, $logFile],
+            [
+                Path::CONFIG_FILE,
+                getFromEnv('CONFIG_FILE', FileSystem::buildPath($configPath, 'config.xml'))
+            ],
+            [
+                Path::ACTIONS_FILE,
+                getFromEnv('ACTIONS_FILE', FileSystem::buildPath($resourcesPath, 'actions.yaml'))
+            ],
+            [
+                Path::MIMETYPES_FILE,
+                getFromEnv(
+                    'MIMETYPES_FILE',
+                    FileSystem::buildPath($resourcesPath, 'mimetypes.yaml')
+                )
+            ],
         ];
     }
 }

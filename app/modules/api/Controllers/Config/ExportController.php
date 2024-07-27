@@ -28,6 +28,8 @@ namespace SP\Modules\Api\Controllers\Config;
 use Exception;
 use Klein\Klein;
 use SP\Core\Application;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -40,26 +42,27 @@ use SP\Infrastructure\File\DirectoryHandler;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
 
+use function SP\__u;
+use function SP\processException;
+
 /**
  * Class ExportController
  */
 final class ExportController extends ControllerBase
 {
-    private XmlExportService $xmlExportService;
 
     /**
      * @throws InvalidClassException
      */
     public function __construct(
-        Application      $application,
-        Klein            $router,
-        ApiService       $apiService,
-        AclInterface     $acl,
-        XmlExportService $xmlExportService
+        Application                       $application,
+        Klein                             $router,
+        ApiService                        $apiService,
+        AclInterface                      $acl,
+        private readonly XmlExportService $xmlExportService,
+        private readonly PathsContext     $pathsContext
     ) {
         parent::__construct($application, $router, $apiService, $acl);
-
-        $this->xmlExportService = $xmlExportService;
 
         $this->apiService->setHelpClass(ConfigHelp::class);
     }
@@ -73,7 +76,7 @@ final class ExportController extends ControllerBase
             $this->setupApi(AclActionsInterface::CONFIG_EXPORT_RUN);
 
             $password = $this->apiService->getParamString('password');
-            $path = $this->apiService->getParamString('path', false, BACKUP_PATH);
+            $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
 
             $this->eventDispatcher->notify(
                 'run.export.start',

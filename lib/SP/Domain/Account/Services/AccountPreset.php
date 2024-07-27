@@ -40,7 +40,7 @@ use SP\Domain\ItemPreset\Models\AccountPermission;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Mvc\Controller\Validators\ValidatorInterface;
+use SP\Mvc\Controller\Validators\PasswordValidator;
 
 /**
  * Class AccountPreset
@@ -53,7 +53,7 @@ final class AccountPreset extends Service implements AccountPresetService
         private readonly AccountToUserGroupRepository $accountToUserGroupRepository,
         private readonly AccountToUserRepository      $accountToUserRepository,
         private readonly ConfigDataInterface          $configData,
-        private readonly ValidatorInterface           $validator
+        private readonly PasswordValidator $passwordValidator
     ) {
         parent::__construct($application);
     }
@@ -72,7 +72,7 @@ final class AccountPreset extends Service implements AccountPresetService
         if ($itemPreset !== null && $itemPreset->getFixed() === 1) {
             $passwordPreset = $itemPreset->hydrate(Password::class);
 
-            $this->validator->validate($passwordPreset, $accountDto->getPass());
+            $this->passwordValidator->validate($passwordPreset, $accountDto->getPass());
 
             if ($this->configData->isAccountExpireEnabled()) {
                 $expireTimePreset = $passwordPreset->getExpireTime();

@@ -27,6 +27,8 @@ namespace SP\Modules\Api\Controllers\Config;
 use Exception;
 use Klein\Klein;
 use SP\Core\Application;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -38,6 +40,10 @@ use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Ports\BackupFileService;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
+
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class BackupController
@@ -55,7 +61,8 @@ final class BackupController extends ControllerBase
         ApiService                         $apiService,
         AclInterface                       $acl,
         private readonly BackupFileService $fileBackupService,
-        private readonly BackupFiles       $backupFiles
+        private readonly BackupFiles  $backupFiles,
+        private readonly PathsContext $pathsContext
     ) {
         parent::__construct($application, $router, $apiService, $acl);
 
@@ -70,7 +77,7 @@ final class BackupController extends ControllerBase
         try {
             $this->setupApi(AclActionsInterface::CONFIG_BACKUP_RUN);
 
-            $path = $this->apiService->getParamString('path', false, BACKUP_PATH);
+            $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
 
             $this->fileBackupService->doBackup($path);
 

@@ -25,6 +25,8 @@
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Modules\Cli\Init;
 use Symfony\Component\Console\Application;
@@ -40,7 +42,9 @@ const MODULE_PATH = __DIR__;
 const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
 
 return [
-    LoggerInterface::class => static fn(Logger $logger) => $logger->pushHandler(new StreamHandler(LOG_FILE)),
+    LoggerInterface::class => static fn(Logger $logger, PathsContext $pathsContext) => $logger->pushHandler(
+        new StreamHandler($pathsContext[Path::LOG_FILE])
+    ),
     Application::class => create(Application::class),
     OutputInterface::class => create(ConsoleOutput::class)
         ->constructor(OutputInterface::VERBOSITY_NORMAL, true),

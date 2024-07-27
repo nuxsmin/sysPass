@@ -123,4 +123,9 @@ final class Init extends HttpModuleBase
             throw new InitializationException('Not installed');
         }
     }
+
+    public function getName(): string
+    {
+        return 'api';
+    }
 }

@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -35,6 +36,9 @@ use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Infrastructure\Database\QueryResult;
+
+use function SP\__;
+use function SP\getElapsedTime;
 
 /**
  * Class EventlogGrid
@@ -49,6 +53,7 @@ final class EventlogGrid extends GridBase
      * @param QueryResult $queryResult
      *
      * @return DataGridInterface
+     * @throws SPException
      */
     public function getGrid(QueryResult $queryResult): DataGridInterface
     {
@@ -70,12 +75,12 @@ final class EventlogGrid extends GridBase
     }
 
     /**
-     * @return DataGridInterface
+     * @throws SPException
      */
     protected function getGridLayout(): DataGridInterface
     {
         // Grid
-        $gridTab = new DataGridTab($this->view->getTheme());
+        $gridTab = new DataGridTab($this->theme);
         $gridTab->setId('tblEventLog');
         $gridTab->setDataRowTemplate('datagrid-rows', 'grid');
         $gridTab->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -86,9 +91,6 @@ final class EventlogGrid extends GridBase
         return $gridTab;
     }
 
-    /**
-     * @return DataGridHeader
-     */
     protected function getHeader(): DataGridHeader
     {
         // Grid Header
@@ -105,7 +107,7 @@ final class EventlogGrid extends GridBase
     }
 
     /**
-     * @return DataGridData
+     * @throws SPException
      */
     protected function getData(): DataGridData
     {
@@ -162,9 +164,6 @@ final class EventlogGrid extends GridBase
         return $gridData;
     }
 
-    /**
-     * @return DataGridActionSearch
-     */
     private function getSearchAction(): DataGridActionSearch
     {
         // Grid Actions
@@ -182,9 +181,6 @@ final class EventlogGrid extends GridBase
         return $gridActionSearch;
     }
 
-    /**
-     * @return DataGridAction
-     */
     private function getRefrestAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
@@ -204,9 +200,6 @@ final class EventlogGrid extends GridBase
         return $gridAction;
     }
 
-    /**
-     * @return DataGridAction
-     */
     private function getClearAction(): DataGridAction
     {
         $gridAction = new DataGridAction();

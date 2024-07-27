@@ -43,10 +43,6 @@ use function SP\processException;
 final class MimeTypes implements MimeTypesService
 {
     /**
-     * Cache file name
-     */
-    public const MIME_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'mime.cache';
-    /**
      * Cache expire time
      */
     public const CACHE_EXPIRE = 86400;

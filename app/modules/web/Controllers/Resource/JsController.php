@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Resource;
 
+use SP\Core\Bootstrap\Path;
 use SP\Domain\Http\Services\Request as HttpRequest;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileSystem;
@@ -34,7 +35,7 @@ use SP\Infrastructure\File\FileSystem;
 final class JsController extends ResourceBase
 {
 
-    private const JS_MIN_FILES     = [
+    private const JS_MIN_FILES = [
         'jquery-3.3.1.min.js',
         'jquery.fileDownload.min.js',
         'clipboard.min.js',
@@ -80,7 +81,10 @@ final class JsController extends ResourceBase
                 $this->minify
                     ->builder()
                     ->addFiles(
-                        $this->buildFiles(FileSystem::buildPath(PUBLIC_PATH, 'vendor', 'js'), self::JS_MIN_FILES),
+                        $this->buildFiles(
+                            FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'vendor', 'js'),
+                            self::JS_MIN_FILES
+                        ),
                         false
                     )
                     ->getMinified();
@@ -88,7 +92,10 @@ final class JsController extends ResourceBase
                 $this->minify
                     ->builder()
                     ->addFiles(
-                        $this->buildFiles(FileSystem::buildPath(PUBLIC_PATH, 'js'), self::JS_APP_MIN_FILES),
+                        $this->buildFiles(
+                            FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'js'),
+                            self::JS_APP_MIN_FILES
+                        ),
                         false
                     )
                     ->getMinified();

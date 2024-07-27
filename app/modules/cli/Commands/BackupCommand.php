@@ -27,14 +27,18 @@ namespace SP\Modules\Cli\Commands;
 use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Export\Ports\BackupFileService;
-use SP\Domain\Export\Services\BackupFile;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\StyleInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class BackupCommand
@@ -52,17 +56,14 @@ final class BackupCommand extends CommandBase
     /**
      * @var string
      */
-    protected static   $defaultName = 'sp:backup';
-    private BackupFile $fileBackupService;
+    protected static $defaultName = 'sp:backup';
 
     public function __construct(
-        BackupFileService $fileBackupService,
-        LoggerInterface   $logger,
-        ConfigFileService $config
-    )
-    {
-        $this->fileBackupService = $fileBackupService;
-
+        private readonly BackupFileService $fileBackupService,
+        LoggerInterface                    $logger,
+        ConfigFileService                  $config,
+        private readonly PathsContext      $pathsContext
+    ) {
         parent::__construct($logger, $config);
     }
 
@@ -70,18 +71,19 @@ final class BackupCommand extends CommandBase
     {
         $this->setDescription(__('Backup actions'))
             ->setHelp(__('This command performs a file based backup from sysPass database and application'))
-            ->addOption('path',
+            ->addOption(
+                'path',
                 null,
                 InputOption::VALUE_OPTIONAL,
                 __('Path where to store the backup files'),
-                BACKUP_PATH);
+                $this->pathsContext[Path::BACKUP]
+            );
     }
 
     protected function execute(
-        InputInterface  $input,
+        InputInterface $input,
         OutputInterface $output
-    ): int
-    {
+    ): int {
         $style = new SymfonyStyle($input, $output);
 
         try {
@@ -91,7 +93,7 @@ final class BackupCommand extends CommandBase
 
             $this->logger->info(sprintf(__u('Backup path set to: %s'), $path));
 
-            $this->fileBackupService->doBackup($path);
+            $this->fileBackupService->doBackup($path, $this->pathsContext[Path::APP]);
 
             $this->logger->info(__u('Application and database backup completed successfully'));
 
@@ -111,7 +113,8 @@ final class BackupCommand extends CommandBase
     private function checkInstalled(): void
     {
         if (!defined('TEST_ROOT')
-            && !$this->configData->isInstalled()) {
+            && !$this->configData->isInstalled()
+        ) {
             throw new RuntimeException(__u('sysPass is not installed'));
         }
     }
@@ -126,7 +129,10 @@ final class BackupCommand extends CommandBase
         if (empty($path)) {
             $this->logger->debug(__u('Ask for path'));
 
-            return $style->ask(__('Please enter the path where to store the backup files'), BACKUP_PATH);
+            return $style->ask(
+                __('Please enter the path where to store the backup files'),
+                $this->pathsContext[Path::BACKUP]
+            );
         }
 
         return $path;

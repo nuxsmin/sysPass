@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -29,7 +30,7 @@ use Dotenv\Repository\RepositoryInterface;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Account\Ports\AccountCryptService;
+use SP\Domain\Account\Ports\AccountMasterPasswordService;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
@@ -49,11 +50,11 @@ use SP\Tests\UnitaryTestCase;
 class MasterPassTest extends UnitaryTestCase
 {
 
-    private ConfigService|MockObject $configService;
-    private AccountCryptService|MockObject     $accountCryptService;
-    private CustomFieldCryptService|MockObject $customFieldCryptService;
-    private MockObject|RepositoryInterface     $repository;
-    private MasterPass               $masterPass;
+    private ConfigService|MockObject                $configService;
+    private AccountMasterPasswordService|MockObject $accountMasterPasswordService;
+    private CustomFieldCryptService|MockObject      $customFieldCryptService;
+    private MockObject|RepositoryInterface          $repository;
+    private MasterPass                              $masterPass;
 
     public function testCheckUserUpdateMPassWithFutureTime()
     {
@@ -170,11 +171,11 @@ class MasterPassTest extends UnitaryTestCase
 
         $request = new UpdateMasterPassRequest('123', '456', $hash);
 
-        $this->accountCryptService
+        $this->accountMasterPasswordService
             ->expects(self::once())
             ->method('updateMasterPassword')
             ->with($request);
-        $this->accountCryptService
+        $this->accountMasterPasswordService
             ->expects(self::once())
             ->method('updateHistoryMasterPassword')
             ->with($request);
@@ -218,14 +219,14 @@ class MasterPassTest extends UnitaryTestCase
         parent::setUp();
 
         $this->configService = $this->createMock(ConfigService::class);
-        $this->accountCryptService = $this->createMock(AccountCryptService::class);
+        $this->accountMasterPasswordService = $this->createMock(AccountMasterPasswordService::class);
         $this->customFieldCryptService = $this->createMock(CustomFieldCryptService::class);
         $this->repository = $this->createMock(Repository::class);
 
         $this->masterPass = new MasterPass(
             $this->application,
             $this->configService,
-            $this->accountCryptService,
+            $this->accountMasterPasswordService,
             $this->customFieldCryptService,
             $this->repository
         );

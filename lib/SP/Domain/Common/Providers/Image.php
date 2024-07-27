@@ -42,11 +42,13 @@ use function SP\processException;
 final class Image implements ImageService
 {
     private const IMAGE_WIDTH = 48;
-    private const IMAGE_FONT  = PUBLIC_PATH . '/vendor/fonts/NotoSans-Regular-webfont.ttf';
     private const TMP_PREFFIX = 'syspass';
 
-    public function __construct(PhpExtensionCheckerService $checker, private readonly string $font = self::IMAGE_FONT)
-    {
+    public function __construct(
+        PhpExtensionCheckerService $checker,
+        private readonly string    $font,
+        private readonly string    $tempPath
+    ) {
         $checker->checkCurl(true);
     }
 
@@ -82,7 +84,7 @@ final class Image implements ImageService
      */
     private function createPngImage(GdImage $gdImage): string
     {
-        if (($tmpFile = tempnam(TMP_PATH, self::TMP_PREFFIX)) !== false
+        if (($tmpFile = tempnam($this->tempPath, self::TMP_PREFFIX)) !== false
             && imagepng($gdImage, $tmpFile)
         ) {
             $file = new FileHandler($tmpFile);

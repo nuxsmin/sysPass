@@ -52,11 +52,6 @@ use function SP\processException;
 class ConfigFile implements ConfigFileService
 {
     /**
-     * Cache file name
-     */
-    public const CONFIG_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'config.cache';
-
-    /**
      * @throws ConfigException
      */
     public function __construct(

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -41,7 +42,7 @@ interface SecureSessionService
      *
      * @throws ServiceException
      */
-    public static function getFileNameFrom(UuidCookieInterface $cookie, string $seed): string;
+    public static function getFileNameFrom(UuidCookieInterface $cookie, string $seed, string $cachePath): string;
 
     /**
      * Returns the encryption key

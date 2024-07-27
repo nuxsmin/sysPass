@@ -27,6 +27,8 @@ namespace SP\Modules\Web\Controllers\ConfigBackup;
 
 use Exception;
 use SP\Core\Application;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -40,6 +42,9 @@ use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
+use function SP\__u;
+use function SP\processException;
+
 /**
  * Class FileBackupController
  */
@@ -47,16 +52,13 @@ final class FileBackupController extends SimpleControllerBase
 {
     use ConfigTrait;
 
-    private BackupFileService $fileBackupService;
-
     public function __construct(
-        Application $application,
-        SimpleControllerHelper $simpleControllerHelper,
-        BackupFileService $fileBackupService
+        Application                        $application,
+        SimpleControllerHelper             $simpleControllerHelper,
+        private readonly BackupFileService $fileBackupService,
+        private readonly PathsContext      $pathsContext
     ) {
         parent::__construct($application, $simpleControllerHelper);
-
-        $this->fileBackupService = $fileBackupService;
     }
 
     /**
@@ -72,7 +74,7 @@ final class FileBackupController extends SimpleControllerBase
         try {
             Session::close();
 
-            $this->fileBackupService->doBackup(BACKUP_PATH);
+            $this->fileBackupService->doBackup($this->pathsContext[Path::BACKUP], $this->pathsContext[Path::APP]);
 
             $this->eventDispatcher->notify(
                 'run.backup.end',
