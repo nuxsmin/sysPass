@@ -67,7 +67,7 @@ final class MasterPass extends Service implements MasterPassService
     public function checkUserUpdateMPass(int $userMPassTime): bool
     {
         try {
-            return $userMPassTime >= (int)$this->configService->getByParam(self::PARAM_MASTER_PASS_TIME, 0);
+            return $userMPassTime >= (int)$this->configService->getByParam(self::PARAM_MASTER_PASS_TIME, '0');
         } catch (ServiceException|NoSuchItemException $e) {
             processException($e);
         }

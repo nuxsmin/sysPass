@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -53,7 +54,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     /**
      * Action's title ID
      */
-    protected ?int $id = null;
+    protected ?string $id = null;
     /**
      * The JavaScript function to be triggered on OnClick event
      */
@@ -145,12 +146,12 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
-        return (string)$this->id;
+        return $this->id;
     }
 
-    public function setId(int $id): DataGridActionBase
+    public function setId(string $id): DataGridActionBase
     {
         $this->id = $id;
 

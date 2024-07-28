@@ -22,17 +22,19 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
- * @var callable $_getvar
- * @var ConfigDataInterface $configData
- * @var \SP\Domain\Account\Adapters\AccountSearchItem $account
- * @var DataGridTab $data
- */
 
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Html\DataGrid\DataGridTab;
+
+/**
+ * @var ThemeIconsInterface $icons
+ * @var callable $_getvar
+ * @var ConfigDataInterface $configData
+ * @var AccountSearchItem $account
+ * @var DataGridTab $data
+ */
 
 if (!isset($data)) {
     $data = $_getvar('data');

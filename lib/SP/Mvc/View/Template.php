@@ -238,6 +238,7 @@ final class Template implements TemplateInterface
         $icons = $this->themeIcons;
         $_getvar = $this->vars->get(...);
         $_getRoute = $this->getRoute(...);
+        $configData = clone $this->configData;
 
         foreach ($this->templates as $template) {
             include_once $template;

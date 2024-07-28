@@ -37,6 +37,8 @@ use SP\Domain\Notification\Models\Notification;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 $notification = $_getvar('notification');
 ?>
 <div id="box-popup">

@@ -35,6 +35,7 @@ use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Http\Code;
+use SP\Util\Util;
 
 use function SP\__;
 use function SP\logger;
@@ -105,7 +106,11 @@ final class Bootstrap extends BootstrapBase
 
                 return call_user_func_array(
                     [$this->buildInstanceFor($controllerClass), $this->routeContextData->getMethodName()],
-                    $this->routeContextData->getMethodParams()
+                    Util::mapScalarParameters(
+                        $controllerClass,
+                        $this->routeContextData->getMethodName(),
+                        $this->routeContextData->getMethodParams()
+                    )
                 );
             } catch (SessionTimeout) {
                 logger('Session timeout');
@@ -125,4 +130,5 @@ final class Bootstrap extends BootstrapBase
             return $response;
         };
     }
+
 }

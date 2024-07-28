@@ -24,7 +24,7 @@
 
 /**
  * @var SP\Html\DataGrid\DataGridTab $data
- * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
+ * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
  * @var TemplateInterface $this

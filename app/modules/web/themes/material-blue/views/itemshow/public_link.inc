@@ -23,7 +23,7 @@
  */
 
 /**
- * @var \SP\Domain\Account\Models\PublicLinkList $publicLink
+ * @var PublicLinkList $publicLink
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
@@ -35,6 +35,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
 
 $publicLink = $_getvar('publicLink');
 ?>

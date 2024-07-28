@@ -22,21 +22,24 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @var callable $_getvar
- * @var ThemeIconsInterface $icons
- * @var AccountExtData $accountData
- * @var AccountPermission $accountAcl
- * @var ConfigDataInterface $configData
- * @var AccountPrivate $accountPrivate
- */
 
-use SP\DataModel\AccountExtData;
 use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Mvc\View\Components\SelectItem;
+
+use function SP\__;
+
+/**
+ * @var callable $_getvar
+ * @var ThemeIconsInterface $icons
+ * @var AccountView $accountView
+ * @var AccountPermission $accountAcl
+ * @var ConfigDataInterface $configData
+ * @var AccountPrivate $accountPrivate
+ */
 
 ?>
 
@@ -295,7 +298,7 @@ use SP\Mvc\View\Components\SelectItem;
         if (!$_getvar('isView')
             && ($_getvar('ctx_userIsAdminApp')
                 || $_getvar('ctx_userIsAdminAcc')
-                || ($gotData && $_getvar('ctx_userId') === $accountData->getUserId()))
+                || ($gotData && $_getvar('ctx_userId') === $accountView->getUserId()))
         ): ?>
             <tr>
                 <td class="descField"><?php
@@ -328,8 +331,8 @@ use SP\Mvc\View\Components\SelectItem;
             && ($_getvar('ctx_userIsAdminApp')
                 || $_getvar('ctx_userIsAdminAcc')
                 || ($gotData
-                    && ($_getvar('ctx_userId') === $accountData->getUserId()
-                        || $_getvar('ctx_userGroupId') === $accountData->getUserGroupId())))
+                    && ($_getvar('ctx_userId') === $accountView->getUserId()
+                        || $_getvar('ctx_userGroupId') === $accountView->getUserGroupId())))
         ): ?>
             <tr>
                 <td class="descField"><?php
@@ -359,7 +362,7 @@ use SP\Mvc\View\Components\SelectItem;
 
         <?php
         if ($_getvar('allowPrivate') === true):
-            $checked = ($gotData && $accountData->getIsPrivate()) || $_getvar('privateUserCheck');
+            $checked = ($gotData && $accountView->getIsPrivate()) || $_getvar('privateUserCheck');
             ?>
             <tr>
                 <td class="descField"><?php
@@ -382,7 +385,7 @@ use SP\Mvc\View\Components\SelectItem;
 
         <?php
         if ($_getvar('allowPrivateGroup') === true):
-            $checked = ($gotData && $accountData->getIsPrivateGroup()) || $_getvar('privateUserGroupCheck');
+            $checked = ($gotData && $accountView->getIsPrivateGroup()) || $_getvar('privateUserGroupCheck');
             ?>
             <tr>
                 <td class="descField"><?php

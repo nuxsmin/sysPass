@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
+use SP\Core\Events\Event;
 use SP\Core\Language;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -136,7 +137,6 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('loadApp', $this->context->getAuthCompleted());
 
         try {
-            // Cargar la clave pública en la sesión
             $this->context->setPublicKey($this->cryptPKI->getPublicKey());
         } catch (SPException $e) {
             processException($e);
@@ -215,38 +215,7 @@ final class LayoutHelper extends HelperBase
             $this->view->append('cssLinks', $cssUriTheme->getUriSigned($this->configData->getPasswordSalt()));
         }
 
-        // Cargar los recursos de los plugins
-        $loadedPlugins = $this->pluginManager->getLoadedPlugins();
-
-        foreach ($loadedPlugins as $plugin) {
-            $base = str_replace(APP_ROOT, '', $plugin->getBase());
-            $base .= DIRECTORY_SEPARATOR . 'public';
-
-            $jsResources = $plugin->getJsResources();
-            $cssResources = $plugin->getCssResources();
-
-            if (count($jsResources) > 0) {
-                $jsUriPlugin = new Uri($baseUrl);
-                $jsUriPlugin->addParams([
-                                            'b' => FileSystem::buildPath($base, 'js'),
-                                            'f' => implode(',', $jsResources)
-                                        ]);
-
-                $this->view->append('jsLinks', $jsUriPlugin->getUriSigned($this->configData->getPasswordSalt()));
-            }
-
-            if (count($cssResources) > 0) {
-                $cssUriPlugin = new Uri($baseUrl);
-                $cssUriPlugin->addParams(
-                    [
-                        'b' => FileSystem::buildPath($base, 'css'),
-                        'f' => implode(',', $cssResources)
-                    ]
-                );
-
-                $this->view->append('cssLinks', $cssUriPlugin->getUriSigned($this->configData->getPasswordSalt()));
-            }
-        }
+        $this->eventDispatcher->notify('layout.resources.load', new Event($this->view));
     }
 
     /**

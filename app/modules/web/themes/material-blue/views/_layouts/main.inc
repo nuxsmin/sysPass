@@ -6,9 +6,12 @@
 
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo $_getvar('lang'); ?>">
+<html lang="<?php
+echo $_getvar('lang'); ?>">
 <head>
     <title><?php
         printf('%s :: %s', $_getvar('app_name'), $_getvar('app_desc')); ?></title>
@@ -36,8 +39,10 @@ echo $_getvar('page'); ?>">
         <div id="taskStatus"></div>
     </div>
 
-    <div id="container" class="<?php echo $_getvar('page'); ?>"
-         data-page="<?php echo $_getvar('page'); ?>"
+    <div id="container" class="<?php
+    echo $_getvar('page'); ?>"
+         data-page="<?php
+         echo $_getvar('page'); ?>"
          data-upgraded="<?php
          echo (int)$_getvar('upgraded'); ?>">
         <?php
@@ -51,11 +56,13 @@ echo $_getvar('page'); ?>">
         ?>
     </div> <!-- Close container -->
 
-    <?php include $this->includePartial('footer'); ?>
+    <?php
+    include $this->includePartial('footer'); ?>
 </div> <!-- Close wrap -->
 <?php
 foreach ($_getvar('jsLinks') as $jsLink) : ?>
-    <script type="text/javascript" src="<?php echo $jsLink; ?>"></script>
+    <script type="text/javascript" src="<?php
+    echo $jsLink; ?>"></script>
 <?php endforeach; ?>
 
 <script type="text/javascript">

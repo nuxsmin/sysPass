@@ -26,6 +26,8 @@
 
 use SP\Domain\Core\UI\ThemeIconsInterface;
 
+use function SP\__;
+
 ?>
 
 <div id="box-pub-noheader">

@@ -81,7 +81,7 @@ final class Config extends Service implements ConfigService
             );
         }
 
-        return $result->getData(ConfigModel::class)->getValue() ?? $default;
+        return $result->getData(ConfigModel::class)?->getValue() ?? $default;
     }
 
     /**

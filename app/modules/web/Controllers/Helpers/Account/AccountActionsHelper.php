@@ -26,30 +26,30 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\UI\ThemeIcons;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionType;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 /**
- * Class AccountIconsHelper
- *
- * @package SP\Modules\Web\Controllers\Helpers
+ * Class AccountActionsHelper
  */
 final class AccountActionsHelper extends HelperBase
 {
-    protected ThemeIcons $icons;
-
-    public function __construct(Application $application, TemplateInterface $template, RequestService $request)
-    {
+    public function __construct(
+        Application                          $application,
+        TemplateInterface                    $template,
+        RequestService                       $request,
+        private readonly ThemeIconsInterface $icons
+    ) {
         parent::__construct($application, $template, $request);
-
-        $this->icons = $this->view->getTheme()->getIcons();
     }
 
     /**
@@ -75,7 +75,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * Set icons for view
      *
-     * @param \SP\Domain\Account\Adapters\AccountPermission $accountAcl
+     * @param AccountPermission $accountAcl
      * @param AccountActionsDto $accountActionsDto
      *
      * @return DataGridAction[]
@@ -247,7 +247,7 @@ final class AccountActionsHelper extends HelperBase
     /**
      * Set icons for view
      *
-     * @param \SP\Domain\Account\Adapters\AccountPermission $accountAcl
+     * @param AccountPermission $accountAcl
      * @param AccountActionsDto $accountActionsDto
      *
      * @return DataGridAction[]

@@ -39,6 +39,8 @@
                 use SP\Domain\Core\UI\ThemeIconsInterface;
                 use SP\Mvc\View\TemplateInterface;
 
+                use function SP\__;
+
                 printf(__('Update %s'), $_getvar('upgradeVersion')); ?></h1>
         </div>
 

@@ -36,6 +36,8 @@ use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 $authToken = $_getvar('authToken');
 ?>
 <div id="box-popup">

@@ -22,18 +22,20 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Models\AccountView;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
+
+use function SP\__;
+
 /**
- * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
+ * @var ThemeIconsInterface $icons
  * @var callable $_getvar
- * @var AccountExtData $accountData
+ * @var AccountView $accountView
  * @var AccountPermission $accountAcl
  * @var ConfigDataInterface $configData
  */
-
-use SP\DataModel\AccountExtData;
-use SP\Domain\Account\Adapters\AccountPermission;
-use SP\Domain\Config\Ports\ConfigDataInterface;
-
 ?>
 
 <div id="data-files">

@@ -22,17 +22,18 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\Html\Html;
+
+use function SP\__;
+
 /**
  * @var ThemeIconsInterface $icons
  * @var callable $_getvar
  * @var ConfigDataInterface $configData
  * @var \SP\Domain\Account\Models\File $file
  */
-
-use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Domain\Html\Html;
-
 ?>
 
 <div id="files-wrap">

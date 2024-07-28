@@ -22,17 +22,21 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Models\AccountView;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
+
+use function SP\__;
+
 /**
- * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
+ * @var ThemeIconsInterface $icons
  * @var callable $_getvar
- * @var AccountExtData $accountData
- * @var \SP\Domain\Account\Adapters\AccountPermission $accountAcl
+ * @var AccountView $accountView
+ * @var AccountPermission $accountAcl
  * @var ConfigDataInterface $configData
  */
-
-use SP\DataModel\AccountExtData;
-use SP\Domain\Account\Adapters\AccountPermission;
-use SP\Domain\Config\Ports\ConfigDataInterface;
 
 ?>
 
@@ -46,7 +50,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
                     echo __('Visits'); ?></div>
 
                 <?php
-                echo $accountData->getCountView() . '(' . $accountData->getCountDecrypt() . ')'; ?>
+                echo $accountView->getCountView() . '(' . $accountView->getCountDecrypt() . ')'; ?>
             </td>
         </tr>
         <tr>
@@ -57,12 +61,12 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
                     echo __('Date Added'); ?></div>
 
                 <?php
-                echo $accountData->getDateAdd() ?>
+                echo $accountView->getDateAdd() ?>
             </td>
         </tr>
 
         <?php
-        if ($_getvar('isModified') && $accountData->getUserEditName()): ?>
+        if ($_getvar('isModified') && $accountView->getUserEditName()): ?>
             <tr>
                 <td class="descField"><?php
                     echo __('Last Modification'); ?></td>
@@ -73,8 +77,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
                     <?php
                     printf(
                         '%s (%s)',
-                        $accountData->getDateEdit(),
-                        htmlspecialchars($accountData->getUserEditName(), ENT_QUOTES)
+                        $accountView->getDateEdit(),
+                        htmlspecialchars($accountView->getUserEditName(), ENT_QUOTES)
                     ); ?>
                 </td>
             </tr>
@@ -89,8 +93,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
                     echo __('Owner'); ?></div>
 
                 <?php
-                echo htmlspecialchars($accountData->getUserName(), ENT_QUOTES) ?: htmlspecialchars(
-                    $accountData->getUserLogin(),
+                echo htmlspecialchars($accountView->getUserName(), ENT_QUOTES) ?: htmlspecialchars(
+                    $accountView->getUserLogin(),
                     ENT_QUOTES
                 ); ?>
             </td>
@@ -103,7 +107,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
                     echo __('Main Group'); ?></div>
 
                 <?php
-                echo htmlspecialchars($accountData->getUserGroupName(), ENT_QUOTES); ?>
+                echo htmlspecialchars($accountView->getUserGroupName(), ENT_QUOTES); ?>
             </td>
         </tr>
 
@@ -117,7 +121,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
                         echo __('Date Modified'); ?></div>
 
                     <?php
-                    echo $accountData->getDateEdit(); ?>
+                    echo $accountView->getDateEdit(); ?>
                 </td>
             </tr>
             <tr>
@@ -128,8 +132,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
                         echo __('Editor'); ?></div>
 
                     <?php
-                    echo htmlspecialchars($accountData->getUserEditName(), ENT_QUOTES) ?: htmlspecialchars(
-                        $accountData->getUserEditLogin(),
+                    echo htmlspecialchars($accountView->getUserEditName(), ENT_QUOTES) ?: htmlspecialchars(
+                        $accountView->getUserEditLogin(),
                         ENT_QUOTES
                     ); ?>
                 </td>
@@ -172,7 +176,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
                     echo __('ID'); ?></div>
 
                 <?php
-                echo $accountData->getId(); ?>
+                echo $accountView->getId(); ?>
             </td>
         </tr>
     </table>

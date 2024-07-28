@@ -22,20 +22,20 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @var ThemeIconsInterface $icons
- * @var callable $_getvar
- * @var AccountExtData $accountData
- * @var \SP\Domain\Account\Adapters\AccountPermission $accountAcl
- * @var ConfigDataInterface $configData
- */
 
-use SP\DataModel\AccountExtData;
 use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Html\DataGrid\Action\DataGridActionInterface;
 
+/**
+ * @var ThemeIconsInterface $icons
+ * @var callable $_getvar
+ * @var AccountView $accountView
+ * @var AccountPermission $accountAcl
+ * @var ConfigDataInterface $configData
+ */
 ?>
 
 <div class="item-actions">

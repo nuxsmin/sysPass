@@ -34,6 +34,8 @@ use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 ?>
 <div id="actions" class="installer" align="center">
     <div id="page-title">

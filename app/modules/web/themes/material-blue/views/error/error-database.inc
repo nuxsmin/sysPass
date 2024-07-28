@@ -22,14 +22,15 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
- * @var TemplateInterface $this
- */
-
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
+/**
+ * @var ThemeIconsInterface $icons
+ * @var TemplateInterface $this
+ */
 ?>
 <div id="actions" align="center">
     <?php

@@ -33,6 +33,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 ?>
 
 <div id="box-pub-noheader">

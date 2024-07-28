@@ -36,6 +36,8 @@ use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 $field = $_getvar('field');
 ?>
 

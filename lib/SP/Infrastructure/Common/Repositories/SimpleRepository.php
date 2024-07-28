@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,30 +22,14 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
+namespace SP\Infrastructure\Common\Repositories;
+
 /**
- * @var ThemeIconsInterface $icons
- * @var TemplateInterface $this
+ * Class SimpleRepository
  */
+final class SimpleRepository extends BaseRepository
+{
 
-use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Mvc\View\TemplateInterface;
-
-use function SP\__;
-
-?>
-<div id="actions" align="center">
-    <?php
-    include $this->includePartial('error-list'); ?>
-
-    <div class="buttons">
-        <button id="btnBack"
-                class="btn-back mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-            <i class="material-icons"
-               title="<?php
-               echo __('Back'); ?>"><?php
-                echo $icons->back()->getIcon(); ?></i>
-            <?php
-            echo __('Back'); ?>
-        </button>
-    </div>
-</div>
+}

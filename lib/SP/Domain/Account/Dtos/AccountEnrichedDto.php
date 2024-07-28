@@ -54,11 +54,11 @@ class AccountEnrichedDto extends Dto
     /**
      * AccountDetailsResponse constructor.
      *
-     * @param AccountView $accountDataView
+     * @param AccountView $accountView
      */
-    public function __construct(private readonly AccountView $accountDataView)
+    public function __construct(private readonly AccountView $accountView)
     {
-        $this->id = $accountDataView->getId();
+        $this->id = $accountView->getId();
     }
 
     /**
@@ -132,8 +132,8 @@ class AccountEnrichedDto extends Dto
         return $this->tags;
     }
 
-    public function getAccountDataView(): AccountView
+    public function getAccountView(): AccountView
     {
-        return $this->accountDataView;
+        return $this->accountView;
     }
 }

@@ -35,6 +35,8 @@ use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\User\Models\User;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 $user = $_getvar('user');
 ?>
 

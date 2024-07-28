@@ -35,20 +35,16 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class AccountViewBase extends AccountControllerBase
 {
-    protected AccountService $accountService;
-    protected AccountHelper  $accountHelper;
-    protected ThemeIcons              $icons;
+    protected readonly ThemeIcons $icons;
 
     public function __construct(
-        Application                             $application,
-        WebControllerHelper                     $webControllerHelper,
-        \SP\Domain\Account\Ports\AccountService $accountService,
-        AccountHelper                           $accountHelper
+        Application                       $application,
+        WebControllerHelper               $webControllerHelper,
+        protected readonly AccountService $accountService,
+        protected readonly AccountHelper  $accountHelper
     ) {
         parent::__construct($application, $webControllerHelper);
 
-        $this->accountService = $accountService;
-        $this->accountHelper = $accountHelper;
         $this->icons = $this->theme->getIcons();
     }
 }

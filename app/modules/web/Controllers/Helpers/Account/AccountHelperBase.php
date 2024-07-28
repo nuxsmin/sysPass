@@ -27,14 +27,12 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\TemplateInterface;
 
@@ -43,11 +41,11 @@ use SP\Mvc\View\TemplateInterface;
  */
 abstract class AccountHelperBase extends HelperBase
 {
-    protected ?int                     $actionId = null;
-    protected AccountActionsHelper     $accountActionsHelper;
-    protected bool                     $isView   = false;
-    protected Acl             $acl;
-    private MasterPassService $masterPassService;
+    protected ?int                 $actionId = null;
+    protected AccountActionsHelper $accountActionsHelper;
+    protected bool                 $isView   = false;
+    protected Acl                  $acl;
+    private MasterPassService      $masterPassService;
 
     public function __construct(
         Application          $application,
@@ -65,7 +63,7 @@ abstract class AccountHelperBase extends HelperBase
     }
 
     /**
-     * @param  bool  $isView
+     * @param bool $isView
      */
     public function setIsView(bool $isView): void
     {
@@ -73,10 +71,8 @@ abstract class AccountHelperBase extends HelperBase
     }
 
     /**
-     * @throws NoSuchItemException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
-     * @throws ServiceException
      */
     final protected function checkActionAccess(): void
     {

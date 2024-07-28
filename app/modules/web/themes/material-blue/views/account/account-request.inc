@@ -22,20 +22,22 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Models\AccountView;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
+
+use function SP\__;
+
 /**
  * @var callable $_getvar
- * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
- * @var AccountExtData $accountData
+ * @var ThemeIconsInterface $icons
+ * @var AccountView $accountView
  * @var AccountPermission $accountAcl
  * @var ConfigDataInterface $configData
  */
-
-use SP\DataModel\AccountExtData;
-use SP\Domain\Account\Adapters\AccountPermission;
-use SP\Domain\Config\Ports\ConfigDataInterface;
-
-/** @var AccountExtData $accountData */
-$accountData = $_getvar('accountData');
+$accountView = $_getvar('accountData');
 ?>
 
 <div class="data-container">
@@ -60,7 +62,7 @@ $accountData = $_getvar('accountData');
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountData->getName(), ENT_QUOTES); ?>"
+                               echo htmlspecialchars($accountView->getName(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="name"><?php
@@ -76,7 +78,7 @@ $accountData = $_getvar('accountData');
                         <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountData->getClientName(), ENT_QUOTES); ?>"
+                               echo htmlspecialchars($accountView->getClientName(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="client"><?php

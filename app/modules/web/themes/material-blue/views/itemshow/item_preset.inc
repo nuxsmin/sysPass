@@ -36,6 +36,8 @@ use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 $preset = $_getvar('preset');
 ?>
 

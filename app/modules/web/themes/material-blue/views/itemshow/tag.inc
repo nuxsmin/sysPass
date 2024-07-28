@@ -23,7 +23,7 @@
  */
 
 /**
- * @var \SP\Domain\Tag\Models\Tag $tag
+ * @var Tag $tag
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
@@ -34,6 +34,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Tag\Models\Tag;
 use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
 
 $tag = $_getvar('tag');
 ?>

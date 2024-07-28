@@ -35,6 +35,8 @@ use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 $sessionTimeout = $_getvar('sessionTimeout');
 ?>
 

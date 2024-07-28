@@ -26,8 +26,12 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
 use SP\Core\Events\Event;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Util\ErrorUtil;
+
+use function SP\__;
+use function SP\processException;
 
 /**
  * Class CopyController
@@ -42,7 +46,7 @@ final class CopyController extends AccountViewBase
     public function copyAction(int $id): void
     {
         try {
-            $accountEnrichedDto = $this->accountService->getByIdEnriched($id);
+            $accountEnrichedDto = new AccountEnrichedDto($this->accountService->getByIdEnriched($id));
             $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
             $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
             $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);

@@ -38,6 +38,8 @@ use SP\Domain\User\Models\UserToUserGroup;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 $group = $_getvar('group');
 ?>
 

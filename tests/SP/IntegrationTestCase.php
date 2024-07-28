@@ -90,7 +90,7 @@ abstract class IntegrationTestCase extends TestCase
         $databaseUtil->method('checkDatabaseTables')->willReturn(true);
 
         $database = self::createStub(DatabaseInterface::class);
-        $database->method('runQuery')->willReturn($this->getQueryResult());
+        $database->method('runQuery')->willReturnCallback($this->getDatabaseReturn());
 
         $mockedDefinitions = [
             ConfigFileService::class => $configFileService,
@@ -142,9 +142,9 @@ abstract class IntegrationTestCase extends TestCase
         return $configData;
     }
 
-    protected function getQueryResult(): QueryResult
+    protected function getDatabaseReturn(): callable
     {
-        return new QueryResult();
+        return fn() => new QueryResult();
     }
 
     /**

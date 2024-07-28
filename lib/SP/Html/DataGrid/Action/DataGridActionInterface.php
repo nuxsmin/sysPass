@@ -38,9 +38,9 @@ interface DataGridActionInterface
 
     public function getName(): ?string;
 
-    public function setId(int $id);
+    public function setId(string $id);
 
-    public function getId(): string;
+    public function getId(): ?string;
 
     public function setTitle(string $title);
 

@@ -122,7 +122,7 @@ final class AccountHelper extends AccountHelperBase
         $this->userGroupService = $userGroupService;
         $this->tagService = $tagService;
 
-        $this->view->assign('changesHash');
+        $this->view->assign('changesHash', '');
         $this->view->assign('chkUserEdit', false);
         $this->view->assign('chkGroupEdit', false);
     }
@@ -142,18 +142,16 @@ final class AccountHelper extends AccountHelperBase
      * @throws UpdatedMasterPassException
      * @throws NoSuchItemException
      */
-    public function setViewForAccount(
-        AccountEnrichedDto $accountDetailsResponse,
-        int $actionId
-    ): void {
-        $this->accountId = $accountDetailsResponse->getAccountDataView()->getId();
+    public function setViewForAccount(AccountEnrichedDto $accountDetailsResponse, int $actionId): void
+    {
+        $this->accountId = $accountDetailsResponse->getAccountView()->getId();
         $this->actionId = $actionId;
 
         $this->checkActionAccess();
 
         $this->accountAcl = $this->checkAccess($accountDetailsResponse);
 
-        $accountData = $accountDetailsResponse->getAccountDataView();
+        $accountData = $accountDetailsResponse->getAccountView();
 
         $accountActionsDto = new AccountActionsDto($this->accountId, null, $accountData->getParentId());
 

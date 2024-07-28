@@ -23,7 +23,7 @@
  */
 
 /**
- * @var \SP\Domain\User\Models\UserPreferences $userPreferences
+ * @var UserPreferences $userPreferences
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
@@ -35,6 +35,8 @@ use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Mvc\View\Components\SelectItem;
 use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
 
 $userPreferences = $_getvar('userPreferences');
 ?>

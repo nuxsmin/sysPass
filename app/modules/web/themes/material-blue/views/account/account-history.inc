@@ -22,24 +22,24 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @var callable $_getvar
- * @var ThemeIconsInterface $icons
- * @var AccountExtData $accountData
- * @var AccountPermission $accountAcl
- * @var ConfigDataInterface $configData
- */
 
-use SP\DataModel\AccountExtData;
 use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\Components\SelectItem;
 
-/** @var AccountExtData $accountData */
-$accountData = $_getvar('accountData');
+use function SP\__;
 
-/** @var AccountPermission $accountAcl */
+/**
+ * @var callable $_getvar
+ * @var ThemeIconsInterface $icons
+ * @var AccountView $accountView
+ * @var AccountPermission $accountAcl
+ * @var ConfigDataInterface $configData
+ */
+
+$accountView = $_getvar('accountData');
 $accountAcl = $_getvar('accountAcl');
 ?>
 
@@ -90,7 +90,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50"
                                        value="<?php
-                                       echo htmlspecialchars($accountData->getName(), ENT_QUOTES); ?>"
+                                       echo htmlspecialchars($accountView->getName(), ENT_QUOTES); ?>"
                                        tabindex="1" readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -161,7 +161,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="255" tabindex="4"
                                        value="<?php
-                                       echo htmlspecialchars($accountData->getUrl(), ENT_QUOTES); ?>"
+                                       echo htmlspecialchars($accountView->getUrl(), ENT_QUOTES); ?>"
                                        readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -178,7 +178,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50" tabindex="5"
                                        value="<?php
-                                       echo htmlspecialchars($accountData->getLogin(), ENT_QUOTES); ?>"
+                                       echo htmlspecialchars($accountView->getLogin(), ENT_QUOTES); ?>"
                                        readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -215,7 +215,7 @@ $accountAcl = $_getvar('accountAcl');
                                 name="notes" tabindex="9"
                                 maxlength="5000"
                                 readonly><?php
-                            echo htmlspecialchars($accountData->getNotes(), ENT_QUOTES); ?>
+                            echo htmlspecialchars($accountView->getNotes(), ENT_QUOTES); ?>
                         </textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php
@@ -265,9 +265,9 @@ $accountAcl = $_getvar('accountAcl');
                             <?php
                             printf(
                                 '%s (%s)',
-                                $accountData->getDateEdit(),
-                                htmlspecialchars($accountData->getUserEditName(), ENT_QUOTES)
-                                    ?: htmlspecialchars($accountData->getUserEditLogin(), ENT_QUOTES)
+                                $accountView->getDateEdit(),
+                                htmlspecialchars($accountView->getUserEditName(), ENT_QUOTES)
+                                    ?: htmlspecialchars($accountView->getUserEditLogin(), ENT_QUOTES)
                             ); ?>
                         </td>
                     </tr>

@@ -62,8 +62,8 @@ final class CryptPKI implements CryptPKIHandler
     private function setUp(): void
     {
         try {
-            $this->publicKeyFile->checkFileExists();
-            $this->privateKeyFile->checkFileExists();
+            $this->publicKeyFile->getFileSize(true);
+            $this->privateKeyFile->getFileSize(true);
         } catch (FileException $e) {
             processException($e);
 

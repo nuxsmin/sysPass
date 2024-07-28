@@ -1,11 +1,13 @@
 <?php
 /**
  * @var callable $_getvar
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var TemplateInterface $this
  */
 
 use SP\Html\Assets\IconInterface;
-use SP\Mvc\View\Template;
+use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
 
 ?>
 <footer>

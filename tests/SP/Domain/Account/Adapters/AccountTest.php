@@ -91,7 +91,7 @@ class AccountTest extends UnitaryTestCase
             $out['userGroups']
         );
 
-        $accountVData = $accountData->getAccountDataView();
+        $accountVData = $accountData->getAccountView();
 
         $this->assertEquals($accountVData->getName(), $out['name']);
         $this->assertEquals($accountVData->getClientId(), $out['clientId']);

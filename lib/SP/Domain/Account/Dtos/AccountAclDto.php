@@ -57,11 +57,11 @@ final class AccountAclDto
     {
         return new self(
             $accountDetailsResponse->getId(),
-            $accountDetailsResponse->getAccountDataView()->getUserId(),
+            $accountDetailsResponse->getAccountView()->getUserId(),
             $accountDetailsResponse->getUsers(),
-            $accountDetailsResponse->getAccountDataView()->getUserGroupId(),
+            $accountDetailsResponse->getAccountView()->getUserGroupId(),
             $accountDetailsResponse->getUserGroups(),
-            strtotime($accountDetailsResponse->getAccountDataView()->getDateEdit())
+            strtotime($accountDetailsResponse->getAccountView()->getDateEdit())
         );
     }
 

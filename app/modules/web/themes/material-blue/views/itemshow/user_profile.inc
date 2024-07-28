@@ -37,6 +37,8 @@ use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserProfile;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 $profile = $_getvar('profile');
 $profileData = $_getvar('profileData');
 ?>

@@ -23,8 +23,7 @@
  */
 
 /**
- * @var  Plugin $plugin
- * @var  Plugin $pluginInfo
+ * @var  PluginModel $plugin
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
@@ -33,11 +32,11 @@
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Domain\Plugin\Models\Plugin;
-use SP\Domain\Plugin\Ports\Plugin;
+use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Mvc\View\TemplateInterface;
 
-$plugin = $_getvar('plugin');
+use function SP\__;
+
 $pluginInfo = $_getvar('pluginInfo');
 ?>
 
@@ -57,7 +56,7 @@ $pluginInfo = $_getvar('pluginInfo');
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo $plugin->getName(); ?>" <?php
+                               echo $pluginInfo->getName(); ?>" <?php
                         echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="name"><?php

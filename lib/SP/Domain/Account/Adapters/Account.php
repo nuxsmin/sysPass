@@ -85,7 +85,7 @@ final class Account extends Adapter implements AccountAdapter
      */
     public function transform(Dto|AccountEnrichedDto $data): array
     {
-        $account = $data->getAccountDataView();
+        $account = $data->getAccountView();
         $actionRoute = $this->actions->getActionById(AclActionsInterface::ACCOUNT_VIEW)->getRoute();
 
         return [

@@ -23,7 +23,7 @@
  */
 
 /**
- * @var \SP\Domain\Client\Models\Client $client
+ * @var Client $client
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
@@ -34,6 +34,8 @@ use SP\Domain\Client\Models\Client;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
 
 $client = $_getvar('client');
 ?>

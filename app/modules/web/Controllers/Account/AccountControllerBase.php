@@ -39,11 +39,8 @@ abstract class AccountControllerBase extends ControllerBase
     private const LOGIN_NOT_REQUIRED = ['ViewLinkController'];
 
     /**
-     * @param Application $application
-     * @param WebControllerHelper $webControllerHelper
-     *
-     * @throws SessionTimeout
      * @throws AuthException
+     * @throws SessionTimeout
      */
     public function __construct(Application $application, WebControllerHelper $webControllerHelper)
     {

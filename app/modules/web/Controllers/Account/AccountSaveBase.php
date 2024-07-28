@@ -42,24 +42,17 @@ abstract class AccountSaveBase extends AccountControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    protected AccountService $accountService;
-    protected AccountForm            $accountForm;
-    protected CustomFieldDataService $customFieldService;
+    protected readonly AccountForm $accountForm;
 
     public function __construct(
-        Application          $application,
-        WebControllerHelper  $webControllerHelper,
-        AccountService       $accountService,
-        AccountPresetService $accountPresetService,
-        CustomFieldDataService $customFieldService
+        Application                               $application,
+        WebControllerHelper                       $webControllerHelper,
+        protected readonly AccountService         $accountService,
+        AccountPresetService                      $accountPresetService,
+        protected readonly CustomFieldDataService $customFieldService
     ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
+        parent::__construct($application, $webControllerHelper);
 
-        $this->accountService = $accountService;
-        $this->customFieldService = $customFieldService;
         $this->accountForm = new AccountForm($application, $this->request, $accountPresetService);
     }
 }

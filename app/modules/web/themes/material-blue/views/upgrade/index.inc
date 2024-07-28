@@ -24,10 +24,13 @@
 
 /**
  * @var TemplateInterface $this
- * @var \SP\Domain\Core\UI\ThemeIconsInterface $icons
+ * @var ThemeIconsInterface $icons
  */
 
+use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
 
 ?>
 <div id="actions" class="installer" align="center">

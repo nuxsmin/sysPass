@@ -33,6 +33,8 @@ use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\CustomField\Services\CustomFieldItem;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 $customFields = $_getvar('customFields');
 
 foreach ($customFields as $index => $field):?>

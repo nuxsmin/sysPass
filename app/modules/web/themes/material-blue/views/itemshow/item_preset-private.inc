@@ -23,7 +23,7 @@
  */
 
 /**
- * @var \SP\Domain\ItemPreset\Models\AccountPrivate $private
+ * @var AccountPrivate $private
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
@@ -34,6 +34,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
 
 $private = $_getvar('private');
 ?>

@@ -22,19 +22,20 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @var callable $_getvar
- * @var ThemeIconsInterface $icons
- * @var AccountExtData $accountData
- * @var AccountPermission $accountAcl
- * @var ConfigDataInterface $configData
- */
-
-use SP\DataModel\AccountExtData;
 use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 
+use function SP\__;
+
+/**
+ * @var callable $_getvar
+ * @var ThemeIconsInterface $icons
+ * @var AccountView $accountData
+ * @var AccountPermission $accountAcl
+ * @var ConfigDataInterface $configData
+ */
 ?>
 <div id="box-popup" class="box-password-view">
     <h2 class="center"><?php

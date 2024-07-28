@@ -28,8 +28,10 @@ namespace SP\Core\Definitions;
 
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
+use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Providers\Image;
 use SP\Domain\Image\Ports\ImageService;
+use SP\Infrastructure\Common\Repositories\SimpleRepository;
 use SP\Infrastructure\File\FileSystem;
 
 use function DI\autowire;
@@ -85,7 +87,8 @@ final class DomainDefinitions
                 ->constructorParameter(
                     'tempPath',
                     factory(static fn(PathsContext $p) => $p[Path::TMP])
-                )
+                ),
+            Repository::class => autowire(SimpleRepository::class)
         ];
 
         foreach (self::DOMAINS as $domain) {

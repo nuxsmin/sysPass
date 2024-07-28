@@ -91,7 +91,12 @@ abstract class BootstrapBase implements BootstrapInterface
             static function (Klein $router, string $err_msg, string $type, Exception|Throwable $err): void {
                 logger(sprintf('Routing error: %s', $err_msg));
                 logger(sprintf('Routing error: %s', $err->getTraceAsString()));
-                $router->response()->body(__($err_msg));
+
+                if (defined('TEST_ROOT')) {
+                    $router->response()->body(__($err_msg) . PHP_EOL . $err->getTraceAsString());
+                } else {
+                    $router->response()->body(__($err_msg));
+                }
             }
         );
 

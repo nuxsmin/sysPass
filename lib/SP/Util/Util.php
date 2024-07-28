@@ -26,7 +26,13 @@ declare(strict_types=1);
 
 namespace SP\Util;
 
+use ReflectionException;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
+use ReflectionUnionType;
 use SP\Infrastructure\File\FileHandler;
+use ValueError;
 
 /**
  * Class Util
@@ -107,5 +113,54 @@ final class Util
     public static function getMaxDownloadChunk(): int
     {
         return self::convertShortUnit(ini_get('memory_limit')) / FileHandler::CHUNK_FACTOR;
+    }
+
+    /**
+     * @param string $class
+     * @param string $method
+     * @param array $parametersValue
+     * @return array
+     * @throws ReflectionException
+     */
+    public static function mapScalarParameters(string $class, string $method, array $parametersValue): array
+    {
+        $reflectionMethod = new ReflectionMethod($class, $method);
+
+        $methodParameters = [];
+
+        foreach ($reflectionMethod->getParameters() as $parameter) {
+            if (!$parameter->isOptional() && !isset($parametersValue[$parameter->getPosition()])) {
+                throw new ValueError('Method parameter expects a value');
+            }
+
+            $type = self::getMethodParameterTypes($parameter)[0]->getName();
+
+            $methodParameters[$parameter->getPosition()] = match ($type) {
+                'int' => (int)$parametersValue[$parameter->getPosition()],
+                'bool' => (bool)$parametersValue[$parameter->getPosition()],
+                'float' => (float)$parametersValue[$parameter->getPosition()],
+                'array' => (array)$parametersValue[$parameter->getPosition()],
+                'object' => (object)$parametersValue[$parameter->getPosition()],
+                default => (string)$parametersValue[$parameter->getPosition()]
+            };
+        }
+        return $methodParameters;
+    }
+
+    /**
+     * @param ReflectionParameter $reflectionParameter
+     * @return array<ReflectionNamedType>
+     */
+    public static function getMethodParameterTypes(ReflectionParameter $reflectionParameter): array
+    {
+        $reflectionType = $reflectionParameter->getType();
+
+        if (!$reflectionType) {
+            return [];
+        }
+
+        return $reflectionType instanceof ReflectionUnionType
+            ? $reflectionType->getTypes()
+            : [$reflectionType];
     }
 }
