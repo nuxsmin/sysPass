@@ -42,9 +42,9 @@ trait JsonTrait
     /**
      * Returns JSON response
      *
-     * @param  int  $status  Status code
-     * @param  string  $description  Untranslated description string
-     * @param  array|null  $messages  Untranslated massages array of strings
+     * @param int $status Status code
+     * @param string $description Untranslated description string
+     * @param array|null $messages Untranslated massages array of strings
      *
      * @return bool
      * @throws SPException
@@ -65,21 +65,20 @@ trait JsonTrait
     /**
      * Returns JSON response
      *
-     * @param  mixed  $data
-     * @param  int  $status  Status code
-     * @param  string|null  $description  Untranslated description string
-     * @param  array|null  $messages
+     * @param mixed $data
+     * @param int $status Status code
+     * @param string|null $description Untranslated description string
+     * @param array|null $messages
      *
      * @return bool
      * @throws SPException
      */
     protected function returnJsonResponseData(
-        $data,
-        int $status = JsonMessage::JSON_SUCCESS,
+        mixed  $data,
+        int    $status = JsonMessage::JSON_SUCCESS,
         ?string $description = null,
         ?array $messages = null
-    ): bool
-    {
+    ): bool {
         $jsonResponse = new JsonMessage();
         $jsonResponse->setStatus($status);
         $jsonResponse->setData($data);
@@ -99,7 +98,7 @@ trait JsonTrait
      * Returns JSON response
      *
      * @param Exception $exception
-     * @param  int  $status
+     * @param int $status
      *
      * @return bool
      * @throws SPException

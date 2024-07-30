@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Ports;
 
+use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName as AccountPassItemWithIdAndNameModel;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Dtos\AccountHistoryDto;
@@ -98,12 +100,12 @@ interface AccountService
     /**
      * @param int $id The account ID
      *
-     * @return Account
+     * @return AccountPassItemWithIdAndNameModel
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getPasswordForId(int $id): Account;
+    public function getPasswordForId(int $id): AccountPassItemWithIdAndNameModel;
 
     /**
      * @param AccountHistoryDto $accountHistoryDto

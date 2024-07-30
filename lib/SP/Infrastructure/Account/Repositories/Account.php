@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -26,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
+use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName as AccountPassItemWithIdAndNameModel;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account as AccountModel;
 use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
@@ -83,7 +85,7 @@ final class Account extends BaseRepository implements AccountRepository
     /**
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<AccountPassItemWithIdAndNameModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -103,13 +105,13 @@ final class Account extends BaseRepository implements AccountRepository
             ->bindValues(['id' => $accountId])
             ->limit(1);
 
-        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountModel::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountPassItemWithIdAndNameModel::class));
     }
 
     /**
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<AccountPassItemWithIdAndNameModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -129,7 +131,7 @@ final class Account extends BaseRepository implements AccountRepository
             ->where('AccountHistory.accountId = :accountId')
             ->bindValues(['accountId' => $accountId]);
 
-        return $this->db->runQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountPassItemWithIdAndNameModel::class));
     }
 
     /**

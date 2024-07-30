@@ -58,27 +58,16 @@ class IndexControllerTest extends IntegrationTestCase
      */
     public function testIndexAction()
     {
-        $outputHandler = $this->createMock(OutputHandlerInterface::class);
-
         $definitions = FileSystem::require(FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'web', 'module.php'));
-        $definitions[OutputHandlerInterface::class] = $outputHandler;
 
-        $outputHandler->expects($this->once())
-                      ->method('bufferedContent')
-                      ->with(
-                          self::callback(static function (callable $callback) {
-                              ob_start();
-                              $callback();
-                              $output = ob_get_clean();
+        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(static function (string $output) {
+            $crawler = new Crawler($output);
+            $filter = $crawler->filterXPath(
+                '//div[contains(@id, \'tabs-\')]//form'
+            )->extract(['id']);
 
-                              $crawler = new Crawler($output);
-                              $filter = $crawler->filterXPath(
-                                  '//div[contains(@id, \'tabs-\')]//form'
-                              )->extract(['id']);
-
-                              return !empty($output) && count($filter) === 5;
-                          })
-                      );
+            return !empty($output) && count($filter) === 5;
+        });
 
         $container = $this->buildContainer(
             $definitions,

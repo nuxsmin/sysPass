@@ -73,11 +73,11 @@ abstract class Model implements JsonSerializable, ArrayAccess
     /**
      * Build a new concrete object from a simple model
      *
-     * @param Simple $model
+     * @param Model|Simple $model
      *
      * @return static
      */
-    final public static function buildFromSimpleModel(Simple $model): static
+    final public static function buildFromSimpleModel(Model|Simple $model): static
     {
         return new static($model->toArray(null, null, true));
     }

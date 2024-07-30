@@ -24,24 +24,21 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
-use Defuse\Crypto\Exception\BadFormatException;
-use Defuse\Crypto\Exception\CryptoException;
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class CopyPassController
@@ -50,40 +47,27 @@ final class CopyPassController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private AccountService        $accountService;
-    private AccountPasswordHelper $accountPasswordHelper;
-
     public function __construct(
-        Application         $application,
-        WebControllerHelper $webControllerHelper,
-        AccountService      $accountService,
-        AccountPasswordHelper $accountPasswordHelper
+        Application                            $application,
+        WebControllerHelper                    $webControllerHelper,
+        private readonly AccountService        $accountService,
+        private readonly AccountPasswordHelper $accountPasswordHelper
     ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
-
-        $this->accountService = $accountService;
-        $this->accountPasswordHelper = $accountPasswordHelper;
+        parent::__construct($application, $webControllerHelper);
     }
 
     /**
      * Copy account's password
      *
-     * @param  int  $id  Account's ID
+     * @param int $id Account's ID
      *
      * @return bool
-     * @throws BadFormatException
-     * @throws CryptoException
-     * @throws EnvironmentIsBrokenException
-     * @throws WrongKeyOrModifiedCiphertextException
-     * @throws JsonException
      * @throws ConstraintException
-     * @throws QueryException
      * @throws HelperException
      * @throws NoSuchItemException
-     * @throws ServiceException
+     * @throws QueryException
+     * @throws SPException
+     * @throws CryptException
      */
     public function copyPassAction(int $id): bool
     {
@@ -96,9 +80,10 @@ final class CopyPassController extends AccountControllerBase
         $this->eventDispatcher->notify(
             'copy.account.pass',
             new Event(
-                $this, EventMessage::factory()
-                ->addDescription(__u('Password copied'))
-                ->addDetail(__u('Account'), $account->getName())
+                $this,
+                EventMessage::factory()
+                            ->addDescription(__u('Password copied'))
+                            ->addDetail(__u('Account'), $account->getName())
             )
         );
 

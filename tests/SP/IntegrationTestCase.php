@@ -31,6 +31,7 @@ use Faker\Factory;
 use Faker\Generator;
 use Klein\Request;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -54,6 +55,7 @@ use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\ArchiveHandler;
+use SP\Mvc\View\OutputHandlerInterface;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserProfileDataGenerator;
 
@@ -151,7 +153,7 @@ abstract class IntegrationTestCase extends TestCase
      * @throws Exception
      * @throws SPException
      */
-    protected function getContext(): Context|Stub
+    protected function getContext(): SessionContext|Stub
     {
         $context = self::createStub(SessionContext::class);
         $context->method('isLoggedIn')->willReturn(true);
@@ -199,5 +201,27 @@ abstract class IntegrationTestCase extends TestCase
             $_FILES,
             null
         );
+    }
+
+    /**
+     * @param callable $outputChecker
+     * @return MockObject|OutputHandlerInterface
+     * @throws Exception
+     */
+    protected function setupOutputHandler(callable $outputChecker): OutputHandlerInterface|MockObject
+    {
+        $outputHandler = $this->createMock(OutputHandlerInterface::class);
+        $outputHandler->expects($this->once())
+                      ->method('bufferedContent')
+                      ->with(
+                          self::callback(static function (callable $callback) use ($outputChecker) {
+                              ob_start();
+                              $callback();
+
+                              return $outputChecker(ob_get_clean());
+                          })
+                      );
+
+        return $outputHandler;
     }
 }

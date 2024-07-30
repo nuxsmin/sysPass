@@ -24,27 +24,22 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use Defuse\Crypto\Exception\BadFormatException;
-use Defuse\Crypto\Exception\CryptoException;
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
-use SP\Domain\Common\Providers\Image;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
-use SP\Domain\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Image\Ports\ImageService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
 use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class AccountPasswordHelper
@@ -53,39 +48,27 @@ use SP\Mvc\View\TemplateInterface;
  */
 final class AccountPasswordHelper extends HelperBase
 {
-    private Acl   $acl;
-    private Image $imageUtil;
-    private MasterPassService $masterPassService;
 
     public function __construct(
-        Application       $application,
-        TemplateInterface $template,
-        RequestService $request,
-        AclInterface      $acl,
-        ImageService      $imageUtil,
-        MasterPassService $masterPassService
+        Application                        $application,
+        TemplateInterface                  $template,
+        RequestService                     $request,
+        private readonly AclInterface      $acl,
+        private readonly ImageService      $imageUtil,
+        private readonly MasterPassService $masterPassService,
+        private readonly CryptInterface    $crypt
     ) {
         parent::__construct($application, $template, $request);
-
-        $this->acl = $acl;
-        $this->imageUtil = $imageUtil;
-        $this->masterPassService = $masterPassService;
     }
 
     /**
      * @param AccountPassItemWithIdAndName $accountData
      *
-     * @param  bool  $useImage
+     * @param bool $useImage
      *
      * @return array
-     * @throws BadFormatException
-     * @throws CryptoException
-     * @throws EnvironmentIsBrokenException
-     * @throws WrongKeyOrModifiedCiphertextException
-     * @throws FileNotFoundException
+     * @throws CryptException
      * @throws HelperException
-     * @throws NoSuchItemException
-     * @throws ServiceException
      */
     public function getPasswordView(
         AccountPassItemWithIdAndName $accountData,
@@ -119,7 +102,7 @@ final class AccountPasswordHelper extends HelperBase
 
         return [
             'useimage' => $useImage,
-            'html'     => $this->view->render(),
+            'html' => $this->view->render(),
         ];
     }
 
@@ -136,33 +119,28 @@ final class AccountPasswordHelper extends HelperBase
     /**
      * Returns account's password
      *
-     * @param AccountPassItemWithIdAndName $accountData
+     * @param AccountPassItemWithIdAndName $accountPassItemWithIdAndName
      *
      * @return string
-     * @throws BadFormatException
-     * @throws CryptoException
-     * @throws EnvironmentIsBrokenException
-     * @throws WrongKeyOrModifiedCiphertextException
      * @throws HelperException
-     * @throws NoSuchItemException
-     * @throws ServiceException
+     * @throws CryptException
      */
-    public function getPasswordClear(AccountPassItemWithIdAndName $accountData): string
+    public function getPasswordClear(AccountPassItemWithIdAndName $accountPassItemWithIdAndName): string
     {
         $this->checkActionAccess();
 
         if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
             throw new HelperException(
                 __('Master password updated')
-                .'<br>'
-                .__('Please, restart the session for update it')
+                . '<br>'
+                . __('Please, restart the session for update it')
             );
         }
 
         return trim(
-            Crypt::decrypt(
-                $accountData->getPass(),
-                $accountData->getKey(),
+            $this->crypt->decrypt(
+                $accountPassItemWithIdAndName->getPass(),
+                $accountPassItemWithIdAndName->getKey(),
                 CryptSession::getSessionKey($this->context)
             )
         );

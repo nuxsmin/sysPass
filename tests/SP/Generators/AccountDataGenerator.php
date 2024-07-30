@@ -96,7 +96,7 @@ final class AccountDataGenerator extends DataGenerator
     }
 
     /**
-     * @return \SP\Domain\Common\Models\Item[]
+     * @return Item[]
      */
     public function buildItemData(): array
     {

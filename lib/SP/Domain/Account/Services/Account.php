@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
+use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName as AccountPassItemWithIdAndNameModel;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
@@ -156,7 +157,7 @@ final class Account extends Service implements AccountService
      * @throws NoSuchItemException
      * @throws SPException
      */
-    public function getPasswordForId(int $id): AccountModel
+    public function getPasswordForId(int $id): AccountPassItemWithIdAndNameModel
     {
         $result = $this->accountRepository->getPasswordForId($id);
 
@@ -164,7 +165,7 @@ final class Account extends Service implements AccountService
             throw new NoSuchItemException(__u('Account not found'));
         }
 
-        return $result->getData(AccountModel::class);
+        return $result->getData(AccountPassItemWithIdAndNameModel::class);
     }
 
     /**

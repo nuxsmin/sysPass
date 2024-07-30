@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Ports;
 
+use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName as AccountPassItemWithIdAndNameModel;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Common\Ports\Repository;
@@ -52,7 +53,7 @@ interface AccountRepository extends Repository
     /**
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<AccountPassItemWithIdAndNameModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -61,7 +62,7 @@ interface AccountRepository extends Repository
     /**
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<AccountPassItemWithIdAndNameModel>
      * @throws ConstraintException
      * @throws QueryException
      */
