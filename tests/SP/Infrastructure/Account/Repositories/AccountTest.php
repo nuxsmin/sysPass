@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -29,6 +30,7 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account as AccountModel;
 use SP\Domain\Account\Models\AccountSearchView;
@@ -78,7 +80,7 @@ class AccountTest extends UnitaryTestCase
 
                 return count($params) === 1
                        && $params['id'] === 1
-                       && $arg->getMapClassName() === AccountModel::class
+                       && $arg->getMapClassName() === AccountPassItemWithIdAndName::class
                        && !empty($query->getStatement());
             }
         );
@@ -101,7 +103,7 @@ class AccountTest extends UnitaryTestCase
 
                 return count($params) === 1
                        && $params['accountId'] === 1
-                       && $arg->getMapClassName() === Simple::class
+                       && $arg->getMapClassName() === AccountPassItemWithIdAndName::class
                        && !empty($query->getStatement());
             }
         );

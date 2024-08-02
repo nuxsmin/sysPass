@@ -578,7 +578,7 @@ final class Account extends Service implements AccountService
      * @throws NoSuchItemException
      * @throws SPException
      */
-    public function getPasswordHistoryForId(int $id): Simple
+    public function getPasswordHistoryForId(int $id): AccountPassItemWithIdAndNameModel
     {
         $result = $this->accountRepository->getPasswordHistoryForId($id);
 
@@ -586,12 +586,11 @@ final class Account extends Service implements AccountService
             throw new NoSuchItemException(__u('The account doesn\'t exist'));
         }
 
-        return $result->getData(Simple::class);
+        return $result->getData(AccountPassItemWithIdAndNameModel::class);
     }
 
     /**
      * @return AccountModel[]
-     * @throws SPException
      */
     public function getAllBasic(): array
     {

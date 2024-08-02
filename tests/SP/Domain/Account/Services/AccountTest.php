@@ -29,6 +29,7 @@ namespace SP\Tests\Domain\Account\Services;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
@@ -416,10 +417,12 @@ class AccountTest extends UnitaryTestCase
      */
     public function testGetPasswordForId()
     {
-        $account = AccountDataGenerator::factory()->buildAccount();
+        $account = AccountPassItemWithIdAndName::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccount());
 
-        $this->accountRepository->expects(self::once())->method('getPasswordForId')
-                                ->with($account->getId())->willReturn(new QueryResult([$account]));
+        $this->accountRepository->expects(self::once())
+                                ->method('getPasswordForId')
+                                ->with($account->getId())
+                                ->willReturn(new QueryResult([$account]));
 
         $this->assertEquals($account, $this->account->getPasswordForId($account->getId()));
     }
@@ -1318,12 +1321,14 @@ class AccountTest extends UnitaryTestCase
      */
     public function testGetPasswordHistoryForId()
     {
-        $id = self::$faker->randomNumber();
+        $account = AccountPassItemWithIdAndName::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccount());
 
-        $this->accountRepository->expects(self::once())->method('getPasswordHistoryForId')
-                                ->with($id)->willReturn(new QueryResult([new Simple()]));
+        $this->accountRepository->expects(self::once())
+                                ->method('getPasswordHistoryForId')
+                                ->with($account->getId())
+                                ->willReturn(new QueryResult([$account]));
 
-        $this->account->getPasswordHistoryForId($id);
+        $this->account->getPasswordHistoryForId($account->getId());
     }
 
     /**

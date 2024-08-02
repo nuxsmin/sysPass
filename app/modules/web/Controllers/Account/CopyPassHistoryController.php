@@ -24,23 +24,21 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use Defuse\Crypto\Exception\BadFormatException;
-use Defuse\Crypto\Exception\CryptoException;
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class CopyPassHistoryController
@@ -70,19 +68,15 @@ final class CopyPassHistoryController extends AccountControllerBase
     /**
      * Copy account's password
      *
-     * @param  int  $id  Account's ID
+     * @param int $id Account's ID
      *
      * @return bool
-     * @throws BadFormatException
-     * @throws CryptoException
-     * @throws EnvironmentIsBrokenException
-     * @throws WrongKeyOrModifiedCiphertextException
-     * @throws JsonException
      * @throws ConstraintException
-     * @throws QueryException
      * @throws HelperException
      * @throws NoSuchItemException
-     * @throws ServiceException
+     * @throws QueryException
+     * @throws CryptException
+     * @throws SPException
      */
     public function copyPassHistoryAction(int $id): bool
     {
@@ -95,9 +89,10 @@ final class CopyPassHistoryController extends AccountControllerBase
         $this->eventDispatcher->notify(
             'copy.account.pass.history',
             new Event(
-                $this, EventMessage::factory()
-                ->addDescription(__u('Password copied'))
-                ->addDetail(__u('Account'), $account->getName())
+                $this,
+                EventMessage::factory()
+                            ->addDescription(__u('Password copied'))
+                            ->addDetail(__u('Account'), $account->getName())
             )
         );
 

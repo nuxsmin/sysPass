@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -85,18 +86,31 @@ class CryptPKITest extends UnitaryTestCase
      */
     public function testCreateKeys()
     {
-        $this->publicKey->expects(once())->method('checkFileExists')->willReturnSelf();
+        $this->publicKey->expects(once())
+                        ->method('getFileSize')
+                        ->willReturn(0);
+
         $this->privateKey->expects(once())
-            ->method('checkFileExists')
+            ->method('getFileSize')
             ->willThrowException(new FileException('test'));
 
         $keys = ['publickey' => self::$faker->sha1, 'privatekey' => self::$faker->sha1];
 
-        $this->rsa->expects(once())->method('createKey')->with(CryptPKI::KEY_SIZE)->willReturn($keys);
+        $this->rsa->expects(once())
+                  ->method('createKey')
+                  ->with(CryptPKI::KEY_SIZE)
+                  ->willReturn($keys);
 
-        $this->privateKey->expects(once())->method('save')->with($keys['privatekey'])->willReturnSelf();
-        $this->privateKey->expects(once())->method('chmod')->with(0600);
-        $this->publicKey->expects(once())->method('save')->with($keys['publickey']);
+        $this->privateKey->expects(once())
+                         ->method('save')
+                         ->with($keys['privatekey'])
+                         ->willReturnSelf();
+        $this->privateKey->expects(once())
+                         ->method('chmod')
+                         ->with(0600);
+        $this->publicKey->expects(once())
+                        ->method('save')
+                        ->with($keys['publickey']);
 
         new CryptPKI($this->rsa, $this->publicKey, $this->privateKey);
     }

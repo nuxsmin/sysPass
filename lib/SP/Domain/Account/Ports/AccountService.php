@@ -225,12 +225,12 @@ interface AccountService
     /**
      * @param int $id The account ID
      *
-     * @return Simple
+     * @return AccountPassItemWithIdAndNameModel
      * @throws QueryException
      * @throws ConstraintException
      * @throws NoSuchItemException
      */
-    public function getPasswordHistoryForId(int $id): Simple;
+    public function getPasswordHistoryForId(int $id): AccountPassItemWithIdAndNameModel;
 
     /**
      * @return Account[]
