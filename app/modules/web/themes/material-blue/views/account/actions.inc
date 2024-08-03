@@ -51,9 +51,10 @@ use SP\Html\DataGrid\Action\DataGridActionInterface;
                     <?php
                     foreach (
                         $action->getData() as $key => $value
-                    ): echo 'data-', $key, '="', $value, '"'; endforeach; ?>
+                    ): echo ' data-', $key, '="', $value, '"'; endforeach; ?>
                     <?php
-                    foreach ($action->getAttributes() as $key => $value): echo $key, '="', $value, '"'; endforeach; ?>
+                    foreach ($action->getAttributes() as $key => $value): echo ' ' .
+                                                                               $key, '="', $value, '"'; endforeach; ?>
                         title="<?php
                         echo $action->getTitle(); ?>">
                     <i class="material-icons"><?php
@@ -82,11 +83,11 @@ use SP\Html\DataGrid\Action\DataGridActionInterface;
                         <?php
                         foreach (
                             $action->getData() as $key => $value
-                        ): echo 'data-', $key, '="', $value, '"'; endforeach; ?>
+                        ): echo ' data-', $key, '="', $value, '"'; endforeach; ?>
                         <?php
                         foreach (
                             $action->getAttributes() as $key => $value
-                        ): echo $key, '="', $value, '"'; endforeach; ?>
+                        ): echo ' ' . $key, '="', $value, '"'; endforeach; ?>
                         title="<?php
                         echo $action->getTitle(); ?>">
                         <i class="material-icons <?php

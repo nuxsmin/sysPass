@@ -29,6 +29,9 @@ use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Util\ErrorUtil;
 
+use function SP\__;
+use function SP\processException;
+
 /**
  * Class CreateController
  */

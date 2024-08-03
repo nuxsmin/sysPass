@@ -214,12 +214,14 @@ abstract class IntegrationTestCase extends TestCase
         $outputHandler->expects($this->once())
                       ->method('bufferedContent')
                       ->with(
-                          self::callback(static function (callable $callback) use ($outputChecker) {
-                              ob_start();
-                              $callback();
+                          self::callback(
+                              static function (callable $callback) use ($outputChecker) {
+                                  ob_start();
+                                  $callback();
 
-                              return $outputChecker(ob_get_clean());
-                          })
+                                  return $outputChecker(ob_get_clean());
+                              }
+                          )
                       );
 
         return $outputHandler;

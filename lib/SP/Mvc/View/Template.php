@@ -29,6 +29,7 @@ namespace SP\Mvc\View;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Http\Providers\Uri;
 
@@ -232,6 +233,9 @@ final class Template implements TemplateInterface
         $this->vars = clone $this->vars;
     }
 
+    /**
+     * @throws SPException
+     */
     protected function includeTemplates(): void
     {
         // These variables will be included in the same scope as included files
@@ -241,7 +245,11 @@ final class Template implements TemplateInterface
         $configData = clone $this->configData;
 
         foreach ($this->templates as $template) {
-            include_once $template;
+            $result = (include $template);
+
+            if ($result === false) {
+                throw SPException::error('Cannot render template file: ' . $template);
+            }
         }
     }
 

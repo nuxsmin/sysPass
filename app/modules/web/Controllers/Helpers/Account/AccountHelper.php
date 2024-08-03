@@ -424,35 +424,35 @@ final class AccountHelper extends AccountHelperBase
             $accountPrivate = $itemPresetPrivate->hydrate(AccountPrivate::class) ?? $accountPrivate;
         }
 
-        $accountPermission = new AccountPermissionPreset();
-
-        if ($itemPresetPermission =
-            $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION)
-        ) {
-            $accountPermission = $itemPresetPermission->hydrate(AccountPermissionPreset::class) ?? $accountPermission;
-        }
-
         $selectUsers = SelectItemAdapter::factory($this->userService->getAll());
         $selectUserGroups = SelectItemAdapter::factory($this->userGroupService->getAll());
-        $selectTags = SelectItemAdapter::factory($this->tagService->getAll());
 
-        $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
+        $itemPresetPermission = $this->itemPresetService->getForCurrentUser(
+            ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION
+        );
+
+        $accountPermission = $itemPresetPermission?->hydrate(AccountPermissionPreset::class);
+
         $this->view->assign(
             'otherUsersView',
-            $selectUsers->getItemsFromModelSelected($accountPermission->getUsersView())
+            $selectUsers->getItemsFromModelSelected($accountPermission?->getUsersView() ?? [])
         );
         $this->view->assign(
             'otherUsersEdit',
-            $selectUsers->getItemsFromModelSelected($accountPermission->getUsersEdit())
+            $selectUsers->getItemsFromModelSelected($accountPermission?->getUsersEdit() ?? [])
         );
         $this->view->assign(
             'otherUserGroupsView',
-            $selectUserGroups->getItemsFromModelSelected($accountPermission->getUserGroupsView())
+            $selectUserGroups->getItemsFromModelSelected($accountPermission?->getUserGroupsView() ?? [])
         );
         $this->view->assign(
             'otherUserGroupsEdit',
-            $selectUserGroups->getItemsFromModelSelected($accountPermission->getUserGroupsEdit())
+            $selectUserGroups->getItemsFromModelSelected($accountPermission?->getUserGroupsEdit() ?? [])
         );
+
+        $selectTags = SelectItemAdapter::factory($this->tagService->getAll());
+
+        $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
         $this->view->assign('users', $selectUsers->getItemsFromModel());
         $this->view->assign('userGroups', $selectUserGroups->getItemsFromModel());
         $this->view->assign('tags', $selectTags->getItemsFromModel());
