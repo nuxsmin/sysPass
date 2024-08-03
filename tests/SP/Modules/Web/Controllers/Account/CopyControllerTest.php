@@ -31,14 +31,10 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\AccountView;
-use SP\Domain\Core\Bootstrap\BootstrapInterface;
-use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileSystem;
-use SP\Modules\Web\Bootstrap;
 use SP\Mvc\View\OutputHandlerInterface;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\IntegrationTestCase;
@@ -59,7 +55,7 @@ class CopyControllerTest extends IntegrationTestCase
      */
     public function testCopyAction()
     {
-        $definitions = FileSystem::require(FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'web', 'module.php'));
+        $definitions = $this->getModuleDefinitions();
         $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(static function (string $output) {
             $crawler = new Crawler($output);
             $filter = $crawler->filterXPath(
@@ -74,7 +70,7 @@ class CopyControllerTest extends IntegrationTestCase
             $this->buildRequest('get', 'index.php', ['r' => 'account/copy/id/' . self::$faker->randomNumber(3)])
         );
 
-        Bootstrap::run($container->get(BootstrapInterface::class), $container->get(ModuleInterface::class));
+        $this->runApp($container);
     }
 
     protected function getDatabaseReturn(): callable

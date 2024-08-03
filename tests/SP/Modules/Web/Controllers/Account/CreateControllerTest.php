@@ -30,13 +30,9 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Domain\Core\Bootstrap\BootstrapInterface;
-use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileSystem;
-use SP\Modules\Web\Bootstrap;
 use SP\Mvc\View\OutputHandlerInterface;
 use SP\Tests\IntegrationTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -57,7 +53,7 @@ class CreateControllerTest extends IntegrationTestCase
      */
     public function testCreateAction()
     {
-        $definitions = FileSystem::require(FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'web', 'module.php'));
+        $definitions = $this->getModuleDefinitions();
         $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(
             static function (string $output) {
                 $crawler = new Crawler($output);
@@ -74,11 +70,12 @@ class CreateControllerTest extends IntegrationTestCase
             $this->buildRequest('get', 'index.php', ['r' => 'account/create'])
         );
 
-        Bootstrap::run($container->get(BootstrapInterface::class), $container->get(ModuleInterface::class));
+        $this->runApp($container);
     }
 
     protected function getUserProfile(): ProfileData
     {
         return new ProfileData(['accAdd' => true,]);
     }
+
 }

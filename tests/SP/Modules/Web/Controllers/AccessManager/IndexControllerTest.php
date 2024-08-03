@@ -32,13 +32,9 @@ use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Bootstrap\BootstrapInterface;
-use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileSystem;
-use SP\Modules\Web\Bootstrap;
 use SP\Mvc\View\OutputHandlerInterface;
 use SP\Tests\IntegrationTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -58,7 +54,7 @@ class IndexControllerTest extends IntegrationTestCase
      */
     public function testIndexAction()
     {
-        $definitions = FileSystem::require(FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'web', 'module.php'));
+        $definitions = $this->getModuleDefinitions();
 
         $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(static function (string $output) {
             $crawler = new Crawler($output);
@@ -74,7 +70,7 @@ class IndexControllerTest extends IntegrationTestCase
             $this->buildRequest('get', 'index.php', ['r' => 'accessManager/index'])
         );
 
-        Bootstrap::run($container->get(BootstrapInterface::class), $container->get(ModuleInterface::class));
+        $this->runApp($container);
     }
 
     protected function getUserProfile(): ProfileData

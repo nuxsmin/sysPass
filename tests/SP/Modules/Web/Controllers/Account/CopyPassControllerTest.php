@@ -32,8 +32,6 @@ use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
-use SP\Domain\Core\Bootstrap\BootstrapInterface;
-use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
@@ -42,8 +40,6 @@ use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileSystem;
-use SP\Modules\Web\Bootstrap;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\IntegrationTestCase;
 
@@ -67,7 +63,7 @@ class CopyPassControllerTest extends IntegrationTestCase
         $crypt->method('decrypt')->willReturn('some_data');
         $crypt->method('encrypt')->willReturn('some_data');
 
-        $definitions = FileSystem::require(FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'web', 'module.php'));
+        $definitions = $this->getModuleDefinitions();
         $definitions[CryptInterface::class] = $crypt;
 
         $container = $this->buildContainer(
@@ -75,7 +71,7 @@ class CopyPassControllerTest extends IntegrationTestCase
             $this->buildRequest('get', 'index.php', ['r' => 'account/copyPass/id/' . self::$faker->randomNumber(3)])
         );
 
-        Bootstrap::run($container->get(BootstrapInterface::class), $container->get(ModuleInterface::class));
+        $this->runApp($container);
 
         $this->expectOutputString('{"status":0,"description":null,"data":{"accpass":"some_data"},"messages":[]}');
     }

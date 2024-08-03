@@ -34,7 +34,9 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Definitions\CoreDefinitions;
@@ -43,9 +45,12 @@ use SP\Core\UI\ThemeContext;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Bootstrap\BootstrapInterface;
+use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
@@ -55,6 +60,9 @@ use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\ArchiveHandler;
+use SP\Infrastructure\File\FileException;
+use SP\Infrastructure\File\FileSystem;
+use SP\Modules\Web\Bootstrap;
 use SP\Mvc\View\OutputHandlerInterface;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserProfileDataGenerator;
@@ -225,5 +233,25 @@ abstract class IntegrationTestCase extends TestCase
                       );
 
         return $outputHandler;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected function runApp(ContainerInterface $container): void
+    {
+        Bootstrap::run($container->get(BootstrapInterface::class), $container->get(ModuleInterface::class));
+    }
+
+    /**
+     * @throws FileException
+     * @throws InvalidClassException
+     */
+    protected function getModuleDefinitions(): array
+    {
+        return FileSystem::require(FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'web', 'module.php'));
     }
 }
