@@ -46,12 +46,14 @@ final class CopyController extends AccountViewBase
     public function copyAction(int $id): void
     {
         try {
+            $this->accountHelper->initializeFor(AclActionsInterface::ACCOUNT_COPY);
+
             $accountEnrichedDto = new AccountEnrichedDto($this->accountService->getByIdEnriched($id));
             $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
             $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
             $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
 
-            $this->accountHelper->setViewForAccount($accountEnrichedDto, AclActionsInterface::ACCOUNT_COPY);
+            $this->accountHelper->setViewForAccount($accountEnrichedDto);
 
             $this->view->addTemplate('account');
             $this->view->assign(

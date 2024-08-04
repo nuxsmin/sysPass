@@ -43,7 +43,8 @@ final class CreateController extends AccountViewBase
     public function createAction(): void
     {
         try {
-            $this->accountHelper->setViewForBlank(AclActionsInterface::ACCOUNT_CREATE);
+            $this->accountHelper->initializeFor(AclActionsInterface::ACCOUNT_CREATE);
+            $this->accountHelper->setViewForBlank();
 
             $this->view->addTemplate('account');
             $this->view->assign(

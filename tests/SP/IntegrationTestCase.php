@@ -42,9 +42,12 @@ use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
 use SP\Core\UI\ThemeContext;
+use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
@@ -102,6 +105,21 @@ abstract class IntegrationTestCase extends TestCase
         $database = self::createStub(DatabaseInterface::class);
         $database->method('runQuery')->willReturnCallback($this->getDatabaseReturn());
 
+        $acl = self::createMock(AclInterface::class);
+        $acl->method('checkUserAccess')->willReturn(true);
+
+        $accountAcl = self::createStub(AccountAclService::class);
+        $accountAcl->method('getAcl')
+                   ->willReturnCallback(static function (int $actionId) {
+                       $accountPermission = new AccountPermission($actionId);
+                       $accountPermission->setCompiledAccountAccess(true);
+                       $accountPermission->setCompiledShowAccess(true);
+                       $accountPermission->setResultView(true);
+                       $accountPermission->setResultEdit(true);
+
+                       return $accountPermission;
+                   });
+
         $mockedDefinitions = [
             ConfigFileService::class => $configFileService,
             LdapConnectionInterface::class => self::createStub(LdapConnectionInterface::class),
@@ -119,7 +137,9 @@ abstract class IntegrationTestCase extends TestCase
                 )
                 ->constructorParameter('baseUri', factory([UriContextInterface::class, 'getWebRoot']))
                 ->constructorParameter('module', 'web')
-                ->constructorParameter('name', 'material-blue')
+                ->constructorParameter('name', 'material-blue'),
+            AclInterface::class => $acl,
+            AccountAclService::class => $accountAcl
         ];
 
 
@@ -178,7 +198,9 @@ abstract class IntegrationTestCase extends TestCase
      */
     protected function getUserDataDto(): UserDataDto
     {
-        return new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        return new UserDataDto(
+            UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => false, 'isAdminAcc' => false])
+        );
     }
 
     /**

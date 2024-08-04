@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Language;
@@ -271,7 +270,7 @@ final class LayoutHelper extends HelperBase
         $actionSearch->setData([
                                    'historyReset' => 1,
                                    'view' => 'search',
-                                   'route' => Acl::getActionRoute(AclActionsInterface::ACCOUNT),
+                                   'route' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT),
                                ]);
 
         $actions[] = $actionSearch;
@@ -284,7 +283,7 @@ final class LayoutHelper extends HelperBase
             $actionNewAccount->setData([
                                            'historyReset' => 0,
                                            'view' => 'account',
-                                           'route' => Acl::getActionRoute(AclActionsInterface::ACCOUNT_CREATE),
+                                           'route' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_CREATE),
                                        ]);
 
             $actions[] = $actionNewAccount;
@@ -293,12 +292,12 @@ final class LayoutHelper extends HelperBase
         if ($acl->checkUserAccess(AclActionsInterface::ACCESS_MANAGE)) {
             $actionAccessManager = new DataGridAction();
             $actionAccessManager->setId(AclActionsInterface::ACCESS_MANAGE);
-            $actionAccessManager->setTitle(Acl::getActionInfo(AclActionsInterface::ACCESS_MANAGE));
+            $actionAccessManager->setTitle($this->acl->getInfoFor(AclActionsInterface::ACCESS_MANAGE));
             $actionAccessManager->setIcon($icons->account());
             $actionAccessManager->setData([
                                               'historyReset' => 0,
                                               'view' => 'datatabs',
-                                              'route' => Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE),
+                                              'route' => $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE),
                                           ]);
 
             $actions[] = $actionAccessManager;
@@ -307,12 +306,12 @@ final class LayoutHelper extends HelperBase
         if ($acl->checkUserAccess(AclActionsInterface::ITEMS_MANAGE)) {
             $actionItemManager = new DataGridAction();
             $actionItemManager->setId(AclActionsInterface::ITEMS_MANAGE);
-            $actionItemManager->setTitle(Acl::getActionInfo(AclActionsInterface::ITEMS_MANAGE));
+            $actionItemManager->setTitle($this->acl->getInfoFor(AclActionsInterface::ITEMS_MANAGE));
             $actionItemManager->setIcon($icons->group());
             $actionItemManager->setData([
                                             'historyReset' => 0,
                                             'view' => 'datatabs',
-                                            'route' => Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE),
+                                            'route' => $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE),
                                         ]);
 
             $actions[] = $actionItemManager;
@@ -321,12 +320,14 @@ final class LayoutHelper extends HelperBase
         if ($acl->checkUserAccess(AclActionsInterface::SECURITY_MANAGE)) {
             $actionSecurityManager = new DataGridAction();
             $actionSecurityManager->setId(AclActionsInterface::SECURITY_MANAGE);
-            $actionSecurityManager->setTitle(Acl::getActionInfo(AclActionsInterface::SECURITY_MANAGE));
+            $actionSecurityManager->setTitle($this->acl->getInfoFor(AclActionsInterface::SECURITY_MANAGE));
             $actionSecurityManager->setIcon($icons->getIconByName('security'));
             $actionSecurityManager->setData([
                                                 'historyReset' => 0,
                                                 'view' => 'datatabs',
-                                                'route' => Acl::getActionRoute(AclActionsInterface::SECURITY_MANAGE),
+                                                'route' => $this->acl->getRouteFor(
+                                                    AclActionsInterface::SECURITY_MANAGE
+                                                ),
                                             ]);
 
             $actions[] = $actionSecurityManager;
@@ -340,7 +341,7 @@ final class LayoutHelper extends HelperBase
             $actionPlugins->setData([
                                         'historyReset' => 1,
                                         'view' => 'plugin',
-                                        'route' => Acl::getActionRoute(AclActionsInterface::PLUGIN),
+                                        'route' => $this->acl->getRouteFor(AclActionsInterface::PLUGIN),
                                     ]);
 
             $actions[] = $actionPlugins;
@@ -354,7 +355,7 @@ final class LayoutHelper extends HelperBase
             $actionConfigManager->setData([
                                               'historyReset' => 1,
                                               'view' => 'config',
-                                              'route' => Acl::getActionRoute(AclActionsInterface::CONFIG),
+                                              'route' => $this->acl->getRouteFor(AclActionsInterface::CONFIG),
                                           ]);
 
             $actions[] = $actionConfigManager;

@@ -137,7 +137,7 @@ final class AuthTokenGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::AUTHTOKEN_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::AUTHTOKEN_SEARCH)
         );
 
         return $gridActionSearch;
@@ -158,7 +158,7 @@ final class AuthTokenGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::AUTHTOKEN_CREATE)
+            $this->acl->getRouteFor(AclActionsInterface::AUTHTOKEN_CREATE)
         );
 
         return $gridAction;
@@ -178,7 +178,7 @@ final class AuthTokenGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::AUTHTOKEN_VIEW)
+            $this->acl->getRouteFor(AclActionsInterface::AUTHTOKEN_VIEW)
         );
 
         return $gridAction;
@@ -198,7 +198,7 @@ final class AuthTokenGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::AUTHTOKEN_EDIT)
+            $this->acl->getRouteFor(AclActionsInterface::AUTHTOKEN_EDIT)
         );
 
         return $gridAction;
@@ -218,7 +218,7 @@ final class AuthTokenGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::AUTHTOKEN_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::AUTHTOKEN_DELETE)
         );
 
         return $gridAction;

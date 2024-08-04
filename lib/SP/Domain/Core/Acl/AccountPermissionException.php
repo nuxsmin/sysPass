@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -38,7 +39,7 @@ final class AccountPermissionException extends SPException
     /**
      * SPException constructor.
      */
-    public function __construct(int $type, $code = 0, Exception $previous = null)
+    public function __construct(int $type = SPException::ERROR, $code = 0, Exception $previous = null)
     {
         parent::__construct(
             __u('You don\'t have permission to access this account'),

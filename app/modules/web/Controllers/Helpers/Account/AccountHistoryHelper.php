@@ -77,7 +77,7 @@ final class AccountHistoryHelper extends AccountHelperBase
 
     /**
      * @param AccountHistory $accountHistoryData
-     * @param  int  $actionId
+     * @param int $actionId
      *
      * @throws AccountPermissionException
      * @throws UnauthorizedPageException
@@ -93,7 +93,7 @@ final class AccountHistoryHelper extends AccountHelperBase
         $this->actionId = $actionId;
         $this->accountId = $accountHistoryData->getAccountId();
 
-        $this->checkActionAccess();
+        $this->initializeFor($actionId);
         $this->checkAccess($accountHistoryData);
 
         $this->view->assign('isView', true);
@@ -105,8 +105,10 @@ final class AccountHistoryHelper extends AccountHelperBase
 
         $this->view->assign(
             'historyData',
-            SelectItemAdapter::factory(self::mapHistoryForDateSelect($this->accountHistoryService->getHistoryForAccount($this->accountId)))
-                ->getItemsFromArraySelected([$accountHistoryData->getId()])
+            SelectItemAdapter::factory(
+                self::mapHistoryForDateSelect($this->accountHistoryService->getHistoryForAccount($this->accountId))
+            )
+                             ->getItemsFromArraySelected([$accountHistoryData->getId()])
         );
 
         $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryData->getPassDate()));
@@ -148,7 +150,7 @@ final class AccountHistoryHelper extends AccountHelperBase
     /**
      * Comprobar si el usuario dispone de acceso al módulo
      *
-     * @param  AccountHistory  $accountHistoryData
+     * @param AccountHistory $accountHistoryData
      *
      * @throws AccountPermissionException
      * @throws ConstraintException

@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
@@ -139,7 +138,7 @@ final class UserProfileGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PROFILE_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::PROFILE_SEARCH)
         );
 
         return $gridActionSearch;
@@ -160,7 +159,7 @@ final class UserProfileGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PROFILE_CREATE)
+            $this->acl->getRouteFor(AclActionsInterface::PROFILE_CREATE)
         );
 
         return $gridAction;
@@ -180,7 +179,7 @@ final class UserProfileGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PROFILE_VIEW)
+            $this->acl->getRouteFor(AclActionsInterface::PROFILE_VIEW)
         );
 
         return $gridAction;
@@ -200,7 +199,7 @@ final class UserProfileGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PROFILE_EDIT)
+            $this->acl->getRouteFor(AclActionsInterface::PROFILE_EDIT)
         );
 
         return $gridAction;
@@ -220,7 +219,7 @@ final class UserProfileGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PROFILE_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::PROFILE_DELETE)
         );
 
         return $gridAction;

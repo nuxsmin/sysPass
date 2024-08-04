@@ -24,42 +24,35 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__u;
+
 /**
  * Class AccountHelperBase
  */
 abstract class AccountHelperBase extends HelperBase
 {
-    protected ?int                 $actionId = null;
-    protected AccountActionsHelper $accountActionsHelper;
-    protected bool                 $isView   = false;
-    protected Acl                  $acl;
-    private MasterPassService      $masterPassService;
+    protected ?int $actionId      = null;
+    protected bool $isView        = false;
+    protected bool $actionGranted = false;
 
     public function __construct(
-        Application          $application,
-        TemplateInterface    $template,
-        RequestService    $request,
-        AclInterface         $acl,
-        AccountActionsHelper $accountActionsHelper,
-        MasterPassService $masterPassService
+        Application                             $application,
+        TemplateInterface                       $template,
+        RequestService                          $request,
+        protected readonly AclInterface         $acl,
+        protected readonly AccountActionsHelper $accountActionsHelper,
+        private readonly MasterPassService      $masterPassService
     ) {
         parent::__construct($application, $template, $request);
-
-        $this->acl = $acl;
-        $this->accountActionsHelper = $accountActionsHelper;
-        $this->masterPassService = $masterPassService;
     }
 
     /**
@@ -74,15 +67,18 @@ abstract class AccountHelperBase extends HelperBase
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
      */
-    final protected function checkActionAccess(): void
+    final public function initializeFor(int $actionId): void
     {
-        if (!$this->acl->checkUserAccess($this->actionId)) {
-            throw new UnauthorizedPageException(SPException::INFO);
+        if (!$this->acl->checkUserAccess($actionId)) {
+            throw UnauthorizedPageException::info($actionId);
         }
 
         if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())
         ) {
-            throw new UpdatedMasterPassException(SPException::INFO);
+            throw UpdatedMasterPassException::info(__u('The master password needs to be updated'));
         }
+
+        $this->actionId = $actionId;
+        $this->actionGranted = true;
     }
 }

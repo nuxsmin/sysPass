@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
@@ -41,6 +40,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -73,54 +73,31 @@ final class AccountHelper extends AccountHelperBase
 {
     use ItemTrait;
 
-    private AccountService         $accountService;
-    private AccountHistoryService  $accountHistoryService;
-    private PublicLinkService      $publicLinkService;
-    private ItemPresetService      $itemPresetService;
-    private MasterPassService      $masterPassService;
-    private AccountAclService      $accountAclService;
-    private CategoryService        $categoryService;
-    private ClientService          $clientService;
-    private CustomFieldDataService $customFieldService;
-    private ?AccountPermission     $accountAcl = null;
-    private ?int                   $accountId  = null;
-    private UserService            $userService;
-    private UserGroupService       $userGroupService;
-    private TagService             $tagService;
+    private MasterPassService  $masterPassService;
+    private ?AccountPermission $accountPermission = null;
+    private ?int               $accountId         = null;
 
     public function __construct(
-        Application           $application,
-        TemplateInterface     $template,
-        RequestService        $request,
-        AclInterface          $acl,
-        AccountService        $accountService,
-        AccountHistoryService $accountHistoryService,
-        PublicLinkService     $publicLinkService,
-        ItemPresetService     $itemPresetService,
-        MasterPassService     $masterPassService,
-        AccountActionsHelper  $accountActionsHelper,
-        AccountAclService     $accountAclService,
-        CategoryService       $categoryService,
-        ClientService         $clientService,
-        CustomFieldDataService               $customFieldService,
-        UserService                          $userService,
-        UserGroupService                     $userGroupService,
-        TagService                           $tagService,
-        private readonly UriContextInterface $uriContext
+        Application                             $application,
+        TemplateInterface                       $template,
+        RequestService                          $request,
+        AclInterface                            $acl,
+        private readonly AccountService         $accountService,
+        private readonly AccountHistoryService  $accountHistoryService,
+        private readonly PublicLinkService      $publicLinkService,
+        private readonly ItemPresetService      $itemPresetService,
+        MasterPassService                       $masterPassService,
+        AccountActionsHelper                    $accountActionsHelper,
+        private readonly AccountAclService      $accountAclService,
+        private readonly CategoryService        $categoryService,
+        private readonly ClientService          $clientService,
+        private readonly CustomFieldDataService $customFieldService,
+        private readonly UserService            $userService,
+        private readonly UserGroupService       $userGroupService,
+        private readonly TagService             $tagService,
+        private readonly UriContextInterface    $uriContext
     ) {
         parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
-
-        $this->accountService = $accountService;
-        $this->accountHistoryService = $accountHistoryService;
-        $this->publicLinkService = $publicLinkService;
-        $this->itemPresetService = $itemPresetService;
-        $this->accountAclService = $accountAclService;
-        $this->categoryService = $categoryService;
-        $this->clientService = $clientService;
-        $this->customFieldService = $customFieldService;
-        $this->userService = $userService;
-        $this->userGroupService = $userGroupService;
-        $this->tagService = $tagService;
 
         $this->view->assign('changesHash', '');
         $this->view->assign('chkUserEdit', false);
@@ -131,25 +108,21 @@ final class AccountHelper extends AccountHelperBase
      * Sets account's view variables
      *
      * @param AccountEnrichedDto $accountDetailsResponse
-     * @param int $actionId
-     *
      * @throws AccountPermissionException
-     * @throws UnauthorizedPageException
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      * @throws ServiceException
-     * @throws UpdatedMasterPassException
-     * @throws NoSuchItemException
+     * @throws UnauthorizedActionException
      */
-    public function setViewForAccount(AccountEnrichedDto $accountDetailsResponse, int $actionId): void
+    public function setViewForAccount(AccountEnrichedDto $accountDetailsResponse): void
     {
+        if (!$this->actionGranted) {
+            throw UnauthorizedActionException::error('This view requires initialization');
+        }
+
         $this->accountId = $accountDetailsResponse->getAccountView()->getId();
-        $this->actionId = $actionId;
-
-        $this->checkActionAccess();
-
-        $this->accountAcl = $this->checkAccess($accountDetailsResponse);
+        $this->accountPermission = $this->checkAccess($accountDetailsResponse);
 
         $accountData = $accountDetailsResponse->getAccountView();
 
@@ -215,7 +188,7 @@ final class AccountHelper extends AccountHelperBase
         $this->view->assign('maxFileSize', round($this->configData->getFilesAllowedSize() / 1024, 1));
         $this->view->assign('filesAllowedExts', implode(',', $this->configData->getFilesAllowedExts()));
 
-        if ($this->configData->isPublinksEnabled() && $this->accountAcl->isShowLink()) {
+        if ($this->configData->isPublinksEnabled() && $this->accountPermission->isShowLink()) {
             try {
                 $publicLinkData = $this->publicLinkService->getHashForItem($this->accountId);
                 $accountActionsDto->setPublicLinkId($publicLinkData->getId());
@@ -278,14 +251,14 @@ final class AccountHelper extends AccountHelperBase
         $this->view->assign(
             'accountActions',
             $this->accountActionsHelper->getActionsForAccount(
-                $this->accountAcl,
+                $this->accountPermission,
                 $accountActionsDto
             )
         );
         $this->view->assign(
             'accountActionsMenu',
             $this->accountActionsHelper->getActionsGrouppedForAccount(
-                $this->accountAcl,
+                $this->accountPermission,
                 $accountActionsDto
             )
         );
@@ -296,25 +269,25 @@ final class AccountHelper extends AccountHelperBase
     /**
      * Comprobar si el usuario dispone de acceso al módulo
      *
-     * @param AccountEnrichedDto $accountDetailsResponse
+     * @param AccountEnrichedDto $accountEnrichedDto
      *
      * @return AccountPermission
      * @throws AccountPermissionException
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function checkAccess(AccountEnrichedDto $accountDetailsResponse): AccountPermission
+    protected function checkAccess(AccountEnrichedDto $accountEnrichedDto): AccountPermission
     {
-        $accountAcl = $this->accountAclService->getAcl(
+        $accountPermission = $this->accountAclService->getAcl(
             $this->actionId,
-            AccountAclDto::makeFromAccount($accountDetailsResponse)
+            AccountAclDto::makeFromAccount($accountEnrichedDto)
         );
 
-        if ($accountAcl->checkAccountAccess($this->actionId) === false) {
-            throw new AccountPermissionException(SPException::INFO);
+        if ($accountPermission->checkAccountAccess($this->actionId) === false) {
+            throw new AccountPermissionException();
         }
 
-        return $accountAcl;
+        return $accountPermission;
     }
 
     /**
@@ -355,24 +328,24 @@ final class AccountHelper extends AccountHelperBase
             'addClientEnabled',
             !$this->isView && $this->acl->checkUserAccess(AclActionsInterface::CLIENT)
         );
-        $this->view->assign('addClientRoute', Acl::getActionRoute(AclActionsInterface::CLIENT_CREATE));
+        $this->view->assign('addClientRoute', $this->acl->getRouteFor(AclActionsInterface::CLIENT_CREATE));
         $this->view->assign(
             'addCategoryEnabled',
             !$this->isView && $this->acl->checkUserAccess(AclActionsInterface::CATEGORY)
         );
-        $this->view->assign('addCategoryRoute', Acl::getActionRoute(AclActionsInterface::CATEGORY_CREATE));
+        $this->view->assign('addCategoryRoute', $this->acl->getRouteFor(AclActionsInterface::CATEGORY_CREATE));
         $this->view->assign(
             'addTagEnabled',
             !$this->isView
             && $this->acl->checkUserAccess(AclActionsInterface::TAG)
         );
-        $this->view->assign('addTagRoute', Acl::getActionRoute(AclActionsInterface::TAG_CREATE));
-        $this->view->assign('fileListRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_LIST));
-        $this->view->assign('fileUploadRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_UPLOAD));
+        $this->view->assign('addTagRoute', $this->acl->getRouteFor(AclActionsInterface::TAG_CREATE));
+        $this->view->assign('fileListRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_LIST));
+        $this->view->assign('fileUploadRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_UPLOAD));
         $this->view->assign('disabled', $this->isView ? 'disabled' : '');
         $this->view->assign('readonly', $this->isView ? 'readonly' : '');
-        $this->view->assign('showViewCustomPass', $this->accountAcl->isShowViewPass());
-        $this->view->assign('accountAcl', $this->accountAcl);
+        $this->view->assign('showViewCustomPass', $this->accountPermission->isShowViewPass());
+        $this->view->assign('accountAcl', $this->accountPermission);
 
         if ($this->accountId) {
             $baseUrl = ($this->configData->getApplicationUrl() ?? $this->uriContext->getWebUri()) .
@@ -388,9 +361,6 @@ final class AccountHelper extends AccountHelperBase
     /**
      * Sets account's view for a blank form
      *
-     * @param int $actionId
-     *
-     * @return void
      * @throws UnauthorizedPageException
      * @throws ConstraintException
      * @throws NoSuchPropertyException
@@ -400,17 +370,18 @@ final class AccountHelper extends AccountHelperBase
      * @throws ServiceException
      * @throws UpdatedMasterPassException
      */
-    public function setViewForBlank(int $actionId): void
+    public function setViewForBlank(): void
     {
-        $this->actionId = $actionId;
-        $this->accountAcl = new AccountPermission($actionId);
+        if (!$this->actionGranted) {
+            throw new UnauthorizedActionException();
+        }
 
-        $this->checkActionAccess();
+        $this->accountPermission = new AccountPermission($this->actionId);
 
         $userProfileData = $this->context->getUserProfile() ?? new ProfileData();
         $userData = $this->context->getUserData();
 
-        $this->accountAcl->setShowPermission(
+        $this->accountPermission->setShowPermission(
             $userData->getIsAdminApp()
             || $userData->getIsAdminAcc()
             || $userProfileData->isAccPermission()
@@ -465,7 +436,7 @@ final class AccountHelper extends AccountHelperBase
         $this->view->assign(
             'accountActions',
             $this->accountActionsHelper->getActionsForAccount(
-                $this->accountAcl,
+                $this->accountPermission,
                 new AccountActionsDto($this->accountId)
             )
         );

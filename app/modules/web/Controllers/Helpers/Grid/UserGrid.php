@@ -24,8 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
-
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
@@ -53,6 +51,7 @@ final class UserGrid extends GridBase
      * @param QueryResult $queryResult
      *
      * @return DataGridInterface
+     * @throws SPException
      */
     public function getGrid(QueryResult $queryResult): DataGridInterface
     {
@@ -85,6 +84,7 @@ final class UserGrid extends GridBase
 
     /**
      * @return DataGridInterface
+     * @throws SPException
      */
     protected function getGridLayout(): DataGridInterface
     {
@@ -163,7 +163,7 @@ final class UserGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::USER_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::USER_SEARCH)
         );
 
         return $gridActionSearch;
@@ -184,7 +184,7 @@ final class UserGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::USER_CREATE)
+            $this->acl->getRouteFor(AclActionsInterface::USER_CREATE)
         );
 
         return $gridAction;
@@ -204,7 +204,7 @@ final class UserGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::USER_VIEW)
+            $this->acl->getRouteFor(AclActionsInterface::USER_VIEW)
         );
 
         return $gridAction;
@@ -224,7 +224,7 @@ final class UserGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::USER_EDIT)
+            $this->acl->getRouteFor(AclActionsInterface::USER_EDIT)
         );
 
         return $gridAction;
@@ -245,7 +245,7 @@ final class UserGrid extends GridBase
         $gridAction->setFilterRowSource('isLdap');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::USER_EDIT_PASS)
+            $this->acl->getRouteFor(AclActionsInterface::USER_EDIT_PASS)
         );
 
         return $gridAction;
@@ -265,7 +265,7 @@ final class UserGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::USER_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::USER_DELETE)
         );
 
         return $gridAction;

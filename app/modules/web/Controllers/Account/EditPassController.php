@@ -28,8 +28,12 @@ use Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Events\Event;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Util\ErrorUtil;
+
+use function SP\__;
+use function SP\processException;
 
 /**
  * Class EditPassController
@@ -47,11 +51,13 @@ final class EditPassController extends AccountViewBase
     public function editPassAction(int $id): void
     {
         try {
-            $accountEnrichedDto = $this->accountService->getByIdEnriched($id);
+            $this->accountHelper->initializeFor(AclActionsInterface::ACCOUNT_EDIT_PASS);
+
+            $accountEnrichedDto = new AccountEnrichedDto($this->accountService->getByIdEnriched($id));
             $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
             $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
 
-            $this->accountHelper->setViewForAccount($accountEnrichedDto, AclActionsInterface::ACCOUNT_EDIT_PASS);
+            $this->accountHelper->setViewForAccount($accountEnrichedDto);
 
             $this->view->addTemplate('account-editpass');
             $this->view->assign(

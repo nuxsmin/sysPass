@@ -26,8 +26,12 @@ namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
 use SP\Core\Events\Event;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Util\ErrorUtil;
+
+use function SP\__;
+use function SP\processException;
 
 /**
  * Class EditController
@@ -43,12 +47,14 @@ final class EditController extends AccountViewBase
     public function editAction(int $id): void
     {
         try {
-            $accountEnrichedDto = $this->accountService->getByIdEnriched($id);
+            $this->accountHelper->initializeFor(AclActionsInterface::ACCOUNT_EDIT);
+
+            $accountEnrichedDto = new AccountEnrichedDto($this->accountService->getByIdEnriched($id));
             $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
             $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
             $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
 
-            $this->accountHelper->setViewForAccount($accountEnrichedDto, AclActionsInterface::ACCOUNT_EDIT);
+            $this->accountHelper->setViewForAccount($accountEnrichedDto);
 
             $this->view->addTemplate('account');
             $this->view->assign(

@@ -29,6 +29,7 @@ use SP\Core\Application;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Html\DataGrid\Action\DataGridAction;
@@ -47,7 +48,8 @@ final class AccountActionsHelper extends HelperBase
         Application                          $application,
         TemplateInterface                    $template,
         RequestService                       $request,
-        private readonly ThemeIconsInterface $icons
+        private readonly ThemeIconsInterface $icons,
+        private readonly AclInterface        $acl
     ) {
         parent::__construct($application, $template, $request);
     }
@@ -140,8 +142,8 @@ final class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Back'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->back());
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
-        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
+        $action->addData('onclick', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -160,8 +162,8 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('btn-action');
         $action->setIcon($this->icons->editPass());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT_PASS));
-        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT_PASS));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_EDIT_PASS));
+        $action->addData('onclick', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_EDIT_PASS));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -180,8 +182,8 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('btn-action');
         $action->setIcon($this->icons->edit());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowEdit');
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT));
-        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_EDIT));
+        $action->addData('onclick', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_EDIT));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -199,8 +201,8 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('btn-action');
         $action->setIcon($this->icons->email());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowRequest');
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_REQUEST));
-        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_REQUEST));
+        $action->addData('onclick', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'submit');
 
         return $action;
@@ -338,8 +340,8 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('btn-action');
         $action->setIcon($this->icons->delete());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowDelete');
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_DELETE));
-        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_DELETE));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_DELETE));
+        $action->addData('onclick', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_DELETE));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -356,9 +358,9 @@ final class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Update Public Link'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->publicLink());
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::PUBLICLINK_REFRESH));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::PUBLICLINK_REFRESH));
         $action->addData('onclick', 'link/refresh');
-        $action->addData('action-next', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-next', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -377,9 +379,9 @@ final class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Delete Public Link'));
         $action->addClass('btn-action');
         $action->setIcon($icon);
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::PUBLICLINK_DELETE));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::PUBLICLINK_DELETE));
         $action->addData('onclick', 'link/delete');
-        $action->addData('action-next', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-next', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -398,7 +400,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setIcon($this->icons->publicLink());
         $action->addData('action-route', 'publicLink/saveCreateFromAccount');
         $action->addData('onclick', 'link/save');
-        $action->addData('action-next', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-next', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -417,9 +419,9 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('btn-action');
         $action->setIcon($this->icons->viewPass());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_HISTORY_VIEW_PASS));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_HISTORY_VIEW_PASS));
         $action->addData('action-full', 1);
-        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_HISTORY_VIEW_PASS));
+        $action->addData('onclick', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_HISTORY_VIEW_PASS));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -439,7 +441,7 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('clip-pass-button');
         $action->setIcon($this->icons->clipboard());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopyPass');
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_HISTORY_COPY_PASS));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_HISTORY_COPY_PASS));
         $action->addData('action-full', 0);
         $action->addData('useclipboard', '1');
         $action->addAttribute('type', 'button');
@@ -460,9 +462,9 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('btn-action');
         $action->setIcon($this->icons->viewPass());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW_PASS));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW_PASS));
         $action->addData('action-full', 1);
-        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW_PASS));
+        $action->addData('onclick', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW_PASS));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -474,7 +476,7 @@ final class AccountActionsHelper extends HelperBase
     public function getCopyPassAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId(AclActionsInterface::ACCOUNT_VIEW_PASS);
+        $action->setId(AclActionsInterface::ACCOUNT_COPY_PASS);
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Copy Password to Clipboard'));
         $action->setTitle(__('Copy Password to Clipboard'));
@@ -482,7 +484,7 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('clip-pass-button');
         $action->setIcon($this->icons->clipboard());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopyPass');
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_COPY_PASS));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_COPY_PASS));
         $action->addData('action-full', 0);
         $action->addData('useclipboard', '1');
         $action->addAttribute('type', 'button');
@@ -503,8 +505,8 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('btn-action');
         $action->setIcon($this->icons->copy());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopy');
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_COPY));
-        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_COPY));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_COPY));
+        $action->addData('onclick', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_COPY));
         $action->addAttribute('type', 'button');
 
         return $action;

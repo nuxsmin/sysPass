@@ -32,7 +32,6 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
@@ -42,10 +41,10 @@ use SP\Tests\IntegrationTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
- * Class DeleteControllerTest
+ * Class EditControllerTest
  */
 #[Group('integration')]
-class DeleteControllerTest extends IntegrationTestCase
+class EditControllerTest extends IntegrationTestCase
 {
 
     /**
@@ -55,31 +54,26 @@ class DeleteControllerTest extends IntegrationTestCase
      * @throws InvalidClassException
      * @throws ContainerExceptionInterface
      */
-    public function testDeleteAction()
+    public function testEditAction()
     {
         $definitions = $this->getModuleDefinitions();
         $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(
             static function (string $output) {
                 $crawler = new Crawler($output);
                 $filter = $crawler->filterXPath(
-                    '//div[@class="data-container"]//form[@name="frmaccount" and @data-action-route="account/saveDelete"]|//div[@class="item-actions"]//button'
+                    '//div[@class="data-container"]//form[@name="frmaccount" and @data-action-route="account/saveEdit"]|//div[@class="item-actions"]//button'
                 )->extract(['id']);
 
-                return !empty($output) && count($filter) === 2;
+                return !empty($output) && count($filter) === 3;
             }
         );
 
         $container = $this->buildContainer(
             $definitions,
-            $this->buildRequest('get', 'index.php', ['r' => 'account/delete'])
+            $this->buildRequest('get', 'index.php', ['r' => 'account/edit/' . self::$faker->randomNumber(3)])
         );
 
         $this->runApp($container);
-    }
-
-    protected function getUserProfile(): ProfileData
-    {
-        return new ProfileData(['accDelete' => true]);
     }
 
     protected function getDatabaseReturn(): callable

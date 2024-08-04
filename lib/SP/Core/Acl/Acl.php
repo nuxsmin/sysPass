@@ -43,60 +43,13 @@ use function SP\processException;
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
  */
-final class Acl implements AclActionsInterface, AclInterface
+final readonly class Acl implements AclActionsInterface, AclInterface
 {
-    /**
-     * @deprecated
-     */
-    private static ActionsInterface $actionsStatic;
-    private ActionsInterface        $actions;
-
     public function __construct(
-        private readonly Context $context,
-        private readonly EventDispatcherInterface $eventDispatcher,
-        ActionsInterface         $actions
+        private Context                  $context,
+        private EventDispatcherInterface $eventDispatcher,
+        private ActionsInterface         $actions
     ) {
-        self::$actionsStatic = $actions;
-        $this->actions = $actions;
-    }
-
-    /**
-     * Returns action route
-     *
-     * @deprecated Use {@link Acl::getRouteFor()} instead
-     */
-    public static function getActionRoute(int $actionId): string
-    {
-        try {
-            return self::$actionsStatic?->getActionById($actionId)->getRoute();
-        } catch (ActionNotFoundException $e) {
-            processException($e);
-        }
-
-        return '';
-    }
-
-    /**
-     * Obtener el nombre de la acción indicada
-     *
-     * @param int $actionId El id de la acción
-     * @param bool $translate
-     *
-     * @return string
-     * @internal param bool $translate Si se devuelve el nombre corto de la acción
-     * @deprecated Use {@link Acl::getInfoFor()} instead
-     */
-    public static function getActionInfo(int $actionId, bool $translate = true): string
-    {
-        try {
-            $text = self::$actionsStatic?->getActionById($actionId)->getText();
-
-            return $translate ? __($text) : $text;
-        } catch (ActionNotFoundException $e) {
-            processException($e);
-        }
-
-        return '';
     }
 
     /**

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
@@ -157,7 +156,7 @@ final class PublicLinkGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PUBLICLINK_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::PUBLICLINK_SEARCH)
         );
 
         return $gridActionSearch;
@@ -178,7 +177,7 @@ final class PublicLinkGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PUBLICLINK_CREATE)
+            $this->acl->getRouteFor(AclActionsInterface::PUBLICLINK_CREATE)
         );
 
         return $gridAction;
@@ -198,7 +197,7 @@ final class PublicLinkGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PUBLICLINK_VIEW)
+            $this->acl->getRouteFor(AclActionsInterface::PUBLICLINK_VIEW)
         );
 
         return $gridAction;
@@ -217,7 +216,7 @@ final class PublicLinkGrid extends GridBase
         $gridAction->setOnClickFunction('link/refresh');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PUBLICLINK_REFRESH)
+            $this->acl->getRouteFor(AclActionsInterface::PUBLICLINK_REFRESH)
         );
 
         return $gridAction;
@@ -237,7 +236,7 @@ final class PublicLinkGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PUBLICLINK_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::PUBLICLINK_DELETE)
         );
 
         return $gridAction;

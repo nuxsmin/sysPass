@@ -57,7 +57,7 @@ final class AccountRequestHelper extends AccountHelperBase
         $this->actionId = $actionId;
         $this->accountAcl = new AccountPermission($actionId);
 
-        $this->checkActionAccess();
+        $this->initializeFor();
 
         $accountData = $accountDetailsResponse->getAccountView();
 

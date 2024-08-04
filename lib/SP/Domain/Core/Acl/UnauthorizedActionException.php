@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -38,11 +39,11 @@ final class UnauthorizedActionException extends SPException
     /**
      * SPException constructor.
      *
-     * @param string $type
+     * @param int $type
      * @param int $code
      * @param Exception|null $previous
      */
-    public function __construct(string $type, int $code = 0, Exception $previous = null)
+    public function __construct(int $type = SPException::ERROR, int $code = 0, Exception $previous = null)
     {
         parent::__construct(
             __u('You don\'t have permission to do this operation'),

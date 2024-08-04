@@ -47,22 +47,16 @@ final class CopyPassHistoryController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private AccountService        $accountService;
-    private AccountPasswordHelper $accountPasswordHelper;
-
     public function __construct(
-        Application         $application,
-        WebControllerHelper $webControllerHelper,
-        AccountService      $accountService,
-        AccountPasswordHelper $accountPasswordHelper
+        Application                            $application,
+        WebControllerHelper                    $webControllerHelper,
+        private readonly AccountService        $accountService,
+        private readonly AccountPasswordHelper $accountPasswordHelper
     ) {
         parent::__construct(
             $application,
             $webControllerHelper
         );
-
-        $this->accountService = $accountService;
-        $this->accountPasswordHelper = $accountPasswordHelper;
     }
 
     /**

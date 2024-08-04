@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
@@ -53,6 +52,7 @@ final class UserGroupGrid extends GridBase
      * @param QueryResult $queryResult
      *
      * @return DataGridInterface
+     * @throws SPException
      */
     public function getGrid(QueryResult $queryResult): DataGridInterface
     {
@@ -84,6 +84,7 @@ final class UserGroupGrid extends GridBase
 
     /**
      * @return DataGridInterface
+     * @throws SPException
      */
     protected function getGridLayout(): DataGridInterface
     {
@@ -142,7 +143,7 @@ final class UserGroupGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::GROUP_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::GROUP_SEARCH)
         );
 
         return $gridActionSearch;
@@ -163,7 +164,7 @@ final class UserGroupGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::GROUP_CREATE)
+            $this->acl->getRouteFor(AclActionsInterface::GROUP_CREATE)
         );
 
         return $gridAction;
@@ -183,7 +184,7 @@ final class UserGroupGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::GROUP_VIEW)
+            $this->acl->getRouteFor(AclActionsInterface::GROUP_VIEW)
         );
 
         return $gridAction;
@@ -203,7 +204,7 @@ final class UserGroupGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::GROUP_EDIT)
+            $this->acl->getRouteFor(AclActionsInterface::GROUP_EDIT)
         );
 
         return $gridAction;
@@ -223,7 +224,7 @@ final class UserGroupGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::GROUP_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::GROUP_DELETE)
         );
 
         return $gridAction;

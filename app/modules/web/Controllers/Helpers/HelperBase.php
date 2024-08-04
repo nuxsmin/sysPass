@@ -39,16 +39,16 @@ use SP\Mvc\View\TemplateInterface;
  */
 abstract class HelperBase
 {
-    protected TemplateInterface        $view;
-    protected ConfigDataInterface      $configData;
-    protected Context                  $context;
-    protected EventDispatcherInterface $eventDispatcher;
-    protected ConfigFileService        $config;
+    protected readonly TemplateInterface        $view;
+    protected readonly ConfigDataInterface      $configData;
+    protected readonly Context                  $context;
+    protected readonly EventDispatcherInterface $eventDispatcher;
+    protected readonly ConfigFileService        $config;
 
     public function __construct(
-        Application              $application,
-        TemplateInterface        $template,
-        protected RequestService $request
+        Application                       $application,
+        TemplateInterface                 $template,
+        protected readonly RequestService $request
     ) {
         $this->config = $application->getConfig();
         $this->context = $application->getContext();
