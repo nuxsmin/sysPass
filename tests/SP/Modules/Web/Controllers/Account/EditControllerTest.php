@@ -58,13 +58,14 @@ class EditControllerTest extends IntegrationTestCase
     {
         $definitions = $this->getModuleDefinitions();
         $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(
-            static function (string $output) {
+            function (string $output): void {
                 $crawler = new Crawler($output);
                 $filter = $crawler->filterXPath(
                     '//div[@class="data-container"]//form[@name="frmaccount" and @data-action-route="account/saveEdit"]|//div[@class="item-actions"]//button'
                 )->extract(['id']);
 
-                return !empty($output) && count($filter) === 3;
+                $this->assertNotEmpty($output);
+                $this->assertCount(3, $filter);
             }
         );
 

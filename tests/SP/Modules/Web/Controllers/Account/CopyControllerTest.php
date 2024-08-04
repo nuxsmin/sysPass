@@ -56,13 +56,14 @@ class CopyControllerTest extends IntegrationTestCase
     public function testCopyAction()
     {
         $definitions = $this->getModuleDefinitions();
-        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(static function (string $output) {
+        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(function (string $output): void {
             $crawler = new Crawler($output);
             $filter = $crawler->filterXPath(
                 '//div[@class="data-container"]//form[@name="frmaccount"]|//div[@class="item-actions"]//button'
             )->extract(['id']);
 
-            return !empty($output) && count($filter) === 3;
+            $this->assertNotEmpty($output);
+            $this->assertCount(3, $filter);
         });
 
         $container = $this->buildContainer(

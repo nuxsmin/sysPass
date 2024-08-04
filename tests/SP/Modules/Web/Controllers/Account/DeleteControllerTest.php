@@ -59,13 +59,14 @@ class DeleteControllerTest extends IntegrationTestCase
     {
         $definitions = $this->getModuleDefinitions();
         $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(
-            static function (string $output) {
+            function (string $output): void {
                 $crawler = new Crawler($output);
                 $filter = $crawler->filterXPath(
                     '//div[@class="data-container"]//form[@name="frmaccount" and @data-action-route="account/saveDelete"]|//div[@class="item-actions"]//button'
                 )->extract(['id']);
 
-                return !empty($output) && count($filter) === 2;
+                $this->assertNotEmpty($output);
+                $this->assertCount(2, $filter);
             }
         );
 

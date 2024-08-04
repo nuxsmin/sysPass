@@ -56,13 +56,14 @@ class IndexControllerTest extends IntegrationTestCase
     {
         $definitions = $this->getModuleDefinitions();
 
-        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(static function (string $output) {
+        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(function (string $output): void {
             $crawler = new Crawler($output);
             $filter = $crawler->filterXPath(
                 '//div[contains(@id, \'tabs-\')]//form'
             )->extract(['id']);
 
-            return !empty($output) && count($filter) === 5;
+            $this->assertNotEmpty($output);
+            $this->assertCount(5, $filter);
         });
 
         $container = $this->buildContainer(

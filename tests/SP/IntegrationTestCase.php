@@ -31,7 +31,6 @@ use Faker\Factory;
 use Faker\Generator;
 use Klein\Request;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -69,6 +68,7 @@ use SP\Modules\Web\Bootstrap;
 use SP\Mvc\View\OutputHandlerInterface;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserProfileDataGenerator;
+use SP\Tests\Stubs\OutputHandlerStub;
 
 use function DI\autowire;
 use function DI\factory;
@@ -235,26 +235,11 @@ abstract class IntegrationTestCase extends TestCase
 
     /**
      * @param callable $outputChecker
-     * @return MockObject|OutputHandlerInterface
-     * @throws Exception
+     * @return OutputHandlerInterface
      */
-    protected function setupOutputHandler(callable $outputChecker): OutputHandlerInterface|MockObject
+    protected function setupOutputHandler(callable $outputChecker): OutputHandlerInterface
     {
-        $outputHandler = $this->createMock(OutputHandlerInterface::class);
-        $outputHandler->expects($this->once())
-                      ->method('bufferedContent')
-                      ->with(
-                          self::callback(
-                              static function (callable $callback) use ($outputChecker) {
-                                  ob_start();
-                                  $callback();
-
-                                  return $outputChecker(ob_get_clean());
-                              }
-                          )
-                      );
-
-        return $outputHandler;
+        return new OutputHandlerStub($outputChecker(...)->bindTo($this));
     }
 
     /**
