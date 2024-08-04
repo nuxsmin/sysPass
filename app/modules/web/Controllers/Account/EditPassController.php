@@ -25,8 +25,6 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Events\Event;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -44,9 +42,6 @@ final class EditPassController extends AccountViewBase
      * Obtener los datos para mostrar el interface para modificar la clave de cuenta
      *
      * @param int $id Account's ID
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      */
     public function editPassAction(int $id): void
     {
