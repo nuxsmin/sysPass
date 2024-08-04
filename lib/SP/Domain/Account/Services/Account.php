@@ -203,14 +203,14 @@ final class Account extends Service implements AccountService
                 $userCanChangePermissions = AccountAcl::getShowPermission($userData, $userProfile);
 
                 foreach ($accountUpdateBulkDto->getAccountUpdateDto() as $accountId => $accountUpdateDto) {
+                    $changeOwner = false;
+                    $changeUserGroup = false;
+
                     if ($userCanChangePermissions) {
                         $account = $this->getById($accountId);
 
                         $changeOwner = $this->userCanChangeOwner($userData, $userProfile, $account);
                         $changeUserGroup = $this->userCanChangeGroup($userData, $userProfile, $account);
-                    } else {
-                        $changeOwner = false;
-                        $changeUserGroup = false;
                     }
 
                     $this->addHistory($accountId);

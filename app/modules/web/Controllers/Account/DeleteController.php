@@ -28,34 +28,33 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\UI\ThemeIcons;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
 use SP\Modules\Web\Util\ErrorUtil;
 use SP\Mvc\Controller\WebControllerHelper;
 
+use function SP\__;
+use function SP\processException;
+
 /**
  * Class DeleteController
  */
 final class DeleteController extends AccountControllerBase
 {
-    private AccountHelper                                    $accountHelper;
-    private ThemeIcons     $icons;
-    private AccountService $accountService;
+    private readonly ThemeIcons $icons;
 
     public function __construct(
-        Application             $application,
-        WebControllerHelper     $webControllerHelper,
-        AccountHelper           $accountHelper,
-        AccountService $accountService
+        Application                     $application,
+        WebControllerHelper             $webControllerHelper,
+        private readonly AccountHelper  $accountHelper,
+        private readonly AccountService $accountService
     ) {
         parent::__construct(
             $application,
             $webControllerHelper
         );
-
-        $this->accountHelper = $accountHelper;
-        $this->accountService = $accountService;
 
         $this->icons = $this->theme->getIcons();
     }
@@ -68,7 +67,7 @@ final class DeleteController extends AccountControllerBase
     public function deleteAction(?int $id = null): void
     {
         try {
-            $accountEnrichedDto = $this->accountService->getByIdEnriched($id);
+            $accountEnrichedDto = new AccountEnrichedDto($this->accountService->getByIdEnriched($id));
             $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
             $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
             $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
