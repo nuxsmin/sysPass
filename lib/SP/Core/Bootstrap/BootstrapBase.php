@@ -94,6 +94,8 @@ abstract class BootstrapBase implements BootstrapInterface
 
                 if (defined('TEST_ROOT')) {
                     $router->response()->body(__($err_msg) . PHP_EOL . $err->getTraceAsString());
+
+                    throw $err;
                 } else {
                     $router->response()->body(__($err_msg));
                 }

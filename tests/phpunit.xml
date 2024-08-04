@@ -67,4 +67,7 @@
             <file>../lib/SP/Domain/Config/Adapters/ConfigData.php</file>
         </exclude>
     </source>
+    <php>
+        <ini name="zend.assertions" value="1"/>
+    </php>
 </phpunit>

@@ -130,5 +130,4 @@ final class Bootstrap extends BootstrapBase
             return $response;
         };
     }
-
 }
