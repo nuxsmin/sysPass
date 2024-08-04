@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers\Account;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -34,39 +35,36 @@ use SP\Modules\Web\Controllers\Helpers\Account\AccountRequestHelper;
 use SP\Modules\Web\Util\ErrorUtil;
 use SP\Mvc\Controller\WebControllerHelper;
 
+use function SP\processException;
+
 /**
  * Class RequestAccessController
  */
 final class RequestAccessController extends ControllerBase
 {
-    private AccountRequestHelper $accountRequestHelper;
-    private AccountService       $accountService;
 
     public function __construct(
-        Application          $application,
-        WebControllerHelper  $webControllerHelper,
-        AccountService       $accountService,
-        AccountRequestHelper $accountRequestHelper
+        Application                           $application,
+        WebControllerHelper                   $webControllerHelper,
+        private readonly AccountService       $accountService,
+        private readonly AccountRequestHelper $accountRequestHelper
     ) {
         parent::__construct($application, $webControllerHelper);
-
-        $this->accountRequestHelper = $accountRequestHelper;
-        $this->accountService = $accountService;
     }
 
     /**
      * Obtener los datos para mostrar el interface de solicitud de cambios en una cuenta
      *
-     * @param  int  $id  Account's ID
+     * @param int $id Account's ID
      *
      */
     public function requestAccessAction(int $id): void
     {
         try {
+            $this->accountRequestHelper->initializeFor(AclActionsInterface::ACCOUNT_REQUEST);
             $this->accountRequestHelper->setIsView(true);
             $this->accountRequestHelper->setViewForRequest(
-                $this->accountService->getByIdEnriched($id),
-                AclActionsInterface::ACCOUNT_REQUEST
+                new AccountEnrichedDto($this->accountService->getByIdEnriched($id))
             );
 
             $this->view->addTemplate('account-request');

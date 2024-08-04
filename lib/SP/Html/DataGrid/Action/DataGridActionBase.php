@@ -52,10 +52,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     protected ?string $title = null;
     /**
-     * Action's title ID
-     */
-    protected ?string $id = null;
-    /**
      * The JavaScript function to be triggered on OnClick event
      */
     protected string $onClickFunction = '';
@@ -103,9 +99,8 @@ abstract class DataGridActionBase implements DataGridActionInterface
     /**
      * DataGridActionBase constructor.
      */
-    public function __construct(?int $id = null)
+    public function __construct(protected ?string $id = null)
     {
-        $this->id = $id;
     }
 
     /**

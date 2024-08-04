@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
@@ -35,9 +34,11 @@ use SP\Domain\Account\Ports\AccountSearchService;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Tag\Ports\TagService;
 use SP\Domain\User\Models\ProfileData;
@@ -53,6 +54,7 @@ use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Mvc\View\TemplateInterface;
 
+use function SP\__;
 use function SP\getElapsedTime;
 
 /**
@@ -65,38 +67,30 @@ final class AccountSearchHelper extends HelperBase
     /**
      * @var bool Indica si el filtrado de cuentas está activo
      */
-    private bool                 $filterOn = false;
-    private bool                 $isAjax   = false;
-    private int                  $queryTimeStart;
+    private bool $filterOn = false;
+    private bool $isAjax   = false;
+    private int  $queryTimeStart;
     private bool                    $isIndex;
     private ?AccountSearchFilterDto $accountSearchFilter = null;
-    private ClientService        $clientService;
-    private AccountSearchService    $accountSearchService;
-    private AccountActionsHelper $accountActionsHelper;
-    private CategoryService      $categoryService;
-    private TagService           $tagService;
 
     public function __construct(
-        Application                        $application,
-        TemplateInterface                  $template,
-        RequestService                     $request,
-        ClientService                      $clientService,
-        CategoryService                    $categoryService,
-        TagService                         $tagService,
-        AccountSearchService               $accountSearchService,
-        AccountActionsHelper               $accountActionsHelper,
-        private readonly AccountSearchData $accountSearchData
+        Application                           $application,
+        TemplateInterface                     $template,
+        RequestService                        $request,
+        private readonly ClientService        $clientService,
+        private readonly CategoryService      $categoryService,
+        private readonly TagService           $tagService,
+        private readonly AccountSearchService $accountSearchService,
+        private readonly AccountActionsHelper $accountActionsHelper,
+        private readonly AccountSearchData    $accountSearchData,
+        private readonly AclInterface         $acl,
+        private readonly ThemeInterface       $theme
     ) {
         parent::__construct($application, $template, $request);
 
-        $this->clientService = $clientService;
-        $this->categoryService = $categoryService;
-        $this->tagService = $tagService;
-        $this->accountSearchService = $accountSearchService;
-        $this->accountActionsHelper = $accountActionsHelper;
-
         $this->queryTimeStart = microtime(true);
-        $this->isIndex = $this->request->analyzeString('r') === Acl::getActionRoute(AclActionsInterface::ACCOUNT);
+        $this->isIndex = $this->request->analyzeString('r') ===
+                         $this->acl->getRouteFor(AclActionsInterface::ACCOUNT);
         $this->setVars();
     }
 
@@ -124,10 +118,10 @@ final class AccountSearchHelper extends HelperBase
         $this->view->assign('searchTxt', $this->accountSearchFilter->getTxtSearch());
         $this->view->assign('searchGlobal', $this->accountSearchFilter->getGlobalSearch());
         $this->view->assign('searchFavorites', $this->accountSearchFilter->isSearchFavorites());
-        $this->view->assign('searchRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_SEARCH));
-        $this->view->assign('favoriteRouteOn', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FAVORITE_ADD));
-        $this->view->assign('favoriteRouteOff', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FAVORITE_DELETE));
-        $this->view->assign('viewAccountRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
+        $this->view->assign('searchRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_SEARCH));
+        $this->view->assign('favoriteRouteOn', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FAVORITE_ADD));
+        $this->view->assign('favoriteRouteOff', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FAVORITE_DELETE));
+        $this->view->assign('viewAccountRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
     }
 
     /**
@@ -264,12 +258,10 @@ final class AccountSearchHelper extends HelperBase
      * Devuelve la matriz a utilizar en la vista
      *
      * @return DataGrid
-     * @throws DependencyException
-     * @throws NotFoundException
      */
     private function getGrid(): DataGrid
     {
-        $icons = $this->view->getTheme()->getIcons();
+        $icons = $this->theme->getIcons();
 
         $gridActionOptional = new DataGridAction();
         $gridActionOptional->setId(0);
@@ -301,7 +293,7 @@ final class AccountSearchHelper extends HelperBase
                                || ($userPreferences->getUserId() === 0
                                    && $this->configData->isResultsAsCards());
 
-        $dataGrid = new DataGrid($this->view->getTheme());
+        $dataGrid = new DataGrid($this->theme);
         $dataGrid->setId('gridSearch');
         $dataGrid->setDataHeaderTemplate('account/search-header');
         $dataGrid->setDataRowTemplate(
@@ -342,7 +334,7 @@ final class AccountSearchHelper extends HelperBase
      */
     private function getHeaderSort(): DataGridHeaderSort
     {
-        $icons = $this->view->getTheme()->getIcons();
+        $icons = $this->theme->getIcons();
 
         $gridSortCustomer = new DataGridSort();
         $gridSortCustomer->setName(__('Client'))

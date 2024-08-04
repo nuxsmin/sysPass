@@ -42,7 +42,7 @@ final class DataGridActionSearch extends DataGridActionBase
     /**
      * DataGridActionSearch constructor.
      */
-    public function __construct(?int $id = null)
+    public function __construct(?string $id = null)
     {
         parent::__construct($id);
 

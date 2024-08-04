@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
@@ -32,24 +31,20 @@ use SP\Modules\Web\Controllers\Helpers\Account\AccountSearchHelper;
 use SP\Modules\Web\Util\ErrorUtil;
 use SP\Mvc\Controller\WebControllerHelper;
 
+use function SP\processException;
+
 /**
  * Class IndexController
  */
 final class IndexController extends AccountControllerBase
 {
-    private AccountSearchHelper $accountSearchHelper;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountSearchHelper $accountSearchHelper
+        Application                          $application,
+        WebControllerHelper                  $webControllerHelper,
+        private readonly AccountSearchHelper $accountSearchHelper
     ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
-
-        $this->accountSearchHelper = $accountSearchHelper;
+        parent::__construct($application, $webControllerHelper);
     }
 
     /**

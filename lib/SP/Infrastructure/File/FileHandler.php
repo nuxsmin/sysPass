@@ -30,6 +30,7 @@ use RuntimeException;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Util\Util;
 use SplFileObject;
+use ValueError;
 
 use function SP\__;
 use function SP\__u;
@@ -73,7 +74,11 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     {
         $this->autoDetectEOL();
 
-        $data = $this->fread($this->getSize());
+        try {
+            $data = $this->fread($this->getSize());
+        } catch (ValueError $e) {
+            throw FileException::error(sprintf(__('Unable to read from file (%s)'), $this->file, $e->getCode(), $e));
+        }
 
         if ($data === false) {
             throw FileException::error(sprintf(__('Unable to read from file (%s)'), $this->file));

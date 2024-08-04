@@ -118,7 +118,7 @@ final class AccountHelper extends AccountHelperBase
     public function setViewForAccount(AccountEnrichedDto $accountDetailsResponse): void
     {
         if (!$this->actionGranted) {
-            throw UnauthorizedActionException::error('This view requires initialization');
+            throw new UnauthorizedActionException();
         }
 
         $this->accountId = $accountDetailsResponse->getAccountView()->getId();

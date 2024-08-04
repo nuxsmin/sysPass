@@ -24,13 +24,9 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
-use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Acl\UnauthorizedPageException;
-use SP\Domain\User\Services\UpdatedMasterPassException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
 
 /**
  * Class AccountRequestHelper
@@ -41,23 +37,17 @@ final class AccountRequestHelper extends AccountHelperBase
      * Sets account's view variables
      *
      * @param AccountEnrichedDto $accountDetailsResponse
-     * @param  int  $actionId
-     *
      * @return bool
-     * @throws UnauthorizedPageException
-     * @throws NoSuchItemException
-     * @throws ServiceException
-     * @throws UpdatedMasterPassException
+     * @throws UnauthorizedActionException
      */
-    public function setViewForRequest(
-        AccountEnrichedDto $accountDetailsResponse,
-        int $actionId
-    ): bool {
-        $this->accountId = $accountDetailsResponse->getAccountView()->getId();
-        $this->actionId = $actionId;
-        $this->accountAcl = new AccountPermission($actionId);
+    public function setViewForRequest(AccountEnrichedDto $accountDetailsResponse,): bool
+    {
+        if (!$this->actionGranted) {
+            throw new UnauthorizedActionException();
+        }
 
-        $this->initializeFor();
+        $accountId = $accountDetailsResponse->getAccountView()->getId();
+        $accountPermission = new AccountPermission($this->actionId);
 
         $accountData = $accountDetailsResponse->getAccountView();
 
@@ -66,9 +56,9 @@ final class AccountRequestHelper extends AccountHelperBase
         $this->view->assign(
             'accountActions',
             $this->accountActionsHelper->getActionsForAccount(
-                $this->accountAcl,
+                $accountPermission,
                 new AccountActionsDto(
-                    $this->accountId,
+                    $accountId,
                     null,
                     $accountData->getParentId()
                 )

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Adapters\AccountSearchItem;
@@ -67,8 +66,8 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('btn-action');
         $action->setIcon($this->icons->view());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowView');
-        $action->addData('action-route', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
-        $action->addData('onclick', Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
+        $action->addData('onclick', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -137,7 +136,7 @@ final class AccountActionsHelper extends HelperBase
     public function getBackAction(): DataGridAction
     {
         $action = new DataGridAction();
-        $action->setId('btnBack');
+        $action->setId(0);
         $action->setName(__('Back'));
         $action->setTitle(__('Back'));
         $action->addClass('btn-action');
