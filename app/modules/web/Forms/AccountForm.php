@@ -58,8 +58,8 @@ final class AccountForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param  int  $action
-     * @param  int|null  $id
+     * @param int $action
+     * @param int|null $id
      *
      * @return FormInterface
      */
@@ -174,10 +174,10 @@ final class AccountForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    private function checkPassword(AccountDto $accountDto): void
+    private function checkPassword(AccountDto $accountDto): AccountDto
     {
         if ($accountDto->getParentId() > 0) {
-            return;
+            return $accountDto;
         }
 
         if (!$accountDto->getPass()) {
@@ -187,6 +187,8 @@ final class AccountForm extends FormBase implements FormInterface
         if ($this->request->analyzeEncrypted('password_repeat') !== $accountDto->getPass()) {
             throw new ValidationException(__u('Passwords do not match'));
         }
+
+        return $accountDto;
     }
 
     private function analyzeItems(AccountDto $accountDto): AccountDto
@@ -226,7 +228,7 @@ final class AccountForm extends FormBase implements FormInterface
         }
 
         if (!$accountDto->getClientId()) {
-            throw new ValidationException(__u('A client name needed'));
+            throw new ValidationException(__u('A client is needed'));
         }
 
         if (!$accountDto->getCategoryId()) {

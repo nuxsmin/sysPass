@@ -104,6 +104,9 @@ abstract class IntegrationTestCase extends TestCase
 
         $database = self::createStub(DatabaseInterface::class);
         $database->method('runQuery')->willReturnCallback($this->getDatabaseReturn());
+        $database->method('beginTransaction')->willReturn(true);
+        $database->method('endTransaction')->willReturn(true);
+        $database->method('rollbackTransaction')->willReturn(true);
 
         $acl = self::createMock(AclInterface::class);
         $acl->method('checkUserAccess')->willReturn(true);
@@ -211,7 +214,7 @@ abstract class IntegrationTestCase extends TestCase
         return UserProfileDataGenerator::factory()->buildProfileData();
     }
 
-    protected function buildRequest(string $method, string $uri, array $params): Request
+    protected function buildRequest(string $method, string $uri, array $paramsGet = [], array $paramsPost = []): Request
     {
         $server = array_merge(
             $_SERVER,
@@ -224,8 +227,8 @@ abstract class IntegrationTestCase extends TestCase
         );
 
         return new Request(
-            array_merge($_GET, $params),
-            array_merge($_POST, $params),
+            array_merge($_GET, $paramsGet),
+            array_merge($_POST, $paramsPost),
             $_COOKIE,
             $server,
             $_FILES,

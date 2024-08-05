@@ -64,7 +64,7 @@ abstract class Service
     final protected function getMasterKeyFromContext(): string
     {
         try {
-            if ($this->context instanceof SessionContext) {
+            if (is_a($this->context, \SP\Domain\Core\Context\SessionContext::class)) {
                 $key = CryptSession::getSessionKey($this->context);
             } else {
                 $key = $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY);

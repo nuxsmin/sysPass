@@ -25,13 +25,15 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
-use JsonException;
-use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Http\Dtos\JsonMessage;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class SaveCopyController
@@ -39,8 +41,8 @@ use SP\Domain\Http\Dtos\JsonMessage;
 final class SaveCopyController extends AccountSaveBase
 {
     /**
-     * @return bool
-     * @throws JsonException
+     * @return bool|null
+     * @throws SPException
      */
     public function saveCopyAction(): ?bool
     {
@@ -49,15 +51,16 @@ final class SaveCopyController extends AccountSaveBase
 
             $accountId = $this->accountService->create($this->accountForm->getItemData());
 
-            $accountDetails = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($accountId);
 
             $this->eventDispatcher->notify(
                 'create.account',
                 new Event(
-                    $this, EventMessage::factory()
-                    ->addDescription(__u('Account created'))
-                    ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('Account created'))
+                                ->addDetail(__u('Account'), $accountDetails->getName())
+                                ->addDetail(__u('Client'), $accountDetails->getClientName())
                 )
             );
 
@@ -70,8 +73,8 @@ final class SaveCopyController extends AccountSaveBase
 
             return $this->returnJsonResponseData(
                 [
-                    'itemId'     => $accountId,
-                    'nextAction' => Acl::getActionRoute(AclActionsInterface::ACCOUNT_EDIT),
+                    'itemId' => $accountId,
+                    'nextAction' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_EDIT),
                 ],
                 JsonMessage::JSON_SUCCESS,
                 __u('Account created')

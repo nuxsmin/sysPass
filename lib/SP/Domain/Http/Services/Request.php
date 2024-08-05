@@ -177,10 +177,8 @@ class Request implements RequestService
         return $this->headers->get(Header::CACHE_CONTROL->value) === 'max-age=0';
     }
 
-    public function analyzeEmail(
-        string $param,
-        ?string $default = null
-    ): ?string {
+    public function analyzeEmail(string $param, ?string $default = null): ?string
+    {
         if (!$this->params->exists($param)) {
             return $default;
         }
@@ -218,10 +216,8 @@ class Request implements RequestService
         }
     }
 
-    public function analyzeString(
-        string $param,
-        ?string $default = null
-    ): ?string {
+    public function analyzeString(string $param, ?string $default = null): ?string
+    {
         if (!$this->params->exists($param)) {
             return $default;
         }
@@ -229,10 +225,8 @@ class Request implements RequestService
         return Filter::getString($this->params->get($param));
     }
 
-    public function analyzeUnsafeString(
-        string $param,
-        ?string $default = null
-    ): ?string {
+    public function analyzeUnsafeString(string $param, ?string $default = null): ?string
+    {
         if (!$this->params->exists($param)) {
             return $default;
         }
@@ -248,9 +242,9 @@ class Request implements RequestService
      * @return array|null
      */
     public function analyzeArray(
-        string    $param,
+        string $param,
         ?callable $mapper = null,
-        mixed     $default = null
+        mixed  $default = null
     ): ?array {
         $requestValue = $this->params->get($param);
 
