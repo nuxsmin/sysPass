@@ -169,6 +169,10 @@ trait ItemTrait
         array|int              $itemId,
         CustomFieldDataService $customFieldService
     ): void {
+        if (!is_array($itemId)) {
+            $itemId = [$itemId];
+        }
+
         $customFieldService->delete($itemId, $moduleId);
     }
 

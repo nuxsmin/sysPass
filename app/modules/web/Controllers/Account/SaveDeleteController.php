@@ -32,11 +32,15 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class SaveDeleteController
@@ -46,46 +50,39 @@ final class SaveDeleteController extends AccountControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountService         $accountService;
-    private CustomFieldDataService $customFieldService;
-
     public function __construct(
-        Application         $application,
-        WebControllerHelper $webControllerHelper,
-        AccountService      $accountService,
-        CustomFieldDataService $customFieldService
+        Application                             $application,
+        WebControllerHelper                     $webControllerHelper,
+        private readonly AccountService         $accountService,
+        private readonly CustomFieldDataService $customFieldService
     ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
-
-        $this->accountService = $accountService;
-        $this->customFieldService = $customFieldService;
+        parent::__construct($application, $webControllerHelper);
     }
 
     /**
      * Saves delete action
      *
-     * @param  int  $id  Account's ID
+     * @param int $id Account's ID
      *
      * @return bool
      * @throws JsonException
+     * @throws SPException
      */
     public function saveDeleteAction(int $id): bool
     {
         try {
-            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($id);
 
             $this->accountService->delete($id);
 
             $this->eventDispatcher->notify(
                 'delete.account',
                 new Event(
-                    $this, EventMessage::factory()
-                    ->addDescription(__u('Account removed'))
-                    ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('Account removed'))
+                                ->addDetail(__u('Account'), $accountDetails->getName())
+                                ->addDetail(__u('Client'), $accountDetails->getClientName())
                 )
             );
 
