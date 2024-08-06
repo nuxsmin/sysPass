@@ -1,11 +1,10 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,17 +22,13 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Ports;
+namespace SP\Domain\Account;
 
 /**
- * Class UpgradePublicLink
- *
- * @package SP\Domain\Upgrade\Services
+ * Enum PublickLinkType
  */
-interface UpgradePublicLinkService
+enum PublickLinkType: int
 {
-    /**
-     * upgrade_300_18010101
-     */
-    public function upgradeV300B18010101(): void;
+    // TODO: check number
+    case Account = 1001;
 }

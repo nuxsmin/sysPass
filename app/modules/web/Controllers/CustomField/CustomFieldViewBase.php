@@ -24,26 +24,33 @@
 
 namespace SP\Modules\Web\Controllers\CustomField;
 
-
-use SP\Core\Acl\Acl;
+use Controllers\Helpers\CustomFields;
 use SP\Core\Application;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Domain\CustomField\Ports\CustomFieldTypeService;
-use SP\Domain\CustomField\Services\CustomFieldDefinition;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\Components\SelectItemAdapter;
 
+/**
+ * Class CustomFieldViewBase
+ */
 abstract class CustomFieldViewBase extends ControllerBase
 {
     private CustomFieldDefinitionService $customFieldDefService;
     private CustomFieldTypeService       $customFieldTypeService;
 
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
         Application                  $application,
         WebControllerHelper          $webControllerHelper,
@@ -61,7 +68,7 @@ abstract class CustomFieldViewBase extends ControllerBase
     /**
      * Sets view data for displaying custom field's data
      *
-     * @param  int|null  $customFieldId
+     * @param int|null $customFieldId
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -83,11 +90,11 @@ abstract class CustomFieldViewBase extends ControllerBase
         );
         $this->view->assign(
             'modules',
-            SelectItemAdapter::factory(CustomFieldDefinition::getFieldModules())
-                ->getItemsFromArraySelected([$customField->getModuleId()])
+            SelectItemAdapter::factory(CustomFields::getFieldModules())
+                             ->getItemsFromArraySelected([$customField->getModuleId()])
         );
 
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');

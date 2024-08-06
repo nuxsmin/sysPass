@@ -31,6 +31,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionClass;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
@@ -107,6 +108,11 @@ class SaveCopyControllerTest extends IntegrationTestCase
     protected function getDatabaseReturn(): callable
     {
         return function (QueryData $queryData): QueryResult {
+            if (!empty($queryData->getMapClassName())) {
+                $reflection = new ReflectionClass($queryData->getMapClassName());
+                return new QueryResult([$reflection->newInstance()], 0, 100);
+            }
+
             return new QueryResult([], 0, 100);
         };
     }

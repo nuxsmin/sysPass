@@ -60,6 +60,7 @@
     <source>
         <include>
             <directory suffix=".php">../lib/SP</directory>
+            <directory suffix=".php">../app/modules/web</directory>
         </include>
         <exclude>
             <directory suffix=".php">../lib/SP/Html/Assets</directory>

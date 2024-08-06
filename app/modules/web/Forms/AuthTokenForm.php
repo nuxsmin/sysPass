@@ -25,9 +25,11 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\Domain\Auth\Models\AuthToken;
-use SP\Domain\Auth\Services\AuthToken;
+use SP\Domain\Auth\Services\AuthToken as AuthTokenService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
+
+use function SP\__u;
 
 /**
  * Class ApiTokenForm
@@ -42,8 +44,8 @@ final class AuthTokenForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param  int  $action
-     * @param  int|null  $id
+     * @param int $action
+     * @param int|null $id
      *
      * @return AuthTokenForm|FormInterface
      * @throws ValidationException
@@ -74,11 +76,14 @@ final class AuthTokenForm extends FormBase implements FormInterface
     {
         $this->refresh = $this->request->analyzeBool('refreshtoken', false);
 
-        $this->authTokenData = new AuthToken();
-        $this->authTokenData->setId($this->itemId);
-        $this->authTokenData->setUserId($this->request->analyzeInt('users'));
-        $this->authTokenData->setActionId($this->request->analyzeInt('actions'));
-        $this->authTokenData->setHash($this->request->analyzeEncrypted('pass'));
+        $this->authTokenData = new AuthToken(
+            [
+                'id' => $this->itemId,
+                'userId' => $this->request->analyzeInt('users'),
+                'actionId' => $this->request->analyzeInt('actions'),
+                'hash' => $this->request->analyzeEncrypted('pass'),
+            ]
+        );
     }
 
     /**
@@ -95,8 +100,9 @@ final class AuthTokenForm extends FormBase implements FormInterface
         }
 
         if (empty($this->authTokenData->getHash())
-            && (AuthToken::isSecuredAction($this->authTokenData->getActionId())
-                || $this->isRefresh())) {
+            && (AuthTokenService::isSecuredAction($this->authTokenData->getActionId())
+                || $this->isRefresh())
+        ) {
             throw new ValidationException(__u('Password cannot be blank'));
         }
     }

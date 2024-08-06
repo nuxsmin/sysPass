@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
-use SP\Core\Acl\Acl;
+use Controllers\Helpers\CustomFields;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
@@ -36,6 +36,7 @@ use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Infrastructure\Database\QueryResult;
 
 use function SP\__;
+use function SP\getElapsedTime;
 
 /**
  * Class CustomFieldGrid
@@ -139,23 +140,9 @@ final class CustomFieldGrid extends GridBase
 
     private static function getFieldModuleById(int $id): int|string
     {
-        $modules = self::getFieldModules();
+        $modules = CustomFields::getFieldModules();
 
         return $modules[$id] ?? $id;
-    }
-
-    /**
-     * Devuelve los módulos disponibles para los campos personalizados
-     */
-    private static function getFieldModules(): array
-    {
-        return [
-            AclActionsInterface::ACCOUNT => __('Accounts'),
-            AclActionsInterface::CATEGORY => __('Categories'),
-            AclActionsInterface::CLIENT => __('Clients'),
-            AclActionsInterface::USER => __('Users'),
-            AclActionsInterface::GROUP => __('Groups'),
-        ];
     }
 
     /**
@@ -172,7 +159,7 @@ final class CustomFieldGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::CUSTOMFIELD_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::CUSTOMFIELD_SEARCH)
         );
 
         return $gridActionSearch;
@@ -193,7 +180,7 @@ final class CustomFieldGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::CUSTOMFIELD_CREATE)
+            $this->acl->getRouteFor(AclActionsInterface::CUSTOMFIELD_CREATE)
         );
 
         return $gridAction;
@@ -213,7 +200,7 @@ final class CustomFieldGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::CUSTOMFIELD_EDIT)
+            $this->acl->getRouteFor(AclActionsInterface::CUSTOMFIELD_EDIT)
         );
 
         return $gridAction;
@@ -233,7 +220,7 @@ final class CustomFieldGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::CUSTOMFIELD_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::CUSTOMFIELD_DELETE)
         );
 
         return $gridAction;

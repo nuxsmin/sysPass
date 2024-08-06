@@ -352,15 +352,14 @@ final class Init extends HttpModuleBase
      * @throws InvalidArgumentException
      * @throws NoSuchPropertyException
      * @throws QueryException
+     * @throws SPException
      */
     private function getSessionTimeoutForUser(?int $default = null): ?int
     {
         if ($this->context->isLoggedIn()) {
             $itemPreset = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT);
 
-            if ($itemPreset !== null) {
-                $sessionTimeout = $itemPreset->hydrate(SessionTimeout::class);
-
+            if ($itemPreset !== null && ($sessionTimeout = $itemPreset->hydrate(SessionTimeout::class)) !== null) {
                 if (Address::check(
                     $this->request->getClientAddress(),
                     $sessionTimeout->getAddress(),
