@@ -43,10 +43,10 @@ use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\IntegrationTestCase;
 
 /**
- * Class SaveCopyControllerTest
+ * Class SaveCreateControllerTest
  */
 #[Group('integration')]
-class SaveCopyControllerTest extends IntegrationTestCase
+class SaveCreateControllerTest extends IntegrationTestCase
 {
 
     /**
@@ -56,7 +56,7 @@ class SaveCopyControllerTest extends IntegrationTestCase
      * @throws InvalidClassException
      * @throws FileException
      */
-    public function testSaveCopyAction()
+    public function testSaveCreateAction()
     {
         $crypt = $this->createStub(CryptInterface::class);
         $crypt->method('decrypt')->willReturn('some_data');
@@ -95,7 +95,7 @@ class SaveCopyControllerTest extends IntegrationTestCase
 
         $container = $this->buildContainer(
             $definitions,
-            $this->buildRequest('post', 'index.php', ['r' => 'account/saveCopy'], $paramsPost)
+            $this->buildRequest('post', 'index.php', ['r' => 'account/saveCreate'], $paramsPost)
         );
 
         $this->runApp($container);

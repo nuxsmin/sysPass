@@ -110,6 +110,7 @@ abstract class IntegrationTestCase extends TestCase
 
         $acl = self::createMock(AclInterface::class);
         $acl->method('checkUserAccess')->willReturn(true);
+        $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId) => (string)$actionId);
 
         $accountAcl = self::createStub(AccountAclService::class);
         $accountAcl->method('getAcl')
