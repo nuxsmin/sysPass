@@ -24,15 +24,16 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
-use JsonException;
-use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Http\Dtos\JsonMessage;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class SaveEditController
@@ -42,29 +43,28 @@ final class SaveEditController extends AccountSaveBase
     /**
      * Saves edit action
      *
-     * @param  int  $id  Account's ID
+     * @param int $id Account's ID
      *
-     * @return bool
-     * @throws JsonException
+     * @return bool|null
+     * @throws SPException
      */
     public function saveEditAction(int $id): ?bool
     {
         try {
             $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_EDIT, $id);
 
-            $itemData = $this->accountForm->getItemData();
+            $this->accountService->update($id, $this->accountForm->getItemData());
 
-            $this->accountService->update($itemData);
-
-            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($id);
 
             $this->eventDispatcher->notify(
                 'edit.account',
                 new Event(
-                    $this, EventMessage::factory()
-                    ->addDescription(__u('Account updated'))
-                    ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('Account updated'))
+                                ->addDetail(__u('Account'), $accountDetails->getName())
+                                ->addDetail(__u('Client'), $accountDetails->getClientName())
                 )
             );
 
@@ -77,8 +77,8 @@ final class SaveEditController extends AccountSaveBase
 
             return $this->returnJsonResponseData(
                 [
-                    'itemId'     => $id,
-                    'nextAction' => Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW),
+                    'itemId' => $id,
+                    'nextAction' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW),
                 ],
                 JsonMessage::JSON_SUCCESS,
                 __u('Account updated')

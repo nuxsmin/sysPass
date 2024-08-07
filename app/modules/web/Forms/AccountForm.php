@@ -149,7 +149,6 @@ final class AccountForm extends FormBase implements FormInterface
             );
         } else {
             $accountDto = new AccountUpdateDto(
-                $this->itemId,
                 $name,
                 $login,
                 $clientId,
