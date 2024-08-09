@@ -28,11 +28,15 @@ namespace SP\Tests\Modules\Web\Controllers\Account;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
@@ -40,10 +44,10 @@ use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\IntegrationTestCase;
 
 /**
- * Class SaveDeleteControllerTest
+ * Class SaveEditRestoreControllerTest
  */
 #[Group('integration')]
-class SaveDeleteControllerTest extends IntegrationTestCase
+class SaveEditRestoreControllerTest extends IntegrationTestCase
 {
 
     /**
@@ -53,18 +57,23 @@ class SaveDeleteControllerTest extends IntegrationTestCase
      * @throws InvalidClassException
      * @throws FileException
      */
-    public function testSaveDeleteAction()
+    public function testSaveEditRestoreAction()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
 
         $this->addDatabaseResolver(
-            AccountView::class,
-            new QueryResult([$accountDataGenerator->buildAccountDataView()])
+            AccountHistory::class,
+            new QueryResult([$accountDataGenerator->buildAccountHistoryData()])
         );
 
         $this->addDatabaseResolver(
             Account::class,
             new QueryResult([$accountDataGenerator->buildAccount()])
+        );
+
+        $this->addDatabaseResolver(
+            AccountView::class,
+            new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );
 
         $configService = self::createStub(ConfigService::class);
@@ -73,15 +82,44 @@ class SaveDeleteControllerTest extends IntegrationTestCase
         $definitions = $this->getModuleDefinitions();
         $definitions[ConfigService::class] = $configService;
 
+        $account = $accountDataGenerator->buildAccount();
+
+        $paramsPost = [
+            'password' => $account->getPass(),
+            'password_repeat' => $account->getPass(),
+        ];
+
+        $historyId = self::$faker->randomNumber(3);
+        $accountId = self::$faker->randomNumber(3);
+
         $container = $this->buildContainer(
             $definitions,
-            $this->buildRequest('post', 'index.php', ['r' => 'account/saveDelete/1'])
+            $this->buildRequest(
+                'post',
+                'index.php',
+                ['r' => sprintf("account/saveEditRestore/%d/%d", $historyId, $accountId)],
+                $paramsPost
+            )
         );
 
         $this->runApp($container);
 
         $this->expectOutputString(
-            '{"status":0,"description":"Account removed","data":[],"messages":[]}'
+            '{"status":0,"description":"Account restored","data":{"itemId":'
+            . $accountId .
+            ',"nextAction":"3"},"messages":[]}'
         );
+    }
+
+    protected function getContext(): SessionContext|Stub
+    {
+        $vault = self::createStub(VaultInterface::class);
+        $vault->method('getData')
+              ->willReturn('some_data');
+
+        $context = parent::getContext();
+        $context->method('getVault')->willReturn($vault);
+
+        return $context;
     }
 }

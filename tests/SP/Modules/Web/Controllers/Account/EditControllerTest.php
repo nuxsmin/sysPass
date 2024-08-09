@@ -32,7 +32,6 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
 use SP\Mvc\View\OutputHandlerInterface;
@@ -56,6 +55,11 @@ class EditControllerTest extends IntegrationTestCase
      */
     public function testEditAction()
     {
+        $this->addDatabaseResolver(
+            AccountView::class,
+            new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
+        );
+
         $definitions = $this->getModuleDefinitions();
         $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(
             function (string $output): void {
@@ -77,16 +81,5 @@ class EditControllerTest extends IntegrationTestCase
         );
 
         $this->runApp($container);
-    }
-
-    protected function getDatabaseReturn(): callable
-    {
-        return function (QueryData $queryData): QueryResult {
-            if ($queryData->getMapClassName() === AccountView::class) {
-                return new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()]);
-            }
-
-            return new QueryResult();
-        };
     }
 }

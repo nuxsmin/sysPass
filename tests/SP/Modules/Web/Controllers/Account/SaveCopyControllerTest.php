@@ -31,12 +31,11 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use ReflectionClass;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\Generators\AccountDataGenerator;
@@ -58,6 +57,13 @@ class SaveCopyControllerTest extends IntegrationTestCase
      */
     public function testSaveCopyAction()
     {
+        $accountDataGenerator = AccountDataGenerator::factory();
+
+        $this->addDatabaseResolver(
+            AccountView::class,
+            new QueryResult([$accountDataGenerator->buildAccountDataView()])
+        );
+
         $crypt = $this->createStub(CryptInterface::class);
         $crypt->method('decrypt')->willReturn('some_data');
         $crypt->method('encrypt')->willReturn('some_data');
@@ -65,7 +71,7 @@ class SaveCopyControllerTest extends IntegrationTestCase
         $definitions = $this->getModuleDefinitions();
         $definitions[CryptInterface::class] = $crypt;
 
-        $account = AccountDataGenerator::factory()->buildAccount();
+        $account = $accountDataGenerator->buildAccount();
 
         $paramsPost = [
             'name' => $account->getName(),
@@ -103,18 +109,6 @@ class SaveCopyControllerTest extends IntegrationTestCase
         $this->expectOutputString(
             '{"status":0,"description":"Account created","data":{"itemId":100,"nextAction":"5"},"messages":[]}'
         );
-    }
-
-    protected function getDatabaseReturn(): callable
-    {
-        return function (QueryData $queryData): QueryResult {
-            if (!empty($queryData->getMapClassName())) {
-                $reflection = new ReflectionClass($queryData->getMapClassName());
-                return new QueryResult([$reflection->newInstance()], 0, 100);
-            }
-
-            return new QueryResult([], 0, 100);
-        };
     }
 
     protected function getContext(): SessionContext|Stub

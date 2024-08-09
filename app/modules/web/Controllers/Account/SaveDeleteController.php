@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
 use JsonException;
 use SP\Core\Application;

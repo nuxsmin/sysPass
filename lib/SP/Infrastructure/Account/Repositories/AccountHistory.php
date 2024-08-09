@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -204,7 +205,9 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ->bindValues(['id' => $id])
             ->limit(1);
 
-        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving account\'s data'));
+        $queryData = QueryData::build($query)
+                              ->setMapClassName(AccountHistoryModel::class)
+                              ->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
         return $this->db->runQuery($queryData);
     }

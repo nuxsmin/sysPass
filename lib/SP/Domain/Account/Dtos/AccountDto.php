@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Account\Dtos;
 
 use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Common\Dtos\Dto;
 
 /**
@@ -60,7 +61,7 @@ abstract class AccountDto extends Dto
     ) {
     }
 
-    public static function fromAccount(Account $account): static
+    public static function fromAccount(Account|AccountHistory $account): static
     {
         return new static(
             name:               $account->getName(),

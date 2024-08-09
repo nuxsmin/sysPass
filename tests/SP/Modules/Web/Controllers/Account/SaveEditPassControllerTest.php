@@ -31,12 +31,12 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use ReflectionClass;
+use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\Generators\AccountDataGenerator;
@@ -58,13 +58,25 @@ class SaveEditPassControllerTest extends IntegrationTestCase
      */
     public function testSaveEditPassAction()
     {
+        $accountDataGenerator = AccountDataGenerator::factory();
+
+        $this->addDatabaseResolver(
+            Account::class,
+            new QueryResult([$accountDataGenerator->buildAccount()])
+        );
+
+        $this->addDatabaseResolver(
+            AccountView::class,
+            new QueryResult([$accountDataGenerator->buildAccountDataView()])
+        );
+
         $configService = self::createStub(ConfigService::class);
         $configService->method('getByParam')->willReturnArgument(0);
 
         $definitions = $this->getModuleDefinitions();
         $definitions[ConfigService::class] = $configService;
 
-        $account = AccountDataGenerator::factory()->buildAccount();
+        $account = $accountDataGenerator->buildAccount();
 
         $paramsPost = [
             'password' => $account->getPass(),
@@ -84,18 +96,6 @@ class SaveEditPassControllerTest extends IntegrationTestCase
             '{"status":0,"description":"Password updated","data":{"itemId":' . $accountId .
             ',"nextAction":"3"},"messages":[]}'
         );
-    }
-
-    protected function getDatabaseReturn(): callable
-    {
-        return function (QueryData $queryData): QueryResult {
-            if (!empty($queryData->getMapClassName())) {
-                $reflection = new ReflectionClass($queryData->getMapClassName());
-                return new QueryResult([$reflection->newInstance()], 0, 100);
-            }
-
-            return new QueryResult([], 0, 100);
-        };
     }
 
     protected function getContext(): SessionContext|Stub

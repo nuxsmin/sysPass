@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -68,7 +69,7 @@ final class AccountHistory extends Service implements AccountHistoryService
             throw new NoSuchItemException(__u('Error while retrieving account\'s data'));
         }
 
-        return $results->getData();
+        return AccountHistoryModel::buildFromSimpleModel($results->getData());
     }
 
     /**

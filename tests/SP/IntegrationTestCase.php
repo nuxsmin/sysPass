@@ -60,6 +60,7 @@ use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Dtos\UserDataDto;
 use SP\Domain\User\Models\ProfileData;
+use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileException;
@@ -79,6 +80,10 @@ use function DI\factory;
 abstract class IntegrationTestCase extends TestCase
 {
     protected static Generator $faker;
+    /**
+     * @var array<string, QueryResult> $databaseResolvers
+     */
+    private array $databaseResolvers = [];
 
     public static function setUpBeforeClass(): void
     {
@@ -178,7 +183,15 @@ abstract class IntegrationTestCase extends TestCase
 
     protected function getDatabaseReturn(): callable
     {
-        return fn() => new QueryResult();
+        return function (QueryData $queryData): QueryResult {
+            $mapClassName = $queryData->getMapClassName();
+
+            if (isset($this->databaseResolvers[$mapClassName])) {
+                return $this->databaseResolvers[$mapClassName];
+            }
+
+            return new QueryResult([], 1, 100);
+        };
     }
 
     /**
@@ -213,6 +226,11 @@ abstract class IntegrationTestCase extends TestCase
     protected function getUserProfile(): ProfileData
     {
         return UserProfileDataGenerator::factory()->buildProfileData();
+    }
+
+    final protected function addDatabaseResolver(string $className, QueryResult $queryResult): void
+    {
+        $this->databaseResolvers[$className] = $queryResult;
     }
 
     protected function buildRequest(string $method, string $uri, array $paramsGet = [], array $paramsPost = []): Request

@@ -30,10 +30,10 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use ReflectionClass;
+use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\Generators\AccountDataGenerator;
@@ -55,13 +55,25 @@ class SaveEditControllerTest extends IntegrationTestCase
      */
     public function testSaveEditAction()
     {
+        $accountDataGenerator = AccountDataGenerator::factory();
+
+        $this->addDatabaseResolver(
+            Account::class,
+            new QueryResult([$accountDataGenerator->buildAccount()])
+        );
+
+        $this->addDatabaseResolver(
+            AccountView::class,
+            new QueryResult([$accountDataGenerator->buildAccountDataView()])
+        );
+
         $configService = self::createStub(ConfigService::class);
         $configService->method('getByParam')->willReturnArgument(0);
 
         $definitions = $this->getModuleDefinitions();
         $definitions[ConfigService::class] = $configService;
 
-        $account = AccountDataGenerator::factory()->buildAccount();
+        $account = $accountDataGenerator->buildAccount();
 
         $paramsPost = [
             'name' => $account->getName(),
@@ -107,17 +119,5 @@ class SaveEditControllerTest extends IntegrationTestCase
             '{"status":0,"description":"Account updated","data":{"itemId":' . $accountId .
             ',"nextAction":"3"},"messages":[]}'
         );
-    }
-
-    protected function getDatabaseReturn(): callable
-    {
-        return function (QueryData $queryData): QueryResult {
-            if (!empty($queryData->getMapClassName())) {
-                $reflection = new ReflectionClass($queryData->getMapClassName());
-                return new QueryResult([$reflection->newInstance()], 1, 100);
-            }
-
-            return new QueryResult([], 1, 100);
-        };
     }
 }

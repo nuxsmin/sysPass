@@ -37,7 +37,6 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\User\Models\ProfileData;
-use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\Generators\AccountDataGenerator;
@@ -59,6 +58,14 @@ class CopyPassControllerTest extends IntegrationTestCase
      */
     public function testCopyPassAction()
     {
+        $this->addDatabaseResolver(
+            AccountPassItemWithIdAndName::class,
+            new QueryResult([
+                                AccountPassItemWithIdAndName::buildFromSimpleModel(
+                                    AccountDataGenerator::factory()->buildAccountDataView()
+                                )
+                            ])
+        );
         $crypt = $this->createStub(CryptInterface::class);
         $crypt->method('decrypt')->willReturn('some_data');
         $crypt->method('encrypt')->willReturn('some_data');
@@ -74,23 +81,6 @@ class CopyPassControllerTest extends IntegrationTestCase
         $this->runApp($container);
 
         $this->expectOutputString('{"status":0,"description":null,"data":{"accpass":"some_data"},"messages":[]}');
-    }
-
-    protected function getDatabaseReturn(): callable
-    {
-        return function (QueryData $queryData): QueryResult {
-            if ($queryData->getMapClassName() === AccountPassItemWithIdAndName::class) {
-                return new QueryResult(
-                    [
-                        AccountPassItemWithIdAndName::buildFromSimpleModel(
-                            AccountDataGenerator::factory()->buildAccountDataView()
-                        )
-                    ]
-                );
-            }
-
-            return new QueryResult();
-        };
     }
 
     protected function getContext(): SessionContext|Stub

@@ -24,18 +24,22 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
 use JsonException;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Account\Dtos\AccountHistoryDto;
+use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class SaveEditRestoreController
@@ -44,51 +48,52 @@ final class SaveEditRestoreController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private AccountService $accountService;
-
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountService $accountService
+        Application                            $application,
+        WebControllerHelper                    $webControllerHelper,
+        private readonly AccountService        $accountService,
+        private readonly AccountHistoryService $accountHistoryService
     ) {
         parent::__construct(
             $application,
             $webControllerHelper
         );
-
-        $this->accountService = $accountService;
     }
 
     /**
      * Saves restore action
      *
-     * @param  int  $historyId  Account's history ID
-     * @param  int  $id  Account's ID
+     * @param int $historyId Account's history ID
+     * @param int $id Account's ID
      *
      * @return bool
      * @throws JsonException
+     * @throws SPException
      */
     public function saveEditRestoreAction(int $historyId, int $id): bool
     {
         try {
-            $this->accountService->restoreModified($historyId, $id);
+            $this->accountService->restoreModified(
+                AccountHistoryDto::fromAccount($this->accountHistoryService->getById($historyId))
+            );
 
-            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
+            $accountDetails = $this->accountService->getByIdEnriched($id);
 
             $this->eventDispatcher->notify(
                 'edit.account.restore',
                 new Event(
-                    $this, EventMessage::factory()
-                    ->addDescription(__u('Account restored'))
-                    ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('Account restored'))
+                                ->addDetail(__u('Account'), $accountDetails->getName())
+                                ->addDetail(__u('Client'), $accountDetails->getClientName())
                 )
             );
 
             return $this->returnJsonResponseData(
                 [
-                    'itemId'     => $id,
-                    'nextAction' => Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW),
+                    'itemId' => $id,
+                    'nextAction' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW),
                 ],
                 JsonMessage::JSON_SUCCESS,
                 __u('Account restored')

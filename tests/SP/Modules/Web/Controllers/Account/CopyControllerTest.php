@@ -31,8 +31,8 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\AccountView;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
 use SP\Mvc\View\OutputHandlerInterface;
@@ -55,6 +55,21 @@ class CopyControllerTest extends IntegrationTestCase
      */
     public function testCopyAction()
     {
+        $this->addDatabaseResolver(
+            AccountView::class,
+            new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
+        );
+
+        $this->addDatabaseResolver(
+            Item::class,
+            new QueryResult(
+                [
+                    new Item(
+                        ['id' => self::$faker->randomNumber(3), 'name' => self::$faker->colorName()]
+                    )
+                ]
+            )
+        );
         $definitions = $this->getModuleDefinitions();
         $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(function (string $output): void {
             $crawler = new Crawler($output);
@@ -74,16 +89,5 @@ class CopyControllerTest extends IntegrationTestCase
         );
 
         $this->runApp($container);
-    }
-
-    protected function getDatabaseReturn(): callable
-    {
-        return function (QueryData $queryData): QueryResult {
-            if ($queryData->getMapClassName() === AccountView::class) {
-                return new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()]);
-            }
-
-            return new QueryResult();
-        };
     }
 }

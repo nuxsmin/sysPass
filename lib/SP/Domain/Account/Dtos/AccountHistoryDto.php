@@ -26,6 +26,9 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Dtos;
 
+use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountHistory;
+
 /**
  * Class AccountHistoryDto
  */
@@ -76,6 +79,30 @@ final class AccountHistoryDto extends AccountDto
             $userGroupId,
             $otherUserGroupEdit,
             $otherUserEdit
+        );
+    }
+
+    public static function fromAccount(Account|AccountHistory $account): static
+    {
+        return new AccountHistoryDto(
+            accountId:          $account->getId(),
+            name:               $account->getName(),
+            login:              $account->getLogin(),
+            clientId:           $account->getClientId(),
+            categoryId:         $account->getCategoryId(),
+            pass:               $account->getPass(),
+            userId:             $account->getUserId(),
+            key:                $account->getKey(),
+            url:                $account->getUrl(),
+            notes:              $account->getNotes(),
+            userEditId:         $account->getUserEditId(),
+            isPrivate:          (bool)$account->getIsPrivate(),
+            isPrivateGroup:     (bool)$account->getIsPrivateGroup(),
+            passDateChange:     $account->getPassDateChange(),
+            parentId:           $account->getParentId(),
+            userGroupId:        $account->getUserGroupId(),
+            otherUserEdit:      (bool)$account->getOtherUserEdit(),
+            otherUserGroupEdit: (bool)$account->getOtherUserGroupEdit(),
         );
     }
 
