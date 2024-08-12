@@ -46,8 +46,10 @@ final readonly class OutputHandlerStub implements OutputHandlerInterface
         ob_start();
         $callback();
 
-        ($this->outputChecker)(ob_get_clean());
+        $out = ob_get_clean();
 
-        return '';
+        ($this->outputChecker)($out);
+
+        return $out;
     }
 }

@@ -24,13 +24,15 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountSearchHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\processException;
 
 /**
  * SearchController
@@ -39,24 +41,17 @@ final class SearchController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private AccountSearchHelper $accountSearchHelper;
-
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountSearchHelper $accountSearchHelper
+        Application                          $application,
+        WebControllerHelper                  $webControllerHelper,
+        private readonly AccountSearchHelper $accountSearchHelper
     ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
-
-        $this->accountSearchHelper = $accountSearchHelper;
+        parent::__construct($application, $webControllerHelper);
     }
 
     /**
-     * @return bool
-     * @throws \JsonException
+     * @return bool|null
+     * @throws SPException
      */
     public function searchAction(): ?bool
     {

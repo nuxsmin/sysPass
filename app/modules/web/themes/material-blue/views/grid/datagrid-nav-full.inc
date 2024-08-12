@@ -1,11 +1,13 @@
 <?php
 /**
  * @var SP\Html\DataGrid\DataGridInterface $data
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var TemplateInterface $this
  * @var callable $_getvar
  */
 
-use SP\Mvc\View\Template;
+use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
 
 if (!isset($data)) {
     $data = $_getvar('data');

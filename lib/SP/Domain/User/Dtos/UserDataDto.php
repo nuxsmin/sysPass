@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\User\Dtos;
 
+use SP\Domain\Common\Dtos\Dto;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserPreferences;
@@ -33,14 +34,14 @@ use SP\Domain\User\Models\UserPreferences;
 /**
  * Class UserDataDto
  */
-final readonly class UserDataDto
+final class UserDataDto extends Dto
 {
-    private ?UserPreferences $preferences;
+    protected ?UserPreferences $preferences;
 
     /**
      * @throws SPException
      */
-    public function __construct(private ?User $user = null)
+    public function __construct(private readonly ?User $user = null)
     {
         $this->preferences = $this->user?->hydrate(UserPreferences::class);
     }

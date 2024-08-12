@@ -24,8 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use SP\Core\Application;
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
@@ -191,8 +189,6 @@ final class AccountSearchHelper extends HelperBase
     /**
      * Obtener los resultados de una búsqueda
      *
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Html\DataGrid;
 
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\Assets\IconInterface;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -94,7 +94,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
     }
 
     /**
-     * @throws SPException
+     * @param QueryResult $queryResult
      */
     public function setData(QueryResult $queryResult): void
     {

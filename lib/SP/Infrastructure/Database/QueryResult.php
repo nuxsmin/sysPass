@@ -137,6 +137,13 @@ class QueryResult
      */
     public function mutateWithCallback(callable $callable): QueryResult
     {
-        return new self(SplFixedArray::fromArray(array_map($callable, $this->data->toArray())));
+        $queryResult = new self(
+            SplFixedArray::fromArray(array_map($callable, $this->data->toArray())),
+            $this->affectedNumRows,
+            $this->lastId
+        );
+        $queryResult->totalNumRows = $this->totalNumRows;
+
+        return $queryResult;
     }
 }
