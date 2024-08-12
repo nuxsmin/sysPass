@@ -24,15 +24,14 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
 use JsonException;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Http\Providers\Uri;
@@ -40,6 +39,9 @@ use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class SaveRequestController
@@ -49,22 +51,13 @@ final class SaveRequestController extends AccountControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountService $accountService;
-    private UserService    $userService;
-
     public function __construct(
-        Application         $application,
-        WebControllerHelper $webControllerHelper,
-        AccountService      $accountService,
-        UserService         $userService
+        Application                     $application,
+        WebControllerHelper             $webControllerHelper,
+        private readonly AccountService $accountService,
+        private readonly UserService    $userService
     ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
-
-        $this->accountService = $accountService;
-        $this->userService = $userService;
+        parent::__construct($application, $webControllerHelper);
     }
 
     /**
@@ -74,6 +67,7 @@ final class SaveRequestController extends AccountControllerBase
      *
      * @return bool
      * @throws JsonException
+     * @throws SPException
      */
     public function saveRequestAction(int $id): bool
     {
@@ -84,7 +78,7 @@ final class SaveRequestController extends AccountControllerBase
                 throw new ValidationException(__u('A description is needed'));
             }
 
-            $accountDetails = $this->accountService->getByIdEnriched($id);
+            $accountView = $this->accountService->getByIdEnriched($id);
 
             $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
                        $this->uriContext->getSubUri();
@@ -92,41 +86,42 @@ final class SaveRequestController extends AccountControllerBase
             $deepLink = new Uri($baseUrl);
             $deepLink->addParam('r', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW) . '/' . $id);
 
-            $usersId = [$accountDetails->userId, $accountDetails->userEditId];
+            $usersId = [$accountView->getUserId(), $accountView->getUserEditId()];
 
             $this->eventDispatcher->notify(
                 'request.account',
                 new Event(
-                    $this, EventMessage::factory()
-                    ->addDescription(__u('Request'))
-                    ->addDetail(
-                        __u('Requester'),
-                        sprintf('%s (%s)', $this->userData->getName(), $this->userData->getLogin())
-                    )
-                    ->addDetail(__u('Account'), $accountDetails->getName())
-                    ->addDetail(__u('Client'), $accountDetails->getClientName())
-                    ->addDetail(__u('Description'), $description)
-                    ->addDetail(
-                        __u('Link'),
-                        $deepLink->getUriSigned($this->configData->getPasswordSalt())
-                    )
-                    ->addExtra('accountId', $id)
-                    ->addExtra('whoId', $this->userData->getId())
-                    ->setExtra('userId', $usersId)
-                    ->setExtra(
-                        'email',
-                        array_map(
-                            static fn($value) => $value->email,
-                            $this->userService->getUserEmailById($usersId)
-                        )
-                    )
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('Request'))
+                                ->addDetail(
+                                    __u('Requester'),
+                                    sprintf('%s (%s)', $this->userData->getName(), $this->userData->getLogin())
+                                )
+                                ->addDetail(__u('Account'), $accountView->getName())
+                                ->addDetail(__u('Client'), $accountView->getClientName())
+                                ->addDetail(__u('Description'), $description)
+                                ->addDetail(
+                                    __u('Link'),
+                                    $deepLink->getUriSigned($this->configData->getPasswordSalt())
+                                )
+                                ->addExtra('accountId', $id)
+                                ->addExtra('whoId', $this->userData->getId())
+                                ->setExtra('userId', $usersId)
+                                ->setExtra(
+                                    'email',
+                                    array_map(
+                                        static fn($value) => $value->email,
+                                        $this->userService->getUserEmailById($usersId)
+                                    )
+                                )
                 )
             );
 
             return $this->returnJsonResponseData(
                 [
                     'itemId' => $id,
-                    'nextAction' => Acl::getActionRoute(AclActionsInterface::ACCOUNT),
+                    'nextAction' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT),
                 ],
                 JsonMessage::JSON_SUCCESS,
                 __u('Request done')
