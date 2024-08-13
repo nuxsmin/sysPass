@@ -69,10 +69,13 @@ final class DeleteController extends AccountControllerBase
         try {
             $this->accountHelper->initializeFor(AclActionsInterface::ACCOUNT_DELETE);
 
-            $accountEnrichedDto = new AccountEnrichedDto($this->accountService->getByIdEnriched($id));
-            $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
-            $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
-            $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
+            $accountEnrichedDto = $this->accountService->withTags(
+                $this->accountService->withUserGroups(
+                    $this->accountService->withUsers(
+                        new AccountEnrichedDto($this->accountService->getByIdEnriched($id))
+                    )
+                )
+            );
 
             $this->accountHelper->setViewForAccount($accountEnrichedDto);
 

@@ -24,11 +24,14 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
 use SP\Core\Events\Event;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Util\ErrorUtil;
+
+use function SP\__;
+use function SP\processException;
 
 /**
  * ViewController
@@ -44,16 +47,19 @@ final class ViewController extends AccountViewBase
     public function viewAction(int $id): void
     {
         try {
-            $this->view->addTemplate('account');
+            $this->accountHelper->initializeFor(AclActionsInterface::ACCOUNT_VIEW);
 
-            $accountDetailsResponse = $this->accountService->getByIdEnriched($id);
-            $this->accountService
-                ->withUsers($accountDetailsResponse)
-                ->withUserGroupsById($accountDetailsResponse)
-                ->withTagsById($accountDetailsResponse);
+            $accountEnrichedDto = $this->accountService->withTags(
+                $this->accountService->withUserGroups(
+                    $this->accountService->withUsers(
+                        new AccountEnrichedDto($this->accountService->getByIdEnriched($id))
+                    )
+                )
+            );
 
             $this->accountHelper->setIsView(true);
-            $this->accountHelper->setViewForAccount($accountDetailsResponse, AclActionsInterface::ACCOUNT_VIEW);
+            $this->accountHelper->setViewForAccount($accountEnrichedDto);
+            $this->view->addTemplate('account');
 
             $this->view->assign(
                 'title',
