@@ -24,7 +24,7 @@
 
 
 use SP\Domain\Account\Adapters\AccountPermission;
-use SP\Domain\Account\Models\AccountView;
+use SP\Domain\Account\Dtos\AccountViewDto;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 
@@ -33,7 +33,7 @@ use function SP\__;
 /**
  * @var ThemeIconsInterface $icons
  * @var callable $_getvar
- * @var AccountView $accountView
+ * @var AccountViewDto $accountView
  * @var AccountPermission $accountAcl
  * @var ConfigDataInterface $configData
  */

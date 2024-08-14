@@ -29,6 +29,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileSystem;
 use Throwable;
 
+use const APP_PATH;
+
 /**
  * [type] [caller] data
  */

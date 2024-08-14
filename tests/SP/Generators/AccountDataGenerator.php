@@ -31,10 +31,10 @@ use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Dtos\AccountHistoryDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Common\Models\Item;
-use SP\Domain\Common\Models\Simple;
 
 /**
  * Class AccountDataGenerator
@@ -125,27 +125,36 @@ final class AccountDataGenerator extends DataGenerator
         return new Account($this->getAccountProperties());
     }
 
-    public function buildAccountHistoryData(): Simple
+    public function buildAccountHistoryData(): AccountHistory
     {
-        return new Simple([
-                              'id' => $this->faker->randomNumber(3),
-                              'accountId' => $this->faker->randomNumber(3),
-                              'name' => $this->faker->name(),
-                              'login' => $this->faker->userName(),
-                              'url' => $this->faker->url(),
-                              'notes' => $this->faker->text(),
-                              'userEditId' => $this->faker->randomNumber(3),
-                              'passDateChange' => $this->faker->unixTime(),
-                              'clientId' => $this->faker->randomNumber(3),
-                              'categoryId' => $this->faker->randomNumber(3),
-                              'isPrivate' => $this->faker->numberBetween(0, 1),
-                              'isPrivateGroup' => $this->faker->numberBetween(0, 1),
-                              'parentId' => $this->faker->randomNumber(3),
-                              'userId' => $this->faker->randomNumber(3),
-                              'userGroupId' => $this->faker->randomNumber(3),
-                              'key' => $this->faker->text(),
-                              'pass' => $this->faker->text(),
-                          ]);
+        return new AccountHistory([
+                                      'id' => $this->faker->randomNumber(3),
+                                      'accountId' => $this->faker->randomNumber(3),
+                                      'name' => $this->faker->name(),
+                                      'login' => $this->faker->userName(),
+                                      'url' => $this->faker->url(),
+                                      'notes' => $this->faker->text(),
+                                      'userEditId' => $this->faker->randomNumber(3),
+                                      'passDateChange' => $this->faker->unixTime(),
+                                      'passDate' => $this->faker->unixTime(),
+                                      'clientId' => $this->faker->randomNumber(3),
+                                      'categoryId' => $this->faker->randomNumber(3),
+                                      'isPrivate' => $this->faker->numberBetween(0, 1),
+                                      'isPrivateGroup' => $this->faker->numberBetween(0, 1),
+                                      'parentId' => $this->faker->randomNumber(3),
+                                      'userId' => $this->faker->randomNumber(3),
+                                      'userGroupId' => $this->faker->randomNumber(3),
+                                      'key' => $this->faker->text(),
+                                      'pass' => $this->faker->text(),
+                                      'dateEdit' => $this->faker->unixTime(),
+                                      'dateAdd' => $this->faker->unixTime(),
+                                      'isModify' => $this->faker->numberBetween(0, 1),
+                                      'isDeleted' => $this->faker->numberBetween(0, 1),
+                                      'otherUserGroupEdit' => $this->faker->numberBetween(0, 1),
+                                      'otherUserEdit' => $this->faker->numberBetween(0, 1),
+                                      'countView' => $this->faker->randomNumber(3),
+                                      'countDecrypt' => $this->faker->randomNumber(3)
+                                  ]);
     }
 
     public function buildAccountUpdateDto(): AccountUpdateDto

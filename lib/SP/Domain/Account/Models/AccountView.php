@@ -170,16 +170,6 @@ final class AccountView extends Model
         return $this->otherUserGroupEdit;
     }
 
-    public function getPass(): ?string
-    {
-        return $this->pass;
-    }
-
-    public function getKey(): ?string
-    {
-        return $this->key;
-    }
-
     public function getId(): ?int
     {
         return $this->id;

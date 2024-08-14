@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,12 +26,36 @@ declare(strict_types=1);
 
 namespace SP\Domain\Common\Dtos;
 
+use ReflectionClass;
+use ReflectionException;
+
+use function SP\processException;
+
 /**
  * Class Dto
  */
 abstract class Dto
 {
     protected array $reservedProperties = [];
+
+    public static function fromArray(array $properties): static
+    {
+        try {
+            $reflectionClass = new ReflectionClass(static::class);
+
+            $parameters = [];
+
+            foreach ($reflectionClass->getConstructor()->getParameters() as $parameter) {
+                $parameters[] = $properties[$parameter->getName()] ?? null;
+            }
+
+            return $reflectionClass->newInstanceArgs($parameters);
+        } catch (ReflectionException $e) {
+            processException($e);
+        }
+
+        return new static();
+    }
 
     /**
      * Expose any property. This allows to get any property from dynamic calls.

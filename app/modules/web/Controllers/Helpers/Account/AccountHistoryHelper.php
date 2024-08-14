@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 use SP\Core\Application;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
+use SP\Domain\Account\Dtos\AccountHistoryViewDto;
 use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountHistoryService;
@@ -37,6 +38,7 @@ use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -50,34 +52,31 @@ use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class AccountHistoryHelper
- *
- * @package SP\Modules\Web\Controllers\Helpers
  */
 final class AccountHistoryHelper extends AccountHelperBase
 {
-    private ?int               $accountId  = null;
-    private ?AccountPermission $accountAcl = null;
+    private ?int               $accountId         = null;
+    private ?AccountPermission $accountPermission = null;
 
     public function __construct(
-        Application                       $application,
-        TemplateInterface                 $template,
-        RequestService          $request,
-        AclInterface                      $acl,
-        AccountActionsHelper              $accountActionsHelper,
-        MasterPassService       $masterPassService,
-        private AccountHistoryService     $accountHistoryService,
-        private AccountAclService         $accountAclService,
-        private CategoryService $categoryService,
-        private ClientService   $clientService,
-        private AccountToUserService      $accountToUserService,
-        private AccountToUserGroupService $accountToUserGroupService
+        Application                                $application,
+        TemplateInterface                          $template,
+        RequestService                             $request,
+        AclInterface                               $acl,
+        AccountActionsHelper                       $accountActionsHelper,
+        MasterPassService                          $masterPassService,
+        private readonly AccountHistoryService     $accountHistoryService,
+        private readonly AccountAclService         $accountAclService,
+        private readonly CategoryService           $categoryService,
+        private readonly ClientService             $clientService,
+        private readonly AccountToUserService      $accountToUserService,
+        private readonly AccountToUserGroupService $accountToUserGroupService
     ) {
         parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
     }
 
     /**
-     * @param AccountHistory $accountHistoryData
-     * @param int $actionId
+     * @param AccountHistory $accountHistoryViewDto
      *
      * @throws AccountPermissionException
      * @throws UnauthorizedPageException
@@ -88,18 +87,20 @@ final class AccountHistoryHelper extends AccountHelperBase
      * @throws UpdatedMasterPassException
      * @throws NoSuchItemException
      */
-    public function setView(AccountHistory $accountHistoryData, int $actionId): void
+    public function setViewForAccount(AccountHistoryViewDto $accountHistoryViewDto): void
     {
-        $this->actionId = $actionId;
-        $this->accountId = $accountHistoryData->getAccountId();
+        if (!$this->actionGranted) {
+            throw new UnauthorizedActionException();
+        }
 
-        $this->initializeFor($actionId);
-        $this->checkAccess($accountHistoryData);
+        $this->accountId = $accountHistoryViewDto->getAccountId();
+
+        $this->checkAccess($accountHistoryViewDto);
 
         $this->view->assign('isView', true);
         $this->view->assign('accountIsHistory', true);
-        $this->view->assign('accountData', $accountHistoryData);
-        $this->view->assign('accountAcl', $this->accountAcl);
+        $this->view->assign('accountData', $accountHistoryViewDto);
+        $this->view->assign('accountAcl', $this->accountPermission);
         $this->view->assign('actionId', $this->actionId);
         $this->view->assign('accountId', $this->accountId);
 
@@ -107,67 +108,65 @@ final class AccountHistoryHelper extends AccountHelperBase
             'historyData',
             SelectItemAdapter::factory(
                 self::mapHistoryForDateSelect($this->accountHistoryService->getHistoryForAccount($this->accountId))
-            )
-                             ->getItemsFromArraySelected([$accountHistoryData->getId()])
+            )->getItemsFromArraySelected([$accountHistoryViewDto->getId()])
         );
 
-        $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryData->getPassDate()));
+        $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryViewDto->getPassDate()));
         $this->view->assign(
             'accountPassDateChange',
-            date('Y-m-d', $accountHistoryData->getPassDateChange() ?: 0)
+            date('Y-m-d', $accountHistoryViewDto->getPassDateChange() ?: 0)
         );
         $this->view->assign(
             'categories',
             SelectItemAdapter::factory($this->categoryService->getAll())
-                ->getItemsFromModelSelected([$accountHistoryData->getCategoryId()])
+                ->getItemsFromModelSelected([$accountHistoryViewDto->getCategoryId()])
         );
         $this->view->assign(
             'clients',
             SelectItemAdapter::factory($this->clientService->getAll())
-                ->getItemsFromModelSelected([$accountHistoryData->getClientId()])
+                ->getItemsFromModelSelected([$accountHistoryViewDto->getClientId()])
         );
         $this->view->assign(
             'isModified',
-            strtotime($accountHistoryData->getDateEdit()) !== false
+            strtotime($accountHistoryViewDto->getDateEdit()) !== false
         );
 
-        $accountActionsDto = new AccountActionsDto(
-            $this->accountId,
-            $accountHistoryData->getId(),
-            0
-        );
+        $accountActionsDto = new AccountActionsDto($this->accountId, $accountHistoryViewDto->getId(), 0);
 
         $this->view->assign(
             'accountActions',
-            $this->accountActionsHelper->getActionsForAccount($this->accountAcl, $accountActionsDto)
+            $this->accountActionsHelper->getActionsForAccount($this->accountPermission, $accountActionsDto)
         );
         $this->view->assign(
             'accountActionsMenu',
-            $this->accountActionsHelper->getActionsGrouppedForAccount($this->accountAcl, $accountActionsDto)
+            $this->accountActionsHelper->getActionsGrouppedForAccount($this->accountPermission, $accountActionsDto)
         );
     }
 
     /**
      * Comprobar si el usuario dispone de acceso al módulo
      *
-     * @param AccountHistory $accountHistoryData
+     * @param AccountHistoryViewDto $accountHistoryViewDto
      *
      * @throws AccountPermissionException
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
-    protected function checkAccess(AccountHistory $accountHistoryData): void
+    protected function checkAccess(AccountHistoryViewDto $accountHistoryViewDto): void
     {
-        $acccountAclDto = AccountAclDto::makeFromAccountHistory(
-            $accountHistoryData,
+        $acccountAclDto = new AccountAclDto(
+            $this->accountId,
+            $accountHistoryViewDto->getUserId(),
             $this->accountToUserService->getUsersByAccountId($this->accountId),
-            $this->accountToUserGroupService->getUserGroupsByAccountId($this->accountId)
+            $accountHistoryViewDto->getUserGroupId(),
+            $this->accountToUserGroupService->getUserGroupsByAccountId($this->accountId),
+            $accountHistoryViewDto->getDateEdit()
         );
 
-        $this->accountAcl = $this->accountAclService->getAcl($this->actionId, $acccountAclDto, true);
+        $this->accountPermission = $this->accountAclService->getAcl($this->actionId, $acccountAclDto, true);
 
-        if ($this->accountAcl->checkAccountAccess($this->actionId) === false) {
+        if ($this->accountPermission->checkAccountAccess($this->actionId) === false) {
             throw new AccountPermissionException(SPException::INFO);
         }
     }

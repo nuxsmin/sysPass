@@ -69,7 +69,7 @@ final class AccountHistory extends Service implements AccountHistoryService
             throw new NoSuchItemException(__u('Error while retrieving account\'s data'));
         }
 
-        return AccountHistoryModel::buildFromSimpleModel($results->getData());
+        return $results->getData(AccountHistoryModel::class);
     }
 
     /**

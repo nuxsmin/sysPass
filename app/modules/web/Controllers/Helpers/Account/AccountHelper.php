@@ -107,7 +107,7 @@ final class AccountHelper extends AccountHelperBase
     /**
      * Sets account's view variables
      *
-     * @param AccountEnrichedDto $accountDetailsResponse
+     * @param AccountEnrichedDto $accountEnrichedDto
      * @throws AccountPermissionException
      * @throws ConstraintException
      * @throws QueryException
@@ -115,16 +115,16 @@ final class AccountHelper extends AccountHelperBase
      * @throws ServiceException
      * @throws UnauthorizedActionException
      */
-    public function setViewForAccount(AccountEnrichedDto $accountDetailsResponse): void
+    public function setViewForAccount(AccountEnrichedDto $accountEnrichedDto): void
     {
         if (!$this->actionGranted) {
             throw new UnauthorizedActionException();
         }
 
-        $this->accountId = $accountDetailsResponse->getAccountView()->getId();
-        $this->accountPermission = $this->checkAccess($accountDetailsResponse);
+        $this->accountId = $accountEnrichedDto->getAccountView()->getId();
+        $this->accountPermission = $this->checkAccess($accountEnrichedDto);
 
-        $accountData = $accountDetailsResponse->getAccountView();
+        $accountData = $accountEnrichedDto->getAccountView();
 
         $accountActionsDto = new AccountActionsDto($this->accountId, null, $accountData->getParentId());
 
@@ -134,28 +134,28 @@ final class AccountHelper extends AccountHelperBase
 
         $usersView = SelectItemAdapter::getIdFromArrayOfObjects(
             array_filter(
-                $accountDetailsResponse->getUsers(),
+                $accountEnrichedDto->getUsers(),
                 static fn($value) => (int)$value->isEdit === 0
             )
         );
 
         $usersEdit = SelectItemAdapter::getIdFromArrayOfObjects(
             array_filter(
-                $accountDetailsResponse->getUsers(),
+                $accountEnrichedDto->getUsers(),
                 static fn($value) => (int)$value->isEdit === 1
             )
         );
 
         $userGroupsView = SelectItemAdapter::getIdFromArrayOfObjects(
             array_filter(
-                $accountDetailsResponse->getUserGroups(),
+                $accountEnrichedDto->getUserGroups(),
                 static fn($value) => (int)$value->isEdit === 0
             )
         );
 
         $userGroupsEdit = SelectItemAdapter::getIdFromArrayOfObjects(
             array_filter(
-                $accountDetailsResponse->getUserGroups(),
+                $accountEnrichedDto->getUserGroups(),
                 static fn($value) => (int)$value->isEdit === 1
             )
         );
@@ -172,7 +172,7 @@ final class AccountHelper extends AccountHelperBase
         $this->view->assign(
             'tags',
             $selectTags->getItemsFromModelSelected(
-                SelectItemAdapter::getIdFromArrayOfObjects($accountDetailsResponse->getTags())
+                SelectItemAdapter::getIdFromArrayOfObjects($accountEnrichedDto->getTags())
             )
         );
         $this->view->assign(

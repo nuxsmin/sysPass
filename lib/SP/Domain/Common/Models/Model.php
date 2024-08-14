@@ -142,6 +142,7 @@ abstract class Model implements JsonSerializable, ArrayAccess
      *
      * @return string
      * @throws JsonException
+     * @throws SPException
      */
     public function __toString()
     {
