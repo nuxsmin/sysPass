@@ -24,22 +24,23 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class ViewPassHistoryController
@@ -48,34 +49,23 @@ final class ViewPassHistoryController extends AccountControllerBase
 {
     use JsonTrait;
 
-    private AccountService        $accountService;
-    private AccountPasswordHelper $accountPasswordHelper;
-    private ItemPresetService $itemPresetService;
-
     public function __construct(
-        Application           $application,
-        WebControllerHelper   $webControllerHelper,
-        AccountService        $accountService,
-        AccountPasswordHelper $accountPasswordHelper,
-        ItemPresetService $itemPresetService
+        Application                            $application,
+        WebControllerHelper                    $webControllerHelper,
+        private readonly AccountService        $accountService,
+        private readonly AccountPasswordHelper $accountPasswordHelper,
+        private readonly ItemPresetService     $itemPresetService
     ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
-
-        $this->accountService = $accountService;
-        $this->accountPasswordHelper = $accountPasswordHelper;
-        $this->itemPresetService = $itemPresetService;
+        parent::__construct($application, $webControllerHelper);
     }
 
     /**
      * Display account's password
      *
-     * @param  int  $id  Account's ID
+     * @param int $id Account's ID
      *
-     * @return bool
-     * @throws JsonException
+     * @return bool|null
+     * @throws SPException
      */
     public function viewPassHistoryAction(int $id): ?bool
     {
@@ -93,9 +83,10 @@ final class ViewPassHistoryController extends AccountControllerBase
             $this->eventDispatcher->notify(
                 'show.account.pass.history',
                 new Event(
-                    $this, EventMessage::factory()
-                    ->addDescription(__u('Password viewed'))
-                    ->addDetail(__u('Account'), $account->getName())
+                    $this,
+                    EventMessage::factory()
+                                ->addDescription(__u('Password viewed'))
+                                ->addDetail(__u('Account'), $account->getName())
                 )
             );
 
@@ -110,10 +101,10 @@ final class ViewPassHistoryController extends AccountControllerBase
     }
 
     /**
-     * @return Password
+     * @return Password|null
      * @throws ConstraintException
-     * @throws NoSuchPropertyException
      * @throws QueryException
+     * @throws SPException
      */
     private function getPasswordPreset(): ?Password
     {
