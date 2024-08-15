@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -143,7 +144,7 @@ class PublicLinkTest extends UnitaryTestCase
     {
         $hash = self::$faker->sha1;
         $publicLink = PublicLinkDataGenerator::factory()->buildPublicLink();
-        $result = new QueryResult([new Simple($publicLink->toArray())]);
+        $result = new QueryResult([$publicLink]);
 
         $this->publicLinkRepository
             ->expects(self::once())
@@ -283,7 +284,7 @@ class PublicLinkTest extends UnitaryTestCase
 
         $actual = $this->publicLink->getHashForItem($itemId);
 
-        $this->assertEquals($publicLinkData, $actual);
+        $this->assertEquals($publicLinkData->toArray(), $actual->toArray(includeOuter: true));
     }
 
     /**

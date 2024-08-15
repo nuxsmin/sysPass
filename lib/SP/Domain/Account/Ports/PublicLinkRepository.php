@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Account\Ports;
 
 use SP\Domain\Account\Models\PublicLink;
+use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -37,7 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
 /**
  * Class PublicLinkRepository
  *
- * @package SP\Infrastructure\Common\Repositories\PublicLink
+ * @template T of PublicLinkModel
  */
 interface PublicLinkRepository extends Repository
 {
@@ -55,7 +56,7 @@ interface PublicLinkRepository extends Repository
     /**
      * Returns all the items
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      */
     public function getAll(): QueryResult;
 
@@ -75,7 +76,7 @@ interface PublicLinkRepository extends Repository
      *
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult;
 
@@ -130,14 +131,14 @@ interface PublicLinkRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      */
     public function getById(int $id): QueryResult;
 
     /**
      * @param $hash string
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      */
     public function getByHash(string $hash): QueryResult;
 

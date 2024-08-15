@@ -86,7 +86,7 @@ class PublicLinkTest extends UnitaryTestCase
                 return $params['login'] === $searchStringLike
                        && $params['accountName'] === $searchStringLike
                        && $params['clientName'] === $searchStringLike
-                       && $arg->getMapClassName() === Simple::class
+                       && $arg->getMapClassName() === PublicLinkModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -127,7 +127,7 @@ class PublicLinkTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
                 return $arg->getQuery()->getBindValues()['id'] === $id
-                       && $arg->getMapClassName() === Simple::class
+                       && $arg->getMapClassName() === PublicLinkModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -264,7 +264,7 @@ class PublicLinkTest extends UnitaryTestCase
     {
         $callback = new Callback(
             static function (QueryData $arg) {
-                return $arg->getMapClassName() === Simple::class
+                return $arg->getMapClassName() === PublicLinkModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -356,7 +356,7 @@ class PublicLinkTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($hash) {
                 return $arg->getQuery()->getBindValues()['hash'] === $hash
-                       && $arg->getMapClassName() === Simple::class
+                       && $arg->getMapClassName() === PublicLinkModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -410,7 +410,7 @@ class PublicLinkTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return count($query->getBindValues()) === 0
-                       && $arg->getMapClassName() === Simple::class
+                       && $arg->getMapClassName() === PublicLinkModel::class
                        && !empty($query->getStatement());
             }
         );

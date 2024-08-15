@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -169,10 +170,7 @@ final class PublicLink extends Service implements PublicLinkService
      */
     public function getPublicLinkKey(?string $hash = null): PublicLinkKey
     {
-        return new PublicLinkKey(
-            $this->config->getConfigData()->getPasswordSalt(),
-            $hash
-        );
+        return new PublicLinkKey($this->config->getConfigData()->getPasswordSalt(), $hash);
     }
 
     /**
@@ -254,9 +252,9 @@ final class PublicLink extends Service implements PublicLinkService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(PublicLinkModel $itemData): int
+    public function create(PublicLinkModel $publicLink): int
     {
-        return $this->publicLinkRepository->create($this->buildPublicLink($itemData))->getLastId();
+        return $this->publicLinkRepository->create($this->buildPublicLink($publicLink))->getLastId();
     }
 
     /**
@@ -322,27 +320,27 @@ final class PublicLink extends Service implements PublicLinkService
             throw new NoSuchItemException(__u('Link not found'));
         }
 
-        return PublicLinkModel::buildFromSimpleModel($result->getData(Simple::class));
+        return $result->getData(PublicLinkModel::class);
     }
 
     /**
      * Devolver el hash asociado a un elemento
      *
-     * @param int $itemId
+     * @param int $id
      *
-     * @return PublicLinkModel
+     * @return Simple
      * @throws SPException
      * @throws NoSuchItemException
      */
-    public function getHashForItem(int $itemId): PublicLinkModel
+    public function getHashForItem(int $id): Simple
     {
-        $result = $this->publicLinkRepository->getHashForItem($itemId);
+        $result = $this->publicLinkRepository->getHashForItem($id);
 
         if ($result->getNumRows() === 0) {
             throw new NoSuchItemException(__u('Link not found'));
         }
 
-        return PublicLinkModel::buildFromSimpleModel($result->getData(Simple::class));
+        return $result->getData(Simple::class);
     }
 
     /**
@@ -352,8 +350,8 @@ final class PublicLink extends Service implements PublicLinkService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(PublicLinkModel $itemData): void
+    public function update(PublicLinkModel $publicLink): void
     {
-        $this->publicLinkRepository->update($itemData);
+        $this->publicLinkRepository->update($publicLink);
     }
 }

@@ -34,39 +34,51 @@ use SP\Domain\Common\Dtos\Dto;
 class AccountViewDto extends Dto
 {
     public function __construct(
-        protected int    $id,
-        protected string $name,
-        protected string $login,
-        protected int    $clientId,
-        protected int    $categoryId,
-        protected string $pass,
-        protected int    $userId,
-        protected string $userName,
-        protected string $key,
-        protected string $url,
-        protected string $notes,
-        protected int    $userEditId,
-        protected string $userEditName,
-        protected string $userEditLogin,
-        protected bool   $isPrivate,
-        protected bool   $isPrivateGroup,
-        protected int    $userGroupId,
-        protected string $userGroupName,
-        protected bool   $otherUserEdit,
-        protected bool   $otherUserGroupEdit,
-        protected int    $countView,
-        protected int    $countDecrypt,
-        protected int    $dateAdd,
-        protected ?int   $dateEdit = null,
-        protected ?int   $passDate = null,
-        protected ?int   $passDateChange = null,
-        protected ?int   $parentId = null,
-        protected ?array $usersView = null,
-        protected ?array $usersEdit = null,
-        protected ?array $userGroupsView = null,
-        protected ?array $userGroupsEdit = null,
-        protected ?array $tags = null
+        protected int     $id,
+        protected string  $name,
+        protected string  $login,
+        protected int     $clientId,
+        protected int     $categoryId,
+        protected string  $pass,
+        protected int     $userId,
+        protected string  $userName,
+        protected string  $key,
+        protected string  $url,
+        protected string  $notes,
+        protected int     $userEditId,
+        protected string  $userEditName,
+        protected string  $userEditLogin,
+        protected bool    $isPrivate,
+        protected bool    $isPrivateGroup,
+        protected int     $userGroupId,
+        protected string  $userGroupName,
+        protected bool    $otherUserEdit,
+        protected bool    $otherUserGroupEdit,
+        protected int     $countView,
+        protected int     $countDecrypt,
+        protected string  $dateAdd,
+        protected ?string $dateEdit = null,
+        protected ?int    $passDate = null,
+        protected ?int    $passDateChange = null,
+        protected ?int    $parentId = null,
+        protected ?array  $usersView = null,
+        protected ?array  $usersEdit = null,
+        protected ?array  $userGroupsView = null,
+        protected ?array  $userGroupsEdit = null,
+        protected ?array  $tags = null,
+        protected ?string $categoryName = null,
+        protected ?string $clientName = null,
     ) {
+    }
+
+    public function getCategoryName(): ?string
+    {
+        return $this->categoryName;
+    }
+
+    public function getClientName(): ?string
+    {
+        return $this->clientName;
     }
 
     public function getPassDate(): ?int
@@ -219,12 +231,12 @@ class AccountViewDto extends Dto
         return $this->countDecrypt;
     }
 
-    public function getDateAdd(): int
+    public function getDateAdd(): string
     {
         return $this->dateAdd;
     }
 
-    public function getDateEdit(): ?int
+    public function getDateEdit(): ?string
     {
         return $this->dateEdit;
     }

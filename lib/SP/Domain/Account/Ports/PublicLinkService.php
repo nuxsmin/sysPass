@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -30,6 +31,7 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Domain\Account\Dtos\PublicLinkKey;
 use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Account\Models\PublicLinkList;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -49,7 +51,7 @@ interface PublicLinkService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchDto $itemSearchData): QueryResult;
+    public function search(ItemSearchDto $itemSearchDto): QueryResult;
 
     /**
      * @throws ConstraintException
@@ -98,7 +100,7 @@ interface PublicLinkService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(PublicLink $itemData): int;
+    public function create(PublicLink $publicLink): int;
 
     /**
      * Get all items from the service's repository
@@ -130,7 +132,7 @@ interface PublicLinkService
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    public function getHashForItem(int $itemId): PublicLink;
+    public function getHashForItem(int $id): Simple;
 
     /**
      * Updates an item
@@ -139,5 +141,5 @@ interface PublicLinkService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function update(PublicLink $itemData): void;
+    public function update(PublicLink $publicLink): void;
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -41,6 +42,8 @@ use function SP\__u;
 
 /**
  * Class PublicLink
+ *
+ * @template T of PublicLinkModel
  */
 final class PublicLink extends BaseRepository implements PublicLinkRepository
 {
@@ -69,7 +72,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
     /**
      * Returns all the items
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -101,7 +104,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->join('INNER', 'Account', 'Account.id = PublicLink.itemId')
             ->orderBy(['PublicLink.id']);
 
-        return $this->db->runQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(PublicLinkModel::class));
     }
 
     /**
@@ -132,7 +135,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
      *
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -182,7 +185,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
                                ]);
         }
 
-        return $this->db->runQuery(QueryData::build($query), true);
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(PublicLinkModel::class), true);
     }
 
     /**
@@ -335,7 +338,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -368,13 +371,17 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->where('PublicLink.id = :id')
             ->bindValue('id', $id);
 
-        return $this->db->runQuery(QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving the link')));
+        $queryData = QueryData::build($query)
+                              ->setMapClassName(PublicLinkModel::class)
+                              ->setOnErrorMessage(__u('Error while retrieving the link'));
+
+        return $this->db->runQuery($queryData);
     }
 
     /**
      * @param $hash string
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -407,7 +414,11 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->where('PublicLink.hash = :hash')
             ->bindValue('hash', $hash);
 
-        return $this->db->runQuery(QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving the link')));
+        $queryData = QueryData::build($query)
+                              ->setMapClassName(PublicLinkModel::class)
+                              ->setOnErrorMessage(__u('Error while retrieving the link'));
+
+        return $this->db->runQuery($queryData);
     }
 
     /**

@@ -54,11 +54,11 @@ final class AccountHistoryViewDto extends AccountViewDto
         bool          $otherUserGroupEdit,
         int           $countView,
         int           $countDecrypt,
-        int           $dateAdd,
+        string  $dateAdd,
         protected int $accountId,
         protected int $isModify,
         protected int $isDeleted,
-        ?int          $dateEdit = null,
+        ?string $dateEdit = null,
         ?int          $passDate = null,
         ?int          $passDateChange = null,
         ?int          $parentId = null,
@@ -66,7 +66,9 @@ final class AccountHistoryViewDto extends AccountViewDto
         ?array        $usersEdit = null,
         ?array        $userGroupsView = null,
         ?array        $userGroupsEdit = null,
-        ?array        $tags = null
+        ?array  $tags = null,
+        ?string $categoryName = null,
+        ?string $clientName = null,
     ) {
         parent::__construct(
             $id,
@@ -100,7 +102,9 @@ final class AccountHistoryViewDto extends AccountViewDto
             $usersEdit,
             $userGroupsView,
             $userGroupsEdit,
-            $tags
+            $tags,
+            $categoryName,
+            $clientName
         );
     }
 

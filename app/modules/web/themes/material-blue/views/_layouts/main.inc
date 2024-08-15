@@ -18,12 +18,14 @@ echo $_getvar('lang'); ?>">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png"
-          href="<?php echo $_getvar('logo_icon'); ?>">
+          href="<?php
+          echo $_getvar('logo_icon'); ?>">
     <?php
     foreach ($_getvar('cssLinks') as $cssLink) : ?>
         <link rel="stylesheet" href="<?php
         echo $cssLink; ?>"/>
-    <?php endforeach; ?>
+    <?php
+    endforeach; ?>
 </head>
 <body class="<?php
 echo $_getvar('page'); ?>">
@@ -39,8 +41,9 @@ echo $_getvar('page'); ?>">
         <div id="taskStatus"></div>
     </div>
 
-    <div id="container" class="<?php
-    echo $_getvar('page'); ?>"
+    <div id="container"
+         class="<?php
+         echo $_getvar('page'); ?>"
          data-page="<?php
          echo $_getvar('page'); ?>"
          data-upgraded="<?php
@@ -63,7 +66,8 @@ echo $_getvar('page'); ?>">
 foreach ($_getvar('jsLinks') as $jsLink) : ?>
     <script type="text/javascript" src="<?php
     echo $jsLink; ?>"></script>
-<?php endforeach; ?>
+<?php
+endforeach; ?>
 
 <script type="text/javascript">
     $(document).ready(function () {

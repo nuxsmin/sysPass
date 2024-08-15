@@ -31,6 +31,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -59,7 +60,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
                 return $arg->getQuery()->getBindValues()['id'] === $id
-                       && $arg->getMapClassName() === Simple::class
+                       && $arg->getMapClassName() === AccountHistoryModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );

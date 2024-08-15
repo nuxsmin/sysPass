@@ -24,20 +24,16 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-
 use Exception;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\Crypt\Vault;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\UI\ThemeIcons;
-use SP\DataModel\AccountExtData;
+use SP\Domain\Account\Dtos\AccountViewDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
-use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Common\Adapters\Serde;
-use SP\Domain\Common\Providers\Image;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Http\Providers\Uri;
@@ -45,31 +41,25 @@ use SP\Domain\Image\Ports\ImageService;
 use SP\Modules\Web\Util\ErrorUtil;
 use SP\Mvc\Controller\WebControllerHelper;
 
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
+
 /**
  * Class ViewLinkController
  */
 final class ViewLinkController extends AccountControllerBase
 {
-    private AccountService $accountService;
-    private ThemeIcons     $icons;
-    private PublicLink $publicLinkService;
-    private Image      $imageUtil;
+    private readonly ThemeIcons $icons;
 
     public function __construct(
-        Application       $application,
-        WebControllerHelper $webControllerHelper,
-        AccountService    $accountService,
-        PublicLinkService $publicLinkService,
-        ImageService $imageUtil
+        Application                        $application,
+        WebControllerHelper                $webControllerHelper,
+        private readonly AccountService    $accountService,
+        private readonly PublicLinkService $publicLinkService,
+        private readonly ImageService      $imageUtil
     ) {
-        parent::__construct(
-            $application,
-            $webControllerHelper
-        );
-
-        $this->accountService = $accountService;
-        $this->publicLinkService = $publicLinkService;
-        $this->imageUtil = $imageUtil;
+        parent::__construct($application, $webControllerHelper);
 
         $this->icons = $this->theme->getIcons();
     }
@@ -84,23 +74,23 @@ final class ViewLinkController extends AccountControllerBase
         try {
             $this->layoutHelper->getPublicLayout('account-link', 'account');
 
-            $publicLinkData = $this->publicLinkService->getByHash($hash);
+            $publicLink = $this->publicLinkService->getByHash($hash);
 
-            if (time() < $publicLinkData->getDateExpire()
-                && $publicLinkData->getCountViews() < $publicLinkData->getMaxCountViews()
+            if (time() < $publicLink->getDateExpire()
+                && $publicLink->getCountViews() < $publicLink->getMaxCountViews()
             ) {
-                $this->publicLinkService->addLinkView($publicLinkData);
+                $this->publicLinkService->addLinkView($publicLink);
 
-                $this->accountService->incrementViewCounter($publicLinkData->getItemId());
-                $this->accountService->incrementDecryptCounter($publicLinkData->getItemId());
+                $this->accountService->incrementViewCounter($publicLink->getItemId());
+                $this->accountService->incrementDecryptCounter($publicLink->getItemId());
 
-                /** @var VaultInterface $vault */
-                $vault = unserialize($publicLinkData->getData(), ['allowed_classes' => [Vault::class]]);
+                $vault = Serde::deserialize($publicLink->getData(), VaultInterface::class);
 
-                /** @var AccountExtData $accountData */
-                $accountData = Serde::deserialize(
-                    $vault->getData($this->publicLinkService->getPublicLinkKey($publicLinkData->getHash())->getKey()),
-                    AccountExtData::class
+                $accountViewDto = AccountViewDto::fromModel(
+                    Serde::deserialize(
+                        $vault->getData($this->publicLinkService->getPublicLinkKey($publicLink->getHash())->getKey()),
+                        Simple::class
+                    )
                 );
 
                 $this->view->assign(
@@ -113,25 +103,23 @@ final class ViewLinkController extends AccountControllerBase
                 );
 
                 $this->view->assign('isView', true);
-                $this->view->assign(
-                    'useImage',
-                    $this->configData->isPublinksImageEnabled()
-                    || $this->configData->isAccountPassToImage()
-                );
+                $useImage = $this->configData->isPublinksImageEnabled()
+                            || $this->configData->isAccountPassToImage();
+                $this->view->assign('useImage', $useImage);
 
-                if ($this->view->useImage) {
+                if ($useImage) {
                     $this->view->assign(
                         'accountPassImage',
-                        $this->imageUtil->convertText($accountData->getPass())
+                        $this->imageUtil->convertText($accountViewDto->getPass())
                     );
                 } else {
                     $this->view->assign(
                         'copyPassRoute',
-                        Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW_PASS)
+                        $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW_PASS)
                     );
                 }
 
-                $this->view->assign('accountData', $accountData);
+                $this->view->assign('accountData', $accountViewDto);
 
                 $clientAddress = $this->configData->isDemoEnabled()
                     ? '***'
@@ -143,25 +131,30 @@ final class ViewLinkController extends AccountControllerBase
                 $deepLink = new Uri($baseUrl);
                 $deepLink->addParam(
                     'r',
-                    Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW) . '/' . $accountData->getId()
+                    sprintf(
+                        "%s/%s",
+                        $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW),
+                        $accountViewDto->getId()
+                    )
                 );
 
                 $this->eventDispatcher->notify(
                     'show.account.link',
                     new Event(
-                        $this, EventMessage::factory()
-                                           ->addDescription(__u('Link viewed'))
-                                           ->addDetail(__u('Account'), $accountData->getName())
-                                           ->addDetail(__u('Client'), $accountData->getClientName())
-                                           ->addDetail(__u('Agent'), $this->request->getHeader('User-Agent'))
-                                           ->addDetail(__u('HTTPS'), $this->request->isHttps() ? __u('ON') : __u('OFF'))
-                                           ->addDetail(__u('IP'), $clientAddress)
-                                           ->addDetail(
-                                               __u('Link'),
-                                               $deepLink->getUriSigned($this->configData->getPasswordSalt())
-                                           )
-                                           ->addExtra('userId', $publicLinkData->getUserId())
-                                           ->addExtra('notify', $publicLinkData->isNotify())
+                        $this,
+                        EventMessage::factory()
+                                    ->addDescription(__u('Link viewed'))
+                                    ->addDetail(__u('Account'), $accountViewDto->getName())
+                                    ->addDetail(__u('Client'), $accountViewDto->getClientName())
+                                    ->addDetail(__u('Agent'), $this->request->getHeader('User-Agent'))
+                                    ->addDetail(__u('HTTPS'), $this->request->isHttps() ? __u('ON') : __u('OFF'))
+                                    ->addDetail(__u('IP'), $clientAddress)
+                                    ->addDetail(
+                                        __u('Link'),
+                                        $deepLink->getUriSigned($this->configData->getPasswordSalt())
+                                    )
+                                    ->addExtra('userId', $publicLink->getUserId())
+                                    ->addExtra('notify', $publicLink->isNotify())
                     )
                 );
             } else {

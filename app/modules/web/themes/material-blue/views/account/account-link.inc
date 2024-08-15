@@ -23,7 +23,7 @@
  */
 
 use SP\Domain\Account\Adapters\AccountPermission;
-use SP\Domain\Account\Models\AccountView;
+use SP\Domain\Account\Dtos\AccountViewDto;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 
@@ -32,7 +32,7 @@ use function SP\__;
 /**
  * @var callable $_getvar
  * @var ThemeIconsInterface $icons
- * @var AccountView $accountView
+ * @var AccountViewDto $accountView
  * @var AccountPermission $accountAcl
  * @var ConfigDataInterface $configData
  */
@@ -40,7 +40,7 @@ $accountView = $_getvar('accountData');
 ?>
 
 <div id="actions" class="public-link" align="center">
-    <div id="content" class="public-link">
+    <div class="public-link">
         <div id="title" class="titleNormal">
             <i class="material-icons"><?php
                 echo $_getvar('title')['icon']; ?></i>

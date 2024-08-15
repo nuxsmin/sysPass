@@ -80,6 +80,7 @@ use function DI\factory;
 abstract class IntegrationTestCase extends TestCase
 {
     protected static Generator $faker;
+    protected readonly string $passwordSalt;
     /**
      * @var array<string, QueryResult> $databaseResolvers
      */
@@ -176,7 +177,7 @@ abstract class IntegrationTestCase extends TestCase
         $configData->method('isInstalled')->willReturn(true);
         $configData->method('isMaintenance')->willReturn(false);
         $configData->method('getDbName')->willReturn(self::$faker->colorName());
-        $configData->method('getPasswordSalt')->willReturn(self::$faker->sha1());
+        $configData->method('getPasswordSalt')->willReturn($this->passwordSalt);
 
         return $configData;
     }
@@ -240,7 +241,8 @@ abstract class IntegrationTestCase extends TestCase
             [
                 'REQUEST_METHOD' => strtoupper($method),
                 'REQUEST_URI' => $uri,
-                'HTTP_USER_AGENT' => self::$faker->userAgent()
+                'HTTP_USER_AGENT' => self::$faker->userAgent(),
+                'HTTP_HOST' => 'localhost'
                 //'QUERY_STRING' => $query
             ]
         );
@@ -282,5 +284,12 @@ abstract class IntegrationTestCase extends TestCase
     protected function getModuleDefinitions(): array
     {
         return FileSystem::require(FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'web', 'module.php'));
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->passwordSalt = self::$faker->sha1();
     }
 }

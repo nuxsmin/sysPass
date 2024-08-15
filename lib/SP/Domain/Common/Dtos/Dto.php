@@ -28,6 +28,7 @@ namespace SP\Domain\Common\Dtos;
 
 use ReflectionClass;
 use ReflectionException;
+use SP\Domain\Common\Models\Simple;
 
 use function SP\processException;
 
@@ -37,6 +38,11 @@ use function SP\processException;
 abstract class Dto
 {
     protected array $reservedProperties = [];
+
+    public static function fromModel(Simple $model): static
+    {
+        return self::fromArray($model->toArray(includeOuter: true));
+    }
 
     public static function fromArray(array $properties): static
     {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -31,25 +32,18 @@ use SP\Domain\Common\Providers\Password;
 /**
  * Class PublicLinkKey
  */
-final class PublicLinkKey
+final readonly class PublicLinkKey
 {
     private string $hash;
-    private string $salt;
 
     /**
      * PublicLinkKey constructor.
      *
      * @throws EnvironmentIsBrokenException
      */
-    public function __construct(string $salt, ?string $hash = null)
+    public function __construct(private string $salt, ?string $hash = null)
     {
-        $this->salt = $salt;
-
-        if ($hash === null) {
-            $this->hash = Password::generateRandomBytes();
-        } else {
-            $this->hash = $hash;
-        }
+        $this->hash = $hash ?: Password::generateRandomBytes();
     }
 
     public function getKey(): string
