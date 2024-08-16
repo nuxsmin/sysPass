@@ -24,9 +24,10 @@
 
 namespace SP\Modules\Web\Controllers\AccountFavorite;
 
-
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountToFavoriteService;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
@@ -35,17 +36,18 @@ use SP\Mvc\Controller\SimpleControllerHelper;
  */
 abstract class AccountFavoriteBase extends SimpleControllerBase
 {
-    protected AccountToFavoriteService $accountToFavoriteService;
 
+    /**
+     * @throws SessionTimeout
+     * @throws SPException
+     */
     public function __construct(
-        Application $application,
-        SimpleControllerHelper $simpleControllerHelper,
-        AccountToFavoriteService $accountToFavoriteService
+        Application                        $application,
+        SimpleControllerHelper             $simpleControllerHelper,
+        protected AccountToFavoriteService $accountToFavoriteService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 
         $this->checks();
-
-        $this->accountToFavoriteService = $accountToFavoriteService;
     }
 }

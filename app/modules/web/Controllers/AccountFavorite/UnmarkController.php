@@ -25,10 +25,13 @@
 namespace SP\Modules\Web\Controllers\AccountFavorite;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class MarkController
@@ -40,10 +43,10 @@ final class UnmarkController extends AccountFavoriteBase
     use JsonTrait;
 
     /**
-     * @param  int  $accountId
+     * @param int $accountId
      *
      * @return bool
-     * @throws JsonException
+     * @throws SPException
      */
     public function unmarkAction(int $accountId): bool
     {

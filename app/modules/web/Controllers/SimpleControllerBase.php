@@ -24,20 +24,20 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\PhpExtensionChecker;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Services\ConfigFile;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Domain\Http\Services\Request;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
@@ -48,17 +48,17 @@ abstract class SimpleControllerBase
 {
     use WebControllerTrait;
 
-    protected readonly EventDispatcher     $eventDispatcher;
-    protected readonly ConfigFile          $config;
-    protected readonly Context             $session;
-    protected readonly ThemeInterface      $theme;
-    protected readonly Acl                 $acl;
-    protected readonly Request             $request;
-    protected readonly PhpExtensionChecker $extensionChecker;
-    protected readonly ConfigDataInterface $configData;
-    protected readonly UriContextInterface $uriContext;
-    protected readonly RouteContextData $routeContextData;
-    protected string                    $controllerName;
+    protected readonly EventDispatcher            $eventDispatcher;
+    protected readonly ConfigFileService          $config;
+    protected readonly SessionContext             $session;
+    protected readonly ThemeInterface             $theme;
+    protected readonly AclInterface               $acl;
+    protected readonly RequestService             $request;
+    protected readonly PhpExtensionCheckerService $extensionChecker;
+    protected readonly ConfigDataInterface        $configData;
+    protected readonly UriContextInterface        $uriContext;
+    protected readonly RouteContextData           $routeContextData;
+    protected string                              $controllerName;
 
     /**
      * @throws SessionTimeout
