@@ -26,123 +26,74 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Dtos;
 
-use SP\Domain\Account\Models\Account;
-use SP\Domain\Account\Models\AccountHistory;
-
 /**
  * Class AccountHistoryDto
  */
 final class AccountHistoryDto extends AccountDto
 {
     public function __construct(
-        protected ?int    $accountId = null,
-        protected ?int    $isDelete = null,
-        protected ?int    $isModify = null,
-        protected ?string $dateAdd = null,
-        protected ?string $dateEdit = null,
-        protected ?int    $passDate = null,
-        protected ?int    $countView = null,
-        protected ?int    $countDecrypt = null,
-        ?string           $name = null,
-        ?string           $login = null,
-        ?int              $clientId = null,
-        ?int              $categoryId = null,
-        ?string           $pass = null,
-        ?int              $userId = null,
-        ?string           $key = null,
-        ?string           $url = null,
-        ?string           $notes = null,
-        ?int              $userEditId = null,
-        ?bool             $isPrivate = null,
-        ?bool             $isPrivateGroup = null,
-        ?int              $passDateChange = null,
-        ?int              $parentId = null,
-        ?int              $userGroupId = null,
-        ?bool             $otherUserEdit = null,
-        ?bool             $otherUserGroupEdit = null
+        ?int                    $id = null,
+        ?int                    $clientId = null,
+        ?int                    $categoryId = null,
+        ?int                    $userId = null,
+        ?int                    $userGroupId = null,
+        ?int                    $userEditId = null,
+        ?int                    $parentId = null,
+        ?int                    $countView = null,
+        ?int                    $countDecrypt = null,
+        ?int                    $passDateChange = null,
+        ?string                 $name = null,
+        ?string                 $login = null,
+        ?string                 $pass = null,
+        ?string                 $key = null,
+        ?string                 $url = null,
+        ?string                 $notes = null,
+        ?bool                   $isPrivate = null,
+        ?bool                   $isPrivateGroup = null,
+        ?bool                   $otherUserEdit = null,
+        ?bool                   $otherUserGroupEdit = null,
+        ?array                  $usersView = null,
+        ?array                  $usersEdit = null,
+        ?array                  $otherUserGroupsView = null,
+        ?array                  $otherUserGroupsEdit = null,
+        ?array                  $tags = null,
+        ?array                  $userGroupsView = null,
+        ?array                  $userGroupsEdit = null,
+        public readonly ?int    $accountId = null,
+        public readonly ?int    $isDelete = null,
+        public readonly ?int    $isModify = null,
+        public readonly ?int    $passDate = null,
+        public readonly ?string $dateAdd = null,
+        public readonly ?string $dateEdit = null,
     ) {
         parent::__construct(
-            $name,
-            $login,
+            $id,
             $clientId,
             $categoryId,
-            $pass,
             $userId,
+            $userGroupId,
+            $userEditId,
+            $parentId,
+            $countView,
+            $countDecrypt,
+            $passDateChange,
+            $name,
+            $login,
+            $pass,
             $key,
             $url,
             $notes,
-            $userEditId,
             $isPrivate,
             $isPrivateGroup,
-            $passDateChange,
-            $parentId,
-            $userGroupId,
+            $otherUserEdit,
             $otherUserGroupEdit,
-            $otherUserEdit
+            $usersView,
+            $usersEdit,
+            $otherUserGroupsView,
+            $otherUserGroupsEdit,
+            $tags,
+            $userGroupsView,
+            $userGroupsEdit
         );
-    }
-
-    public static function fromAccount(Account|AccountHistory $account): static
-    {
-        return new AccountHistoryDto(
-            accountId:          $account->getId(),
-            name:               $account->getName(),
-            login:              $account->getLogin(),
-            clientId:           $account->getClientId(),
-            categoryId:         $account->getCategoryId(),
-            pass:               $account->getPass(),
-            userId:             $account->getUserId(),
-            key:                $account->getKey(),
-            url:                $account->getUrl(),
-            notes:              $account->getNotes(),
-            userEditId:         $account->getUserEditId(),
-            isPrivate:          (bool)$account->getIsPrivate(),
-            isPrivateGroup:     (bool)$account->getIsPrivateGroup(),
-            passDateChange:     $account->getPassDateChange(),
-            parentId:           $account->getParentId(),
-            userGroupId:        $account->getUserGroupId(),
-            otherUserEdit:      (bool)$account->getOtherUserEdit(),
-            otherUserGroupEdit: (bool)$account->getOtherUserGroupEdit(),
-        );
-    }
-
-    public function getAccountId(): ?int
-    {
-        return $this->accountId;
-    }
-
-    public function getIsDelete(): ?int
-    {
-        return $this->isDelete;
-    }
-
-    public function getIsModify(): ?int
-    {
-        return $this->isModify;
-    }
-
-    public function getDateAdd(): ?string
-    {
-        return $this->dateAdd;
-    }
-
-    public function getDateEdit(): ?string
-    {
-        return $this->dateEdit;
-    }
-
-    public function getPassDate(): ?int
-    {
-        return $this->passDate;
-    }
-
-    public function getCountView(): ?int
-    {
-        return $this->countView;
-    }
-
-    public function getCountDecrypt(): ?int
-    {
-        return $this->countDecrypt;
     }
 }

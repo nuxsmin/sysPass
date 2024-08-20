@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -35,10 +36,11 @@ use SP\Domain\Auth\Services\LoginUser;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Ports\UserPassRecoverService;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -58,11 +60,12 @@ class LoginUserTest extends UnitaryTestCase
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     public function testCheckUser()
     {
         $user = UserDataGenerator::factory()->buildUserData();
-        $userDataDto = new UserDataDto($user->mutate(['isDisabled' => false, 'isChangePass' => false]));
+        $userDataDto = UserDto::fromModel($user->mutate(['isDisabled' => false, 'isChangePass' => false]));
 
         $out = $this->loginUser->checkUser($userDataDto);
 
@@ -72,11 +75,12 @@ class LoginUserTest extends UnitaryTestCase
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     public function testCheckUserWithDisabled()
     {
         $user = UserDataGenerator::factory()->buildUserData();
-        $userDataDto = new UserDataDto($user->mutate(['isDisabled' => true, 'isChangePass' => false]));
+        $userDataDto = UserDto::fromModel($user->mutate(['isDisabled' => true, 'isChangePass' => false]));
 
         $this->expectException(AuthException::class);
         $this->expectExceptionMessage('User disabled');
@@ -87,11 +91,12 @@ class LoginUserTest extends UnitaryTestCase
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     public function testCheckUserWithChangePass()
     {
         $user = UserDataGenerator::factory()->buildUserData();
-        $userDataDto = new UserDataDto($user->mutate(['isDisabled' => false, 'isChangePass' => true]));
+        $userDataDto = UserDto::fromModel($user->mutate(['isDisabled' => false, 'isChangePass' => true]));
 
         $this->userPassRecoverService
             ->expects($this->once())
@@ -107,11 +112,12 @@ class LoginUserTest extends UnitaryTestCase
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     public function testCheckUserWithChangePassWithException()
     {
         $user = UserDataGenerator::factory()->buildUserData();
-        $userDataDto = new UserDataDto($user->mutate(['isDisabled' => false, 'isChangePass' => true]));
+        $userDataDto = UserDto::fromModel($user->mutate(['isDisabled' => false, 'isChangePass' => true]));
 
         $this->userPassRecoverService
             ->expects($this->once())
@@ -129,6 +135,7 @@ class LoginUserTest extends UnitaryTestCase
      * @throws Exception
      * @throws ContextException
      * @throws InvalidArgumentException
+     * @throws SPException
      */
     protected function setUp(): void
     {

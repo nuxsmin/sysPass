@@ -206,7 +206,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
                     'AccountToFavorite',
                     'AccountToFavorite.accountId = Account.id AND AccountToFavorite.userId = :userId',
                     [
-                        'userId' => $this->context->getUserData()->getId(),
+                        'userId' => $this->context->getUserData()->id,
                     ]
                 );
         }

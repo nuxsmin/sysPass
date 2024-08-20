@@ -75,8 +75,8 @@ class AccountItemsTest extends UnitaryTestCase
             ->method('addByType')
             ->with(
                 ...
-                self::withConsecutive([100, $accountUpdateDto->getUserGroupsView(), false],
-                                      [100, $accountUpdateDto->getUserGroupsEdit(), true])
+                self::withConsecutive([100, $accountUpdateDto->userGroupsView, false],
+                                      [100, $accountUpdateDto->userGroupsEdit, true])
             );
 
         $this->accountToUserRepository
@@ -94,8 +94,8 @@ class AccountItemsTest extends UnitaryTestCase
             ->method('addByType')
             ->with(
                 ...
-                self::withConsecutive([100, $accountUpdateDto->getUsersView(), false],
-                                      [100, $accountUpdateDto->getUsersEdit(), true])
+                self::withConsecutive([100, $accountUpdateDto->usersView, false],
+                                      [100, $accountUpdateDto->usersEdit, true])
             );
 
         $this->accountToTagRepository
@@ -111,29 +111,29 @@ class AccountItemsTest extends UnitaryTestCase
         $this->accountToTagRepository
             ->expects($this->once())
             ->method('add')
-            ->with(100, $accountUpdateDto->getTags());
+            ->with(100, $accountUpdateDto->tags);
 
         $this->accountItems->updateItems(true, 100, $accountUpdateDto);
     }
 
     /**
      * @throws ConstraintException
-     * @throws ServiceException
      * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
      */
     public function testUpdateItemsWithNoItems()
     {
         $accountUpdateDto = AccountDataGenerator::factory()
                                                 ->buildAccountUpdateDto()
-                                                ->setBatch(
+            ->mutate(
                                                     [
-                                                        'usersView',
-                                                        'usersEdit',
-                                                        'userGroupsView',
-                                                        'userGroupsEdit',
-                                                        'tags'
-                                                    ],
-                                                    [null, null, null, null, null]
+                                                        'usersView' => null,
+                                                        'usersEdit' => null,
+                                                        'userGroupsView' => null,
+                                                        'userGroupsEdit' => null,
+                                                        'tags' => null
+                                                    ]
                                                 );
 
         $this->accountToUserGroupRepository
@@ -224,7 +224,7 @@ class AccountItemsTest extends UnitaryTestCase
         $this->accountToTagRepository
             ->expects($this->once())
             ->method('add')
-            ->with(100, $accountUpdateDto->getTags());
+            ->with(100, $accountUpdateDto->tags);
 
         $this->accountItems->updateItems(false, 100, $accountUpdateDto);
     }
@@ -238,8 +238,10 @@ class AccountItemsTest extends UnitaryTestCase
             ->method('addByType')
             ->with(
                 ...
-                self::withConsecutive([100, $accountCreateDto->getUserGroupsView(), false],
-                                      [100, $accountCreateDto->getUserGroupsEdit(), true])
+                self::withConsecutive(
+                    [100, $accountCreateDto->userGroupsView, false],
+                    [100, $accountCreateDto->userGroupsEdit, true]
+                )
             );
 
         $this->accountToUserRepository
@@ -247,14 +249,14 @@ class AccountItemsTest extends UnitaryTestCase
             ->method('addByType')
             ->with(
                 ...
-                self::withConsecutive([100, $accountCreateDto->getUsersView(), false],
-                                      [100, $accountCreateDto->getUsersEdit(), true])
+                self::withConsecutive([100, $accountCreateDto->usersView, false],
+                                      [100, $accountCreateDto->usersEdit, true])
             );
 
         $this->accountToTagRepository
             ->expects($this->once())
             ->method('add')
-            ->with(100, $accountCreateDto->getTags());
+            ->with(100, $accountCreateDto->tags);
 
         $this->accountItems->addItems(true, 100, $accountCreateDto);
     }
@@ -274,7 +276,7 @@ class AccountItemsTest extends UnitaryTestCase
         $this->accountToTagRepository
             ->expects($this->once())
             ->method('add')
-            ->with(100, $accountCreateDto->getTags());
+            ->with(100, $accountCreateDto->tags);
 
         $this->accountItems->addItems(false, 100, $accountCreateDto);
     }

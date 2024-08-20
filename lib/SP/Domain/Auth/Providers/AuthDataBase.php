@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Providers;
 
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 
 /**
  * Class AuthDataBase
@@ -45,7 +45,7 @@ abstract class AuthDataBase
      */
     public function __construct(
         private readonly bool         $authoritative = false,
-        private readonly ?UserDataDto $userDataDto = null
+        private readonly ?UserDto $userDataDto = null
     ) {
     }
 
@@ -122,7 +122,7 @@ abstract class AuthDataBase
         return $this->authenticated && $this->success && !$this->failed;
     }
 
-    public function getUserDataDto(): ?UserDataDto
+    public function getUserDataDto(): ?UserDto
     {
         return $this->userDataDto;
     }

@@ -26,35 +26,51 @@ declare(strict_types=1);
 
 namespace SP\Domain\Common\Dtos;
 
+use Closure;
 use ReflectionClass;
 use ReflectionException;
-use SP\Domain\Common\Models\Simple;
+use ReflectionMethod;
+use SP\Domain\Common\Attributes\DtoTransformation;
+use SP\Domain\Common\Attributes\ModelBounded;
+use SP\Domain\Common\Models\Model;
+use SP\Domain\Common\Ports\Dto as DtoInterface;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Infrastructure\Database\QueryResult;
+use ValueError;
 
 use function SP\processException;
 
 /**
  * Class Dto
  */
-abstract class Dto
+abstract class Dto implements DtoInterface
 {
-    protected array $reservedProperties = [];
-
-    public static function fromModel(Simple $model): static
+    /**
+     * @inheritDoc
+     * @throws SPException
+     */
+    public static function fromResult(QueryResult $queryResult, ?string $type = null): static
     {
-        return self::fromArray($model->toArray(includeOuter: true));
+        return self::fromArray($queryResult->getData($type)->toArray(includeOuter: true));
     }
 
+    /**
+     * Create a Dto instance with constructor values from an array.
+     *
+     * @param array $properties
+     * @return static
+     * @throws SPException
+     */
     public static function fromArray(array $properties): static
     {
+        $reflectionClass = new ReflectionClass(static::class);
+        $parameters = self::getConstructorParametersFromClass($reflectionClass);
+
+        foreach ($parameters as $name => $value) {
+            $parameters[$name] = $properties[$name] ?? null;
+        }
+
         try {
-            $reflectionClass = new ReflectionClass(static::class);
-
-            $parameters = [];
-
-            foreach ($reflectionClass->getConstructor()->getParameters() as $parameter) {
-                $parameters[] = $properties[$parameter->getName()] ?? null;
-            }
-
             return $reflectionClass->newInstanceArgs($parameters);
         } catch (ReflectionException $e) {
             processException($e);
@@ -64,68 +80,131 @@ abstract class Dto
     }
 
     /**
-     * Expose any property. This allows to get any property from dynamic calls.
-     *
-     * @param string $property
-     *
-     * @return mixed
+     * @param ReflectionClass $reflectionClass
+     * @return null[]
+     * @throws SPException
      */
-    public function get(string $property): mixed
+    private static function getConstructorParametersFromClass(ReflectionClass $reflectionClass): array
     {
-        if (property_exists($this, $property) && !in_array($property, $this->reservedProperties)) {
-            return $this->{$property};
+        if (!method_exists(static::class, '__construct')) {
+            throw SPException::error('Cannot mutate a class without a constructor');
         }
 
-        return null;
+        return array_map(
+            null,
+            array_flip(array_map(static fn($p) => $p->getName(), $reflectionClass->getConstructor()->getParameters()))
+        );
     }
 
     /**
-     * Set any property. This allows to set any property from dynamic calls.
-     *
-     * @param string $property
-     * @param mixed $value
-     *
-     * @return Dto|null Returns a new instance with the property set.
+     * @return array
      */
-    public function set(string $property, mixed $value): static|null
+    final public function toArray(): array
     {
-        if ($this->checkProperty($property)) {
-            $self = clone $this;
-            $self->{$property} = $value;
-
-            return $self;
-        }
-
-        return null;
-    }
-
-    private function checkProperty(string $property): bool
-    {
-        return property_exists($this, $property) && !in_array($property, $this->reservedProperties);
+        return get_object_vars($this);
     }
 
     /**
-     * Set any properties in bacth mode. This allows to set any property from dynamic calls.
-     *
-     * @param string[] $properties
-     * @param array $values
-     *
-     * @return Dto Returns a new instance with the poperties set.
+     * @inheritDoc
+     * @throws SPException
+     */
+    public static function fromModel(Model $model): static
+    {
+        self::checkModelBounded($model);
+
+        $modelProperties = $model->toArray(includeOuter: true);
+
+        $tranformations = self::getTransformations();
+
+        if (count($tranformations) > 0) {
+            array_walk(
+                $modelProperties,
+                static function (mixed &$v, string $k) use ($tranformations, $model) {
+                    if ($v !== null && array_key_exists($k, $tranformations)) {
+                        $v = call_user_func($tranformations[$k], $model);
+                    }
+                }
+            );
+        }
+
+        return self::fromArray($modelProperties);
+    }
+
+    /**
+     * @param Model $model
+     * @return void
+     */
+    private static function checkModelBounded(Model $model): void
+    {
+        $reflection = new ReflectionClass(static::class);
+
+        foreach ($reflection->getAttributes(ModelBounded::class) as $attribute) {
+            /** @var ModelBounded $instance */
+            $instance = $attribute->newInstance();
+            if (!is_a($model, $instance->modelClass)) {
+                throw new ValueError(sprintf('Model (%s) is not an instance of %s', $model, $instance->modelClass));
+            }
+        }
+    }
+
+    /**
+     * @return array<string, Closure>
+     */
+    private static function getTransformations(): array
+    {
+        $transformers = [];
+        $reflection = new ReflectionClass(static::class);
+
+        foreach ($reflection->getMethods(ReflectionMethod::IS_STATIC | ReflectionMethod::IS_PRIVATE) as $method) {
+            foreach ($method->getAttributes(DtoTransformation::class) as $attribute) {
+                /** @var DtoTransformation $instance */
+                $instance = $attribute->newInstance();
+
+                try {
+                    $transformers[$instance->targetProperty] = $method->getClosure();
+                } catch (ReflectionException $e) {
+                    processException($e);
+                }
+            }
+        }
+
+        return $transformers;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function setBatch(array $properties, array $values): static
     {
-        $self = clone $this;
-
         $filteredProperties = array_filter(
             array_combine($properties, $values),
-            fn($key) => is_string($key) && $this->checkProperty($key),
+            fn($key) => is_string($key),
             ARRAY_FILTER_USE_KEY
         );
 
-        foreach ($filteredProperties as $property => $value) {
-            $self->{$property} = $value;
+        return new static($filteredProperties);
+    }
+
+    /**
+     * @throws SPException
+     */
+    public function mutate(array $properties): static
+    {
+        $reflectionClass = new ReflectionClass($this);
+        $parameters = array_merge(self::getConstructorParametersFromClass($reflectionClass), get_object_vars($this));
+
+        foreach ($parameters as $name => $value) {
+            if (array_key_exists($name, $properties)) {
+                $parameters[$name] = $properties[$name];
+            }
         }
 
-        return $self;
+        try {
+            return $reflectionClass->newInstanceArgs($parameters);
+        } catch (ReflectionException $e) {
+            processException($e);
+        }
+
+        return new static();
     }
 }

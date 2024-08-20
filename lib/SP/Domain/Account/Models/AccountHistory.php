@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -38,16 +39,8 @@ final class AccountHistory extends Model
     protected ?int    $userId             = null;
     protected ?int    $userGroupId        = null;
     protected ?int    $userEditId         = null;
-    protected ?string $name               = null;
     protected ?int    $clientId           = null;
     protected ?int    $categoryId         = null;
-    protected ?string $login              = null;
-    protected ?string $url                = null;
-    protected ?string $pass               = null;
-    protected ?string $key                = null;
-    protected ?string $notes              = null;
-    protected ?int    $dateAdd            = null;
-    protected ?int    $dateEdit           = null;
     protected ?int    $countView          = null;
     protected ?int    $countDecrypt       = null;
     protected ?int    $isPrivate          = null;
@@ -60,6 +53,14 @@ final class AccountHistory extends Model
     protected ?int    $isModify           = null;
     protected ?int    $isDeleted          = null;
     protected ?int    $accountId          = null;
+    protected ?string $name     = null;
+    protected ?string $login    = null;
+    protected ?string $url      = null;
+    protected ?string $pass     = null;
+    protected ?string $key      = null;
+    protected ?string $notes    = null;
+    protected ?string $dateAdd  = null;
+    protected ?string $dateEdit = null;
 
     public function getAccountId(): ?int
     {

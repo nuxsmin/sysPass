@@ -246,7 +246,7 @@ final class User extends BaseRepository implements UserRepository
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
-        if (!$this->context->getUserData()->getIsAdminApp()) {
+        if (!$this->context->getUserData()->isAdminApp) {
             $query->where(sprintf('%s.isAdminApp = 0', UserModel::TABLE));
         }
 

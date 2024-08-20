@@ -24,12 +24,12 @@
 
 namespace SP\Modules\Web\Controllers\AccountHistoryManager;
 
-use JsonException;
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -38,6 +38,8 @@ use SP\Modules\Web\Controllers\Helpers\Grid\AccountHistoryGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class SearchController
@@ -69,12 +71,13 @@ final class SearchController extends ControllerBase
 
     /**
      * @return bool
-     * @throws JsonException
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
     public function searchAction(): bool
     {
+        /** @noinspection DuplicatedCode */
         if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR_HISTORY_SEARCH)) {
             return $this->returnJsonResponse(
                 JsonMessage::JSON_ERROR,

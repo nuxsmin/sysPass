@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -64,13 +65,13 @@ class SyspassImportTest extends UnitaryTestCase
     private const SYSPASS_ENCRYPTED_FILE = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR .
                                            'data_syspass_encrypted.xml';
 
-    private AccountService|MockObject      $accountService;
-    private MockObject|CategoryService     $categoryService;
-    private ClientService|MockObject  $clientService;
-    private TagService|MockObject     $tagService;
-    private CryptInterface|MockObject $crypt;
-    private SyspassImport                  $sysPassImport;
-    private ConfigService|MockObject       $configService;
+    private AccountService|MockObject  $accountService;
+    private MockObject|CategoryService $categoryService;
+    private ClientService|MockObject   $clientService;
+    private TagService|MockObject      $tagService;
+    private CryptInterface|MockObject  $crypt;
+    private SyspassImport              $sysPassImport;
+    private ConfigService|MockObject   $configService;
 
     /**
      * @throws ImportException
@@ -133,12 +134,12 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('create')
             ->with(
                 self::callback(function (AccountCreateDto $dto) use ($accountCounter) {
-                    return $dto->getClientId() > 0
-                           && $dto->getCategoryId() > 0
-                           && $dto->getUserId() === 100
-                           && $dto->getUserGroupId() === 200
-                           && !empty($dto->getPass())
-                           && !empty($dto->getKey())
+                    return $dto->clientId > 0
+                           && $dto->categoryId > 0
+                           && $dto->userId === 100
+                           && $dto->userGroupId === 200
+                           && !empty($dto->pass)
+                           && !empty($dto->key)
                            && $this->getCommonAccountMatcher($accountCounter, $dto);
                 })
             );
@@ -153,38 +154,36 @@ class SyspassImportTest extends UnitaryTestCase
      * @param AccountCreateDto $dto
      * @return bool
      */
-    protected function getCommonAccountMatcher(
-        InvokedCount     $accountCounter,
-        AccountCreateDto $dto
-    ): bool {
-        $tagsCount = count(array_filter($dto->getTags() ?? [], static fn($value) => is_int($value)));
+    protected function getCommonAccountMatcher(InvokedCount $accountCounter, AccountCreateDto $dto): bool
+    {
+        $tagsCount = count(array_filter($dto->tags ?? [], static fn($value) => is_int($value)));
 
         return match ($accountCounter->numberOfInvocations()) {
             1 => $tagsCount === 3
-                 && $dto->getName() === 'Google'
-                 && $dto->getLogin() === 'admin'
-                 && $dto->getUrl() === 'https://google.com'
-                 && empty($dto->getNotes()),
+                 && $dto->name === 'Google'
+                 && $dto->login === 'admin'
+                 && $dto->url === 'https://google.com'
+                 && empty($dto->notes),
             2 => $tagsCount === 3
-                 && $dto->getName() === 'Google'
-                 && $dto->getLogin() === 'admin'
-                 && $dto->getUrl() === 'https://google.com'
-                 && $dto->getNotes() === 'blablacar',
+                 && $dto->name === 'Google'
+                 && $dto->login === 'admin'
+                 && $dto->url === 'https://google.com'
+                 && $dto->notes === 'blablacar',
             3 => $tagsCount === 0
-                 && $dto->getName() === 'Test CSV 1'
-                 && $dto->getLogin() === 'csv_login1'
-                 && $dto->getUrl() === 'http://test.me'
-                 && $dto->getNotes() === 'CSV Notes',
+                 && $dto->name === 'Test CSV 1'
+                 && $dto->login === 'csv_login1'
+                 && $dto->url === 'http://test.me'
+                 && $dto->notes === 'CSV Notes',
             4 => $tagsCount === 0
-                 && $dto->getName() === 'Test CSV 2'
-                 && $dto->getLogin() === 'csv_login2'
-                 && $dto->getUrl() === 'http://linux.org'
-                 && str_starts_with($dto->getNotes(), 'CSV Notes 2'),
+                 && $dto->name === 'Test CSV 2'
+                 && $dto->login === 'csv_login2'
+                 && $dto->url === 'http://linux.org'
+                 && str_starts_with($dto->notes, 'CSV Notes 2'),
             5 => $tagsCount === 0
-                 && $dto->getName() === 'Test CSV 3'
-                 && $dto->getLogin() === 'csv_login2'
-                 && $dto->getUrl() === 'http://apple.com'
-                 && $dto->getNotes() === 'CSV Notes 3',
+                 && $dto->name === 'Test CSV 3'
+                 && $dto->login === 'csv_login2'
+                 && $dto->url === 'http://apple.com'
+                 && $dto->notes === 'CSV Notes 3',
         };
     }
 
@@ -260,12 +259,12 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('create')
             ->with(
                 self::callback(function (AccountCreateDto $dto) use ($accountCounter) {
-                    return $dto->getClientId() > 0
-                           && $dto->getCategoryId() > 0
-                           && $dto->getUserId() === 100
-                           && $dto->getUserGroupId() === 200
-                           && $dto->getPass() === 'super_secret'
-                           && empty($dto->getKey())
+                    return $dto->clientId > 0
+                           && $dto->categoryId > 0
+                           && $dto->userId === 100
+                           && $dto->userGroupId === 200
+                           && $dto->pass === 'super_secret'
+                           && empty($dto->key)
                            && $this->getCommonAccountMatcher($accountCounter, $dto);
                 })
             );
@@ -330,12 +329,12 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('create')
             ->with(
                 self::callback(function (AccountCreateDto $dto) use ($accountCounter) {
-                    return $dto->getClientId() > 0
-                           && $dto->getCategoryId() > 0
-                           && $dto->getUserId() === 100
-                           && $dto->getUserGroupId() === 200
-                           && !empty($dto->getPass())
-                           && !empty($dto->getKey())
+                    return $dto->clientId > 0
+                           && $dto->categoryId > 0
+                           && $dto->userId === 100
+                           && $dto->userGroupId === 200
+                           && !empty($dto->pass)
+                           && !empty($dto->key)
                            && $this->getCommonAccountMatcher($accountCounter, $dto);
                 })
             );
@@ -415,12 +414,12 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('create')
             ->with(
                 self::callback(function (AccountCreateDto $dto) use ($accountCounter) {
-                    return $dto->getClientId() > 0
-                           && $dto->getCategoryId() > 0
-                           && $dto->getUserId() === 100
-                           && $dto->getUserGroupId() === 200
-                           && !empty($dto->getPass())
-                           && !empty($dto->getKey())
+                    return $dto->clientId > 0
+                           && $dto->categoryId > 0
+                           && $dto->userId === 100
+                           && $dto->userGroupId === 200
+                           && !empty($dto->pass)
+                           && !empty($dto->key)
                            && $this->getCommonAccountMatcher($accountCounter, $dto);
                 })
             );
@@ -665,27 +664,27 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('create')
             ->with(
                 self::callback(function (AccountCreateDto $dto) use ($accountCounter) {
-                    $tagsCount = count(array_filter($dto->getTags() ?? [], static fn($value) => is_int($value)));
+                    $tagsCount = count(array_filter($dto->tags ?? [], static fn($value) => is_int($value)));
 
                     $accountMatcher = match ($accountCounter->numberOfInvocations()) {
                         1 => $tagsCount === 1
-                             && $dto->getName() === 'Amazon SES'
-                             && $dto->getLogin() === 'admin'
-                             && $dto->getUrl() === 'https://aws.amazon.com/'
-                             && $dto->getNotes() === 'Simple Email Service',
+                             && $dto->name === 'Amazon SES'
+                             && $dto->login === 'admin'
+                             && $dto->url === 'https://aws.amazon.com/'
+                             && $dto->notes === 'Simple Email Service',
                         2 => $tagsCount === 1
-                             && $dto->getName() === 'Google GCP'
-                             && $dto->getLogin() === 'admin'
-                             && $dto->getUrl() === 'https://cloud.google.com/'
-                             && $dto->getNotes() === 'Google Cloud'
+                             && $dto->name === 'Google GCP'
+                             && $dto->login === 'admin'
+                             && $dto->url === 'https://cloud.google.com/'
+                             && $dto->notes === 'Google Cloud'
                     };
 
-                    return $dto->getClientId() > 0
-                           && $dto->getCategoryId() > 0
-                           && $dto->getUserId() === 100
-                           && $dto->getUserGroupId() === 200
-                           && !empty($dto->getPass())
-                           && !empty($dto->getKey())
+                    return $dto->clientId > 0
+                           && $dto->categoryId > 0
+                           && $dto->userId === 100
+                           && $dto->userGroupId === 200
+                           && !empty($dto->pass)
+                           && !empty($dto->key)
                            && $accountMatcher;
                 })
             );

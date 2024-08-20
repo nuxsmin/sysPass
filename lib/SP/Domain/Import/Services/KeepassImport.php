@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -187,6 +188,13 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
         );
     }
 
+    /**
+     * @param SplObjectStorage<AccountCreateDto> $accounts
+     * @param int $clientId
+     * @param ImportParamsDto $importParamsDto
+     * @param string $groupName
+     * @return void
+     */
     private function processAccounts(
         SplObjectStorage $accounts,
         int              $clientId,
@@ -195,14 +203,14 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
     ): void {
         foreach ($accounts as $account) {
             try {
-                $this->addAccount($account->set('clientId', $clientId), $importParamsDto);
+                $this->addAccount($account->mutate(['clientId' => $clientId]), $importParamsDto);
 
                 $this->eventDispatcher->notify(
                     'run.import.keepass.process.account',
                     new Event(
                         $this,
                         EventMessage::factory()
-                                    ->addDetail(__u('Account imported'), $account->getName())
+                            ->addDetail(__u('Account imported'), $account->name)
                                     ->addDetail(__u('Category'), $groupName)
                     )
                 );

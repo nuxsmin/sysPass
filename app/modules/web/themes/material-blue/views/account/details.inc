@@ -50,7 +50,7 @@ use function SP\__;
                     echo __('Visits'); ?></div>
 
                 <?php
-                echo $accountView->getCountView() . '(' . $accountView->getCountDecrypt() . ')'; ?>
+                echo $accountView->countView . '(' . $accountView->countDecrypt . ')'; ?>
             </td>
         </tr>
         <tr>
@@ -61,12 +61,12 @@ use function SP\__;
                     echo __('Date Added'); ?></div>
 
                 <?php
-                echo $accountView->getDateAdd() ?>
+                echo $accountView->dateAdd ?>
             </td>
         </tr>
 
         <?php
-        if ($_getvar('isModified') && $accountView->getUserEditName()): ?>
+        if ($_getvar('isModified') && $accountView->userEditName): ?>
             <tr>
                 <td class="descField"><?php
                     echo __('Last Modification'); ?></td>
@@ -77,8 +77,8 @@ use function SP\__;
                     <?php
                     printf(
                         '%s (%s)',
-                        $accountView->getDateEdit(),
-                        htmlspecialchars($accountView->getUserEditName(), ENT_QUOTES)
+                        $accountView->dateEdit,
+                        htmlspecialchars($accountView->userEditName, ENT_QUOTES)
                     ); ?>
                 </td>
             </tr>
@@ -93,8 +93,8 @@ use function SP\__;
                     echo __('Owner'); ?></div>
 
                 <?php
-                echo htmlspecialchars($accountView->getUserName(), ENT_QUOTES) ?: htmlspecialchars(
-                    $accountView->getUserLogin(),
+                echo htmlspecialchars($accountView->userName, ENT_QUOTES) ?: htmlspecialchars(
+                    $accountView->login,
                     ENT_QUOTES
                 ); ?>
             </td>
@@ -107,7 +107,7 @@ use function SP\__;
                     echo __('Main Group'); ?></div>
 
                 <?php
-                echo htmlspecialchars($accountView->getUserGroupName(), ENT_QUOTES); ?>
+                echo htmlspecialchars($accountView->userGroupName, ENT_QUOTES); ?>
             </td>
         </tr>
 
@@ -121,7 +121,7 @@ use function SP\__;
                         echo __('Date Modified'); ?></div>
 
                     <?php
-                    echo $accountView->getDateEdit(); ?>
+                    echo $accountView->dateEdit; ?>
                 </td>
             </tr>
             <tr>
@@ -132,8 +132,8 @@ use function SP\__;
                         echo __('Editor'); ?></div>
 
                     <?php
-                    echo htmlspecialchars($accountView->getUserEditName(), ENT_QUOTES) ?: htmlspecialchars(
-                        $accountView->getUserEditLogin(),
+                    echo htmlspecialchars($accountView->userEditName, ENT_QUOTES) ?: htmlspecialchars(
+                        $accountView->userEditLogin,
                         ENT_QUOTES
                     ); ?>
                 </td>
@@ -176,7 +176,7 @@ use function SP\__;
                     echo __('ID'); ?></div>
 
                 <?php
-                echo $accountView->getId(); ?>
+                echo $accountView->id; ?>
             </td>
         </tr>
     </table>

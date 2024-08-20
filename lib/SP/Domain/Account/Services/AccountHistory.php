@@ -28,6 +28,7 @@ namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
+use SP\Domain\Account\Dtos\AccountHistoryDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Account\Ports\AccountHistoryRepository;
@@ -57,11 +58,11 @@ final class AccountHistory extends Service implements AccountHistoryService
      * Returns the item for given id
      *
      * @param int $id
-     * @return AccountHistoryModel
+     * @return AccountHistoryDto
      * @throws NoSuchItemException
      * @throws SPException
      */
-    public function getById(int $id): AccountHistoryModel
+    public function getById(int $id): AccountHistoryDto
     {
         $results = $this->accountHistoryRepository->getById($id);
 
@@ -69,7 +70,7 @@ final class AccountHistory extends Service implements AccountHistoryService
             throw new NoSuchItemException(__u('Error while retrieving account\'s data'));
         }
 
-        return $results->getData(AccountHistoryModel::class);
+        return AccountHistoryDto::fromResult($results, AccountHistoryModel::class);
     }
 
     /**

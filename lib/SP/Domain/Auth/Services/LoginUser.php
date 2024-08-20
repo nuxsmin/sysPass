@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -38,7 +39,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Ports\UserPassRecoverService;
 
 use function SP\__u;
@@ -60,22 +61,22 @@ final class LoginUser extends LoginBase implements LoginUserService
     /**
      * Check the user status
      *
-     * @param UserDataDto $userDataDto
+     * @param UserDto $userDto
      * @return LoginResponseDto
      * @throws AuthException
      * @throws ServiceException
      */
-    public function checkUser(UserDataDto $userDataDto): LoginResponseDto
+    public function checkUser(UserDto $userDto): LoginResponseDto
     {
         try {
-            if ($userDataDto->getIsDisabled()) {
+            if ($userDto->isDisabled) {
                 $this->eventDispatcher->notify(
                     'login.checkUser.disabled',
                     new Event(
                         $this,
                         EventMessage::factory()
                                     ->addDescription(__u('User disabled'))
-                                    ->addDetail(__u('User'), $userDataDto->getLogin())
+                            ->addDetail(__u('User'), $userDto->login)
                     )
                 );
 
@@ -84,15 +85,15 @@ final class LoginUser extends LoginBase implements LoginUserService
                 throw AuthException::info(__u('User disabled'), null, LoginStatus::USER_DISABLED->value);
             }
 
-            if ($userDataDto->getIsChangePass()) {
+            if ($userDto->isChangePass) {
                 $this->eventDispatcher->notify(
                     'login.checkUser.changePass',
-                    new Event($this, EventMessage::factory()->addDetail(__u('User'), $userDataDto->getLogin()))
+                    new Event($this, EventMessage::factory()->addDetail(__u('User'), $userDto->login))
                 );
 
                 $hash = Password::generateRandomBytes(16);
 
-                $this->userPassRecoverService->add($userDataDto->getId(), $hash);
+                $this->userPassRecoverService->add($userDto->id, $hash);
 
                 return new LoginResponseDto(
                     LoginStatus::PASS_RESET_REQUIRED,

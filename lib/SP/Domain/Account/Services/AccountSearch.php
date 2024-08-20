@@ -138,8 +138,8 @@ final class AccountSearch extends Service implements AccountSearchService
                     break;
                 case AccountSearchConstants::FILTER_IS_PRIVATE:
                     $this->accountSearchRepository->withFilterForIsPrivate(
-                        $this->context->getUserData()->getId(),
-                        $this->context->getUserData()->getUserGroupId()
+                        $this->context->getUserData()->id,
+                        $this->context->getUserData()->userGroupId
                     );
                     break;
                 case AccountSearchConstants::FILTER_NOT_PRIVATE:

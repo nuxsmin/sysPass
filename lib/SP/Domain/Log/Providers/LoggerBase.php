@@ -81,7 +81,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
         $userLogin = 'N/A';
 
         if ($this->context->isInitialized()) {
-            $userLogin = $this->context->getUserData()->getLogin() ?? 'N/A';
+            $userLogin = $this->context->getUserData()->login ?? 'N/A';
         }
 
         $source = $event->getSource();

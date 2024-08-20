@@ -45,7 +45,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
@@ -132,10 +132,10 @@ final class Login extends LoginBase implements LoginService
      * @throws ServiceException
      * @throws SPException
      */
-    private function setUserSession(UserDataDto $userDataDto): void
+    private function setUserSession(UserDto $userDataDto): void
     {
         try {
-            $this->userService->updateLastLoginById($userDataDto->getId());
+            $this->userService->updateLastLoginById($userDataDto->id);
 
 //        if ($this->context->getTrasientKey(UserMasterPass::SESSION_MASTERPASS_UPDATED)) {
 //            $this->context->setTrasientKey('user_master_pass_last_update', time());
@@ -144,14 +144,14 @@ final class Login extends LoginBase implements LoginService
             $this->context->setUserData($userDataDto);
             $this->context->setUserProfile(
                 $this->userProfileService
-                    ->getById($userDataDto->getUserProfileId())
+                    ->getById($userDataDto->userProfileId)
                     ->hydrate(ProfileData::class)
             );
-            $this->context->setLocale($userDataDto->getPreferences()->getLang());
+            $this->context->setLocale($userDataDto->preferences->getLang());
 
             $this->eventDispatcher->notify(
                 'login.session.load',
-                new Event($this, EventMessage::factory()->addDetail(__u('User'), $userDataDto->getLogin()))
+                new Event($this, EventMessage::factory()->addDetail(__u('User'), $userDataDto->login))
             );
         } catch (ConstraintException|NoSuchItemException|QueryException $e) {
             throw ServiceException::from($e);
@@ -169,9 +169,6 @@ final class Login extends LoginBase implements LoginService
      * @inheritDoc
      *
      * @throws AuthException
-     * @uses LoginAuthHandlerService::authBrowser()
-     * @uses LoginAuthHandlerService::authDatabase()
-     * @uses LoginAuthHandlerService::authLdap()
      */
     public function handleAuthResponse(AuthResult $authResult): void
     {

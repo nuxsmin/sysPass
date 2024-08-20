@@ -29,7 +29,7 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Account\Models\File;
+use SP\Domain\Account\Models\File as FileModel;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -97,7 +97,7 @@ class AccountFileTest extends UnitaryTestCase
      */
     public function testCreate(): void
     {
-        $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
+        $fileData = FileModel::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
 
         $expected = new QueryResult(null, 0, 1);
 
@@ -131,14 +131,14 @@ class AccountFileTest extends UnitaryTestCase
      */
     public function testGetByAccountId(): void
     {
-        $id = self::$faker->randomNumber();
+        $id = self::$faker->randomNumber(3);
 
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
                 $query = $arg->getQuery();
 
                 return $query->getBindValues()['accountId'] === $id
-                       && $arg->getMapClassName() === Simple::class
+                       && $arg->getMapClassName() === FileModel::class
                        && !empty($query->getStatement());
             }
         );
@@ -184,7 +184,7 @@ class AccountFileTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return $query->getBindValues()['id'] === $id
-                       && $arg->getMapClassName() === Simple::class
+                       && $arg->getMapClassName() === FileModel::class
                        && !empty($query->getStatement());
             }
         );
@@ -210,7 +210,7 @@ class AccountFileTest extends UnitaryTestCase
                        && $params['clientName'] === $searchStringLike
                        && $params['accountName'] === $searchStringLike
                        && $params['type'] === $searchStringLike
-                       && $arg->getMapClassName() === Simple::class
+                       && $arg->getMapClassName() === FileModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );

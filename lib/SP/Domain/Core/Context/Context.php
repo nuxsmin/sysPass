@@ -27,7 +27,7 @@ namespace SP\Domain\Core\Context;
 
 use SP\Core\Context\ContextException;
 use SP\Domain\Account\Dtos\AccountCacheDto;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 
 /**
@@ -57,7 +57,7 @@ interface Context
     /**
      * Establece los datos del usuario en la sesión.
      */
-    public function setUserData(?UserDataDto $userDataDto = null);
+    public function setUserData(?UserDto $userDataDto = null);
 
     /**
      * Obtiene el objeto de perfil de usuario de la sesión.
@@ -77,7 +77,7 @@ interface Context
     /**
      * Devuelve los datos del usuario en la sesión.
      */
-    public function getUserData(): UserDataDto;
+    public function getUserData(): UserDto;
 
     /**
      * Establecer el lenguaje de la sesión

@@ -60,7 +60,7 @@ class ViewPassControllerTest extends IntegrationTestCase
      */
     public function testViewPassAction()
     {
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountPassItemWithIdAndName::class,
             new QueryResult([
                                 AccountPassItemWithIdAndName::buildFromSimpleModel(

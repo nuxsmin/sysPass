@@ -61,17 +61,17 @@ class SaveEditRestoreControllerTest extends IntegrationTestCase
     {
         $accountDataGenerator = AccountDataGenerator::factory();
 
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountHistory::class,
             new QueryResult([$accountDataGenerator->buildAccountHistoryData()])
         );
 
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             Account::class,
             new QueryResult([$accountDataGenerator->buildAccount()])
         );
 
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountView::class,
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );

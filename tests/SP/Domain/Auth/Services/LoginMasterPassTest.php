@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -36,11 +37,12 @@ use SP\Domain\Auth\Services\LoginMasterPass;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Dtos\UserMasterPassDto;
 use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Services\UserMasterPassStatus;
@@ -72,10 +74,11 @@ class LoginMasterPassTest extends UnitaryTestCase
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadMasterPass()
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
         $userLoginDto = new UserLoginDto('a_user', 'a_password');
 
         $this->request
@@ -89,20 +92,21 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->userMasterPassService
             ->expects($this->once())
             ->method('load')
-            ->with($userLoginDto, $userDataDto)
+            ->with($userLoginDto, $userDto)
             ->willReturn($userMasterPassDto);
 
-        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDataDto);
+        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDto);
     }
 
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     #[DataProvider('wrongStatusDataProvider')]
     public function testLoadMasterPassWithWrongPassword(UserMasterPassStatus $userMasterPassStatus)
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
         $userLoginDto = new UserLoginDto('a_user', 'a_password');
 
         $this->request
@@ -116,7 +120,7 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->userMasterPassService
             ->expects($this->once())
             ->method('load')
-            ->with($userLoginDto, $userDataDto)
+            ->with($userLoginDto, $userDto)
             ->willReturn($userMasterPassDto);
 
         $this->trackService
@@ -126,16 +130,17 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->expectException(AuthException::class);
         $this->expectExceptionMessage('The Master Password either is not saved or is wrong');
 
-        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDataDto);
+        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDto);
     }
 
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadMasterPassWithPreviousNeeded()
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
         $userLoginDto = new UserLoginDto('a_user', 'a_password');
 
         $this->request
@@ -149,22 +154,23 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->userMasterPassService
             ->expects($this->once())
             ->method('load')
-            ->with($userLoginDto, $userDataDto)
+            ->with($userLoginDto, $userDto)
             ->willReturn($userMasterPassDto);
 
         $this->expectException(AuthException::class);
         $this->expectExceptionMessage('Your previous password is needed');
 
-        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDataDto);
+        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDto);
     }
 
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadMasterPassWithTemporary()
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
         $userLoginDto = new UserLoginDto('a_user', 'a_password');
 
         $this->request
@@ -190,23 +196,24 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->userMasterPassService
             ->expects($this->once())
             ->method('updateOnLogin')
-            ->with('a_master_pass', $userLoginDto, $userDataDto->getId())
+            ->with('a_master_pass', $userLoginDto, $userDto->id)
             ->willReturn($userMasterPassDto);
 
         $this->trackService
             ->expects($this->never())
             ->method('add');
 
-        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDataDto);
+        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDto);
     }
 
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadMasterPassWithTemporaryAndWrongKey()
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
         $userLoginDto = new UserLoginDto('a_user', 'a_password');
 
         $this->request
@@ -228,17 +235,18 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->expectException(AuthException::class);
         $this->expectExceptionMessage('Wrong master password');
 
-        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDataDto);
+        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDto);
     }
 
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     #[DataProvider('wrongStatusDataProvider')]
     public function testLoadMasterPassWithTemporaryAndInvalidStatus(UserMasterPassStatus $userMasterPassStatus)
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
         $userLoginDto = new UserLoginDto('a_user', 'a_password');
 
         $this->request
@@ -264,7 +272,7 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->userMasterPassService
             ->expects($this->once())
             ->method('updateOnLogin')
-            ->with('a_master_pass', $userLoginDto, $userDataDto->getId())
+            ->with('a_master_pass', $userLoginDto, $userDto->id)
             ->willReturn($userMasterPassDto);
 
         $this->trackService
@@ -274,16 +282,17 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->expectException(AuthException::class);
         $this->expectExceptionMessage('Wrong master password');
 
-        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDataDto);
+        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDto);
     }
 
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadMasterPassWithTemporaryAndException()
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
         $userLoginDto = new UserLoginDto('a_user', 'a_password');
 
         $this->request
@@ -315,16 +324,17 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Internal error');
 
-        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDataDto);
+        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDto);
     }
 
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadMasterPassWithOld()
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
         $userLoginDto = new UserLoginDto('a_user', 'a_password');
 
         $this->request
@@ -338,24 +348,25 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->userMasterPassService
             ->expects($this->once())
             ->method('updateFromOldPass')
-            ->with('an_old_pass', $userLoginDto, $userDataDto)
+            ->with('an_old_pass', $userLoginDto, $userDto)
             ->willReturn($userMasterPassDto);
 
         $this->trackService
             ->expects($this->never())
             ->method('add');
 
-        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDataDto);
+        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDto);
     }
 
     /**
      * @throws AuthException
      * @throws ServiceException
+     * @throws SPException
      */
     #[DataProvider('wrongStatusDataProvider')]
     public function testLoadMasterPassWithOldAndWrongStatus(UserMasterPassStatus $userMasterPassStatus)
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
         $userLoginDto = new UserLoginDto('a_user', 'a_password');
 
         $this->request
@@ -369,7 +380,7 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->userMasterPassService
             ->expects($this->once())
             ->method('updateFromOldPass')
-            ->with('an_old_pass', $userLoginDto, $userDataDto)
+            ->with('an_old_pass', $userLoginDto, $userDto)
             ->willReturn($userMasterPassDto);
 
         $this->trackService
@@ -379,7 +390,7 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->expectException(AuthException::class);
         $this->expectExceptionMessage('Wrong master password');
 
-        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDataDto);
+        $this->loginMasterPass->loadMasterPass($userLoginDto, $userDto);
     }
 
 
@@ -387,6 +398,7 @@ class LoginMasterPassTest extends UnitaryTestCase
      * @throws Exception
      * @throws ContextException
      * @throws InvalidArgumentException
+     * @throws SPException
      */
     protected function setUp(): void
     {

@@ -113,12 +113,12 @@ class ItemPresetTest extends UnitaryTestCase
     {
         $itemPreset = ItemPresetDataGenerator::factory()->buildItemPresetData((object)['foo' => 'bar']);
 
-        $userData = $this->context->getUserData();
+        $userDto = $this->context->getUserData();
 
         $this->itemPresetRepository
             ->expects(self::once())
             ->method('getByFilter')
-            ->with('test', $userData->getId(), $userData->getUserGroupId(), $userData->getUserProfileId())
+            ->with('test', $userDto->id, $userDto->userGroupId, $userDto->userProfileId)
             ->willReturn(new QueryResult([$itemPreset]));
 
         $out = $this->itemPreset->getForCurrentUser('test');

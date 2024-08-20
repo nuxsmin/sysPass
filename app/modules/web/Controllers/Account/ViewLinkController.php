@@ -88,7 +88,9 @@ final class ViewLinkController extends AccountControllerBase
 
                 $accountViewDto = AccountViewDto::fromModel(
                     Serde::deserialize(
-                        $vault->getData($this->publicLinkService->getPublicLinkKey($publicLink->getHash())->getKey()),
+                        $vault->getData(
+                            $this->publicLinkService->getPublicLinkKey($publicLink->getHash())->getKey()
+                        ),
                         Simple::class
                     )
                 );
@@ -110,7 +112,7 @@ final class ViewLinkController extends AccountControllerBase
                 if ($useImage) {
                     $this->view->assign(
                         'accountPassImage',
-                        $this->imageUtil->convertText($accountViewDto->getPass())
+                        $this->imageUtil->convertText($accountViewDto->pass)
                     );
                 } else {
                     $this->view->assign(

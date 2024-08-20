@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -27,7 +28,7 @@ namespace SP\Domain\User\Ports;
 
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Dtos\UserMasterPassDto;
 
 /**
@@ -45,7 +46,7 @@ interface UserMasterPassService
     public function updateFromOldPass(
         string       $oldUserPass,
         UserLoginDto $userLoginDto,
-        UserDataDto  $userDataDto
+        UserDto $userDto
     ): UserMasterPassDto;
 
     /**
@@ -55,7 +56,7 @@ interface UserMasterPassService
      */
     public function load(
         UserLoginDto $userLoginDto,
-        UserDataDto  $userDataDto,
+        UserDto $userDataDto,
         ?string      $userPass = null
     ): UserMasterPassDto;
 

@@ -29,7 +29,6 @@ use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Dtos\AccountHistoryDto;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -73,9 +72,7 @@ final class SaveEditRestoreController extends AccountControllerBase
     public function saveEditRestoreAction(int $historyId, int $id): bool
     {
         try {
-            $this->accountService->restoreModified(
-                AccountHistoryDto::fromAccount($this->accountHistoryService->getById($historyId))
-            );
+            $this->accountService->restoreModified($this->accountHistoryService->getById($historyId));
 
             $accountDetails = $this->accountService->getByIdEnriched($id);
 

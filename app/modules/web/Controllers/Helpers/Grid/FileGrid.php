@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
@@ -52,6 +51,7 @@ final class FileGrid extends GridBase
      * @param QueryResult $queryResult
      *
      * @return DataGridInterface
+     * @throws SPException
      */
     public function getGrid(QueryResult $queryResult): DataGridInterface
     {
@@ -81,6 +81,9 @@ final class FileGrid extends GridBase
         return $grid;
     }
 
+    /**
+     * @throws SPException
+     */
     protected function getGridLayout(): DataGridInterface
     {
         // Grid
@@ -143,7 +146,7 @@ final class FileGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_SEARCH)
         );
 
         return $gridActionSearch;
@@ -161,7 +164,7 @@ final class FileGrid extends GridBase
         $gridAction->setFilterRowSource('type', 'application/pdf');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_VIEW)
+            $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_VIEW)
         );
 
         return $gridAction;
@@ -178,7 +181,7 @@ final class FileGrid extends GridBase
         $gridAction->setOnClickFunction('file/download');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_DOWNLOAD)
+            $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_DOWNLOAD)
         );
         $gridAction->setRuntimeData(
             function ($dataItem) {
@@ -200,7 +203,7 @@ final class FileGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_DELETE)
         );
 
         return $gridAction;

@@ -215,12 +215,12 @@ final class IndexController extends ControllerBase
         $template->assign(
             'isDemoMode',
             $this->configData->isDemoEnabled()
-            && !$this->userData->getIsAdminApp()
+            && !$this->userDto->getIsAdminApp()
         );
         $template->assign(
             'isDisabled',
             $this->configData->isDemoEnabled()
-            && !$this->userData->getIsAdminApp() ? 'disabled' : ''
+            && !$this->userDto->getIsAdminApp() ? 'disabled' : ''
         );
         $template->assign(
             'users',
@@ -528,12 +528,12 @@ final class IndexController extends ControllerBase
         $template->assign(
             'userGroups',
             SelectItemAdapter::factory($this->userGroupService->getAll())
-                             ->getItemsFromModelSelected([$this->userData->getUserGroupId()])
+                ->getItemsFromModelSelected([$this->userDto->getUserGroupId()])
         );
         $template->assign(
             'users',
             SelectItemAdapter::factory($this->userService->getAll())
-                             ->getItemsFromModelSelected([$this->userData->getId()])
+                ->getItemsFromModelSelected([$this->userDto->getId()])
         );
 
         return new DataTab(__('Import Accounts'), $template);
@@ -571,11 +571,11 @@ final class IndexController extends ControllerBase
 
         $template->assign(
             'downloadConfigBackup',
-            !$isDemo && $this->userData->getIsAdminApp()
+            !$isDemo && $this->userDto->getIsAdminApp()
         );
         $template->assign(
             'downloadLog',
-            !$isDemo && is_readable($this->pathsContext[Path::LOG_FILE]) && $this->userData->getIsAdminApp()
+            !$isDemo && is_readable($this->pathsContext[Path::LOG_FILE]) && $this->userDto->getIsAdminApp()
         );
 
         return new DataTab(__('Information'), $template);

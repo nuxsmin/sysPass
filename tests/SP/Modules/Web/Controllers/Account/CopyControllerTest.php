@@ -55,12 +55,12 @@ class CopyControllerTest extends IntegrationTestCase
      */
     public function testCopyAction()
     {
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountView::class,
             new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
         );
 
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             Item::class,
             new QueryResult(
                 [

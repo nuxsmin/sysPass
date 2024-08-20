@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -32,7 +33,8 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Services\Builders\AccountFilter;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -88,8 +90,8 @@ class AccountFilterUserTest extends UnitaryTestCase
                ->willReturnSelf();
         $select->expects(self::exactly(1))->method('bindValues')
                ->with([
-                          'userId' => $this->context->getUserData()->getId(),
-                          'userGroupId' => $this->context->getUserData()->getUserGroupId(),
+                          'userId' => $this->context->getUserData()->id,
+                          'userGroupId' => $this->context->getUserData()->userGroupId,
                       ]);
     }
 
@@ -143,19 +145,21 @@ class AccountFilterUserTest extends UnitaryTestCase
         $select->expects(self::exactly(3))->method('where')->willReturnSelf();
         $select->expects(self::exactly(1))->method('bindValues')
                ->with([
-                          'userId' => $this->context->getUserData()->getId(),
-                          'userGroupId' => $this->context->getUserData()->getUserGroupId(),
+                          'userId' => $this->context->getUserData()->id,
+                          'userGroupId' => $this->context->getUserData()->userGroupId,
                       ]);
 
         $this->accountFilter->buildFilter(false, $select);
     }
 
+    /**
+     * @throws Exception
+     * @throws SPException
+     */
     public function testBuildFilterWithGlobalSearchForAdminAcc()
     {
         $this->context->setUserData(
-            new UserDataDto(
-                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminAcc' => true])
-            )
+            UserDto::fromModel(UserDataGenerator::factory()->buildUserData()->mutate(['isAdminAcc' => true]))
         );
 
         $this->setExpectationForGlobalSearch('Account');
@@ -183,17 +187,19 @@ class AccountFilterUserTest extends UnitaryTestCase
                ->willReturnSelf();
         $select->expects(self::exactly(1))->method('bindValues')
                ->with([
-                          'userId' => $this->context->getUserData()->getId(),
-                          'userGroupId' => $this->context->getUserData()->getUserGroupId(),
+                          'userId' => $this->context->getUserData()->id,
+                          'userGroupId' => $this->context->getUserData()->userGroupId,
                       ]);
     }
 
+    /**
+     * @throws Exception
+     * @throws SPException
+     */
     public function testBuildFilterWithGlobalSearchForAdminApp()
     {
         $this->context->setUserData(
-            new UserDataDto(
-                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true])
-            )
+            UserDto::fromModel(UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true]))
         );
 
         $this->setExpectationForGlobalSearch('Account');
@@ -218,12 +224,14 @@ class AccountFilterUserTest extends UnitaryTestCase
         $this->accountFilter->buildFilterHistory();
     }
 
+    /**
+     * @throws Exception
+     * @throws SPException
+     */
     public function testBuildFilterHistoryWithGlobalSearchForAdminAcc()
     {
         $this->context->setUserData(
-            new UserDataDto(
-                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminAcc' => true])
-            )
+            UserDto::fromModel(UserDataGenerator::factory()->buildUserData()->mutate(['isAdminAcc' => true]))
         );
 
         $this->setExpectationForGlobalSearch('AccountHistory');
@@ -231,12 +239,14 @@ class AccountFilterUserTest extends UnitaryTestCase
         $this->accountFilter->buildFilterHistory();
     }
 
+    /**
+     * @throws Exception
+     * @throws SPException
+     */
     public function testBuildFilterHistoryWithGlobalSearchForAdminApp()
     {
         $this->context->setUserData(
-            new UserDataDto(
-                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true])
-            )
+            UserDto::fromModel(UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true]))
         );
 
         $this->setExpectationForGlobalSearch('AccountHistory');
@@ -254,6 +264,9 @@ class AccountFilterUserTest extends UnitaryTestCase
         $this->accountFilter->buildFilterHistory(true);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testBuildFilterHistoryWithQueryProvided()
     {
         $this->queryFactory->expects(self::never())->method('newSelect');
@@ -263,8 +276,8 @@ class AccountFilterUserTest extends UnitaryTestCase
         $select->expects(self::exactly(3))->method('where')->willReturnSelf();
         $select->expects(self::exactly(1))->method('bindValues')
                ->with([
-                          'userId' => $this->context->getUserData()->getId(),
-                          'userGroupId' => $this->context->getUserData()->getUserGroupId(),
+                          'userId' => $this->context->getUserData()->id,
+                          'userGroupId' => $this->context->getUserData()->userGroupId,
                       ]);
 
         $this->accountFilter->buildFilterHistory(false, $select);

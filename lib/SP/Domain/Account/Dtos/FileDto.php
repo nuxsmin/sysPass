@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
@@ -23,23 +22,26 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Account\Models;
+declare(strict_types=1);
+
+namespace SP\Domain\Account\Dtos;
+
+use SP\Domain\Common\Dtos\Dto;
 
 /**
- * Class FileExtData
+ * Class FileDto
  */
-class FileExtData extends File
+final class FileDto extends Dto
 {
-    protected ?string $clientName  = null;
-    protected ?string $accountName = null;
-
-    public function getClientName(): ?string
-    {
-        return $this->clientName;
-    }
-
-    public function getAccountName(): ?string
-    {
-        return $this->accountName;
+    public function __construct(
+        public readonly ?int    $id = null,
+        public readonly ?int    $accountId = null,
+        public readonly ?string $name = null,
+        public readonly ?string $type = null,
+        public readonly ?string $content = null,
+        public readonly ?string $extension = null,
+        public readonly ?string $thumb = null,
+        public readonly ?int    $size = null,
+    ) {
     }
 }

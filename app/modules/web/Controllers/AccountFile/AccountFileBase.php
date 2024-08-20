@@ -24,25 +24,30 @@
 
 namespace SP\Modules\Web\Controllers\AccountFile;
 
-
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountFileService;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 
+/**
+ * Class AccountFileBase
+ */
 abstract class AccountFileBase extends ControllerBase
 {
-    protected AccountFileService $accountFileService;
 
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountFileService $accountFileService
+        Application                           $application,
+        WebControllerHelper                   $webControllerHelper,
+        protected readonly AccountFileService $accountFileService
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->accountFileService = $accountFileService;
     }
 }

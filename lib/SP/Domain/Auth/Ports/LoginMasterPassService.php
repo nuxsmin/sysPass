@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -28,7 +29,7 @@ namespace SP\Domain\Auth\Ports;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 
 /**
  * Class LoginMasterPass
@@ -39,9 +40,9 @@ interface LoginMasterPassService
      * Load master password or request it
      *
      * @param UserLoginDto $userLoginDto
-     * @param UserDataDto $userDataDto
+     * @param UserDto $userDto
      * @throws AuthException
      * @throws ServiceException
      */
-    public function loadMasterPass(UserLoginDto $userLoginDto, UserDataDto $userDataDto): void;
+    public function loadMasterPass(UserLoginDto $userLoginDto, UserDto $userDto): void;
 }

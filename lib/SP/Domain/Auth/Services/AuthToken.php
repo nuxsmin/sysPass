@@ -166,7 +166,7 @@ final class AuthToken extends Service implements AuthTokenService
         }
 
         $properties['token'] = $token;
-        $properties['createdBy'] = $this->context->getUserData()->getId();
+        $properties['createdBy'] = $this->context->getUserData()->id;
 
         return $authToken->mutate($properties);
     }

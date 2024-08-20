@@ -42,9 +42,9 @@ abstract class AccountFavoriteBase extends SimpleControllerBase
      * @throws SPException
      */
     public function __construct(
-        Application                        $application,
-        SimpleControllerHelper             $simpleControllerHelper,
-        protected AccountToFavoriteService $accountToFavoriteService
+        Application                                 $application,
+        SimpleControllerHelper                      $simpleControllerHelper,
+        protected readonly AccountToFavoriteService $accountToFavoriteService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 

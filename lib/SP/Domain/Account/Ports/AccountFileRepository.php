@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Ports;
 
-use SP\Domain\Account\Models\File;
+use SP\Domain\Account\Models\File as FileModel;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -35,27 +35,27 @@ use SP\Infrastructure\Database\QueryResult;
 /**
  * Class AccountFileRepository
  *
- * @package SP\Infrastructure\Account\Repositories
+ * @template T of FileModel
  */
 interface AccountFileRepository extends Repository
 {
     /**
      * Creates an item
      *
-     * @param File $fileData
+     * @param FileModel $fileData
      *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(File $fileData): int;
+    public function create(FileModel $fileData): int;
 
     /**
      * Returns the item for given id
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -77,7 +77,7 @@ interface AccountFileRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      */
     public function getById(int $id): QueryResult;
 
@@ -97,7 +97,7 @@ interface AccountFileRepository extends Repository
      *
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult;
 }

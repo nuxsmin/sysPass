@@ -56,12 +56,12 @@ class ViewControllerTest extends IntegrationTestCase
      */
     public function testViewAction()
     {
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountView::class,
             new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
         );
 
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             Item::class,
             new QueryResult(
                 [

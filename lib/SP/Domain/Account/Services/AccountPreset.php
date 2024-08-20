@@ -72,14 +72,14 @@ final class AccountPreset extends Service implements AccountPresetService
         if ($itemPreset !== null && $itemPreset->getFixed() === 1) {
             $passwordPreset = $itemPreset->hydrate(Password::class);
 
-            $this->passwordValidator->validate($passwordPreset, $accountDto->getPass());
+            $this->passwordValidator->validate($passwordPreset, $accountDto->pass);
 
             if ($this->configData->isAccountExpireEnabled()) {
                 $expireTimePreset = $passwordPreset->getExpireTime();
 
                 if ($expireTimePreset > 0
-                    && ($accountDto->getPassDateChange() === 0
-                        || $accountDto->getPassDateChange() < time() + $expireTimePreset)
+                    && ($accountDto->passDateChange === 0
+                        || $accountDto->passDateChange < time() + $expireTimePreset)
                 ) {
                     return $accountDto->withPassDateChange(time() + $expireTimePreset);
                 }
@@ -104,10 +104,10 @@ final class AccountPreset extends Service implements AccountPresetService
             $userData = $this->context->getUserData();
             $accountPermission = $itemPresetData->hydrate(AccountPermission::class);
 
-            $usersView = array_diff($accountPermission->getUsersView(), [$userData->getId()]);
-            $usersEdit = array_diff($accountPermission->getUsersEdit(), [$userData->getId()]);
-            $userGroupsView = array_diff($accountPermission->getUserGroupsView(), [$userData->getUserGroupId()]);
-            $userGroupsEdit = array_diff($accountPermission->getUserGroupsEdit(), [$userData->getUserGroupId()]);
+            $usersView = array_diff($accountPermission->getUsersView(), [$userData->id]);
+            $usersEdit = array_diff($accountPermission->getUsersEdit(), [$userData->id]);
+            $userGroupsView = array_diff($accountPermission->getUserGroupsView(), [$userData->userGroupId]);
+            $userGroupsEdit = array_diff($accountPermission->getUserGroupsEdit(), [$userData->userGroupId]);
 
             if (count($usersView) > 0) {
                 $this->accountToUserRepository->addByType($accountId, $usersView);

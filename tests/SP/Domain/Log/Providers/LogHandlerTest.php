@@ -82,7 +82,7 @@ class LogHandlerTest extends UnitaryTestCase
                 self::callback(function (array $event) use ($eventMessage, $ipv4) {
                     return $event['message'] === $eventMessage->composeText(' | ')
                            && $event['address'] === $ipv4
-                           && $event['user'] === $this->context->getUserData()->getLogin()
+                           && $event['user'] === $this->context->getUserData()->login
                            && !empty($event['caller']);
                 })
             );
@@ -121,7 +121,7 @@ class LogHandlerTest extends UnitaryTestCase
                 self::callback(function (array $event) use ($ipv4) {
                     return $event['message'] === 'N/A'
                            && $event['address'] === $ipv4
-                           && $event['user'] === $this->context->getUserData()->getLogin()
+                           && $event['user'] === $this->context->getUserData()->login
                            && !empty($event['caller']);
                 })
             );
@@ -160,7 +160,7 @@ class LogHandlerTest extends UnitaryTestCase
                 self::callback(function (array $event) use ($ipv4) {
                     return $event['message'] === 'an_exception'
                            && $event['address'] === $ipv4
-                           && $event['user'] === $this->context->getUserData()->getLogin()
+                           && $event['user'] === $this->context->getUserData()->login
                            && !empty($event['caller']);
                 })
             );

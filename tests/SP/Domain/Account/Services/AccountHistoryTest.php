@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -137,7 +138,10 @@ class AccountHistoryTest extends UnitaryTestCase
 
         $this->accountHistoryRepository->expects(self::once())->method('getById')->with($id)->willReturn($queryResult);
 
-        $this->assertEquals($accountHistoryData, $this->accountHistory->getById($id));
+        $this->assertEquals(
+            $accountHistoryData->toArray(),
+            $this->accountHistory->getById($id)->toArray()
+        );
     }
 
     /**

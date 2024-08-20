@@ -129,21 +129,24 @@ final class Util
         $methodParameters = [];
 
         foreach ($reflectionMethod->getParameters() as $parameter) {
-            if (!$parameter->isOptional() && !isset($parametersValue[$parameter->getPosition()])) {
+            if (isset($parametersValue[$parameter->getPosition()])) {
+                $type = self::getMethodParameterTypes($parameter)[0]->getName();
+
+                $methodParameters[$parameter->getPosition()] = match ($type) {
+                    'int' => (int)$parametersValue[$parameter->getPosition()],
+                    'bool' => (bool)$parametersValue[$parameter->getPosition()],
+                    'float' => (float)$parametersValue[$parameter->getPosition()],
+                    'array' => (array)$parametersValue[$parameter->getPosition()],
+                    'object' => (object)$parametersValue[$parameter->getPosition()],
+                    default => (string)$parametersValue[$parameter->getPosition()]
+                };
+            } elseif ($parameter->allowsNull()) {
+                $methodParameters[$parameter->getPosition()] = null;
+            } elseif (!$parameter->isOptional()) {
                 throw new ValueError('Method parameter expects a value');
             }
-
-            $type = self::getMethodParameterTypes($parameter)[0]->getName();
-
-            $methodParameters[$parameter->getPosition()] = match ($type) {
-                'int' => (int)$parametersValue[$parameter->getPosition()],
-                'bool' => (bool)$parametersValue[$parameter->getPosition()],
-                'float' => (float)$parametersValue[$parameter->getPosition()],
-                'array' => (array)$parametersValue[$parameter->getPosition()],
-                'object' => (object)$parametersValue[$parameter->getPosition()],
-                default => (string)$parametersValue[$parameter->getPosition()]
-            };
         }
+
         return $methodParameters;
     }
 

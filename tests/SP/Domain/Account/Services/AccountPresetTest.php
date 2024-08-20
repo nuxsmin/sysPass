@@ -162,11 +162,11 @@ class AccountPresetTest extends UnitaryTestCase
             ->method('validate');
 
         $accountDto = AccountDataGenerator::factory()->buildAccountCreateDto();
-        $accountDto = $accountDto->set('passDateChange', 0);
+        $accountDto = $accountDto->mutate(['passDateChange' => 0]);
 
         $out = $this->accountPreset->checkPasswordPreset($accountDto);
 
-        $this->assertGreaterThan(0, $out->getPassDateChange());
+        $this->assertGreaterThan(0, $out->passDateChange);
     }
 
     /**

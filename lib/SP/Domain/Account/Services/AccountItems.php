@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -67,70 +68,70 @@ final class AccountItems extends Service implements AccountItemsService
         AccountUpdateDto $accountUpdateDto
     ): void {
         if ($userCanChangePermissions) {
-            if (null === $accountUpdateDto->getUserGroupsView()) {
+            if (null === $accountUpdateDto->userGroupsView) {
                 $this->accountToUserGroupRepository->deleteTypeByAccountId($accountId, false);
-            } elseif (count($accountUpdateDto->getUserGroupsView()) > 0) {
+            } elseif (count($accountUpdateDto->userGroupsView) > 0) {
                 $this->accountToUserGroupRepository->transactionAware(
                     function () use ($accountUpdateDto, $accountId) {
                         $this->accountToUserGroupRepository
                             ->deleteTypeByAccountId($accountId, false);
                         $this->accountToUserGroupRepository
-                            ->addByType($accountId, $accountUpdateDto->getUserGroupsView());
+                            ->addByType($accountId, $accountUpdateDto->userGroupsView);
                     },
                     $this
                 );
             }
 
-            if (null === $accountUpdateDto->getUserGroupsEdit()) {
+            if (null === $accountUpdateDto->userGroupsEdit) {
                 $this->accountToUserGroupRepository->deleteTypeByAccountId($accountId, true);
-            } elseif (count($accountUpdateDto->getUserGroupsEdit()) > 0) {
+            } elseif (count($accountUpdateDto->userGroupsEdit) > 0) {
                 $this->accountToUserGroupRepository->transactionAware(
                     function () use ($accountUpdateDto, $accountId) {
                         $this->accountToUserGroupRepository
                             ->deleteTypeByAccountId($accountId, true);
                         $this->accountToUserGroupRepository
-                            ->addByType($accountId, $accountUpdateDto->getUserGroupsEdit(), true);
+                            ->addByType($accountId, $accountUpdateDto->userGroupsEdit, true);
                     },
                     $this
                 );
             }
 
-            if (null === $accountUpdateDto->getUsersView()) {
+            if (null === $accountUpdateDto->usersView) {
                 $this->accountToUserRepository->deleteTypeByAccountId($accountId, false);
-            } elseif (count($accountUpdateDto->getUsersView()) > 0) {
+            } elseif (count($accountUpdateDto->usersView) > 0) {
                 $this->accountToUserRepository->transactionAware(
                     function () use ($accountUpdateDto, $accountId) {
                         $this->accountToUserRepository
                             ->deleteTypeByAccountId($accountId, false);
                         $this->accountToUserRepository
-                            ->addByType($accountId, $accountUpdateDto->getUsersView());
+                            ->addByType($accountId, $accountUpdateDto->usersView);
                     },
                     $this
                 );
             }
 
-            if (null === $accountUpdateDto->getUsersEdit()) {
+            if (null === $accountUpdateDto->usersEdit) {
                 $this->accountToUserRepository->deleteTypeByAccountId($accountId, true);
-            } elseif (count($accountUpdateDto->getUsersEdit()) > 0) {
+            } elseif (count($accountUpdateDto->usersEdit) > 0) {
                 $this->accountToUserRepository->transactionAware(
                     function () use ($accountUpdateDto, $accountId) {
                         $this->accountToUserRepository
                             ->deleteTypeByAccountId($accountId, true);
                         $this->accountToUserRepository
-                            ->addByType($accountId, $accountUpdateDto->getUsersEdit(), true);
+                            ->addByType($accountId, $accountUpdateDto->usersEdit, true);
                     },
                     $this
                 );
             }
         }
 
-        if (null === $accountUpdateDto->getTags()) {
+        if (null === $accountUpdateDto->tags) {
             $this->accountToTagRepository->deleteByAccountId($accountId);
-        } elseif (count($accountUpdateDto->getTags()) > 0) {
+        } elseif (count($accountUpdateDto->tags) > 0) {
             $this->accountToTagRepository->transactionAware(
                 function () use ($accountUpdateDto, $accountId) {
                     $this->accountToTagRepository->deleteByAccountId($accountId);
-                    $this->accountToTagRepository->add($accountId, $accountUpdateDto->getTags());
+                    $this->accountToTagRepository->add($accountId, $accountUpdateDto->tags);
                 },
                 $this
             );
@@ -144,36 +145,36 @@ final class AccountItems extends Service implements AccountItemsService
     {
         try {
             if ($userCanChangePermissions) {
-                if (null !== $accountCreateDto->getUserGroupsView()
-                    && count($accountCreateDto->getUserGroupsView()) > 0
+                if (null !== $accountCreateDto->userGroupsView
+                    && count($accountCreateDto->userGroupsView) > 0
                 ) {
                     $this->accountToUserGroupRepository->addByType(
                         $accountId,
-                        $accountCreateDto->getUserGroupsView()
+                        $accountCreateDto->userGroupsView
                     );
                 }
 
-                if (null !== $accountCreateDto->getUserGroupsEdit()
-                    && count($accountCreateDto->getUserGroupsEdit()) > 0
+                if (null !== $accountCreateDto->userGroupsEdit
+                    && count($accountCreateDto->userGroupsEdit) > 0
                 ) {
                     $this->accountToUserGroupRepository->addByType(
                         $accountId,
-                        $accountCreateDto->getUserGroupsEdit(),
+                        $accountCreateDto->userGroupsEdit,
                         true
                     );
                 }
 
-                if (null !== $accountCreateDto->getUsersView() && count($accountCreateDto->getUsersView()) > 0) {
-                    $this->accountToUserRepository->addByType($accountId, $accountCreateDto->getUsersView());
+                if (null !== $accountCreateDto->usersView && count($accountCreateDto->usersView) > 0) {
+                    $this->accountToUserRepository->addByType($accountId, $accountCreateDto->usersView);
                 }
 
-                if (null !== $accountCreateDto->getUsersEdit() && count($accountCreateDto->getUsersEdit()) > 0) {
-                    $this->accountToUserRepository->addByType($accountId, $accountCreateDto->getUsersEdit(), true);
+                if (null !== $accountCreateDto->usersEdit && count($accountCreateDto->usersEdit) > 0) {
+                    $this->accountToUserRepository->addByType($accountId, $accountCreateDto->usersEdit, true);
                 }
             }
 
-            if (null !== $accountCreateDto->getTags() && count($accountCreateDto->getTags()) > 0) {
-                $this->accountToTagRepository->add($accountId, $accountCreateDto->getTags());
+            if (null !== $accountCreateDto->tags && count($accountCreateDto->tags) > 0) {
+                $this->accountToTagRepository->add($accountId, $accountCreateDto->tags);
             }
         } catch (SPException $e) {
             processException($e);

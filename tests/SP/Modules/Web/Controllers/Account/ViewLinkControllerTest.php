@@ -79,7 +79,7 @@ class ViewLinkControllerTest extends IntegrationTestCase
                                                      'data' => $vault->getSerialized()
                                                  ]
                                              );
-        $this->addDatabaseResolver(PublicLink::class, new QueryResult([$publicLink]));
+        $this->addDatabaseMapperResolver(PublicLink::class, new QueryResult([$publicLink]));
 
         $definitions = $this->getModuleDefinitions();
         $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(function (string $output): void {

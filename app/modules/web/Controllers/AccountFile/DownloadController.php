@@ -27,8 +27,10 @@ namespace SP\Modules\Web\Controllers\AccountFile;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class DownloadController
@@ -38,20 +40,18 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 final class DownloadController extends AccountFileBase
 {
     use JsonTrait;
-    
+
     /**
      * Download action
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return string
      */
     public function downloadAction(int $id): string
     {
         try {
-            if (null === ($fileData = $this->accountFileService->getById($id))) {
-                throw new SPException(__u('File does not exist'), SPException::INFO);
-            }
+            $fileDto = $this->accountFileService->getById($id);
 
             $this->eventDispatcher->notify(
                 'download.accountFile',
@@ -59,29 +59,29 @@ final class DownloadController extends AccountFileBase
                     $this,
                     EventMessage::factory()
                         ->addDescription(__u('File downloaded'))
-                        ->addDetail(__u('File'), $fileData->getName())
+                        ->addDetail(__u('File'), $fileDto->name)
                 )
             );
 
             $response = $this->router->response();
-            $response->header('Content-Length', $fileData->getSize());
-            $response->header('Content-Type', $fileData->getType());
+            $response->header('Content-Length', $fileDto->size);
+            $response->header('Content-Type', $fileDto->type);
             $response->header('Content-Description', ' sysPass file');
             $response->header('Content-Transfer-Encoding', 'binary');
             $response->header('Accept-Ranges', 'bytes');
 
-            $type = strtolower($fileData->getType());
+            $type = strtolower($fileDto->type);
 
             if ($type === 'application/pdf') {
-                $disposition = sprintf('inline; filename="%s"', $fileData->getName());
+                $disposition = sprintf('inline; filename="%s"', $fileDto->name);
             } else {
-                $disposition = sprintf('attachment; filename="%s"', $fileData->getName());
+                $disposition = sprintf('attachment; filename="%s"', $fileDto->name);
                 $response->header('Set-Cookie', 'fileDownload=true; path=/');
             }
 
             $response->header('Content-Disposition', $disposition);
 
-            $response->body($fileData->getContent());
+            $response->body($fileDto->content);
             $response->send(true);
         } catch (Exception $e) {
             processException($e);

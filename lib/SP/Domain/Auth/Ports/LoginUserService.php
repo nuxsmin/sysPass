@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -28,7 +29,7 @@ namespace SP\Domain\Auth\Ports;
 use SP\Domain\Auth\Dtos\LoginResponseDto;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 
 /**
  * Interface LoginUserService
@@ -38,10 +39,10 @@ interface LoginUserService
     /**
      * Check the user status
      *
-     * @param UserDataDto $userDataDto
+     * @param UserDto $userDto
      * @return LoginResponseDto
      * @throws AuthException
      * @throws ServiceException
      */
-    public function checkUser(UserDataDto $userDataDto): LoginResponseDto;
+    public function checkUser(UserDto $userDto): LoginResponseDto;
 }

@@ -79,8 +79,8 @@ final class Eventlog extends Service implements EventlogService
         $userData = $this->context->getUserData();
 
         $data = [
-            'userId' => $userData->getId(),
-            'login' => $userData->getLogin() ?: '-',
+            'userId' => $userData->id,
+            'login' => $userData->login ?: '-',
             'ipAddress' => $this->request->getClientAddress()
         ];
 

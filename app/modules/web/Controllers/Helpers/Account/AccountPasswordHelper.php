@@ -129,7 +129,7 @@ final class AccountPasswordHelper extends HelperBase
     {
         $this->checkActionAccess();
 
-        if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
+        if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->lastUpdateMPass)) {
             throw new HelperException(
                 __('Master password updated')
                 . '<br>'

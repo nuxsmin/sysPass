@@ -35,7 +35,7 @@ use function SP\__u;
 /**
  * Class QueryResult
  *
- * @template T of Model
+ * @template T of Model&object
  */
 class QueryResult
 {
@@ -72,7 +72,7 @@ class QueryResult
      * @param class-string<T>|null $dataType
      * @return T
      */
-    public function getData(?string $dataType = null): ?Model
+    public function getData(?string $dataType = null): ?object
     {
         if ($dataType) {
             $this->checkDataType($dataType);

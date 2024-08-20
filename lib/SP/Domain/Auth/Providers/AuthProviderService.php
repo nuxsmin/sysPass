@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Auth\Providers;
 
 use SP\Domain\Auth\Dtos\UserLoginDto;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 
 /**
  * Interface AuthProviderService
@@ -41,7 +41,7 @@ interface AuthProviderService
      *
      * @param UserLoginDto $userLoginData
      * @param callable(AuthResult):void $callback A callback function to call after the authentication.
-     * @return UserDataDto|null
+     * @return UserDto|null
      */
-    public function doAuth(UserLoginDto $userLoginData, callable $callback): ?UserDataDto;
+    public function doAuth(UserLoginDto $userLoginData, callable $callback): ?UserDto;
 }

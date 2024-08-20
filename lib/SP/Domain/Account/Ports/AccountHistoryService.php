@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -26,8 +27,8 @@ declare(strict_types=1);
 namespace SP\Domain\Account\Ports;
 
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
+use SP\Domain\Account\Dtos\AccountHistoryDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
-use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -48,7 +49,7 @@ interface AccountHistoryService
      *
      * @throws NoSuchItemException
      */
-    public function getById(int $id): AccountHistory;
+    public function getById(int $id): AccountHistoryDto;
 
     /**
      * Obtiene el listado del histórico de una cuenta.

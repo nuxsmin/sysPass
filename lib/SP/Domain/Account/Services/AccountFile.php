@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -26,8 +27,8 @@ declare(strict_types=1);
 namespace SP\Domain\Account\Services;
 
 use SP\Core\Application;
-use SP\Domain\Account\Models\File;
-use SP\Domain\Account\Models\FileExtData;
+use SP\Domain\Account\Dtos\FileDto;
+use SP\Domain\Account\Models\File as FileModel;
 use SP\Domain\Account\Ports\AccountFileRepository;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Common\Services\Service;
@@ -61,14 +62,14 @@ final class AccountFile extends Service implements AccountFileService
     /**
      * Creates an item
      *
-     * @param File $itemData
+     * @param FileModel $itemData
      *
      * @return int
      * @throws ConstraintException
      * @throws InvalidImageException
      * @throws QueryException
      */
-    public function create(File $itemData): int
+    public function create(FileModel $itemData): int
     {
         if (FileSystem::isImage($itemData)) {
             $itemData->setThumb($this->imageUtil->createThumbnail($itemData->getContent()));
@@ -80,16 +81,19 @@ final class AccountFile extends Service implements AccountFileService
     }
 
     /**
-     * Returns the file with its content
-     *
-     * @param int $id
-     *
-     * @return FileExtData|null
+     * @inheritDoc
+     * @throws NoSuchItemException
      * @throws SPException
      */
-    public function getById(int $id): ?FileExtData
+    public function getById(int $id): FileDto
     {
-        return $this->accountFileRepository->getById($id)->getData();
+        $data = $this->accountFileRepository->getById($id);
+
+        if ($data->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('File not found'));
+        }
+
+        return FileDto::fromResult($data, FileModel::class);
     }
 
     /**
@@ -151,7 +155,7 @@ final class AccountFile extends Service implements AccountFileService
      * Returns the item for given id
      *
      * @param int $id
-     * @return File[]
+     * @return FileModel[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException

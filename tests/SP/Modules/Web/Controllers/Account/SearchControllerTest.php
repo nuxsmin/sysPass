@@ -32,7 +32,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
 use SP\Mvc\View\OutputHandlerInterface;
@@ -59,7 +59,7 @@ class SearchControllerTest extends IntegrationTestCase
     {
         $accountSearchView = AccountDataGenerator::factory()->buildAccountSearchView();
 
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountSearchView::class,
             QueryResult::withTotalNumRows([$accountSearchView], 1)
         );
@@ -95,9 +95,9 @@ class SearchControllerTest extends IntegrationTestCase
         $this->runApp($container);
     }
 
-    protected function getUserDataDto(): UserDataDto
+    protected function getUserDataDto(): UserDto
     {
         $userPreferences = UserDataGenerator::factory()->buildUserPreferencesData()->mutate(['topNavbar' => true]);
-        return parent::getUserDataDto()->set('preferences', $userPreferences);
+        return parent::getUserDataDto()->mutate(['preferences' => $userPreferences]);
     }
 }

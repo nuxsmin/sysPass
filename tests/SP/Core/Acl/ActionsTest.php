@@ -33,6 +33,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Acl\Actions;
 use SP\Core\Context\ContextException;
 use SP\Domain\Core\Acl\ActionNotFoundException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Models\Action;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\YamlFileStorageService;
@@ -302,6 +303,7 @@ class ActionsTest extends UnitaryTestCase
      * @throws ContextException
      * @throws Exception
      * @throws FileException
+     * @throws SPException
      */
     protected function setUp(): void
     {

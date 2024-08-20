@@ -41,8 +41,9 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserToUserGroupService;
 use SP\Infrastructure\File\FileException;
@@ -327,6 +328,7 @@ class AccountAclTest extends UnitaryTestCase
      * @param bool|int $isAdminAcc
      *
      * @return AccountAclDto
+     * @throws SPException
      */
     private function setUpAccountEnvironment(
         int $accountId,
@@ -336,7 +338,7 @@ class AccountAclTest extends UnitaryTestCase
         bool $isAdminAcc = false
     ): AccountAclDto {
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 new User(
                     [
                         'id' => $userId,
@@ -676,6 +678,7 @@ class AccountAclTest extends UnitaryTestCase
      * @throws Exception
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
     public function testCacheIsUsedWithHit(): void
     {
@@ -696,7 +699,7 @@ class AccountAclTest extends UnitaryTestCase
         $lastUpdate = DateTime::createFromFormat('U', (string)($dto->getDateEdit() + 10))->format('Y-m-d H:i:s');
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(['lastUpdate' => $lastUpdate])

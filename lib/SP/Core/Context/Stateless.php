@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Core\Context;
 
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 
 use function SP\processException;
@@ -49,9 +49,9 @@ class Stateless extends ContextBase
     /**
      * Establece los datos del usuario en la sesión.
      */
-    public function setUserData(?UserDataDto $userDataDto = null): void
+    public function setUserData(?UserDto $userDto = null): void
     {
-        $this->setContextKey('userData', $userDataDto);
+        $this->setContextKey('user', $userDto);
     }
 
     /**
@@ -103,15 +103,15 @@ class Stateless extends ContextBase
      */
     public function isLoggedIn(): bool
     {
-        return !empty($this->getUserData()->getLogin());
+        return !empty($this->getUserData()->login);
     }
 
     /**
      * Devuelve los datos del usuario en la sesión.
      */
-    public function getUserData(): UserDataDto
+    public function getUserData(): UserDto
     {
-        return $this->getContextKey('userData', new UserDataDto());
+        return $this->getContextKey('user', new UserDto());
     }
 
     /**

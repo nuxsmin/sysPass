@@ -54,7 +54,7 @@ use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -85,6 +85,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testUpdate()
     {
@@ -93,7 +94,7 @@ class AccountTest extends UnitaryTestCase
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true])
             )
         );
@@ -118,6 +119,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testUpdateUserCannotChangePermissionsWithoutPermission()
     {
@@ -126,7 +128,7 @@ class AccountTest extends UnitaryTestCase
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(['isAdminApp' => false, 'isAdminAcc' => false])
@@ -155,6 +157,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testUpdateUserCanChangePermissionsWithAdminAcc()
     {
@@ -163,7 +166,7 @@ class AccountTest extends UnitaryTestCase
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(['isAdminApp' => false, 'isAdminAcc' => true])
@@ -192,6 +195,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testUpdateUserCanChangePermissionsWithProfilePermission()
     {
@@ -200,7 +204,7 @@ class AccountTest extends UnitaryTestCase
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(['isAdminApp' => false, 'isAdminAcc' => false])
@@ -229,6 +233,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testUpdateWithPresetPrivateForUser()
     {
@@ -247,13 +252,13 @@ class AccountTest extends UnitaryTestCase
                                      ]);
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
                                      [
-                                         'id' => $accountUpdateDto->getUserId(),
-                                         'userGroupId' => $accountUpdateDto->getUserGroupId(),
+                                         'id' => $accountUpdateDto->userId,
+                                         'userGroupId' => $accountUpdateDto->userGroupId,
                                          'isAdminApp' => true,
                                          'isAdminAcc' => false
                                      ]
@@ -269,7 +274,7 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn($itemPreset);
         $account = new AccountModel(
             [
-                'userId' => $accountUpdateDto->getUserId(),
+                'userId' => $accountUpdateDto->userId,
                 'userGroupId' => self::$faker->randomNumber(),
             ]
         );
@@ -306,6 +311,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testUpdateWithPresetPrivateForGroup()
     {
@@ -324,13 +330,13 @@ class AccountTest extends UnitaryTestCase
                                      ]);
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
                                      [
-                                         'id' => $accountUpdateDto->getUserId(),
-                                         'userGroupId' => $accountUpdateDto->getUserGroupId(),
+                                         'id' => $accountUpdateDto->userId,
+                                         'userGroupId' => $accountUpdateDto->userGroupId,
                                          'isAdminApp' => true,
                                          'isAdminAcc' => false
                                      ]
@@ -347,7 +353,7 @@ class AccountTest extends UnitaryTestCase
         $account = new AccountModel(
             [
                 'userId' => self::$faker->randomNumber(),
-                'userGroupId' => $accountUpdateDto->getUserGroupId(),
+                'userGroupId' => $accountUpdateDto->userGroupId,
             ]
         );
 
@@ -557,6 +563,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testUpdateBulk()
     {
@@ -566,7 +573,7 @@ class AccountTest extends UnitaryTestCase
         $accountUpdateBulkDto = new AccountUpdateBulkDto($accountsId, $accounts);
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
@@ -601,6 +608,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testUpdateBulkCannotChangePermissionsWithoutAdminApp()
     {
@@ -610,7 +618,7 @@ class AccountTest extends UnitaryTestCase
         $accountUpdateBulkDto = new AccountUpdateBulkDto($accountsId, $accounts);
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
@@ -641,6 +649,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testUpdateBulkCanChangePermissionsWithAdminAcc()
     {
@@ -650,7 +659,7 @@ class AccountTest extends UnitaryTestCase
         $accountUpdateBulkDto = new AccountUpdateBulkDto($accountsId, $accounts);
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
@@ -686,6 +695,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testUpdateBulkCanChangePermissionsWithProfilePermission()
     {
@@ -695,7 +705,7 @@ class AccountTest extends UnitaryTestCase
         $accountUpdateBulkDto = new AccountUpdateBulkDto($accountsId, $accounts);
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
@@ -720,10 +730,7 @@ class AccountTest extends UnitaryTestCase
         $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
                                   ->with(
                                       ...self::withConsecutive(
-                                      ...array_map(
-                                             fn($v) => [true, $v, $accounts[$v]],
-                                             $accountsId
-                                         )
+                                      ...array_map(fn($v) => [true, $v, $accounts[$v]], $accountsId)
                                   )
                                   );
 
@@ -838,9 +845,6 @@ class AccountTest extends UnitaryTestCase
         $this->assertFalse($this->account->incrementViewCounter($id));
     }
 
-    /**
-     * @throws SPException
-     */
     public function testGetAllBasic()
     {
         $this->accountRepository->expects(self::once())->method('getAll');
@@ -900,10 +904,10 @@ class AccountTest extends UnitaryTestCase
                                 ->with(
                                     AccountModel::restoreRemoved(
                                         $accountHistoryDto,
-                                        $this->context->getUserData()->getId()
+                                        $this->context->getUserData()->id
                                     )
                                 )
-            ->willReturn(new QueryResult(null, 1));
+                                ->willReturn(new QueryResult(null, 1));
 
         $this->account->restoreRemoved($accountHistoryDto);
     }
@@ -923,7 +927,7 @@ class AccountTest extends UnitaryTestCase
                                 ->with(
                                     AccountModel::restoreRemoved(
                                         $accountHistoryDto,
-                                        $this->context->getUserData()->getId()
+                                        $this->context->getUserData()->id
                                     )
                                 )
                                 ->willReturn($queryResult);
@@ -936,12 +940,13 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testEditPassword()
     {
         $id = self::$faker->randomNumber();
         $account = AccountDataGenerator::factory()->buildAccount();
-        $accountUpdateDto = AccountUpdateDto::fromAccount($account);
+        $accountUpdateDto = AccountUpdateDto::fromModel($account);
 
         $password = self::$faker->password;
 
@@ -957,9 +962,9 @@ class AccountTest extends UnitaryTestCase
                                     ->with($accountHistoryCreateDto);
 
         $this->accountCryptService->expects(self::once())->method('getPasswordEncrypted')
-                                  ->with($accountUpdateDto->getPass())
+            ->with($accountUpdateDto->pass)
                                   ->willReturn(
-                                      new EncryptedPassword($accountUpdateDto->getPass(), $accountUpdateDto->getKey())
+                                      new EncryptedPassword($accountUpdateDto->pass, $accountUpdateDto->key)
                                   );
 
         $this->accountRepository->expects(self::once())->method('editPassword')
@@ -975,7 +980,8 @@ class AccountTest extends UnitaryTestCase
     {
         $password = self::$faker->password;
 
-        $this->configService->expects(self::once())->method('getByParam')
+        $this->configService->expects(self::once())
+                            ->method('getByParam')
                             ->with('masterPwd')->willReturn($password);
 
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -984,7 +990,7 @@ class AccountTest extends UnitaryTestCase
         $accountHistoryDto = $accountDataGenerator->buildAccountHistoryDto();
 
         $this->accountRepository->expects(self::once())->method('getById')
-                                ->with($accountHistoryDto->getAccountId())->willReturn(new QueryResult([$account]));
+            ->with($accountHistoryDto->accountId)->willReturn(new QueryResult([$account]));
 
         $accountHistoryCreateDto = new AccountHistoryCreateDto($account, true, false, $password);
 
@@ -993,13 +999,13 @@ class AccountTest extends UnitaryTestCase
 
         $this->accountRepository->expects(self::once())->method('restoreModified')
                                 ->with(
-                                    $accountHistoryDto->getAccountId(),
+                                    $accountHistoryDto->accountId,
                                     AccountModel::restoreModified(
                                         $accountHistoryDto,
-                                        $this->context->getUserData()->getId()
+                                        $this->context->getUserData()->id
                                     )
                                 )
-            ->willReturn(new QueryResult(null, 1));
+                                ->willReturn(new QueryResult(null, 1));
 
         $this->account->restoreModified($accountHistoryDto);
     }
@@ -1020,7 +1026,7 @@ class AccountTest extends UnitaryTestCase
         $accountHistoryDto = $accountDataGenerator->buildAccountHistoryDto();
 
         $this->accountRepository->expects(self::once())->method('getById')
-                                ->with($accountHistoryDto->getAccountId())->willReturn(new QueryResult([$account]));
+            ->with($accountHistoryDto->accountId)->willReturn(new QueryResult([$account]));
 
         $accountHistoryCreateDto = new AccountHistoryCreateDto($account, true, false, $password);
 
@@ -1030,13 +1036,13 @@ class AccountTest extends UnitaryTestCase
 
         $this->accountRepository->expects(self::once())->method('restoreModified')
                                 ->with(
-                                    $accountHistoryDto->getAccountId(),
+                                    $accountHistoryDto->accountId,
                                     AccountModel::restoreModified(
                                         $accountHistoryDto,
-                                        $this->context->getUserData()->getId()
+                                        $this->context->getUserData()->id
                                     )
                                 )
-            ->willReturn(new QueryResult(null, 0));
+                                ->willReturn(new QueryResult(null, 0));
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error on restoring the account');
@@ -1075,6 +1081,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testCreate()
     {
@@ -1083,7 +1090,7 @@ class AccountTest extends UnitaryTestCase
         $accountCreateDto = $accountDataGenerator->buildAccountCreateDto();
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
@@ -1098,7 +1105,7 @@ class AccountTest extends UnitaryTestCase
         $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
 
         $this->accountCryptService->expects(self::once())->method('getPasswordEncrypted')
-                                  ->with($accountCreateDto->getPass())
+            ->with($accountCreateDto->pass)
                                   ->willReturn($encryptedPassword);
 
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
@@ -1119,6 +1126,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testCreateCannotChangePermissions()
     {
@@ -1126,17 +1134,17 @@ class AccountTest extends UnitaryTestCase
         $accountDataGenerator = AccountDataGenerator::factory();
         $userData = $this->context->getUserData();
         $accountCreateDto = $accountDataGenerator->buildAccountCreateDto()
-                                                 ->withUserId($userData->getId())
-                                                 ->withUserGroupId($userData->getUserGroupId());
+            ->withUserId($userData->id)
+            ->withUserGroupId($userData->userGroupId);
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
                                      [
-                                         'id' => $userData->getId(),
-                                         'userGroupId' => $userData->getUserGroupId(),
+                                         'id' => $userData->id,
+                                         'userGroupId' => $userData->userGroupId,
                                          'isAdminApp' => false,
                                          'isAdminAcc' => false
                                      ]
@@ -1147,7 +1155,7 @@ class AccountTest extends UnitaryTestCase
         $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
 
         $this->accountCryptService->expects(self::once())->method('getPasswordEncrypted')
-                                  ->with($accountCreateDto->getPass())
+            ->with($accountCreateDto->pass)
                                   ->willReturn($encryptedPassword);
 
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
@@ -1168,6 +1176,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testCreateWithPrivateForUser()
     {
@@ -1187,12 +1196,12 @@ class AccountTest extends UnitaryTestCase
 
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
                                      [
-                                         'id' => $accountCreateDto->getUserId(),
+                                         'id' => $accountCreateDto->userId,
                                          'isAdminApp' => true,
                                          'isAdminAcc' => false
                                      ]
@@ -1204,7 +1213,7 @@ class AccountTest extends UnitaryTestCase
         $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
 
         $this->accountCryptService->expects(self::once())->method('getPasswordEncrypted')
-                                  ->with($accountCreateDto->getPass())
+            ->with($accountCreateDto->pass)
                                   ->willReturn($encryptedPassword);
 
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
@@ -1235,6 +1244,7 @@ class AccountTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testCreateWithPrivateForGroup()
     {
@@ -1253,12 +1263,12 @@ class AccountTest extends UnitaryTestCase
                                      ]);
 
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
                                      [
-                                         'userGroupId' => $accountCreateDto->getUserGroupId(),
+                                         'userGroupId' => $accountCreateDto->userGroupId,
                                          'isAdminApp' => true,
                                          'isAdminAcc' => false
                                      ]
@@ -1269,7 +1279,7 @@ class AccountTest extends UnitaryTestCase
         $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
 
         $this->accountCryptService->expects(self::once())->method('getPasswordEncrypted')
-                                  ->with($accountCreateDto->getPass())
+            ->with($accountCreateDto->pass)
                                   ->willReturn($encryptedPassword);
 
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
@@ -1436,8 +1446,6 @@ class AccountTest extends UnitaryTestCase
     public function testIncrementDecryptCounterNoRows()
     {
         $id = self::$faker->randomNumber();
-
-        $queryResult = new QueryResult();
 
         $this->accountRepository->expects(self::once())->method('incrementDecryptCounter')
             ->with($id)

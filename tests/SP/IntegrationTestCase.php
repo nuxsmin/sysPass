@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests;
 
+use Closure;
 use DI\ContainerBuilder;
 use Faker\Factory;
 use Faker\Generator;
@@ -58,8 +59,10 @@ use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Notification\Ports\MailService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
+use SP\Domain\User\Models\User;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\ArchiveHandler;
@@ -81,10 +84,11 @@ abstract class IntegrationTestCase extends TestCase
 {
     protected static Generator $faker;
     protected readonly string $passwordSalt;
+    protected Closure|null    $databaseQueryResolver = null;
     /**
-     * @var array<string, QueryResult> $databaseResolvers
+     * @var array<string, QueryResult> $databaseMapperResolvers
      */
-    private array $databaseResolvers = [];
+    private array $databaseMapperResolvers = [];
 
     public static function setUpBeforeClass(): void
     {
@@ -178,6 +182,7 @@ abstract class IntegrationTestCase extends TestCase
         $configData->method('isMaintenance')->willReturn(false);
         $configData->method('getDbName')->willReturn(self::$faker->colorName());
         $configData->method('getPasswordSalt')->willReturn($this->passwordSalt);
+        $configData->method('isFilesEnabled')->willReturn(true);
 
         return $configData;
     }
@@ -185,10 +190,14 @@ abstract class IntegrationTestCase extends TestCase
     protected function getDatabaseReturn(): callable
     {
         return function (QueryData $queryData): QueryResult {
+            if ($this->databaseQueryResolver) {
+                return $this->databaseQueryResolver->call($this, $queryData);
+            }
+
             $mapClassName = $queryData->getMapClassName();
 
-            if (isset($this->databaseResolvers[$mapClassName])) {
-                return $this->databaseResolvers[$mapClassName];
+            if (isset($this->databaseMapperResolvers[$mapClassName])) {
+                return $this->databaseMapperResolvers[$mapClassName];
             }
 
             return new QueryResult([], 1, 100);
@@ -211,14 +220,15 @@ abstract class IntegrationTestCase extends TestCase
     }
 
     /**
-     * @return UserDataDto
+     * @return UserDto
      * @throws SPException
      */
-    protected function getUserDataDto(): UserDataDto
+    protected function getUserDataDto(): UserDto
     {
-        return new UserDataDto(
-            UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => false, 'isAdminAcc' => false])
-        );
+        $user = UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => false, 'isAdminAcc' => false]);
+
+        return UserDto::fromModel($user, User::class)
+                      ->mutate(['preferences', $user->hydrate(UserPreferences::class)]);
     }
 
     /**
@@ -229,9 +239,9 @@ abstract class IntegrationTestCase extends TestCase
         return UserProfileDataGenerator::factory()->buildProfileData();
     }
 
-    final protected function addDatabaseResolver(string $className, QueryResult $queryResult): void
+    final protected function addDatabaseMapperResolver(string $className, QueryResult $queryResult): void
     {
-        $this->databaseResolvers[$className] = $queryResult;
+        $this->databaseMapperResolvers[$className] = $queryResult;
     }
 
     protected function buildRequest(string $method, string $uri, array $paramsGet = [], array $paramsPost = []): Request

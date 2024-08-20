@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -32,10 +33,11 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Domain\Notification\Ports\NotificationRepository;
 use SP\Domain\Notification\Services\Notification;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\Generators\NotificationDataGenerator;
@@ -85,9 +87,12 @@ class NotificationTest extends UnitaryTestCase
         $this->assertEquals([1], $out);
     }
 
+    /**
+     * @throws SPException
+     */
     public function testSearchWithAdmin()
     {
-        $userDataDto = new UserDataDto(
+        $userDto = UserDto::fromModel(
             UserDataGenerator::factory()
                              ->buildUserData()
                              ->mutate(
@@ -97,28 +102,28 @@ class NotificationTest extends UnitaryTestCase
                              )
         );
 
-        $this->context->setUserData($userDataDto);
+        $this->context->setUserData($userDto);
 
         $itemSearchData = new ItemSearchDto();
 
         $this->notificationRepository
             ->expects($this->once())
             ->method('searchForAdmin')
-            ->with($itemSearchData, $userDataDto->getId());
+            ->with($itemSearchData, $userDto->id);
 
         $this->notification->search($itemSearchData);
     }
 
     public function testSearchWithNoAdmin()
     {
-        $userData = $this->context->getUserData();
+        $userDto = $this->context->getUserData();
 
         $itemSearchData = new ItemSearchDto();
 
         $this->notificationRepository
             ->expects($this->once())
             ->method('searchForUserId')
-            ->with($itemSearchData, $userData->getId());
+            ->with($itemSearchData, $userDto->id);
 
         $this->notification->search($itemSearchData);
     }
@@ -160,10 +165,11 @@ class NotificationTest extends UnitaryTestCase
 
     /**
      * @throws Exception
+     * @throws SPException
      */
     public function testGetAllActiveForCurrentUserWithAdmin()
     {
-        $userDataDto = new UserDataDto(
+        $userDto = UserDto::fromModel(
             UserDataGenerator::factory()
                              ->buildUserData()
                              ->mutate(
@@ -172,7 +178,7 @@ class NotificationTest extends UnitaryTestCase
                                  ]
                              )
         );
-        $this->context->setUserData($userDataDto);
+        $this->context->setUserData($userDto);
 
         $queryResult = $this->createMock(QueryResult::class);
         $queryResult->expects($this->once())
@@ -183,7 +189,7 @@ class NotificationTest extends UnitaryTestCase
         $this->notificationRepository
             ->expects($this->once())
             ->method('getAllActiveForAdmin')
-            ->with($userDataDto->getId())
+            ->with($userDto->id)
             ->willReturn($queryResult);
 
         $out = $this->notification->getAllActiveForCurrentUser();
@@ -196,7 +202,7 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testGetAllActiveForCurrentUserWithNoAdmin()
     {
-        $userData = $this->context->getUserData();
+        $userDto = $this->context->getUserData();
 
         $queryResult = $this->createMock(QueryResult::class);
         $queryResult->expects($this->once())
@@ -207,7 +213,7 @@ class NotificationTest extends UnitaryTestCase
         $this->notificationRepository
             ->expects($this->once())
             ->method('getAllActiveForUserId')
-            ->with($userData->getId())
+            ->with($userDto->id)
             ->willReturn($queryResult);
 
         $out = $this->notification->getAllActiveForCurrentUser();

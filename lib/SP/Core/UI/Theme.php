@@ -55,7 +55,7 @@ final readonly class Theme implements ThemeInterface
         $name = $configData->getSiteTheme();
 
         if ($context->isLoggedIn()) {
-            return $context->getUserData()->getPreferences()->getTheme() ?? $name;
+            return $context->getUserData()->preferences->getTheme() ?? $name;
         }
 
         return $name;

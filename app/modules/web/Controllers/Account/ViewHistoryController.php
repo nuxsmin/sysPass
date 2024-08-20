@@ -65,11 +65,9 @@ final class ViewHistoryController extends AccountControllerBase
         try {
             $this->accountHistoryHelper->initializeFor(AclActionsInterface::ACCOUNT_HISTORY_VIEW);
 
-            $accountHistoryViewDto = AccountHistoryViewDto::fromArray(
-                $this->accountHistoryService->getById($id)->toArray(includeOuter: true)
+            $this->accountHistoryHelper->setViewForAccount(
+                AccountHistoryViewDto::fromArray($this->accountHistoryService->getById($id)->toArray())
             );
-
-            $this->accountHistoryHelper->setViewForAccount($accountHistoryViewDto);
 
             $this->view->addTemplate('account-history');
 

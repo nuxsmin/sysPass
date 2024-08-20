@@ -25,6 +25,7 @@
 
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountHistoryViewDto;
+use SP\Domain\Account\Dtos\AccountViewDto;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\Components\SelectItem;
@@ -34,7 +35,7 @@ use function SP\__;
 /**
  * @var callable $_getvar
  * @var ThemeIconsInterface $icons
- * @var AccountHistoryViewDto $accountView
+ * @var AccountHistoryViewDto|AccountViewDto $accountView
  * @var AccountPermission $accountAcl
  * @var ConfigDataInterface $configData
  */
@@ -90,7 +91,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50"
                                        value="<?php
-                                       echo htmlspecialchars($accountView->getName(), ENT_QUOTES); ?>"
+                                       echo htmlspecialchars($accountView->name, ENT_QUOTES); ?>"
                                        tabindex="1" readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -161,7 +162,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="255" tabindex="4"
                                        value="<?php
-                                       echo htmlspecialchars($accountView->getUrl(), ENT_QUOTES); ?>"
+                                       echo htmlspecialchars($accountView->url, ENT_QUOTES); ?>"
                                        readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -178,7 +179,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50" tabindex="5"
                                        value="<?php
-                                       echo htmlspecialchars($accountView->getLogin(), ENT_QUOTES); ?>"
+                                       echo htmlspecialchars($accountView->login, ENT_QUOTES); ?>"
                                        readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -215,7 +216,7 @@ $accountAcl = $_getvar('accountAcl');
                                 name="notes" tabindex="9"
                                 maxlength="5000"
                                 readonly><?php
-                            echo htmlspecialchars($accountView->getNotes(), ENT_QUOTES); ?>
+                            echo htmlspecialchars($accountView->notes, ENT_QUOTES); ?>
                         </textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php
@@ -265,9 +266,9 @@ $accountAcl = $_getvar('accountAcl');
                             <?php
                             printf(
                                 '%s (%s)',
-                                $accountView->getDateEdit(),
-                                htmlspecialchars($accountView->getUserEditName(), ENT_QUOTES)
-                                    ?: htmlspecialchars($accountView->getUserEditLogin(), ENT_QUOTES)
+                                $accountView->dateEdit,
+                                htmlspecialchars($accountView->userEditName, ENT_QUOTES)
+                                    ?: htmlspecialchars($accountView->userEditLogin, ENT_QUOTES)
                             ); ?>
                         </td>
                     </tr>

@@ -25,10 +25,12 @@
 namespace SP\Modules\Web\Controllers\AccountFile;
 
 use Exception;
-use SP\Core\Acl\Acl;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Util\ErrorUtil;
+
+use function SP\__;
+use function SP\processException;
 
 /**
  * Class ListController
@@ -40,7 +42,7 @@ final class ListController extends AccountFileBase
     /**
      * Obtener los datos para la vista de archivos de una cuenta
      *
-     * @param  int  $accountId  Account's ID
+     * @param int $accountId Account's ID
      */
     public function listAction(int $accountId): void
     {
@@ -53,14 +55,18 @@ final class ListController extends AccountFileBase
         try {
             $this->view->addTemplate('files-list', 'account');
 
-            $this->view->assign('deleteEnabled', $this->request->analyzeInt('del', false));
-            $this->view->assign('files', $this->accountFileService->getByAccountId($accountId));
-            $this->view->assign('fileViewRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_VIEW));
-            $this->view->assign('fileDownloadRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_DOWNLOAD));
-            $this->view->assign('fileDeleteRoute', Acl::getActionRoute(AclActionsInterface::ACCOUNT_FILE_DELETE));
+            $files = $this->accountFileService->getByAccountId($accountId);
 
-            if (!is_array($this->view->files)
-                || count($this->view->files) === 0) {
+            $this->view->assign('deleteEnabled', $this->request->analyzeInt('del', false));
+            $this->view->assign('files', $files);
+            $this->view->assign('fileViewRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_VIEW));
+            $this->view->assign(
+                'fileDownloadRoute',
+                $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_DOWNLOAD)
+            );
+            $this->view->assign('fileDeleteRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_DELETE));
+
+            if (count($files) === 0) {
                 $this->view->addTemplate('no_records_found', '_partials');
 
                 $this->view->assign('message', __('There are no linked files for the account'));

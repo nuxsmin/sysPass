@@ -30,8 +30,9 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Language;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Tests\UnitaryTestCase;
@@ -71,6 +72,9 @@ class LanguageTest extends UnitaryTestCase
         $this->assertEquals($locale . '.utf8', getenv('LANGUAGE'));
     }
 
+    /**
+     * @throws SPException
+     */
     public function testSetLanguageForceWithUserLanguage()
     {
         $locale = 'es_ES';
@@ -84,7 +88,7 @@ class LanguageTest extends UnitaryTestCase
         $user = (new User(['id' => self::$faker->randomNumber(2)]))
             ->dehydrate(new UserPreferences(['lang' => $locale]));
 
-        $this->context->setUserData(new UserDataDto($user));
+        $this->context->setUserData(UserDto::fromModel($user));
 
         $this->language->setLanguage(true);
 
@@ -101,7 +105,7 @@ class LanguageTest extends UnitaryTestCase
 
         $this->context->setLocale($locale);
 
-        $this->context->setUserData(new UserDataDto(new User()));
+        $this->context->setUserData(new UserDto());
 
         $this->configData
             ->expects(self::once())
@@ -123,7 +127,7 @@ class LanguageTest extends UnitaryTestCase
 
         $this->context->setLocale($locale);
 
-        $this->context->setUserData(new UserDataDto(new User()));
+        $this->context->setUserData(new UserDto());
 
         $this->configData
             ->expects(self::once())

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -45,11 +46,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
     use RepositoryItemTrait;
 
     /**
-     * Creates an item
-     *
-     * @param FileModel $fileData
-     *
-     * @return int
+     * @inheritDoc
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -73,11 +70,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
     }
 
     /**
-     * Returns the item for given id
-     *
-     * @param int $id
-     *
-     * @return QueryResult
+     * @inheritDoc
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -104,15 +97,11 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
             ->bindValues(['id' => $id])
             ->limit(1);
 
-        return $this->db->runQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, FileModel::class));
     }
 
     /**
-     * Returns the item for given id
-     *
-     * @param int $id
-     *
-     * @return QueryResult
+     * @inheritDoc
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -136,15 +125,11 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
             ->orderBy(['name ASC'])
             ->limit(1);
 
-        return $this->db->runQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, FileModel::class));
     }
 
     /**
-     * Deletes an item
-     *
-     * @param int $id
-     *
-     * @return bool
+     * @inheritDoc
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -162,11 +147,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
     }
 
     /**
-     * Deletes all the items for given ids
-     *
-     * @param array $ids
-     *
-     * @return int
+     * @inheritDoc
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -187,11 +168,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
     }
 
     /**
-     * Searches for items by a given filter
-     *
-     * @param ItemSearchDto $itemSearchData
-     *
-     * @return QueryResult
+     * @inheritDoc
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -233,6 +210,6 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
                                ]);
         }
 
-        return $this->db->runQuery(QueryData::build($query), true);
+        return $this->db->runQuery(QueryData::buildWithMapper($query, FileModel::class), true);
     }
 }

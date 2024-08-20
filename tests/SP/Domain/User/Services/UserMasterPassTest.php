@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -34,8 +35,8 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
-use SP\Domain\User\Dtos\UserDataDto;
-use SP\Domain\User\Models\User;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Domain\User\Services\UserMasterPass;
 use SP\Domain\User\Services\UserMasterPassStatus;
@@ -56,6 +57,7 @@ class UserMasterPassTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoad()
     {
@@ -63,7 +65,7 @@ class UserMasterPassTest extends UnitaryTestCase
                                  ->buildUserData()
                                  ->mutate(['isChangedPass' => false, 'lastUpdateMPass' => 10]);
 
-        $userDataDto = new UserDataDto($user);
+        $userDto = UserDto::fromModel($user);
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
 
         $this->configService
@@ -82,16 +84,17 @@ class UserMasterPassTest extends UnitaryTestCase
             ->with($user->getMPass(), $user->getMKey(), $key)
             ->willReturn('a_master_pass');
 
-        $out = $this->userMasterPass->load($userLoginDto, $userDataDto);
+        $out = $this->userMasterPass->load($userLoginDto, $userDto);
 
         $this->assertEquals(UserMasterPassStatus::Ok, $out->getUserMasterPassStatus());
         $this->assertEquals('a_master_pass', $out->getClearMasterPass());
-        $this->assertEquals($userDataDto->getMPass(), $out->getCryptMasterPass());
-        $this->assertEquals($userDataDto->getMKey(), $out->getCryptSecuredKey());
+        $this->assertEquals($userDto->mPass, $out->getCryptMasterPass());
+        $this->assertEquals($userDto->mKey, $out->getCryptSecuredKey());
     }
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadWithUserPass()
     {
@@ -99,7 +102,7 @@ class UserMasterPassTest extends UnitaryTestCase
                                  ->buildUserData()
                                  ->mutate(['isChangedPass' => false, 'lastUpdateMPass' => 10]);
 
-        $userDataDto = new UserDataDto($user);
+        $userDto = UserDto::fromModel($user);
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
 
         $this->configService
@@ -118,12 +121,12 @@ class UserMasterPassTest extends UnitaryTestCase
             ->with($user->getMPass(), $user->getMKey(), $key)
             ->willReturn('a_master_pass');
 
-        $out = $this->userMasterPass->load($userLoginDto, $userDataDto, 'a_password');
+        $out = $this->userMasterPass->load($userLoginDto, $userDto, 'a_password');
 
         $this->assertEquals(UserMasterPassStatus::Ok, $out->getUserMasterPassStatus());
         $this->assertEquals('a_master_pass', $out->getClearMasterPass());
-        $this->assertEquals($userDataDto->getMPass(), $out->getCryptMasterPass());
-        $this->assertEquals($userDataDto->getMKey(), $out->getCryptSecuredKey());
+        $this->assertEquals($userDto->mPass, $out->getCryptMasterPass());
+        $this->assertEquals($userDto->mKey, $out->getCryptSecuredKey());
     }
 
     /**
@@ -131,7 +134,7 @@ class UserMasterPassTest extends UnitaryTestCase
      */
     public function testLoadWithNotSet()
     {
-        $userDataDto = new UserDataDto(new User());
+        $userDto = new UserDto();
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
 
         $this->configService
@@ -142,17 +145,18 @@ class UserMasterPassTest extends UnitaryTestCase
             ->expects($this->never())
             ->method('decrypt');
 
-        $out = $this->userMasterPass->load($userLoginDto, $userDataDto);
+        $out = $this->userMasterPass->load($userLoginDto, $userDto);
 
         $this->assertEquals(UserMasterPassStatus::NotSet, $out->getUserMasterPassStatus());
     }
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadWithNotSetAndEmptyPass()
     {
-        $userDataDto = new UserDataDto(new User(['use' => self::$faker->userName]));
+        $userDto = UserDto::fromArray(['use' => self::$faker->userName]);
         $userLoginDto = new UserLoginDto(self::$faker->userName());
 
         $this->configService
@@ -163,17 +167,18 @@ class UserMasterPassTest extends UnitaryTestCase
             ->expects($this->never())
             ->method('decrypt');
 
-        $out = $this->userMasterPass->load($userLoginDto, $userDataDto);
+        $out = $this->userMasterPass->load($userLoginDto, $userDto);
 
         $this->assertEquals(UserMasterPassStatus::NotSet, $out->getUserMasterPassStatus());
     }
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadWithNotSetAndEmptyUser()
     {
-        $userDataDto = new UserDataDto(new User(['pass' => self::$faker->password]));
+        $userDto = UserDto::fromArray(['pass' => self::$faker->password]);
         $userLoginDto = new UserLoginDto();
 
         $this->configService
@@ -184,13 +189,14 @@ class UserMasterPassTest extends UnitaryTestCase
             ->expects($this->never())
             ->method('decrypt');
 
-        $out = $this->userMasterPass->load($userLoginDto, $userDataDto);
+        $out = $this->userMasterPass->load($userLoginDto, $userDto);
 
         $this->assertEquals(UserMasterPassStatus::NotSet, $out->getUserMasterPassStatus());
     }
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadWithNotSetAndNullHash()
     {
@@ -198,7 +204,7 @@ class UserMasterPassTest extends UnitaryTestCase
                                  ->buildUserData()
                                  ->mutate(['isChangedPass' => false, 'lastUpdateMPass' => 10]);
 
-        $userDataDto = new UserDataDto($user);
+        $userDto = UserDto::fromModel($user);
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
 
         $this->configService
@@ -210,13 +216,14 @@ class UserMasterPassTest extends UnitaryTestCase
             ->expects($this->never())
             ->method('decrypt');
 
-        $out = $this->userMasterPass->load($userLoginDto, $userDataDto);
+        $out = $this->userMasterPass->load($userLoginDto, $userDto);
 
         $this->assertEquals(UserMasterPassStatus::NotSet, $out->getUserMasterPassStatus());
     }
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadWithChanged()
     {
@@ -224,7 +231,7 @@ class UserMasterPassTest extends UnitaryTestCase
                                  ->buildUserData()
                                  ->mutate(['isChangedPass' => false, 'lastUpdateMPass' => 0]);
 
-        $userDataDto = new UserDataDto($user);
+        $userDto = UserDto::fromModel($user);
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
 
         $this->configService
@@ -237,13 +244,14 @@ class UserMasterPassTest extends UnitaryTestCase
             ->expects($this->never())
             ->method('decrypt');
 
-        $out = $this->userMasterPass->load($userLoginDto, $userDataDto);
+        $out = $this->userMasterPass->load($userLoginDto, $userDto);
 
         $this->assertEquals(UserMasterPassStatus::Changed, $out->getUserMasterPassStatus());
     }
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadWithCheckOld()
     {
@@ -251,7 +259,7 @@ class UserMasterPassTest extends UnitaryTestCase
                                  ->buildUserData()
                                  ->mutate(['isChangedPass' => true, 'lastUpdateMPass' => 10]);
 
-        $userDataDto = new UserDataDto($user);
+        $userDto = UserDto::fromModel($user);
         $userLoginDto = new UserLoginDto(self::$faker->userName(), null);
 
         $this->configService
@@ -264,13 +272,14 @@ class UserMasterPassTest extends UnitaryTestCase
             ->expects($this->never())
             ->method('decrypt');
 
-        $out = $this->userMasterPass->load($userLoginDto, $userDataDto);
+        $out = $this->userMasterPass->load($userLoginDto, $userDto);
 
         $this->assertEquals(UserMasterPassStatus::CheckOld, $out->getUserMasterPassStatus());
     }
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadWithCryptException()
     {
@@ -278,7 +287,7 @@ class UserMasterPassTest extends UnitaryTestCase
                                  ->buildUserData()
                                  ->mutate(['isChangedPass' => false, 'lastUpdateMPass' => 10]);
 
-        $userDataDto = new UserDataDto($user);
+        $userDto = UserDto::fromModel($user);
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
 
         $this->configService
@@ -292,13 +301,14 @@ class UserMasterPassTest extends UnitaryTestCase
             ->method('decrypt')
             ->willThrowException(CryptException::error('test'));
 
-        $out = $this->userMasterPass->load($userLoginDto, $userDataDto);
+        $out = $this->userMasterPass->load($userLoginDto, $userDto);
 
         $this->assertEquals(UserMasterPassStatus::CheckOld, $out->getUserMasterPassStatus());
     }
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadWithInvalid()
     {
@@ -306,7 +316,7 @@ class UserMasterPassTest extends UnitaryTestCase
                                  ->buildUserData()
                                  ->mutate(['isChangedPass' => false, 'lastUpdateMPass' => 10]);
 
-        $userDataDto = new UserDataDto($user);
+        $userDto = UserDto::fromModel($user);
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
 
         $this->configService
@@ -325,13 +335,14 @@ class UserMasterPassTest extends UnitaryTestCase
             ->with($user->getMPass(), $user->getMKey(), $key)
             ->willReturn('a_pass');
 
-        $out = $this->userMasterPass->load($userLoginDto, $userDataDto);
+        $out = $this->userMasterPass->load($userLoginDto, $userDto);
 
         $this->assertEquals(UserMasterPassStatus::Invalid, $out->getUserMasterPassStatus());
     }
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testLoadWithException()
     {
@@ -339,7 +350,7 @@ class UserMasterPassTest extends UnitaryTestCase
                                  ->buildUserData()
                                  ->mutate(['isChangedPass' => false, 'lastUpdateMPass' => 10]);
 
-        $userDataDto = new UserDataDto($user);
+        $userDto = UserDto::fromModel($user);
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
 
         $this->configService
@@ -356,12 +367,13 @@ class UserMasterPassTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('test');
 
-        $this->userMasterPass->load($userLoginDto, $userDataDto);
+        $this->userMasterPass->load($userLoginDto, $userDto);
     }
 
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testUpdateFromOldPass()
     {
@@ -369,7 +381,7 @@ class UserMasterPassTest extends UnitaryTestCase
                                  ->buildUserData()
                                  ->mutate(['isChangedPass' => false, 'lastUpdateMPass' => 10]);
 
-        $userDataDto = new UserDataDto($user);
+        $userDto = UserDto::fromModel($user);
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
 
         $this->configService
@@ -407,9 +419,9 @@ class UserMasterPassTest extends UnitaryTestCase
         $this->userRepository
             ->expects($this->once())
             ->method('updateMasterPassById')
-            ->with($userDataDto->getId(), 'encrypted', 'a_secure_key');
+            ->with($userDto->id, 'encrypted', 'a_secure_key');
 
-        $out = $this->userMasterPass->updateFromOldPass('an_old_user_pass', $userLoginDto, $userDataDto);
+        $out = $this->userMasterPass->updateFromOldPass('an_old_user_pass', $userLoginDto, $userDto);
 
         $this->assertEquals(UserMasterPassStatus::Ok, $out->getUserMasterPassStatus());
         $this->assertEquals('encrypted', $out->getCryptMasterPass());
@@ -419,6 +431,7 @@ class UserMasterPassTest extends UnitaryTestCase
 
     /**
      * @throws ServiceException
+     * @throws SPException
      */
     public function testUpdateFromOldPassWithInvalid()
     {
@@ -426,7 +439,7 @@ class UserMasterPassTest extends UnitaryTestCase
                                  ->buildUserData()
                                  ->mutate(['isChangedPass' => false, 'lastUpdateMPass' => 10]);
 
-        $userDataDto = new UserDataDto($user);
+        $userDto = UserDto::fromModel($user);
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
 
         $this->configService
@@ -457,7 +470,7 @@ class UserMasterPassTest extends UnitaryTestCase
             ->expects($this->never())
             ->method('updateMasterPassById');
 
-        $out = $this->userMasterPass->updateFromOldPass('an_old_user_pass', $userLoginDto, $userDataDto);
+        $out = $this->userMasterPass->updateFromOldPass('an_old_user_pass', $userLoginDto, $userDto);
 
         $this->assertEquals(UserMasterPassStatus::Invalid, $out->getUserMasterPassStatus());
     }

@@ -26,100 +26,24 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Dtos;
 
+use SP\Domain\Common\Dtos\Dto;
+
 /**
  * Class AccountHistoryViewDto
  */
-final class AccountHistoryViewDto extends AccountViewDto
+final class AccountHistoryViewDto extends Dto
 {
+
     public function __construct(
-        int           $id,
-        string        $name,
-        string        $login,
-        int           $clientId,
-        int           $categoryId,
-        string        $pass,
-        int           $userId,
-        string        $userName,
-        string        $key,
-        string        $url,
-        string        $notes,
-        int           $userEditId,
-        string        $userEditName,
-        string        $userEditLogin,
-        bool          $isPrivate,
-        bool          $isPrivateGroup,
-        int           $userGroupId,
-        string        $userGroupName,
-        bool          $otherUserEdit,
-        bool          $otherUserGroupEdit,
-        int           $countView,
-        int           $countDecrypt,
-        string  $dateAdd,
-        protected int $accountId,
-        protected int $isModify,
-        protected int $isDeleted,
-        ?string $dateEdit = null,
-        ?int          $passDate = null,
-        ?int          $passDateChange = null,
-        ?int          $parentId = null,
-        ?array        $usersView = null,
-        ?array        $usersEdit = null,
-        ?array        $userGroupsView = null,
-        ?array        $userGroupsEdit = null,
-        ?array  $tags = null,
-        ?string $categoryName = null,
-        ?string $clientName = null,
+        public readonly ?int $userId,
+        public readonly ?int $userGroupId,
+        public readonly ?int $dateEdit,
+        public readonly ?int $accountId,
+        public readonly ?int $id,
+        public readonly ?int $passDateChange,
+        public readonly ?int $categoryId,
+        public readonly ?int $clientId,
+        public readonly ?int $passDate,
     ) {
-        parent::__construct(
-            $id,
-            $name,
-            $login,
-            $clientId,
-            $categoryId,
-            $pass,
-            $userId,
-            $userName,
-            $key,
-            $url,
-            $notes,
-            $userEditId,
-            $userEditName,
-            $userEditLogin,
-            $isPrivate,
-            $isPrivateGroup,
-            $userGroupId,
-            $userGroupName,
-            $otherUserEdit,
-            $otherUserGroupEdit,
-            $countView,
-            $countDecrypt,
-            $dateAdd,
-            $dateEdit,
-            $passDate,
-            $passDateChange,
-            $parentId,
-            $usersView,
-            $usersEdit,
-            $userGroupsView,
-            $userGroupsEdit,
-            $tags,
-            $categoryName,
-            $clientName
-        );
-    }
-
-    public function getAccountId(): int
-    {
-        return $this->accountId;
-    }
-
-    public function getIsModify(): int
-    {
-        return $this->isModify;
-    }
-
-    public function getIsDeleted(): int
-    {
-        return $this->isDeleted;
     }
 }

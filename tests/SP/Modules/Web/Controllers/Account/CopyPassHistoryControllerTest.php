@@ -58,7 +58,7 @@ class CopyPassHistoryControllerTest extends IntegrationTestCase
      */
     public function testCopyPassHistoryAction()
     {
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountPassItemWithIdAndName::class,
             new QueryResult([
                                 AccountPassItemWithIdAndName::buildFromSimpleModel(

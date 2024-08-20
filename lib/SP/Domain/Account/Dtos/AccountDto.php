@@ -26,9 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Dtos;
 
-use SP\Domain\Account\Models\Account;
-use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Common\Dtos\Dto;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
  * Class AccountDto
@@ -36,250 +35,121 @@ use SP\Domain\Common\Dtos\Dto;
 abstract class AccountDto extends Dto
 {
     public function __construct(
-        protected ?string $name = null,
-        protected ?string $login = null,
-        protected ?int   $clientId = null,
-        protected ?int   $categoryId = null,
-        protected ?string $pass = null,
-        protected ?int   $userId = null,
-        protected ?string $key = null,
-        protected ?string $url = null,
-        protected ?string $notes = null,
-        protected ?int   $userEditId = null,
-        protected ?bool  $isPrivate = null,
-        protected ?bool  $isPrivateGroup = null,
-        protected ?int   $passDateChange = null,
-        protected ?int   $parentId = null,
-        protected ?int   $userGroupId = null,
-        protected ?bool  $otherUserEdit = null,
-        protected ?bool  $otherUserGroupEdit = null,
-        protected ?array $usersView = null,
-        protected ?array $usersEdit = null,
-        protected ?array $userGroupsView = null,
-        protected ?array $userGroupsEdit = null,
-        protected ?array $tags = null
+        public readonly ?int    $id = null,
+        public readonly ?int    $clientId = null,
+        public readonly ?int    $categoryId = null,
+        public readonly ?int    $userId = null,
+        public readonly ?int    $userGroupId = null,
+        public readonly ?int    $userEditId = null,
+        public readonly ?int    $parentId = null,
+        public readonly ?int    $countView = null,
+        public readonly ?int    $countDecrypt = null,
+        public readonly ?int    $passDateChange = null,
+        public readonly ?string $name = null,
+        public readonly ?string $login = null,
+        public readonly ?string $pass = null,
+        public readonly ?string $key = null,
+        public readonly ?string $url = null,
+        public readonly ?string $notes = null,
+        public readonly ?bool   $isPrivate = null,
+        public readonly ?bool   $isPrivateGroup = null,
+        public readonly ?bool   $otherUserEdit = null,
+        public readonly ?bool   $otherUserGroupEdit = null,
+        public readonly ?array  $usersView = null,
+        public readonly ?array  $usersEdit = null,
+        public readonly ?array  $otherUserGroupsView = null,
+        public readonly ?array  $otherUserGroupsEdit = null,
+        public readonly ?array  $tags = null,
+        public readonly ?array  $userGroupsView = null,
+        public readonly ?array  $userGroupsEdit = null
     ) {
     }
 
-    public static function fromAccount(Account|AccountHistory $account): static
+    /**
+     * @throws SPException
+     */
+    public function withUserId(int $id): static
     {
-        return new static(
-            name:               $account->getName(),
-            login:              $account->getLogin(),
-            clientId:           $account->getClientId(),
-            categoryId:         $account->getCategoryId(),
-            pass:               $account->getPass(),
-            userId:             $account->getUserId(),
-            key:                $account->getKey(),
-            url:                $account->getUrl(),
-            notes:              $account->getNotes(),
-            userEditId:         $account->getUserEditId(),
-            isPrivate:          (bool)$account->getIsPrivate(),
-            isPrivateGroup:     (bool)$account->getIsPrivateGroup(),
-            passDateChange:     $account->getPassDateChange(),
-            parentId:           $account->getParentId(),
-            userGroupId:        $account->getUserGroupId(),
-            otherUserEdit:      (bool)$account->getOtherUserEdit(),
-            otherUserGroupEdit: (bool)$account->getOtherUserGroupEdit(),
-        );
+        return $this->mutate(['userId' => $id]);
     }
 
-    public function getName(): ?string
+    /**
+     * @throws SPException
+     */
+    public function withUserGroupId(int $id): static
     {
-        return $this->name;
+        return $this->mutate(['userGroupId' => $id]);
     }
 
-    public function getLogin(): ?string
-    {
-        return $this->login;
-    }
-
-    public function getClientId(): ?int
-    {
-        return $this->clientId;
-    }
-
-    public function getCategoryId(): ?int
-    {
-        return $this->categoryId;
-    }
-
-    public function getPass(): ?string
-    {
-        return $this->pass;
-    }
-
-    public function getUserId(): ?int
-    {
-        return $this->userId;
-    }
-
-    public function getKey(): ?string
-    {
-        return $this->key;
-    }
-
-    public function getUrl(): ?string
-    {
-        return $this->url;
-    }
-
-    public function getNotes(): ?string
-    {
-        return $this->notes;
-    }
-
-    public function getUserEditId(): ?int
-    {
-        return $this->userEditId;
-    }
-
-    public function getIsPrivate(): ?bool
-    {
-        return $this->isPrivate;
-    }
-
-    public function getIsPrivateGroup(): ?bool
-    {
-        return $this->isPrivateGroup;
-    }
-
-    public function getPassDateChange(): ?int
-    {
-        return $this->passDateChange;
-    }
-
-    public function getParentId(): ?int
-    {
-        return $this->parentId;
-    }
-
-    public function getUserGroupId(): ?int
-    {
-        return $this->userGroupId;
-    }
-
-    public function getOtherUserEdit(): ?bool
-    {
-        return $this->otherUserEdit;
-    }
-
-    public function getOtherUserGroupEdit(): ?bool
-    {
-        return $this->otherUserGroupEdit;
-    }
-
-    public function withUserId(int $userId): static
-    {
-        $self = clone $this;
-        $self->userId = $userId;
-
-        return $self;
-    }
-
-    public function withUserGroupId(int $userGroupId): static
-    {
-        $self = clone $this;
-        $self->userGroupId = $userGroupId;
-
-        return $self;
-    }
-
+    /**
+     * @throws SPException
+     */
     public function withPrivate(bool $isPrivate): static
     {
-        $self = clone $this;
-        $self->isPrivate = $isPrivate;
-
-        return $self;
+        return $this->mutate(['isPrivate' => $isPrivate]);
     }
 
+    /**
+     * @throws SPException
+     */
     public function withPrivateGroup(bool $isPrivateGroup): static
     {
-        $self = clone $this;
-        $self->isPrivateGroup = $isPrivateGroup;
-
-        return $self;
+        return $this->mutate(['isPrivateGroup' => $isPrivateGroup]);
     }
 
+    /**
+     * @throws SPException
+     */
     public function withEncryptedPassword(EncryptedPassword $encryptedPassword): static
     {
-        $self = clone $this;
-        $self->pass = $encryptedPassword->getPass();
-        $self->key = $encryptedPassword->getKey();
-
-        return $self;
+        return $this->mutate(['pass' => $encryptedPassword->getPass(), 'key' => $encryptedPassword->getKey()]);
     }
 
+    /**
+     * @throws SPException
+     */
     public function withUsersView(array $users): static
     {
-        $self = clone $this;
-        $self->usersView = $users;
-
-        return $self;
+        return $this->mutate(['usersView' => $users]);
     }
 
+    /**
+     * @throws SPException
+     */
     public function withUsersEdit(array $users): static
     {
-        $self = clone $this;
-        $self->usersEdit = $users;
-
-        return $self;
+        return $this->mutate(['usersEdit' => $users]);
     }
 
+    /**
+     * @throws SPException
+     */
     public function withUserGroupsView(array $userGroups): static
     {
-        $self = clone $this;
-        $self->userGroupsView = $userGroups;
-
-        return $self;
+        return $this->mutate(['userGroupsView' => $userGroups]);
     }
 
+    /**
+     * @throws SPException
+     */
     public function withUserGroupsEdit(array $userGroups): static
     {
-        $self = clone $this;
-        $self->userGroupsEdit = $userGroups;
-
-        return $self;
+        return $this->mutate(['userGroupsEdit' => $userGroups]);
     }
 
+    /**
+     * @throws SPException
+     */
     public function withTags(array $tags): static
     {
-        $self = clone $this;
-        $self->tags = $tags;
-
-        return $self;
+        return $this->mutate(['tags' => $tags]);
     }
 
-    public function withPassDateChange(int $passDateChange): static
+    /**
+     * @throws SPException
+     */
+    public function withPassDateChange(int $timestamp): static
     {
-        $self = clone $this;
-        $self->passDateChange = $passDateChange;
-
-        return $self;
-    }
-
-    public function getUsersView(): ?array
-    {
-        return $this->usersView;
-    }
-
-    public function getUsersEdit(): ?array
-    {
-        return $this->usersEdit;
-    }
-
-    public function getUserGroupsView(): ?array
-    {
-        return $this->userGroupsView;
-    }
-
-    public function getUserGroupsEdit(): ?array
-    {
-        return $this->userGroupsEdit;
-    }
-
-    public function getTags(): ?array
-    {
-        return $this->tags;
+        return $this->mutate(['passDateChange' => $timestamp]);
     }
 }

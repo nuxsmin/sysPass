@@ -55,7 +55,7 @@ class EditControllerTest extends IntegrationTestCase
      */
     public function testEditAction()
     {
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountView::class,
             new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
         );

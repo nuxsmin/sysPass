@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -96,8 +97,8 @@ class EventlogTest extends UnitaryTestCase
                 self::callback(function (EventlogModel $eventlog) {
                     $userData = $this->context->getUserData();
 
-                    return $eventlog->getUserId() == $userData->getId()
-                           && $eventlog->getLogin() == $userData->getLogin()
+                    return $eventlog->getUserId() == $userData->id
+                           && $eventlog->getLogin() == $userData->login
                            && $eventlog->getIpAddress() == '192.168.0.1';
                 })
             )

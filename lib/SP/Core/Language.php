@@ -121,10 +121,10 @@ final class Language implements LanguageInterface
      */
     private function getUserLang(): string
     {
-        $userData = $this->context->getUserData();
+        $userDto = $this->context->getUserData();
 
-        return ($userData->getId() > 0)
-            ? $userData->getPreferences()->getLang()
+        return ($userDto->id > 0)
+            ? $userDto->preferences->getLang()
             : '';
     }
 

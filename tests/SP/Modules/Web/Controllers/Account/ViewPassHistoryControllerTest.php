@@ -60,7 +60,7 @@ class ViewPassHistoryControllerTest extends IntegrationTestCase
      */
     public function testViewPassHistoryAction()
     {
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountPassItemWithIdAndName::class,
             new QueryResult([
                                 AccountPassItemWithIdAndName::buildFromSimpleModel(

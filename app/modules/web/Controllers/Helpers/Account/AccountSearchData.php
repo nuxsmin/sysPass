@@ -133,11 +133,11 @@ final class AccountSearchData
     public function buildFrom(QueryResult $queryResult): QueryResult
     {
         $maxTextLength = $this->configData->isResultsAsCards() ? self::TEXT_LENGTH_CARDS : self::TEXT_LENGTH_NORMAL;
-        $userPreferencesData = $this->context->getUserData()->getPreferences();
+        $userPreferencesData = $this->context->getUserData()->preferences;
 
         $accountLinkEnabled = (null !== $userPreferencesData && $userPreferencesData->isAccountLink())
                               || $this->configData->isAccountLink();
-        $favorites = $this->accountToFavoriteService->getForUserId($this->context->getUserData()->getId());
+        $favorites = $this->accountToFavoriteService->getForUserId($this->context->getUserData()->id);
 
         return $queryResult->mutateWithCallback(
             function (AccountSearchView $accountSearchView) use (

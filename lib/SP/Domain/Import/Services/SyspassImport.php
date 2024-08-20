@@ -365,7 +365,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
             }
 
             try {
-                $dto = AccountCreateDto::fromAccount(new Account($data));
+                $dto = AccountCreateDto::fromModel(new Account($data));
                 $dtoWithTags = $dto->withTags($data['tags']);
 
                 $this->addAccount($dtoWithTags, $importParams, true);

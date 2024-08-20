@@ -40,7 +40,7 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserToUserGroupService;
 use SP\Infrastructure\File\FileException;
@@ -55,7 +55,7 @@ final class AccountAcl extends Service implements AccountAclService
 {
     private ?AccountAclDto     $accountAclDto     = null;
     private ?AccountPermission $accountPermission = null;
-    private UserDataDto        $userData;
+    private UserDto $userData;
 
     public function __construct(
         Application                             $application,
@@ -94,7 +94,7 @@ final class AccountAcl extends Service implements AccountAclService
 
             if (null !== $accountAcl) {
                 $isModified = $accountAclDto->getDateEdit() > $accountAcl->getTime()
-                              || $this->userData->getLastUpdate() > $accountAcl->getTime();
+                              || $this->userData->lastUpdate > $accountAcl->getTime();
 
                 if (!$isModified) {
                     $this->eventDispatcher->notify(
@@ -122,15 +122,15 @@ final class AccountAcl extends Service implements AccountAclService
     /**
      * Sets grants which don't need the account's data
      *
-     * @param UserDataDto $userData
+     * @param UserDto $userData
      * @param ProfileData $profileData
      *
      * @return bool
      */
-    public static function getShowPermission(UserDataDto $userData, ProfileData $profileData): bool
+    public static function getShowPermission(UserDto $userData, ProfileData $profileData): bool
     {
-        return $userData->getIsAdminApp()
-               || $userData->getIsAdminAcc()
+        return $userData->isAdminApp
+               || $userData->isAdminAcc
                || $profileData->isAccPermission();
     }
 
@@ -165,7 +165,7 @@ final class AccountAcl extends Service implements AccountAclService
      */
     private function getCacheFileForAcl(int $accountId, int $actionId): string
     {
-        $userId = $this->context->getUserData()->getId();
+        $userId = $this->context->getUserData()->id;
 
         return FileSystem::buildPath(
             $this->pathsContext[Path::CACHE],
@@ -208,10 +208,10 @@ final class AccountAcl extends Service implements AccountAclService
         $this->accountPermission->setResultEdit(false);
 
         // Check out if user is admin or owner/maingroup
-        if ($this->userData->getIsAdminApp()
-            || $this->userData->getIsAdminAcc()
-            || $this->userData->getId() === $this->accountAclDto->getUserId()
-            || $this->userData->getUserGroupId() === $this->accountAclDto->getUserGroupId()
+        if ($this->userData->isAdminApp
+            || $this->userData->isAdminAcc
+            || $this->userData->id === $this->accountAclDto->getUserId()
+            || $this->userData->userGroupId === $this->accountAclDto->getUserGroupId()
         ) {
             $this->accountPermission->setResultView(true);
             $this->accountPermission->setResultEdit(true);
@@ -220,7 +220,7 @@ final class AccountAcl extends Service implements AccountAclService
         }
 
         // Check out if user is listed in secondary users of the account
-        $userInUsers = $this->getUserInSecondaryUsers($this->userData->getId());
+        $userInUsers = $this->getUserInSecondaryUsers($this->userData->id);
         $this->accountPermission->setUserInUsers(count($userInUsers) > 0);
 
         if ($this->accountPermission->isUserInUsers()) {
@@ -234,7 +234,7 @@ final class AccountAcl extends Service implements AccountAclService
         // Groups in which the user is listed in
         $userGroups = array_map(
             static fn($value) => (int)$value->userGroupId,
-            $this->userToUserGroupService->getGroupsForUser($this->userData->getId())
+            $this->userToUserGroupService->getGroupsForUser($this->userData->id)
         );
 
         // Check out if user groups match with account's main group
@@ -250,7 +250,7 @@ final class AccountAcl extends Service implements AccountAclService
         $userGroupsInSecondaryUserGroups =
             $this->getUserGroupsInSecondaryGroups(
                 $userGroups,
-                $this->userData->getUserGroupId()
+                $this->userData->userGroupId
             );
 
         $this->accountPermission->setUserInGroups(count($userGroupsInSecondaryUserGroups) > 0);

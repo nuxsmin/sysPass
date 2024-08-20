@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -157,7 +158,7 @@ class AuthTokenTest extends UnitaryTestCase
                            && $current->getVault() === $authToken->getVault()
                            && $current->getToken() === $authToken->getToken()
                            && $current->getHash() === null
-                           && $current->getCreatedBy() === $this->context->getUserData()->getId();
+                           && $current->getCreatedBy() === $this->context->getUserData()->id;
                 })
             )
             ->willReturn(new QueryResult(null, 0, 100));
@@ -196,7 +197,7 @@ class AuthTokenTest extends UnitaryTestCase
                            && $current->getVault() === $authToken->getVault()
                            && $current->getToken() !== $authToken->getToken()
                            && $current->getHash() === null
-                           && $current->getCreatedBy() === $this->context->getUserData()->getId();
+                           && $current->getCreatedBy() === $this->context->getUserData()->id;
                 })
             )
             ->willReturn(new QueryResult(null, 0, 100));
@@ -240,7 +241,7 @@ class AuthTokenTest extends UnitaryTestCase
                            && $current->getToken() === $authToken->getToken()
                            && $current->getVault() !== $authToken->getVault()
                            && $current->getHash() !== $authToken->getHash()
-                           && $current->getCreatedBy() === $this->context->getUserData()->getId();
+                           && $current->getCreatedBy() === $this->context->getUserData()->id;
                 })
             )
             ->willReturn(new QueryResult(null, 0, 100));
@@ -301,9 +302,6 @@ class AuthTokenTest extends UnitaryTestCase
 
     /**
      * @throws NoSuchItemException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
      */
     public function testGetTokenByTokenWithNoFound()
     {
@@ -352,7 +350,7 @@ class AuthTokenTest extends UnitaryTestCase
                            && $current->getVault() === $authToken->getVault()
                            && $current->getToken() === $authToken->getToken()
                            && $current->getHash() === null
-                           && $current->getCreatedBy() === $this->context->getUserData()->getId();
+                           && $current->getCreatedBy() === $this->context->getUserData()->id;
                 })
             )
             ->willReturn(true);
@@ -389,7 +387,7 @@ class AuthTokenTest extends UnitaryTestCase
                            && $current->getVault() === $authToken->getVault()
                            && $current->getToken() !== $authToken->getToken()
                            && $current->getHash() === null
-                           && $current->getCreatedBy() === $this->context->getUserData()->getId();
+                           && $current->getCreatedBy() === $this->context->getUserData()->id;
                 })
             )
             ->willReturn(true);
@@ -431,7 +429,7 @@ class AuthTokenTest extends UnitaryTestCase
                            && $current->getToken() === $authToken->getToken()
                            && $current->getVault() !== $authToken->getVault()
                            && $current->getHash() !== $authToken->getHash()
-                           && $current->getCreatedBy() === $this->context->getUserData()->getId();
+                           && $current->getCreatedBy() === $this->context->getUserData()->id;
                 })
             )
             ->willReturn(true);
@@ -453,11 +451,6 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authToken->update($authToken);
     }
 
-    /**
-     * @throws ConstraintException
-     * @throws SPException
-     * @throws QueryException
-     */
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -475,11 +468,6 @@ class AuthTokenTest extends UnitaryTestCase
         $this->assertEquals($authToken, $out);
     }
 
-    /**
-     * @throws ConstraintException
-     * @throws SPException
-     * @throws QueryException
-     */
     public function testGetAll()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
@@ -599,7 +587,7 @@ class AuthTokenTest extends UnitaryTestCase
                            && $current->getVault() === $authToken->getVault()
                            && $current->getToken() !== $authToken->getToken()
                            && $current->getHash() === null
-                           && $current->getCreatedBy() === $this->context->getUserData()->getId();
+                           && $current->getCreatedBy() === $this->context->getUserData()->id;
                 })
             )
             ->willReturn(true);

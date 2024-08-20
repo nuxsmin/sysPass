@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -114,13 +115,13 @@ class CsvImportTest extends UnitaryTestCase
             ->method('create')
             ->with(
                 new Callback(static function (AccountCreateDto $dto) {
-                    return $dto->getName() === 'Account_name'
-                           && $dto->getLogin() === 'a_login'
-                           && $dto->getClientId() === 100
-                           && $dto->getCategoryId() === 200
-                           && $dto->getPass() === 'a_password'
-                           && $dto->getNotes() === 'a_note'
-                           && $dto->getUrl() === 'a_url';
+                    return $dto->name === 'Account_name'
+                           && $dto->login === 'a_login'
+                           && $dto->clientId === 100
+                           && $dto->categoryId === 200
+                           && $dto->pass === 'a_password'
+                           && $dto->notes === 'a_note'
+                           && $dto->url === 'a_url';
                 })
             );
 
@@ -239,13 +240,13 @@ class CsvImportTest extends UnitaryTestCase
             ->method('create')
             ->with(
                 new Callback(static function (AccountCreateDto $dto) {
-                    return $dto->getName() === 'Account_name'
-                           && $dto->getLogin() === 'a_login'
-                           && $dto->getClientId() === 100
-                           && $dto->getCategoryId() === 200
-                           && $dto->getPass() === 'a_password'
-                           && $dto->getNotes() === 'a_note'
-                           && $dto->getUrl() === 'a_url';
+                    return $dto->name === 'Account_name'
+                           && $dto->login === 'a_login'
+                           && $dto->clientId === 100
+                           && $dto->categoryId === 200
+                           && $dto->pass === 'a_password'
+                           && $dto->notes === 'a_note'
+                           && $dto->url === 'a_url';
                 })
             );
 
@@ -295,13 +296,13 @@ class CsvImportTest extends UnitaryTestCase
             ->method('create')
             ->with(
                 new Callback(static function (AccountCreateDto $dto) {
-                    return $dto->getName() === 'Account_name'
-                           && $dto->getLogin() === 'a_login'
-                           && $dto->getClientId() === 100
-                           && $dto->getCategoryId() === 200
-                           && $dto->getPass() === 'a_password'
-                           && $dto->getNotes() === 'a_note'
-                           && $dto->getUrl() === 'a_url';
+                    return $dto->name === 'Account_name'
+                           && $dto->login === 'a_login'
+                           && $dto->clientId === 100
+                           && $dto->categoryId === 200
+                           && $dto->pass === 'a_password'
+                           && $dto->notes === 'a_note'
+                           && $dto->url === 'a_url';
                 })
             );
 

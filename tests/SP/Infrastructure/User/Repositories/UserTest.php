@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -40,7 +41,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseInterface;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
@@ -598,11 +599,12 @@ class UserTest extends UnitaryTestCase
     /**
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
     public function testSearchWithAdmin()
     {
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(

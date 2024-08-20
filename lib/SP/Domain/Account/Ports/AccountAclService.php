@@ -29,7 +29,7 @@ use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 
 /**
@@ -42,12 +42,12 @@ interface AccountAclService
     /**
      * Sets grants which don't need the account's data
      *
-     * @param UserDataDto $userData
+     * @param UserDto $userData
      * @param ProfileData $profileData
      *
      * @return bool
      */
-    public static function getShowPermission(UserDataDto $userData, ProfileData $profileData): bool;
+    public static function getShowPermission(UserDto $userData, ProfileData $profileData): bool;
 
     /**
      * Obtener la ACL de una cuenta

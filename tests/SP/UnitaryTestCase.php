@@ -61,7 +61,7 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User;
 use SP\Tests\Generators\ConfigDataGenerator;
@@ -154,12 +154,12 @@ abstract class UnitaryTestCase extends TestCase
     }
 
     /**
-     * @return UserDataDto
+     * @return UserDto
      * @throws SPException
      */
-    private function buildUserDataDto(): UserDataDto
+    private function buildUserDataDto(): UserDto
     {
-        return new UserDataDto(
+        return UserDto::fromModel(
             new User(
                 [
                     'login' => self::$faker->userName,

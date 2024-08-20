@@ -58,7 +58,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -248,35 +248,35 @@ final class Account extends Service implements AccountService
     }
 
     /**
-     * @param UserDataDto $userData
+     * @param UserDto $userData
      * @param ProfileData $userProfile
      * @param AccountModel $account
      *
      * @return bool
      */
     protected function userCanChangeOwner(
-        UserDataDto $userData,
+        UserDto $userData,
         ProfileData  $userProfile,
         AccountModel $account
     ): bool {
-        return $userData->getIsAdminApp() || $userData->getIsAdminAcc()
-               || ($userProfile->isAccPermission() && $userData->getId() === $account->getUserId());
+        return $userData->isAdminApp || $userData->isAdminAcc
+               || ($userProfile->isAccPermission() && $userData->id === $account->getUserId());
     }
 
     /**
-     * @param UserDataDto $userData
+     * @param UserDto $userDto
      * @param ProfileData $userProfile
      * @param AccountModel $account
      *
      * @return bool
      */
     protected function userCanChangeGroup(
-        UserDataDto $userData,
+        UserDto $userDto,
         ProfileData  $userProfile,
         AccountModel $account
     ): bool {
-        return $this->userCanChangeOwner($userData, $userProfile, $account)
-               || ($userProfile->isAccPermission() && $userData->getUserGroupId() === $account->getUserGroupId());
+        return $this->userCanChangeOwner($userDto, $userProfile, $account)
+               || ($userProfile->isAccPermission() && $userDto->userGroupId === $account->getUserGroupId());
     }
 
     /**
@@ -318,7 +318,7 @@ final class Account extends Service implements AccountService
                 }
 
                 $accountCreateDto = $accountCreateDto->withEncryptedPassword(
-                    $this->accountCryptService->getPasswordEncrypted($accountCreateDto->getPass())
+                    $this->accountCryptService->getPasswordEncrypted($accountCreateDto->pass)
                 );
 
                 $accountCreateDto = $this->setPresetPrivate($accountCreateDto);
@@ -336,16 +336,17 @@ final class Account extends Service implements AccountService
     }
 
     /**
-     * @param UserDataDto $userData
+     * @param UserDto $userData
      * @param AccountCreateDto $accountCreateDto
      *
      * @return AccountCreateDto
+     * @throws SPException
      */
     private static function buildWithUserData(
-        UserDataDto $userData,
+        UserDto $userData,
         AccountCreateDto $accountCreateDto
     ): AccountCreateDto {
-        return $accountCreateDto->withUserGroupId($userData->getUserGroupId())->withUserId($userData->getId());
+        return $accountCreateDto->withUserGroupId($userData->userGroupId)->withUserId($userData->id);
     }
 
     /**
@@ -359,7 +360,7 @@ final class Account extends Service implements AccountService
         AccountCreateDto|AccountUpdateDto $accountDto,
         ?int $accountId = null
     ): AccountCreateDto|AccountUpdateDto {
-        $userData = $this->context->getUserData();
+        $userDto = $this->context->getUserData();
         $itemPreset = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE);
 
         if ($itemPreset !== null && $itemPreset->getFixed()) {
@@ -371,9 +372,9 @@ final class Account extends Service implements AccountService
                     $accountDto->withUserId($account->getUserId())->withUserGroupId($account->getUserGroupId());
             }
 
-            $privateUser = $userData->getId() === $accountDto->getUserId()
+            $privateUser = $userDto->id === $accountDto->userId
                            && $accountPrivate->isPrivateUser();
-            $privateGroup = $userData->getUserGroupId() === $accountDto->getUserGroupId()
+            $privateGroup = $userDto->userGroupId === $accountDto->userGroupId
                             && $accountPrivate->isPrivateGroup();
 
             return $accountDto->withPrivate($privateUser)->withPrivateGroup($privateGroup);
@@ -440,7 +441,7 @@ final class Account extends Service implements AccountService
             function () use ($id, $accountUpdateDto) {
                 $this->addHistory($id);
 
-                $encryptedPassword = $this->accountCryptService->getPasswordEncrypted($accountUpdateDto->getPass());
+                $encryptedPassword = $this->accountCryptService->getPasswordEncrypted($accountUpdateDto->pass);
 
                 $this->accountRepository->editPassword(
                     $id,
@@ -472,19 +473,19 @@ final class Account extends Service implements AccountService
     }
 
     /**
-     * @param AccountHistoryDto $accountHistoryDto
+     * @param AccountHistoryDto $dto
      *
      * @throws ServiceException
      */
-    public function restoreModified(AccountHistoryDto $accountHistoryDto): void
+    public function restoreModified(AccountHistoryDto $dto): void
     {
         $this->accountRepository->transactionAware(
-            function () use ($accountHistoryDto) {
-                $this->addHistory($accountHistoryDto->getAccountId());
+            function () use ($dto) {
+                $this->addHistory($dto->accountId);
 
                 $result = $this->accountRepository->restoreModified(
-                    $accountHistoryDto->getAccountId(),
-                    AccountModel::restoreModified($accountHistoryDto, $this->context->getUserData()->getId())
+                    $dto->accountId,
+                    AccountModel::restoreModified($dto, $this->context->getUserData()->id)
                 );
 
                 if ($result->getAffectedNumRows() === 0) {
@@ -506,7 +507,7 @@ final class Account extends Service implements AccountService
     public function restoreRemoved(AccountHistoryDto $accountHistoryDto): void
     {
         $result = $this->accountRepository->createRemoved(
-            AccountModel::restoreRemoved($accountHistoryDto, $this->context->getUserData()->getId())
+            AccountModel::restoreRemoved($accountHistoryDto, $this->context->getUserData()->id)
         );
 
         if ($result->getAffectedNumRows() === 0) {

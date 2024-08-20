@@ -123,8 +123,8 @@ final class MailEvent extends Service implements EventReceiver
                 $mailMessage->addDescription(
                     sprintf(
                         __('Performed by: %s (%s)'),
-                        $userData->getName() ?? 'sysPass',
-                        $userData->getLogin() ?? 'APP'
+                        $userData->name ?? 'sysPass',
+                        $userData->login ?? 'APP'
                     )
                 );
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -238,14 +239,14 @@ final class Notification extends Service implements NotificationService
     {
         $userData = $this->context->getUserData();
 
-        if ($userData->getIsAdminApp()) {
+        if ($userData->isAdminApp) {
             return $this->notificationRepository
-                ->getAllActiveForAdmin($userData->getId())
+                ->getAllActiveForAdmin($userData->id)
                 ->getDataAsArray(NotificationModel::class);
         }
 
         return $this->notificationRepository
-            ->getAllActiveForUserId($userData->getId())
+            ->getAllActiveForUserId($userData->id)
             ->getDataAsArray(NotificationModel::class);
     }
 
@@ -259,13 +260,13 @@ final class Notification extends Service implements NotificationService
     {
         $userData = $this->context->getUserData();
 
-        if ($userData->getIsAdminApp()) {
+        if ($userData->isAdminApp) {
             return $this->notificationRepository
-                ->searchForAdmin($itemSearchData, $userData->getId());
+                ->searchForAdmin($itemSearchData, $userData->id);
         }
 
         return $this->notificationRepository
-            ->searchForUserId($itemSearchData, $userData->getId());
+            ->searchForUserId($itemSearchData, $userData->id);
     }
 
     /**

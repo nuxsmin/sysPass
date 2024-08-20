@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -132,13 +133,13 @@ final class ItemPreset extends Service implements ItemPresetService
      */
     public function getForCurrentUser(string $type): ?ItemPresetModel
     {
-        $userData = $this->context->getUserData();
+        $userDto = $this->context->getUserData();
 
         return $this->getForUser(
             $type,
-            $userData->getId(),
-            $userData->getUserGroupId(),
-            $userData->getUserProfileId()
+            $userDto->id,
+            $userDto->userGroupId,
+            $userDto->userProfileId
         );
     }
 

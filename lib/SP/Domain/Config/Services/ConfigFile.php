@@ -176,7 +176,7 @@ class ConfigFile implements ConfigFileService
         ConfigDataInterface $configData,
         ?bool               $commit = true
     ): ConfigFileService {
-        $configSaver = $this->context->getUserData()->getLogin() ?: AppInfoInterface::APP_NAME;
+        $configSaver = $this->context->getUserData()->login ?: AppInfoInterface::APP_NAME;
 
         $configData->setConfigDate(time());
         $configData->setConfigSaver($configSaver);

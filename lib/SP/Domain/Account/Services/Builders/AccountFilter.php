@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -33,7 +34,7 @@ use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\Context;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 
 /**
@@ -86,27 +87,27 @@ final readonly class AccountFilter implements AccountFilterBuilder
         );
 
         $query->bindValues([
-                               'userId' => $userData->getId(),
-                               'userGroupId' => $userData->getUserGroupId(),
+                               'userId' => $userData->id,
+                               'userGroupId' => $userData->userGroupId,
                            ]);
 
         return $query;
     }
 
     /**
-     * @param UserDataDto $userData
+     * @param UserDto $userData
      * @param bool $useGlobalSearch
      * @param ProfileData|null $userProfile
      *
      * @return bool
      */
     private function isFilterWithoutGlobalSearch(
-        UserDataDto $userData,
+        UserDto $userData,
         bool         $useGlobalSearch,
         ?ProfileData $userProfile
     ): bool {
-        return !$userData->getIsAdminApp()
-               && !$userData->getIsAdminAcc()
+        return !$userData->isAdminApp
+               && !$userData->isAdminAcc
                && !($this->configData->isGlobalSearch() && $useGlobalSearch && $userProfile->isAccGlobalSearch());
     }
 
@@ -147,8 +148,8 @@ final readonly class AccountFilter implements AccountFilterBuilder
         );
 
         $query->bindValues([
-                               'userId' => $userData->getId(),
-                               'userGroupId' => $userData->getUserGroupId(),
+                               'userId' => $userData->id,
+                               'userGroupId' => $userData->userGroupId,
                            ]);
 
         return $query;

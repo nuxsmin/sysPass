@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -52,20 +53,19 @@ trait AccountUseCases
      */
     private static function buildCommon(AccountDto $accountDto, Account $account): void
     {
-        $account->userId = $accountDto->getUserId();
-        $account->userGroupId = $accountDto->getUserGroupId();
-        $account->userGroupId = $accountDto->getUserGroupId();
-        $account->name = $accountDto->getName();
-        $account->clientId = $accountDto->getClientId();
-        $account->login = $accountDto->getLogin();
-        $account->url = $accountDto->getUrl();
-        $account->notes = $accountDto->getNotes();
-        $account->isPrivate = (int)$accountDto->getIsPrivate();
-        $account->isPrivateGroup = (int)$accountDto->getIsPrivateGroup();
-        $account->passDateChange = $accountDto->getPassDateChange();
-        $account->parentId = $accountDto->getParentId();
-        $account->otherUserEdit = (int)$accountDto->getOtherUserEdit();
-        $account->otherUserGroupEdit = (int)$accountDto->getOtherUserGroupEdit();
+        $account->userId = $accountDto->userId;
+        $account->userGroupId = $accountDto->userGroupId;
+        $account->name = $accountDto->name;
+        $account->clientId = $accountDto->clientId;
+        $account->login = $accountDto->login;
+        $account->url = $accountDto->url;
+        $account->notes = $accountDto->notes;
+        $account->isPrivate = (int)$accountDto->isPrivate;
+        $account->isPrivateGroup = (int)$accountDto->isPrivateGroup;
+        $account->passDateChange = $accountDto->passDateChange;
+        $account->parentId = $accountDto->parentId;
+        $account->otherUserEdit = (int)$accountDto->otherUserEdit;
+        $account->otherUserGroupEdit = (int)$accountDto->otherUserGroupEdit;
     }
 
     public static function update(AccountUpdateDto $accountUpdateDto): Account
@@ -79,11 +79,11 @@ trait AccountUseCases
     public static function updatePassword(AccountUpdateDto $accountUpdateDto): Account
     {
         $account = new Account();
-        $account->pass = $accountUpdateDto->getPass();
-        $account->key = $accountUpdateDto->getKey();
+        $account->pass = $accountUpdateDto->pass;
+        $account->key = $accountUpdateDto->key;
         $account->passDate = time();
-        $account->userEditId = $accountUpdateDto->getUserEditId();
-        $account->passDateChange = $accountUpdateDto->getPassDateChange();
+        $account->userEditId = $accountUpdateDto->userEditId;
+        $account->passDateChange = $accountUpdateDto->passDateChange;
 
         return $account;
     }
@@ -91,14 +91,14 @@ trait AccountUseCases
     public static function restoreRemoved(AccountHistoryDto $accountHistoryDto, int $userEditId): Account
     {
         $account = new Account();
-        $account->pass = $accountHistoryDto->getPass();
-        $account->key = $accountHistoryDto->getKey();
+        $account->pass = $accountHistoryDto->pass;
+        $account->key = $accountHistoryDto->key;
         $account->userEditId = $userEditId;
-        $account->passDate = $accountHistoryDto->getPassDate();
-        $account->dateAdd = $accountHistoryDto->getDateAdd();
-        $account->dateEdit = $accountHistoryDto->getDateEdit();
-        $account->countView = $accountHistoryDto->getCountView();
-        $account->countDecrypt = $accountHistoryDto->getCountDecrypt();
+        $account->passDate = $accountHistoryDto->passDate;
+        $account->dateAdd = $accountHistoryDto->dateAdd;
+        $account->dateEdit = $accountHistoryDto->dateEdit;
+        $account->countView = $accountHistoryDto->countView;
+        $account->countDecrypt = $accountHistoryDto->countDecrypt;
 
         self::buildCommon($accountHistoryDto, $account);
 
@@ -108,8 +108,8 @@ trait AccountUseCases
     public static function restoreModified(AccountHistoryDto $accountHistoryDto, int $userEditId): Account
     {
         $account = new Account();
-        $account->pass = $accountHistoryDto->getPass();
-        $account->key = $accountHistoryDto->getKey();
+        $account->pass = $accountHistoryDto->pass;
+        $account->key = $accountHistoryDto->key;
         $account->userEditId = $userEditId;
 
         self::buildCommon($accountHistoryDto, $account);

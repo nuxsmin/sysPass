@@ -200,7 +200,7 @@ class AccountSearchTest extends UnitaryTestCase
                 $this->accountSearchRepository
                     ->expects(self::once())
                     ->method('withFilterForIsPrivate')
-                    ->with($this->context->getUserData()->getId(), $this->context->getUserData()->getUserGroupId());
+                    ->with($this->context->getUserData()->id, $this->context->getUserData()->userGroupId);
                 break;
             case AccountSearchConstants::FILTER_NOT_PRIVATE:
                 $this->accountSearchRepository

@@ -179,7 +179,7 @@ final class XmlExport extends Service implements XmlExportService
     private function appendMeta(): void
     {
         try {
-            $userData = $this->context->getUserData();
+            $userDto = $this->context->getUserData();
 
             $nodeMeta = $this->document->createElement('Meta');
             $nodeMeta->append(
@@ -188,11 +188,11 @@ final class XmlExport extends Service implements XmlExportService
                 $this->document->createElement('Time', (string)time()),
                 $this->document->createElement(
                     'User',
-                    $this->document->createTextNode($userData->getLogin())->nodeValue
+                    $this->document->createTextNode($userDto->login)->nodeValue
                 ),
                 $this->document->createElement(
                     'Group',
-                    $this->document->createTextNode($userData->getUserGroupName())->nodeValue
+                    $this->document->createTextNode($userDto->userGroupName)->nodeValue
                 )
             );
 

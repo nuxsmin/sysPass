@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -36,7 +37,7 @@ use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Services\UserMasterPassStatus;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -61,17 +62,17 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
     /**
      * @inheritDoc
      */
-    public function loadMasterPass(UserLoginDto $userLoginDto, UserDataDto $userDataDto): void
+    public function loadMasterPass(UserLoginDto $userLoginDto, UserDto $userDto): void
     {
         $masterPass = $this->request->analyzeEncrypted('mpass');
         $oldPass = $this->request->analyzeEncrypted('oldpass');
 
         if ($masterPass) {
-            $this->loadTemporary($masterPass, $userLoginDto, $userDataDto->getId());
+            $this->loadTemporary($masterPass, $userLoginDto, $userDto->id);
         } elseif ($oldPass) {
-            $this->loadUsingOld($oldPass, $userLoginDto, $userDataDto);
+            $this->loadUsingOld($oldPass, $userLoginDto, $userDto);
         } else {
-            $this->loadCurrent($userLoginDto, $userDataDto);
+            $this->loadCurrent($userLoginDto, $userDto);
         }
     }
 
@@ -128,7 +129,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
      * @throws AuthException
      * @throws ServiceException
      */
-    private function loadUsingOld(string $oldPass, UserLoginDto $userLoginDto, UserDataDto $userDataDto): void
+    private function loadUsingOld(string $oldPass, UserLoginDto $userLoginDto, UserDto $userDataDto): void
     {
         $userMasterPassDto = $this->userMasterPassService->updateFromOldPass($oldPass, $userLoginDto, $userDataDto);
 
@@ -153,7 +154,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
      * @throws AuthException
      * @throws ServiceException
      */
-    private function loadCurrent(UserLoginDto $userLoginDto, UserDataDto $userDataDto): void
+    private function loadCurrent(UserLoginDto $userLoginDto, UserDto $userDataDto): void
     {
         switch ($this->userMasterPassService->load($userLoginDto, $userDataDto)->getUserMasterPassStatus()) {
             case UserMasterPassStatus::CheckOld:

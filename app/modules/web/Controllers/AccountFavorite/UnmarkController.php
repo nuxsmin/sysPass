@@ -51,7 +51,7 @@ final class UnmarkController extends AccountFavoriteBase
     public function unmarkAction(int $accountId): bool
     {
         try {
-            $this->accountToFavoriteService->delete($accountId, $this->session->getUserData()->getId());
+            $this->accountToFavoriteService->delete($accountId, $this->session->getUserData()->id);
 
             return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Favorite deleted'));
         } catch (Exception $e) {

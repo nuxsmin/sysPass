@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,8 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Ports;
 
-use SP\Domain\Account\Models\File;
-use SP\Domain\Account\Models\FileExtData;
+use SP\Domain\Account\Dtos\FileDto;
+use SP\Domain\Account\Models\File as FileModel;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -49,18 +50,17 @@ interface AccountFileService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(File $itemData): int;
+    public function create(FileModel $itemData): int;
 
     /**
      * Returns the item for given id
      *
      * @param int $id
      *
-     * @return FileExtData|null
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getById(int $id): ?FileExtData;
+    public function getById(int $id): FileDto;
 
     /**
      * Deletes all the items for given ids
@@ -93,7 +93,7 @@ interface AccountFileService
     /**
      * Returns the item for given id
      *
-     * @return File[]
+     * @return FileModel[]
      * @throws ConstraintException
      * @throws QueryException
      */

@@ -31,7 +31,6 @@ use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Modules\Cli\Commands\Crypt\UpdateMasterPasswordCommand;
 use SP\Tests\DatabaseTrait;
 use SP\Tests\Modules\Cli\CliTestCase;
-use SP\Tests\Services\Account\AccountCryptServiceTest;
 
 use function SP\Tests\recreateDir;
 
@@ -51,8 +50,8 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @var string[]
      */
     protected static array $commandInputData = [
-        '--currentMasterPassword' => AccountCryptServiceTest::CURRENT_MASTERPASS,
-        '--masterPassword' => AccountCryptServiceTest::NEW_MASTERPASS
+        '--currentMasterPassword' => 'a_pass',
+        '--masterPassword' => 'a_new_pass'
     ];
 
     /**

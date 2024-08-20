@@ -121,10 +121,10 @@ final class CsvImport extends ImportBase implements ItemsImportService
                 $categoryId = $this->addCategory(new Category(['name' => $categoryName]));
 
                 $accountCreateDto = new AccountCreateDto(
-                    name:       $accountName,
-                    login:      $login,
                     clientId:   $clientId,
                     categoryId: $categoryId,
+                    name:       $accountName,
+                    login:      $login,
                     pass:       $password,
                     url:        $url,
                     notes:      $notes

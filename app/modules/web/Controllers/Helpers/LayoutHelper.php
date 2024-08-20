@@ -178,7 +178,7 @@ final class LayoutHelper extends HelperBase
             $this->view->append('jsLinks', $jsUriTheme->getUriSigned($this->configData->getPasswordSalt()));
         }
 
-        $userPreferences = $this->context->getUserData()->getPreferences();
+        $userPreferences = $this->context->getUserData()->preferences;
 
         if ($this->loggedIn
             && $userPreferences
@@ -237,20 +237,20 @@ final class LayoutHelper extends HelperBase
     {
         $userType = null;
 
-        $userData = $this->context->getUserData();
+        $userDto = $this->context->getUserData();
         $icons = $this->theme->getIcons();
 
-        if ($userData->getIsAdminApp()) {
+        if ($userDto->isAdminApp) {
             $userType = $icons->appAdmin();
-        } elseif ($userData->getIsAdminAcc()) {
+        } elseif ($userDto->isAdminAcc) {
             $userType = $icons->accAdmin();
         }
 
         $this->view->assign('ctx_userType', $userType);
-        $this->view->assign('ctx_userLogin', mb_strtoupper($userData->getLogin()));
-        $this->view->assign('ctx_userName', $userData->getName() ?: mb_strtoupper($userData->getLogin()));
-        $this->view->assign('ctx_userGroup', $userData->getUserGroupName());
-        $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $userData->getIsLdap()));
+        $this->view->assign('ctx_userLogin', mb_strtoupper($userDto->login));
+        $this->view->assign('ctx_userName', $userDto->name ?: mb_strtoupper($userDto->login));
+        $this->view->assign('ctx_userGroup', $userDto->userGroupName);
+        $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $userDto->isLdap));
     }
 
     /**

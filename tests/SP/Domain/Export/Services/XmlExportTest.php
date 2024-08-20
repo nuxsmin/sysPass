@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -42,6 +43,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Export\Ports\XmlAccountExportService;
 use SP\Domain\Export\Ports\XmlCategoryExportService;
@@ -49,7 +51,7 @@ use SP\Domain\Export\Ports\XmlClientExportService;
 use SP\Domain\Export\Ports\XmlTagExportService;
 use SP\Domain\Export\Services\XmlExport;
 use SP\Domain\File\Ports\DirectoryHandlerService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -78,17 +80,18 @@ class XmlExportTest extends UnitaryTestCase
      * @throws CheckException
      * @throws EnvironmentIsBrokenException
      * @throws DOMException
+     * @throws SPException
      */
     public function testExport()
     {
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
                                      [
                                          'login' => 'test_user',
-                                         'userGroup.name' => 'test_group',
+                                         'userGroupName' => 'test_group',
                                      ]
                                  )
             )
@@ -224,11 +227,12 @@ class XmlExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      * @throws ServiceException
+     * @throws SPException
      */
     public function testExportWithCheckDirectoryException()
     {
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
@@ -256,17 +260,18 @@ class XmlExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      * @throws ServiceException
+     * @throws SPException
      */
     public function testExportWithExportCategoryException()
     {
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
                                      [
                                          'login' => 'test_user',
-                                         'userGroup.name' => 'test_group',
+                                         'userGroupName' => 'test_group',
                                      ]
                                  )
             )
@@ -298,17 +303,18 @@ class XmlExportTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws DOMException
      * @throws EnvironmentIsBrokenException
+     * @throws SPException
      */
     public function testExportWithExportClientException()
     {
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
                                      [
                                          'login' => 'test_user',
-                                         'userGroup.name' => 'test_group',
+                                         'userGroupName' => 'test_group',
                                      ]
                                  )
             )
@@ -347,17 +353,18 @@ class XmlExportTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws DOMException
      * @throws EnvironmentIsBrokenException
+     * @throws SPException
      */
     public function testExportWithExportTagException()
     {
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
                                      [
                                          'login' => 'test_user',
-                                         'userGroup.name' => 'test_group',
+                                         'userGroupName' => 'test_group',
                                      ]
                                  )
             )
@@ -401,17 +408,18 @@ class XmlExportTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws DOMException
      * @throws EnvironmentIsBrokenException
+     * @throws SPException
      */
     public function testExportWithExportAccountException()
     {
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
                                      [
                                          'login' => 'test_user',
-                                         'userGroup.name' => 'test_group',
+                                         'userGroupName' => 'test_group',
                                      ]
                                  )
             )
@@ -459,17 +467,18 @@ class XmlExportTest extends UnitaryTestCase
      * @throws FileException
      * @throws CheckException
      * @throws DOMException
+     * @throws SPException
      */
     public function testExportWithCryptException()
     {
         $this->context->setUserData(
-            new UserDataDto(
+            UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
                                  ->mutate(
                                      [
                                          'login' => 'test_user',
-                                         'userGroup.name' => 'test_group',
+                                         'userGroupName' => 'test_group',
                                      ]
                                  )
             )
@@ -503,6 +512,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      * @throws ContextException
+     * @throws SPException
      */
     protected function setUp(): void
     {

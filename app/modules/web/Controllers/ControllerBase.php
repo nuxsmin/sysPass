@@ -42,7 +42,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
@@ -72,7 +72,7 @@ abstract class ControllerBase
     protected readonly TemplateInterface          $view;
     protected readonly LayoutHelper               $layoutHelper;
     protected readonly UriContextInterface        $uriContext;
-    protected ?UserDataDto                      $userData        = null;
+    protected ?UserDto                          $userDto         = null;
     protected ?ProfileData                      $userProfileData = null;
     protected readonly bool                     $isAjax;
     protected readonly string                   $actionName;
@@ -104,7 +104,7 @@ abstract class ControllerBase
         $loggedIn = $this->session->isLoggedIn();
 
         if ($loggedIn) {
-            $this->userData = clone $this->session->getUserData();
+            $this->userDto = clone $this->session->getUserData();
             $this->userProfileData = clone $this->session->getUserProfile();
         }
 
@@ -128,10 +128,10 @@ abstract class ControllerBase
         $this->view->assign('action', $this->actionName);
 
         if ($loggedIn) {
-            $this->view->assignWithScope('userId', $this->userData->getId(), 'ctx');
-            $this->view->assignWithScope('userGroupId', $this->userData->getUserGroupId(), 'ctx');
-            $this->view->assignWithScope('userIsAdminApp', $this->userData->getIsAdminApp(), 'ctx');
-            $this->view->assignWithScope('userIsAdminAcc', $this->userData->getIsAdminAcc(), 'ctx');
+            $this->view->assignWithScope('userId', $this->userDto->id, 'ctx');
+            $this->view->assignWithScope('userGroupId', $this->userDto->userGroupId, 'ctx');
+            $this->view->assignWithScope('userIsAdminApp', $this->userDto->isAdminApp, 'ctx');
+            $this->view->assignWithScope('userIsAdminAcc', $this->userDto->isAdminAcc, 'ctx');
         }
     }
 
@@ -185,8 +185,8 @@ abstract class ControllerBase
         if ($this->session->isLoggedIn()
             && $this->session->getAuthCompleted() === $requireAuthCompleted
             && $this->configData->isAuthBasicEnabled()
-            && $this->browser->checkServerAuthUser($this->userData->getLogin()) === false
-            && $this->browser->checkServerAuthUser($this->userData->getSsoLogin()) === false
+            && $this->browser->checkServerAuthUser($this->userDto->login) === false
+            && $this->browser->checkServerAuthUser($this->userDto->ssoLogin) === false
         ) {
             throw new AuthException('Invalid browser auth');
         }
@@ -220,6 +220,6 @@ abstract class ControllerBase
      */
     protected function checkAccess(int $action): bool
     {
-        return $this->userData->getIsAdminApp() || $this->acl->checkUserAccess($action);
+        return $this->userDto->isAdminApp || $this->acl->checkUserAccess($action);
     }
 }

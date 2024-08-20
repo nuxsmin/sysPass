@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -32,9 +33,10 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
 use SP\Core\UI\Theme;
 use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -48,7 +50,7 @@ class ThemeTest extends UnitaryTestCase
 
     private ThemeContextInterface|MockObject $themeContext;
     private ThemeIconsInterface|MockObject   $themeIcons;
-    private Theme                                               $theme;
+    private Theme $theme;
 
     public function testGetIcons()
     {
@@ -81,6 +83,7 @@ class ThemeTest extends UnitaryTestCase
 
     /**
      * @throws Exception
+     * @throws SPException
      */
     public function testGetThemeNameAuthenticated()
     {
@@ -89,18 +92,18 @@ class ThemeTest extends UnitaryTestCase
                 ->method('isLoggedIn')
                 ->willReturn(true);
 
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
 
         $context->expects(self::once())
                 ->method('getUserData')
-            ->willReturn($userDataDto);
+            ->willReturn($userDto);
 
         $configData = $this->config->getConfigData();
         $configData->setSiteTheme(self::$faker->colorName);
 
         $current = Theme::getThemeName($this->config->getConfigData(), $context);
 
-        $this->assertEquals($userDataDto->getPreferences()->getTheme(), $current);
+        $this->assertEquals($userDto->preferences->getTheme(), $current);
     }
 
     public function testGetViewsPath()

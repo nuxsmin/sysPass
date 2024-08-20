@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -61,14 +62,14 @@ abstract class ImportBase extends Service implements ImportService
     protected const ITEM_CLIENT           = 'client';
     protected const ITEM_TAG              = 'tag';
     protected const ITEM_MASTER_PASS_HASH = 'masterpasshash';
-    protected int $version = 0;
-    protected int $counter = 0;
-    protected readonly AccountService      $accountService;
-    protected readonly CategoryService     $categoryService;
-    protected readonly ClientService $clientService;
-    protected readonly TagService    $tagService;
-    protected readonly ConfigService $configService;
-    private array $cache;
+    protected int                      $version = 0;
+    protected int                      $counter = 0;
+    protected readonly AccountService  $accountService;
+    protected readonly CategoryService $categoryService;
+    protected readonly ClientService   $clientService;
+    protected readonly TagService      $tagService;
+    protected readonly ConfigService   $configService;
+    private array                      $cache;
 
     public function __construct(
         Application                       $application,
@@ -107,17 +108,16 @@ abstract class ImportBase extends Service implements ImportService
         ImportParamsDto  $importParams,
         bool             $useEncryption = false
     ): void {
-        if (empty($accountCreateDto->getCategoryId())) {
+        if (empty($accountCreateDto->categoryId)) {
             throw ImportException::error(__u('Category Id not set. Unable to import account.'));
         }
 
-        if (empty($accountCreateDto->getClientId())) {
+        if (empty($accountCreateDto->clientId)) {
             throw ImportException::error(__u('Client Id not set. Unable to import account.'));
         }
 
-        $dto = $accountCreateDto->setBatch(
-            ['userId', 'userGroupId'],
-            [$importParams->getDefaultUser(), $importParams->getDefaultGroup()]
+        $dto = $accountCreateDto->mutate(
+            ['userId' => $importParams->getDefaultUser(), 'userGroupId' => $importParams->getDefaultGroup()]
         );
 
         if ($useEncryption) {
@@ -130,12 +130,12 @@ abstract class ImportBase extends Service implements ImportService
             if ($hasValidHash === true && !empty($importParams->getMasterPassword())) {
                 if ($this->version >= 210) {
                     $pass = $this->crypt->decrypt(
-                        $accountCreateDto->getPass(),
-                        $accountCreateDto->getKey(),
+                        $accountCreateDto->pass,
+                        $accountCreateDto->key,
                         $importParams->getMasterPassword()
                     );
 
-                    $dto = $dto->setBatch(['pass', 'key'], [$pass, '']);
+                    $dto = $dto->mutate(['pass' => $pass, 'key' => '']);
                 } else {
                     throw ImportException::error(__u('The file was exported with an old sysPass version (<= 2.10).'));
                 }

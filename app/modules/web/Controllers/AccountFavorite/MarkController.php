@@ -51,7 +51,7 @@ final class MarkController extends AccountFavoriteBase
     public function markAction(int $accountId): bool
     {
         try {
-            $this->accountToFavoriteService->add($accountId, $this->session->getUserData()->getId());
+            $this->accountToFavoriteService->add($accountId, $this->session->getUserData()->id);
 
             return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Favorite added'));
         } catch (Exception $e) {

@@ -28,25 +28,20 @@ use SP\Core\Application;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountHistoryViewDto;
-use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountToUserGroupService;
 use SP\Domain\Account\Ports\AccountToUserService;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
-use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\User\Services\UpdatedMasterPassException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Mvc\View\TemplateInterface;
 
@@ -76,16 +71,13 @@ final class AccountHistoryHelper extends AccountHelperBase
     }
 
     /**
-     * @param AccountHistory $accountHistoryViewDto
+     * @param AccountHistoryViewDto $accountHistoryViewDto
      *
      * @throws AccountPermissionException
-     * @throws UnauthorizedPageException
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
-     * @throws ServiceException
-     * @throws UpdatedMasterPassException
-     * @throws NoSuchItemException
+     * @throws UnauthorizedActionException
      */
     public function setViewForAccount(AccountHistoryViewDto $accountHistoryViewDto): void
     {
@@ -93,7 +85,7 @@ final class AccountHistoryHelper extends AccountHelperBase
             throw new UnauthorizedActionException();
         }
 
-        $this->accountId = $accountHistoryViewDto->getAccountId();
+        $this->accountId = $accountHistoryViewDto->accountId;
 
         $this->checkAccess($accountHistoryViewDto);
 
@@ -108,30 +100,30 @@ final class AccountHistoryHelper extends AccountHelperBase
             'historyData',
             SelectItemAdapter::factory(
                 self::mapHistoryForDateSelect($this->accountHistoryService->getHistoryForAccount($this->accountId))
-            )->getItemsFromArraySelected([$accountHistoryViewDto->getId()])
+            )->getItemsFromArraySelected([$accountHistoryViewDto->id])
         );
 
-        $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryViewDto->getPassDate()));
+        $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryViewDto->passDate));
         $this->view->assign(
             'accountPassDateChange',
-            date('Y-m-d', $accountHistoryViewDto->getPassDateChange() ?: 0)
+            date('Y-m-d', $accountHistoryViewDto->passDateChange ?: 0)
         );
         $this->view->assign(
             'categories',
             SelectItemAdapter::factory($this->categoryService->getAll())
-                ->getItemsFromModelSelected([$accountHistoryViewDto->getCategoryId()])
+                ->getItemsFromModelSelected([$accountHistoryViewDto->categoryId])
         );
         $this->view->assign(
             'clients',
             SelectItemAdapter::factory($this->clientService->getAll())
-                ->getItemsFromModelSelected([$accountHistoryViewDto->getClientId()])
+                ->getItemsFromModelSelected([$accountHistoryViewDto->clientId])
         );
         $this->view->assign(
             'isModified',
-            strtotime($accountHistoryViewDto->getDateEdit()) !== false
+            strtotime($accountHistoryViewDto->dateEdit) !== false
         );
 
-        $accountActionsDto = new AccountActionsDto($this->accountId, $accountHistoryViewDto->getId(), 0);
+        $accountActionsDto = new AccountActionsDto($this->accountId, $accountHistoryViewDto->id, 0);
 
         $this->view->assign(
             'accountActions',
@@ -144,10 +136,6 @@ final class AccountHistoryHelper extends AccountHelperBase
     }
 
     /**
-     * Comprobar si el usuario dispone de acceso al módulo
-     *
-     * @param AccountHistoryViewDto $accountHistoryViewDto
-     *
      * @throws AccountPermissionException
      * @throws ConstraintException
      * @throws QueryException
@@ -157,11 +145,11 @@ final class AccountHistoryHelper extends AccountHelperBase
     {
         $acccountAclDto = new AccountAclDto(
             $this->accountId,
-            $accountHistoryViewDto->getUserId(),
+            $accountHistoryViewDto->userId,
             $this->accountToUserService->getUsersByAccountId($this->accountId),
-            $accountHistoryViewDto->getUserGroupId(),
+            $accountHistoryViewDto->userGroupId,
             $this->accountToUserGroupService->getUserGroupsByAccountId($this->accountId),
-            $accountHistoryViewDto->getDateEdit()
+            $accountHistoryViewDto->dateEdit
         );
 
         $this->accountPermission = $this->accountAclService->getAcl($this->actionId, $acccountAclDto, true);

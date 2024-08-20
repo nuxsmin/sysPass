@@ -55,7 +55,7 @@ class RequestAccessControllerTest extends IntegrationTestCase
      */
     public function testRequestAccessAction()
     {
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountView::class,
             new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
         );

@@ -28,14 +28,15 @@ namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Domain\Account\Dtos\FileDto;
 use SP\Domain\Account\Models\File;
-use SP\Domain\Account\Models\FileExtData;
 use SP\Domain\Account\Ports\AccountFileRepository;
 use SP\Domain\Account\Services\AccountFile;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidImageException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
@@ -100,9 +101,15 @@ class AccountFileTest extends UnitaryTestCase
         $this->accountFile->create($fileData);
     }
 
+    /**
+     * @throws NoSuchItemException
+     * @throws ConstraintException
+     * @throws SPException
+     * @throws QueryException
+     */
     public function testGetById(): void
     {
-        $fileData = FileExtData::buildFromSimpleModel(FileDataGenerator::factory()->buildFileExtData());
+        $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileExtData());
 
         $queryResult = new QueryResult([$fileData]);
 
@@ -114,7 +121,7 @@ class AccountFileTest extends UnitaryTestCase
 
         $out = $this->accountFile->getById($fileData->getId());
 
-        $this->assertEquals($fileData, $out);
+        $this->assertEquals(FileDto::fromModel($fileData), $out);
     }
 
     /**
@@ -200,7 +207,7 @@ class AccountFileTest extends UnitaryTestCase
     public function testSearch(): void
     {
         $files = array_map(
-            static fn() => FileExtData::buildFromSimpleModel(FileDataGenerator::factory()->buildFileExtData()),
+            static fn() => File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileExtData()),
             range(0, 4)
         );
         $itemSearchData = ItemSearchDataGenerator::factory()->buildItemSearchData();
@@ -219,6 +226,7 @@ class AccountFileTest extends UnitaryTestCase
     /**
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
     public function testGetByAccountId(): void
     {

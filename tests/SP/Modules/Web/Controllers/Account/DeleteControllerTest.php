@@ -56,7 +56,7 @@ class DeleteControllerTest extends IntegrationTestCase
      */
     public function testDeleteAction()
     {
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountView::class,
             new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
         );
@@ -78,7 +78,7 @@ class DeleteControllerTest extends IntegrationTestCase
 
         $container = $this->buildContainer(
             $definitions,
-            $this->buildRequest('get', 'index.php', ['r' => 'account/delete'])
+            $this->buildRequest('get', 'index.php', ['r' => 'account/delete/100'])
         );
 
         $this->runApp($container);

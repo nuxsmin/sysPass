@@ -99,33 +99,33 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             return false;
         }
 
-        $userData = $this->context->getUserData();
+        $userDto = $this->context->getUserData();
 
-        if ($userData->getIsAdminApp()) {
+        if ($userDto->isAdminApp) {
             return true;
         }
 
         switch ($actionId) {
             case self::ACCOUNT_VIEW:
-                return $userData->getIsAdminAcc() || $userProfile->isAccView() || $userProfile->isAccEdit();
+                return $userDto->isAdminAcc || $userProfile->isAccView() || $userProfile->isAccEdit();
             case self::ACCOUNT_VIEW_PASS:
-                return $userData->getIsAdminAcc() || $userProfile->isAccViewPass();
+                return $userDto->isAdminAcc || $userProfile->isAccViewPass();
             case self::ACCOUNT_HISTORY_VIEW:
-                return $userData->getIsAdminAcc() || $userProfile->isAccViewHistory();
+                return $userDto->isAdminAcc || $userProfile->isAccViewHistory();
             case self::ACCOUNT_EDIT:
-                return $userData->getIsAdminAcc() || $userProfile->isAccEdit();
+                return $userDto->isAdminAcc || $userProfile->isAccEdit();
             case self::ACCOUNT_EDIT_PASS:
-                return $userData->getIsAdminAcc() || $userProfile->isAccEditPass();
+                return $userDto->isAdminAcc || $userProfile->isAccEditPass();
             case self::ACCOUNT_CREATE:
-                return $userData->getIsAdminAcc() || $userProfile->isAccAdd();
+                return $userDto->isAdminAcc || $userProfile->isAccAdd();
             case self::ACCOUNT_COPY:
-                return $userData->getIsAdminAcc() || ($userProfile->isAccAdd() && $userProfile->isAccView());
+                return $userDto->isAdminAcc || ($userProfile->isAccAdd() && $userProfile->isAccView());
             case self::ACCOUNT_DELETE:
-                return $userData->getIsAdminAcc() || $userProfile->isAccDelete();
+                return $userDto->isAdminAcc || $userProfile->isAccDelete();
             case self::ACCOUNT_FILE:
-                return $userData->getIsAdminAcc() || $userProfile->isAccFiles();
+                return $userDto->isAdminAcc || $userProfile->isAccFiles();
             case self::ITEMS_MANAGE:
-                return $userData->getIsAdminAcc()
+                return $userDto->isAdminAcc
                        || $userProfile->isMgmCategories()
                        || $userProfile->isMgmCustomers()
                        || $userProfile->isMgmAccounts()
@@ -186,7 +186,7 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             case self::ACCOUNTMGR_SEARCH:
             case self::ACCOUNTMGR_HISTORY:
             case self::ACCOUNTMGR_HISTORY_SEARCH:
-            return $userData->getIsAdminAcc() || $userProfile->isMgmAccounts();
+            return $userDto->isAdminAcc || $userProfile->isMgmAccounts();
             case self::FILE:
             case self::FILE_SEARCH:
             case self::FILE_DELETE:
@@ -225,7 +225,7 @@ final readonly class Acl implements AclActionsInterface, AclInterface
                 return $userProfile->isMgmUsers();
             case self::USER_EDIT_PASS:
                 // Comprobar si el usuario es distinto al de la sesión
-                return $userId === $userData->getId() || $userProfile->isMgmUsers();
+                return $userId === $userDto->id || $userProfile->isMgmUsers();
             case self::GROUP:
             case self::GROUP_SEARCH:
             case self::GROUP_VIEW:
@@ -281,7 +281,7 @@ final readonly class Acl implements AclActionsInterface, AclInterface
                 EventMessage::factory()
                             ->addDescription(__u('Access denied'))
                             ->addDetail(__u('Action'), $actionName)
-                            ->addDetail(__u('User'), $userData->getLogin())
+                    ->addDetail(__u('User'), $userDto->login)
             )
         );
 

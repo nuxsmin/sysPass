@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Providers\Provider;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SplObjectStorage;
 
 use function SP\__u;
@@ -74,7 +74,7 @@ final class AuthProvider extends Provider implements AuthProviderService
     /**
      * @inheritDoc
      */
-    public function doAuth(UserLoginDto $userLoginData, callable $callback): ?UserDataDto
+    public function doAuth(UserLoginDto $userLoginData, callable $callback): ?UserDto
     {
         $this->auths->rewind();
 

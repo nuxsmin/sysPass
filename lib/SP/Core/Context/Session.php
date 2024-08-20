@@ -33,7 +33,7 @@ use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 
 use function SP\getLastCaller;
@@ -138,9 +138,9 @@ class Session extends ContextBase implements SessionContext
     /**
      * Establece los datos del usuario en la sesión.
      */
-    public function setUserData(?UserDataDto $userDataDto = null): void
+    public function setUserData(?UserDto $userDto = null): void
     {
-        $this->setContextKey('userData', $userDataDto);
+        $this->setContextKey('user', $userDto);
     }
 
     /**
@@ -179,15 +179,15 @@ class Session extends ContextBase implements SessionContext
      */
     public function isLoggedIn(): bool
     {
-        return $this->getUserData()->getLogin() && $this->getUserData()->getPreferences() !== null;
+        return $this->getUserData()->login && $this->getUserData()->preferences !== null;
     }
 
     /**
      * Devuelve los datos del usuario en la sesión.
      */
-    public function getUserData(): UserDataDto
+    public function getUserData(): UserDto
     {
-        return $this->getContextKey('userData', new UserDataDto());
+        return $this->getContextKey('user', new UserDto());
     }
 
     /**

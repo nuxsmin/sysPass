@@ -191,8 +191,8 @@ final class AccountHelper extends AccountHelperBase
         if ($this->configData->isPublinksEnabled() && $this->accountPermission->isShowLink()) {
             try {
                 $publicLinkData = $this->publicLinkService->getHashForItem($this->accountId);
-                $accountActionsDto->setPublicLinkId($publicLinkData->getId());
-                $accountActionsDto->setPublicLinkCreatorId($publicLinkData->getUserId());
+                $accountActionsDto->setPublicLinkId($publicLinkData['id']);
+                $accountActionsDto->setPublicLinkCreatorId($publicLinkData['userId']);
 
                 $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
                            $this->uriContext->getSubUri();
@@ -201,10 +201,10 @@ final class AccountHelper extends AccountHelperBase
                     'publicLinkUrl',
                     PublicLink::getLinkForHash(
                         $baseUrl,
-                        $publicLinkData->getHash()
+                        $publicLinkData['hash']
                     )
                 );
-                $this->view->assign('publicLinkId', $publicLinkData->getId());
+                $this->view->assign('publicLinkId', $publicLinkData['id']);
             } catch (NoSuchItemException $e) {
                 $this->view->assign('publicLinkId', 0);
                 $this->view->assign('publicLinkUrl', null);
@@ -221,15 +221,15 @@ final class AccountHelper extends AccountHelperBase
         $this->view->assign(
             'allowPrivate',
             ($userProfileData->isAccPrivate()
-             && $accountData->getUserId() === $userData->getId())
-            || $userData->getIsAdminApp()
+             && $accountData->getUserId() === $userData->id)
+            || $userData->isAdminApp
         );
 
         $this->view->assign(
             'allowPrivateGroup',
             ($userProfileData->isAccPrivateGroup()
-             && $accountData->getUserGroupId() === $userData->getUserGroupId())
-            || $userData->getIsAdminApp()
+             && $accountData->getUserGroupId() === $userData->userGroupId)
+            || $userData->isAdminApp
         );
 
         $this->view->assign(
@@ -382,8 +382,8 @@ final class AccountHelper extends AccountHelperBase
         $userData = $this->context->getUserData();
 
         $this->accountPermission->setShowPermission(
-            $userData->getIsAdminApp()
-            || $userData->getIsAdminAcc()
+            $userData->isAdminApp
+            || $userData->isAdminAcc
             || $userProfileData->isAccPermission()
         );
 
@@ -427,8 +427,8 @@ final class AccountHelper extends AccountHelperBase
         $this->view->assign('users', $selectUsers->getItemsFromModel());
         $this->view->assign('userGroups', $selectUserGroups->getItemsFromModel());
         $this->view->assign('tags', $selectTags->getItemsFromModel());
-        $this->view->assign('allowPrivate', $userProfileData->isAccPrivate() || $userData->getIsAdminApp());
-        $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup() || $userData->getIsAdminApp());
+        $this->view->assign('allowPrivate', $userProfileData->isAccPrivate() || $userData->isAdminApp);
+        $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup() || $userData->isAdminApp);
         $this->view->assign('privateUserCheck', $accountPrivate->isPrivateUser());
         $this->view->assign('privateUserGroupCheck', $accountPrivate->isPrivateGroup());
         $this->view->assign('accountId', 0);

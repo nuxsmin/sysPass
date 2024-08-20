@@ -59,7 +59,7 @@ class SaveCopyControllerTest extends IntegrationTestCase
     {
         $accountDataGenerator = AccountDataGenerator::factory();
 
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountView::class,
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );

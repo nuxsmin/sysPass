@@ -27,8 +27,12 @@ namespace SP\Modules\Web\Controllers\AccountFile;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class DeleteController
@@ -37,17 +41,18 @@ use SP\Mvc\Controller\ItemTrait;
  */
 final class DeleteController extends AccountFileBase
 {
-    use JsonTrait, ItemTrait;
+    use ItemTrait;
+    use JsonTrait;
 
     /**
      * Delete action
      *
-     * @param  int|null  $id
+     * @param int|null $id
      *
      * @return bool
-     * @throws \JsonException
+     * @throws SPException
      */
-    public function deleteAction(?int $id = null): bool
+    public function deleteAction(?int $id): bool
     {
         try {
             if ($id === null) {
@@ -71,7 +76,7 @@ final class DeleteController extends AccountFileBase
 
             $this->accountFileService->delete($id);
 
-            return $this->returnJsonResponse(0, __u('File Deleted'));
+            return $this->returnJsonResponse(0, __u('File deleted'));
         } catch (Exception $e) {
             processException($e);
 

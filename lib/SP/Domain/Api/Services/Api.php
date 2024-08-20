@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -47,7 +48,7 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
@@ -217,15 +218,13 @@ final class Api extends Service implements ApiService
      */
     private function setupUser(): void
     {
-        $userLoginResponse = new UserDataDto(
-            $this->userService->getById($this->authToken->getUserId())
-        );
-        $userLoginResponse->getIsDisabled() && $this->accessDenied();
+        $userDto = UserDto::fromModel($this->userService->getById($this->authToken->getUserId()));
+        $userDto->isDisabled && $this->accessDenied();
 
-        $this->context->setUserData($userLoginResponse);
+        $this->context->setUserData($userDto);
         $this->context->setUserProfile(
             $this->userProfileService
-                ->getById($userLoginResponse->getUserProfileId())
+                ->getById($userDto->userProfileId)
                 ->hydrate(ProfileData::class)
         );
     }

@@ -73,7 +73,7 @@ abstract class AccountHelperBase extends HelperBase
             throw UnauthorizedPageException::info($actionId);
         }
 
-        if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())
+        if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->lastUpdateMPass)
         ) {
             throw UpdatedMasterPassException::info(__u('The master password needs to be updated'));
         }

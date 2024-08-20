@@ -96,7 +96,7 @@ final class SaveRequestController extends AccountControllerBase
                                 ->addDescription(__u('Request'))
                                 ->addDetail(
                                     __u('Requester'),
-                                    sprintf('%s (%s)', $this->userData->getName(), $this->userData->getLogin())
+                                    sprintf('%s (%s)', $this->userDto->name, $this->userDto->login)
                                 )
                                 ->addDetail(__u('Account'), $accountView->getName())
                                 ->addDetail(__u('Client'), $accountView->getClientName())
@@ -106,7 +106,7 @@ final class SaveRequestController extends AccountControllerBase
                                     $deepLink->getUriSigned($this->configData->getPasswordSalt())
                                 )
                                 ->addExtra('accountId', $id)
-                                ->addExtra('whoId', $this->userData->getId())
+                                ->addExtra('whoId', $this->userDto->id)
                                 ->setExtra('userId', $usersId)
                                 ->setExtra(
                                     'email',

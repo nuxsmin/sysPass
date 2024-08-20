@@ -99,7 +99,7 @@ final class AccountSearchHelper extends HelperBase
     {
         $userData = $this->context->getUserData();
 
-        $this->view->assign('isAdmin', $userData->getIsAdminApp() || $userData->getIsAdminAcc());
+        $this->view->assign('isAdmin', $userData->isAdminApp || $userData->isAdminAcc);
 
         $profileData = $this->context->getUserProfile() ?? new ProfileData();
 
@@ -136,7 +136,7 @@ final class AccountSearchHelper extends HelperBase
             return $accountSearchFilter;
         }
 
-        $userPreferences = $this->context->getUserData()->getPreferences() ?? new UserPreferences();
+        $userPreferences = $this->context->getUserData()->preferences ?? new UserPreferences();
         $limitCount = $userPreferences->getResultsPerPage() > 0
             ? $userPreferences->getResultsPerPage()
             : $this->configData->getAccountCount();
@@ -207,7 +207,7 @@ final class AccountSearchHelper extends HelperBase
                            || $this->accountSearchFilter->isSearchFavorites()
                            || $this->accountSearchFilter->isSortViews());
 
-        $userPreferences = $this->context->getUserData()->getPreferences() ?? new UserPreferences();
+        $userPreferences = $this->context->getUserData()->preferences ?? new UserPreferences();
 
         AccountSearchItem::$accountLink = $userPreferences->isAccountLink();
         AccountSearchItem::$topNavbar = $userPreferences->isTopNavbar();
@@ -283,7 +283,7 @@ final class AccountSearchHelper extends HelperBase
         $gridPager->setFilterOn($this->filterOn);
         $gridPager->setSourceAction(new DataGridActionSearch(AclActionsInterface::ACCOUNT_SEARCH));
 
-        $userPreferences = $this->context->getUserData()->getPreferences() ?? new UserPreferences();
+        $userPreferences = $this->context->getUserData()->preferences ?? new UserPreferences();
         $showOptionalActions = $userPreferences->isOptionalActions()
                                || $userPreferences->isResultsAsCards()
                                || ($userPreferences->getUserId() === 0

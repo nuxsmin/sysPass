@@ -1,4 +1,6 @@
 <?php
+/** @noinspection PhpMultipleClassDeclarationsInspection */
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -22,8 +24,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/** @noinspection PhpMultipleClassDeclarationsInspection */
 
 namespace SP\Domain\Common\Attributes;
 

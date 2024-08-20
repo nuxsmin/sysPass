@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -28,7 +29,7 @@ namespace SP\Domain\Auth\Providers\Database;
 use Exception;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Auth\Dtos\UserLoginDto;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Ports\UserPassService;
 use SP\Domain\User\Ports\UserService;
 
@@ -60,19 +61,21 @@ final readonly class DatabaseAuth implements DatabaseAuthService
         return $authUser ? $authData->success() : $authData->fail();
     }
 
-    private function authUser(UserLoginDto $userLoginDto): UserDataDto|false
+    private function authUser(UserLoginDto $userLoginDto): UserDto|false
     {
         try {
-            $userDataDto = new UserDataDto($this->userService->getByLogin($userLoginDto->getLoginUser()));
+            $userDto = UserDto::fromModel(
+                $this->userService->getByLogin($userLoginDto->getLoginUser())
+            );
 
-            if ($userDataDto->getIsMigrate() && $this->checkMigrateUser($userDataDto, $userLoginDto)) {
-                $this->userPassService->migrateUserPassById($userDataDto->getId(), $userLoginDto->getLoginPass());
+            if ($userDto->isMigrate && $this->checkMigrateUser($userDto, $userLoginDto)) {
+                $this->userPassService->migrateUserPassById($userDto->id, $userLoginDto->getLoginPass());
 
-                return $userDataDto;
+                return $userDto;
             }
 
-            if (Hash::checkHashKey($userLoginDto->getLoginPass(), $userDataDto->getPass())) {
-                return $userDataDto;
+            if (Hash::checkHashKey($userLoginDto->getLoginPass(), $userDto->pass)) {
+                return $userDto;
             }
         } catch (Exception $e) {
             processException($e);
@@ -81,17 +84,17 @@ final readonly class DatabaseAuth implements DatabaseAuthService
         return false;
     }
 
-    private function checkMigrateUser(UserDataDto $userDataDto, UserLoginDto $userLoginDto): bool
+    private function checkMigrateUser(UserDto $userDto, UserLoginDto $userLoginDto): bool
     {
-        $passHashSha = sha1($userDataDto->getHashSalt() . $userLoginDto->getLoginPass());
+        $passHashSha = sha1($userDto->hashSalt . $userLoginDto->getLoginPass());
 
-        return ($userDataDto->getPass() === $passHashSha
-                || $userDataDto->getPass() === md5($userLoginDto->getLoginPass())
+        return ($userDto->pass === $passHashSha
+                || $userDto->pass === md5($userLoginDto->getLoginPass())
                 || hash_equals(
-                    $userDataDto->getPass(),
-                    crypt($userLoginDto->getLoginPass(), $userDataDto->getHashSalt())
+                    $userDto->pass,
+                    crypt($userLoginDto->getLoginPass(), $userDto->hashSalt)
                 )
-                || Hash::checkHashKey($userLoginDto->getLoginPass(), $userDataDto->getPass()));
+                || Hash::checkHashKey($userLoginDto->getLoginPass(), $userDto->pass));
     }
 
     /**

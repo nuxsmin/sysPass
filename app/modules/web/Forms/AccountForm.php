@@ -30,6 +30,7 @@ use SP\Domain\Account\Dtos\AccountDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Util\Chainable;
@@ -41,18 +42,15 @@ use function SP\__u;
  */
 final class AccountForm extends FormBase implements FormInterface
 {
-    private AccountPresetService $accountPresetService;
     private null|AccountCreateDto|AccountUpdateDto $accountDto = null;
 
     public function __construct(
-        Application          $application,
-        RequestService $request,
-        AccountPresetService $accountPresetService,
-        ?int                 $itemId = null
+        Application                           $application,
+        RequestService                        $request,
+        private readonly AccountPresetService $accountPresetService,
+        ?int                                  $itemId = null
     ) {
         parent::__construct($application, $request, $itemId);
-
-        $this->accountPresetService = $accountPresetService;
     }
 
     /**
@@ -71,39 +69,35 @@ final class AccountForm extends FormBase implements FormInterface
 
         $chain = new Chainable(fn() => $this->analyzeRequestData(), $this);
 
-        switch ($action) {
-            case AclActionsInterface::ACCOUNT_EDIT_PASS:
-                $this->accountDto = $chain->next(fn(AccountDto $dto) => $this->checkPassword($dto))
-                                          ->next(
-                                              fn(AccountDto $dto) => $this->accountPresetService->checkPasswordPreset(
-                                                  $dto
-                                              )
-                                          )
-                                          ->resolve();
-                break;
-            case AclActionsInterface::ACCOUNT_EDIT:
-                $this->accountDto = $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
-                                          ->next(fn(AccountDto $dto) => $this->checkCommon($dto))
-                                          ->resolve();
-                break;
-            case AclActionsInterface::ACCOUNT_CREATE:
-            case AclActionsInterface::ACCOUNT_COPY:
-                $this->accountDto = $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
-                                          ->next(fn(AccountDto $dto) => $this->checkCommon($dto))
-                                          ->next(fn(AccountDto $dto) => $this->checkPassword($dto))
-                                          ->next(
-                                              fn(AccountDto $dto) => $this->accountPresetService->checkPasswordPreset(
-                                                  $dto
-                                              )
-                                          )
-                                          ->resolve();
-                break;
-            case AclActionsInterface::ACCOUNTMGR_BULK_EDIT:
-                $this->accountDto = $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
-                                          ->next(fn(AccountDto $dto) => $this->analyzeBulkEdit($dto))
-                                          ->resolve();
-                break;
-        }
+        $this->accountDto = match ($action) {
+            AclActionsInterface::ACCOUNT_EDIT_PASS =>
+            $chain->next(fn(AccountDto $dto) => $this->checkPassword($dto))
+                  ->next(
+                      fn(AccountDto $dto) => $this->accountPresetService->checkPasswordPreset(
+                          $dto
+                      )
+                  )
+                  ->resolve(),
+            AclActionsInterface::ACCOUNT_EDIT =>
+            $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
+                  ->next(fn(AccountDto $dto) => $this->checkCommon($dto))
+                  ->resolve(),
+            AclActionsInterface::ACCOUNT_CREATE,
+            AclActionsInterface::ACCOUNT_COPY =>
+            $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
+                  ->next(fn(AccountDto $dto) => $this->checkCommon($dto))
+                  ->next(fn(AccountDto $dto) => $this->checkPassword($dto))
+                  ->next(
+                      fn(AccountDto $dto) => $this->accountPresetService->checkPasswordPreset(
+                          $dto
+                      )
+                  )
+                  ->resolve(),
+            AclActionsInterface::ACCOUNTMGR_BULK_EDIT =>
+            $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
+                  ->next(fn(AccountDto $dto) => $this->analyzeBulkEdit($dto))
+                  ->resolve()
+        };
 
         return $this;
     }
@@ -112,62 +106,29 @@ final class AccountForm extends FormBase implements FormInterface
      * Analizar los datos de la petición HTTP
      *
      * @return AccountCreateDto|AccountUpdateDto
+     * @throws SPException
      */
     private function analyzeRequestData(): AccountCreateDto|AccountUpdateDto
     {
-        $name = $this->request->analyzeString('name');
-        $login = $this->request->analyzeString('login');
-        $clientId = $this->request->analyzeInt('client_id');
-        $categoryId = $this->request->analyzeInt('category_id');
-        $password = $this->request->analyzeEncrypted('password');
-        $userId = $this->request->analyzeInt('owner_id');
-        $url = $this->request->analyzeString('url');
-        $notes = $this->request->analyzeUnsafeString('notes');
-        $private = (int)$this->request->analyzeBool('private_enabled', false);
-        $privateGroup = (int)$this->request->analyzeBool('private_group_enabled', false);
-        $passDateChange = $this->request->analyzeInt('password_date_expire_unix');
-        $parentId = $this->request->analyzeInt('parent_account_id');
-        $userGroupId = $this->request->analyzeInt('main_usergroup_id');
+        $properties = [
+            'name' => $this->request->analyzeString('name'),
+            'login' => $this->request->analyzeString('login'),
+            'clientId' => $this->request->analyzeInt('client_id'),
+            'categoryId' => $this->request->analyzeInt('category_id'),
+            'pass' => $this->request->analyzeEncrypted('password'),
+            'userId' => $this->request->analyzeInt('owner_id', $this->context->getUserData()->id),
+            'url' => $this->request->analyzeString('url'),
+            'notes' => $this->request->analyzeUnsafeString('notes'),
+            'private' => (int)$this->request->analyzeBool('private_enabled', false),
+            'privateGroup' => (int)$this->request->analyzeBool('private_group_enabled', false),
+            'passDateChange' => $this->request->analyzeInt('password_date_expire_unix'),
+            'parentId' => $this->request->analyzeInt('parent_account_id'),
+            'userGroupId' => $this->request->analyzeInt('main_usergroup_id'),
+        ];
 
-        if (null === $this->itemId) {
-            $accountDto = new AccountCreateDto(
-                $name,
-                $login,
-                $clientId,
-                $categoryId,
-                $password,
-                $userId,
-                null,
-                $url,
-                $notes,
-                $this->context->getUserData()->getId(),
-                $private,
-                $privateGroup,
-                $passDateChange,
-                $parentId,
-                $userGroupId
-            );
-        } else {
-            $accountDto = new AccountUpdateDto(
-                $name,
-                $login,
-                $clientId,
-                $categoryId,
-                $password,
-                $userId,
-                null,
-                $url,
-                $notes,
-                $this->context->getUserData()->getId(),
-                $private,
-                $privateGroup,
-                $passDateChange,
-                $parentId,
-                $userGroupId
-            );
-        }
-
-        return $accountDto;
+        return $this->itemId === null ? AccountCreateDto::fromArray($properties) : AccountUpdateDto::fromArray(
+            $properties
+        );
     }
 
     /**
@@ -175,21 +136,24 @@ final class AccountForm extends FormBase implements FormInterface
      */
     private function checkPassword(AccountDto $accountDto): AccountDto
     {
-        if ($accountDto->getParentId() > 0) {
+        if ($accountDto->parentId > 0) {
             return $accountDto;
         }
 
-        if (!$accountDto->getPass()) {
+        if (!$accountDto->pass) {
             throw new ValidationException(__u('A key is needed'));
         }
 
-        if ($this->request->analyzeEncrypted('password_repeat') !== $accountDto->getPass()) {
+        if ($this->request->analyzeEncrypted('password_repeat') !== $accountDto->pass) {
             throw new ValidationException(__u('Passwords do not match'));
         }
 
         return $accountDto;
     }
 
+    /**
+     * @throws SPException
+     */
     private function analyzeItems(AccountDto $accountDto): AccountDto
     {
         if ($this->request->analyzeInt('other_users_view_update') === 1) {
@@ -222,21 +186,24 @@ final class AccountForm extends FormBase implements FormInterface
      */
     private function checkCommon(AccountDto $accountDto): AccountDto
     {
-        if (!$accountDto->getName()) {
+        if (!$accountDto->name) {
             throw new ValidationException(__u('An account name needed'));
         }
 
-        if (!$accountDto->getClientId()) {
+        if (!$accountDto->clientId) {
             throw new ValidationException(__u('A client is needed'));
         }
 
-        if (!$accountDto->getCategoryId()) {
+        if (!$accountDto->categoryId) {
             throw new ValidationException(__u('A category is needed'));
         }
 
         return $accountDto;
     }
 
+    /**
+     * @throws SPException
+     */
     private function analyzeBulkEdit(AccountDto $accountDto): AccountDto
     {
         if ($this->request->analyzeBool('clear_permission_users_view', false)) {

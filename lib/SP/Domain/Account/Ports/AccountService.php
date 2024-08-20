@@ -181,12 +181,12 @@ interface AccountService
     public function updatePasswordMasterPass(int $id, EncryptedPassword $encryptedPassword): void;
 
     /**
-     * @param AccountHistoryDto $accountHistoryDto
+     * @param AccountHistoryDto $dto
      *
      * @throws ServiceException
      * @throws NoSuchItemException
      */
-    public function restoreModified(AccountHistoryDto $accountHistoryDto): void;
+    public function restoreModified(AccountHistoryDto $dto): void;
 
     /**
      * @param int $id The account ID

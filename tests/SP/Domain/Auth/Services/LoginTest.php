@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -50,12 +51,13 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Log\Ports\ProviderInterface;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
@@ -189,12 +191,15 @@ class LoginTest extends UnitaryTestCase
     }
 
     /**
+     * @param string|null $from
+     * @param string $redirect
      * @throws AuthException
+     * @throws SPException
      */
     #[DataProvider('fromDataProvider')]
     public function testDoLogin(?string $from, string $redirect)
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
 
         $this->request
             ->expects($this->once())
@@ -226,12 +231,12 @@ class LoginTest extends UnitaryTestCase
                            && $callable[1] === 'handleAuthResponse';
                 })
             )
-            ->willReturn($userDataDto);
+            ->willReturn($userDto);
 
         $this->loginUserService
             ->expects($this->once())
             ->method('checkUser')
-            ->with($userDataDto)
+            ->with($userDto)
             ->willReturn(new LoginResponseDto(LoginStatus::PASS));
 
         $this->loginMasterPassService
@@ -242,25 +247,25 @@ class LoginTest extends UnitaryTestCase
                     return $userLoginDto->getLoginUser() === 'a_user'
                            && $userLoginDto->getLoginPass() === 'a_password';
                 }),
-                $userDataDto
+                $userDto
             );
 
         $this->userService
             ->expects($this->once())
             ->method('updateLastLoginById')
-            ->with($userDataDto->getId());
+            ->with($userDto->id);
 
         $this->context
             ->expects($this->once())
             ->method('setUserData')
-            ->with($userDataDto);
+            ->with($userDto);
 
         $userProfile = UserProfileDataGenerator::factory()->buildUserProfileData();
 
         $this->userProfileService
             ->expects($this->once())
             ->method('getById')
-            ->with($userDataDto->getUserProfileId())
+            ->with($userDto->userProfileId)
             ->willReturn($userProfile);
 
         $this->context
@@ -312,13 +317,8 @@ class LoginTest extends UnitaryTestCase
         $this->login->doLogin();
     }
 
-    /**
-     * @throws AuthException
-     */
     public function testDoLoginWithNullUserData()
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
-
         $this->request
             ->expects($this->once())
             ->method('analyzeString')
@@ -359,11 +359,12 @@ class LoginTest extends UnitaryTestCase
 
     /**
      * @throws AuthException
+     * @throws SPException
      */
     #[DataProvider('loginStatusDataProvider')]
     public function testDoLoginWithCheckUserFail(LoginStatus $loginStatus)
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
+        $userDataDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
 
         $this->request
             ->expects($this->once())
@@ -413,8 +414,6 @@ class LoginTest extends UnitaryTestCase
      */
     public function testDoLoginWithServiceException()
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
-
         $this->request
             ->expects($this->once())
             ->method('analyzeString')
@@ -448,8 +447,6 @@ class LoginTest extends UnitaryTestCase
      */
     public function testDoLoginWithException()
     {
-        $userDataDto = new UserDataDto(UserDataGenerator::factory()->buildUserData());
-
         $this->request
             ->expects($this->once())
             ->method('analyzeString')
@@ -487,9 +484,10 @@ class LoginTest extends UnitaryTestCase
     }
 
     /**
-     * @throws Exception
      * @throws ContextException
+     * @throws Exception
      * @throws InvalidArgumentException
+     * @throws SPException
      */
     protected function setUp(): void
     {

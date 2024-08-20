@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Common\Models;
 
 use ArrayAccess;
+use Error;
 use JsonException;
 use JsonSerializable;
 use SP\Domain\Common\Adapters\Serde;
@@ -125,6 +126,26 @@ abstract class Model implements JsonSerializable, ArrayAccess
         return array_keys((new static())->toArray(null, $exclude));
     }
 
+    public function offsetExists(mixed $offset): bool
+    {
+        return array_key_exists($offset, $this->properties);
+    }
+
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->properties[$offset];
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        throw new Error('Cannot modify internal property');
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        throw new Error('Cannot unset internal property');
+    }
+
     /**
      * Create a new object with properties changed
      *
@@ -184,75 +205,16 @@ abstract class Model implements JsonSerializable, ArrayAccess
      */
     public function __get(string $name)
     {
-        $this->offsetGet($name);
+        return $this->{$name};
     }
 
     /**
-     * Set non-class properties
-     *
      * @param string $name
      * @param $value
-     *
      * @return void
      */
     public function __set(string $name, $value): void
     {
-        $this->offsetSet($name, $value);
-    }
-
-    /**
-     * Get non-class properties
-     *
-     * @param mixed $offset
-     *
-     * @return mixed
-     */
-    public function offsetGet(mixed $offset): mixed
-    {
-        return $this->properties[$offset];
-    }
-
-    /**
-     * Set non-class properties
-     *
-     * @param mixed $offset
-     * @param mixed $value
-     *
-     * @return void
-     */
-    public function offsetSet(mixed $offset, mixed $value): void
-    {
-        $this->properties[$offset] = $value;
-    }
-
-    /**
-     * Whether an offset exists in non-class properties
-     *
-     * @link https://php.net/manual/en/arrayaccess.offsetexists.php
-     *
-     * @param mixed $offset <p>
-     * An offset to check for.
-     * </p>
-     *
-     * @return bool true on success or false on failure.
-     * </p>
-     * <p>
-     * The return value will be cast to boolean if non-boolean was returned.
-     */
-    public function offsetExists(mixed $offset): bool
-    {
-        return array_key_exists($offset, $this->properties);
-    }
-
-    /**
-     * Unset a non-class property
-     *
-     * @param mixed $offset
-     *
-     * @return void
-     */
-    public function offsetUnset(mixed $offset): void
-    {
-        unset($this->properties[$offset]);
+        throw new Error('Dynamic properties not allowed');
     }
 }

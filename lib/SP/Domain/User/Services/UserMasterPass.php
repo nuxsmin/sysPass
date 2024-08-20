@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -35,7 +36,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
-use SP\Domain\User\Dtos\UserDataDto;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Dtos\UserMasterPassDto;
 use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Ports\UserRepository;
@@ -67,12 +68,12 @@ final class UserMasterPass extends Service implements UserMasterPassService
     public function updateFromOldPass(
         string       $oldUserPass,
         UserLoginDto $userLoginDto,
-        UserDataDto  $userDataDto
+        UserDto $userDto
     ): UserMasterPassDto {
-        $response = $this->load($userLoginDto, $userDataDto, $oldUserPass);
+        $response = $this->load($userLoginDto, $userDto, $oldUserPass);
 
         if ($response->getUserMasterPassStatus() === UserMasterPassStatus::Ok) {
-            return $this->updateOnLogin($response->getClearMasterPass(), $userLoginDto, $userDataDto->getId());
+            return $this->updateOnLogin($response->getClearMasterPass(), $userLoginDto, $userDto->id);
         }
 
         return new UserMasterPassDto(UserMasterPassStatus::Invalid);
@@ -83,31 +84,31 @@ final class UserMasterPass extends Service implements UserMasterPassService
      */
     public function load(
         UserLoginDto $userLoginDto,
-        UserDataDto  $userDataDto,
+        UserDto $userDataDto,
         ?string      $userPass = null
     ): UserMasterPassDto {
         try {
-            if (empty($userDataDto->getMPass())
-                || empty($userDataDto->getMKey())
+            if (empty($userDataDto->mPass)
+                || empty($userDataDto->mKey)
                 || empty($systemMasterPassHash = $this->configService->getByParam(self::PARAM_MASTER_PWD))
             ) {
                 return new UserMasterPassDto(UserMasterPassStatus::NotSet);
             }
 
-            if ($userDataDto->getLastUpdateMPass() <
+            if ($userDataDto->lastUpdateMPass <
                 (int)$this->configService->getByParam(self::PARAM_LASTUPDATEMPASS, 0)
             ) {
                 return new UserMasterPassDto(UserMasterPassStatus::Changed);
             }
 
-            if ($userPass === null && $userDataDto->getIsChangedPass()) {
+            if ($userPass === null && $userDataDto->isChangedPass) {
                 return new UserMasterPassDto(UserMasterPassStatus::CheckOld);
             }
 
 
             $key = $this->makeKeyForUser($userLoginDto->getLoginUser(), $userPass ?? $userLoginDto->getLoginPass());
 
-            $userMasterPass = $this->crypt->decrypt($userDataDto->getMPass(), $userDataDto->getMKey(), $key);
+            $userMasterPass = $this->crypt->decrypt($userDataDto->mPass, $userDataDto->mKey, $key);
 
             // Comprobamos el hash de la clave del usuario con la guardada
             if (Hash::checkHashKey($userMasterPass, $systemMasterPassHash)) {
@@ -116,8 +117,8 @@ final class UserMasterPass extends Service implements UserMasterPassService
                 return new UserMasterPassDto(
                     UserMasterPassStatus::Ok,
                     $userMasterPass,
-                    $userDataDto->getMPass(),
-                    $userDataDto->getMKey()
+                    $userDataDto->mPass,
+                    $userDataDto->mKey
                 );
             }
         } catch (CryptException $e) {

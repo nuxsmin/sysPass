@@ -64,12 +64,12 @@ class ViewHistoryControllerTest extends IntegrationTestCase
                                                            'userEditName' => self::$faker->userName(),
                                                            'userEditLogin' => self::$faker->userName(),
                                                        ]);
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             AccountHistory::class,
             new QueryResult([$accountHistory])
         );
 
-        $this->addDatabaseResolver(
+        $this->addDatabaseMapperResolver(
             Item::class,
             new QueryResult(
                 [
