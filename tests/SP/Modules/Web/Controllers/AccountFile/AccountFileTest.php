@@ -29,9 +29,11 @@ namespace SP\Tests\Modules\Web\Controllers\AccountFile;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\File;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -223,5 +225,63 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $this->runApp($container);
+    }
+
+    /**
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws FileException
+     * @throws InvalidClassException
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function upload()
+    {
+        $definitions = $this->getModuleDefinitions();
+        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(function (string $output): void {
+            $crawler = new Crawler($output);
+            $filter = $crawler->filterXPath('//table/tbody//tr[string-length(@data-item-id) > 0]')
+                              ->extract(['class']);
+
+            assert(!empty($output));
+            assert(count($filter) === 2);
+
+            $this->assertTrue(true);
+        });
+
+        $file = sprintf('%s.txt', self::$faker->filePath());
+
+        file_put_contents($file, self::$faker->text());
+
+        $files = [
+            'inFile' => [
+                'name' => self::$faker->name(),
+                'tmp_name' => $file,
+                'size' => filesize($file),
+                'type' => 'text/plain'
+            ]
+        ];
+
+        $container = $this->buildContainer(
+            $definitions,
+            $this->buildRequest('post', 'index.php', ['r' => 'accountFile/upload/100'], [], $files)
+        );
+
+        $this->runApp($container);
+
+        $this->expectOutputString(
+            '{"status":0,"description":"File saved","data":[],"messages":[]}'
+        );
+    }
+
+    protected function getConfigData(): ConfigDataInterface|Stub
+    {
+        $configData = parent::getConfigData();
+        $configData->method('isFilesEnabled')->willReturn(true);
+        $configData->method('getFilesAllowedMime')->willReturn(['text/plain']);
+        $configData->method('getFilesAllowedSize')->willReturn(1000);
+
+        return $configData;
     }
 }

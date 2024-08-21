@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Core\Events;
 
+use Closure;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 
 /**
@@ -33,9 +34,13 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
  */
 readonly class Event
 {
+    /**
+     * @param object $source The emmiter of the event
+     * @param EventMessage|Closure|null $eventMessage An {@link EventMessage} or a {@link Closure} that returns an {@link EventMessage}
+     */
     public function __construct(
-        private object        $source,
-        private ?EventMessage $eventMessage = null
+        private object                    $source,
+        private EventMessage|Closure|null $eventMessage = null
     ) {
     }
 
@@ -60,6 +65,10 @@ readonly class Event
 
     public function getEventMessage(): ?EventMessage
     {
+        if ($this->eventMessage instanceof Closure) {
+            return $this->eventMessage->call($this);
+        }
+
         return $this->eventMessage;
     }
 }

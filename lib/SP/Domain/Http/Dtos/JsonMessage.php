@@ -80,7 +80,7 @@ final class JsonMessage implements JsonSerializable
 
     public function setMessages(array $messages): JsonMessage
     {
-        $this->messages = array_map('__', $messages);
+        $this->messages = array_map('SP\__', $messages);
 
         return $this;
     }

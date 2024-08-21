@@ -44,19 +44,19 @@ trait JsonTrait
      *
      * @param int $status Status code
      * @param string $description Untranslated description string
-     * @param array|null $messages Untranslated massages array of strings
+     * @param array|string|null $messages Untranslated massages array of strings
      *
      * @return bool
      * @throws SPException
      */
-    protected function returnJsonResponse(int $status, string $description, ?array $messages = null): bool
+    protected function returnJsonResponse(int $status, string $description, array|string|null $messages = null): bool
     {
         $jsonResponse = new JsonMessage();
         $jsonResponse->setStatus($status);
         $jsonResponse->setDescription($description);
 
         if (null !== $messages) {
-            $jsonResponse->setMessages($messages);
+            $jsonResponse->setMessages((array)$messages);
         }
 
         return JsonResponse::factory($this->router->response())->send($jsonResponse);

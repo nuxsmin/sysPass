@@ -182,7 +182,6 @@ abstract class IntegrationTestCase extends TestCase
         $configData->method('isMaintenance')->willReturn(false);
         $configData->method('getDbName')->willReturn(self::$faker->colorName());
         $configData->method('getPasswordSalt')->willReturn($this->passwordSalt);
-        $configData->method('isFilesEnabled')->willReturn(true);
 
         return $configData;
     }
@@ -244,8 +243,13 @@ abstract class IntegrationTestCase extends TestCase
         $this->databaseMapperResolvers[$className] = $queryResult;
     }
 
-    protected function buildRequest(string $method, string $uri, array $paramsGet = [], array $paramsPost = []): Request
-    {
+    protected function buildRequest(
+        string $method,
+        string $uri,
+        array  $paramsGet = [],
+        array  $paramsPost = [],
+        array  $files = []
+    ): Request {
         $server = array_merge(
             $_SERVER,
             [
@@ -262,7 +266,7 @@ abstract class IntegrationTestCase extends TestCase
             array_merge($_POST, $paramsPost),
             $_COOKIE,
             $server,
-            $_FILES,
+            array_merge($_FILES, $files),
             null
         );
     }

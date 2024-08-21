@@ -32,6 +32,8 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Models\File;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\File\FileException;
@@ -39,6 +41,10 @@ use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class UploadController
@@ -49,21 +55,19 @@ final class UploadController extends ControllerBase
 {
     use JsonTrait;
 
-    private AccountFileService $accountFileService;
-    private AccountService     $accountService;
-
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application             $application,
-        WebControllerHelper     $webControllerHelper,
-        AccountFileService $accountFileService,
-        AccountService     $accountService
+        Application                         $application,
+        WebControllerHelper                 $webControllerHelper,
+        private readonly AccountFileService $accountFileService,
+        private readonly AccountService     $accountService
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->accountFileService = $accountFileService;
-        $this->accountService = $accountService;
     }
 
     /**
@@ -73,6 +77,7 @@ final class UploadController extends ControllerBase
      *
      * @return bool
      * @throws JsonException
+     * @throws SPException
      */
     public function uploadAction(int $accountId): bool
     {
@@ -90,57 +95,57 @@ final class UploadController extends ControllerBase
             }
 
             try {
-                $fileHandler = new FileHandler($file['tmp_name']);
+                $fileName = htmlspecialchars($file['name'] ?? '', ENT_QUOTES);
 
-                $fileData = new File();
-                $fileData->setAccountId($accountId);
-                $fileData->setName(htmlspecialchars($file['name'], ENT_QUOTES));
-                $fileData->setSize($file['size']);
-                $fileData->setType($file['type']);
-                $fileData->setExtension(mb_strtoupper(pathinfo($fileData->getName(), PATHINFO_EXTENSION)));
-
-                if ($fileData->getName() === '') {
-                    throw new SPException(
-                        __u('Invalid file'),
-                        SPException::ERROR,
-                        sprintf(__u('File: %s'), $fileData->getName())
-                    );
+                if (empty($fileName)) {
+                    throw SPException::error(__u('Invalid file'), sprintf(__u('File: %s'), $fileName));
                 }
-
-                $fileHandler->checkFileExists();
-
-                $fileData->setType($this->checkAllowedMimeType($fileData, $fileHandler));
 
                 $allowedSize = $this->configData->getFilesAllowedSize();
 
-                if ($fileData->getSize() > ($allowedSize * 1000)) {
-                    throw new SPException(
+                if ($file['size'] > ($allowedSize * 1000)) {
+                    throw SPException::error(
                         __u('File size exceeded'),
-                        SPException::ERROR,
-                        sprintf(__u('Maximum size: %d KB'), $fileData->getRoundSize())
+                        sprintf(__u('Maximum size: %f KB'), round($allowedSize / 1000, 2))
                     );
                 }
 
-                $fileData->setContent($fileHandler->readToString());
+                $fileHandler = new FileHandler($file['tmp_name']);
+
+                $fileData = [
+                    'accountId' => $accountId,
+                    'name' => $fileName,
+                    'size' => $file['size'],
+                    'type' => $this->checkAllowedMimeType($file['type'], $fileHandler),
+                    'extension' => mb_strtoupper(pathinfo($fileName, PATHINFO_EXTENSION)),
+                    'content' => $fileHandler->readToString()
+                ];
             } catch (FileException $e) {
-                throw new SPException(__u('Internal error while reading the file'));
+                $this->eventDispatcher->notify('exception', new Event($e));
+
+                throw SPException::error(__u('Internal error while reading the file'));
             }
 
-            $this->accountFileService->create($fileData);
-
-            $account = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
+            $this->accountFileService->create(new File($fileData));
 
             $this->eventDispatcher->notify(
                 'upload.accountFile',
                 new Event(
                     $this,
-                    EventMessage::factory()
-                                ->addDescription(__u('File saved'))
-                                ->addDetail(__u('File'), $fileData->getName())
-                                ->addDetail(__u('Account'), $account->getName())
-                                ->addDetail(__u('Client'), $account->getClientName())
-                                ->addDetail(__u('Type'), $fileData->getType())
-                                ->addDetail(__u('Size'), $fileData->getRoundSize() . 'KB')
+                    static function () use ($accountId, $fileData): EventMessage {
+                        $account = $this->accountService->getByIdEnriched($accountId);
+
+                        return EventMessage::factory()
+                                           ->addDescription(__u('File saved'))
+                                           ->addDetail(__u('File'), $fileData['name'])
+                                           ->addDetail(__u('Account'), $account->getName())
+                                           ->addDetail(__u('Client'), $account->getClientName())
+                                           ->addDetail(__u('Type'), $fileData['type'])
+                                           ->addDetail(
+                                               __u('Size'),
+                                               sprintf('%f KB', round($fileData['size'] / 1000))
+                                           );
+                    }
                 )
             );
 
@@ -150,7 +155,7 @@ final class UploadController extends ControllerBase
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponse(1, $e->getMessage(), [$e->getHint()]);
+            return $this->returnJsonResponse(1, $e->getMessage(), $e->getHint());
         } catch (Exception $e) {
             processException($e);
 
@@ -161,27 +166,23 @@ final class UploadController extends ControllerBase
     }
 
     /**
-     * @param \SP\Domain\Account\Models\File $fileData
+     * @param string $type
      * @param FileHandlerInterface $fileHandler
      *
      * @return string
-     * @throws SPException
      * @throws FileException
+     * @throws SPException
      */
-    private function checkAllowedMimeType(File $fileData, FileHandlerInterface $fileHandler): string
+    private function checkAllowedMimeType(string $type, FileHandlerInterface $fileHandler): string
     {
-        if (in_array($fileData->getType(), $this->configData->getFilesAllowedMime(), true)) {
-            return $fileData->getType();
+        if (in_array($type, $this->configData->getFilesAllowedMime(), true)) {
+            return $type;
         }
 
         if (in_array($fileHandler->getFileType(), $this->configData->getFilesAllowedMime(), true)) {
             return $fileHandler->getFileType();
         }
 
-        throw new SPException(
-            __u('File type not allowed'),
-            SPException::ERROR,
-            sprintf(__('MIME type: %s'), $fileData->getType())
-        );
+        throw SPException::error(__u('File type not allowed'), sprintf(__('MIME type: %s'), $type));
     }
 }

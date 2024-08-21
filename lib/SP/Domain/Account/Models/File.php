@@ -91,13 +91,4 @@ class File extends Model implements ItemWithIdAndNameModel
     {
         return $this->size;
     }
-
-    public function getRoundSize(): float
-    {
-        if (null === $this->size) {
-            return 0.0;
-        }
-
-        return round($this->size / 1000, 2);
-    }
 }
