@@ -50,7 +50,7 @@ interface AccountFileService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function create(FileModel $itemData): int;
+    public function create(FileModel $file): int;
 
     /**
      * Returns the item for given id

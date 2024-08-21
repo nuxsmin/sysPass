@@ -62,22 +62,22 @@ final class AccountFile extends Service implements AccountFileService
     /**
      * Creates an item
      *
-     * @param FileModel $itemData
+     * @param FileModel $file
      *
      * @return int
      * @throws ConstraintException
      * @throws InvalidImageException
      * @throws QueryException
      */
-    public function create(FileModel $itemData): int
+    public function create(FileModel $file): int
     {
-        if (FileSystem::isImage($itemData)) {
-            $itemData->setThumb($this->imageUtil->createThumbnail($itemData->getContent()));
+        if (FileSystem::isImage($file->getType())) {
+            $file->setThumb($this->imageUtil->createThumbnail($file->getContent()));
         } else {
-            $itemData->setThumb('no_thumb');
+            $file->setThumb('no_thumb');
         }
 
-        return $this->accountFileRepository->create($itemData);
+        return $this->accountFileRepository->create($file);
     }
 
     /**

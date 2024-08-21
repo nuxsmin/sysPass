@@ -33,6 +33,9 @@ use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
+use function SP\__u;
+use function SP\processException;
+
 /**
  * Class ViewController
  *
@@ -47,23 +50,22 @@ final class ViewController extends AccountFileBase
     /**
      * View action
      *
-     * @param  int  $id
+     * @param int $id
      *
      * @return bool
      * @throws JsonException
+     * @throws SPException
      */
     public function viewAction(int $id): bool
     {
         try {
-            if (null === ($fileData = $this->accountFileService->getById($id))) {
-                throw new SPException(__u('File does not exist'), SPException::INFO);
-            }
+            $fileDto = $this->accountFileService->getById($id);
 
             $this->view->addTemplate('file', 'itemshow');
 
-            if (FileSystem::isImage($fileData)) {
-                $this->view->assign('data', chunk_split(base64_encode($fileData->getContent())));
-                $this->view->assign('fileData', $fileData);
+            if (FileSystem::isImage($fileDto->type)) {
+                $this->view->assign('data', chunk_split(base64_encode($fileDto->content)));
+                $this->view->assign('fileData', $fileDto);
                 $this->view->assign('isImage', 1);
 
                 $this->eventDispatcher->notify(
@@ -72,18 +74,18 @@ final class ViewController extends AccountFileBase
                         $this,
                         EventMessage::factory()
                             ->addDescription(__u('File viewed'))
-                            ->addDetail(__u('File'), $fileData->getName())
+                            ->addDetail(__u('File'), $fileDto->name)
                     )
                 );
 
                 return $this->returnJsonResponseData(['html' => $this->render()]);
             }
 
-            $type = strtolower($fileData->getType());
+            $type = strtolower($fileDto->type);
 
             if (in_array($type, self::MIME_VIEW)) {
                 $this->view->assign('mime', $type);
-                $this->view->assign('data', htmlentities($fileData->getContent()));
+                $this->view->assign('data', htmlentities($fileDto->content));
 
                 $this->eventDispatcher->notify(
                     'show.accountFile',
@@ -91,7 +93,7 @@ final class ViewController extends AccountFileBase
                         $this,
                         EventMessage::factory()
                             ->addDescription(__u('File viewed'))
-                            ->addDetail(__u('File'), $fileData->getName())
+                            ->addDetail(__u('File'), $fileDto->name)
                     )
                 );
 

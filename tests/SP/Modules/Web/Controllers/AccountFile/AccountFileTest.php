@@ -275,6 +275,43 @@ class AccountFileTest extends IntegrationTestCase
         );
     }
 
+    /**
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws FileException
+     * @throws InvalidClassException
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function view()
+    {
+        $fileDataGenerator = FileDataGenerator::factory();
+
+        $this->addDatabaseMapperResolver(
+            File::class,
+            new QueryResult([File::buildFromSimpleModel($fileDataGenerator->buildFileData())])
+        );
+
+        $definitions = $this->getModuleDefinitions();
+        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(function (string $output): void {
+            $crawler = new Crawler($output);
+            $filter = $crawler->filterXPath('//img|//div[@class="title"]')->count();
+
+            assert(!empty($output));
+            assert($filter === 2);
+
+            $this->assertTrue(true);
+        });
+
+        $container = $this->buildContainer(
+            $definitions,
+            $this->buildRequest('get', 'index.php', ['r' => 'accountFile/view/100'])
+        );
+
+        $this->runApp($container);
+    }
+
     protected function getConfigData(): ConfigDataInterface|Stub
     {
         $configData = parent::getConfigData();

@@ -29,7 +29,6 @@ namespace SP\Infrastructure\File;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use SP\Domain\Account\Models\File;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 
@@ -79,9 +78,9 @@ class FileSystem
         return rmdir($dir);
     }
 
-    public static function isImage(File $fileData): bool
+    public static function isImage(string $fileType): bool
     {
-        return in_array(strtolower($fileData->getType()), self::IMAGE_MIME, true);
+        return in_array(strtolower($fileType), self::IMAGE_MIME, true);
     }
 
     /**
