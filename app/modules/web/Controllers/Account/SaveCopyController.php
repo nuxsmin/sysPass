@@ -57,10 +57,13 @@ final class SaveCopyController extends AccountSaveBase
                 'create.account',
                 new Event(
                     $this,
-                    EventMessage::build()
-                                ->addDescription(__u('Account created'))
-                                ->addDetail(__u('Account'), $accountDetails->getName())
-                                ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    function () use ($accountId) {
+                        $accountDetails = $this->accountService->getByIdEnriched($accountId);
+
+                        return EventMessage::build(__u('Account created'))
+                                           ->addDetail(__u('Account'), $accountDetails->getName())
+                                           ->addDetail(__u('Client'), $accountDetails->getClientName());
+                    }
                 )
             );
 

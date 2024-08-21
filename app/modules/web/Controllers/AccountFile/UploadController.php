@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\AccountFile;
 
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -76,7 +75,6 @@ final class UploadController extends ControllerBase
      * @param int $accountId
      *
      * @return bool
-     * @throws JsonException
      * @throws SPException
      */
     public function uploadAction(int $accountId): bool

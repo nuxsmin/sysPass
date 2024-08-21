@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -66,7 +65,6 @@ final class SaveEditRestoreController extends AccountControllerBase
      * @param int $id Account's ID
      *
      * @return bool
-     * @throws JsonException
      * @throws SPException
      */
     public function saveEditRestoreAction(int $historyId, int $id): bool
@@ -74,16 +72,17 @@ final class SaveEditRestoreController extends AccountControllerBase
         try {
             $this->accountService->restoreModified($this->accountHistoryService->getById($historyId));
 
-            $accountDetails = $this->accountService->getByIdEnriched($id);
-
             $this->eventDispatcher->notify(
                 'edit.account.restore',
                 new Event(
                     $this,
-                    EventMessage::build()
-                                ->addDescription(__u('Account restored'))
-                                ->addDetail(__u('Account'), $accountDetails->getName())
-                                ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    function () use ($id) {
+                        $accountDetails = $this->accountService->getByIdEnriched($id);
+
+                        return EventMessage::build(__u('Account restored'))
+                                           ->addDetail(__u('Account'), $accountDetails->getName())
+                                           ->addDetail(__u('Client'), $accountDetails->getClientName());
+                    }
                 )
             );
 

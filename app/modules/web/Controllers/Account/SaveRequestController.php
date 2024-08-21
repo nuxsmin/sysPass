@@ -92,8 +92,7 @@ final class SaveRequestController extends AccountControllerBase
                 'request.account',
                 new Event(
                     $this,
-                    EventMessage::build()
-                                ->addDescription(__u('Request'))
+                    EventMessage::build(__u('Request'))
                                 ->addDetail(
                                     __u('Requester'),
                                     sprintf('%s (%s)', $this->userDto->name, $this->userDto->login)

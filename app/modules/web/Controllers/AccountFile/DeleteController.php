@@ -70,7 +70,7 @@ final class DeleteController extends AccountFileBase
                 'delete.accountFile',
                 new Event(
                     $this,
-                    EventMessage::build()->addDescription(__u('File deleted'))->addDetail(__u('File'), $id)
+                    EventMessage::build(__u('File deleted'))->addDetail(__u('File'), $id)
                 )
             );
 

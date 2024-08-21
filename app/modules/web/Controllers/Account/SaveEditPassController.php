@@ -78,16 +78,18 @@ final class SaveEditPassController extends AccountControllerBase
 
             $this->accountService->editPassword($id, $this->accountForm->getItemData());
 
-            $accountDetails = $this->accountService->getByIdEnriched($id);
 
             $this->eventDispatcher->notify(
                 'edit.account.pass',
                 new Event(
                     $this,
-                    EventMessage::build()
-                                ->addDescription(__u('Password updated'))
-                                ->addDetail(__u('Account'), $accountDetails->getName())
-                                ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    function () use ($id) {
+                        $accountDetails = $this->accountService->getByIdEnriched($id);
+
+                        return EventMessage::build(__u('Password updated'))
+                                           ->addDetail(__u('Account'), $accountDetails->getName())
+                                           ->addDetail(__u('Client'), $accountDetails->getClientName());
+                    }
                 )
             );
 

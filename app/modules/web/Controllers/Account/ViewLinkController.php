@@ -144,8 +144,7 @@ final class ViewLinkController extends AccountControllerBase
                     'show.account.link',
                     new Event(
                         $this,
-                        EventMessage::build()
-                                    ->addDescription(__u('Link viewed'))
+                        EventMessage::build(__u('Link viewed'))
                                     ->addDetail(__u('Account'), $accountViewDto->getName())
                                     ->addDetail(__u('Client'), $accountViewDto->getClientName())
                                     ->addDetail(__u('Agent'), $this->request->getHeader('User-Agent'))

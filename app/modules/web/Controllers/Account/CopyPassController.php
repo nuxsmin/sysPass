@@ -81,8 +81,7 @@ final class CopyPassController extends AccountControllerBase
             'copy.account.pass',
             new Event(
                 $this,
-                EventMessage::build()
-                            ->addDescription(__u('Password copied'))
+                EventMessage::build(__u('Password copied'))
                             ->addDetail(__u('Account'), $account->getName())
             )
         );
