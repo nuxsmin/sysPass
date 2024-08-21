@@ -33,6 +33,7 @@ use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Account\Ports\AccountHistoryRepository;
 use SP\Domain\Account\Services\AccountHistory;
+use SP\Domain\Common\Adapters\DumpMode;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\SPException;
@@ -138,10 +139,34 @@ class AccountHistoryTest extends UnitaryTestCase
 
         $this->accountHistoryRepository->expects(self::once())->method('getById')->with($id)->willReturn($queryResult);
 
+        $properties = [
+            'usersView',
+            'usersEdit',
+            'otherUserGroupsView',
+            'otherUserGroupsEdit',
+            'tags',
+            'userGroupsView',
+            'userGroupsEdit',
+            'isDeleted',
+            'isPrivate',
+            'isPrivateGroup',
+            'otherUserGroupEdit',
+            'otherUserEdit',
+            'isModify',
+        ];
+
+        $current = $this->accountHistory->getById($id);
+
         $this->assertEquals(
-            $accountHistoryData->toArray(),
-            $this->accountHistory->getById($id)->toArray()
+            $accountHistoryData->toArray(null, $properties),
+            $current->toArray($properties, DumpMode::EXCLUDE)
         );
+        $this->assertEquals((bool)$accountHistoryData->getIsDeleted(), $current->isDeleted);
+        $this->assertEquals((bool)$accountHistoryData->getIsPrivate(), $current->isPrivate);
+        $this->assertEquals((bool)$accountHistoryData->getIsPrivateGroup(), $current->isPrivateGroup);
+        $this->assertEquals((bool)$accountHistoryData->getOtherUserGroupEdit(), $current->otherUserGroupEdit);
+        $this->assertEquals((bool)$accountHistoryData->getOtherUserEdit(), $current->otherUserEdit);
+        $this->assertEquals((bool)$accountHistoryData->getIsModify(), $current->isModify);
     }
 
     /**

@@ -30,6 +30,7 @@ use Closure;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+use SP\Domain\Common\Adapters\DumpMode;
 use SP\Domain\Common\Attributes\DtoTransformation;
 use SP\Domain\Common\Attributes\ModelBounded;
 use SP\Domain\Common\Models\Model;
@@ -97,11 +98,22 @@ abstract class Dto implements DtoInterface
     }
 
     /**
+     * @param array|null $properties Properties to process
+     * @param DumpMode $mode The mode to process the properties
      * @return array
      */
-    final public function toArray(): array
+    final public function toArray(?array $properties = null, DumpMode $mode = DumpMode::ONLY): array
     {
-        return get_object_vars($this);
+        $instanceProperties = get_object_vars($this);
+
+        if (null !== $properties) {
+            return match ($mode) {
+                DumpMode::ONLY => array_intersect_key($instanceProperties, array_flip($properties)),
+                DumpMode::EXCLUDE => array_diff_key($instanceProperties, array_flip($properties))
+            };
+        }
+
+        return $instanceProperties;
     }
 
     /**
