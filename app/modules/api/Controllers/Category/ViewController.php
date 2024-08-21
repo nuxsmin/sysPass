@@ -57,7 +57,7 @@ final class ViewController extends CategoryBase
                 'show.category',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Category displayed'))
                         ->addDetail(__u('Name'), $categoryData->getName())
                         ->addDetail('ID', $id)

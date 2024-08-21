@@ -87,7 +87,7 @@ final class ViewPassController extends AccountControllerBase
                 'show.account.pass',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Password viewed'))
                                 ->addDetail(__u('Account'), $account->getName())
                 )

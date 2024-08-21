@@ -278,7 +278,7 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             'acl.deny',
             new Event(
                 $this,
-                EventMessage::factory()
+                EventMessage::build()
                             ->addDescription(__u('Access denied'))
                             ->addDetail(__u('Action'), $actionName)
                     ->addDetail(__u('User'), $userDto->login)

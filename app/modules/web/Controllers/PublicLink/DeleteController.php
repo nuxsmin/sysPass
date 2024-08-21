@@ -66,7 +66,7 @@ final class DeleteController extends PublicLinkSaveBase
 
                 $this->eventDispatcher->notify(
                     'delete.publicLink.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Links deleted')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Links deleted')))
                 );
 
                 return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Links deleted'));
@@ -78,7 +78,7 @@ final class DeleteController extends PublicLinkSaveBase
                 'delete.publicLink',
                 new Event(
                     $this,
-                    EventMessage::factory()->addDescription(__u('Link deleted'))->addDetail(__u('Link'), $id)
+                    EventMessage::build()->addDescription(__u('Link deleted'))->addDetail(__u('Link'), $id)
                 )
             );
 

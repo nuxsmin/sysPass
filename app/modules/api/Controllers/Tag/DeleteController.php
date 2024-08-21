@@ -54,7 +54,7 @@ final class DeleteController extends TagBase
                 'delete.tag',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Tag removed'))
                         ->addDetail(__u('Name'), $tagData->getName())
                         ->addDetail('ID', $id)

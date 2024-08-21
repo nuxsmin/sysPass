@@ -63,7 +63,7 @@ final class DeleteController extends AuthTokenSaveBase
 
                 $this->eventDispatcher->notify(
                     'delete.authToken.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Authorizations deleted')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Authorizations deleted')))
                 );
 
                 return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Authorizations deleted'));
@@ -77,7 +77,7 @@ final class DeleteController extends AuthTokenSaveBase
                 'delete.authToken',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Authorization deleted'))
                         ->addDetail(__u('Authorization'), $id)
                 )

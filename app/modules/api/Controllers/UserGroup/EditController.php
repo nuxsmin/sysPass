@@ -54,7 +54,7 @@ final class EditController extends UserGroupBase
                 'edit.userGroup',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Group updated'))
                         ->addDetail(__u('Name'), $userGroupData->getName())
                         ->addDetail('ID', $userGroupData->getId())

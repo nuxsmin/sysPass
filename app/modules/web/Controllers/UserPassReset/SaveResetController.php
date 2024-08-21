@@ -74,7 +74,7 @@ final class SaveResetController extends UserPassResetSaveBase
                 'edit.user.password',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Password updated'))
                         ->addDetail(__u('User'), $user->getLogin())
                         ->addExtra('userId', $userId)

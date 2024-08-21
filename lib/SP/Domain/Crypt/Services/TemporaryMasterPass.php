@@ -120,7 +120,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
                 'create.tempMasterPassword',
                 new Event(
                     $this,
-                    EventMessage::factory()->addDescription(__u('Generate temporary password'))
+                    EventMessage::build()->addDescription(__u('Generate temporary password'))
                 )
             );
 
@@ -151,7 +151,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
                     'check.tempMasterPassword',
                     new Event(
                         $this,
-                        EventMessage::factory()
+                        EventMessage::build()
                             ->addDescription(__u('Temporary password expired'))
                     )
                 );
@@ -208,7 +208,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
             'expire.tempMasterPassword',
             new Event(
                 $this,
-                EventMessage::factory()->addDescription(__u('Temporary password expired'))
+                EventMessage::build()->addDescription(__u('Temporary password expired'))
             )
         );
     }

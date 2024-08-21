@@ -67,7 +67,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
         try {
             $this->eventDispatcher->notify(
                 'run.import.syspass',
-                new Event($this, EventMessage::factory()->addDescription(__u('sysPass XML Import')))
+                new Event($this, EventMessage::build()->addDescription(__u('sysPass XML Import')))
             );
 
             $this->version = $this->getXmlVersion();
@@ -174,7 +174,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
 
         $this->eventDispatcher->notify(
             'run.import.syspass.process.decryption',
-            new Event($this, EventMessage::factory()->addDescription(__u('Data unencrypted')))
+            new Event($this, EventMessage::build()->addDescription(__u('Data unencrypted')))
         );
     }
 
@@ -190,7 +190,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 'run.import.syspass.process.verify',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Error while checking integrity hash'))
                         ->addDescription(
                             __u(
@@ -228,7 +228,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                     'run.import.syspass.process.category',
                     new Event(
                         $this,
-                        EventMessage::factory()
+                        EventMessage::build()
                                     ->addDetail(__u('Category imported'), $data['name'])
                     )
                 );
@@ -238,7 +238,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 'exception',
                 new Event(
                     $e,
-                    EventMessage::factory()->addDescription(__('Unable to import categories'))
+                    EventMessage::build()->addDescription(__('Unable to import categories'))
                 )
             );
 
@@ -272,7 +272,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                     'run.import.syspass.process.client',
                     new Event(
                         $this,
-                        EventMessage::factory()
+                        EventMessage::build()
                                     ->addDetail(__u('Client imported'), $data['name'])
                     )
                 );
@@ -282,7 +282,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 'exception',
                 new Event(
                     $e,
-                    EventMessage::factory()->addDescription(__('Unable to import clients'))
+                    EventMessage::build()->addDescription(__('Unable to import clients'))
                 )
             );
 
@@ -317,7 +317,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                     'run.import.syspass.process.tag',
                     new Event(
                         $this,
-                        EventMessage::factory()->addDetail(__u('Tag imported'), $data['name'])
+                        EventMessage::build()->addDetail(__u('Tag imported'), $data['name'])
                     )
                 );
             }
@@ -326,7 +326,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 'exception',
                 new Event(
                     $e,
-                    EventMessage::factory()->addDescription(__('Unable to import tags'))
+                    EventMessage::build()->addDescription(__('Unable to import tags'))
                 )
             );
 
@@ -374,7 +374,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                     'run.import.syspass.process.account',
                     new Event(
                         $this,
-                        EventMessage::factory()->addDetail(__u('Account imported'), $data['name'])
+                        EventMessage::build()->addDetail(__u('Account imported'), $data['name'])
                     )
                 );
             } catch (Exception $e) {
@@ -382,7 +382,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                     'exception',
                     new Event(
                         $e,
-                        EventMessage::factory()->addDescription(__('Unable to import account'))
+                        EventMessage::build()->addDescription(__('Unable to import account'))
                     )
                 );
 

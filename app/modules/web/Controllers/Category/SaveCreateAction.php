@@ -61,7 +61,7 @@ final class SaveCreateAction extends CategorySaveBase
                 'create.category',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Category added'))
                         ->addDetail(__u('Category'), $itemData->getName())
                 )

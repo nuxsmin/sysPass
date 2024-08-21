@@ -25,17 +25,21 @@
 namespace SP\Modules\Web\Controllers\AccountHistoryManager;
 
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountHistoryService;
-use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class DeleteController
@@ -47,17 +51,16 @@ final class DeleteController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountHistoryService $accountHistoryService;
-    private AccountService        $accountService;
-
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        AccountHistoryService $accountHistoryService
+        Application                            $application,
+        WebControllerHelper                    $webControllerHelper,
+        private readonly AccountHistoryService $accountHistoryService
     ) {
-        $this->accountHistoryService = $accountHistoryService;
-
-        parent::__construct($application, $webControllerHelper,);
+        parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
     }
@@ -66,10 +69,10 @@ final class DeleteController extends ControllerBase
     /**
      * Delete action
      *
-     * @param  int|null  $id
+     * @param int|null $id
      *
      * @return bool
-     * @throws JsonException
+     * @throws SPException
      */
     public function deleteAction(?int $id = null): bool
     {
@@ -81,17 +84,14 @@ final class DeleteController extends ControllerBase
                     'delete.accountHistory.selection',
                     new Event(
                         $this,
-                        EventMessage::factory()
-                            ->addDescription(__u('Accounts removed'))
+                        EventMessage::build(__u('Accounts removed'))
                     )
                 );
 
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_SUCCESS,
-                    __u('Accounts removed')
-                );
+                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Accounts removed'));
             }
-            $accountDetails = $this->accountHistoryService->getById($id);
+
+            $accountHistoryDto = $this->accountHistoryService->getById($id);
 
             $this->accountHistoryService->delete($id);
 
@@ -99,17 +99,12 @@ final class DeleteController extends ControllerBase
                 'delete.accountHistory',
                 new Event(
                     $this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Account removed'))
-                        ->addDetail(__u('Account'), $accountDetails->getName())
-                        ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    EventMessage::build(__u('Account removed'))
+                                ->addDetail(__u('Data'), (string)$accountHistoryDto)
                 )
             );
 
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_SUCCESS,
-                __u('Account removed')
-            );
+            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Account removed'));
         } catch (Exception $e) {
             processException($e);
 

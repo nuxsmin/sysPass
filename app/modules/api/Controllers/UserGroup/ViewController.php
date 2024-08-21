@@ -52,7 +52,7 @@ final class ViewController extends UserGroupBase
                 'show.userGroup',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Group viewed'))
                         ->addDetail(__u('Name'), $userGroupData->getName())
                         ->addDetail('ID', $id)

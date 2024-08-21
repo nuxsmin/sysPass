@@ -57,7 +57,7 @@ final class XmlTagExport extends XmlExportEntityBase
         try {
             $this->eventDispatcher->notify(
                 'run.export.process.tag',
-                new Event($this, EventMessage::factory()->addDescription(__u('Exporting tags')))
+                new Event($this, EventMessage::build()->addDescription(__u('Exporting tags')))
             );
 
             $tags = $this->tagService->getAll();

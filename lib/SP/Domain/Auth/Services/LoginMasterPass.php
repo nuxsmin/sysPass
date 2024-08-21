@@ -86,7 +86,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
             if (!$this->temporaryMasterPassService->checkKey($key)) {
                 $this->eventDispatcher->notify(
                     'login.masterPass',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Wrong master password')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Wrong master password')))
                 );
 
                 $this->addTracking();
@@ -96,7 +96,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
 
             $this->eventDispatcher->notify(
                 'login.masterPass.temporary',
-                new Event($this, EventMessage::factory()->addDescription(__u('Using temporary password')))
+                new Event($this, EventMessage::build()->addDescription(__u('Using temporary password')))
             );
 
             $userMasterPassDto = $this->userMasterPassService->updateOnLogin(
@@ -108,7 +108,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
             if ($userMasterPassDto->getUserMasterPassStatus() !== UserMasterPassStatus::Ok) {
                 $this->eventDispatcher->notify(
                     'login.masterPass',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Wrong master password')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Wrong master password')))
                 );
 
                 $this->addTracking();
@@ -118,7 +118,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
 
             $this->eventDispatcher->notify(
                 'login.masterPass',
-                new Event($this, EventMessage::factory()->addDescription(__u('Master password updated')))
+                new Event($this, EventMessage::build()->addDescription(__u('Master password updated')))
             );
         } catch (NoSuchItemException|CryptException $e) {
             throw ServiceException::error('Internal error', __FUNCTION__, Service::STATUS_INTERNAL_ERROR, $e);
@@ -136,7 +136,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
         if ($userMasterPassDto->getUserMasterPassStatus() !== UserMasterPassStatus::Ok) {
             $this->eventDispatcher->notify(
                 'login.masterPass',
-                new Event($this, EventMessage::factory()->addDescription(__u('Wrong master password')))
+                new Event($this, EventMessage::build()->addDescription(__u('Wrong master password')))
             );
 
             $this->addTracking();
@@ -146,7 +146,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
 
         $this->eventDispatcher->notify(
             'login.masterPass',
-            new Event($this, EventMessage::factory()->addDescription(__u('Master password updated')))
+            new Event($this, EventMessage::build()->addDescription(__u('Master password updated')))
         );
     }
 
@@ -176,7 +176,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
             case UserMasterPassStatus::Ok:
                 $this->eventDispatcher->notify(
                     'login.masterPass',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Master password loaded')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Master password loaded')))
                 );
                 break;
         }

@@ -71,7 +71,7 @@ final class SaveEditController extends UserGroupSaveBase
                 'edit.userGroup',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Group updated'))
                         ->addDetail(__u('Name'), $groupData->getName())
                         ->addExtra('userGroupId', $id)

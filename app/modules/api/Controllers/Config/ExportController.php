@@ -82,7 +82,7 @@ final class ExportController extends ControllerBase
                 'run.export.start',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('sysPass XML export'))
                         ->addDetail(__u('Path'), $path)
                 )
@@ -93,7 +93,7 @@ final class ExportController extends ControllerBase
 
             $this->eventDispatcher->notify(
                 'run.export.end',
-                new Event($this, EventMessage::factory()->addDescription(__u('Export process finished')))
+                new Event($this, EventMessage::build()->addDescription(__u('Export process finished')))
             );
 
             $exportFiles = ['files' => ['xml' => $file]];

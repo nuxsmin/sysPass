@@ -65,7 +65,7 @@ final class DeleteController extends UserProfileSaveBase
 
                 $this->eventDispatcher->notify(
                     'delete.userProfile.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Profiles deleted')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Profiles deleted')))
                 );
 
                 $this->deleteCustomFieldsForItem(AclActionsInterface::PROFILE, $id, $this->customFieldService);
@@ -79,7 +79,7 @@ final class DeleteController extends UserProfileSaveBase
                 'delete.userProfile',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Profile deleted'))
                         ->addDetail(__u('Profile'), $id)
                         ->addExtra('userProfileId', $id)

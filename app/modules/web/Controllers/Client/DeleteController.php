@@ -69,7 +69,7 @@ final class DeleteController extends ClientSaveBase
                     'delete.client.selection',
                     new Event(
                         $this,
-                        EventMessage::factory()->addDescription(__u('Clients deleted'))
+                        EventMessage::build()->addDescription(__u('Clients deleted'))
                     )
                 );
 
@@ -83,7 +83,7 @@ final class DeleteController extends ClientSaveBase
                 'delete.client',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Client deleted'))
                         ->addDetail(__u('Client'), $id)
                 )

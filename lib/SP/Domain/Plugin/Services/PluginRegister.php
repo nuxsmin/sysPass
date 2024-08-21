@@ -62,7 +62,7 @@ final class PluginRegister extends Service implements PluginRegisterService
                 'register.plugin',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Plugin already registered'))
                                 ->addDetail(__u('Name'), $plugin->getName())
                 )
@@ -72,7 +72,7 @@ final class PluginRegister extends Service implements PluginRegisterService
                 'register.plugin',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Plugin not registered yet'))
                                 ->addDetail(__u('Name'), $plugin->getName())
                 )
@@ -94,7 +94,7 @@ final class PluginRegister extends Service implements PluginRegisterService
             'create.plugin',
             new Event(
                 $this,
-                EventMessage::factory()
+                EventMessage::build()
                             ->addDescription(__u('New Plugin'))
                             ->addDetail(__u('Name'), $plugin->getName())
             )

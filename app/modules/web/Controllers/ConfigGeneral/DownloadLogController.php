@@ -75,7 +75,7 @@ final class DownloadLogController extends SimpleControllerBase
                 'download.logFile',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('File downloaded'))
                         ->addDetail(
                             __u('File'),

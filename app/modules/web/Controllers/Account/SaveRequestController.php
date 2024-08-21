@@ -92,7 +92,7 @@ final class SaveRequestController extends AccountControllerBase
                 'request.account',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Request'))
                                 ->addDetail(
                                     __u('Requester'),

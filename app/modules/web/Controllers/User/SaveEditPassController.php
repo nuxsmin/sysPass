@@ -69,7 +69,7 @@ final class SaveEditPassController extends UserSaveBase
                 'edit.user.pass',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Password updated'))
                         ->addDetail(__u('User'), $id)
                 )

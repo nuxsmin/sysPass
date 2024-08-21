@@ -51,7 +51,7 @@ final class EditController extends CategoryBase
                 'edit.category',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Category updated'))
                         ->addDetail(__u('Name'), $categoryData->getName())
                         ->addDetail('ID', $categoryData->getId())

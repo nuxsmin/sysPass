@@ -67,7 +67,7 @@ final class SaveCreateController extends UserSaveBase
                 'create.user',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('User added'))
                         ->addDetail(__u('User'), $itemData->getName())
                 )

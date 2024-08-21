@@ -56,7 +56,7 @@ final class CreateController extends ClientBase
                 'create.client',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Client added'))
                         ->addDetail(__u('Name'), $clientData->getName())
                         ->addDetail('ID', $id)

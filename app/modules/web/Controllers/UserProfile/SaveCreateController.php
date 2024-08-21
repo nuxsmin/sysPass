@@ -67,7 +67,7 @@ final class SaveCreateController extends UserProfileSaveBase
                 'create.userProfile',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Profile added'))
                         ->addDetail(__u('Name'), $profileData->getName())
                 )

@@ -31,6 +31,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use SP\Domain\Common\Adapters\DumpMode;
+use SP\Domain\Common\Adapters\PrintableTrait;
 use SP\Domain\Common\Attributes\DtoTransformation;
 use SP\Domain\Common\Attributes\ModelBounded;
 use SP\Domain\Common\Models\Model;
@@ -46,6 +47,8 @@ use function SP\processException;
  */
 abstract class Dto implements DtoInterface
 {
+    use PrintableTrait;
+
     /**
      * @inheritDoc
      * @throws SPException

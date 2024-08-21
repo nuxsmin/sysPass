@@ -61,7 +61,7 @@ final class DeleteController extends NotificationSaveBase
 
                 $this->eventDispatcher->notify(
                     'delete.notification.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Notifications deleted')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Notifications deleted')))
                 );
 
                 return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Notifications deleted'));
@@ -77,7 +77,7 @@ final class DeleteController extends NotificationSaveBase
                 'delete.notification',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Notification deleted'))
                         ->addDetail(__u('Notification'), $id)
                 )

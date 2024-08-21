@@ -65,7 +65,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
     {
         $this->eventDispatcher->notify(
             'run.import.keepass',
-            new Event($this, EventMessage::factory()->addDescription(__u('KeePass XML Import')))
+            new Event($this, EventMessage::build()->addDescription(__u('KeePass XML Import')))
         );
 
         $this->process($importParams);
@@ -84,7 +84,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
 
         $this->eventDispatcher->notify(
             'run.import.keepass.process.client',
-            new Event($this, EventMessage::factory()->addDetail(__u('Client added'), 'KeePass'))
+            new Event($this, EventMessage::build()->addDetail(__u('Client added'), 'KeePass'))
         );
 
         $this->getGroups();
@@ -128,7 +128,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
 
             $this->eventDispatcher->notify(
                 'run.import.keepass.process.category',
-                new Event($this, EventMessage::factory()->addDetail(__u('Category imported'), $groupName))
+                new Event($this, EventMessage::build()->addDetail(__u('Category imported'), $groupName))
             );
 
             $this->entries[$groupName] = new SplObjectStorage();
@@ -209,7 +209,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
                     'run.import.keepass.process.account',
                     new Event(
                         $this,
-                        EventMessage::factory()
+                        EventMessage::build()
                             ->addDetail(__u('Account imported'), $account->name)
                                     ->addDetail(__u('Category'), $groupName)
                     )

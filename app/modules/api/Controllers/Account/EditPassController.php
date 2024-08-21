@@ -57,7 +57,7 @@ final class EditPassController extends AccountBase
                 'edit.account.pass',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Password updated'))
                         ->addDetail(__u('Name'), $accountDetails->getName())
                         ->addDetail(__u('Client'), $accountDetails->getClientName())

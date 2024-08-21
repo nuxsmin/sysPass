@@ -115,7 +115,7 @@ final class Track extends Service implements TrackService
                     'track.delay',
                     new Event(
                         $this,
-                        EventMessage::factory()
+                        EventMessage::build()
                             ->addDescription(
                                 sprintf(
                                     __('Attempts exceeded (%d/%d)'),
@@ -165,7 +165,7 @@ final class Track extends Service implements TrackService
             'track.add',
             new Event(
                 $this,
-                EventMessage::factory()->addDescription($this->request->getClientAddress(true))
+                EventMessage::build()->addDescription($this->request->getClientAddress(true))
             )
         );
 

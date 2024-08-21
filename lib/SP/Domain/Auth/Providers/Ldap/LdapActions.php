@@ -109,7 +109,7 @@ final class LdapActions implements LdapActionsService
                 'ldap.search.group',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Error while searching the group RDN'))
                                 ->addDetail(__u('Group'), $group)
                                 ->addDetail('LDAP ERROR', $this->ldap->getLastError())

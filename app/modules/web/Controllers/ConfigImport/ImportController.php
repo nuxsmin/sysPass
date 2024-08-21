@@ -88,7 +88,7 @@ final class ImportController extends SimpleControllerBase
                 'run.import.end',
                 new Event(
                     $this,
-                    EventMessage::factory()->addDetail(__u('Accounts imported'), $counter)
+                    EventMessage::build()->addDetail(__u('Accounts imported'), $counter)
                 )
             );
 

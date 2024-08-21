@@ -67,7 +67,7 @@ final class SaveCreateController extends ClientSaveBase
                 'create.client',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Client added'))
                         ->addDetail(__u('Client'), $itemData->getName())
                 )

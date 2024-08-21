@@ -135,7 +135,7 @@ final class UploadController extends ControllerBase
                     static function () use ($accountId, $fileData): EventMessage {
                         $account = $this->accountService->getByIdEnriched($accountId);
 
-                        return EventMessage::factory()
+                        return EventMessage::build()
                                            ->addDescription(__u('File saved'))
                                            ->addDetail(__u('File'), $fileData['name'])
                                            ->addDetail(__u('Account'), $account->getName())

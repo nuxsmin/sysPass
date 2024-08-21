@@ -72,7 +72,7 @@ final class ViewController extends AccountFileBase
                     'show.accountFile',
                     new Event(
                         $this,
-                        EventMessage::factory()
+                        EventMessage::build()
                             ->addDescription(__u('File viewed'))
                             ->addDetail(__u('File'), $fileDto->name)
                     )
@@ -91,7 +91,7 @@ final class ViewController extends AccountFileBase
                     'show.accountFile',
                     new Event(
                         $this,
-                        EventMessage::factory()
+                        EventMessage::build()
                             ->addDescription(__u('File viewed'))
                             ->addDetail(__u('File'), $fileDto->name)
                     )

@@ -69,7 +69,7 @@ final class DownloadConfigBackup extends SimpleControllerBase
                 'download.configBackupFile',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('File downloaded'))
                         ->addDetail(__u('File'), 'config.json')
                 )

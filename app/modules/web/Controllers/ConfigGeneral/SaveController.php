@@ -69,7 +69,7 @@ final class SaveController extends SimpleControllerBase
     public function saveAction(): bool
     {
         $configData = $this->config->getConfigData();
-        $eventMessage = EventMessage::factory();
+        $eventMessage = EventMessage::build();
 
         try {
             $this->handleGeneralConfig($configData);

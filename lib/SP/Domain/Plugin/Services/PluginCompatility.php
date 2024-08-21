@@ -69,7 +69,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
                 'plugin.check.version',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(
                                     sprintf(
                                         __('Plugin version not compatible (%s)'),
@@ -85,7 +85,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
                 'plugin.edit.disable',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDetail(__('Plugin disabled'), $plugin->getName())
                 )
             );
@@ -97,7 +97,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
             'plugin.check.version',
             new Event(
                 $this,
-                EventMessage::factory()
+                EventMessage::build()
                             ->addDescription(
                                 sprintf(
                                     __('Plugin version compatible (%s)'),

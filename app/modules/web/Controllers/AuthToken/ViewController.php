@@ -65,7 +65,7 @@ final class ViewController extends AuthTokenViewBase
                 'show.authToken',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Authorization viewed'))
                         ->addDetail(__u('Authorization'), $id)
                 )

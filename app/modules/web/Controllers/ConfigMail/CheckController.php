@@ -80,7 +80,7 @@ final class CheckController extends SimpleControllerBase
                 'send.mail.check',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Email sent'))
                         ->addDetail(__u('Recipient'), $mailRecipients[0])
                 )
@@ -101,7 +101,7 @@ final class CheckController extends SimpleControllerBase
     }
 
     /**
-     * @return \SP\Domain\Notification\Dtos\MailParams
+     * @return MailParams
      */
     private function handleMailConfig(): MailParams
     {

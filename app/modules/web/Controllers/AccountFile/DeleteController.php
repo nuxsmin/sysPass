@@ -60,7 +60,7 @@ final class DeleteController extends AccountFileBase
 
                 $this->eventDispatcher->notify(
                     'delete.accountFile.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Files deleted')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Files deleted')))
                 );
 
                 return $this->returnJsonResponse(0, __u('Files deleted'));
@@ -70,7 +70,7 @@ final class DeleteController extends AccountFileBase
                 'delete.accountFile',
                 new Event(
                     $this,
-                    EventMessage::factory()->addDescription(__u('File deleted'))->addDetail(__u('File'), $id)
+                    EventMessage::build()->addDescription(__u('File deleted'))->addDetail(__u('File'), $id)
                 )
             );
 

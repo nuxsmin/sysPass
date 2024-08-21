@@ -74,7 +74,7 @@ final class SaveEditController extends CustomFieldSaveBase
                 'edit.customField',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Field updated'))
                         ->addDetail(__u('Field'), $itemData->getName())
                 )

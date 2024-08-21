@@ -136,10 +136,13 @@ final class AccountHistory extends Service implements AccountHistoryService
      * @param int[] $ids
      *
      * @return int
+     * @throws ServiceException
      */
     public function deleteByIdBatch(array $ids): int
     {
-        return $this->accountHistoryRepository->deleteByIdBatch($ids);
+        return $this->accountHistoryRepository->transactionAware(function () use ($ids) {
+            return $this->accountHistoryRepository->deleteByIdBatch($ids);
+        }, $this);
     }
 
     /**

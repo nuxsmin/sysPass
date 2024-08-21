@@ -26,15 +26,16 @@ namespace SP\Modules\Web\Controllers\AccountHistoryManager;
 
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountHistoryService;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers;
-use SP\Modules\Web\Controllers\Helpers\Grid\AccountHistoryGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -51,18 +52,16 @@ final class SearchController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountHistoryService $accountHistoryService;
-    private AccountHistoryGrid    $accountHistoryGrid;
-
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application           $application,
-        WebControllerHelper   $webControllerHelper,
-        AccountHistoryService $accountHistoryService,
-        Helpers\Grid\AccountHistoryGrid $accountHistoryGrid
+        Application                                      $application,
+        WebControllerHelper                              $webControllerHelper,
+        private readonly AccountHistoryService           $accountHistoryService,
+        private readonly Helpers\Grid\AccountHistoryGrid $accountHistoryGrid
     ) {
-        $this->accountHistoryService = $accountHistoryService;
-        $this->accountHistoryGrid = $accountHistoryGrid;
-
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();

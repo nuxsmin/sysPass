@@ -81,7 +81,7 @@ final class Upgrade extends Service implements UpgradeService
             sprintf('upgrade.%s.start', $class),
             new Event(
                 $this,
-                EventMessage::factory()->addDescription(__u('Update'))->addDetail('type', $class)
+                EventMessage::build()->addDescription(__u('Update'))->addDetail('type', $class)
             )
         );
 
@@ -102,7 +102,7 @@ final class Upgrade extends Service implements UpgradeService
             sprintf('upgrade.%s.end', $class),
             new Event(
                 $this,
-                EventMessage::factory()->addDescription(__u('Update'))->addDetail('type', $class)
+                EventMessage::build()->addDescription(__u('Update'))->addDetail('type', $class)
             )
         );
     }

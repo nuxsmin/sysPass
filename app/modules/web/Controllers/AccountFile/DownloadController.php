@@ -57,7 +57,7 @@ final class DownloadController extends AccountFileBase
                 'download.accountFile',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('File downloaded'))
                         ->addDetail(__u('File'), $fileDto->name)
                 )

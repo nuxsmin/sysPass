@@ -64,7 +64,7 @@ final class SaveEditController extends NotificationSaveBase
 
             $this->eventDispatcher->notify(
                 'edit.notification',
-                new Event($this, EventMessage::factory()->addDescription(__u('Notification updated')))
+                new Event($this, EventMessage::build()->addDescription(__u('Notification updated')))
             );
 
             return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Notification updated'));

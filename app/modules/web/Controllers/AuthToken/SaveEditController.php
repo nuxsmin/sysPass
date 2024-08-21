@@ -66,7 +66,7 @@ final class SaveEditController extends AuthTokenSaveBase
                     'refresh.authToken',
                     new Event(
                         $this,
-                        EventMessage::factory()
+                        EventMessage::build()
                             ->addDescription(__u('Authorization updated'))
                             ->addDetail(__u('Authorization'), $id)
                     )
@@ -78,7 +78,7 @@ final class SaveEditController extends AuthTokenSaveBase
                     'edit.authToken',
                     new Event(
                         $this,
-                        EventMessage::factory()
+                        EventMessage::build()
                             ->addDescription(__u('Authorization updated'))
                             ->addDetail(__u('Authorization'), $id)
                     )

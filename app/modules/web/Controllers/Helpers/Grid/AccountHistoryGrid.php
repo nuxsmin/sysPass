@@ -24,9 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Html\DataGrid\Action\DataGridActionType;
@@ -37,11 +35,10 @@ use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Infrastructure\Database\QueryResult;
 
 use function SP\__;
+use function SP\getElapsedTime;
 
 /**
  * Class AccountHistoryGrid
- *
- * @package SP\Modules\Web\Controllers\Helpers\Grid
  */
 final class AccountHistoryGrid extends GridBase
 {
@@ -111,9 +108,6 @@ final class AccountHistoryGrid extends GridBase
         return $gridHeader;
     }
 
-    /**
-     * @throws SPException
-     */
     protected function getData(): DataGridData
     {
         // Grid Data
@@ -153,7 +147,7 @@ final class AccountHistoryGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ACCOUNTMGR_HISTORY_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::ACCOUNTMGR_HISTORY_SEARCH)
         );
 
         return $gridActionSearch;
@@ -173,7 +167,7 @@ final class AccountHistoryGrid extends GridBase
         $gridAction->setOnClickFunction('accountManager/restore');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ACCOUNTMGR_HISTORY_RESTORE)
+            $this->acl->getRouteFor(AclActionsInterface::ACCOUNTMGR_HISTORY_RESTORE)
         );
 
         return $gridAction;
@@ -193,7 +187,7 @@ final class AccountHistoryGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ACCOUNTMGR_HISTORY_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::ACCOUNTMGR_HISTORY_DELETE)
         );
 
         return $gridAction;

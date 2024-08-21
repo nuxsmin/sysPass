@@ -65,7 +65,7 @@ final class DeleteController extends UserGroupSaveBase
 
                 $this->eventDispatcher->notify(
                     'delete.userGroup.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Groups deleted')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Groups deleted')))
                 );
 
                 $this->deleteCustomFieldsForItem(AclActionsInterface::GROUP, $id, $this->customFieldService);
@@ -79,7 +79,7 @@ final class DeleteController extends UserGroupSaveBase
                 'delete.userGroup',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Group deleted'))
                         ->addDetail(__u('Group'), $id)
                         ->addExtra('userGroupId', $id)

@@ -56,7 +56,7 @@ final class SaveCreateController extends AccountSaveBase
                 'create.account',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Account created'))
                                 ->addDetail(__u('Account'), $accountView->getName())
                                 ->addDetail(__u('Client'), $accountView->getClientName())

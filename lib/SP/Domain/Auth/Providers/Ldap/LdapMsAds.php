@@ -126,7 +126,7 @@ final class LdapMsAds extends LdapBase
                 'ldap.check.group',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('User in group verified'))
                                 ->addDetail(__u('User'), $userLogin)
                                 ->addDetail(__u('Group'), $this->ldapParams->getGroup())
@@ -156,7 +156,7 @@ final class LdapMsAds extends LdapBase
                 'ldap.check.group',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('User does not belong to the group'))
                                 ->addDetail(__u('User'), $userLogin)
                                 ->addDetail(__u('Group'), $groupDn)
@@ -171,7 +171,7 @@ final class LdapMsAds extends LdapBase
             'ldap.check.group',
             new Event(
                 $this,
-                EventMessage::factory()
+                EventMessage::build()
                             ->addDescription(__u('User in group verified'))
                             ->addDetail(__u('User'), $userLogin)
                             ->addDetail(__u('Group'), $groupDn)

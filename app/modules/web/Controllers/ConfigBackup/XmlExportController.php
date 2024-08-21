@@ -80,7 +80,7 @@ final class XmlExportController extends SimpleControllerBase
         try {
             $this->eventDispatcher->notify(
                 'run.export.start',
-                new Event($this, EventMessage::factory()->addDescription(__u('sysPass XML export')))
+                new Event($this, EventMessage::build()->addDescription(__u('sysPass XML export')))
             );
 
             Session::close();
@@ -92,7 +92,7 @@ final class XmlExportController extends SimpleControllerBase
 
             $this->eventDispatcher->notify(
                 'run.export.end',
-                new Event($this, EventMessage::factory()->addDescription(__u('Export process finished')))
+                new Event($this, EventMessage::build()->addDescription(__u('Export process finished')))
             );
 
             if (!empty($exportPassword)) {
@@ -108,7 +108,7 @@ final class XmlExportController extends SimpleControllerBase
                 'run.export.verify',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Verification of exported data finished'))
                         ->addDetail(__u('Version'), $verifyResult->getVersion())
                         ->addDetail(__u('Encrypted'), $verifyResult->isEncrypted() ? __u('Yes') : __u('No'))

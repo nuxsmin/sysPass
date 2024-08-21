@@ -54,7 +54,7 @@ class MailEventTest extends UnitaryTestCase
 
     public function testUpdate()
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('email', ['an_email']);
@@ -92,7 +92,7 @@ class MailEventTest extends UnitaryTestCase
     {
         $this->configData->setMailRecipients(['an_email']);
 
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value');
 
@@ -127,7 +127,7 @@ class MailEventTest extends UnitaryTestCase
 
     public function testUpdateWithNoEmail()
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value');
 
@@ -142,7 +142,7 @@ class MailEventTest extends UnitaryTestCase
 
     public function testUpdateWithNoDescriptionAndDetails()
     {
-        $eventMessage = EventMessage::factory()->setExtra('email', ['an_email']);
+        $eventMessage = EventMessage::build()->setExtra('email', ['an_email']);
 
         $event = new Event($this, $eventMessage);
 
@@ -175,7 +175,7 @@ class MailEventTest extends UnitaryTestCase
 
     public function testUpdateWithEmptyRecipients()
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('email', ['an_email', '']);
@@ -211,7 +211,7 @@ class MailEventTest extends UnitaryTestCase
 
     public function testUpdateWithException()
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value')
                                     ->addExtra('email', ['an_email']);

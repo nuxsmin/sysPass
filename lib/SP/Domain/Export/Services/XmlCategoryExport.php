@@ -57,7 +57,7 @@ final class XmlCategoryExport extends XmlExportEntityBase
         try {
             $this->eventDispatcher->notify(
                 'run.export.process.category',
-                new Event($this, EventMessage::factory()->addDescription(__u('Exporting categories')))
+                new Event($this, EventMessage::build()->addDescription(__u('Exporting categories')))
             );
 
             $categories = $this->categoryService->getAll();

@@ -126,7 +126,7 @@ final readonly class LdapAuth implements LdapAuthService
                 'ldap.getAttributes',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Error while searching the user on LDAP'))
                                 ->addDetail(
                                     'LDAP FILTER',

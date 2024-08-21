@@ -80,7 +80,7 @@ final class SaveEditRestoreController extends AccountControllerBase
                 'edit.account.restore',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Account restored'))
                                 ->addDetail(__u('Account'), $accountDetails->getName())
                                 ->addDetail(__u('Client'), $accountDetails->getClientName())

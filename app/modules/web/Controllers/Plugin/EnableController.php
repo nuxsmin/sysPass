@@ -72,7 +72,7 @@ final class EnableController extends ControllerBase
 
             $this->eventDispatcher->notify(
                 'edit.plugin.enable',
-                new Event($this, EventMessage::factory()->addDescription(__u('Plugin enabled')))
+                new Event($this, EventMessage::build()->addDescription(__u('Plugin enabled')))
             );
 
             return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Plugin enabled'));

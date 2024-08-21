@@ -69,7 +69,7 @@ final class SaveEditController extends ClientSaveBase
                 'edit.client',
                 new Event(
                     $this,
-                    EventMessage::factory()->addDescription(__u('Client updated'))->addDetail(__u('Client'), $id)
+                    EventMessage::build()->addDescription(__u('Client updated'))->addDetail(__u('Client'), $id)
                 )
             );
 

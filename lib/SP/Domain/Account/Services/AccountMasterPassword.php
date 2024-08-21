@@ -74,7 +74,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 'update.masterPassword.accounts.start',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Update Master Password'))
                 )
             );
@@ -123,7 +123,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
         $startTime = time();
         $numAccounts = count($accounts);
 
-        $eventMessage = EventMessage::factory();
+        $eventMessage = EventMessage::build();
 
         if ($numAccounts === 0) {
             $eventMessage->addDescription(__u('There are no accounts for processing'));
@@ -225,7 +225,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 'update.masterPassword.accountsHistory.start',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Update Master Password (H)'))
                 )
             );

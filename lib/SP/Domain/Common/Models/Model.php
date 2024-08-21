@@ -28,16 +28,16 @@ namespace SP\Domain\Common\Models;
 
 use ArrayAccess;
 use Error;
-use JsonException;
 use JsonSerializable;
-use SP\Domain\Common\Adapters\Serde;
-use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Common\Adapters\PrintableTrait;
 
 /**
  * Class Model
  */
 abstract class Model implements JsonSerializable, ArrayAccess
 {
+    use PrintableTrait;
+
     /**
      * Dynamically declared properties. Must not be class' properties
      */
@@ -156,31 +156,6 @@ abstract class Model implements JsonSerializable, ArrayAccess
     final public function mutate(array $properties): static
     {
         return new static(array_merge($this->toArray(), $properties));
-    }
-
-    /**
-     * Convert the model to its string representation.
-     *
-     * @return string
-     * @throws JsonException
-     * @throws SPException
-     */
-    public function __toString()
-    {
-        return $this->toJson();
-    }
-
-    /**
-     * Convert the model instance to JSON.
-     *
-     * @param int $options
-     *
-     * @return string
-     * @throws SPException
-     */
-    public function toJson(int $options = 0): string
-    {
-        return Serde::serializeJson($this, $options);
     }
 
     /**

@@ -83,7 +83,7 @@ abstract class BaseRepository implements Repository
 
                 $this->eventDispatcher->notify(
                     'database.rollback',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Rollback')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Rollback')))
                 );
                 $this->eventDispatcher->notify('exception', new Event($e));
 

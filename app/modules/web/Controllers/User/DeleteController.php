@@ -67,7 +67,7 @@ final class DeleteController extends UserSaveBase
                     'delete.user.selection',
                     new Event(
                         $this,
-                        EventMessage::factory()
+                        EventMessage::build()
                             ->addDescription(__u('Users deleted'))
                             ->setExtra('userId', $this->getItemsIdFromRequest($this->request))
                     )
@@ -86,7 +86,7 @@ final class DeleteController extends UserSaveBase
                 'delete.user',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('User deleted'))
                         ->addDetail(__u('User'), $id)
                         ->addExtra('userId', $id)

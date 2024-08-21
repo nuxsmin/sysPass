@@ -71,7 +71,7 @@ final class SaveEditController extends UserSaveBase
                 'edit.user',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('User updated'))
                         ->addDetail(__u('User'), $itemData->getName())
                         ->addExtra('userId', $id)

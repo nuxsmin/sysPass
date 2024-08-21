@@ -68,7 +68,7 @@ final class ViewController extends AccountBase
                 'show.account',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Account displayed'))
                         ->addDetail(__u('Name'), $accountDetails->getName())
                         ->addDetail(__u('Client'), $accountDetails->getClientName())

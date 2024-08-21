@@ -77,7 +77,7 @@ final class RefreshController extends SimpleControllerBase
 
             $this->eventDispatcher->notify(
                 'refresh.masterPassword.hash',
-                new Event($this, EventMessage::factory()->addDescription(__u('Master password hash updated')))
+                new Event($this, EventMessage::build()->addDescription(__u('Master password hash updated')))
             );
 
             return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Master password hash updated'));

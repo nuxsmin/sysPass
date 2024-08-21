@@ -58,7 +58,7 @@ final class XmlClientExport extends XmlExportEntityBase
         try {
             $this->eventDispatcher->notify(
                 'run.export.process.client',
-                new Event($this, EventMessage::factory()->addDescription(__u('Exporting clients')))
+                new Event($this, EventMessage::build()->addDescription(__u('Exporting clients')))
             );
 
             $clients = $this->clientService->getAll();

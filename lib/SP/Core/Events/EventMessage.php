@@ -48,11 +48,38 @@ class EventMessage implements MessageInterface
     private array $extra              = [];
 
     /**
+     * @param string|null $description
      * @return EventMessage
      */
-    public static function factory(): EventMessage
+    public static function build(?string $description = null): EventMessage
     {
-        return new self();
+        $eventMessage = new self();
+
+        if ($description) {
+            $eventMessage->addDescription($description);
+        }
+
+        return $eventMessage;
+    }
+
+    /**
+     * Establece la descripción de la acción realizada
+     */
+    public function addDescription(string $description = ''): EventMessage
+    {
+        $this->description[] = $this->formatString($description);
+
+        $this->descriptionCounter++;
+
+        return $this;
+    }
+
+    /**
+     * Formatear una cadena para guardarla en el registro
+     */
+    private function formatString(string $string): string
+    {
+        return strip_tags($string);
     }
 
     /**
@@ -67,26 +94,6 @@ class EventMessage implements MessageInterface
         $this->details[] = [$this->formatString($key), $this->formatString((string)$value)];
 
         $this->detailsCounter++;
-
-        return $this;
-    }
-
-    /**
-     * Formatear una cadena para guardarla en el registro
-     */
-    private function formatString(string $string): string
-    {
-        return strip_tags($string);
-    }
-
-    /**
-     * Establece la descripción de la acción realizada
-     */
-    public function addDescription(string $description = ''): EventMessage
-    {
-        $this->description[] = $this->formatString($description);
-
-        $this->descriptionCounter++;
 
         return $this;
     }

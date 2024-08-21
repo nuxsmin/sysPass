@@ -72,7 +72,7 @@ final class DisableController extends ControllerBase
 
             $this->eventDispatcher->notify(
                 'edit.plugin.disable',
-                new Event($this, EventMessage::factory()->addDescription(__u('Plugin disabled')))
+                new Event($this, EventMessage::build()->addDescription(__u('Plugin disabled')))
             );
 
             return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Plugin disabled'));

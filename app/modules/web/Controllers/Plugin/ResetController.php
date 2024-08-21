@@ -76,7 +76,7 @@ final class ResetController extends ControllerBase
 
             $this->eventDispatcher->notify(
                 'edit.plugin.reset',
-                new Event($this, EventMessage::factory()->addDescription(__u('Plugin reset')))
+                new Event($this, EventMessage::build()->addDescription(__u('Plugin reset')))
             );
 
             return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Plugin reset'));

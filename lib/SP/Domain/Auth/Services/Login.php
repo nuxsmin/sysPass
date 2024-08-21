@@ -151,7 +151,7 @@ final class Login extends LoginBase implements LoginService
 
             $this->eventDispatcher->notify(
                 'login.session.load',
-                new Event($this, EventMessage::factory()->addDetail(__u('User'), $userDataDto->login))
+                new Event($this, EventMessage::build()->addDetail(__u('User'), $userDataDto->login))
             );
         } catch (ConstraintException|NoSuchItemException|QueryException $e) {
             throw ServiceException::from($e);

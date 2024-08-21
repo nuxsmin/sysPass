@@ -105,7 +105,7 @@ final class Database implements DatabaseInterface
 
             $this->eventDispatcher->notify(
                 'database.query',
-                new Event($this, EventMessage::factory()->addDescription($query->getStatement()))
+                new Event($this, EventMessage::build()->addDescription($query->getStatement()))
             );
 
             if ($query instanceof SelectInterface) {
@@ -253,7 +253,7 @@ final class Database implements DatabaseInterface
                 'database.transaction.begin',
                 new Event(
                     $this,
-                    EventMessage::factory()->addExtra('result', $result)
+                    EventMessage::build()->addExtra('result', $result)
                 )
             );
 
@@ -280,7 +280,7 @@ final class Database implements DatabaseInterface
             'database.transaction.end',
             new Event(
                 $this,
-                EventMessage::factory()->addExtra('result', $result)
+                EventMessage::build()->addExtra('result', $result)
             )
         );
 
@@ -302,7 +302,7 @@ final class Database implements DatabaseInterface
             'database.transaction.rollback',
             new Event(
                 $this,
-                EventMessage::factory()->addExtra('result', $result)
+                EventMessage::build()->addExtra('result', $result)
             )
         );
 

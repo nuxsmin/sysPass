@@ -48,7 +48,7 @@ class NotificationEventTest extends UnitaryTestCase
 
     public function testUpdateWithRequestAccount()
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('userId', [100, 200]);
@@ -79,7 +79,7 @@ class NotificationEventTest extends UnitaryTestCase
 
     public function testUpdateWithRequestAccountAndNoUserId()
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value');
 
@@ -94,7 +94,7 @@ class NotificationEventTest extends UnitaryTestCase
 
     public function testUpdateWithRequestAccountAndException()
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('userId', [100, 200]);
@@ -113,7 +113,7 @@ class NotificationEventTest extends UnitaryTestCase
 
     public function testUpdateWithShowLink()
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('notify', [true])
@@ -138,7 +138,7 @@ class NotificationEventTest extends UnitaryTestCase
 
     public function testUpdateWithShowLinkAndException()
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('notify', [true])
@@ -156,7 +156,7 @@ class NotificationEventTest extends UnitaryTestCase
 
     public function testUpdateWithShowLinkAndNoNotify()
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('userId', [100]);
@@ -172,7 +172,7 @@ class NotificationEventTest extends UnitaryTestCase
 
     public function testUpdateWithShowLinkAndFalseNoNotify()
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('notify', [false])
@@ -189,7 +189,7 @@ class NotificationEventTest extends UnitaryTestCase
 
     public function testUpdateWithShowLinkAndNoUserId()
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('notify', [true]);

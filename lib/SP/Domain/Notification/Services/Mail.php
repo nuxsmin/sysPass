@@ -160,7 +160,7 @@ final class Mail extends Service implements MailService
                 'send.mail',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Email sent'))
                         ->addDetail(
                             __u('Recipient'),

@@ -54,7 +54,7 @@ final class DeleteController extends CategoryBase
                 'delete.category',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Category deleted'))
                         ->addDetail(__u('Name'), $categoryData->getName())
                         ->addDetail('ID', $categoryData->getId())

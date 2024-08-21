@@ -78,7 +78,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
      */
     public function testUpdate()
     {
-        $eventMessage = EventMessage::factory()->addDescription('a_description')->addDetail('a_detail', 'a_value');
+        $eventMessage = EventMessage::build()->addDescription('a_description')->addDetail('a_detail', 'a_value');
         $event = new Event($this, $eventMessage);
 
         $this->language

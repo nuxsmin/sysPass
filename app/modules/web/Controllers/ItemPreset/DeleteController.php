@@ -65,7 +65,7 @@ final class DeleteController extends ItemPresetSaveBase
 
                 $this->eventDispatcher->notify(
                     'delete.itemPreset',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Values deleted')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Values deleted')))
                 );
 
                 return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Values deleted'));
@@ -77,7 +77,7 @@ final class DeleteController extends ItemPresetSaveBase
                 'delete.itemPreset',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Value deleted'))
                         ->addDetail(__u('ID'), $id)
                 )

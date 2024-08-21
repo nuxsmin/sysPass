@@ -61,7 +61,7 @@ final class PluginLoader extends Service implements PluginLoaderService
                 'plugin.load',
                 new Event(
                     $e,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDetail(__('Plugin not registered'), $plugin->getName())
                 )
             );
@@ -76,7 +76,7 @@ final class PluginLoader extends Service implements PluginLoaderService
                 'plugin.load',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDetail(__('Plugin loaded'), $plugin->getName())
                 )
             );
@@ -85,7 +85,7 @@ final class PluginLoader extends Service implements PluginLoaderService
                 'plugin.load',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDetail(__('Plugin not loaded (disabled)'), $plugin->getName())
                 )
             );

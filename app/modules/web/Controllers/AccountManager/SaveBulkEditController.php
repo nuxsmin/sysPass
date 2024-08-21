@@ -101,7 +101,7 @@ final class SaveBulkEditController extends ControllerBase
 
             $this->eventDispatcher->notify(
                 'edit.account.bulk',
-                new Event($this, EventMessage::factory()->addDescription(__u('Accounts updated')))
+                new Event($this, EventMessage::build()->addDescription(__u('Accounts updated')))
             );
 
             return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Accounts updated'));

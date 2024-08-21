@@ -71,7 +71,7 @@ class LogHandlerTest extends UnitaryTestCase
             ->with(true)
             ->willReturn($ipv4);
 
-        $eventMessage = EventMessage::factory()->addDescription('test');
+        $eventMessage = EventMessage::build()->addDescription('test');
         $event = new Event($this, $eventMessage);
 
         $this->logger

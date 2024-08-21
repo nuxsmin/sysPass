@@ -76,7 +76,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
      */
     public function authDatabase(DatabaseAuthData $authData, UserLoginDto $userLoginDto): void
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDetail(__u('Type'), AuthType::Database->value)
                                     ->addDetail(__u('User'), $userLoginDto->getLoginUser());
 
@@ -108,7 +108,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
     {
         $authType = $this->request->getServer('AUTH_TYPE') ?: __('N/A');
 
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDetail(__u('Type'), AuthType::Browser->value)
                                     ->addDetail(__u('User'), $userLoginDto->getLoginUser())
                                     ->addDetail(
@@ -162,7 +162,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
      */
     public function authLdap(LdapAuthData $authData, UserLoginDto $userLoginDto): void
     {
-        $eventMessage = EventMessage::factory()
+        $eventMessage = EventMessage::build()
                                     ->addDetail(__u('Type'), AuthType::Ldap->value)
                                     ->addDetail(__u('LDAP Server'), $authData->getServer())
                                     ->addDetail(__u('User'), $userLoginDto->getLoginUser());

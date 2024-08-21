@@ -84,7 +84,7 @@ final class BackupFile extends Service implements BackupFileService
 
             $this->eventDispatcher->notify(
                 'run.backup.start',
-                new Event($this, EventMessage::factory()->addDescription(__u('Make Backup')))
+                new Event($this, EventMessage::build()->addDescription(__u('Make Backup')))
             );
 
             $configData = $this->config->getConfigData();
@@ -129,7 +129,7 @@ final class BackupFile extends Service implements BackupFileService
             'run.backup.process',
             new Event(
                 $this,
-                EventMessage::factory()->addDescription(__u('Copying database'))
+                EventMessage::build()->addDescription(__u('Copying database'))
             )
         );
 
@@ -265,7 +265,7 @@ final class BackupFile extends Service implements BackupFileService
     {
         $this->eventDispatcher->notify(
             'run.backup.process',
-            new Event($this, EventMessage::factory()->addDescription(__u('Copying application')))
+            new Event($this, EventMessage::build()->addDescription(__u('Copying application')))
         );
 
         $this->appArchiveHandler->compressDirectory($directory, self::BACKUP_INCLUDE_REGEX);

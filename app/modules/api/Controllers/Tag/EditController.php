@@ -54,7 +54,7 @@ final class EditController extends TagBase
                 'edit.tag',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Tag updated'))
                         ->addDetail(__u('Name'), $tagData->getName())
                         ->addDetail('ID', $tagData->getId())

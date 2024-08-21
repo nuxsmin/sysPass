@@ -54,7 +54,7 @@ final class DeleteController extends ClientBase
                 'delete.client',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Client deleted'))
                         ->addDetail(__u('Name'), $clientData->getName())
                         ->addDetail('ID', $id)

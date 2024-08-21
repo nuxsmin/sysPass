@@ -57,7 +57,7 @@ final class CreateController extends AccountBase
                 'create.account',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Account created'))
                         ->addDetail(__u('Name'), $accountDetails->getName())
                         ->addDetail(__u('Client'), $accountDetails->getClientName())

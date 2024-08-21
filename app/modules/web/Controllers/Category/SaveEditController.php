@@ -65,7 +65,7 @@ final class SaveEditController extends CategorySaveBase
                 'edit.category',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Category updated'))
                         ->addDetail(__u('Category'), $itemData->getName())
                 )

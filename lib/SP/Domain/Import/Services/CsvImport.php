@@ -73,7 +73,7 @@ final class CsvImport extends ImportBase implements ItemsImportService
             'run.import.csv',
             new Event(
                 $this,
-                EventMessage::factory()
+                EventMessage::build()
                             ->addDescription(sprintf(__('Detected format: %s'), 'CSV'))
             )
         );
@@ -136,7 +136,7 @@ final class CsvImport extends ImportBase implements ItemsImportService
                     'run.import.csv.process.account',
                     new Event(
                         $this,
-                        EventMessage::factory()
+                        EventMessage::build()
                                     ->addDetail(__u('Account imported'), $accountName)
                                     ->addDetail(__u('Client'), $clientName)
                     )
@@ -148,7 +148,7 @@ final class CsvImport extends ImportBase implements ItemsImportService
                     'exception',
                     new Event(
                         $e,
-                        EventMessage::factory()
+                        EventMessage::build()
                                     ->addDetail(__u('Error while importing the account'), $accountName)
                                     ->addDetail(__u('Error while processing line'), $line)
                     )

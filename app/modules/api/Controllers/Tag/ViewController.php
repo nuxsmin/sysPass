@@ -50,7 +50,8 @@ final class ViewController extends TagBase
 
             $this->eventDispatcher->notify(
                 'show.tag',
-                new Event($this, EventMessage::factory()
+                new Event(
+                    $this, EventMessage::build()
                     ->addDescription(__u('Tag displayed'))
                     ->addDetail(__u('Name'), $tagData->getName())
                     ->addDetail('ID', $id)

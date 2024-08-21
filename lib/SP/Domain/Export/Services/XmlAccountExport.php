@@ -61,7 +61,7 @@ final class XmlAccountExport extends XmlExportEntityBase
         try {
             $this->eventDispatcher->notify(
                 'run.export.process.account',
-                new Event($this, EventMessage::factory()->addDescription(__u('Exporting accounts')))
+                new Event($this, EventMessage::build()->addDescription(__u('Exporting accounts')))
             );
 
             $accounts = $this->accountService->getAllBasic();

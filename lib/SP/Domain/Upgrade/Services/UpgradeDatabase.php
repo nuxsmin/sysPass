@@ -70,7 +70,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
 
             $this->eventDispatcher->notify(
                 'upgrade.db.process',
-                new Event($this, EventMessage::factory()->addDetail(__u('Version'), $version))
+                new Event($this, EventMessage::build()->addDetail(__u('Version'), $version))
             );
 
             try {
@@ -84,7 +84,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
                     'exception',
                     new Event(
                         $this,
-                        EventMessage::factory()
+                        EventMessage::build()
                             ->addDescription(__u('Error while updating the database'))
                             ->addDetail('ERROR', sprintf('%s (%s)', $e->getMessage(), $e->getCode()))
                     )
@@ -106,7 +106,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
             'upgrade.db.process',
             new Event(
                 $this,
-                EventMessage::factory()->addDescription(__u('Database updating was completed successfully.'))
+                EventMessage::build()->addDescription(__u('Database updating was completed successfully.'))
             )
         );
 

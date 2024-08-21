@@ -78,7 +78,7 @@ final class ImportController extends SimpleControllerBase
 
             $this->eventDispatcher->notify(
                 'import.ldap.start',
-                new Event($this, EventMessage::factory()->addDescription(__u('LDAP Import')))
+                new Event($this, EventMessage::build()->addDescription(__u('LDAP Import')))
             );
 
             $userImportResults = $this->ldapImportService->importUsers($ldapParams, $ldapImportParams);
@@ -91,7 +91,7 @@ final class ImportController extends SimpleControllerBase
 
             $this->eventDispatcher->notify(
                 'import.ldap.end',
-                new Event($this, EventMessage::factory()->addDescription(__u('Import finished')))
+                new Event($this, EventMessage::build()->addDescription(__u('Import finished')))
             );
 
             if ($totalObjects === 0) {

@@ -54,7 +54,7 @@ final class EditController extends ClientBase
                 'edit.client',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Client updated'))
                         ->addDetail(__u('Name'), $clientData->getName())
                         ->addDetail('ID', $clientData->getId())

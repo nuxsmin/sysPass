@@ -65,7 +65,7 @@ final class DeleteController extends CustomFieldSaveBase
 
                 $this->eventDispatcher->notify(
                     'delete.customField.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Fields deleted')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Fields deleted')))
                 );
 
                 return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Fields deleted'));

@@ -67,7 +67,7 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
                 'plugin.upgrade',
                 new Event(
                     $e,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDetail(__('Plugin not registered'), $plugin->getName())
                 )
             );
@@ -82,7 +82,7 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
                 'plugin.upgrade.process',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Upgrading plugin'))
                                 ->addDetail(__u('Name'), $plugin->getName())
                 )
@@ -96,7 +96,7 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
                 'plugin.upgrade.process',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Plugin upgraded'))
                                 ->addDetail(__u('Name'), $plugin->getName())
                 )

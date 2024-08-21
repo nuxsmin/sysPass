@@ -56,7 +56,7 @@ final class CreateController extends TagBase
                 'create.tag',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Tag added'))
                         ->addDetail(__u('Name'), $tagData->getName())
                         ->addDetail('ID', $id)

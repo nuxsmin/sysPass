@@ -54,7 +54,7 @@ final class DeleteController extends UserGroupBase
                 'delete.userGroup',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Group deleted'))
                         ->addDetail(__u('Name'), $userGroupData->getName())
                         ->addDetail('ID', $id)

@@ -78,7 +78,7 @@ final class SaveDeleteController extends AccountControllerBase
                 'delete.account',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Account removed'))
                                 ->addDetail(__u('Account'), $accountDetails->getName())
                                 ->addDetail(__u('Client'), $accountDetails->getClientName())

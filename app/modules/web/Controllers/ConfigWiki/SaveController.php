@@ -49,7 +49,7 @@ final class SaveController extends SimpleControllerBase
      */
     public function saveAction(): bool
     {
-        $eventMessage = EventMessage::factory();
+        $eventMessage = EventMessage::build();
         $configData = $this->config->getConfigData();
 
         $wikiEnabled = $this->request->analyzeBool('wiki_enabled', false);

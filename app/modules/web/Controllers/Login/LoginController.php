@@ -85,7 +85,7 @@ final class LoginController extends ControllerBase
 
             $this->eventDispatcher->notify(
                 'login.finish',
-                new Event($this, EventMessage::factory()->addExtra('redirect', $redirector))
+                new Event($this, EventMessage::build()->addExtra('redirect', $redirector))
             );
 
             return $this->returnJsonResponseData([
@@ -114,7 +114,7 @@ final class LoginController extends ControllerBase
                 'login.info',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDetail(
                             'Forwarded',
                             $this->configData->isDemoEnabled() ? '***' : implode(',', $forward)

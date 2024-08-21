@@ -64,7 +64,7 @@ final class DeleteController extends CategorySaveBase
                     'delete.category',
                     new Event(
                         $this,
-                        EventMessage::factory()->addDescription(__u('Categories deleted'))
+                        EventMessage::build()->addDescription(__u('Categories deleted'))
                     )
                 );
 
@@ -79,7 +79,7 @@ final class DeleteController extends CategorySaveBase
                 'delete.category',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Category deleted'))
                         ->addDetail(__u('Category'), $id)
                 )

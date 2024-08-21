@@ -80,7 +80,7 @@ final class FileBackupController extends SimpleControllerBase
                 'run.backup.end',
                 new Event(
                     $this,
-                    EventMessage::factory()->addDescription(
+                    EventMessage::build()->addDescription(
                         __u('Application and database backup completed successfully')
                     )
                 )

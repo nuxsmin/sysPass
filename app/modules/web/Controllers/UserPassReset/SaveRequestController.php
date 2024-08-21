@@ -73,7 +73,7 @@ final class SaveRequestController extends UserPassResetSaveBase
                 'request.user.passReset',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Password Recovery'))
                         ->addDetail(__u('Requested for'), sprintf('%s (%s)', $login, $email))
                 )

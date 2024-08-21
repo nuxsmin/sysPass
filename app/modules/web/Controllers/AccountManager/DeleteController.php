@@ -83,7 +83,7 @@ final class DeleteController extends ControllerBase
 
                 $this->eventDispatcher->notify(
                     'delete.account.selection',
-                    new Event($this, EventMessage::factory()->addDescription(__u('Accounts removed')))
+                    new Event($this, EventMessage::build()->addDescription(__u('Accounts removed')))
                 );
 
                 return $this->returnJsonResponseData(JsonMessage::JSON_SUCCESS, __u('Accounts removed'));
@@ -99,7 +99,7 @@ final class DeleteController extends ControllerBase
                 'delete.account',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Account removed'))
                         ->addDetail(__u('Account'), $accountDetails->getName())
                         ->addDetail(__u('Client'), $accountDetails->getClientName())

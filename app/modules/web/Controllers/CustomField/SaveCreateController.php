@@ -65,7 +65,7 @@ final class SaveCreateController extends CustomFieldSaveBase
                 'create.customField',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Field added'))
                         ->addDetail(__u('Field'), $itemData->getName())
                 )

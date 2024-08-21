@@ -67,7 +67,7 @@ final class SaveCreateController extends UserGroupSaveBase
                 'create.userGroup',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Group added'))
                         ->addDetail(__u('Name'), $groupData->getName())
                 )

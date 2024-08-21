@@ -71,7 +71,7 @@ final class SaveEditController extends UserProfileSaveBase
                 'edit.userProfile',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Profile updated'))
                         ->addDetail(__u('Name'), $profileData->getName())
                         ->addExtra('userProfileId', $id)

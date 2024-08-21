@@ -98,7 +98,7 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
                 'update.masterPassword.customFieldsData',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Update Master Password'))
                                 ->addDescription(__u('There aren\'t any data from custom fields'))
                 )
@@ -111,7 +111,7 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
             'update.masterPassword.customFieldsData.start',
             new Event(
                 $this,
-                EventMessage::factory()
+                EventMessage::build()
                             ->addDescription(__u('Update Master Password'))
                             ->addDescription(__u('Updating encrypted data'))
             )
@@ -141,7 +141,7 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
             'update.masterPassword.customFieldsData.end',
             new Event(
                 $this,
-                EventMessage::factory()
+                EventMessage::build()
                             ->addDescription(__u('Update Master Password'))
                             ->addDetail(__u('Records updated'), implode(',', $success))
                             ->addDetail(__u('Records not updated'), implode(',', $errors))

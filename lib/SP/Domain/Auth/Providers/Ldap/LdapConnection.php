@@ -107,7 +107,7 @@ final class LdapConnection implements LdapConnectionInterface
             'ldap.check.connection',
             new Event(
                 $this,
-                EventMessage::factory()
+                EventMessage::build()
                             ->addDescription(__u('LDAP connection OK'))
             )
         );
@@ -140,7 +140,7 @@ final class LdapConnection implements LdapConnectionInterface
                 'ldap.bind',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('LDAP connection error'))
                                 ->addDetail('LDAP ERROR', $this->ldap->getLastError())
                                 ->addDetail('LDAP DN', $username)

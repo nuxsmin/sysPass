@@ -54,7 +54,7 @@ final class SaveController extends SimpleControllerBase
     {
         $configData = $this->config->getConfigData();
 
-        $eventMessage = EventMessage::factory();
+        $eventMessage = EventMessage::build();
 
         try {
             $this->handleAccountsConfig($configData);

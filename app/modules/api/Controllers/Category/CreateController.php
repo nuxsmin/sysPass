@@ -56,7 +56,7 @@ final class CreateController extends CategoryBase
                 'create.category',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Category added'))
                         ->addDetail(__u('Name'), $categoryData->getName())
                         ->addDetail('ID', $id)

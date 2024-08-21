@@ -61,7 +61,7 @@ final class SaveEditController extends AccountSaveBase
                 'edit.account',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                                 ->addDescription(__u('Account updated'))
                                 ->addDetail(__u('Account'), $accountDetails->getName())
                                 ->addDetail(__u('Client'), $accountDetails->getClientName())

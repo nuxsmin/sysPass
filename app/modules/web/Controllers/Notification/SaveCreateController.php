@@ -57,7 +57,7 @@ final class SaveCreateController extends NotificationSaveBase
 
             $this->eventDispatcher->notify(
                 'create.notification',
-                new Event($this, EventMessage::factory()->addDescription(__u('Notification created')))
+                new Event($this, EventMessage::build()->addDescription(__u('Notification created')))
             );
 
             return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Notification created'));

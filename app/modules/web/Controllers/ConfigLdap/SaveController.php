@@ -55,7 +55,7 @@ final class SaveController extends SimpleControllerBase
     public function saveAction(): bool
     {
         try {
-            $eventMessage = EventMessage::factory();
+            $eventMessage = EventMessage::build();
             $configData = $this->config->getConfigData();
 
             $ldapEnabled = $this->request->analyzeBool('ldap_enabled', false);

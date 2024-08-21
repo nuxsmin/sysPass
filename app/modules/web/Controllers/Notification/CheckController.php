@@ -61,7 +61,7 @@ final class CheckController extends NotificationSaveBase
                 'check.notification',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Notification read'))
                         ->addDetail(__u('Notification'), $id)
                 )

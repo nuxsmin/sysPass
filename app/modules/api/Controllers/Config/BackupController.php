@@ -85,7 +85,7 @@ final class BackupController extends ControllerBase
                 'run.backup.end',
                 new Event(
                     $this,
-                    EventMessage::factory()
+                    EventMessage::build()
                         ->addDescription(__u('Application and database backup completed successfully'))
                         ->addDetail(__u('Path'), $path)
                 )

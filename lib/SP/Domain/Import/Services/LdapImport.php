@@ -77,7 +77,7 @@ final class LdapImport extends Service implements LdapImportService
 
         $this->eventDispatcher->notify(
             'import.ldap.groups',
-            new Event($this, EventMessage::factory()->addDetail(__u('Objects found'), $objects->getCount()))
+            new Event($this, EventMessage::build()->addDetail(__u('Objects found'), $objects->getCount()))
         );
 
         $iterator = $objects->getIterator();
@@ -97,7 +97,7 @@ final class LdapImport extends Service implements LdapImportService
                         'import.ldap.progress.groups',
                         new Event(
                             $this,
-                            EventMessage::factory()
+                            EventMessage::build()
                                         ->addDetail(__u('Group'), sprintf('%s', $userGroup['name']))
                         )
                     );
@@ -163,7 +163,7 @@ final class LdapImport extends Service implements LdapImportService
 
         $this->eventDispatcher->notify(
             'import.ldap.users',
-            new Event($this, EventMessage::factory()->addDetail(__u('Objects found'), $objects->getCount()))
+            new Event($this, EventMessage::build()->addDetail(__u('Objects found'), $objects->getCount()))
         );
 
         $iterator = $objects->getIterator();
@@ -189,7 +189,7 @@ final class LdapImport extends Service implements LdapImportService
                         'import.ldap.progress.users',
                         new Event(
                             $this,
-                            EventMessage::factory()
+                            EventMessage::build()
                                         ->addDetail(
                                             __u('User'),
                                             sprintf('%s (%s)', $user['name'], $user['login'])
