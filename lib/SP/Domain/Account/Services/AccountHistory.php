@@ -79,7 +79,6 @@ final class AccountHistory extends Service implements AccountHistoryService
      * @param int $id
      *
      * @return array Con los registros con id como clave y fecha - usuario como valor
-     * @throws SPException
      */
     public function getHistoryForAccount(int $id): array
     {
