@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
+use DateTime;
 use SP\Core\Application;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
@@ -149,7 +150,7 @@ final class AccountHistoryHelper extends AccountHelperBase
             $this->accountToUserService->getUsersByAccountId($this->accountId),
             $accountHistoryViewDto->userGroupId,
             $this->accountToUserGroupService->getUserGroupsByAccountId($this->accountId),
-            $accountHistoryViewDto->dateEdit
+            DateTime::createFromFormat('Y-m-d H:i:s', $accountHistoryViewDto->dateEdit)->getTimestamp()
         );
 
         $this->accountPermission = $this->accountAclService->getAcl($this->actionId, $acccountAclDto, true);

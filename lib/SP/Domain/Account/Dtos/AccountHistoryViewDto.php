@@ -35,15 +35,15 @@ final class AccountHistoryViewDto extends Dto
 {
 
     public function __construct(
-        public readonly ?int $userId,
-        public readonly ?int $userGroupId,
-        public readonly ?int $dateEdit,
-        public readonly ?int $accountId,
-        public readonly ?int $id,
-        public readonly ?int $passDateChange,
-        public readonly ?int $categoryId,
-        public readonly ?int $clientId,
-        public readonly ?int $passDate,
+        public readonly ?int    $userId,
+        public readonly ?int    $userGroupId,
+        public readonly ?string $dateEdit,
+        public readonly ?int    $accountId,
+        public readonly ?int    $id,
+        public readonly ?int    $passDateChange,
+        public readonly ?int    $categoryId,
+        public readonly ?int    $clientId,
+        public readonly ?int    $passDate,
     ) {
     }
 }
