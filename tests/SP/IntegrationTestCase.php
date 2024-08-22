@@ -37,6 +37,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionObject;
@@ -73,7 +74,6 @@ use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
 use SP\Mvc\View\OutputHandlerInterface;
-use SP\OutputChecker;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserProfileDataGenerator;
 use SP\Tests\Stubs\OutputHandlerStub;
@@ -253,9 +253,14 @@ abstract class IntegrationTestCase extends TestCase
     private function getOutputChecker(): ?Closure
     {
         $reflection = new ReflectionObject($this);
-        foreach ($reflection->getMethods(ReflectionMethod::IS_PRIVATE) as $method) {
-            if (count($method->getAttributes(OutputChecker::class)) > 0) {
-                return $method->getClosure($this);
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            if ($this->name() === $method->name) {
+                /** @var array<ReflectionAttribute<OutputChecker>> $attributes */
+                $attributes = $method->getAttributes(OutputChecker::class);
+
+                if (count($attributes) === 1) {
+                    return (new ReflectionMethod($this, $attributes[0]->newInstance()->target))->getClosure($this);
+                }
             }
         }
 

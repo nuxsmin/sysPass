@@ -39,9 +39,9 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
-use SP\Mvc\View\OutputHandlerInterface;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\IntegrationTestCase;
+use SP\Tests\OutputChecker;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -50,13 +50,12 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class AccountHistoryManagerTest extends IntegrationTestCase
 {
+    private array $definitions;
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     * @throws InvalidClassException
-     * @throws FileException
      * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
      */
     #[Test]
     public function deleteSingle()
@@ -66,10 +65,8 @@ class AccountHistoryManagerTest extends IntegrationTestCase
             new QueryResult([AccountDataGenerator::factory()->buildAccountHistoryData()])
         );
 
-        $definitions = $this->getModuleDefinitions();
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/delete/100'])
         );
 
@@ -79,11 +76,9 @@ class AccountHistoryManagerTest extends IntegrationTestCase
     }
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     * @throws InvalidClassException
-     * @throws FileException
      * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
      */
     #[Test]
     public function deleteMultiple()
@@ -93,10 +88,8 @@ class AccountHistoryManagerTest extends IntegrationTestCase
             new QueryResult([AccountDataGenerator::factory()->buildAccountHistoryData()])
         );
 
-        $definitions = $this->getModuleDefinitions();
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->definitions,
             $this->buildRequest(
                 'post',
                 'index.php',
@@ -111,11 +104,9 @@ class AccountHistoryManagerTest extends IntegrationTestCase
     }
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     * @throws InvalidClassException
-     * @throws FileException
      * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
      */
     #[Test]
     public function restoreModified()
@@ -146,10 +137,8 @@ class AccountHistoryManagerTest extends IntegrationTestCase
             return new QueryResult([], 1, 100);
         };
 
-        $definitions = $this->getModuleDefinitions();
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/restore/100'])
         );
 
@@ -159,11 +148,9 @@ class AccountHistoryManagerTest extends IntegrationTestCase
     }
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     * @throws InvalidClassException
-     * @throws FileException
      * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
      */
     #[Test]
     public function restoreDeleted()
@@ -194,10 +181,8 @@ class AccountHistoryManagerTest extends IntegrationTestCase
             return new QueryResult([], 1, 100);
         };
 
-        $definitions = $this->getModuleDefinitions();
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/restore/100'])
         );
 
@@ -207,13 +192,12 @@ class AccountHistoryManagerTest extends IntegrationTestCase
     }
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     * @throws InvalidClassException
-     * @throws FileException
      * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[OutputChecker('outputCheckerSearch')]
     public function search()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -229,25 +213,38 @@ class AccountHistoryManagerTest extends IntegrationTestCase
             )
         );
 
-        $definitions = $this->getModuleDefinitions();
-        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(function (string $output): void {
-            $crawler = new Crawler($output);
-            $filter = $crawler->filterXPath(
-                '//table/tbody[@id="data-rows-tblAccountsHistory"]//tr[string-length(@data-item-id) > 0]'
-            )
-                              ->extract(['data-item-id']);
-
-            assert(!empty($output));
-            assert(count($filter) === 2);
-
-            $this->assertTrue(true);
-        });
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/search'])
         );
 
         $this->runApp($container);
+    }
+
+    /**
+     * @throws FileException
+     * @throws InvalidClassException
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->definitions = $this->getModuleDefinitions();
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerSearch(string $output): void
+    {
+        $crawler = new Crawler($output);
+        $filter = $crawler->filterXPath(
+            '//table/tbody[@id="data-rows-tblAccountsHistory"]//tr[string-length(@data-item-id) > 0]'
+        )
+                          ->extract(['data-item-id']);
+
+        self::assertNotEmpty($output);
+        self::assertCount(2, $filter);
     }
 }

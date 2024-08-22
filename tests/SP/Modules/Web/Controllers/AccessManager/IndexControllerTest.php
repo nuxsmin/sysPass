@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Modules\Web\Controllers\AccessManager;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
@@ -35,8 +36,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\File\FileException;
-use SP\Mvc\View\OutputHandlerInterface;
 use SP\Tests\IntegrationTestCase;
+use SP\Tests\OutputChecker;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -52,24 +53,12 @@ class IndexControllerTest extends IntegrationTestCase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function testIndexAction()
+    #[Test]
+    #[OutputChecker('outputCheckerIndex')]
+    public function index()
     {
-        $definitions = $this->getModuleDefinitions();
-
-        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(function (string $output): void {
-            $crawler = new Crawler($output);
-            $filter = $crawler->filterXPath(
-                '//div[contains(@id, \'tabs-\')]//form'
-            )->extract(['id']);
-
-            assert(!empty($output));
-            assert(count($filter) === 5);
-
-            $this->assertTrue(true);
-        });
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->getModuleDefinitions(),
             $this->buildRequest('get', 'index.php', ['r' => 'accessManager/index'])
         );
 
@@ -95,5 +84,20 @@ class IndexControllerTest extends IntegrationTestCase
         $configData->method('isPublinksEnabled')->willReturn(true);
 
         return $configData;
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerIndex(string $output): void
+    {
+        $crawler = new Crawler($output);
+        $filter = $crawler->filterXPath(
+            '//div[contains(@id, \'tabs-\')]//form'
+        )->extract(['id']);
+
+        self::assertNotEmpty($output);
+        self::assertCount(5, $filter);
     }
 }

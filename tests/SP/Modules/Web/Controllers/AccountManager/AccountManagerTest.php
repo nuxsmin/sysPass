@@ -39,13 +39,13 @@ use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
-use SP\OutputChecker;
 use SP\Tests\Generators\CategoryGenerator;
 use SP\Tests\Generators\ClientGenerator;
 use SP\Tests\Generators\TagGenerator;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserGroupGenerator;
 use SP\Tests\IntegrationTestCase;
+use SP\Tests\OutputChecker;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -63,6 +63,7 @@ class AccountManagerTest extends IntegrationTestCase
      * @throws ContainerExceptionInterface
      */
     #[Test]
+    #[OutputChecker('outputCheckerBulkEdit')]
     public function bulkEdit()
     {
         $this->addDatabaseMapperResolver(
@@ -98,15 +99,14 @@ class AccountManagerTest extends IntegrationTestCase
         $this->runApp($container);
     }
 
-    #[OutputChecker]
-    private function outputChecker(string $output): void
+    private function outputCheckerBulkEdit(string $output): void
     {
         $crawler = new Crawler($output);
         $filter = $crawler->filterXPath(
             '//div[@id="box-popup"]//form[@name="frmAccountBulkEdit"]//select|//input|//div[@class="action-in-box"]/button'
         )->extract(['_name']);
 
-        $this->assertNotEmpty($output);
-        $this->assertCount(19, $filter);
+        self::assertNotEmpty($output);
+        self::assertCount(19, $filter);
     }
 }

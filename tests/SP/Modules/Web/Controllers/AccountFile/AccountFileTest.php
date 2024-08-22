@@ -38,9 +38,9 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
-use SP\Mvc\View\OutputHandlerInterface;
 use SP\Tests\Generators\FileDataGenerator;
 use SP\Tests\IntegrationTestCase;
+use SP\Tests\OutputChecker;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -49,21 +49,18 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class AccountFileTest extends IntegrationTestCase
 {
+    private array $moduleDefinitions;
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     * @throws FileException
-     * @throws InvalidClassException
      * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
      */
     #[Test]
     public function deleteSingleFile()
     {
-        $definitions = $this->getModuleDefinitions();
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->moduleDefinitions,
             $this->buildRequest('post', 'index.php', ['r' => 'accountFile/delete/100'])
         );
 
@@ -75,11 +72,9 @@ class AccountFileTest extends IntegrationTestCase
     }
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     * @throws FileException
-     * @throws InvalidClassException
      * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
      */
     #[Test]
     public function deleteMultipleFiles()
@@ -93,10 +88,8 @@ class AccountFileTest extends IntegrationTestCase
             return new QueryResult();
         };
 
-        $definitions = $this->getModuleDefinitions();
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->moduleDefinitions,
             $this->buildRequest('post', 'index.php', ['r' => 'accountFile/delete'], ['items' => [100, 200, 300]])
         );
 
@@ -111,8 +104,6 @@ class AccountFileTest extends IntegrationTestCase
      * @return void
      * @throws ContainerExceptionInterface
      * @throws Exception
-     * @throws FileException
-     * @throws InvalidClassException
      * @throws NotFoundExceptionInterface
      */
     #[Test]
@@ -127,10 +118,8 @@ class AccountFileTest extends IntegrationTestCase
             )
         );
 
-        $definitions = $this->getModuleDefinitions();
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->moduleDefinitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountFile/download/100'])
         );
 
@@ -143,11 +132,10 @@ class AccountFileTest extends IntegrationTestCase
      * @return void
      * @throws ContainerExceptionInterface
      * @throws Exception
-     * @throws FileException
-     * @throws InvalidClassException
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[OutputChecker('outputCheckerList')]
     public function listFiles()
     {
         $fileDataGenerator = FileDataGenerator::factory();
@@ -162,21 +150,8 @@ class AccountFileTest extends IntegrationTestCase
             )
         );
 
-        $definitions = $this->getModuleDefinitions();
-        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(function (string $output): void {
-            $crawler = new Crawler($output);
-            $filter = $crawler->filterXPath(
-                '//div[@id="files-wrap"]/ul//li'
-            )->extract(['class']);
-
-            assert(!empty($output));
-            assert(count($filter) === 2);
-
-            $this->assertTrue(true);
-        });
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->moduleDefinitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountFile/list/100'])
         );
 
@@ -187,11 +162,10 @@ class AccountFileTest extends IntegrationTestCase
      * @return void
      * @throws ContainerExceptionInterface
      * @throws Exception
-     * @throws FileException
-     * @throws InvalidClassException
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[OutputChecker('outputCheckerSearch')]
     public function search()
     {
         $fileDataGenerator = FileDataGenerator::factory();
@@ -207,20 +181,8 @@ class AccountFileTest extends IntegrationTestCase
             )
         );
 
-        $definitions = $this->getModuleDefinitions();
-        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(function (string $output): void {
-            $crawler = new Crawler($output);
-            $filter = $crawler->filterXPath('//table/tbody//tr[string-length(@data-item-id) > 0]')
-                              ->extract(['class']);
-
-            assert(!empty($output));
-            assert(count($filter) === 2);
-
-            $this->assertTrue(true);
-        });
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->moduleDefinitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountFile/search'])
         );
 
@@ -231,25 +193,12 @@ class AccountFileTest extends IntegrationTestCase
      * @return void
      * @throws ContainerExceptionInterface
      * @throws Exception
-     * @throws FileException
-     * @throws InvalidClassException
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[OutputChecker('outputCheckerUpload')]
     public function upload()
     {
-        $definitions = $this->getModuleDefinitions();
-        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(function (string $output): void {
-            $crawler = new Crawler($output);
-            $filter = $crawler->filterXPath('//table/tbody//tr[string-length(@data-item-id) > 0]')
-                              ->extract(['class']);
-
-            assert(!empty($output));
-            assert(count($filter) === 2);
-
-            $this->assertTrue(true);
-        });
-
         $file = sprintf('%s.txt', self::$faker->filePath());
 
         file_put_contents($file, self::$faker->text());
@@ -264,7 +213,7 @@ class AccountFileTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $definitions,
+            $this->moduleDefinitions,
             $this->buildRequest('post', 'index.php', ['r' => 'accountFile/upload/100'], [], $files)
         );
 
@@ -276,14 +225,28 @@ class AccountFileTest extends IntegrationTestCase
     }
 
     /**
+     * @param string $output
+     * @return void
+     */
+
+    private function outputCheckerUpload(string $output): void
+    {
+        $crawler = new Crawler($output);
+        $filter = $crawler->filterXPath('//table/tbody//tr[string-length(@data-item-id) > 0]')
+                          ->extract(['class']);
+
+        self::assertNotEmpty($output);
+        self::assertCount(2, $filter);
+    }
+
+    /**
      * @return void
      * @throws ContainerExceptionInterface
      * @throws Exception
-     * @throws FileException
-     * @throws InvalidClassException
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[OutputChecker('outputCheckerView')]
     public function view()
     {
         $fileDataGenerator = FileDataGenerator::factory();
@@ -293,19 +256,8 @@ class AccountFileTest extends IntegrationTestCase
             new QueryResult([File::buildFromSimpleModel($fileDataGenerator->buildFileData())])
         );
 
-        $definitions = $this->getModuleDefinitions();
-        $definitions[OutputHandlerInterface::class] = $this->setupOutputHandler(function (string $output): void {
-            $crawler = new Crawler($output);
-            $filter = $crawler->filterXPath('//img|//div[@class="title"]')->count();
-
-            assert(!empty($output));
-            assert($filter === 2);
-
-            $this->assertTrue(true);
-        });
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->moduleDefinitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountFile/view/100'])
         );
 
@@ -320,5 +272,58 @@ class AccountFileTest extends IntegrationTestCase
         $configData->method('getFilesAllowedSize')->willReturn(1000);
 
         return $configData;
+    }
+
+    /**
+     * @throws FileException
+     * @throws InvalidClassException
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->moduleDefinitions = $this->getModuleDefinitions();
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerSearch(string $output): void
+    {
+        $crawler = new Crawler($output);
+        $filter = $crawler->filterXPath('//table/tbody//tr[string-length(@data-item-id) > 0]')
+                          ->extract(['class']);
+
+        self::assertNotEmpty($output);
+        self::assertCount(2, $filter);
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerView(string $output): void
+    {
+        $crawler = new Crawler($output);
+        $filter = $crawler->filterXPath('//img|//div[@class="title"]')->count();
+
+        self::assertNotEmpty($output);
+        self::assertEquals(2, $filter);
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerList(string $output): void
+    {
+        $crawler = new Crawler($output);
+        $filter = $crawler->filterXPath(
+            '//div[@id="files-wrap"]/ul//li'
+        )->extract(['class']);
+
+        self::assertNotEmpty($output);
+        self::assertCount(2, $filter);
     }
 }
