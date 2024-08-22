@@ -37,6 +37,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionException;
+use ReflectionMethod;
+use ReflectionObject;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Definitions\CoreDefinitions;
@@ -70,6 +73,7 @@ use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
 use SP\Mvc\View\OutputHandlerInterface;
+use SP\OutputChecker;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserProfileDataGenerator;
 use SP\Tests\Stubs\OutputHandlerStub;
@@ -153,9 +157,14 @@ abstract class IntegrationTestCase extends TestCase
                 ->constructorParameter('module', 'web')
                 ->constructorParameter('name', 'material-blue'),
             AclInterface::class => $acl,
-            AccountAclService::class => $accountAcl
+            AccountAclService::class => $accountAcl,
         ];
 
+        $outputChecker = $this->getOutputChecker();
+
+        if ($outputChecker !== null) {
+            $definitions[OutputHandlerInterface::class] = new OutputHandlerStub($outputChecker->bindTo($this));
+        }
 
         if ($request) {
             $definitions += [Request::class => $request];
@@ -236,6 +245,21 @@ abstract class IntegrationTestCase extends TestCase
     protected function getUserProfile(): ProfileData
     {
         return UserProfileDataGenerator::factory()->buildProfileData();
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    private function getOutputChecker(): ?Closure
+    {
+        $reflection = new ReflectionObject($this);
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PRIVATE) as $method) {
+            if (count($method->getAttributes(OutputChecker::class)) > 0) {
+                return $method->getClosure($this);
+            }
+        }
+
+        return null;
     }
 
     final protected function addDatabaseMapperResolver(string $className, QueryResult $queryResult): void

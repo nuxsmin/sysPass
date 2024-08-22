@@ -25,27 +25,29 @@
 namespace SP\Modules\Web\Controllers\AccountManager;
 
 use Exception;
-use JsonException;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Domain\Account\Ports\AccountHistoryService;
-use SP\Domain\Account\Ports\AccountSearchService;
-use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Tag\Ports\TagService;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\Components\SelectItemAdapter;
+
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class AccountManagerController
@@ -57,33 +59,20 @@ final class BulkEditController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountService        $accountService;
-    private AccountSearchService  $accountSearchService;
-    private AccountHistoryService $accountHistoryService;
-    private AccountGrid            $accountGrid;
-    private CustomFieldDataService $customFieldService;
-    private CategoryService        $categoryService;
-    private ClientService        $clientService;
-    private TagService  $tagService;
-    private UserService $userService;
-    private UserGroupService $userGroupService;
-
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application         $application,
-        WebControllerHelper $webControllerHelper,
-        CategoryService     $categoryService,
-        ClientService       $clientService,
-        TagService          $tagService,
-        UserService         $userService,
-        UserGroupService    $userGroupService
+        Application                       $application,
+        WebControllerHelper               $webControllerHelper,
+        private readonly CategoryService  $categoryService,
+        private readonly ClientService    $clientService,
+        private readonly TagService       $tagService,
+        private readonly UserService      $userService,
+        private readonly UserGroupService $userGroupService
     ) {
         parent::__construct($application, $webControllerHelper);
-
-        $this->categoryService = $categoryService;
-        $this->clientService = $clientService;
-        $this->tagService = $tagService;
-        $this->userService = $userService;
-        $this->userGroupService = $userGroupService;
 
         $this->checkLoggedIn();
     }
@@ -92,7 +81,7 @@ final class BulkEditController extends ControllerBase
      * bulkEditAction
      *
      * @return bool
-     * @throws JsonException
+     * @throws SPException
      */
     public function bulkEditAction(): bool
     {
@@ -111,10 +100,7 @@ final class BulkEditController extends ControllerBase
 
             $this->setViewData();
 
-            $this->eventDispatcher->notify(
-                'show.account.bulkEdit',
-                new Event($this)
-            );
+            $this->eventDispatcher->notify('show.account.bulkEdit', new Event($this));
 
             return $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (Exception $e) {
@@ -125,33 +111,28 @@ final class BulkEditController extends ControllerBase
     }
 
     /**
-     * Sets view data
+     * @return void
+     * @throws ConstraintException
+     * @throws QueryException
      */
     protected function setViewData(): void
     {
         $this->view->addTemplate('account_bulkedit', 'itemshow');
 
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE));
 
-        $clients = SelectItemAdapter::factory($this->clientService->getAll())->getItemsFromModel();
-        $categories = SelectItemAdapter::factory($this->categoryService->getAll())->getItemsFromModel();
-        $tags = SelectItemAdapter::factory($this->tagService->getAll())->getItemsFromModel();
-        $users = SelectItemAdapter::factory($this->userService->getAll())->getItemsFromModel();
-        $userGroups = SelectItemAdapter::factory($this->userGroupService->getAll())->getItemsFromModel();
-
-        $this->view->assign('users', $users);
-        $this->view->assign('userGroups', $userGroups);
-
-        $this->view->assign('clients', $clients);
-        $this->view->assign('categories', $categories);
-        $this->view->assign('tags', $tags);
-
-        if ($this->view->isView === true) {
-            $this->view->assign('disabled', 'disabled');
-            $this->view->assign('readonly', 'readonly');
-        } else {
-            $this->view->assign('disabled', false);
-            $this->view->assign('readonly', false);
-        }
+        $this->view->assign('users', SelectItemAdapter::factory($this->userService->getAll())->getItemsFromModel());
+        $this->view->assign(
+            'userGroups',
+            SelectItemAdapter::factory($this->userGroupService->getAll())->getItemsFromModel()
+        );
+        $this->view->assign('clients', SelectItemAdapter::factory($this->clientService->getAll())->getItemsFromModel());
+        $this->view->assign(
+            'categories',
+            SelectItemAdapter::factory($this->categoryService->getAll())->getItemsFromModel()
+        );
+        $this->view->assign('tags', SelectItemAdapter::factory($this->tagService->getAll())->getItemsFromModel());
+        $this->view->assign('disabled', '');
+        $this->view->assign('readonly', '');
     }
 }
