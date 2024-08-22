@@ -186,11 +186,24 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->accountHistory->getById($id);
     }
 
+    /**
+     * @throws ServiceException
+     */
     public function testDeleteByIdBatch()
     {
         $ids = [1, 2, 3];
 
-        $this->accountHistoryRepository->expects(self::once())->method('deleteByIdBatch')->with($ids);
+        $this->accountHistoryRepository
+            ->expects($this->once())
+            ->method('transactionAware')
+            ->with(self::withResolveCallableCallback())
+            ->willReturn(3);
+
+        $this->accountHistoryRepository
+            ->expects(self::once())
+            ->method('deleteByIdBatch')
+            ->with($ids)
+            ->willReturn(3);
 
         $this->accountHistory->deleteByIdBatch($ids);
     }
