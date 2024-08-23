@@ -24,29 +24,21 @@
 
 declare(strict_types=1);
 
-namespace SP\Modules\Web\Controllers\Helpers;
+namespace SP\Modules\Web\Controllers;
 
-use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Http\Ports\RequestService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\View\TemplateInterface;
 
 use function SP\__u;
 
 /**
- * Trait SearchViewTrait
- *
- * @property AclInterface $acl
- * @property TemplateInterface $view
- * @property RequestService $request
- * @method render()
+ * Class SearchGridControllerBase
  */
-trait SearchViewTrait
+abstract class SearchGridControllerBase extends ControllerBase
 {
     use JsonTrait;
 
@@ -72,7 +64,7 @@ trait SearchViewTrait
         return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
-    abstract private function getAclAction(): int;
+    abstract protected function getAclAction(): int;
 
     abstract protected function getSearchGrid(): DataGridInterface;
 }

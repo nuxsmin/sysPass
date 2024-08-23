@@ -34,9 +34,8 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\DataGridInterface;
-use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
-use SP\Modules\Web\Controllers\Helpers\SearchViewTrait;
+use SP\Modules\Web\Controllers\SearchGridControllerBase;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -45,10 +44,9 @@ use SP\Mvc\Controller\WebControllerHelper;
  *
  * @package SP\Modules\Web\Controllers
  */
-final class SearchController extends ControllerBase
+final class SearchController extends SearchGridControllerBase
 {
     use ItemTrait;
-    use SearchViewTrait;
 
     /**
      * @throws SessionTimeout
@@ -87,7 +85,7 @@ final class SearchController extends ControllerBase
         );
     }
 
-    private function getAclAction(): int
+    protected function getAclAction(): int
     {
         return AclActionsInterface::ACCOUNTMGR_SEARCH;
     }

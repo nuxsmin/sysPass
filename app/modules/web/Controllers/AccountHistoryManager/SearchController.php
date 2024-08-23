@@ -31,64 +31,34 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Html\DataGrid\DataGridInterface;
-use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Controllers\Helpers\Grid\AccountHistoryGrid;
+use SP\Modules\Web\Controllers\SearchGridControllerBase;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
-
-use function SP\__u;
 
 /**
  * Class SearchController
  *
  * @package SP\Modules\Web\Controllers
  */
-final class SearchController extends ControllerBase
+final class SearchController extends SearchGridControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     /**
      * @throws AuthException
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                                      $application,
-        WebControllerHelper                              $webControllerHelper,
-        private readonly AccountHistoryService           $accountHistoryService,
-        private readonly Helpers\Grid\AccountHistoryGrid $accountHistoryGrid
+        Application                            $application,
+        WebControllerHelper                    $webControllerHelper,
+        private readonly AccountHistoryService $accountHistoryService,
+        private readonly AccountHistoryGrid    $accountHistoryGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
-    }
-
-
-    /**
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     */
-    public function searchAction(): bool
-    {
-        /** @noinspection DuplicatedCode */
-        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR_HISTORY_SEARCH)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
-            );
-        }
-
-        $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
-        $this->view->assign('data', $this->getSearchGrid());
-
-        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -105,5 +75,10 @@ final class SearchController extends ControllerBase
             $this->accountHistoryGrid->getGrid($this->accountHistoryService->search($itemSearchData)),
             $itemSearchData
         );
+    }
+
+    protected function getAclAction(): int
+    {
+        return AclActionsInterface::ACCOUNTMGR_HISTORY_SEARCH;
     }
 }
