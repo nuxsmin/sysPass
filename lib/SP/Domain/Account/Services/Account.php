@@ -542,9 +542,13 @@ final class Account extends Service implements AccountService
      */
     public function deleteByIdBatch(array $ids): void
     {
-        if ($this->accountRepository->deleteByIdBatch($ids)->getAffectedNumRows() === 0) {
-            throw new ServiceException(__u('Error while deleting the accounts'));
-        }
+        $this->accountRepository->transactionAware(function () use ($ids) {
+            $affectedNumRows = $this->accountRepository->deleteByIdBatch($ids)->getAffectedNumRows();
+
+            if ($affectedNumRows === 0) {
+                throw ServiceException::error(__u('Error while deleting the accounts'));
+            }
+        }, $this);
     }
 
     /**

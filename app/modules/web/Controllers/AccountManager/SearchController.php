@@ -27,19 +27,16 @@ namespace SP\Modules\Web\Controllers\AccountManager;
 use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchService;
-use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers;
 use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Controllers\Helpers\SearchViewTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -51,50 +48,21 @@ use SP\Mvc\Controller\WebControllerHelper;
 final class SearchController extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
-
-    private AccountService       $accountService;
-    private AccountSearchService $accountSearchService;
-    private AccountGrid          $accountGrid;
+    use SearchViewTrait;
 
     /**
      * @throws SessionTimeout
      * @throws AuthException
      */
     public function __construct(
-        Application          $application,
-        WebControllerHelper  $webControllerHelper,
-        AccountSearchService $accountSearchService,
-        Helpers\Grid\AccountGrid $accountGrid
+        Application                           $application,
+        WebControllerHelper                   $webControllerHelper,
+        private readonly AccountSearchService $accountSearchService,
+        private readonly AccountGrid          $accountGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 
-        $this->accountSearchService = $accountSearchService;
-        $this->accountGrid = $accountGrid;
-
         $this->checkLoggedIn();
-    }
-
-    /**
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     */
-    public function searchAction(): bool
-    {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR_SEARCH)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
-            );
-        }
-
-        $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
-        $this->view->assign('data', $this->getSearchGrid());
-
-        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -117,5 +85,10 @@ final class SearchController extends ControllerBase
             $this->accountGrid->getGrid($this->accountSearchService->getByFilter($filter)),
             $itemSearchData
         );
+    }
+
+    private function getAclAction(): int
+    {
+        return AclActionsInterface::ACCOUNTMGR_SEARCH;
     }
 }

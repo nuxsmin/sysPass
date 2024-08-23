@@ -25,18 +25,23 @@
 namespace SP\Modules\Web\Controllers\AccountManager;
 
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class AccountManagerController
@@ -48,19 +53,17 @@ final class DeleteController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountService         $accountService;
-    private CustomFieldDataService $customFieldService;
-
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application         $application,
-        WebControllerHelper $webControllerHelper,
-        AccountService      $accountService,
-        CustomFieldDataService $customFieldService
+        Application                             $application,
+        WebControllerHelper                     $webControllerHelper,
+        private readonly AccountService         $accountService,
+        private readonly CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
-
-        $this->accountService = $accountService;
-        $this->customFieldService = $customFieldService;
 
         $this->checkLoggedIn();
     }
@@ -68,28 +71,29 @@ final class DeleteController extends ControllerBase
     /**
      * Delete action
      *
-     * @param  int|null  $id
+     * @param int|null $id
      *
      * @return bool
-     * @throws JsonException
+     * @throws SPException
      */
     public function deleteAction(?int $id = null): bool
     {
         try {
             if ($id === null) {
-                $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $ids = $this->getItemsIdFromRequest($this->request);
+                $this->accountService->deleteByIdBatch($ids);
 
-                $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $id, $this->customFieldService);
+                $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $ids, $this->customFieldService);
 
                 $this->eventDispatcher->notify(
                     'delete.account.selection',
                     new Event($this, EventMessage::build()->addDescription(__u('Accounts removed')))
                 );
 
-                return $this->returnJsonResponseData(JsonMessage::JSON_SUCCESS, __u('Accounts removed'));
+                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Accounts removed'));
             }
 
-            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
+            $accountView = $this->accountService->getByIdEnriched($id);
 
             $this->accountService->delete($id);
 
@@ -99,10 +103,9 @@ final class DeleteController extends ControllerBase
                 'delete.account',
                 new Event(
                     $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Account removed'))
-                        ->addDetail(__u('Account'), $accountDetails->getName())
-                        ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    EventMessage::build(__u('Account removed'))
+                                ->addDetail(__u('Account'), $accountView->getName())
+                                ->addDetail(__u('Client'), $accountView->getClientName())
                 )
             );
 

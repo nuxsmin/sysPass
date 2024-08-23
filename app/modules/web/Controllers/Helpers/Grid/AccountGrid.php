@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
@@ -38,6 +37,7 @@ use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Infrastructure\Database\QueryResult;
 
 use function SP\__;
+use function SP\getElapsedTime;
 
 /**
  * Class AccountGrid
@@ -52,6 +52,7 @@ final class AccountGrid extends GridBase
      * @param QueryResult $queryResult
      *
      * @return DataGridInterface
+     * @throws SPException
      */
     public function getGrid(QueryResult $queryResult): DataGridInterface
     {
@@ -119,7 +120,7 @@ final class AccountGrid extends GridBase
     }
 
     /**
-     * @throws SPException
+     * @return DataGridData
      */
     protected function getData(): DataGridData
     {
@@ -146,7 +147,7 @@ final class AccountGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ACCOUNTMGR_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::ACCOUNTMGR_SEARCH)
         );
 
         return $gridActionSearch;
@@ -163,10 +164,10 @@ final class AccountGrid extends GridBase
         $gridAction->setName(__('Account Details'));
         $gridAction->setTitle(__('Account Details'));
         $gridAction->setIcon($this->icons->view());
-        $gridAction->setOnClickFunction(Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW));
+        $gridAction->setOnClickFunction($this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ACCOUNT_VIEW)
+            $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW)
         );
 
         return $gridAction;
@@ -183,7 +184,7 @@ final class AccountGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ACCOUNTMGR_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::ACCOUNTMGR_DELETE)
         );
 
         return $gridAction;
@@ -203,7 +204,7 @@ final class AccountGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ACCOUNTMGR_BULK_EDIT)
+            $this->acl->getRouteFor(AclActionsInterface::ACCOUNTMGR_BULK_EDIT)
         );
 
         return $gridAction;

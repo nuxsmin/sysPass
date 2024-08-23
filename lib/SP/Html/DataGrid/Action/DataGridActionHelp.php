@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -42,7 +43,7 @@ final class DataGridActionHelp extends DataGridActionBase
      */
     public function __construct(string $template)
     {
-        parent::__construct(0);
+        parent::__construct();
 
         $this->type = DataGridActionType::HELP_ITEM;
         $this->template = $template;

@@ -32,7 +32,9 @@ use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -42,6 +44,7 @@ use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\Util;
 
+use function SP\__u;
 use function SP\processException;
 
 /**
@@ -54,21 +57,21 @@ final class SaveBulkEditController extends ControllerBase
     use ItemTrait;
     use JsonTrait;
 
-    private AccountService        $accountService;
-    private AccountHistoryService $accountHistoryService;
-    private AccountForm           $accountForm;
+    private readonly AccountForm $accountForm;
 
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application           $application,
-        WebControllerHelper   $webControllerHelper,
-        AccountService        $accountService,
-        AccountHistoryService $accountHistoryService,
-        AccountPresetService  $accountPresetService
+        Application                            $application,
+        WebControllerHelper                    $webControllerHelper,
+        private readonly AccountService        $accountService,
+        private readonly AccountHistoryService $accountHistoryService,
+        AccountPresetService                   $accountPresetService
     ) {
         parent::__construct($application, $webControllerHelper);
 
-        $this->accountService = $accountService;
-        $this->accountHistoryService = $accountHistoryService;
         $this->accountForm = new AccountForm($application, $this->request, $accountPresetService);
 
         $this->checkLoggedIn();
@@ -86,11 +89,13 @@ final class SaveBulkEditController extends ControllerBase
             $itemsId = Util::itemsIdAdapter($this->request->analyzeString('itemsId'));
 
             $accountBulkDto = new AccountUpdateBulkDto(
-                array_map(function ($itemId) {
-                    $this->accountForm->validateFor(AclActionsInterface::ACCOUNTMGR_BULK_EDIT, $itemId);
-
-                    return $this->accountForm->getItemData();
-                }, $itemsId)
+                $itemsId,
+                array_map(
+                    fn(int $id) => $this->accountForm
+                        ->validateFor(AclActionsInterface::ACCOUNTMGR_BULK_EDIT, $id)
+                        ->getItemData(),
+                    $itemsId
+                )
             );
 
             if ($this->request->analyzeBool('delete_history', false)) {
@@ -101,7 +106,7 @@ final class SaveBulkEditController extends ControllerBase
 
             $this->eventDispatcher->notify(
                 'edit.account.bulk',
-                new Event($this, EventMessage::build()->addDescription(__u('Accounts updated')))
+                new Event($this, EventMessage::build(__u('Accounts updated')))
             );
 
             return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Accounts updated'));
