@@ -31,6 +31,7 @@ use DI\ContainerBuilder;
 use Faker\Factory;
 use Faker\Generator;
 use Klein\Request;
+use Klein\Response;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
@@ -166,6 +167,15 @@ abstract class IntegrationTestCase extends TestCase
             $definitions[OutputHandlerInterface::class] = new OutputHandlerStub($outputChecker->bindTo($this));
         }
 
+        $bodyChecker = $this->getBodyChecker();
+
+        if ($bodyChecker !== null) {
+            $response = $this->getMockBuilder(Response::class)->onlyMethods(['body'])->getMock();
+            $response->method('body')->with(self::callback($bodyChecker));
+
+            $definitions[Response::class] = $response;
+        }
+
         if ($request) {
             $definitions += [Request::class => $request];
         }
@@ -257,6 +267,26 @@ abstract class IntegrationTestCase extends TestCase
             if ($this->name() === $method->name) {
                 /** @var array<ReflectionAttribute<OutputChecker>> $attributes */
                 $attributes = $method->getAttributes(OutputChecker::class);
+
+                if (count($attributes) === 1) {
+                    return (new ReflectionMethod($this, $attributes[0]->newInstance()->target))->getClosure($this);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    private function getBodyChecker(): ?Closure
+    {
+        $reflection = new ReflectionObject($this);
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            if ($this->name() === $method->name) {
+                /** @var array<ReflectionAttribute<BodyChecker>> $attributes */
+                $attributes = $method->getAttributes(BodyChecker::class);
 
                 if (count($attributes) === 1) {
                     return (new ReflectionMethod($this, $attributes[0]->newInstance()->target))->getClosure($this);

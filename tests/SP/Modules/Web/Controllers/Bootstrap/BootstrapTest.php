@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Tests\Modules\Web\Controllers\Bootstrap;
 
-use Klein\Response;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
@@ -34,6 +33,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\File\FileException;
+use SP\Tests\BodyChecker;
 use SP\Tests\IntegrationTestCase;
 
 /**
@@ -51,50 +51,43 @@ class BootstrapTest extends IntegrationTestCase
      * @throws FileException
      */
     #[Test]
+    #[BodyChecker('getEnvironmentBodyChecker')]
     public function getEnvironment()
     {
-        $definitions = $this->getModuleDefinitions();
-        $response = $this->getMockBuilder(Response::class)
-                         ->onlyMethods(['body'])
-                         ->getMock();
-        $response->method('body')
-                 ->with(
-                     self::callback(static function (string $content) {
-                         self::assertNotEmpty($content);
-
-                         $json = json_decode($content);
-
-                         self::assertObjectHasProperty('lang', $json->data);
-                         self::assertObjectHasProperty('locale', $json->data);
-                         self::assertObjectHasProperty('app_root', $json->data);
-                         self::assertObjectHasProperty('max_file_size', $json->data);
-                         self::assertObjectHasProperty('check_updates', $json->data);
-                         self::assertObjectHasProperty('check_notices', $json->data);
-                         self::assertObjectHasProperty('check_notifications', $json->data);
-                         self::assertObjectHasProperty('timezone', $json->data);
-                         self::assertObjectHasProperty('debug', $json->data);
-                         self::assertObjectHasProperty('cookies_enabled', $json->data);
-                         self::assertObjectHasProperty('plugins', $json->data);
-                         self::assertObjectHasProperty('loggedin', $json->data);
-                         self::assertObjectHasProperty('authbasic_autologin', $json->data);
-                         self::assertObjectHasProperty('pki_key', $json->data);
-                         self::assertObjectHasProperty('pki_max_size', $json->data);
-                         self::assertObjectHasProperty('import_allowed_mime', $json->data);
-                         self::assertObjectHasProperty('files_allowed_mime', $json->data);
-                         self::assertObjectHasProperty('session_timeout', $json->data);
-                         self::assertObjectHasProperty('csrf', $json->data);
-
-                         return true;
-                     })
-                 );
-
-        $definitions[Response::class] = $response;
-
         $container = $this->buildContainer(
-            $definitions,
+            $this->getModuleDefinitions(),
             $this->buildRequest('get', 'index.php', ['r' => 'bootstrap/getEnvironment'])
         );
 
         $this->runApp($container);
+    }
+
+    public function getEnvironmentBodyChecker(string $content): bool
+    {
+        self::assertNotEmpty($content);
+
+        $json = json_decode($content);
+
+        self::assertObjectHasProperty('lang', $json->data);
+        self::assertObjectHasProperty('locale', $json->data);
+        self::assertObjectHasProperty('app_root', $json->data);
+        self::assertObjectHasProperty('max_file_size', $json->data);
+        self::assertObjectHasProperty('check_updates', $json->data);
+        self::assertObjectHasProperty('check_notices', $json->data);
+        self::assertObjectHasProperty('check_notifications', $json->data);
+        self::assertObjectHasProperty('timezone', $json->data);
+        self::assertObjectHasProperty('debug', $json->data);
+        self::assertObjectHasProperty('cookies_enabled', $json->data);
+        self::assertObjectHasProperty('plugins', $json->data);
+        self::assertObjectHasProperty('loggedin', $json->data);
+        self::assertObjectHasProperty('authbasic_autologin', $json->data);
+        self::assertObjectHasProperty('pki_key', $json->data);
+        self::assertObjectHasProperty('pki_max_size', $json->data);
+        self::assertObjectHasProperty('import_allowed_mime', $json->data);
+        self::assertObjectHasProperty('files_allowed_mime', $json->data);
+        self::assertObjectHasProperty('session_timeout', $json->data);
+        self::assertObjectHasProperty('csrf', $json->data);
+
+        return true;
     }
 }
