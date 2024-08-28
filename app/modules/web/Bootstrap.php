@@ -31,6 +31,7 @@ use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionAttribute;
+use ReflectionException;
 use ReflectionMethod;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
@@ -39,6 +40,7 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Code;
@@ -95,10 +97,7 @@ final class Bootstrap extends BootstrapBase
                 return $response;
             }
 
-            $method = new ReflectionMethod(
-                $controllerClass,
-                $this->routeContextData->methodName
-            );
+            $method = $this->getMethod($controllerClass);
 
             try {
                 $this->setCors($response);
@@ -117,9 +116,8 @@ final class Bootstrap extends BootstrapBase
                 );
 
                 /** @var ActionResponse $response */
-                $actionResponse = $method->invoke(
+                $actionResponse = $method->invokeArgs(
                     $this->buildInstanceFor($controllerClass),
-                    ...
                     Util::mapScalarParameters(
                         $controllerClass,
                         $this->routeContextData->methodName,
@@ -146,6 +144,32 @@ final class Bootstrap extends BootstrapBase
 
             return $response->send();
         };
+    }
+
+    /**
+     * @param string $controllerClass
+     * @return ReflectionMethod
+     * @throws InitializationException
+     * @throws ReflectionException
+     */
+    public function getMethod(string $controllerClass): ReflectionMethod
+    {
+        $method = new ReflectionMethod(
+            $controllerClass,
+            $this->routeContextData->methodName
+        );
+
+        if ($method->getReturnType()?->getName() !== ActionResponse::class) {
+            throw InitializationException::error(
+                sprintf('Incorrect method return type: expected \'%s\'', ActionResponse::class)
+            );
+        }
+
+        if (count($method->getAttributes(Action::class)) === 0) {
+            throw InitializationException::error('Method is not defined as an action');
+        }
+
+        return $method;
     }
 
     /**
