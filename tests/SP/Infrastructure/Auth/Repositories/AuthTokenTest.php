@@ -74,7 +74,7 @@ class AuthTokenTest extends UnitaryTestCase
                 return count($params) === 2
                        && $params['userLogin'] === $searchStringLike
                        && $params['userName'] === $searchStringLike
-                       && $arg->getMapClassName() === Simple::class
+                       && $arg->getMapClassName() === AuthTokenModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -98,7 +98,7 @@ class AuthTokenTest extends UnitaryTestCase
             static function (QueryData $arg) {
                 $query = $arg->getQuery();
                 return count($query->getBindValues()) === 0
-                       && $arg->getMapClassName() === Simple::class
+                       && $arg->getMapClassName() === AuthTokenModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
