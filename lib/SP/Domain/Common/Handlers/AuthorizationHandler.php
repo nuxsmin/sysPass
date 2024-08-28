@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -22,26 +22,31 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers\UserPassReset;
+declare(strict_types=1);
 
-use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Util\ErrorUtil;
+namespace SP\Domain\Common\Handlers;
+
+use ReflectionAttribute;
+use ReflectionClass;
+use ReflectionMethod;
+use SP\Domain\Common\Attributes\Authorize;
 
 /**
- * Class IndexController
- *
- * @package SP\Modules\Web\Controllers
+ * Trait AuthorizationHandler
  */
-final class IndexController extends ControllerBase
+trait AuthorizationHandler
 {
-    public function indexAction(): void
+    private static function authorize(): string
     {
-        $this->layoutHelper->getCustomLayout('request', strtolower($this->routeContextData->actionName));
+        $ref = new ReflectionClass(self::class);
 
-        if (!$this->configData->isMailEnabled()) {
-            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, true, 'request');
+        foreach ($ref->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            /** @var array<ReflectionAttribute<Authorize>> $attributes */
+            $attributes = $method->getAttributes(Authorize::class);
+
+            if (count($attributes) === 1) {
+                $attributes[0]->newInstance()->actionId;
+            }
         }
-
-        $this->view();
     }
 }

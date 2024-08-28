@@ -24,13 +24,21 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use Exception;
 use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Modules\Web\Util\ErrorUtil;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Services\UpdatedMasterPassException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 
 use function SP\__;
-use function SP\processException;
 
 /**
  * Class CreateController
@@ -38,40 +46,39 @@ use function SP\processException;
 final class CreateController extends AccountViewBase
 {
     /**
-     * Create action
+     * @return ActionResponse
+     * @throws ServiceException
+     * @throws UnauthorizedPageException
+     * @throws ConstraintException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws SPException
+     * @throws UpdatedMasterPassException
+     * @throws NoSuchItemException
      */
-    public function createAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function createAction(): ActionResponse
     {
-        try {
-            $this->accountHelper->initializeFor(AclActionsInterface::ACCOUNT_CREATE);
-            $this->accountHelper->setViewForBlank();
+        $this->accountHelper->initializeFor(AclActionsInterface::ACCOUNT_CREATE);
+        $this->accountHelper->setViewForBlank();
 
-            $this->view->addTemplate('account');
-            $this->view->assign(
-                'title',
-                [
-                    'class' => 'titleGreen',
-                    'name' => __('New Account'),
-                    'icon' => $this->icons->add()->getIcon(),
-                ]
-            );
-            $this->view->assign('formRoute', 'account/saveCreate');
+        $this->view->addTemplate('account');
+        $this->view->assign(
+            'title',
+            [
+                'class' => 'titleGreen',
+                'name' => __('New Account'),
+                'icon' => $this->icons->add()->getIcon(),
+            ]
+        );
+        $this->view->assign('formRoute', 'account/saveCreate');
 
-            $this->eventDispatcher->notify('show.account.create', new Event($this));
+        $this->eventDispatcher->notify('show.account.create', new Event($this));
 
-            if ($this->isAjax === false) {
-                $this->upgradeView();
-            }
-
-            $this->view();
-        } catch (Exception $e) {
-            processException($e);
-
-            if ($this->isAjax === false) {
-                $this->upgradeView();
-            }
-
-            ErrorUtil::showExceptionInView($this->view, $e, 'account');
+        if ($this->isAjax === false) {
+            $this->upgradeView();
         }
+
+        return ActionResponse::ok($this->render());
     }
 }

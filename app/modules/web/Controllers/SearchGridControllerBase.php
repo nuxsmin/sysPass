@@ -26,12 +26,10 @@ declare(strict_types=1);
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Html\DataGrid\DataGridInterface;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 use function SP\__u;
 
@@ -40,28 +38,21 @@ use function SP\__u;
  */
 abstract class SearchGridControllerBase extends ControllerBase
 {
-    use JsonTrait;
-
     /**
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
+     * @return ActionResponse
      */
-    public function searchAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function searchAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess($this->getAclAction())) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
-            );
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
-        return $this->returnJsonResponseData(['html' => $this->render()]);
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 
     abstract protected function getAclAction(): int;

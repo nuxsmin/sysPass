@@ -232,7 +232,7 @@ final class CoreDefinitions
                 ),
             ThemeInterface::class => autowire(Theme::class),
             TemplateInterface::class => autowire(Template::class)
-                ->constructorParameter('base', factory([RouteContextData::class, 'getController'])),
+                ->constructorParameter('base', factory(static fn(RouteContextData $r) => $r->controller)),
             DatabaseAuthService::class => autowire(DatabaseAuth::class),
             BrowserAuthService::class => autowire(BrowserAuth::class),
             LdapParams::class => factory([LdapParams::class, 'getFrom']),

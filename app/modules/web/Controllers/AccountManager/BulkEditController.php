@@ -24,30 +24,29 @@
 
 namespace SP\Modules\Web\Controllers\AccountManager;
 
-use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Tag\Ports\TagService;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\Components\SelectItemAdapter;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class AccountManagerController
@@ -57,7 +56,6 @@ use function SP\processException;
 final class BulkEditController extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     /**
      * @throws AuthException
@@ -80,34 +78,26 @@ final class BulkEditController extends ControllerBase
     /**
      * bulkEditAction
      *
-     * @return bool
+     * @return ActionResponse
      * @throws SPException
      */
-    public function bulkEditAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function bulkEditAction(): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $this->view->assign('header', __('Bulk Update'));
-            $this->view->assign('isView', false);
-            $this->view->assign('route', 'accountManager/saveBulkEdit');
-            $this->view->assign('itemsId', $this->getItemsIdFromRequest($this->request));
-
-            $this->setViewData();
-
-            $this->eventDispatcher->notify('show.account.bulkEdit', new Event($this));
-
-            return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (Exception $e) {
-            processException($e);
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        $this->view->assign('header', __('Bulk Update'));
+        $this->view->assign('isView', false);
+        $this->view->assign('route', 'accountManager/saveBulkEdit');
+        $this->view->assign('itemsId', $this->getItemsIdFromRequest($this->request));
+
+        $this->setViewData();
+
+        $this->eventDispatcher->notify('show.account.bulkEdit', new Event($this));
+
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 
     /**

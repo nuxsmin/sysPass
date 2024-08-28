@@ -24,18 +24,26 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Account\Dtos\AccountHistoryViewDto;
 use SP\Domain\Account\Ports\AccountHistoryService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Services\UpdatedMasterPassException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHistoryHelper;
-use SP\Modules\Web\Util\ErrorUtil;
 use SP\Mvc\Controller\WebControllerHelper;
 
 use function SP\__;
-use function SP\processException;
 
 /**
  * ViewHistoryController
@@ -59,47 +67,43 @@ final class ViewHistoryController extends AccountControllerBase
      * Obtener los datos para mostrar el interface para ver cuenta en fecha concreta
      *
      * @param int $id Account's ID
+     * @throws AccountPermissionException
+     * @throws UnauthorizedActionException
+     * @throws UnauthorizedPageException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws UpdatedMasterPassException
+     * @throws NoSuchItemException
      */
-    public function viewHistoryAction(int $id): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function viewHistoryAction(int $id): ActionResponse
     {
-        try {
-            $this->accountHistoryHelper->initializeFor(AclActionsInterface::ACCOUNT_HISTORY_VIEW);
+        $this->accountHistoryHelper->initializeFor(AclActionsInterface::ACCOUNT_HISTORY_VIEW);
 
-            $this->accountHistoryHelper->setViewForAccount(
-                AccountHistoryViewDto::fromArray($this->accountHistoryService->getById($id)->toArray())
-            );
+        $this->accountHistoryHelper->setViewForAccount(
+            AccountHistoryViewDto::fromArray($this->accountHistoryService->getById($id)->toArray())
+        );
 
-            $this->view->addTemplate('account-history');
+        $this->view->addTemplate('account-history');
 
-            $this->view->assign(
-                'title',
-                [
-                    'class' => 'titleNormal',
-                    'name' => __('Account Details'),
-                    'icon' => 'access_time',
-                ]
-            );
+        $this->view->assign(
+            'title',
+            [
+                'class' => 'titleNormal',
+                'name' => __('Account Details'),
+                'icon' => 'access_time',
+            ]
+        );
 
-            $this->view->assign('formRoute', 'account/saveRestore');
+        $this->view->assign('formRoute', 'account/saveRestore');
 
-            $this->eventDispatcher->notify('show.account.history', new Event($this));
+        $this->eventDispatcher->notify('show.account.history', new Event($this));
 
-            if ($this->isAjax === false) {
-                $this->upgradeView();
-            }
-
-            $this->view();
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            if ($this->isAjax === false) {
-                $this->upgradeView();
-            }
-
-            ErrorUtil::showExceptionInView($this->view, $e, 'account-history');
+        if ($this->isAjax === false) {
+            $this->upgradeView();
         }
-    }
 
+        return ActionResponse::ok($this->render());
+    }
 }

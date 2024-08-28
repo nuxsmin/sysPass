@@ -24,22 +24,21 @@
 
 namespace SP\Modules\Web\Controllers\AccountHistoryManager;
 
-use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class RestoreController
@@ -48,8 +47,6 @@ use function SP\processException;
  */
 final class RestoreController extends ControllerBase
 {
-    use JsonTrait;
-
     /**
      * @throws AuthException
      * @throws SessionTimeout
@@ -71,36 +68,29 @@ final class RestoreController extends ControllerBase
      *
      * @param int $id Account's history ID
      *
-     * @return bool
+     * @return ActionResponse
      * @throws SPException
      */
-    public function restoreAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function restoreAction(int $id): ActionResponse
     {
-        try {
-            $accountHistoryDto = $this->accountHistoryService->getById($id);
+        $accountHistoryDto = $this->accountHistoryService->getById($id);
 
-            if ($accountHistoryDto->isModify) {
-                $this->accountService->restoreModified($accountHistoryDto);
-            } else {
-                $this->accountService->restoreRemoved($accountHistoryDto);
-            }
-
-            $this->eventDispatcher->notify(
-                'restore.accountHistory',
-                new Event(
-                    $this,
-                    EventMessage::build(__u('Account restored'))
-                                ->addDetail(__u('Data'), (string)$accountHistoryDto)
-                )
-            );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Account restored'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if ($accountHistoryDto->isModify) {
+            $this->accountService->restoreModified($accountHistoryDto);
+        } else {
+            $this->accountService->restoreRemoved($accountHistoryDto);
         }
+
+        $this->eventDispatcher->notify(
+            'restore.accountHistory',
+            new Event(
+                $this,
+                EventMessage::build(__u('Account restored'))
+                            ->addDetail(__u('Data'), (string)$accountHistoryDto)
+            )
+        );
+
+        return ActionResponse::ok(__u('Account restored'));
     }
 }

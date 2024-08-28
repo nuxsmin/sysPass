@@ -24,11 +24,15 @@
 
 namespace SP\Modules\Web\Controllers\AuthToken;
 
-use Exception;
-use JsonException;
 use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Core\Exceptions\SPException;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class EditController
@@ -40,36 +44,25 @@ final class EditController extends AuthTokenViewBase
     /**
      * Edit action
      *
-     * @param  int  $id
+     * @param int $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
+     * @throws SPException
      */
-    public function editAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function editAction(int $id): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_EDIT)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $this->view->assign('header', __('Edit Authorization'));
-            $this->view->assign('isView', false);
-            $this->view->assign('route', 'authToken/saveEdit/'.$id);
-
-            $this->setViewData($id);
-
-            $this->eventDispatcher->notify('show.authToken.edit', new Event($this));
-
-            return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_EDIT)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        $this->view->assign('header', __('Edit Authorization'));
+        $this->view->assign('route', 'authToken/saveEdit/' . $id);
+
+        $this->setViewData($id, false);
+
+        $this->eventDispatcher->notify('show.authToken.edit', new Event($this));
+
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 }

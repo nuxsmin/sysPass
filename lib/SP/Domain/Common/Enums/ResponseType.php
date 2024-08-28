@@ -1,11 +1,10 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,17 +22,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Auth\Ports;
+namespace SP\Domain\Common\Enums;
 
 /**
- * Interface AuthTokenAction
+ * Enum ResponseType
  */
-interface AuthTokenActionInterface
+enum ResponseType
 {
-    /**
-     * Devuelver un array de acciones posibles para los tokens
-     *
-     * @return array
-     */
-    public function getTokenActions(): array;
+    case PLAIN_TEXT;
+    case JSON;
+    case JSON_RPC;
 }

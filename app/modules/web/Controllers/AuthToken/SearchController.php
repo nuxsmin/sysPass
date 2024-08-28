@@ -24,18 +24,16 @@
 
 namespace SP\Modules\Web\Controllers\AuthToken;
 
-use JsonException;
 use SP\Core\Application;
 use SP\Domain\Auth\Ports\AuthTokenService;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Html\DataGrid\DataGridInterface;
-use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Controllers\SearchGridControllerBase;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -44,51 +42,23 @@ use SP\Mvc\Controller\WebControllerHelper;
  *
  * @package SP\Modules\Web\Controllers
  */
-final class SearchController extends ControllerBase
+final class SearchController extends SearchGridControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
-    private AuthTokenService $authTokenService;
-    private AuthTokenGrid    $authTokenGrid;
-
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application      $application,
-        WebControllerHelper $webControllerHelper,
-        AuthTokenService $authTokenService,
-        AuthTokenGrid    $authTokenGrid
+        Application                       $application,
+        WebControllerHelper               $webControllerHelper,
+        private readonly AuthTokenService $authTokenService,
+        private readonly AuthTokenGrid    $authTokenGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->authTokenService = $authTokenService;
-        $this->authTokenGrid = $authTokenGrid;
-    }
-
-    /**
-     * Search action
-     *
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     * @throws JsonException
-     */
-    public function searchAction(): bool
-    {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_SEARCH)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
-            );
-        }
-
-        $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
-        $this->view->assign('data', $this->getSearchGrid());
-
-        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -105,5 +75,10 @@ final class SearchController extends ControllerBase
             $this->authTokenGrid->getGrid($this->authTokenService->search($itemSearchData)),
             $itemSearchData
         );
+    }
+
+    protected function getAclAction(): int
+    {
+        return AclActionsInterface::AUTHTOKEN_SEARCH;
     }
 }

@@ -24,24 +24,23 @@
 
 namespace SP\Modules\Web\Controllers\AccountManager;
 
-use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class AccountManagerController
@@ -51,7 +50,6 @@ use function SP\processException;
 final class DeleteController extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     /**
      * @throws AuthException
@@ -73,47 +71,42 @@ final class DeleteController extends ControllerBase
      *
      * @param int|null $id
      *
-     * @return bool
+     * @return ActionResponse
      * @throws SPException
      */
-    public function deleteAction(?int $id = null): bool
+    #[Action(ResponseType::JSON)]
+    public function deleteAction(?int $id = null): ActionResponse
     {
-        try {
-            if ($id === null) {
-                $ids = $this->getItemsIdFromRequest($this->request);
-                $this->accountService->deleteByIdBatch($ids);
+        if ($id === null) {
+            $ids = $this->getItemsIdFromRequest($this->request);
+            $this->accountService->deleteByIdBatch($ids);
 
-                $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $ids, $this->customFieldService);
-
-                $this->eventDispatcher->notify(
-                    'delete.account.selection',
-                    new Event($this, EventMessage::build()->addDescription(__u('Accounts removed')))
-                );
-
-                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Accounts removed'));
-            }
-
-            $accountView = $this->accountService->getByIdEnriched($id);
-
-            $this->accountService->delete($id);
-
-            $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $id, $this->customFieldService);
+            $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $ids, $this->customFieldService);
 
             $this->eventDispatcher->notify(
-                'delete.account',
-                new Event(
-                    $this,
-                    EventMessage::build(__u('Account removed'))
-                                ->addDetail(__u('Account'), $accountView->getName())
-                                ->addDetail(__u('Client'), $accountView->getClientName())
-                )
+                'delete.account.selection',
+                new Event($this, EventMessage::build()->addDescription(__u('Accounts removed')))
             );
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Account removed'));
-        } catch (Exception $e) {
-            processException($e);
-
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::ok(__u('Accounts removed'));
         }
+
+        $accountView = $this->accountService->getByIdEnriched($id);
+
+        $this->accountService->delete($id);
+
+        $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $id, $this->customFieldService);
+
+        $this->eventDispatcher->notify(
+            'delete.account',
+            new Event(
+                $this,
+                EventMessage::build(__u('Account removed'))
+                            ->addDetail(__u('Account'), $accountView->getName())
+                            ->addDetail(__u('Client'), $accountView->getClientName())
+            )
+        );
+
+        return ActionResponse::ok(__u('Account removed'));
     }
 }

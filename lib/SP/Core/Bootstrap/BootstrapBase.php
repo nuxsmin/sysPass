@@ -34,6 +34,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Common\Providers\Environment;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -76,7 +77,8 @@ abstract class BootstrapBase implements BootstrapInterface
         protected readonly Response            $response,
         protected readonly RouteContextData $routeContextData,
         LanguageInterface                   $language,
-        protected readonly PathsContext     $pathsContext
+        protected readonly PathsContext     $pathsContext,
+        protected readonly EventDispatcher  $eventDispatcher
     ) {
         // Set the default language
         $language->setLocales('en_US');

@@ -28,6 +28,9 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -35,7 +38,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
@@ -45,8 +47,6 @@ use function SP\__u;
  */
 final class CopyPassHistoryController extends AccountControllerBase
 {
-    use JsonTrait;
-
     public function __construct(
         Application                            $application,
         WebControllerHelper                    $webControllerHelper,
@@ -64,7 +64,7 @@ final class CopyPassHistoryController extends AccountControllerBase
      *
      * @param int $id Account's ID
      *
-     * @return bool
+     * @return ActionResponse
      * @throws ConstraintException
      * @throws HelperException
      * @throws NoSuchItemException
@@ -72,7 +72,8 @@ final class CopyPassHistoryController extends AccountControllerBase
      * @throws CryptException
      * @throws SPException
      */
-    public function copyPassHistoryAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function copyPassHistoryAction(int $id): ActionResponse
     {
         $account = $this->accountService->getPasswordHistoryForId($id);
 
@@ -89,6 +90,6 @@ final class CopyPassHistoryController extends AccountControllerBase
             )
         );
 
-        return $this->returnJsonResponseData($data);
+        return ActionResponse::ok(__u('Password copied'), $data);
     }
 }

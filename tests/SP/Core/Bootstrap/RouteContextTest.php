@@ -52,11 +52,11 @@ class RouteContextTest extends TestCase
 
         $out = RouteContext::getRouteContextData($route);
 
-        $this->assertEquals('testController', $out->getController());
-        $this->assertEquals('testAction', $out->getActionName());
-        $this->assertEquals('testActionAction', $out->getMethodName());
-        $this->assertEquals('param1', $out->getMethodParams()[0]);
-        $this->assertEquals('param2', $out->getMethodParams()[1]);
+        $this->assertEquals('testController', $out->controller);
+        $this->assertEquals('testAction', $out->actionName);
+        $this->assertEquals('testActionAction', $out->methodName);
+        $this->assertEquals('param1', $out->methodParams[0]);
+        $this->assertEquals('param2', $out->methodParams[1]);
     }
 
     public function testGetRouteContextDataWithNoaction()
@@ -65,10 +65,10 @@ class RouteContextTest extends TestCase
 
         $out = RouteContext::getRouteContextData($route);
 
-        $this->assertEquals('testController', $out->getController());
-        $this->assertEquals('index', $out->getActionName());
-        $this->assertEquals('indexAction', $out->getMethodName());
-        $this->assertCount(0, $out->getMethodParams());
+        $this->assertEquals('testController', $out->controller);
+        $this->assertEquals('index', $out->actionName);
+        $this->assertEquals('indexAction', $out->methodName);
+        $this->assertCount(0, $out->methodParams);
     }
 
     public function testGetRouteContextDataWithActionAndNoParam()
@@ -77,10 +77,10 @@ class RouteContextTest extends TestCase
 
         $out = RouteContext::getRouteContextData($route);
 
-        $this->assertEquals('testController', $out->getController());
-        $this->assertEquals('testAction', $out->getActionName());
-        $this->assertEquals('testActionAction', $out->getMethodName());
-        $this->assertCount(0, $out->getMethodParams());
+        $this->assertEquals('testController', $out->controller);
+        $this->assertEquals('testAction', $out->actionName);
+        $this->assertEquals('testActionAction', $out->methodName);
+        $this->assertCount(0, $out->methodParams);
     }
 
     #[DataProvider('wrongRouteProvider')]

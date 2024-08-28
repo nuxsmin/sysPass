@@ -24,12 +24,15 @@
 
 namespace SP\Modules\Web\Controllers\AuthToken;
 
-use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Core\Exceptions\SPException;
+
+use function SP\__u;
 
 /**
  * Class DeleteController
@@ -41,55 +44,43 @@ final class DeleteController extends AuthTokenSaveBase
     /**
      * Delete action
      *
-     * @param  int|null  $id
+     * @param int|null $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
+     * @throws SPException
      */
-    public function deleteAction(?int $id = null): bool
+    #[Action(ResponseType::JSON)]
+    public function deleteAction(?int $id = null): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_DELETE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
+        if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_DELETE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
 
-            if ($id === null) {
-                $this->authTokenService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
-
-                $this->deleteCustomFieldsForItem(AclActionsInterface::AUTHTOKEN, $id, $this->customFieldService);
-
-                $this->eventDispatcher->notify(
-                    'delete.authToken.selection',
-                    new Event($this, EventMessage::build()->addDescription(__u('Authorizations deleted')))
-                );
-
-                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Authorizations deleted'));
-            }
-
-            $this->authTokenService->delete($id);
+        if ($id === null) {
+            $this->authTokenService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
             $this->deleteCustomFieldsForItem(AclActionsInterface::AUTHTOKEN, $id, $this->customFieldService);
 
             $this->eventDispatcher->notify(
-                'delete.authToken',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Authorization deleted'))
-                        ->addDetail(__u('Authorization'), $id)
-                )
+                'delete.authToken.selection',
+                new Event($this, EventMessage::build(__u('Authorizations deleted')))
             );
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Authorization deleted'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::ok(__u('Authorizations deleted'));
         }
+
+        $this->authTokenService->delete($id);
+
+        $this->deleteCustomFieldsForItem(AclActionsInterface::AUTHTOKEN, $id, $this->customFieldService);
+
+        $this->eventDispatcher->notify(
+            'delete.authToken',
+            new Event(
+                $this,
+                EventMessage::build(__u('Authorization deleted'))->addDetail(__u('Authorization'), $id)
+            )
+        );
+
+        return ActionResponse::ok(__u('Authorization deleted'));
     }
 }

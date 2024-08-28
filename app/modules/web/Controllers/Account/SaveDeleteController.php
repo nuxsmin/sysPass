@@ -24,22 +24,20 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class SaveDeleteController
@@ -47,7 +45,6 @@ use function SP\processException;
 final class SaveDeleteController extends AccountControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     public function __construct(
         Application                             $application,
@@ -63,36 +60,28 @@ final class SaveDeleteController extends AccountControllerBase
      *
      * @param int $id Account's ID
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      * @throws SPException
      */
-    public function saveDeleteAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function saveDeleteAction(int $id): ActionResponse
     {
-        try {
-            $accountDetails = $this->accountService->getByIdEnriched($id);
+        $accountDetails = $this->accountService->getByIdEnriched($id);
 
-            $this->accountService->delete($id);
+        $this->accountService->delete($id);
 
-            $this->eventDispatcher->notify(
-                'delete.account',
-                new Event(
-                    $this,
-                    EventMessage::build(__u('Account removed'))
-                                ->addDetail(__u('Account'), $accountDetails->getName())
-                                ->addDetail(__u('Client'), $accountDetails->getClientName())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'delete.account',
+            new Event(
+                $this,
+                EventMessage::build(__u('Account removed'))
+                            ->addDetail(__u('Account'), $accountDetails->getName())
+                            ->addDetail(__u('Client'), $accountDetails->getClientName())
+            )
+        );
 
-            $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $id, $this->customFieldService);
+        $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $id, $this->customFieldService);
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Account removed'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
-        }
+        return ActionResponse::ok(__u('Account removed'));
     }
 }

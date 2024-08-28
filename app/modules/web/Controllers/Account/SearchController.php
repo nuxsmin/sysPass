@@ -24,23 +24,20 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountSearchHelper;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
-
-use function SP\processException;
 
 /**
  * SearchController
  */
 final class SearchController extends AccountControllerBase
 {
-    use JsonTrait;
-
     public function __construct(
         Application                          $application,
         WebControllerHelper                  $webControllerHelper,
@@ -50,23 +47,16 @@ final class SearchController extends AccountControllerBase
     }
 
     /**
-     * @return bool|null
+     * @return ActionResponse
      * @throws SPException
      */
-    public function searchAction(): ?bool
+    #[Action(ResponseType::JSON)]
+    public function searchAction(): ActionResponse
     {
-        try {
-            $this->accountSearchHelper->getAccountSearch();
+        $this->accountSearchHelper->getAccountSearch();
 
-            $this->eventDispatcher->notify('show.account.search', new Event($this));
+        $this->eventDispatcher->notify('show.account.search', new Event($this));
 
-            return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
-        }
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 }

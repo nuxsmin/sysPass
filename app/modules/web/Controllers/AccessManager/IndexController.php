@@ -29,11 +29,15 @@ use SP\Core\Events\Event;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
@@ -78,21 +82,26 @@ final class IndexController extends ControllerBase
     }
 
     /**
+     * @return ActionResponse
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
-        $this->getGridTabs();
+        return ActionResponse::ok($this->getGridTabs());
     }
 
     /**
      * Returns a tabbed grid with items
      *
+     * @return string
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
-    protected function getGridTabs(): void
+    protected function getGridTabs(): string
     {
         $itemSearchData = new ItemSearchDto(null, 0, $this->configData->getAccountCount());
 
@@ -135,7 +144,7 @@ final class IndexController extends ControllerBase
             $this->request->analyzeInt('tabIndex', 0)
         );
 
-        $this->view();
+        return $this->render();
     }
 
     /**

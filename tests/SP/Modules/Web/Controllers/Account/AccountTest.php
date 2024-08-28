@@ -109,7 +109,7 @@ class AccountTest extends IntegrationTestCase
         $this->runApp($container);
 
         $this->expectOutputRegex(
-            '/\{"status":0,"description":null,"data":\{"useimage":false,"html":".*"\},"messages":\[\]\}/'
+            '/\{"status":"OK","description":"","data":\{"useimage":false,"html":".*"\}}/'
         );
     }
 
@@ -153,7 +153,7 @@ class AccountTest extends IntegrationTestCase
         $this->runApp($container);
 
         $this->expectOutputRegex(
-            '/\{"status":0,"description":null,"data":\{"useimage":false,"html":".*"\},"messages":\[\]\}/'
+            '/\{"status":"OK","description":"","data":\{"useimage":false,"html":".*"\}\}/'
         );
     }
 
@@ -295,7 +295,7 @@ class AccountTest extends IntegrationTestCase
         );
 
         $this->expectOutputRegex(
-            '/\{"status":0,"description":null,"data":\{"html":".*"\},"messages":\[\]\}/'
+            '/\{"status":"OK","description":"","data":\{"html":".*"\}\}/'
         );
 
         $this->runApp($container);
@@ -334,7 +334,7 @@ class AccountTest extends IntegrationTestCase
         $this->runApp($container);
 
         $this->expectOutputString(
-            '{"status":0,"description":"Request done","data":{"itemId":100,"nextAction":"1"},"messages":[]}'
+            '{"status":"OK","description":"Request done","data":{"itemId":100,"nextAction":"1"}}'
         );
     }
 
@@ -391,9 +391,9 @@ class AccountTest extends IntegrationTestCase
         $this->runApp($container);
 
         $this->expectOutputString(
-            '{"status":0,"description":"Account restored","data":{"itemId":'
+            '{"status":"OK","description":"Account restored","data":{"itemId":'
             . $accountId .
-            ',"nextAction":"3"},"messages":[]}'
+            ',"nextAction":"3"}}'
         );
     }
 
@@ -439,8 +439,8 @@ class AccountTest extends IntegrationTestCase
         $this->runApp($container);
 
         $this->expectOutputString(
-            '{"status":0,"description":"Password updated","data":{"itemId":' . $accountId .
-            ',"nextAction":"3"},"messages":[]}'
+            '{"status":"OK","description":"Password updated","data":{"itemId":' . $accountId .
+            ',"nextAction":"3"}}'
         );
     }
 
@@ -512,8 +512,8 @@ class AccountTest extends IntegrationTestCase
         $this->runApp($container);
 
         $this->expectOutputString(
-            '{"status":0,"description":"Account updated","data":{"itemId":' . $accountId .
-            ',"nextAction":"3"},"messages":[]}'
+            '{"status":"OK","description":"Account updated","data":{"itemId":' . $accountId .
+            ',"nextAction":"3"}}'
         );
     }
 
@@ -550,7 +550,7 @@ class AccountTest extends IntegrationTestCase
         $this->runApp($container);
 
         $this->expectOutputString(
-            '{"status":0,"description":"Account removed","data":[],"messages":[]}'
+            '{"status":"OK","description":"Account removed","data":null}'
         );
     }
 
@@ -616,7 +616,7 @@ class AccountTest extends IntegrationTestCase
 
         $this->runApp($container);
 
-        $this->expectOutputString('{"status":0,"description":null,"data":{"accpass":"some_data"},"messages":[]}');
+        $this->expectOutputString('{"status":"OK","description":"Password copied","data":{"accpass":"some_data"}}');
     }
 
     /**
@@ -653,7 +653,7 @@ class AccountTest extends IntegrationTestCase
 
         $this->runApp($container);
 
-        $this->expectOutputString('{"status":0,"description":null,"data":{"accpass":"some_data"},"messages":[]}');
+        $this->expectOutputString('{"status":"OK","description":"Password copied","data":{"accpass":"some_data"}}');
     }
 
     /**
@@ -813,7 +813,7 @@ class AccountTest extends IntegrationTestCase
         $this->runApp($container);
 
         $this->expectOutputString(
-            '{"status":0,"description":"Account created","data":{"itemId":100,"nextAction":"5"},"messages":[]}'
+            '{"status":"OK","description":"Account created","data":{"itemId":100,"nextAction":"5"}}'
         );
     }
 
@@ -874,7 +874,7 @@ class AccountTest extends IntegrationTestCase
         $this->runApp($container);
 
         $this->expectOutputString(
-            '{"status":0,"description":"Account created","data":{"itemId":100,"nextAction":"5"},"messages":[]}'
+            '{"status":"OK","description":"Account created","data":{"itemId":100,"nextAction":"5"}}'
         );
     }
 

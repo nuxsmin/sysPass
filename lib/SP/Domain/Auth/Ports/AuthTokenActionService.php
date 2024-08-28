@@ -1,5 +1,6 @@
 <?php
-/*
+declare(strict_types=1);
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -22,33 +23,17 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers\AccountFavorite;
-
-use SP\Domain\Common\Attributes\Action;
-use SP\Domain\Common\Dtos\ActionResponse;
-use SP\Domain\Common\Enums\ResponseType;
-use SP\Domain\Core\Exceptions\SPException;
-
-use function SP\__u;
+namespace SP\Domain\Auth\Ports;
 
 /**
- * Class MarkController
- *
- * @package SP\Modules\Web\Controllers
+ * Interface AuthTokenAction
  */
-final class UnmarkController extends AccountFavoriteBase
+interface AuthTokenActionService
 {
     /**
-     * @param int $accountId
+     * Devuelver un array de acciones posibles para los tokens
      *
-     * @return ActionResponse
-     * @throws SPException
+     * @return array
      */
-    #[Action(ResponseType::JSON)]
-    public function unmarkAction(int $accountId): ActionResponse
-    {
-        $this->accountToFavoriteService->delete($accountId, $this->session->getUserData()->id);
-
-        return ActionResponse::ok(__u('Favorite deleted'));
-    }
+    public function getTokenActions(): array;
 }

@@ -24,28 +24,25 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class SaveEditRestoreController
  */
 final class SaveEditRestoreController extends AccountControllerBase
 {
-    use JsonTrait;
-
     public function __construct(
         Application                            $application,
         WebControllerHelper                    $webControllerHelper,
@@ -64,42 +61,34 @@ final class SaveEditRestoreController extends AccountControllerBase
      * @param int $historyId Account's history ID
      * @param int $id Account's ID
      *
-     * @return bool
+     * @return ActionResponse
      * @throws SPException
      */
-    public function saveEditRestoreAction(int $historyId, int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function saveEditRestoreAction(int $historyId, int $id): ActionResponse
     {
-        try {
-            $this->accountService->restoreModified($this->accountHistoryService->getById($historyId));
+        $this->accountService->restoreModified($this->accountHistoryService->getById($historyId));
 
-            $this->eventDispatcher->notify(
-                'edit.account.restore',
-                new Event(
-                    $this,
-                    function () use ($id) {
-                        $accountDetails = $this->accountService->getByIdEnriched($id);
+        $this->eventDispatcher->notify(
+            'edit.account.restore',
+            new Event(
+                $this,
+                function () use ($id) {
+                    $accountDetails = $this->accountService->getByIdEnriched($id);
 
-                        return EventMessage::build(__u('Account restored'))
-                                           ->addDetail(__u('Account'), $accountDetails->getName())
-                                           ->addDetail(__u('Client'), $accountDetails->getClientName());
-                    }
-                )
-            );
+                    return EventMessage::build(__u('Account restored'))
+                                       ->addDetail(__u('Account'), $accountDetails->getName())
+                                       ->addDetail(__u('Client'), $accountDetails->getClientName());
+                }
+            )
+        );
 
-            return $this->returnJsonResponseData(
-                [
-                    'itemId' => $id,
-                    'nextAction' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW),
-                ],
-                JsonMessage::JSON_SUCCESS,
-                __u('Account restored')
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
-        }
+        return ActionResponse::ok(
+            __u('Account restored'),
+            [
+                'itemId' => $id,
+                'nextAction' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW),
+            ]
+        );
     }
 }

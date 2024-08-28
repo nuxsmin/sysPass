@@ -24,18 +24,23 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\User\Services\UpdatedMasterPassException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountRequestHelper;
-use SP\Modules\Web\Util\ErrorUtil;
 use SP\Mvc\Controller\WebControllerHelper;
-
-use function SP\processException;
 
 /**
  * Class RequestAccessController
@@ -56,37 +61,32 @@ final class RequestAccessController extends ControllerBase
      * Obtener los datos para mostrar el interface de solicitud de cambios en una cuenta
      *
      * @param int $id Account's ID
-     *
+     * @return ActionResponse
+     * @throws UnauthorizedActionException
+     * @throws UnauthorizedPageException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws UpdatedMasterPassException
+     * @throws NoSuchItemException
      */
-    public function requestAccessAction(int $id): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function requestAccessAction(int $id): ActionResponse
     {
-        try {
-            $this->accountRequestHelper->initializeFor(AclActionsInterface::ACCOUNT_REQUEST);
-            $this->accountRequestHelper->setIsView(true);
-            $this->accountRequestHelper->setViewForRequest(
-                new AccountEnrichedDto($this->accountService->getByIdEnriched($id))
-            );
+        $this->accountRequestHelper->initializeFor(AclActionsInterface::ACCOUNT_REQUEST);
+        $this->accountRequestHelper->setIsView(true);
+        $this->accountRequestHelper->setViewForRequest(
+            new AccountEnrichedDto($this->accountService->getByIdEnriched($id))
+        );
 
-            $this->view->addTemplate('account-request');
-            $this->view->assign('formRoute', 'account/saveRequest');
+        $this->view->addTemplate('account-request');
+        $this->view->assign('formRoute', 'account/saveRequest');
 
-            $this->eventDispatcher->notify('show.account.request', new Event($this));
+        $this->eventDispatcher->notify('show.account.request', new Event($this));
 
-            if ($this->isAjax === false) {
-                $this->upgradeView();
-            }
-
-            $this->view();
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            if ($this->isAjax === false) {
-                $this->upgradeView();
-            }
-
-            ErrorUtil::showExceptionInView($this->view, $e, 'account-request');
+        if ($this->isAjax === false) {
+            $this->upgradeView();
         }
+
+        return ActionResponse::ok($this->render());
     }
 }

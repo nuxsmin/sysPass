@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -22,26 +22,21 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers\UserPassReset;
+declare(strict_types=1);
 
-use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Util\ErrorUtil;
+namespace SP\Domain\Common\Attributes;
+
+use Attribute;
+use SP\Domain\Common\Enums\ResponseType;
 
 /**
- * Class IndexController
- *
- * @package SP\Modules\Web\Controllers
+ * Class Action
  */
-final class IndexController extends ControllerBase
+#[Attribute(Attribute::TARGET_METHOD)]
+final class Action
 {
-    public function indexAction(): void
+
+    public function __construct(public readonly ResponseType $responseType)
     {
-        $this->layoutHelper->getCustomLayout('request', strtolower($this->routeContextData->actionName));
-
-        if (!$this->configData->isMailEnabled()) {
-            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, true, 'request');
-        }
-
-        $this->view();
     }
 }

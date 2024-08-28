@@ -24,15 +24,15 @@
 
 namespace SP\Modules\Web\Controllers\AccountFile;
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class DeleteController
@@ -42,47 +42,39 @@ use function SP\processException;
 final class DeleteController extends AccountFileBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     /**
      * Delete action
      *
      * @param int|null $id
      *
-     * @return bool
+     * @return ActionResponse
      * @throws SPException
      */
-    public function deleteAction(?int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function deleteAction(?int $id): ActionResponse
     {
-        try {
-            if ($id === null) {
-                $this->accountFileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
-
-                $this->eventDispatcher->notify(
-                    'delete.accountFile.selection',
-                    new Event($this, EventMessage::build()->addDescription(__u('Files deleted')))
-                );
-
-                return $this->returnJsonResponse(0, __u('Files deleted'));
-            }
+        if ($id === null) {
+            $this->accountFileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
             $this->eventDispatcher->notify(
-                'delete.accountFile',
-                new Event(
-                    $this,
-                    EventMessage::build(__u('File deleted'))->addDetail(__u('File'), $id)
-                )
+                'delete.accountFile.selection',
+                new Event($this, EventMessage::build()->addDescription(__u('Files deleted')))
             );
 
-            $this->accountFileService->delete($id);
-
-            return $this->returnJsonResponse(0, __u('File deleted'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::ok(__u('Files deleted'));
         }
+
+        $this->eventDispatcher->notify(
+            'delete.accountFile',
+            new Event(
+                $this,
+                EventMessage::build(__u('File deleted'))->addDetail(__u('File'), $id)
+            )
+        );
+
+        $this->accountFileService->delete($id);
+
+        return ActionResponse::ok(__u('File deleted'));
     }
 }

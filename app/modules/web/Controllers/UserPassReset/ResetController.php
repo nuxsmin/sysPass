@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\UserPassReset;
 
-
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Util\ErrorUtil;
 
@@ -34,12 +33,12 @@ use SP\Modules\Web\Util\ErrorUtil;
 final class ResetController extends ControllerBase
 {
     /**
-     * @param  string|null  $hash
+     * @param string|null $hash
      *
      */
     public function resetAction(?string $hash = null): void
     {
-        $this->layoutHelper->getCustomLayout('reset', strtolower($this->routeContextData->getActionName()));
+        $this->layoutHelper->getCustomLayout('reset', strtolower($this->routeContextData->actionName));
 
         if ($hash !== null && $this->configData->isMailEnabled()) {
             $this->view->assign('hash', $hash);

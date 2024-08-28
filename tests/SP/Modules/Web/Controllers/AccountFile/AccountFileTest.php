@@ -66,9 +66,7 @@ class AccountFileTest extends IntegrationTestCase
 
         $this->runApp($container);
 
-        $this->expectOutputString(
-            '{"status":0,"description":"File deleted","data":[],"messages":[]}'
-        );
+        $this->expectOutputString('{"status":"OK","description":"File deleted","data":null}');
     }
 
     /**
@@ -95,9 +93,7 @@ class AccountFileTest extends IntegrationTestCase
 
         $this->runApp($container);
 
-        $this->expectOutputString(
-            '{"status":0,"description":"Files deleted","data":[],"messages":[]}'
-        );
+        $this->expectOutputString('{"status":"OK","description":"Files deleted","data":null}');
     }
 
     /**
@@ -219,24 +215,7 @@ class AccountFileTest extends IntegrationTestCase
 
         $this->runApp($container);
 
-        $this->expectOutputString(
-            '{"status":0,"description":"File saved","data":[],"messages":[]}'
-        );
-    }
-
-    /**
-     * @param string $output
-     * @return void
-     */
-
-    private function outputCheckerUpload(string $output): void
-    {
-        $crawler = new Crawler($output);
-        $filter = $crawler->filterXPath('//table/tbody//tr[string-length(@data-item-id) > 0]')
-                          ->extract(['class']);
-
-        self::assertNotEmpty($output);
-        self::assertCount(2, $filter);
+        $this->expectOutputString('{"status":"OK","description":"File saved","data":null}');
     }
 
     /**
@@ -283,6 +262,21 @@ class AccountFileTest extends IntegrationTestCase
         parent::setUp();
 
         $this->moduleDefinitions = $this->getModuleDefinitions();
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+
+    private function outputCheckerUpload(string $output): void
+    {
+        $crawler = new Crawler($output);
+        $filter = $crawler->filterXPath('//table/tbody//tr[string-length(@data-item-id) > 0]')
+                          ->extract(['class']);
+
+        self::assertNotEmpty($output);
+        self::assertCount(2, $filter);
     }
 
     /**

@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,42 +22,23 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers\Traits;
+declare(strict_types=1);
+
+namespace SP\Modules\Web\Controllers\Helpers;
 
 use Exception;
-use Klein\Klein;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Http\Services\JsonResponse;
 
 /**
- * Trait JsonTrait
- *
- * @property Klein $router
+ * Class JsonResponseHandler
  */
-trait JsonTrait
+final readonly class JsonResponseHandler
 {
-    /**
-     * Returns JSON response
-     *
-     * @param int $status Status code
-     * @param string $description Untranslated description string
-     * @param array|string|null $messages Untranslated massages array of strings
-     *
-     * @return bool
-     * @throws SPException
-     */
-    protected function returnJsonResponse(int $status, string $description, array|string|null $messages = null): bool
+
+    public function __construct(private JsonResponse $response)
     {
-        $jsonResponse = new JsonMessage();
-        $jsonResponse->setStatus($status);
-        $jsonResponse->setDescription($description);
-
-        if (null !== $messages) {
-            $jsonResponse->setMessages((array)$messages);
-        }
-
-        return JsonResponse::factory($this->router->response())->send($jsonResponse);
     }
 
     /**
@@ -71,11 +52,11 @@ trait JsonTrait
      * @return bool
      * @throws SPException
      */
-    protected function returnJsonResponseData(
-        mixed  $data,
-        int    $status = JsonMessage::JSON_SUCCESS,
+    public function sendData(
+        mixed   $data,
+        int     $status = JsonMessage::JSON_SUCCESS,
         ?string $description = null,
-        ?array $messages = null
+        ?array  $messages = null
     ): bool {
         $jsonResponse = new JsonMessage();
         $jsonResponse->setStatus($status);
@@ -89,7 +70,30 @@ trait JsonTrait
             $jsonResponse->setMessages($messages);
         }
 
-        return JsonResponse::factory($this->router->response())->send($jsonResponse);
+        return $this->response->send($jsonResponse);
+    }
+
+    /**
+     * Returns JSON response
+     *
+     * @param int $status Status code
+     * @param string $description Untranslated description string
+     * @param array|string|null $messages Untranslated massages array of strings
+     *
+     * @return bool
+     * @throws SPException
+     */
+    public function send(int $status, string $description, array|string|null $messages = null): bool
+    {
+        $jsonMessage = new JsonMessage();
+        $jsonMessage->setStatus($status);
+        $jsonMessage->setDescription($description);
+
+        if (null !== $messages) {
+            $jsonMessage->setMessages((array)$messages);
+        }
+
+        return $this->response->send($jsonMessage);
     }
 
     /**
@@ -101,7 +105,7 @@ trait JsonTrait
      * @return bool
      * @throws SPException
      */
-    protected function returnJsonResponseException(Exception $exception, int $status = JsonMessage::JSON_ERROR): bool
+    public function sendException(Exception $exception, int $status = JsonMessage::JSON_ERROR): bool
     {
         $jsonResponse = new JsonMessage();
         $jsonResponse->setStatus($status);
@@ -111,6 +115,6 @@ trait JsonTrait
             $jsonResponse->setMessages([$exception->getHint()]);
         }
 
-        return JsonResponse::factory($this->router->response())->send($jsonResponse);
+        return $this->response->send($jsonResponse);
     }
 }

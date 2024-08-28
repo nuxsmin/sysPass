@@ -37,7 +37,7 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
  */
 abstract class ModuleBase implements ModuleInterface
 {
-    protected ConfigFileService $config;
+    protected ConfigFileService   $config;
     protected ConfigDataInterface $configData;
     protected Context             $context;
     private EventDispatcherInterface $eventDispatcher;

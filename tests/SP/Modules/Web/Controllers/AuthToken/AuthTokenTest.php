@@ -24,61 +24,69 @@
 
 declare(strict_types=1);
 
-namespace SP\Tests\Modules\Web\Controllers\AccountFavorite;
+namespace SP\Tests\Modules\Web\Controllers\AuthToken;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\IntegrationTestCase;
+use SP\Tests\OutputChecker;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
- * Class AccountFavoriteTest
+ * Class AuthTokenTest
  */
 #[Group('integration')]
-class AccountFavoriteTest extends IntegrationTestCase
+class AuthTokenTest extends IntegrationTestCase
 {
-    /**
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     * @throws FileException
-     * @throws InvalidClassException
-     * @throws ContainerExceptionInterface
-     */
-    public function testMarkAction()
-    {
-        $definitions = $this->getModuleDefinitions();
+    private array $definitions;
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[OutputChecker('outputCheckerCreate')]
+    public function create()
+    {
         $container = $this->buildContainer(
-            $definitions,
-            $this->buildRequest('post', 'index.php', ['r' => 'accountFavorite/mark/100'])
+            $this->definitions,
+            $this->buildRequest('get', 'index.php', ['r' => 'authToken/create'])
         );
 
         $this->runApp($container);
 
-        $this->expectOutputString('{"status":"OK","description":"Favorite added","data":null}');
+        $this->expectOutputRegex('/\{"status":"OK","description":"","data":\{"html":".*"\}\}/');
     }
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
      * @throws FileException
      * @throws InvalidClassException
-     * @throws ContainerExceptionInterface
      */
-    public function testUnmarkAction()
+    protected function setUp(): void
     {
-        $definitions = $this->getModuleDefinitions();
+        parent::setUp();
 
-        $container = $this->buildContainer(
-            $definitions,
-            $this->buildRequest('post', 'index.php', ['r' => 'accountFavorite/unmark/100'])
-        );
+        $this->definitions = $this->getModuleDefinitions();
+    }
 
-        $this->runApp($container);
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerCreate(string $output): void
+    {
+        $crawler = new Crawler($output);
+        $filter = $crawler->filterXPath(
+            '//div[@id="box-popup"]//form[@name="frmTokens"]//select|//input'
+        )->extract(['_name']);
 
-        $this->expectOutputString('{"status":"OK","description":"Favorite deleted","data":null}');
+        self::assertNotEmpty($output);
+        self::assertCount(5, $filter);
     }
 }

@@ -24,14 +24,16 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountSearchHelper;
-use SP\Modules\Web\Util\ErrorUtil;
 use SP\Mvc\Controller\WebControllerHelper;
-
-use function SP\processException;
 
 /**
  * Class IndexController
@@ -48,24 +50,19 @@ final class IndexController extends AccountControllerBase
     }
 
     /**
-     * Index action
-     *
+     * @return ActionResponse
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
-        try {
-            $this->accountSearchHelper->getSearchBox();
-            $this->accountSearchHelper->getAccountSearch();
+        $this->accountSearchHelper->getSearchBox();
+        $this->accountSearchHelper->getAccountSearch();
 
-            $this->eventDispatcher->notify('show.account.search', new Event($this));
+        $this->eventDispatcher->notify('show.account.search', new Event($this));
 
-            $this->view();
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            ErrorUtil::showExceptionInView($this->view, $e);
-        }
+        return ActionResponse::ok($this->render());
     }
 }

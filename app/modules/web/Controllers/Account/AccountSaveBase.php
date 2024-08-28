@@ -28,7 +28,6 @@ use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AccountForm;
 use SP\Modules\Web\Forms\FormInterface;
 use SP\Mvc\Controller\ItemTrait;
@@ -40,7 +39,6 @@ use SP\Mvc\Controller\WebControllerHelper;
 abstract class AccountSaveBase extends AccountControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     protected readonly FormInterface $accountForm;
 

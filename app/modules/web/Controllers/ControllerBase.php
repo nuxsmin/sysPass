@@ -44,7 +44,6 @@ use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
-use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\TemplateInterface;
@@ -61,29 +60,27 @@ abstract class ControllerBase
 
     protected const ERR_UNAVAILABLE = 0;
 
-    protected readonly EventDispatcherInterface $eventDispatcher;
-    protected readonly ConfigFileService          $config;
-    protected readonly Context|SessionContext   $session;
-    protected readonly ThemeInterface             $theme;
-    protected readonly AclInterface               $acl;
-    protected readonly ConfigDataInterface        $configData;
-    protected readonly RequestService           $request;
-    protected readonly PhpExtensionCheckerService $extensionChecker;
-    protected readonly TemplateInterface          $view;
-    protected readonly LayoutHelper               $layoutHelper;
-    protected readonly UriContextInterface        $uriContext;
-    protected ?UserDto                          $userDto         = null;
-    protected ?ProfileData                      $userProfileData = null;
-    protected readonly bool                     $isAjax;
-    protected readonly string                   $actionName;
-    protected readonly RouteContextData         $routeContextData;
-    protected readonly string                   $controllerName;
-    private readonly BrowserAuthService           $browser;
+    protected readonly EventDispatcherInterface    $eventDispatcher;
+    protected readonly ConfigFileService           $config;
+    protected readonly Context|SessionContext      $session;
+    protected readonly ThemeInterface              $theme;
+    protected readonly AclInterface                $acl;
+    protected readonly ConfigDataInterface         $configData;
+    protected readonly RequestService              $request;
+    protected readonly PhpExtensionCheckerService  $extensionChecker;
+    protected readonly TemplateInterface           $view;
+    protected readonly Helpers\LayoutHelper        $layoutHelper;
+    protected readonly UriContextInterface         $uriContext;
+    protected ?UserDto                             $userDto         = null;
+    protected ?ProfileData                         $userProfileData = null;
+    protected readonly bool                        $isAjax;
+    protected readonly RouteContextData            $routeContextData;
+    protected readonly Helpers\JsonResponseHandler $jsonResponse;
+    private readonly BrowserAuthService            $browser;
 
     public function __construct(Application $application, WebControllerHelper $webControllerHelper)
     {
         $this->routeContextData = $webControllerHelper->getRouteContextData();
-        $this->controllerName = $this->routeContextData->getController();
         $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();
         $this->eventDispatcher = $application->getEventDispatcher();
@@ -97,9 +94,9 @@ abstract class ControllerBase
         $this->layoutHelper = $webControllerHelper->getLayoutHelper();
         $this->view = $webControllerHelper->getTemplate();
         $this->uriContext = $webControllerHelper->getUriContext();
+        $this->jsonResponse = $webControllerHelper->getJsonResponseHandler();
 
         $this->isAjax = $this->request->isAjax();
-        $this->actionName = $this->routeContextData->getActionName();
 
         $loggedIn = $this->session->isLoggedIn();
 
@@ -125,7 +122,7 @@ abstract class ControllerBase
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
         $this->view->assign('themeUri', $this->theme->getUri());
         $this->view->assign('configData', $this->configData);
-        $this->view->assign('action', $this->actionName);
+        $this->view->assign('action', $this->routeContextData->actionName);
 
         if ($loggedIn) {
             $this->view->assignWithScope('userId', $this->userDto->id, 'ctx');
@@ -157,7 +154,7 @@ abstract class ControllerBase
     protected function upgradeView(?string $page = null): void
     {
         $this->view->upgrade();
-        $this->view->assign('contentPage', $page ?: strtolower($this->routeContextData->getActionName()));
+        $this->view->assign('contentPage', $page ?: strtolower($this->routeContextData->actionName));
 
         try {
             $this->layoutHelper->getFullLayout('main', $this->acl);

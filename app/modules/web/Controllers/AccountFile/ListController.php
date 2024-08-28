@@ -24,13 +24,15 @@
 
 namespace SP\Modules\Web\Controllers\AccountFile;
 
-use Exception;
 use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Modules\Web\Util\ErrorUtil;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 
 use function SP\__;
-use function SP\processException;
 
 /**
  * Class ListController
@@ -43,51 +45,40 @@ final class ListController extends AccountFileBase
      * Obtener los datos para la vista de archivos de una cuenta
      *
      * @param int $accountId Account's ID
+     * @return ActionResponse
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function listAction(int $accountId): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function listAction(int $accountId): ActionResponse
     {
         if (!$this->configData->isFilesEnabled()) {
             echo __('Files management disabled');
 
-            return;
+            return ActionResponse::ok(__('Files management disabled'));
         }
 
-        try {
-            $this->view->addTemplate('files-list', 'account');
+        $this->view->addTemplate('files-list', 'account');
 
-            $files = $this->accountFileService->getByAccountId($accountId);
+        $files = $this->accountFileService->getByAccountId($accountId);
 
-            $this->view->assign('deleteEnabled', $this->request->analyzeInt('del', false));
-            $this->view->assign('files', $files);
-            $this->view->assign('fileViewRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_VIEW));
-            $this->view->assign(
-                'fileDownloadRoute',
-                $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_DOWNLOAD)
-            );
-            $this->view->assign('fileDeleteRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_DELETE));
+        $this->view->assign('deleteEnabled', $this->request->analyzeInt('del', false));
+        $this->view->assign('files', $files);
+        $this->view->assign('fileViewRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_VIEW));
+        $this->view->assign(
+            'fileDownloadRoute',
+            $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_DOWNLOAD)
+        );
+        $this->view->assign('fileDeleteRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_DELETE));
 
-            if (count($files) === 0) {
-                $this->view->addTemplate('no_records_found', '_partials');
+        if (count($files) === 0) {
+            $this->view->addTemplate('no_records_found', '_partials');
 
-                $this->view->assign('message', __('There are no linked files for the account'));
-
-                $this->view();
-
-                return;
-            }
-
-            $this->eventDispatcher->notify('list.accountFile', new Event($this));
-        } catch (Exception $e) {
-            processException($e);
-
-            ErrorUtil::showErrorInView(
-                $this->view,
-                ErrorUtil::ERR_EXCEPTION,
-                true,
-                'files-list'
-            );
+            $this->view->assign('message', __('There are no linked files for the account'));
         }
 
-        $this->view();
+        $this->eventDispatcher->notify('list.accountFile', new Event($this));
+
+        return ActionResponse::ok($this->render());
     }
 }

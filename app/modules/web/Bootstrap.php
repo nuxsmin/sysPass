@@ -30,14 +30,21 @@ use Klein\Request;
 use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionAttribute;
+use ReflectionMethod;
 use SP\Core\Bootstrap\BootstrapBase;
+use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Code;
+use SP\Domain\Http\Header;
 use SP\Util\Util;
 
-use function SP\__;
 use function SP\logger;
 use function SP\processException;
 
@@ -71,24 +78,29 @@ final class Bootstrap extends BootstrapBase
     private function manageWebRequest(): Closure
     {
         return function (Request $request, Response $response) {
+            logger('WEB route');
+
+            $controllerClass = self::getClassFor(
+                $this->module->getName(),
+                $this->routeContextData->controller,
+                $this->routeContextData->actionName
+            );
+
+            if (!method_exists($controllerClass, $this->routeContextData->methodName)) {
+                logger($controllerClass . '::' . $this->routeContextData->methodName);
+
+                $response->code(Code::NOT_FOUND->value);
+                $response->append(self::OOPS_MESSAGE);
+
+                return $response;
+            }
+
+            $method = new ReflectionMethod(
+                $controllerClass,
+                $this->routeContextData->methodName
+            );
+
             try {
-                logger('WEB route');
-
-                $controllerClass = self::getClassFor(
-                    $this->module->getName(),
-                    $this->routeContextData->getController(),
-                    $this->routeContextData->getActionName()
-                );
-
-                if (!method_exists($controllerClass, $this->routeContextData->getMethodName())) {
-                    logger($controllerClass . '::' . $this->routeContextData->getMethodName());
-
-                    $response->code(Code::NOT_FOUND->value);
-                    $response->append(self::OOPS_MESSAGE);
-
-                    return $response;
-                }
-
                 $this->setCors($response);
 
                 $this->initializeCommon();
@@ -99,35 +111,68 @@ final class Bootstrap extends BootstrapBase
                     sprintf(
                         'Routing call: %s::%s::%s',
                         $controllerClass,
-                        $this->routeContextData->getMethodName(),
-                        print_r($this->routeContextData->getMethodParams(), true)
+                        $this->routeContextData->methodName,
+                        print_r($this->routeContextData->methodParams, true)
                     )
                 );
 
-                return call_user_func_array(
-                    [$this->buildInstanceFor($controllerClass), $this->routeContextData->getMethodName()],
+                /** @var ActionResponse $response */
+                $actionResponse = $method->invoke(
+                    $this->buildInstanceFor($controllerClass),
+                    ...
                     Util::mapScalarParameters(
                         $controllerClass,
-                        $this->routeContextData->getMethodName(),
-                        $this->routeContextData->getMethodParams()
+                        $this->routeContextData->methodName,
+                        $this->routeContextData->methodParams
                     )
                 );
+
+                $this->buildResponse($method, $actionResponse, $response);
             } catch (SessionTimeout) {
                 logger('Session timeout');
             } catch (Exception $e) {
                 processException($e);
 
-                echo __($e->getMessage());
+                $this->eventDispatcher->notify('exception', new Event($e));
 
-                if (DEBUG) {
-                    echo $e->getTraceAsString();
-                }
+                $this->buildResponse(
+                    $method,
+                    ActionResponse::error($e->getMessage(), $e->getTrace()),
+                    $response
+                );
 
                 $response->code(Code::INTERNAL_SERVER_ERROR->value);
-                $response->append($e->getMessage());
             }
 
-            return $response;
+            return $response->send();
         };
+    }
+
+    /**
+     * @param ReflectionMethod $method
+     * @param ActionResponse $actionResponse
+     * @param Response $response
+     * @return void
+     * @throws SPException
+     */
+    protected function buildResponse(
+        ReflectionMethod $method,
+        ActionResponse   $actionResponse,
+        Response         $response
+    ): void {
+        /** @var ReflectionAttribute<Action> $attribute */
+        $attribute = array_reduce(
+            $method->getAttributes(Action::class),
+            static fn($_, ReflectionAttribute $item) => $item
+        );
+
+        $responseType = $attribute->newInstance()->responseType;
+
+        if ($responseType === ResponseType::JSON) {
+            $this->response->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_JSON->value);
+            $response->body(ActionResponse::toJson($actionResponse));
+        } elseif ($responseType === ResponseType::PLAIN_TEXT) {
+            $response->body(ActionResponse::toPlain($actionResponse));
+        }
     }
 }

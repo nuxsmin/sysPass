@@ -24,17 +24,16 @@
 
 namespace SP\Modules\Web\Controllers\AccountFile;
 
-use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\File\FileSystem;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class ViewController
@@ -45,68 +44,59 @@ final class ViewController extends AccountFileBase
 {
     private const MIME_VIEW = ['text/plain'];
 
-    use JsonTrait;
-
     /**
      * View action
      *
      * @param int $id
      *
-     * @return bool
-     * @throws JsonException
-     * @throws SPException
+     * @return ActionResponse
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function viewAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function viewAction(int $id): ActionResponse
     {
-        try {
-            $fileDto = $this->accountFileService->getById($id);
+        $fileDto = $this->accountFileService->getById($id);
 
-            $this->view->addTemplate('file', 'itemshow');
+        $this->view->addTemplate('file', 'itemshow');
 
-            if (FileSystem::isImage($fileDto->type)) {
-                $this->view->assign('data', chunk_split(base64_encode($fileDto->content)));
-                $this->view->assign('fileData', $fileDto);
-                $this->view->assign('isImage', 1);
+        if (FileSystem::isImage($fileDto->type)) {
+            $this->view->assign('data', chunk_split(base64_encode($fileDto->content)));
+            $this->view->assign('fileData', $fileDto);
+            $this->view->assign('isImage', 1);
 
-                $this->eventDispatcher->notify(
-                    'show.accountFile',
-                    new Event(
-                        $this,
-                        EventMessage::build()
-                            ->addDescription(__u('File viewed'))
-                            ->addDetail(__u('File'), $fileDto->name)
-                    )
-                );
+            $this->eventDispatcher->notify(
+                'show.accountFile',
+                new Event(
+                    $this,
+                    EventMessage::build()
+                                ->addDescription(__u('File viewed'))
+                                ->addDetail(__u('File'), $fileDto->name)
+                )
+            );
 
-                return $this->returnJsonResponseData(['html' => $this->render()]);
-            }
-
-            $type = strtolower($fileDto->type);
-
-            if (in_array($type, self::MIME_VIEW)) {
-                $this->view->assign('mime', $type);
-                $this->view->assign('data', htmlentities($fileDto->content));
-
-                $this->eventDispatcher->notify(
-                    'show.accountFile',
-                    new Event(
-                        $this,
-                        EventMessage::build()
-                            ->addDescription(__u('File viewed'))
-                            ->addDetail(__u('File'), $fileDto->name)
-                    )
-                );
-
-                return $this->returnJsonResponseData(['html' => $this->render()]);
-            }
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::ok('', ['html' => $this->render()]);
         }
 
-        return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('File not supported for preview'));
+        $type = strtolower($fileDto->type);
+
+        if (in_array($type, self::MIME_VIEW)) {
+            $this->view->assign('mime', $type);
+            $this->view->assign('data', htmlentities($fileDto->content));
+
+            $this->eventDispatcher->notify(
+                'show.accountFile',
+                new Event(
+                    $this,
+                    EventMessage::build()
+                                ->addDescription(__u('File viewed'))
+                                ->addDetail(__u('File'), $fileDto->name)
+                )
+            );
+
+            return ActionResponse::ok('', ['html' => $this->render()]);
+        }
+
+        return ActionResponse::warning(__u('File not supported for preview'));
     }
 }

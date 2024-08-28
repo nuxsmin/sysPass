@@ -24,31 +24,26 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AccountForm;
 use SP\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class SaveEditPassController
  */
 final class SaveEditPassController extends AccountControllerBase
 {
-    use JsonTrait;
-
     private AccountForm $accountForm;
 
     public function __construct(
@@ -67,48 +62,37 @@ final class SaveEditPassController extends AccountControllerBase
      *
      * @param int $id Account's ID
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      * @throws SPException
      */
-    public function saveEditPassAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function saveEditPassAction(int $id): ActionResponse
     {
-        try {
-            $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_EDIT_PASS, $id);
+        $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_EDIT_PASS, $id);
 
-            $this->accountService->editPassword($id, $this->accountForm->getItemData());
+        $this->accountService->editPassword($id, $this->accountForm->getItemData());
 
 
-            $this->eventDispatcher->notify(
-                'edit.account.pass',
-                new Event(
-                    $this,
-                    function () use ($id) {
-                        $accountDetails = $this->accountService->getByIdEnriched($id);
+        $this->eventDispatcher->notify(
+            'edit.account.pass',
+            new Event(
+                $this,
+                function () use ($id) {
+                    $accountDetails = $this->accountService->getByIdEnriched($id);
 
-                        return EventMessage::build(__u('Password updated'))
-                                           ->addDetail(__u('Account'), $accountDetails->getName())
-                                           ->addDetail(__u('Client'), $accountDetails->getClientName());
-                    }
-                )
-            );
+                    return EventMessage::build(__u('Password updated'))
+                                       ->addDetail(__u('Account'), $accountDetails->getName())
+                                       ->addDetail(__u('Client'), $accountDetails->getClientName());
+                }
+            )
+        );
 
-            return $this->returnJsonResponseData(
-                [
-                    'itemId' => $id,
-                    'nextAction' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW),
-                ],
-                JsonMessage::JSON_SUCCESS,
-                __u('Password updated')
-            );
-        } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
-        }
+        return ActionResponse::ok(
+            __u('Password updated'),
+            [
+                'itemId' => $id,
+                'nextAction' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW),
+            ]
+        );
     }
 }

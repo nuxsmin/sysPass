@@ -24,31 +24,32 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Controllers\Helpers\HelperException;
 use SP\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class ViewPassController
  */
 final class ViewPassController extends AccountControllerBase
 {
-    use JsonTrait;
-
     public function __construct(
         Application                            $application,
         WebControllerHelper                    $webControllerHelper,
@@ -65,41 +66,39 @@ final class ViewPassController extends AccountControllerBase
      * @param int $id Account's ID
      * @param int $parentId
      *
-     * @return bool|null
+     * @return ActionResponse
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws SPException
+     * @throws CryptException
+     * @throws NoSuchItemException
+     * @throws HelperException
      */
-    public function viewPassAction(int $id, int $parentId = 0): ?bool
+    #[Action(ResponseType::JSON)]
+    public function viewPassAction(int $id, int $parentId = 0): ActionResponse
     {
-        try {
-            $account = $this->accountService->getPasswordForId($id);
+        $account = $this->accountService->getPasswordForId($id);
 
-            $passwordPreset = $this->getPasswordPreset();
-            $useImage = $this->configData->isAccountPassToImage()
-                        || ($passwordPreset !== null && $passwordPreset->isUseImage());
+        $passwordPreset = $this->getPasswordPreset();
+        $useImage = $this->configData->isAccountPassToImage()
+                    || ($passwordPreset !== null && $passwordPreset->isUseImage());
 
-            $this->view->assign('isLinked', $parentId > 0);
+        $this->view->assign('isLinked', $parentId > 0);
 
-            $data = $this->accountPasswordHelper->getPasswordView($account, $useImage);
+        $data = $this->accountPasswordHelper->getPasswordView($account, $useImage);
 
-            $this->accountService->incrementDecryptCounter($id);
+        $this->accountService->incrementDecryptCounter($id);
 
-            $this->eventDispatcher->notify(
-                'show.account.pass',
-                new Event(
-                    $this,
-                    EventMessage::build(__u('Password viewed'))
-                                ->addDetail(__u('Account'), $account->getName())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'show.account.pass',
+            new Event(
+                $this,
+                EventMessage::build(__u('Password viewed'))
+                            ->addDetail(__u('Account'), $account->getName())
+            )
+        );
 
-            return $this->returnJsonResponseData($data);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
-        }
+        return ActionResponse::ok('', $data);
     }
 
     /**

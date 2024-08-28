@@ -24,12 +24,20 @@
 
 namespace SP\Modules\Web\Controllers\AuthToken;
 
-use Exception;
-use JsonException;
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
+
+use function SP\__u;
 
 /**
  * Class SaveCreateController
@@ -39,41 +47,35 @@ use SP\Domain\Http\Dtos\JsonMessage;
 final class SaveCreateController extends AuthTokenSaveBase
 {
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
+     * @throws SPException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ValidationException
      */
-    public function saveCreateAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveCreateAction(): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $this->form->validateFor(AclActionsInterface::AUTHTOKEN_CREATE);
-
-            $id = $this->authTokenService->create($this->form->getItemData());
-
-            $this->addCustomFieldsForItem(
-                AclActionsInterface::AUTHTOKEN,
-                $id,
-                $this->request,
-                $this->customFieldService
-            );
-
-            $this->eventDispatcher->notify('create.authToken', new Event($this));
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Authorization added'));
-        } catch (ValidationException $e) {
-            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, $e->getMessage());
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_CREATE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        $this->form->validateFor(AclActionsInterface::AUTHTOKEN_CREATE);
+
+        $id = $this->authTokenService->create($this->form->getItemData());
+
+        $this->addCustomFieldsForItem(
+            AclActionsInterface::AUTHTOKEN,
+            $id,
+            $this->request,
+            $this->customFieldService
+        );
+
+        $this->eventDispatcher->notify('create.authToken', new Event($this));
+
+        return ActionResponse::ok(__u('Authorization added'));
     }
 }

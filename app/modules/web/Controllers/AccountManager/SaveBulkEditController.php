@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\AccountManager;
 
-use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -33,19 +32,19 @@ use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AccountForm;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Util\Util;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class AccountManagerController
@@ -55,7 +54,6 @@ use function SP\processException;
 final class SaveBulkEditController extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     private readonly AccountForm $accountForm;
 
@@ -80,40 +78,35 @@ final class SaveBulkEditController extends ControllerBase
     /**
      * saveBulkEditAction
      *
-     * @return bool
+     * @return ActionResponse
      * @throws SPException
      */
-    public function saveBulkEditAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveBulkEditAction(): ActionResponse
     {
-        try {
-            $itemsId = Util::itemsIdAdapter($this->request->analyzeString('itemsId'));
+        $itemsId = Util::itemsIdAdapter($this->request->analyzeString('itemsId'));
 
-            $accountBulkDto = new AccountUpdateBulkDto(
-                $itemsId,
-                array_map(
-                    fn(int $id) => $this->accountForm
-                        ->validateFor(AclActionsInterface::ACCOUNTMGR_BULK_EDIT, $id)
-                        ->getItemData(),
-                    $itemsId
-                )
-            );
+        $accountBulkDto = new AccountUpdateBulkDto(
+            $itemsId,
+            array_map(
+                fn(int $id) => $this->accountForm
+                    ->validateFor(AclActionsInterface::ACCOUNTMGR_BULK_EDIT, $id)
+                    ->getItemData(),
+                $itemsId
+            )
+        );
 
-            if ($this->request->analyzeBool('delete_history', false)) {
-                $this->accountHistoryService->deleteByAccountIdBatch($itemsId);
-            }
-
-            $this->accountService->updateBulk($accountBulkDto);
-
-            $this->eventDispatcher->notify(
-                'edit.account.bulk',
-                new Event($this, EventMessage::build(__u('Accounts updated')))
-            );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Accounts updated'));
-        } catch (Exception $e) {
-            processException($e);
-
-            return $this->returnJsonResponseException($e);
+        if ($this->request->analyzeBool('delete_history', false)) {
+            $this->accountHistoryService->deleteByAccountIdBatch($itemsId);
         }
+
+        $this->accountService->updateBulk($accountBulkDto);
+
+        $this->eventDispatcher->notify(
+            'edit.account.bulk',
+            new Event($this, EventMessage::build(__u('Accounts updated')))
+        );
+
+        return ActionResponse::ok(__u('Accounts updated'));
     }
 }

@@ -72,7 +72,7 @@ class AccountHistoryManagerTest extends IntegrationTestCase
 
         $this->runApp($container);
 
-        $this->expectOutputString('{"status":0,"description":"Account removed","data":[],"messages":[]}');
+        $this->expectOutputString('{"status":"OK","description":"Account removed","data":null}');
     }
 
     /**
@@ -100,7 +100,7 @@ class AccountHistoryManagerTest extends IntegrationTestCase
 
         $this->runApp($container);
 
-        $this->expectOutputString('{"status":0,"description":"Accounts removed","data":[],"messages":[]}');
+        $this->expectOutputString('{"status":"OK","description":"Accounts removed","data":null}');
     }
 
     /**
@@ -144,7 +144,7 @@ class AccountHistoryManagerTest extends IntegrationTestCase
 
         $this->runApp($container);
 
-        $this->expectOutputString('{"status":0,"description":"Account restored","data":[],"messages":[]}');
+        $this->expectOutputString('{"status":"OK","description":"Account restored","data":null}');
     }
 
     /**
@@ -188,7 +188,7 @@ class AccountHistoryManagerTest extends IntegrationTestCase
 
         $this->runApp($container);
 
-        $this->expectOutputString('{"status":0,"description":"Account restored","data":[],"messages":[]}');
+        $this->expectOutputString('{"status":"OK","description":"Account restored","data":null}');
     }
 
     /**

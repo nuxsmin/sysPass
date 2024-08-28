@@ -24,14 +24,12 @@
 
 namespace SP\Modules\Web\Controllers\AccountFavorite;
 
-use Exception;
-use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class MarkController
@@ -40,26 +38,17 @@ use function SP\processException;
  */
 final class MarkController extends AccountFavoriteBase
 {
-    use JsonTrait;
-
     /**
      * @param int $accountId
      *
-     * @return bool
+     * @return ActionResponse
      * @throws SPException
      */
-    public function markAction(int $accountId): bool
+    #[Action(ResponseType::JSON)]
+    public function markAction(int $accountId): ActionResponse
     {
-        try {
-            $this->accountToFavoriteService->add($accountId, $this->session->getUserData()->id);
+        $this->accountToFavoriteService->add($accountId, $this->session->getUserData()->id);
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Favorite added'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
-        }
+        return ActionResponse::ok(__u('Favorite added'));
     }
 }

@@ -24,13 +24,15 @@
 
 namespace SP\Modules\Web\Controllers\AccountFile;
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class DownloadController
@@ -39,55 +41,47 @@ use function SP\processException;
  */
 final class DownloadController extends AccountFileBase
 {
-    use JsonTrait;
-
     /**
      * Download action
      *
      * @param int $id
      *
-     * @return string
+     * @return ActionResponse
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function downloadAction(int $id): string
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function downloadAction(int $id): ActionResponse
     {
-        try {
-            $fileDto = $this->accountFileService->getById($id);
+        $fileDto = $this->accountFileService->getById($id);
 
-            $this->eventDispatcher->notify(
-                'download.accountFile',
-                new Event(
-                    $this,
-                    EventMessage::build(__u('File downloaded'))
-                        ->addDetail(__u('File'), $fileDto->name)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'download.accountFile',
+            new Event(
+                $this,
+                EventMessage::build(__u('File downloaded'))
+                            ->addDetail(__u('File'), $fileDto->name)
+            )
+        );
 
-            $response = $this->router->response();
-            $response->header('Content-Length', $fileDto->size);
-            $response->header('Content-Type', $fileDto->type);
-            $response->header('Content-Description', ' sysPass file');
-            $response->header('Content-Transfer-Encoding', 'binary');
-            $response->header('Accept-Ranges', 'bytes');
+        $response = $this->router->response();
+        $response->header('Content-Length', $fileDto->size);
+        $response->header('Content-Type', $fileDto->type);
+        $response->header('Content-Description', ' sysPass file');
+        $response->header('Content-Transfer-Encoding', 'binary');
+        $response->header('Accept-Ranges', 'bytes');
 
-            $type = strtolower($fileDto->type);
+        $type = strtolower($fileDto->type);
 
-            if ($type === 'application/pdf') {
-                $disposition = sprintf('inline; filename="%s"', $fileDto->name);
-            } else {
-                $disposition = sprintf('attachment; filename="%s"', $fileDto->name);
-                $response->header('Set-Cookie', 'fileDownload=true; path=/');
-            }
-
-            $response->header('Content-Disposition', $disposition);
-
-            $response->body($fileDto->content);
-            $response->send(true);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
+        if ($type === 'application/pdf') {
+            $disposition = sprintf('inline; filename="%s"', $fileDto->name);
+        } else {
+            $disposition = sprintf('attachment; filename="%s"', $fileDto->name);
+            $response->header('Set-Cookie', 'fileDownload=true; path=/');
         }
 
-        return '';
+        $response->header('Content-Disposition', $disposition);
+
+        return ActionResponse::ok($fileDto->content);
     }
 }

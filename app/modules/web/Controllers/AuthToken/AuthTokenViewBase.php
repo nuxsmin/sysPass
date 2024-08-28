@@ -24,10 +24,9 @@
 
 namespace SP\Modules\Web\Controllers\AuthToken;
 
-
 use SP\Core\Application;
 use SP\Domain\Auth\Models\AuthToken;
-use SP\Domain\Auth\Ports\AuthTokenActionInterface;
+use SP\Domain\Auth\Ports\AuthTokenActionService;
 use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Services\ServiceException;
@@ -57,12 +56,12 @@ abstract class AuthTokenViewBase extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                               $application,
-        WebControllerHelper                       $webControllerHelper,
+        Application                             $application,
+        WebControllerHelper                     $webControllerHelper,
         private readonly CustomFieldDataService $customFieldService,
         private readonly UserService            $userService,
-        private readonly AuthTokenService         $authTokenService,
-        private readonly AuthTokenActionInterface $authTokenAction,
+        private readonly AuthTokenService       $authTokenService,
+        private readonly AuthTokenActionService $authTokenAction,
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -72,6 +71,7 @@ abstract class AuthTokenViewBase extends ControllerBase
     /**
      * Sets view data for displaying auth token's data
      *
+     * @param bool $isReadonly
      * @param int|null $authTokenId
      *
      * @throws ConstraintException
@@ -79,7 +79,7 @@ abstract class AuthTokenViewBase extends ControllerBase
      * @throws SPException
      * @throws ServiceException
      */
-    protected function setViewData(?int $authTokenId = null): void
+    protected function setViewData(?int $authTokenId = null, bool $isReadonly = true): void
     {
         $this->view->addTemplate('auth_token', 'itemshow');
 
@@ -105,7 +105,9 @@ abstract class AuthTokenViewBase extends ControllerBase
             $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE)
         );
 
-        if ($this->view->isView === true) {
+        $this->view->assign('isView', $isReadonly);
+
+        if ($isReadonly) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

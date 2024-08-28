@@ -29,6 +29,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Mvc\Controller\ControllerTrait;
 
+use function SP\processException;
+
 /**
  * Trait ControllerTratit
  */
@@ -42,10 +44,8 @@ trait WebControllerTrait
      * Returns the signed URI component after validating its signature.
      * This component is used for deep linking
      */
-    final protected function getSignedUriFromRequest(
-        RequestService $request,
-        ConfigDataInterface $configData
-    ): ?string {
+    final protected function getSignedUriFromRequest(RequestService $request, ConfigDataInterface $configData): ?string
+    {
         if (!$this->setup) {
             return null;
         }

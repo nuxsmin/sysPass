@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use Exception;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -33,17 +33,24 @@ use SP\Domain\Account\Dtos\AccountViewDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Providers\Uri;
 use SP\Domain\Image\Ports\ImageService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Util\ErrorUtil;
 use SP\Mvc\Controller\WebControllerHelper;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class ViewLinkController
@@ -68,112 +75,112 @@ final class ViewLinkController extends AccountControllerBase
      * View public link action
      *
      * @param string $hash Link's hash
+     * @return ActionResponse
+     * @throws EnvironmentIsBrokenException
+     * @throws ConstraintException
+     * @throws CryptException
+     * @throws QueryException
+     * @throws SPException
+     * @throws NoSuchItemException
      */
-    public function viewLinkAction(string $hash): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function viewLinkAction(string $hash): ActionResponse
     {
-        try {
-            $this->layoutHelper->getPublicLayout('account-link', 'account');
+        $this->layoutHelper->getPublicLayout('account-link', 'account');
 
-            $publicLink = $this->publicLinkService->getByHash($hash);
+        $publicLink = $this->publicLinkService->getByHash($hash);
 
-            if (time() < $publicLink->getDateExpire()
-                && $publicLink->getCountViews() < $publicLink->getMaxCountViews()
-            ) {
-                $this->publicLinkService->addLinkView($publicLink);
+        if (time() < $publicLink->getDateExpire()
+            && $publicLink->getCountViews() < $publicLink->getMaxCountViews()
+        ) {
+            $this->publicLinkService->addLinkView($publicLink);
 
-                $this->accountService->incrementViewCounter($publicLink->getItemId());
-                $this->accountService->incrementDecryptCounter($publicLink->getItemId());
+            $this->accountService->incrementViewCounter($publicLink->getItemId());
+            $this->accountService->incrementDecryptCounter($publicLink->getItemId());
 
-                $vault = Serde::deserialize($publicLink->getData(), VaultInterface::class);
+            $vault = Serde::deserialize($publicLink->getData(), VaultInterface::class);
 
-                $accountViewDto = AccountViewDto::fromModel(
-                    Serde::deserialize(
-                        $vault->getData(
-                            $this->publicLinkService->getPublicLinkKey($publicLink->getHash())->getKey()
-                        ),
-                        Simple::class
-                    )
-                );
+            $accountViewDto = AccountViewDto::fromModel(
+                Serde::deserialize(
+                    $vault->getData(
+                        $this->publicLinkService->getPublicLinkKey($publicLink->getHash())->getKey()
+                    ),
+                    Simple::class
+                )
+            );
 
+            $this->view->assign(
+                'title',
+                [
+                    'class' => 'titleNormal',
+                    'name' => __('Account Details'),
+                    'icon' => $this->icons->view()->getIcon(),
+                ]
+            );
+
+            $this->view->assign('isView', true);
+            $useImage = $this->configData->isPublinksImageEnabled()
+                        || $this->configData->isAccountPassToImage();
+            $this->view->assign('useImage', $useImage);
+
+            if ($useImage) {
                 $this->view->assign(
-                    'title',
-                    [
-                        'class' => 'titleNormal',
-                        'name' => __('Account Details'),
-                        'icon' => $this->icons->view()->getIcon(),
-                    ]
-                );
-
-                $this->view->assign('isView', true);
-                $useImage = $this->configData->isPublinksImageEnabled()
-                            || $this->configData->isAccountPassToImage();
-                $this->view->assign('useImage', $useImage);
-
-                if ($useImage) {
-                    $this->view->assign(
-                        'accountPassImage',
-                        $this->imageUtil->convertText($accountViewDto->pass)
-                    );
-                } else {
-                    $this->view->assign(
-                        'copyPassRoute',
-                        $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW_PASS)
-                    );
-                }
-
-                $this->view->assign('accountData', $accountViewDto);
-
-                $clientAddress = $this->configData->isDemoEnabled()
-                    ? '***'
-                    : $this->request->getClientAddress(true);
-
-                $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
-                           $this->uriContext->getSubUri();
-
-                $deepLink = new Uri($baseUrl);
-                $deepLink->addParam(
-                    'r',
-                    sprintf(
-                        "%s/%s",
-                        $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW),
-                        $accountViewDto->getId()
-                    )
-                );
-
-                $this->eventDispatcher->notify(
-                    'show.account.link',
-                    new Event(
-                        $this,
-                        EventMessage::build(__u('Link viewed'))
-                                    ->addDetail(__u('Account'), $accountViewDto->getName())
-                                    ->addDetail(__u('Client'), $accountViewDto->getClientName())
-                                    ->addDetail(__u('Agent'), $this->request->getHeader('User-Agent'))
-                                    ->addDetail(__u('HTTPS'), $this->request->isHttps() ? __u('ON') : __u('OFF'))
-                                    ->addDetail(__u('IP'), $clientAddress)
-                                    ->addDetail(
-                                        __u('Link'),
-                                        $deepLink->getUriSigned($this->configData->getPasswordSalt())
-                                    )
-                                    ->addExtra('userId', $publicLink->getUserId())
-                                    ->addExtra('notify', $publicLink->isNotify())
-                    )
+                    'accountPassImage',
+                    $this->imageUtil->convertText($accountViewDto->pass)
                 );
             } else {
-                ErrorUtil::showErrorInView(
-                    $this->view,
-                    ErrorUtil::ERR_PAGE_NO_PERMISSION,
-                    true,
-                    'account-link'
+                $this->view->assign(
+                    'copyPassRoute',
+                    $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW_PASS)
                 );
             }
 
-            $this->view();
-        } catch (Exception $e) {
-            processException($e);
+            $this->view->assign('accountData', $accountViewDto);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $clientAddress = $this->configData->isDemoEnabled()
+                ? '***'
+                : $this->request->getClientAddress(true);
 
-            ErrorUtil::showExceptionInView($this->view, $e, 'account-link');
+            $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
+                       $this->uriContext->getSubUri();
+
+            $deepLink = new Uri($baseUrl);
+            $deepLink->addParam(
+                'r',
+                sprintf(
+                    "%s/%s",
+                    $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW),
+                    $accountViewDto->getId()
+                )
+            );
+
+            $this->eventDispatcher->notify(
+                'show.account.link',
+                new Event(
+                    $this,
+                    EventMessage::build(__u('Link viewed'))
+                                ->addDetail(__u('Account'), $accountViewDto->getName())
+                                ->addDetail(__u('Client'), $accountViewDto->getClientName())
+                                ->addDetail(__u('Agent'), $this->request->getHeader('User-Agent'))
+                                ->addDetail(__u('HTTPS'), $this->request->isHttps() ? __u('ON') : __u('OFF'))
+                                ->addDetail(__u('IP'), $clientAddress)
+                                ->addDetail(
+                                    __u('Link'),
+                                    $deepLink->getUriSigned($this->configData->getPasswordSalt())
+                                )
+                                ->addExtra('userId', $publicLink->getUserId())
+                                ->addExtra('notify', $publicLink->isNotify())
+                )
+            );
+        } else {
+            ErrorUtil::showErrorInView(
+                $this->view,
+                ErrorUtil::ERR_PAGE_NO_PERMISSION,
+                true,
+                'account-link'
+            );
         }
+
+        return ActionResponse::ok($this->render());
     }
 }

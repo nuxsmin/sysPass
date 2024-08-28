@@ -24,13 +24,24 @@
 
 namespace SP\Modules\Web\Controllers\AuthToken;
 
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+
+use function SP\__u;
 
 /**
  * Class SaveEditController
@@ -42,66 +53,58 @@ final class SaveEditController extends AuthTokenSaveBase
     /**
      * Saves edit action
      *
-     * @param  int  $id
+     * @param int $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
+     * @throws SPException
+     * @throws CryptoException
+     * @throws EnvironmentIsBrokenException
+     * @throws ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ValidationException
+     * @throws DuplicatedItemException
+     * @throws NoSuchItemException
+     * @throws Exception
      */
-    public function saveEditAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function saveEditAction(int $id): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_EDIT)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $this->form->validateFor(AclActionsInterface::AUTHTOKEN_EDIT, $id);
-
-            if ($this->form->isRefresh()) {
-                $this->authTokenService->refreshAndUpdate($this->form->getItemData());
-
-                $this->eventDispatcher->notify(
-                    'refresh.authToken',
-                    new Event(
-                        $this,
-                        EventMessage::build()
-                            ->addDescription(__u('Authorization updated'))
-                            ->addDetail(__u('Authorization'), $id)
-                    )
-                );
-            } else {
-                $this->authTokenService->update($this->form->getItemData());
-
-                $this->eventDispatcher->notify(
-                    'edit.authToken',
-                    new Event(
-                        $this,
-                        EventMessage::build()
-                            ->addDescription(__u('Authorization updated'))
-                            ->addDetail(__u('Authorization'), $id)
-                    )
-                );
-            }
-
-            $this->updateCustomFieldsForItem(
-                AclActionsInterface::AUTHTOKEN,
-                $id,
-                $this->request,
-                $this->customFieldService
-            );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Authorization updated'));
-        } catch (ValidationException $e) {
-            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, $e->getMessage());
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_EDIT)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
-    }
 
+        $this->form->validateFor(AclActionsInterface::AUTHTOKEN_EDIT, $id);
+
+        if ($this->form->isRefresh()) {
+            $this->authTokenService->refreshAndUpdate($this->form->getItemData());
+
+            $this->eventDispatcher->notify(
+                'refresh.authToken',
+                new Event(
+                    $this,
+                    EventMessage::build(__u('Authorization updated'))->addDetail(__u('Authorization'), $id)
+                )
+            );
+        } else {
+            $this->authTokenService->update($this->form->getItemData());
+
+            $this->eventDispatcher->notify(
+                'edit.authToken',
+                new Event(
+                    $this,
+                    EventMessage::build(__u('Authorization updated'))->addDetail(__u('Authorization'), $id)
+                )
+            );
+        }
+
+        $this->updateCustomFieldsForItem(
+            AclActionsInterface::AUTHTOKEN,
+            $id,
+            $this->request,
+            $this->customFieldService
+        );
+
+        return ActionResponse::ok(__u('Authorization updated'));
+    }
 }

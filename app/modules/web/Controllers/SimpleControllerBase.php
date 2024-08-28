@@ -30,7 +30,6 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
-use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -57,8 +56,6 @@ abstract class SimpleControllerBase
     protected readonly PhpExtensionCheckerService $extensionChecker;
     protected readonly ConfigDataInterface        $configData;
     protected readonly UriContextInterface        $uriContext;
-    protected readonly RouteContextData           $routeContextData;
-    protected string                              $controllerName;
 
     /**
      * @throws SessionTimeout
@@ -73,8 +70,6 @@ abstract class SimpleControllerBase
         $this->request = $simpleControllerHelper->getRequest();
         $this->extensionChecker = $simpleControllerHelper->getExtensionChecker();
         $this->uriContext = $simpleControllerHelper->getUriContext();
-        $this->routeContextData = $simpleControllerHelper->getRouteContextData();
-        $this->controllerName = $this->routeContextData->getController();
         $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();
         $this->eventDispatcher = $application->getEventDispatcher();
@@ -109,7 +104,7 @@ abstract class SimpleControllerBase
      */
     protected function checkAccess(int $action): void
     {
-        if (!$this->acl->checkUserAccess($action) && !$this->session->getUserData()->getIsAdminApp()) {
+        if (!$this->acl->checkUserAccess($action) && !$this->session->getUserData()->isAdminApp) {
             throw new UnauthorizedPageException(SPException::INFO);
         }
     }

@@ -25,14 +25,14 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Services;
 
-use SP\Domain\Auth\Ports\AuthTokenActionInterface;
+use SP\Domain\Auth\Ports\AuthTokenActionService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 
 /**
  * Class AuthTokenAction
  */
-final readonly class AuthTokenAction implements AuthTokenActionInterface
+final readonly class AuthTokenAction implements AuthTokenActionService
 {
     public function __construct(private AclInterface $acl)
     {

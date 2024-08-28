@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -31,30 +32,10 @@ namespace SP\Domain\Core\Bootstrap;
 final readonly class RouteContextData
 {
     public function __construct(
-        private string $controller,
-        private string $actionName,
-        private string $methodName,
-        private array  $methodParams
+        public string $controller,
+        public string $actionName,
+        public string $methodName,
+        public array  $methodParams
     ) {
-    }
-
-    public function getController(): string
-    {
-        return $this->controller;
-    }
-
-    public function getActionName(): string
-    {
-        return $this->actionName;
-    }
-
-    public function getMethodName(): string
-    {
-        return $this->methodName;
-    }
-
-    public function getMethodParams(): array
-    {
-        return $this->methodParams;
     }
 }

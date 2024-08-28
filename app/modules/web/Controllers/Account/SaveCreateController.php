@@ -24,16 +24,15 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class SaveCreateController
@@ -41,53 +40,43 @@ use function SP\processException;
 final class SaveCreateController extends AccountSaveBase
 {
     /**
-     * @return bool|null
+     * @return ActionResponse
      * @throws SPException
      */
-    public function saveCreateAction(): ?bool
+    #[Action(ResponseType::JSON)]
+    public function saveCreateAction(): ActionResponse
     {
-        try {
-            $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_CREATE);
+        $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_CREATE);
 
-            $accountId = $this->accountService->create($this->accountForm->getItemData());
+        $accountId = $this->accountService->create($this->accountForm->getItemData());
 
-            $this->eventDispatcher->notify(
-                'create.account',
-                new Event(
-                    $this,
-                    function () use ($accountId) {
-                        $accountView = $this->accountService->getByIdEnriched($accountId);
+        $this->eventDispatcher->notify(
+            'create.account',
+            new Event(
+                $this,
+                function () use ($accountId) {
+                    $accountView = $this->accountService->getByIdEnriched($accountId);
 
-                        return EventMessage::build(__u('Account created'))
-                                           ->addDetail(__u('Account'), $accountView->getName())
-                                           ->addDetail(__u('Client'), $accountView->getClientName());
-                    }
-                )
-            );
+                    return EventMessage::build(__u('Account created'))
+                                       ->addDetail(__u('Account'), $accountView->getName())
+                                       ->addDetail(__u('Client'), $accountView->getClientName());
+                }
+            )
+        );
 
-            $this->addCustomFieldsForItem(
-                AclActionsInterface::ACCOUNT,
-                $accountId,
-                $this->request,
-                $this->customFieldService
-            );
+        $this->addCustomFieldsForItem(
+            AclActionsInterface::ACCOUNT,
+            $accountId,
+            $this->request,
+            $this->customFieldService
+        );
 
-            return $this->returnJsonResponseData(
-                [
-                    'itemId' => $accountId,
-                    'nextAction' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_EDIT),
-                ],
-                JsonMessage::JSON_SUCCESS,
-                __u('Account created')
-            );
-        } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
-        }
+        return ActionResponse::ok(
+            __u('Account created'),
+            [
+                'itemId' => $accountId,
+                'nextAction' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_EDIT),
+            ]
+        );
     }
 }

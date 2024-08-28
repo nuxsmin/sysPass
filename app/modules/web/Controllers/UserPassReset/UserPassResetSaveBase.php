@@ -70,7 +70,7 @@ abstract class UserPassResetSaveBase extends ControllerBase
         $this->mailService = $mailService;
         $this->trackService = $trackService;
 
-        $this->trackRequest = $this->trackService->buildTrackRequest($this->routeContextData->getActionName());
+        $this->trackRequest = $this->trackService->buildTrackRequest($this->routeContextData->actionName);
     }
 
     /**
