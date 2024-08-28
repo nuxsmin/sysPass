@@ -43,6 +43,8 @@ final readonly class OutputHandlerStub implements OutputHandlerInterface
      */
     public function bufferedContent(callable $callback): string
     {
+        ob_flush();
+
         ob_start();
         $callback();
 

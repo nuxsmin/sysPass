@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -171,7 +172,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
             $query->bindValues(['userLogin' => $search, 'userName' => $search]);
         }
 
-        return $this->db->runQuery(QueryData::build($query), true);
+        return $this->db->runQuery(QueryData::buildWithMapper($query, AuthTokenModel::class), true);
     }
 
     /**
@@ -274,7 +275,6 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
             ->cols($authToken->toArray(null, ['id', 'startDate']))
             ->set('startDate', 'UNIX_TIMESTAMP()')
             ->where('id = :id')
-            ->limit(1)
             ->bindValues(['id' => $authToken->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));

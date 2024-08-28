@@ -57,7 +57,7 @@ final class EditController extends AuthTokenViewBase
         }
 
         $this->view->assign('header', __('Edit Authorization'));
-        $this->view->assign('route', 'authToken/saveEdit/' . $id);
+        $this->view->assign('route', sprintf("authToken/saveEdit/%d", $id));
 
         $this->setViewData($id, false);
 

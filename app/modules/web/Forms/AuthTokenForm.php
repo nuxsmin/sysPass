@@ -47,7 +47,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
      * @param int $action
      * @param int|null $id
      *
-     * @return AuthTokenForm|FormInterface
+     * @return FormInterface
      * @throws ValidationException
      */
     public function validateFor(int $action, ?int $id = null): FormInterface

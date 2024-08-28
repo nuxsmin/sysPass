@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
@@ -114,9 +113,7 @@ final class AuthTokenGrid extends GridBase
         $gridData->addDataRowSource(
             'actionId',
             false,
-            function ($value) {
-                return Acl::getActionInfo($value);
-            }
+            fn($value) => $this->acl->getInfoFor($value)
         );
         $gridData->setData($this->queryResult);
 

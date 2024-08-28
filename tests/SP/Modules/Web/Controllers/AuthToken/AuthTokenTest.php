@@ -31,8 +31,11 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
+use SP\Tests\Generators\AuthTokenGenerator;
 use SP\Tests\IntegrationTestCase;
 use SP\Tests\OutputChecker;
 use Symfony\Component\DomCrawler\Crawler;
@@ -65,6 +68,170 @@ class AuthTokenTest extends IntegrationTestCase
     }
 
     /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function deleteMultiple()
+    {
+        $container = $this->buildContainer(
+            $this->definitions,
+            $this->buildRequest('get', 'index.php', ['r' => 'authToken/delete', 'items' => [100, 200, 300]])
+        );
+
+        $this->runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"Authorizations deleted","data":null}');
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function deleteSingle()
+    {
+        $container = $this->buildContainer(
+            $this->definitions,
+            $this->buildRequest('get', 'index.php', ['r' => 'authToken/delete/100'])
+        );
+
+        $this->runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"Authorization deleted","data":null}');
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[OutputChecker('outputCheckerEdit')]
+    public function edit()
+    {
+        $this->addDatabaseMapperResolver(
+            AuthToken::class,
+            new QueryResult([AuthTokenGenerator::factory()->buildAuthToken()])
+        );
+
+        $container = $this->buildContainer(
+            $this->definitions,
+            $this->buildRequest('get', 'index.php', ['r' => 'authToken/edit/100'])
+        );
+
+        $this->runApp($container);
+
+        $this->expectOutputRegex('/\{"status":"OK","description":"","data":\{"html":".*"\}\}/');
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveCreate()
+    {
+        $data = [
+            'users' => self::$faker->randomNumber(3),
+            'actions' => self::$faker->randomNumber(3),
+            'pass' => self::$faker->sha1()
+        ];
+
+        $container = $this->buildContainer(
+            $this->definitions,
+            $this->buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data)
+        );
+
+        $this->runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"Authorization added","data":null}');
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEdit()
+    {
+        $data = [
+            'users' => self::$faker->randomNumber(3),
+            'actions' => self::$faker->randomNumber(3),
+            'pass' => self::$faker->sha1()
+        ];
+
+        $container = $this->buildContainer(
+            $this->definitions,
+            $this->buildRequest('post', 'index.php', ['r' => 'authToken/saveEdit/100'], $data)
+        );
+
+        $this->runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"Authorization updated","data":null}');
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[OutputChecker('outputCheckerSearch')]
+    public function search()
+    {
+        $authTokenGenerator = AuthTokenGenerator::factory();
+
+        $this->addDatabaseMapperResolver(
+            AuthToken::class,
+            QueryResult::withTotalNumRows(
+                [
+                    $authTokenGenerator->buildAuthToken(),
+                    $authTokenGenerator->buildAuthToken()
+                ],
+                2
+            )
+        );
+
+        $container = $this->buildContainer(
+            $this->definitions,
+            $this->buildRequest('get', 'index.php', ['r' => 'authToken/search', 'search' => 'test'])
+        );
+
+        $this->expectOutputRegex('/\{"status":"OK","description":"","data":\{"html":".*"\}\}/');
+
+        $this->runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[OutputChecker('outputCheckerView')]
+    public function view()
+    {
+        $this->addDatabaseMapperResolver(
+            AuthToken::class,
+            new QueryResult([AuthTokenGenerator::factory()->buildAuthToken()])
+        );
+
+        $container = $this->buildContainer(
+            $this->definitions,
+            $this->buildRequest('get', 'index.php', ['r' => 'authToken/view/100'])
+        );
+
+        $this->expectOutputRegex('/\{"status":"OK","description":"","data":\{"html":".*"\}\}/');
+
+        $this->runApp($container);
+    }
+
+    /**
      * @throws FileException
      * @throws InvalidClassException
      */
@@ -88,5 +255,51 @@ class AuthTokenTest extends IntegrationTestCase
 
         self::assertNotEmpty($output);
         self::assertCount(5, $filter);
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerEdit(string $output): void
+    {
+        $crawler = new Crawler($output);
+        $filter = $crawler->filterXPath(
+            '//div[@id="box-popup"]//form[@name="frmTokens"]//select|//input'
+        )->extract(['_name']);
+
+        self::assertNotEmpty($output);
+        self::assertCount(5, $filter);
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerSearch(string $output): void
+    {
+        $crawler = new Crawler($output);
+        $filter = $crawler->filterXPath(
+            '//table/tbody[@id="data-rows-tblTokens"]//tr[string-length(@data-item-id) > 0]'
+        )
+                          ->extract(['data-item-id']);
+
+        self::assertNotEmpty($output);
+        self::assertCount(2, $filter);
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerView(string $output): void
+    {
+        $crawler = new Crawler($output);
+        $filter = $crawler->filterXPath(
+            '//div[@id="box-popup"]//form[@name="frmTokens"]//select|//input'
+        )->extract(['_name']);
+
+        self::assertNotEmpty($output);
+        self::assertCount(3, $filter);
     }
 }
