@@ -25,12 +25,14 @@
 namespace SP\Modules\Web\Controllers\Bootstrap;
 
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Crypt\CryptPKI;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -39,7 +41,6 @@ use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\logger;
@@ -47,13 +48,9 @@ use function SP\processException;
 
 /**
  * Class GetEnvironmentController
- *
- * @package SP\Modules\Web\Controllers
  */
 final class GetEnvironmentController extends SimpleControllerBase
 {
-    use JsonTrait;
-
     public function __construct(
         Application                           $application,
         SimpleControllerHelper                $simpleControllerHelper,
@@ -68,14 +65,13 @@ final class GetEnvironmentController extends SimpleControllerBase
     /**
      * Returns environment data
      *
-     * @return bool
-     * @throws JsonException
      * @throws SPException
      */
-    public function getEnvironmentAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function getEnvironmentAction(): ActionResponse
     {
         $checkStatus = $this->session->getAuthCompleted()
-                       && ($this->session->getUserData()->getIsAdminApp()
+                       && ($this->session->getUserData()->isAdminApp
                            || $this->configData->isDemoEnabled());
 
         $data = [
@@ -100,7 +96,7 @@ final class GetEnvironmentController extends SimpleControllerBase
             'csrf' => $this->getCSRF(),
         ];
 
-        return $this->returnJsonResponseData($data);
+        return ActionResponse::ok('', $data);
     }
 
     /**
@@ -119,10 +115,7 @@ final class GetEnvironmentController extends SimpleControllerBase
     private function getNotificationsEnabled(): bool
     {
         if ($this->session->isLoggedIn()) {
-            return $this->session
-                ->getUserData()
-                ->getPreferences()
-                ->isCheckNotifications();
+            return $this->session->getUserData()->preferences->isCheckNotifications();
         }
 
         return false;

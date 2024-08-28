@@ -56,7 +56,7 @@ final class DomainDefinitions
         'Install',
         'ItemPreset',
         'Notification',
-        'Plugins',
+        'Plugin',
         'Security',
         'Tag',
         'User',
