@@ -189,9 +189,9 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
 
         while (!$this->eof()) {
             if ($chunker !== null) {
-                $chunker($this->fread(round($rate)));
+                $chunker($this->fread((int)round($rate)));
             } else {
-                print $this->fread(round($rate));
+                print $this->fread((int)round($rate));
                 ob_flush();
                 flush();
             }

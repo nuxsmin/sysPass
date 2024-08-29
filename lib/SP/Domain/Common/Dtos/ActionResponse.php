@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Common\Dtos;
 
+use Closure;
 use JsonSerializable;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Enums\ResponseStatus;
@@ -42,7 +43,7 @@ final readonly class ActionResponse implements JsonSerializable
 
     public function __construct(
         public ResponseStatus             $status,
-        public array|string               $subject,
+        public array|string|Closure $subject,
         public array|string|stdClass|null $extra = null
     ) {
     }

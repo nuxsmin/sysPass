@@ -142,7 +142,7 @@ final class Bootstrap extends BootstrapBase
                 $response->code(Code::INTERNAL_SERVER_ERROR->value);
             }
 
-            return $response->send();
+            return $response->send(true);
         };
     }
 
@@ -178,6 +178,7 @@ final class Bootstrap extends BootstrapBase
      * @param Response $response
      * @return void
      * @throws SPException
+     * @throws Exception
      */
     protected function buildResponse(
         ReflectionMethod $method,
@@ -190,13 +191,21 @@ final class Bootstrap extends BootstrapBase
             static fn($_, ReflectionAttribute $item) => $item
         );
 
-        $responseType = $attribute->newInstance()->responseType;
-
-        if ($responseType === ResponseType::JSON) {
-            $this->response->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_JSON->value);
-            $response->body(ActionResponse::toJson($actionResponse));
-        } elseif ($responseType === ResponseType::PLAIN_TEXT) {
-            $response->body(ActionResponse::toPlain($actionResponse));
+        switch ($attribute->newInstance()->responseType) {
+            case ResponseType::JSON:
+                $this->response->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_JSON->value);
+                $response->body(ActionResponse::toJson($actionResponse));
+                break;
+            case ResponseType::PLAIN_TEXT:
+                $response->body(ActionResponse::toPlain($actionResponse));
+                break;
+            case ResponseType::CALLBACK:
+                if ($actionResponse->subject instanceof Closure) {
+                    $actionResponse->subject->call($this, $response);
+                }
+                break;
+            default:
+                throw new Exception('Unexpected value');
         }
     }
 }

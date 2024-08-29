@@ -112,7 +112,13 @@ final class Util
 
     public static function getMaxDownloadChunk(): int
     {
-        return self::convertShortUnit(ini_get('memory_limit')) / FileHandler::CHUNK_FACTOR;
+        $memoryLimit = ini_get('memory_limit');
+
+        if ($memoryLimit < 0) {
+            return 1024;
+        }
+
+        return (int)(self::convertShortUnit(ini_get('memory_limit')) / FileHandler::CHUNK_FACTOR);
     }
 
     /**
