@@ -28,6 +28,8 @@ use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 
+use function SP\__u;
+
 /**
  * Class ClientForm
  *
@@ -43,7 +45,7 @@ final class ClientForm extends FormBase implements FormInterface
      * @param int $action
      * @param int|null $id
      *
-     * @return ClientForm|FormInterface
+     * @return FormInterface
      * @throws ValidationException
      */
     public function validateFor(int $action, ?int $id = null): FormInterface

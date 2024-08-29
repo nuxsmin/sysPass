@@ -26,7 +26,9 @@ namespace SP\Modules\Web\Controllers\Client;
 
 
 use SP\Core\Application;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Client\Ports\ClientService;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\ClientForm;
@@ -37,22 +39,22 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 abstract class ClientSaveBase extends ControllerBase
 {
-    protected ClientService          $clientService;
-    protected CustomFieldDataService $customFieldService;
-    protected ClientForm             $form;
+    protected readonly ClientForm $form;
 
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application         $application,
-        WebControllerHelper $webControllerHelper,
-        ClientService       $clientService,
-        CustomFieldDataService $customFieldService
+        Application                               $application,
+        WebControllerHelper                       $webControllerHelper,
+        protected readonly ClientService          $clientService,
+        protected readonly CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->clientService = $clientService;
-        $this->customFieldService = $customFieldService;
         $this->form = new ClientForm($application, $this->request);
     }
 }

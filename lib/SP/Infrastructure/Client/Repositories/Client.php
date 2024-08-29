@@ -122,7 +122,6 @@ final class Client extends BaseRepository implements ClientRepository
             ->table(ClientModel::TABLE)
             ->cols($client->toArray(null, ['id', 'hash']))
             ->where('id = :id')
-            ->limit(1)
             ->bindValues(
                 [
                     'id' => $client->getId(),

@@ -25,15 +25,20 @@
 namespace SP\Modules\Web\Controllers\Client;
 
 
-use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
+
+use function SP\__u;
 
 /**
  * Class SaveCreateController
@@ -44,51 +49,40 @@ final class SaveCreateController extends ClientSaveBase
     use JsonTrait;
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
+     * @throws ValidationException
+     * @throws ServiceException
+     * @throws SPException
+     * @throws DuplicatedItemException
      */
-    public function saveCreateAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveCreateAction(): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $this->form->validateFor(AclActionsInterface::CLIENT_CREATE);
-
-            $itemData = $this->form->getItemData();
-
-            $id = $this->clientService->create($itemData);
-
-            $this->eventDispatcher->notify(
-                'create.client',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Client added'))
-                        ->addDetail(__u('Client'), $itemData->getName())
-                )
-            );
-
-            $this->addCustomFieldsForItem(
-                AclActionsInterface::CLIENT,
-                $id,
-                $this->request,
-                $this->customFieldService
-            );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Client added'));
-        } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_CREATE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        $this->form->validateFor(AclActionsInterface::CLIENT_CREATE);
+
+        $itemData = $this->form->getItemData();
+
+        $id = $this->clientService->create($itemData);
+
+        $this->eventDispatcher->notify(
+            'create.client',
+            new Event(
+                $this,
+                EventMessage::build(__u('Client added'))->addDetail(__u('Client'), $itemData->getName())
+            )
+        );
+
+        $this->addCustomFieldsForItem(
+            AclActionsInterface::CLIENT,
+            $id,
+            $this->request,
+            $this->customFieldService
+        );
+
+        return ActionResponse::ok(__u('Client added'));
     }
 }

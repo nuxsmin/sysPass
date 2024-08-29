@@ -25,76 +25,49 @@
 namespace SP\Modules\Web\Controllers\Client;
 
 
-use JsonException;
 use SP\Core\Application;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Html\DataGrid\DataGridInterface;
-use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\ClientGrid;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Controllers\SearchGridControllerBase;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class SearchController
  */
-final class SearchController extends ControllerBase
+final class SearchController extends SearchGridControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
-    private ClientService $clientService;
-    private ClientGrid    $clientGrid;
-
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application   $application,
-        WebControllerHelper $webControllerHelper,
-        ClientService $clientService,
-        ClientGrid    $clientGrid
+        Application                    $application,
+        WebControllerHelper            $webControllerHelper,
+        private readonly ClientService $clientService,
+        private readonly ClientGrid    $clientGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->clientService = $clientService;
-        $this->clientGrid = $clientGrid;
-    }
-
-    /**
-     * Search action
-     *
-     * @return bool
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     * @throws JsonException
-     */
-    public function searchAction(): bool
-    {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_SEARCH)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
-            );
-        }
-
-        $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
-        $this->view->assign('data', $this->getSearchGrid());
-
-        return $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
      * getSearchGrid
      *
+     * @return DataGridInterface
      * @throws ConstraintException
      * @throws QueryException
+     * @throws SPException
      */
     protected function getSearchGrid(): DataGridInterface
     {
@@ -104,5 +77,10 @@ final class SearchController extends ControllerBase
             $this->clientGrid->getGrid($this->clientService->search($itemSearchData)),
             $itemSearchData
         );
+    }
+
+    protected function getAclAction(): int
+    {
+        return AclActionsInterface::CLIENT_SEARCH;
     }
 }

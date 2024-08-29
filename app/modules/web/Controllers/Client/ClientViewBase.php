@@ -24,15 +24,15 @@
 
 namespace SP\Modules\Web\Controllers\Client;
 
-
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -47,27 +47,25 @@ abstract class ClientViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    private ClientService          $clientService;
-    private CustomFieldDataService $customFieldService;
-
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application         $application,
-        WebControllerHelper $webControllerHelper,
-        ClientService       $clientService,
-        CustomFieldDataService $customFieldService
+        Application                             $application,
+        WebControllerHelper                     $webControllerHelper,
+        private readonly ClientService          $clientService,
+        private readonly CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->clientService = $clientService;
-        $this->customFieldService = $customFieldService;
     }
 
     /**
      * Sets view data for displaying client's data
      *
-     * @param  int|null  $clientId
+     * @param int|null $clientId
      *
      * @throws ConstraintException
      * @throws NoSuchItemException
@@ -75,7 +73,7 @@ abstract class ClientViewBase extends ControllerBase
      * @throws SPException
      * @throws ServiceException
      */
-    protected function setViewData(?int $clientId = null): void
+    protected function setViewData(?int $clientId = null, bool $readonly = true): void
     {
         $this->view->addTemplate('client', 'itemshow');
 
@@ -87,10 +85,12 @@ abstract class ClientViewBase extends ControllerBase
 
         $this->view->assign(
             'nextAction',
-            Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE)
+            $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE)
         );
 
-        if ($this->view->isView === true) {
+        $this->view->assign('isView', $readonly);
+
+        if ($readonly) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

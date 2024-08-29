@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
@@ -82,7 +81,7 @@ final class ClientGrid extends GridBase
     }
 
     /**
-     * @throws SPException
+     * @return DataGridInterface
      */
     protected function getGridLayout(): DataGridInterface
     {
@@ -110,7 +109,7 @@ final class ClientGrid extends GridBase
     }
 
     /**
-     * @throws SPException
+     * @return DataGridData
      */
     protected function getData(): DataGridData
     {
@@ -122,9 +121,7 @@ final class ClientGrid extends GridBase
         $gridData->addDataRowSource(
             'isGlobal',
             false,
-            function ($value) {
-                return $value ? __('YES') : __('NO');
-            }
+            fn($value) => $value ? __('YES') : __('NO')
         );
         $gridData->setData($this->queryResult);
 
@@ -142,7 +139,7 @@ final class ClientGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::CLIENT_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::CLIENT_SEARCH)
         );
 
         return $gridActionSearch;
@@ -163,7 +160,7 @@ final class ClientGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::CLIENT_CREATE)
+            $this->acl->getRouteFor(AclActionsInterface::CLIENT_CREATE)
         );
 
         return $gridAction;
@@ -180,7 +177,7 @@ final class ClientGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::CLIENT_EDIT)
+            $this->acl->getRouteFor(AclActionsInterface::CLIENT_EDIT)
         );
 
         return $gridAction;
@@ -197,7 +194,7 @@ final class ClientGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::CLIENT_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::CLIENT_DELETE)
         );
 
         return $gridAction;

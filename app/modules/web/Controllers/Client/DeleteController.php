@@ -24,15 +24,20 @@
 
 namespace SP\Modules\Web\Controllers\Client;
 
-
-use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
+
+use function SP\__u;
 
 /**
  * Class DeleteController
@@ -45,60 +50,48 @@ final class DeleteController extends ClientSaveBase
     /**
      * Delete action
      *
-     * @param  int|null  $id
+     * @param int|null $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
+     * @throws ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
-    public function deleteAction(?int $id = null): bool
+    #[Action(ResponseType::JSON)]
+    public function deleteAction(?int $id = null): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_DELETE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
+        if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_DELETE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
 
-            if ($id === null) {
-                $this->clientService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
-
-                $this->deleteCustomFieldsForItem(AclActionsInterface::CLIENT, $id, $this->customFieldService);
-
-                $this->eventDispatcher->notify(
-                    'delete.client.selection',
-                    new Event(
-                        $this,
-                        EventMessage::build()->addDescription(__u('Clients deleted'))
-                    )
-                );
-
-                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Clients deleted'));
-            }
-            $this->clientService->delete($id);
-
-            $this->deleteCustomFieldsForItem(AclActionsInterface::CLIENT, $id, $this->customFieldService);
+        if ($id === null) {
+            $ids = $this->getItemsIdFromRequest($this->request);
+            $this->clientService->deleteByIdBatch($ids);
+            $this->deleteCustomFieldsForItem(AclActionsInterface::CLIENT, $ids, $this->customFieldService);
 
             $this->eventDispatcher->notify(
-                'delete.client',
+                'delete.client.selection',
                 new Event(
                     $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Client deleted'))
-                        ->addDetail(__u('Client'), $id)
+                    EventMessage::build()->addDescription(__u('Clients deleted'))
                 )
             );
 
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_SUCCESS,
-                __u('Client deleted')
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::ok(__u('Clients deleted'));
         }
+        $this->clientService->delete($id);
+
+        $this->deleteCustomFieldsForItem(AclActionsInterface::CLIENT, $id, $this->customFieldService);
+
+        $this->eventDispatcher->notify(
+            'delete.client',
+            new Event(
+                $this,
+                EventMessage::build(__u('Client deleted'))->addDetail(__u('Client'), $id)
+            )
+        );
+
+        return ActionResponse::ok(__u('Client deleted'));
     }
 }
