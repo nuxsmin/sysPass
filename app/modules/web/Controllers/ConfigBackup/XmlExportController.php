@@ -54,6 +54,11 @@ final class XmlExportController extends SimpleControllerBase
 {
     use JsonTrait;
 
+    /**
+     * @throws SessionTimeout
+     * @throws SPException
+     * @throws UnauthorizedPageException
+     */
     public function __construct(
         Application                       $application,
         SimpleControllerHelper            $simpleControllerHelper,
@@ -62,6 +67,9 @@ final class XmlExportController extends SimpleControllerBase
         private readonly PathsContext     $pathsContext
     ) {
         parent::__construct($application, $simpleControllerHelper);
+
+        $this->checks();
+        $this->checkAccess(AclActionsInterface::CONFIG_BACKUP);
     }
 
     /**
@@ -130,24 +138,6 @@ final class XmlExportController extends SimpleControllerBase
             $this->eventDispatcher->notify('exception', new Event($e));
 
             return $this->returnJsonResponseException($e);
-        }
-    }
-
-    /**
-     * initialize
-     *
-     * @throws SPException
-     * @throws SessionTimeout
-     */
-    protected function initialize(): void
-    {
-        try {
-            $this->checks();
-            $this->checkAccess(AclActionsInterface::CONFIG_BACKUP);
-        } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            $this->returnJsonResponseException($e);
         }
     }
 }

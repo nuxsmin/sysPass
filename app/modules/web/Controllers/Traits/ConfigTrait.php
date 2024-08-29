@@ -25,11 +25,10 @@
 namespace SP\Modules\Web\Controllers\Traits;
 
 use Exception;
-use JsonException;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
 
 use function SP\__u;
 use function SP\processException;
@@ -41,22 +40,19 @@ use function SP\processException;
  */
 trait ConfigTrait
 {
-    use JsonTrait;
-
     /**
      * Guardar la configuración
      *
-     * @throws JsonException
      * @throws SPException
      */
     protected function saveConfig(
         ConfigDataInterface $configData,
         ConfigFileService $config,
         callable          $onSuccess = null
-    ): bool {
+    ): ActionResponse {
         try {
             if ($configData->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+                return ActionResponse::warning(__u('Ey, this is a DEMO!!'));
             }
 
             $config->save($configData);
@@ -65,15 +61,11 @@ trait ConfigTrait
                 $onSuccess();
             }
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Configuration updated'));
+            return ActionResponse::ok(__u('Configuration updated'));
         } catch (Exception $e) {
             processException($e);
 
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('Error while saving the configuration'),
-                [$e]
-            );
+            return ActionResponse::error(__u('Error while saving the configuration'));
         }
     }
 }

@@ -24,21 +24,23 @@
 
 namespace SP\Modules\Web\Controllers\ConfigAccount;
 
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 
+use function SP\__u;
+
 /**
- * Class ConfigAccountController
- *
- * @package SP\Modules\Web\Controllers
+ * Class SaveController
  */
 final class SaveController extends SimpleControllerBase
 {
@@ -47,31 +49,25 @@ final class SaveController extends SimpleControllerBase
     private const MAX_FILES_SIZE = 16384;
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
+     * @throws ValidationException
+     * @throws SPException
      */
-    public function saveAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveAction(): ActionResponse
     {
         $configData = $this->config->getConfigData();
 
         $eventMessage = EventMessage::build();
 
-        try {
-            $this->handleAccountsConfig($configData);
-            $this->handleFilesConfig($configData, $eventMessage);
-            $this->handlePublicLinksConfig($configData, $eventMessage);
-        } catch (ValidationException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            $this->returnJsonResponseException($e);
-        }
+        $this->handleAccountsConfig($configData);
+        $this->handleFilesConfig($configData, $eventMessage);
+        $this->handlePublicLinksConfig($configData, $eventMessage);
 
         return $this->saveConfig(
             $configData,
             $this->config,
-            function () use ($eventMessage) {
-                $this->eventDispatcher->notify('save.config.account', new Event($this, $eventMessage));
-            }
+            fn() => $this->eventDispatcher->notify('save.config.account', new Event($this, $eventMessage))
         );
     }
 
@@ -152,18 +148,12 @@ final class SaveController extends SimpleControllerBase
 
     /**
      * @return void
-     * @throws JsonException
+     * @throws SPException
      * @throws SessionTimeout
      */
     protected function initialize(): void
     {
-        try {
-            $this->checks();
-            $this->checkAccess(AclActionsInterface::CONFIG_ACCOUNT);
-        } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            $this->returnJsonResponseException($e);
-        }
+        $this->checks();
+        $this->checkAccess(AclActionsInterface::CONFIG_ACCOUNT);
     }
 }
