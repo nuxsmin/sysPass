@@ -25,12 +25,18 @@
 namespace SP\Modules\Web\Controllers\Category;
 
 
-use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+
+use function SP\__u;
 
 /**
  * DeleteController
@@ -40,61 +46,50 @@ final class DeleteController extends CategorySaveBase
     /**
      * Delete action
      *
-     * @param  int|null  $id
+     * @param int|null $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
+     * @throws ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
      */
-    public function deleteAction(?int $id = null): bool
+    #[Action(ResponseType::JSON)]
+    public function deleteAction(?int $id = null): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_DELETE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
+        if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_DELETE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
 
-            if ($id === null) {
-                $this->categoryService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+        if ($id === null) {
+            $ids = $this->getItemsIdFromRequest($this->request);
+            $this->categoryService->deleteByIdBatch($ids);
 
-                $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $id, $this->customFieldService);
-
-                $this->eventDispatcher->notify(
-                    'delete.category',
-                    new Event(
-                        $this,
-                        EventMessage::build()->addDescription(__u('Categories deleted'))
-                    )
-                );
-
-                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Categories deleted'));
-            }
-
-            $this->categoryService->delete($id);
-
-            $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $id, $this->customFieldService);
+            $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $ids, $this->customFieldService);
 
             $this->eventDispatcher->notify(
                 'delete.category',
                 new Event(
                     $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Category deleted'))
-                        ->addDetail(__u('Category'), $id)
+                    EventMessage::build()->addDescription(__u('Categories deleted'))
                 )
             );
 
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_SUCCESS,
-                __u('Category deleted')
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::ok(__u('Categories deleted'));
         }
+
+        $this->categoryService->delete($id);
+
+        $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $id, $this->customFieldService);
+
+        $this->eventDispatcher->notify(
+            'delete.category',
+            new Event(
+                $this,
+                EventMessage::build(__u('Category deleted'))->addDetail(__u('Category'), $id)
+            )
+        );
+
+        return ActionResponse::ok(__u('Category deleted'));
     }
 }

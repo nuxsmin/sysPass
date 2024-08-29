@@ -123,7 +123,6 @@ final class Category extends BaseRepository implements CategoryRepository
             ->table(CategoryModel::TABLE)
             ->cols($category->toArray(null, ['id', 'hash']))
             ->where('id = :id')
-            ->limit(1)
             ->bindValues(
                 [
                     'id' => $category->getId(),

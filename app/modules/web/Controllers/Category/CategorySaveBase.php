@@ -25,10 +25,11 @@
 namespace SP\Modules\Web\Controllers\Category;
 
 use SP\Core\Application;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Category\Ports\CategoryService;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\CategoryForm;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -39,24 +40,23 @@ use SP\Mvc\Controller\WebControllerHelper;
 abstract class CategorySaveBase extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
-    protected CategoryService        $categoryService;
-    protected CustomFieldDataService $customFieldService;
-    protected CategoryForm           $form;
+    protected readonly CategoryForm $form;
 
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application         $application,
-        WebControllerHelper $webControllerHelper,
-        CategoryService     $categoryService,
-        CustomFieldDataService $customFieldService
+        Application                               $application,
+        WebControllerHelper                       $webControllerHelper,
+        protected readonly CategoryService        $categoryService,
+        protected readonly CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->categoryService = $categoryService;
-        $this->customFieldService = $customFieldService;
         $this->form = new CategoryForm($application, $this->request);
     }
 }

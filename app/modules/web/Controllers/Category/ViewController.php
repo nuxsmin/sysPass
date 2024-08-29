@@ -24,12 +24,20 @@
 
 namespace SP\Modules\Web\Controllers\Category;
 
-use Exception;
-use JsonException;
 use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * ViewController
@@ -41,35 +49,28 @@ final class ViewController extends CategoryViewBase
     /**
      * View action
      *
-     * @param  int  $id
      *
-     * @return bool
-     * @throws JsonException
+     * @throws ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     * @throws NoSuchItemException
      */
-    public function viewAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function viewAction(int $id): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_VIEW)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $this->view->assign('header', __('View Category'));
-            $this->view->assign('isView', true);
-
-            $this->setViewData($id);
-
-            $this->eventDispatcher->notify('show.category', new Event($this));
-
-            return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_VIEW)) {
+            return ActionResponse::error(
+                __u('You don\'t have permission to do this operation')
+            );
         }
+
+        $this->view->assign('header', __('View Category'));
+
+        $this->setViewData($id);
+
+        $this->eventDispatcher->notify('show.category', new Event($this));
+
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 }

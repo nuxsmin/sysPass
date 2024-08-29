@@ -24,8 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
-
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
@@ -83,7 +81,7 @@ final class CategoryGrid extends GridBase
     }
 
     /**
-     * @throws SPException
+     * @return DataGridInterface
      */
     protected function getGridLayout(): DataGridInterface
     {
@@ -110,7 +108,7 @@ final class CategoryGrid extends GridBase
     }
 
     /**
-     * @throws SPException
+     * @return DataGridData
      */
     protected function getData(): DataGridData
     {
@@ -135,7 +133,7 @@ final class CategoryGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::CATEGORY_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::CATEGORY_SEARCH)
         );
 
         return $gridActionSearch;
@@ -153,7 +151,7 @@ final class CategoryGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::CATEGORY_CREATE)
+            $this->acl->getRouteFor(AclActionsInterface::CATEGORY_CREATE)
         );
 
         return $gridAction;
@@ -170,7 +168,7 @@ final class CategoryGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::CATEGORY_EDIT)
+            $this->acl->getRouteFor(AclActionsInterface::CATEGORY_EDIT)
         );
 
         return $gridAction;
@@ -187,7 +185,7 @@ final class CategoryGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::CATEGORY_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::CATEGORY_DELETE)
         );
 
         return $gridAction;

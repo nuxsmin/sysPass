@@ -24,14 +24,15 @@
 
 namespace SP\Modules\Web\Controllers\Category;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
@@ -46,35 +47,33 @@ abstract class CategoryViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    private CategoryService        $categoryService;
-    private CustomFieldDataService $customFieldService;
-
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
     public function __construct(
-        Application                 $application,
-        WebControllerHelper         $webControllerHelper,
-        CategoryService $categoryService,
-        CustomFieldDataService $customFieldService
+        Application                             $application,
+        WebControllerHelper                     $webControllerHelper,
+        private readonly CategoryService        $categoryService,
+        private readonly CustomFieldDataService $customFieldService
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->categoryService = $categoryService;
-        $this->customFieldService = $customFieldService;
     }
 
     /**
      * Sets view data for displaying category's data
      *
-     * @param  int|null  $categoryId
-     *
+     * @param int|null $categoryId
+     * @param bool $readOnly
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException
      * @throws SPException
      * @throws ServiceException
      */
-    protected function setViewData(?int $categoryId = null)
+    protected function setViewData(?int $categoryId = null, bool $readOnly = true): void
     {
         $this->view->addTemplate('category', 'itemshow');
 
@@ -83,10 +82,10 @@ abstract class CategoryViewBase extends ControllerBase
             : new Category();
 
         $this->view->assign('category', $category);
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('isView', $readOnly);
 
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE));
-
-        if ($this->view->isView === true) {
+        if ($readOnly) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

@@ -25,38 +25,57 @@
 namespace SP\Modules\Web\Controllers\Category;
 
 use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
 
-use function SP\__;
 use function SP\__u;
 
 /**
- * CreateController
+ * SaveCreateAction
  */
-final class CreateController extends CategoryViewBase
+final class SaveCreateController extends CategorySaveBase
 {
     /**
-     * @return ActionResponse
+     * @throws ValidationException
+     * @throws ServiceException
      * @throws SPException
+     * @throws DuplicatedItemException
      */
     #[Action(ResponseType::JSON)]
-    public function createAction(): ActionResponse
+    public function saveCreateAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_CREATE)) {
             return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
-        $this->view->assign('header', __('New Category'));
-        $this->view->assign('route', 'category/saveCreate');
+        $this->form->validateFor(AclActionsInterface::CATEGORY_CREATE);
 
-        $this->setViewData();
+        $itemData = $this->form->getItemData();
 
-        $this->eventDispatcher->notify('show.category.create', new Event($this));
+        $id = $this->categoryService->create($itemData);
 
-        return ActionResponse::ok('', ['html' => $this->render()]);
+        $this->eventDispatcher->notify(
+            'create.category',
+            new Event(
+                $this,
+                EventMessage::build(__u('Category added'))->addDetail(__u('Category'), $itemData->getName())
+            )
+        );
+
+        $this->addCustomFieldsForItem(
+            AclActionsInterface::CATEGORY,
+            $id,
+            $this->request,
+            $this->customFieldService
+        );
+
+        return ActionResponse::ok(__u('Category added'));
     }
 }

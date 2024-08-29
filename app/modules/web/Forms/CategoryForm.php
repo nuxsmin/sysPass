@@ -28,6 +28,8 @@ use SP\Domain\Category\Models\Category;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 
+use function SP\__u;
+
 /**
  * Class CategoryForm
  *
@@ -40,10 +42,10 @@ final class CategoryForm extends FormBase implements FormInterface
     /**
      * Validar el formulario
      *
-     * @param  int  $action
-     * @param  int|null  $id
+     * @param int $action
+     * @param int|null $id
      *
-     * @return CategoryForm|FormInterface
+     * @return FormInterface
      * @throws ValidationException
      */
     public function validateFor(int $action, ?int $id = null): FormInterface
@@ -70,10 +72,13 @@ final class CategoryForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->categoryData = new Category();
-        $this->categoryData->setId($this->itemId);
-        $this->categoryData->setName($this->request->analyzeString('name'));
-        $this->categoryData->setDescription($this->request->analyzeString('description'));
+        $this->categoryData = new Category(
+            [
+                'id' => $this->itemId,
+                'name' => $this->request->analyzeString('name'),
+                'description' => $this->request->analyzeString('description')
+            ]
+        );
     }
 
     /**
