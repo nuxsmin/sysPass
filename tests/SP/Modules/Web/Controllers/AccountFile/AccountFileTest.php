@@ -38,9 +38,9 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
+use SP\Tests\BodyChecker;
 use SP\Tests\Generators\FileDataGenerator;
 use SP\Tests\IntegrationTestCase;
-use SP\Tests\OutputChecker;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -131,7 +131,7 @@ class AccountFileTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerList')]
+    #[BodyChecker('outputCheckerList')]
     public function listFiles()
     {
         $fileDataGenerator = FileDataGenerator::factory();
@@ -161,7 +161,7 @@ class AccountFileTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerSearch')]
+    #[BodyChecker('outputCheckerSearch')]
     public function search()
     {
         $fileDataGenerator = FileDataGenerator::factory();
@@ -192,7 +192,7 @@ class AccountFileTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerUpload')]
+    #[BodyChecker('outputCheckerUpload')]
     public function upload()
     {
         $file = sprintf('%s.txt', self::$faker->filePath());
@@ -214,8 +214,6 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $this->runApp($container);
-
-        $this->expectOutputString('{"status":"OK","description":"File saved","data":null}');
     }
 
     /**
@@ -225,7 +223,7 @@ class AccountFileTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerView')]
+    #[BodyChecker('outputCheckerView')]
     public function view()
     {
         $fileDataGenerator = FileDataGenerator::factory();
@@ -271,12 +269,10 @@ class AccountFileTest extends IntegrationTestCase
 
     private function outputCheckerUpload(string $output): void
     {
-        $crawler = new Crawler($output);
-        $filter = $crawler->filterXPath('//table/tbody//tr[string-length(@data-item-id) > 0]')
-                          ->extract(['class']);
+        $json = json_decode($output);
 
-        self::assertNotEmpty($output);
-        self::assertCount(2, $filter);
+        self::assertEquals('OK', $json->status);
+        self::assertEquals('File saved', $json->description);
     }
 
     /**
@@ -289,7 +285,6 @@ class AccountFileTest extends IntegrationTestCase
         $filter = $crawler->filterXPath('//table/tbody//tr[string-length(@data-item-id) > 0]')
                           ->extract(['class']);
 
-        self::assertNotEmpty($output);
         self::assertCount(2, $filter);
     }
 
@@ -302,7 +297,6 @@ class AccountFileTest extends IntegrationTestCase
         $crawler = new Crawler($output);
         $filter = $crawler->filterXPath('//img|//div[@class="title"]')->count();
 
-        self::assertNotEmpty($output);
         self::assertEquals(2, $filter);
     }
 
@@ -317,7 +311,6 @@ class AccountFileTest extends IntegrationTestCase
             '//div[@id="files-wrap"]/ul//li'
         )->extract(['class']);
 
-        self::assertNotEmpty($output);
         self::assertCount(2, $filter);
     }
 }

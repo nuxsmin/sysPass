@@ -36,8 +36,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\File\FileException;
+use SP\Tests\BodyChecker;
 use SP\Tests\IntegrationTestCase;
-use SP\Tests\OutputChecker;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -54,7 +54,7 @@ class IndexControllerTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerIndex')]
+    #[BodyChecker('outputCheckerIndex')]
     public function index()
     {
         $container = $this->buildContainer(
@@ -97,7 +97,6 @@ class IndexControllerTest extends IntegrationTestCase
             '//div[contains(@id, \'tabs-\')]//form'
         )->extract(['id']);
 
-        self::assertNotEmpty($output);
         self::assertCount(5, $filter);
     }
 }

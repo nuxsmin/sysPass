@@ -45,6 +45,7 @@ use SP\Domain\User\Models\UserGroup;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
+use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\CategoryGenerator;
 use SP\Tests\Generators\ClientGenerator;
@@ -52,7 +53,6 @@ use SP\Tests\Generators\TagGenerator;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserGroupGenerator;
 use SP\Tests\IntegrationTestCase;
-use SP\Tests\OutputChecker;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -69,7 +69,7 @@ class AccountManagerTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerBulkEdit')]
+    #[BodyChecker('outputCheckerBulkEdit')]
     public function bulkEdit()
     {
         $this->addDatabaseMapperResolver(
@@ -242,7 +242,7 @@ class AccountManagerTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerSearch')]
+    #[BodyChecker('outputCheckerSearch')]
     public function search()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -279,13 +279,15 @@ class AccountManagerTest extends IntegrationTestCase
 
     private function outputCheckerBulkEdit(string $output): void
     {
-        $crawler = new Crawler($output);
+        $json = json_decode($output);
+
+        $crawler = new Crawler($json->data->html);
         $filter = $crawler->filterXPath(
             '//div[@id="box-popup"]//form[@name="frmAccountBulkEdit"]//select|//input|//div[@class="action-in-box"]/button'
         )->extract(['_name']);
 
-        self::assertNotEmpty($output);
         self::assertCount(19, $filter);
+        self::assertEquals('OK', $json->status);
     }
 
     /**
@@ -294,13 +296,14 @@ class AccountManagerTest extends IntegrationTestCase
      */
     private function outputCheckerSearch(string $output): void
     {
-        $crawler = new Crawler($output);
-        $filter = $crawler->filterXPath(
-            '//table/tbody[@id="data-rows-tblAccountsHistory"]//tr[string-length(@data-item-id) > 0]'
-        )
-                          ->extract(['data-item-id']);
+        $json = json_decode($output);
 
-        self::assertNotEmpty($output);
+        $crawler = new Crawler($json->data->html);
+        $filter = $crawler->filterXPath(
+            '//table/tbody[@id="data-rows-tblAccounts"]//tr[string-length(@data-item-id) > 0]'
+        )->extract(['data-item-id']);
+
         self::assertCount(2, $filter);
+        self::assertEquals('OK', $json->status);
     }
 }

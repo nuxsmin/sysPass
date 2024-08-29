@@ -171,7 +171,16 @@ abstract class IntegrationTestCase extends TestCase
 
         if ($bodyChecker !== null) {
             $response = $this->getMockBuilder(Response::class)->onlyMethods(['body'])->getMock();
-            $response->method('body')->with(self::callback($bodyChecker));
+            $response->method('body')
+                     ->with(
+                         self::callback(static function (string $output) use ($bodyChecker) {
+                             self::assertNotEmpty($output);
+
+                             $bodyChecker($output);
+
+                             return true;
+                         })
+                     );
 
             $definitions[Response::class] = $response;
         }

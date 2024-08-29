@@ -54,11 +54,11 @@ use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
+use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\PublicLinkDataGenerator;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\IntegrationTestCase;
-use SP\Tests\OutputChecker;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -75,7 +75,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerViewPassHistory')]
+    #[BodyChecker('outputCheckerViewPassHistory')]
     public function viewPassHistory()
     {
         $this->addDatabaseMapperResolver(
@@ -107,10 +107,6 @@ class AccountTest extends IntegrationTestCase
         );
 
         $this->runApp($container);
-
-        $this->expectOutputRegex(
-            '/\{"status":"OK","description":"","data":\{"useimage":false,"html":".*"\}}/'
-        );
     }
 
     /**
@@ -119,7 +115,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerViewPass')]
+    #[BodyChecker('outputCheckerViewPass')]
     public function viewPass()
     {
         $this->addDatabaseMapperResolver(
@@ -151,10 +147,6 @@ class AccountTest extends IntegrationTestCase
         );
 
         $this->runApp($container);
-
-        $this->expectOutputRegex(
-            '/\{"status":"OK","description":"","data":\{"useimage":false,"html":".*"\}\}/'
-        );
     }
 
     /**
@@ -165,7 +157,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerViewLink')]
+    #[BodyChecker('outputCheckerViewLink')]
     public function viewLink()
     {
         $account = serialize(Simple::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccount()));
@@ -200,7 +192,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerViewHistory')]
+    #[BodyChecker('outputCheckerViewHistory')]
     public function viewHistory()
     {
         $accountHistory = AccountDataGenerator::factory()
@@ -241,7 +233,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerView')]
+    #[BodyChecker('outputCheckerView')]
     public function view()
     {
         $this->addDatabaseMapperResolver(
@@ -274,7 +266,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerSearch')]
+    #[BodyChecker('outputCheckerSearch')]
     public function search()
     {
         $accountSearchView = AccountDataGenerator::factory()->buildAccountSearchView();
@@ -292,10 +284,6 @@ class AccountTest extends IntegrationTestCase
                 ['r' => 'account/search'],
                 ['search' => $accountSearchView->getName()]
             )
-        );
-
-        $this->expectOutputRegex(
-            '/\{"status":"OK","description":"","data":\{"html":".*"\}\}/'
         );
 
         $this->runApp($container);
@@ -560,7 +548,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerCopy')]
+    #[BodyChecker('outputCheckerCopy')]
     public function copy()
     {
         $this->addDatabaseMapperResolver(
@@ -662,7 +650,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerCreate')]
+    #[BodyChecker('outputCheckerCreate')]
     public function create()
     {
         $container = $this->buildContainer(
@@ -679,7 +667,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerDelete')]
+    #[BodyChecker('outputCheckerDelete')]
     public function delete()
     {
         $this->addDatabaseMapperResolver(
@@ -701,7 +689,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerEdit')]
+    #[BodyChecker('outputCheckerEdit')]
     public function edit()
     {
         $this->addDatabaseMapperResolver(
@@ -723,7 +711,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerIndex')]
+    #[BodyChecker('outputCheckerIndex')]
     public function index()
     {
         $container = $this->buildContainer(
@@ -740,7 +728,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerRequestAccess')]
+    #[BodyChecker('outputCheckerRequestAccess')]
     public function requestAccess()
     {
         $this->addDatabaseMapperResolver(
@@ -929,7 +917,6 @@ class AccountTest extends IntegrationTestCase
             '//div[@class="data-container"]//form[@name="frmaccount"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
-        self::assertNotEmpty($output);
         self::assertCount(3, $filter);
     }
 
@@ -939,13 +926,16 @@ class AccountTest extends IntegrationTestCase
      */
     private function outputCheckerViewPassHistory(string $output): void
     {
-        $crawler = new Crawler($output);
+        $json = json_decode($output);
+
+        $crawler = new Crawler($json->data->html);
         $filter = $crawler->filterXPath(
             '//div[@id="box-popup" and @class="box-password-view"]//table//td[starts-with(@class,"dialog-text")]|//button'
         )->extract(['_name']);
 
-        self::assertNotEmpty($output);
         self::assertCount(4, $filter);
+        self::assertFalse($json->data->useimage);
+        self::assertEquals('OK', $json->status);
     }
 
     /**
@@ -954,13 +944,16 @@ class AccountTest extends IntegrationTestCase
      */
     private function outputCheckerViewPass(string $output): void
     {
-        $crawler = new Crawler($output);
+        $json = json_decode($output);
+
+        $crawler = new Crawler($json->data->html);
         $filter = $crawler->filterXPath(
             '//div[@id="box-popup" and @class="box-password-view"]//table//td[starts-with(@class,"dialog-text")]|//button'
         )->extract(['_name']);
 
-        self::assertNotEmpty($output);
         self::assertCount(4, $filter);
+        self::assertFalse($json->data->useimage);
+        self::assertEquals('OK', $json->status);
     }
 
     /**
@@ -974,7 +967,6 @@ class AccountTest extends IntegrationTestCase
             '//div[@id="actions" and @class="public-link"]//table[@class="data"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
-        self::assertNotEmpty($output);
         self::assertCount(2, $filter);
     }
 
@@ -989,7 +981,6 @@ class AccountTest extends IntegrationTestCase
             '//div[@class="data-container"]//form[@name="frmaccount"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
-        self::assertNotEmpty($output);
         self::assertCount(2, $filter);
     }
 
@@ -1004,7 +995,6 @@ class AccountTest extends IntegrationTestCase
             '//div[@class="data-container"]//form[@name="frmaccount"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
-        self::assertNotEmpty($output);
         self::assertCount(2, $filter);
     }
 
@@ -1014,11 +1004,13 @@ class AccountTest extends IntegrationTestCase
      */
     private function outputCheckerSearch(string $output): void
     {
-        $crawler = new Crawler($output);
+        $json = json_decode($output);
+
+        $crawler = new Crawler($json->data->html);
         $filter = $crawler->filterXPath('//div[@id="res-content"]/div')->extract(['id']);
 
-        self::assertNotEmpty($output);
         self::assertCount(4, $filter);
+        self::assertEquals('OK', $json->status);
     }
 
     /**
@@ -1032,7 +1024,6 @@ class AccountTest extends IntegrationTestCase
             '//div[@class="data-container"]//form[@name="requestmodify" and @data-action-route="account/saveRequest"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
-        self::assertNotEmpty($output);
         self::assertCount(3, $filter);
     }
 
@@ -1047,7 +1038,6 @@ class AccountTest extends IntegrationTestCase
             '//div[@class="data-container"]//form[@name="frmaccount" and @data-action-route="account/saveDelete"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
-        self::assertNotEmpty($output);
         self::assertCount(2, $filter);
     }
 
@@ -1062,7 +1052,6 @@ class AccountTest extends IntegrationTestCase
             '//div[@class="data-container"]//form[@name="frmaccount" and @data-action-route="account/saveEdit"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
-        self::assertNotEmpty($output);
         self::assertCount(3, $filter);
     }
 
@@ -1077,7 +1066,6 @@ class AccountTest extends IntegrationTestCase
             '//div[@id="searchbox"]/form[@name="frmSearch"]|//div[@id="res-content"]'
         )->extract(['id']);
 
-        self::assertNotEmpty($output);
         self::assertCount(2, $filter);
     }
 
@@ -1092,7 +1080,6 @@ class AccountTest extends IntegrationTestCase
             '//div[@class="data-container"]//form[@name="frmaccount" and @data-action-route="account/saveCreate"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
-        self::assertNotEmpty($output);
         self::assertCount(3, $filter);
     }
 }

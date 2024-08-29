@@ -35,9 +35,9 @@ use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileException;
+use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AuthTokenGenerator;
 use SP\Tests\IntegrationTestCase;
-use SP\Tests\OutputChecker;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -54,7 +54,7 @@ class AuthTokenTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerCreate')]
+    #[BodyChecker('outputCheckerCreate')]
     public function create()
     {
         $container = $this->buildContainer(
@@ -63,8 +63,6 @@ class AuthTokenTest extends IntegrationTestCase
         );
 
         $this->runApp($container);
-
-        $this->expectOutputRegex('/\{"status":"OK","description":"","data":\{"html":".*"\}\}/');
     }
 
     /**
@@ -109,7 +107,7 @@ class AuthTokenTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerEdit')]
+    #[BodyChecker('outputCheckerEdit')]
     public function edit()
     {
         $this->addDatabaseMapperResolver(
@@ -123,8 +121,6 @@ class AuthTokenTest extends IntegrationTestCase
         );
 
         $this->runApp($container);
-
-        $this->expectOutputRegex('/\{"status":"OK","description":"","data":\{"html":".*"\}\}/');
     }
 
     /**
@@ -181,7 +177,7 @@ class AuthTokenTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerSearch')]
+    #[BodyChecker('outputCheckerSearch')]
     public function search()
     {
         $authTokenGenerator = AuthTokenGenerator::factory();
@@ -202,8 +198,6 @@ class AuthTokenTest extends IntegrationTestCase
             $this->buildRequest('get', 'index.php', ['r' => 'authToken/search', 'search' => 'test'])
         );
 
-        $this->expectOutputRegex('/\{"status":"OK","description":"","data":\{"html":".*"\}\}/');
-
         $this->runApp($container);
     }
 
@@ -213,7 +207,7 @@ class AuthTokenTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[OutputChecker('outputCheckerView')]
+    #[BodyChecker('outputCheckerView')]
     public function view()
     {
         $this->addDatabaseMapperResolver(
@@ -225,8 +219,6 @@ class AuthTokenTest extends IntegrationTestCase
             $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'authToken/view/100'])
         );
-
-        $this->expectOutputRegex('/\{"status":"OK","description":"","data":\{"html":".*"\}\}/');
 
         $this->runApp($container);
     }
@@ -248,12 +240,13 @@ class AuthTokenTest extends IntegrationTestCase
      */
     private function outputCheckerCreate(string $output): void
     {
-        $crawler = new Crawler($output);
+        $json = json_decode($output);
+
+        $crawler = new Crawler($json->data->html);
         $filter = $crawler->filterXPath(
             '//div[@id="box-popup"]//form[@name="frmTokens"]//select|//input'
         )->extract(['_name']);
 
-        self::assertNotEmpty($output);
         self::assertCount(5, $filter);
     }
 
@@ -263,13 +256,15 @@ class AuthTokenTest extends IntegrationTestCase
      */
     private function outputCheckerEdit(string $output): void
     {
-        $crawler = new Crawler($output);
+        $json = json_decode($output);
+
+        $crawler = new Crawler($json->data->html);
         $filter = $crawler->filterXPath(
             '//div[@id="box-popup"]//form[@name="frmTokens"]//select|//input'
         )->extract(['_name']);
 
-        self::assertNotEmpty($output);
         self::assertCount(5, $filter);
+        self::assertEquals('OK', $json->status);
     }
 
     /**
@@ -278,14 +273,16 @@ class AuthTokenTest extends IntegrationTestCase
      */
     private function outputCheckerSearch(string $output): void
     {
-        $crawler = new Crawler($output);
+        $json = json_decode($output);
+
+        $crawler = new Crawler($json->data->html);
         $filter = $crawler->filterXPath(
             '//table/tbody[@id="data-rows-tblTokens"]//tr[string-length(@data-item-id) > 0]'
         )
                           ->extract(['data-item-id']);
 
-        self::assertNotEmpty($output);
         self::assertCount(2, $filter);
+        self::assertEquals('OK', $json->status);
     }
 
     /**
@@ -294,12 +291,14 @@ class AuthTokenTest extends IntegrationTestCase
      */
     private function outputCheckerView(string $output): void
     {
-        $crawler = new Crawler($output);
+        $json = json_decode($output);
+
+        $crawler = new Crawler($json->data->html);
         $filter = $crawler->filterXPath(
             '//div[@id="box-popup"]//form[@name="frmTokens"]//select|//input'
         )->extract(['_name']);
 
-        self::assertNotEmpty($output);
         self::assertCount(3, $filter);
+        self::assertEquals('OK', $json->status);
     }
 }
