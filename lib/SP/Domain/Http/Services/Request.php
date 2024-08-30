@@ -189,19 +189,17 @@ class Request implements RequestService
     /**
      * Analizar un valor encriptado y devolverlo desencriptado
      */
-    public function analyzeEncrypted(string $param): string
+    public function analyzeEncrypted(string $param): ?string
     {
         $encryptedData = $this->analyzeString($param);
 
         if ($encryptedData === null) {
-            return '';
+            return null;
         }
 
         try {
-            // Desencriptar con la clave RSA
             $clearData = $this->cryptPKI->decryptRSA(base64_decode($encryptedData));
 
-            // Desencriptar con la clave RSA
             if ($clearData === null) {
                 logger('No RSA encrypted data from request');
 
@@ -244,7 +242,7 @@ class Request implements RequestService
     public function analyzeArray(
         string $param,
         ?callable $mapper = null,
-        mixed  $default = null
+        mixed $default = null
     ): ?array {
         $requestValue = $this->params->get($param);
 

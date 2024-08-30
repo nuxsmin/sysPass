@@ -63,16 +63,118 @@ class ConfigBackupControllerTest extends IntegrationTestCase
                     $this->passwordSalt .
                     '.gz';
 
-        file_put_contents($filename, 'test_data');
+        file_put_contents($filename, 'test_data_app');
 
         $container = $this->buildContainer(
             $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'configBackup/downloadBackupApp'])
         );
 
+        $this->expectOutputString('test_data_app');
+
         $this->runApp($container);
 
-        $this->expectOutputString('test_data');
+        unlink($filename);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function downloadBackupDb()
+    {
+        $filename = REAL_APP_ROOT .
+                    DIRECTORY_SEPARATOR .
+                    'app' .
+                    DIRECTORY_SEPARATOR .
+                    'backup' .
+                    DIRECTORY_SEPARATOR .
+                    'sysPass_db-' .
+                    $this->passwordSalt .
+                    '.gz';
+
+        file_put_contents($filename, 'test_data_db');
+
+        $container = $this->buildContainer(
+            $this->definitions,
+            $this->buildRequest('get', 'index.php', ['r' => 'configBackup/downloadBackupDb'])
+        );
+
+        $this->expectOutputString('test_data_db');
+
+        $this->runApp($container);
+
+        unlink($filename);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function downloadBackupExport()
+    {
+        $filename = REAL_APP_ROOT .
+                    DIRECTORY_SEPARATOR .
+                    'app' .
+                    DIRECTORY_SEPARATOR .
+                    'backup' .
+                    DIRECTORY_SEPARATOR .
+                    'sysPass_export-' .
+                    $this->passwordSalt .
+                    '.gz';
+
+        file_put_contents($filename, 'test_data_export');
+
+        $container = $this->buildContainer(
+            $this->definitions,
+            $this->buildRequest('get', 'index.php', ['r' => 'configBackup/downloadExport'])
+        );
+
+        $this->expectOutputString('test_data_export');
+
+        $this->runApp($container);
+
+        unlink($filename);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function fileBackup()
+    {
+        $container = $this->buildContainer(
+            $this->definitions,
+            $this->buildRequest('get', 'index.php', ['r' => 'configBackup/fileBackup'])
+        );
+
+        $this->expectOutputString('{"status":"OK","description":"Backup process finished","data":null}');
+
+        $this->runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function xmlExport()
+    {
+        $container = $this->buildContainer(
+            $this->definitions,
+            $this->buildRequest('get', 'index.php', ['r' => 'configBackup/xmlExport'])
+        );
+
+        $this->expectOutputString('{"status":"OK","description":"Export process finished","data":null}');
+
+        $this->runApp($container);
     }
 
     /**
@@ -90,8 +192,8 @@ class ConfigBackupControllerTest extends IntegrationTestCase
     {
         $configData = parent::getConfigData();
         $configData->method('getBackupHash')->willReturn($this->passwordSalt);
+        $configData->method('getExportHash')->willReturn($this->passwordSalt);
 
         return $configData;
     }
-
 }

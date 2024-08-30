@@ -24,36 +24,36 @@
 
 namespace SP\Modules\Web\Controllers\ConfigBackup;
 
-use Exception;
 use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Ports\XmlExportService;
 use SP\Domain\Export\Ports\XmlVerifyService;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Import\Services\ImportException;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\DirectoryHandler;
+use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class XmlExportController
  */
 final class XmlExportController extends SimpleControllerBase
 {
-    use JsonTrait;
-
     /**
      * @throws SessionTimeout
      * @throws SPException
@@ -73,71 +73,60 @@ final class XmlExportController extends SimpleControllerBase
     }
 
     /**
-     * @return bool
-     * @throws SPException
+     * @return ActionResponse
+     * @throws ServiceException
+     * @throws ImportException
+     * @throws FileException
      */
-    public function xmlExportAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function xmlExportAction(): ActionResponse
     {
         $exportPassword = $this->request->analyzeEncrypted('exportPwd');
         $exportPasswordR = $this->request->analyzeEncrypted('exportPwdR');
 
         if (!empty($exportPassword) && $exportPassword !== $exportPasswordR) {
-            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, __u('Passwords do not match'));
+            return ActionResponse::error(__u('Passwords do not match'));
         }
 
-        try {
-            $this->eventDispatcher->notify(
-                'run.export.start',
-                new Event($this, EventMessage::build()->addDescription(__u('sysPass XML export')))
-            );
+        $this->eventDispatcher->notify(
+            'run.export.start',
+            new Event($this, EventMessage::build(__u('sysPass XML export')))
+        );
 
-            Session::close();
+        Session::close();
 
-            $file = $this->xmlExportService->export(
-                new DirectoryHandler($this->pathsContext[Path::BACKUP]),
-                $exportPassword
-            );
+        $file = $this->xmlExportService->export(
+            new DirectoryHandler($this->pathsContext[Path::BACKUP]),
+            $exportPassword
+        );
 
-            $this->eventDispatcher->notify(
-                'run.export.end',
-                new Event($this, EventMessage::build()->addDescription(__u('Export process finished')))
-            );
+        $this->eventDispatcher->notify(
+            'run.export.end',
+            new Event($this, EventMessage::build(__u('Export process finished')))
+        );
 
-            if (!empty($exportPassword)) {
-                $verifyResult =
-                    $this->xmlVerifyService->verify($file, $exportPassword);
-            } else {
-                $verifyResult = $this->xmlVerifyService->verify($file);
-            }
+        $verifyResult = $this->xmlVerifyService->verify($file, $exportPassword);
 
-            $nodes = $verifyResult->getNodes();
+        $nodes = $verifyResult->getNodes();
 
-            $this->eventDispatcher->notify(
-                'run.export.verify',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Verification of exported data finished'))
-                        ->addDetail(__u('Version'), $verifyResult->getVersion())
-                        ->addDetail(__u('Encrypted'), $verifyResult->isEncrypted() ? __u('Yes') : __u('No'))
-                        ->addDetail(__u('Accounts'), $nodes['Account'])
-                        ->addDetail(__u('Clients'), $nodes['Client'])
-                        ->addDetail(__u('Categories'), $nodes['Category'])
-                        ->addDetail(__u('Tags'), $nodes['Tag'])
-                )
-            );
+        $this->eventDispatcher->notify(
+            'run.export.verify',
+            new Event(
+                $this,
+                EventMessage::build(__u('Verification of exported data finished'))
+                            ->addDetail(__u('Version'), $verifyResult->getVersion())
+                            ->addDetail(__u('Encrypted'), $verifyResult->isEncrypted() ? __u('Yes') : __u('No'))
+                            ->addDetail(__u('Accounts'), $nodes['Account'])
+                            ->addDetail(__u('Clients'), $nodes['Client'])
+                            ->addDetail(__u('Categories'), $nodes['Category'])
+                            ->addDetail(__u('Tags'), $nodes['Tag'])
+            )
+        );
 
-            // Create the XML archive after verifying the export integrity
-            $archive = new ArchiveHandler($file, $this->extensionChecker);
-            $archive->compressFile($file);
+        // Create the XML archive after verifying the export integrity
+        $archive = new ArchiveHandler($file, $this->extensionChecker);
+        $archive->compressFile($file);
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Export process finished'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
-        }
+        return ActionResponse::ok(__u('Export process finished'));
     }
 }

@@ -30,6 +30,8 @@ use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Providers\Image;
+use SP\Domain\Export\Ports\XmlVerifyService;
+use SP\Domain\Export\Services\XmlVerify;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Infrastructure\Common\Repositories\SimpleRepository;
 use SP\Infrastructure\File\FileSystem;
@@ -88,7 +90,11 @@ final class DomainDefinitions
                     'tempPath',
                     factory(static fn(PathsContext $p) => $p[Path::TMP])
                 ),
-            Repository::class => autowire(SimpleRepository::class)
+            Repository::class => autowire(SimpleRepository::class),
+            XmlVerifyService::class => autowire(XmlVerify::class)->constructorParameter(
+                'schema',
+                factory(static fn(PathsContext $p) => $p[Path::XML_SCHEMA])
+            )
         ];
 
         foreach (self::DOMAINS as $domain) {

@@ -80,7 +80,9 @@ final class XmlVerify extends Service implements XmlVerifyService
 
         self::checkVersion($version);
 
-        if (!self::checkXmlHash($self->document, $password ?? $self->config->getConfigData()->getPasswordSalt())) {
+        $key = $password ?: sha1($self->config->getConfigData()->getPasswordSalt());
+
+        if (!self::checkXmlHash($self->document, $key)) {
             throw ServiceException::error(__u('Error while checking integrity hash'));
         }
 

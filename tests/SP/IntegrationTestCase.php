@@ -66,7 +66,6 @@ use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
-use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -252,10 +251,16 @@ abstract class IntegrationTestCase extends TestCase
      */
     protected function getUserDataDto(): UserDto
     {
-        $user = UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => false, 'isAdminAcc' => false]);
+        $user = UserDataGenerator::factory()->buildUserData();
 
-        return UserDto::fromModel($user, User::class)
-                      ->mutate(['preferences', $user->hydrate(UserPreferences::class)]);
+        $properties = [
+            'isAdminApp' => false,
+            'isAdminAcc' => false,
+            'userGroupName' => self::$faker->colorName(),
+            'preferences' => $user->hydrate(UserPreferences::class)
+        ];
+
+        return UserDto::fromModel($user)->mutate($properties);
     }
 
     /**

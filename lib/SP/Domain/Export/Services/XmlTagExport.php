@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -31,6 +32,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Export\Ports\XmlTagExportService;
 use SP\Domain\Tag\Ports\TagService;
 
 use function SP\__u;
@@ -38,10 +40,10 @@ use function SP\__u;
 /**
  * Class XmlTagExport
  */
-final class XmlTagExport extends XmlExportEntityBase
+final class XmlTagExport extends XmlExportEntityBase implements XmlTagExportService
 {
     public function __construct(
-        Application                          $application,
+        Application $application,
         private readonly TagService $tagService
     ) {
         parent::__construct($application);

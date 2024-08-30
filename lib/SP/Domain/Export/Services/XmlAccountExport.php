@@ -34,13 +34,14 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\AccountToTagService;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Export\Ports\XmlAccountExportService;
 
 use function SP\__u;
 
 /**
  * Class XmlAccountExport
  */
-final class XmlAccountExport extends XmlExportEntityBase
+final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountExportService
 {
 
     public function __construct(

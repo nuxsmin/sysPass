@@ -181,19 +181,26 @@ final class XmlExport extends Service implements XmlExportService
         try {
             $userDto = $this->context->getUserData();
 
+            $nodeUser = $this->document->createElement(
+                'User',
+                $this->document->createTextNode($userDto->login)->nodeValue
+            );
+            $nodeUser->setAttribute('id', (string)$userDto->id);
+
+            $nodeUserGroup = $this->document->createElement(
+                'Group',
+                $this->document->createTextNode($userDto->userGroupName)->nodeValue
+            );
+            $nodeUserGroup->setAttribute('id', (string)$userDto->userGroupId);
+
+
             $nodeMeta = $this->document->createElement('Meta');
             $nodeMeta->append(
                 $this->document->createElement('Generator', 'sysPass'),
                 $this->document->createElement('Version', Version::getVersionStringNormalized()),
                 $this->document->createElement('Time', (string)time()),
-                $this->document->createElement(
-                    'User',
-                    $this->document->createTextNode($userDto->login)->nodeValue
-                ),
-                $this->document->createElement(
-                    'Group',
-                    $this->document->createTextNode($userDto->userGroupName)->nodeValue
-                )
+                $nodeUser,
+                $nodeUserGroup
             );
 
             $this->document->documentElement->appendChild($nodeMeta);

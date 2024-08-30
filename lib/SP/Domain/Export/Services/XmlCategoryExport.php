@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -32,13 +33,14 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Export\Ports\XmlCategoryExportService;
 
 use function SP\__u;
 
 /**
  * Class XmlCategoryExport
  */
-final class XmlCategoryExport extends XmlExportEntityBase
+final class XmlCategoryExport extends XmlExportEntityBase implements XmlCategoryExportService
 {
     public function __construct(
         Application                      $application,

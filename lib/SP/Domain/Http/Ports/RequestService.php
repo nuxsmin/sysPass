@@ -51,7 +51,7 @@ interface RequestService
     /**
      * Analizar un valor encriptado y devolverlo desencriptado
      */
-    public function analyzeEncrypted(string $param): string;
+    public function analyzeEncrypted(string $param): ?string;
 
     public function analyzeString(string $param, ?string $default = null): ?string;
 
