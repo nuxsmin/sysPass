@@ -28,6 +28,7 @@ namespace SP\Tests\Core\Definitions;
 
 use DI\ContainerBuilder;
 use Exception;
+use Klein\Request;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Application;
@@ -70,32 +71,14 @@ class DefinitionsTest extends TestCase
         $configData->method('getPasswordSalt')->willReturn('a_salt');
 
         $requestService = $this->createStub(RequestService::class);
-        $requestService->method('analyzeString')
-                       ->willReturnMap(
-                           [
-                               ['sitelang', 'a_lang'],
-                               ['adminlogin', 'a_login'],
-                               ['dbuser', 'a_user'],
-                               ['dbname', 'a_name'],
-                               ['dbhost', 'a_host'],
-                           ]
-                       );
-        $requestService->method('analyzeEncrypted')
-                       ->willReturnMap(
-                           [
-                               ['adminpass', 'a_password'],
-                               ['masterpassword', 'a_password'],
-                           ]
-                       );
-        $requestService->method('analyzeBool')
-                       ->willReturnMap(
-                           [
-                               ['hostingmode', false]
-                           ]
-                       );
+        $requestService->method('analyzeString')->willReturnArgument(0);
+        $requestService->method('analyzeEncrypted')->willReturnArgument(0);
+        $requestService->method('analyzeBool')->willReturnArgument(1);
+        $requestService->method('getRequest')->willReturn(new Request());
 
         $mockedDefinitions = [
             ConfigDataInterface::class => $configData,
+            RequestService::class => $requestService,
             LdapConnectionInterface::class => $this->createStub(LdapConnectionInterface::class),
             'backup.dbArchiveHandler' => $this->createStub(ArchiveHandler::class),
             'backup.appArchiveHandler' => $this->createStub(ArchiveHandler::class)

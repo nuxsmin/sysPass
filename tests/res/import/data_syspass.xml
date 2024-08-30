@@ -29,7 +29,9 @@
         <Time>1531870108</Time>
         <User id="1">admin</User>
         <Group id="1">admin</Group>
-        <Hash sign="3e65f34c33deb68d8735cfb6c6bb14380b52dddc96ead77a60c81f6a676c74a8">da39a3ee5e6b4b0d3255bfef95601890afd80709</Hash>
+        <Hash sign="757a6ae3009a60cb9a3dd879880ea196a1799c73c9fcea51bd543430bd7a82ab">
+            da39a3ee5e6b4b0d3255bfef95601890afd80709
+        </Hash>
     </Meta>
     <Categories>
         <Category id="4">
