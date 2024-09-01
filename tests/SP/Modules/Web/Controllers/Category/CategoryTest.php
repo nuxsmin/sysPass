@@ -32,9 +32,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Category\Models\Category;
-use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\File\FileException;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\CategoryGenerator;
 use SP\Tests\IntegrationTestCase;
@@ -46,8 +44,6 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class CategoryTest extends IntegrationTestCase
 {
-    private array $definitions;
-
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -58,7 +54,6 @@ class CategoryTest extends IntegrationTestCase
     public function create()
     {
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'category/create'])
         );
 
@@ -74,7 +69,6 @@ class CategoryTest extends IntegrationTestCase
     public function deleteMultiple()
     {
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'category/delete', 'items' => [100, 200, 300]])
         );
 
@@ -92,7 +86,6 @@ class CategoryTest extends IntegrationTestCase
     public function deleteSingle()
     {
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'category/delete/100'])
         );
 
@@ -116,7 +109,6 @@ class CategoryTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'category/edit/100'])
         );
 
@@ -137,7 +129,6 @@ class CategoryTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('post', 'index.php', ['r' => 'category/saveCreate'], $data)
         );
 
@@ -160,7 +151,6 @@ class CategoryTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('post', 'index.php', ['r' => 'category/saveEdit/100'], $data)
         );
 
@@ -192,7 +182,6 @@ class CategoryTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'category/search', 'search' => 'test'])
         );
 
@@ -214,22 +203,10 @@ class CategoryTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'category/view/100'])
         );
 
         $this->runApp($container);
-    }
-
-    /**
-     * @throws FileException
-     * @throws InvalidClassException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->definitions = $this->getModuleDefinitions();
     }
 
     /**

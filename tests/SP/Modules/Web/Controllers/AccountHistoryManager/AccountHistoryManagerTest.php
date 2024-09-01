@@ -35,10 +35,8 @@ use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Config\Models\Config;
-use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\File\FileException;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\IntegrationTestCase;
@@ -50,8 +48,6 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class AccountHistoryManagerTest extends IntegrationTestCase
 {
-    private array $definitions;
-
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -66,7 +62,6 @@ class AccountHistoryManagerTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/delete/100'])
         );
 
@@ -89,7 +84,6 @@ class AccountHistoryManagerTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest(
                 'post',
                 'index.php',
@@ -138,7 +132,6 @@ class AccountHistoryManagerTest extends IntegrationTestCase
         };
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/restore/100'])
         );
 
@@ -182,7 +175,6 @@ class AccountHistoryManagerTest extends IntegrationTestCase
         };
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/restore/100'])
         );
 
@@ -214,22 +206,10 @@ class AccountHistoryManagerTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/search'])
         );
 
         $this->runApp($container);
-    }
-
-    /**
-     * @throws FileException
-     * @throws InvalidClassException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->definitions = $this->getModuleDefinitions();
     }
 
     /**

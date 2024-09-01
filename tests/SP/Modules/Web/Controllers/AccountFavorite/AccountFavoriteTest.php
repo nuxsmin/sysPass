@@ -30,8 +30,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Infrastructure\File\FileException;
 use SP\Tests\IntegrationTestCase;
 
 /**
@@ -41,18 +39,13 @@ use SP\Tests\IntegrationTestCase;
 class AccountFavoriteTest extends IntegrationTestCase
 {
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     * @throws FileException
-     * @throws InvalidClassException
      * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
      */
     public function testMarkAction()
     {
-        $definitions = $this->getModuleDefinitions();
-
         $container = $this->buildContainer(
-            $definitions,
             $this->buildRequest('post', 'index.php', ['r' => 'accountFavorite/mark/100'])
         );
 
@@ -62,18 +55,13 @@ class AccountFavoriteTest extends IntegrationTestCase
     }
 
     /**
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     * @throws FileException
-     * @throws InvalidClassException
      * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
      */
     public function testUnmarkAction()
     {
-        $definitions = $this->getModuleDefinitions();
-
         $container = $this->buildContainer(
-            $definitions,
             $this->buildRequest('post', 'index.php', ['r' => 'accountFavorite/unmark/100'])
         );
 

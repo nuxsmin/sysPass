@@ -38,13 +38,11 @@ use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Config\Models\Config;
 use SP\Domain\Config\Ports\ConfigService;
-use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\File\FileException;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\CategoryGenerator;
@@ -52,6 +50,7 @@ use SP\Tests\Generators\ClientGenerator;
 use SP\Tests\Generators\TagGenerator;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserGroupGenerator;
+use SP\Tests\InjectConfigParam;
 use SP\Tests\IntegrationTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -61,8 +60,6 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class AccountManagerTest extends IntegrationTestCase
 {
-    private array $definitions;
-
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -98,7 +95,6 @@ class AccountManagerTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('post', 'index.php', ['r' => 'accountManager/bulkEdit'], ['items' => [100, 200, 300]])
         );
 
@@ -111,6 +107,7 @@ class AccountManagerTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[InjectConfigParam]
     public function deleteSingle()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -125,13 +122,7 @@ class AccountManagerTest extends IntegrationTestCase
             new QueryResult([$accountDataGenerator->buildAccount()])
         );
 
-        $configService = self::createStub(ConfigService::class);
-        $configService->method('getByParam')->willReturnArgument(0);
-
-        $this->definitions[ConfigService::class] = $configService;
-
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountManager/delete/100'])
         );
 
@@ -172,7 +163,6 @@ class AccountManagerTest extends IntegrationTestCase
         };
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('post', 'index.php', ['r' => 'accountManager/delete'], ['items' => [100, 200, 300]])
         );
 
@@ -222,7 +212,6 @@ class AccountManagerTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest(
                 'post',
                 'index.php',
@@ -259,22 +248,10 @@ class AccountManagerTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountManager/search', 'search' => 'test'])
         );
 
         $this->runApp($container);
-    }
-
-    /**
-     * @throws InvalidClassException
-     * @throws FileException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->definitions = $this->getModuleDefinitions();
     }
 
     private function outputCheckerBulkEdit(string $output): void

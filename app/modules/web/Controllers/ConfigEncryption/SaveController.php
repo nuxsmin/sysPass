@@ -24,29 +24,30 @@
 
 namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
-
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Crypt\Services\MasterPass;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Task\Ports\TaskInterface;
-use SP\Domain\Task\Services\Task;
-use SP\Domain\Task\Services\TaskFactory;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\File\FileException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class SaveController
@@ -55,28 +56,25 @@ final class SaveController extends SimpleControllerBase
 {
     use JsonTrait;
 
-    private MasterPassService $masterPassService;
-    private ConfigService     $configService;
-
     public function __construct(
-        Application   $application,
-        SimpleControllerHelper $simpleControllerHelper,
-        MasterPassService $masterPassService,
-        ConfigService $configService
+        Application                        $application,
+        SimpleControllerHelper             $simpleControllerHelper,
+        private readonly MasterPassService $masterPassService,
+        private readonly ConfigService     $configService
     ) {
         parent::__construct($application, $simpleControllerHelper);
-
-        $this->masterPassService = $masterPassService;
-        $this->configService = $configService;
     }
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      * @throws NoSuchItemException
      * @throws ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws Exception
      */
-    public function saveAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveAction(): ActionResponse
     {
         $currentMasterPass = $this->request->analyzeEncrypted('current_masterpass');
         $newMasterPass = $this->request->analyzeEncrypted('new_masterpass');
@@ -85,134 +83,71 @@ final class SaveController extends SimpleControllerBase
         $noAccountPassChange = $this->request->analyzeBool('no_account_change', false);
 
 
-        if (!$this->masterPassService->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_SUCCESS_STICKY,
-                __u('Master password updated'),
-                [__u('Please, restart the session for update it')]
-            );
+        if (!$this->masterPassService->checkUserUpdateMPass($this->session->getUserData()->lastUpdateMPass)) {
+            return ActionResponse::ok(__u('Master password updated'), __u('Please, restart the session for update it'));
         }
 
         if (empty($newMasterPass) || empty($currentMasterPass)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('Master password not entered')
-            );
+            return ActionResponse::error(__u('Master password not entered'));
         }
 
         if ($confirmPassChange === false) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('The password update must be confirmed')
-            );
+            return ActionResponse::ok(__u('The password update must be confirmed'));
         }
 
         if ($newMasterPass === $currentMasterPass) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('Passwords are the same')
-            );
+            return ActionResponse::ok(__u('Passwords are the same'));
         }
 
         if ($newMasterPass !== $newMasterPassR) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('Master passwords do not match')
-            );
+            return ActionResponse::ok(__u('Master passwords do not match'));
         }
 
         if (!$this->masterPassService->checkMasterPassword($currentMasterPass)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('The current master password does not match')
-            );
+            return ActionResponse::ok(__u('The current master password does not match'));
         }
 
         if (!$this->config->getConfigData()->isMaintenance()) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_WARNING,
+            return ActionResponse::warning(
                 __u('Maintenance mode not enabled'),
-                [__u('Please, enable it to avoid unwanted behavior from other sessions')]
+                __u('Please, enable it to avoid unwanted behavior from other sessions')
             );
         }
 
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_WARNING,
-                __u('Ey, this is a DEMO!!')
-            );
+            return ActionResponse::warning(__u('Ey, this is a DEMO!!'));
         }
 
         if (!$noAccountPassChange) {
-            try {
-                $request = new UpdateMasterPassRequest(
-                    $currentMasterPass,
-                    $newMasterPass,
-                    $this->configService->getByParam(MasterPass::PARAM_MASTER_PASS_HASH),
-                );
+            $request = new UpdateMasterPassRequest(
+                $currentMasterPass,
+                $newMasterPass,
+                $this->configService->getByParam(MasterPass::PARAM_MASTER_PASS_HASH),
+            );
 
-                $this->eventDispatcher->notify('update.masterPassword.start', new Event($this));
+            $this->eventDispatcher->notify('update.masterPassword.start', new Event($this));
 
-                $this->masterPassService->changeMasterPassword($request);
+            $this->masterPassService->changeMasterPassword($request);
 
-                $this->eventDispatcher->notify('update.masterPassword.end', new Event($this));
-            } catch (Exception $e) {
-                processException($e);
-
-                $this->eventDispatcher->notify('exception', new Event($e));
-
-                return $this->returnJsonResponseException($e);
-            }
+            $this->eventDispatcher->notify('update.masterPassword.end', new Event($this));
         } else {
-            try {
-                $this->eventDispatcher->notify('update.masterPassword.hash', new Event($this));
+            $this->eventDispatcher->notify('update.masterPassword.hash', new Event($this));
 
-                $this->masterPassService->updateConfig(Hash::hashKey($newMasterPass));
-            } catch (Exception $e) {
-                processException($e);
-
-                $this->eventDispatcher->notify('exception', new Event($e));
-
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('Error while saving the Master Password\'s hash')
-                );
-            }
+            $this->masterPassService->updateConfig(Hash::hashKey($newMasterPass));
         }
 
-        return $this->returnJsonResponse(
-            JsonMessage::JSON_SUCCESS_STICKY,
-            __u('Master password updated'),
-            [__u('Please, restart the session to update it')]
-        );
+        return ActionResponse::ok(__u('Master password updated'), __u('Please, restart the session to update it'));
     }
 
     /**
      * @return void
-     * @throws JsonException
      * @throws SessionTimeout
+     * @throws UnauthorizedPageException
+     * @throws SPException
      */
     protected function initialize(): void
     {
-        try {
-            $this->checks();
-            $this->checkAccess(AclActionsInterface::CONFIG_CRYPT);
-        } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            $this->returnJsonResponseException($e);
-        }
-    }
-
-    /**
-     * @throws FileException
-     */
-    private function getTask(): ?TaskInterface
-    {
-        $taskId = $this->request->analyzeString('taskId');
-
-        return $taskId !== null
-            ? TaskFactory::register(new Task(__FUNCTION__, $taskId))
-            : null;
+        $this->checks();
+        $this->checkAccess(AclActionsInterface::CONFIG_CRYPT);
     }
 }

@@ -24,108 +24,81 @@
 
 namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
-use Exception;
-use JsonException;
+use PHPMailer\PHPMailer\Exception;
 use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
+use function SP\__u;
+
 /**
- * Class ConfigEncryptionController
- *
- * @package SP\Modules\Web\Controllers
+ * Class SaveTempController
  */
 final class SaveTempController extends SimpleControllerBase
 {
-    use JsonTrait;
-
-    private TemporaryMasterPassService $temporaryMasterPassService;
 
     public function __construct(
-        Application $application,
-        SimpleControllerHelper $simpleControllerHelper,
-        TemporaryMasterPassService $temporaryMasterPassService
+        Application                                 $application,
+        SimpleControllerHelper                      $simpleControllerHelper,
+        private readonly TemporaryMasterPassService $temporaryMasterPassService
     ) {
         parent::__construct($application, $simpleControllerHelper);
-
-        $this->temporaryMasterPassService = $temporaryMasterPassService;
     }
 
     /**
      * Create a temporary master pass
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
+     * @throws Exception
+     * @throws ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
      */
-    public function saveTempAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveTempAction(): ActionResponse
     {
-        try {
-            $key =
-                $this->temporaryMasterPassService->create(
-                    $this->request->analyzeInt('temporary_masterpass_maxtime', 3600)
-                );
+        $key =
+            $this->temporaryMasterPassService->create(
+                $this->request->analyzeInt('temporary_masterpass_maxtime', 3600)
+            );
 
-            $groupId = $this->request->analyzeInt('temporary_masterpass_group', 0);
-            $sendEmail = $this->configData->isMailEnabled()
-                         && $this->request->analyzeBool('temporary_masterpass_email');
+        $groupId = $this->request->analyzeInt('temporary_masterpass_group', 0);
+        $sendEmail = $this->configData->isMailEnabled()
+                     && $this->request->analyzeBool('temporary_masterpass_email');
 
-            if ($sendEmail) {
-                try {
-                    if ($groupId > 0) {
-                        $this->temporaryMasterPassService->sendByEmailForGroup($groupId, $key);
-                    } else {
-                        $this->temporaryMasterPassService->sendByEmailForAllUsers($key);
-                    }
-
-                    return $this->returnJsonResponse(
-                        JsonMessage::JSON_SUCCESS,
-                        __u('Temporary password generated'),
-                        [__u('Email sent')]
-                    );
-                } catch (Exception $e) {
-                    processException($e);
-
-                    $this->eventDispatcher->notify('exception', new Event($e));
-
-                    return $this->returnJsonResponse(
-                        JsonMessage::JSON_WARNING,
-                        __u('Temporary password generated'),
-                        [__u('Error while sending the email')]
-                    );
-                }
+        if ($sendEmail) {
+            if ($groupId > 0) {
+                $this->temporaryMasterPassService->sendByEmailForGroup($groupId, $key);
+            } else {
+                $this->temporaryMasterPassService->sendByEmailForAllUsers($key);
             }
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Temporary password generated'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::ok(__u('Temporary password generated'), __u('Email sent'));
         }
+
+        return ActionResponse::ok(__u('Temporary password generated'));
     }
 
     /**
      * @return void
-     * @throws JsonException
      * @throws SessionTimeout
+     * @throws UnauthorizedPageException
+     * @throws SPException
      */
     protected function initialize(): void
     {
-        try {
-            $this->checks();
-            $this->checkAccess(AclActionsInterface::CONFIG_CRYPT);
-        } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            $this->returnJsonResponseException($e);
-        }
+        $this->checks();
+        $this->checkAccess(AclActionsInterface::CONFIG_CRYPT);
     }
 }

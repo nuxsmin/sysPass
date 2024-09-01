@@ -31,8 +31,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Infrastructure\File\FileException;
 use SP\Tests\IntegrationTestCase;
 
 /**
@@ -46,8 +44,6 @@ class ConfigAccountControllerTest extends IntegrationTestCase
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
-     * @throws InvalidClassException
-     * @throws FileException
      */
     #[Test]
     public function save()
@@ -71,7 +67,6 @@ class ConfigAccountControllerTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->getModuleDefinitions(),
             $this->buildRequest('post', 'index.php', ['r' => 'configAccount/save'], $data)
         );
 

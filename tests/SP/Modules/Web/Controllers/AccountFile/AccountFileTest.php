@@ -34,10 +34,8 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\File;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\File\FileException;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\FileDataGenerator;
 use SP\Tests\IntegrationTestCase;
@@ -49,8 +47,6 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class AccountFileTest extends IntegrationTestCase
 {
-    private array $moduleDefinitions;
-
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -60,7 +56,6 @@ class AccountFileTest extends IntegrationTestCase
     public function deleteSingleFile()
     {
         $container = $this->buildContainer(
-            $this->moduleDefinitions,
             $this->buildRequest('post', 'index.php', ['r' => 'accountFile/delete/100'])
         );
 
@@ -87,7 +82,6 @@ class AccountFileTest extends IntegrationTestCase
         };
 
         $container = $this->buildContainer(
-            $this->moduleDefinitions,
             $this->buildRequest('post', 'index.php', ['r' => 'accountFile/delete'], ['items' => [100, 200, 300]])
         );
 
@@ -115,7 +109,6 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->moduleDefinitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountFile/download/100'])
         );
 
@@ -147,7 +140,6 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->moduleDefinitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountFile/list/100'])
         );
 
@@ -178,7 +170,6 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->moduleDefinitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountFile/search'])
         );
 
@@ -209,7 +200,6 @@ class AccountFileTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->moduleDefinitions,
             $this->buildRequest('post', 'index.php', ['r' => 'accountFile/upload/100'], [], $files)
         );
 
@@ -234,7 +224,6 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->moduleDefinitions,
             $this->buildRequest('get', 'index.php', ['r' => 'accountFile/view/100'])
         );
 
@@ -249,17 +238,6 @@ class AccountFileTest extends IntegrationTestCase
         $configData->method('getFilesAllowedSize')->willReturn(1000);
 
         return $configData;
-    }
-
-    /**
-     * @throws FileException
-     * @throws InvalidClassException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->moduleDefinitions = $this->getModuleDefinitions();
     }
 
     /**

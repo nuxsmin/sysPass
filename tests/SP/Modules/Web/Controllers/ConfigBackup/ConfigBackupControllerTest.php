@@ -33,8 +33,6 @@ use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Infrastructure\File\FileException;
 use SP\Tests\IntegrationTestCase;
 
 /**
@@ -43,8 +41,6 @@ use SP\Tests\IntegrationTestCase;
 #[Group('integration')]
 class ConfigBackupControllerTest extends IntegrationTestCase
 {
-    private array $definitions;
-
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -66,7 +62,6 @@ class ConfigBackupControllerTest extends IntegrationTestCase
         file_put_contents($filename, 'test_data_app');
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'configBackup/downloadBackupApp'])
         );
 
@@ -98,7 +93,6 @@ class ConfigBackupControllerTest extends IntegrationTestCase
         file_put_contents($filename, 'test_data_db');
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'configBackup/downloadBackupDb'])
         );
 
@@ -130,7 +124,6 @@ class ConfigBackupControllerTest extends IntegrationTestCase
         file_put_contents($filename, 'test_data_export');
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'configBackup/downloadExport'])
         );
 
@@ -150,7 +143,6 @@ class ConfigBackupControllerTest extends IntegrationTestCase
     public function fileBackup()
     {
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'configBackup/fileBackup'])
         );
 
@@ -168,24 +160,12 @@ class ConfigBackupControllerTest extends IntegrationTestCase
     public function xmlExport()
     {
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'configBackup/xmlExport'])
         );
 
         $this->expectOutputString('{"status":"OK","description":"Export process finished","data":null}');
 
         $this->runApp($container);
-    }
-
-    /**
-     * @throws InvalidClassException
-     * @throws FileException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->definitions = $this->getModuleDefinitions();
     }
 
     protected function getConfigData(): ConfigDataInterface|Stub

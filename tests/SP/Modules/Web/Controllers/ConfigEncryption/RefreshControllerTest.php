@@ -24,69 +24,38 @@
 
 declare(strict_types=1);
 
-namespace SP\Tests\Modules\Web\Controllers\Bootstrap;
+namespace SP\Tests\Modules\Web\Controllers\ConfigEncryption;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Tests\BodyChecker;
+use SP\Tests\InjectVault;
 use SP\Tests\IntegrationTestCase;
 
 /**
- * Class BootstrapTest
+ * Class RefreshControllerTest
  */
 #[Group('integration')]
-class BootstrapTest extends IntegrationTestCase
+#[InjectVault]
+class RefreshControllerTest extends IntegrationTestCase
 {
 
     /**
      * @throws ContainerExceptionInterface
-     * @throws Exception
      * @throws NotFoundExceptionInterface
+     * @throws Exception
      */
     #[Test]
-    #[BodyChecker('getEnvironmentOutputChecker')]
-    public function getEnvironment()
+    public function refresh()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'bootstrap/getEnvironment'])
+            $this->buildRequest('get', 'index.php', ['r' => 'configEncryption/refresh'])
         );
 
         $this->runApp($container);
-    }
 
-    public function getEnvironmentOutputChecker(string $output): void
-    {
-        $json = json_decode($output);
-
-        $properties = [
-            'lang',
-            'locale',
-            'app_root',
-            'max_file_size',
-            'check_updates',
-            'check_notices',
-            'check_notifications',
-            'timezone',
-            'debug',
-            'cookies_enabled',
-            'plugins',
-            'loggedin',
-            'authbasic_autologin',
-            'pki_key',
-            'pki_max_size',
-            'import_allowed_mime',
-            'files_allowed_mime',
-            'session_timeout',
-            'csrf',
-        ];
-
-        self::assertCount(count($properties), (array)$json->data);
-
-        foreach ($properties as $property) {
-            self::assertObjectHasProperty($property, $json->data);
-        }
+        $this->expectOutputString('{"status":"OK","description":"Master password hash updated","data":null}');
     }
 }

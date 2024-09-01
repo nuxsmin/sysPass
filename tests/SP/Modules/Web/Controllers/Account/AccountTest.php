@@ -30,7 +30,6 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Crypt\Crypt;
@@ -44,20 +43,17 @@ use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Models\Simple;
-use SP\Domain\Config\Ports\ConfigService;
-use SP\Domain\Core\Context\SessionContext;
-use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\CryptException;
-use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\File\FileException;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\PublicLinkDataGenerator;
 use SP\Tests\Generators\UserDataGenerator;
+use SP\Tests\InjectConfigParam;
+use SP\Tests\InjectCrypt;
+use SP\Tests\InjectVault;
 use SP\Tests\IntegrationTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -65,10 +61,9 @@ use Symfony\Component\DomCrawler\Crawler;
  * Class AccountTest
  */
 #[Group('integration')]
+#[InjectVault]
 class AccountTest extends IntegrationTestCase
 {
-    private array $definitions;
-
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -76,6 +71,7 @@ class AccountTest extends IntegrationTestCase
      */
     #[Test]
     #[BodyChecker('outputCheckerViewPassHistory')]
+    #[InjectCrypt]
     public function viewPassHistory()
     {
         $this->addDatabaseMapperResolver(
@@ -86,14 +82,8 @@ class AccountTest extends IntegrationTestCase
                                 )
                             ])
         );
-        $crypt = $this->createStub(CryptInterface::class);
-        $crypt->method('decrypt')->willReturn('some_data');
-        $crypt->method('encrypt')->willReturn('some_data');
-
-        $this->definitions[CryptInterface::class] = $crypt;
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest(
                 'get',
                 'index.php',
@@ -116,6 +106,7 @@ class AccountTest extends IntegrationTestCase
      */
     #[Test]
     #[BodyChecker('outputCheckerViewPass')]
+    #[InjectCrypt]
     public function viewPass()
     {
         $this->addDatabaseMapperResolver(
@@ -126,14 +117,8 @@ class AccountTest extends IntegrationTestCase
                                 )
                             ])
         );
-        $crypt = $this->createStub(CryptInterface::class);
-        $crypt->method('decrypt')->willReturn('some_data');
-        $crypt->method('encrypt')->willReturn('some_data');
-
-        $this->definitions[CryptInterface::class] = $crypt;
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest(
                 'get',
                 'index.php',
@@ -179,7 +164,6 @@ class AccountTest extends IntegrationTestCase
         $this->addDatabaseMapperResolver(PublicLink::class, new QueryResult([$publicLink]));
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()])
         );
 
@@ -220,7 +204,6 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'account/viewHistory/id/' . self::$faker->randomNumber(3)])
         );
 
@@ -253,7 +236,6 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'account/view/id/' . self::$faker->randomNumber(3)])
         );
 
@@ -277,7 +259,6 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest(
                 'post',
                 'index.php',
@@ -295,6 +276,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[InjectConfigParam]
     public function saveRequest()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -304,13 +286,7 @@ class AccountTest extends IntegrationTestCase
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );
 
-        $configService = self::createStub(ConfigService::class);
-        $configService->method('getByParam')->willReturnArgument(0);
-
-        $this->definitions[ConfigService::class] = $configService;
-
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest(
                 'post',
                 'index.php',
@@ -332,6 +308,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[InjectConfigParam]
     public function saveEditRestore()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -351,11 +328,6 @@ class AccountTest extends IntegrationTestCase
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );
 
-        $configService = self::createStub(ConfigService::class);
-        $configService->method('getByParam')->willReturnArgument(0);
-
-        $this->definitions[ConfigService::class] = $configService;
-
         $account = $accountDataGenerator->buildAccount();
 
         $paramsPost = [
@@ -367,7 +339,6 @@ class AccountTest extends IntegrationTestCase
         $accountId = self::$faker->randomNumber(3);
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest(
                 'post',
                 'index.php',
@@ -391,6 +362,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[InjectConfigParam]
     public function saveEditPass()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -405,11 +377,6 @@ class AccountTest extends IntegrationTestCase
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );
 
-        $configService = self::createStub(ConfigService::class);
-        $configService->method('getByParam')->willReturnArgument(0);
-
-        $this->definitions[ConfigService::class] = $configService;
-
         $account = $accountDataGenerator->buildAccount();
 
         $paramsPost = [
@@ -420,7 +387,6 @@ class AccountTest extends IntegrationTestCase
         $accountId = self::$faker->randomNumber(3);
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('post', 'index.php', ['r' => 'account/saveEditPass/' . $accountId], $paramsPost)
         );
 
@@ -438,6 +404,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[InjectConfigParam]
     public function saveEdit()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -451,11 +418,6 @@ class AccountTest extends IntegrationTestCase
             AccountView::class,
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );
-
-        $configService = self::createStub(ConfigService::class);
-        $configService->method('getByParam')->willReturnArgument(0);
-
-        $this->definitions[ConfigService::class] = $configService;
 
         $account = $accountDataGenerator->buildAccount();
 
@@ -488,7 +450,6 @@ class AccountTest extends IntegrationTestCase
         $accountId = self::$faker->randomNumber(3);
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest(
                 'post',
                 'index.php',
@@ -511,6 +472,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[InjectConfigParam]
     public function saveDelete()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -525,13 +487,7 @@ class AccountTest extends IntegrationTestCase
             new QueryResult([$accountDataGenerator->buildAccount()])
         );
 
-        $configService = self::createStub(ConfigService::class);
-        $configService->method('getByParam')->willReturnArgument(0);
-
-        $this->definitions[ConfigService::class] = $configService;
-
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('post', 'index.php', ['r' => 'account/saveDelete/1'])
         );
 
@@ -568,7 +524,6 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'account/copy/id/' . self::$faker->randomNumber(3)])
         );
 
@@ -581,6 +536,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[InjectCrypt]
     public function copyPass()
     {
         $this->addDatabaseMapperResolver(
@@ -591,14 +547,8 @@ class AccountTest extends IntegrationTestCase
                                 )
                             ])
         );
-        $crypt = $this->createStub(CryptInterface::class);
-        $crypt->method('decrypt')->willReturn('some_data');
-        $crypt->method('encrypt')->willReturn('some_data');
-
-        $this->definitions[CryptInterface::class] = $crypt;
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'account/copyPass/id/' . self::$faker->randomNumber(3)])
         );
 
@@ -613,6 +563,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[InjectCrypt]
     public function copyPassHistory()
     {
         $this->addDatabaseMapperResolver(
@@ -624,14 +575,7 @@ class AccountTest extends IntegrationTestCase
                             ])
         );
 
-        $crypt = $this->createStub(CryptInterface::class);
-        $crypt->method('decrypt')->willReturn('some_data');
-        $crypt->method('encrypt')->willReturn('some_data');
-
-        $this->definitions[CryptInterface::class] = $crypt;
-
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest(
                 'get',
                 'index.php',
@@ -654,7 +598,6 @@ class AccountTest extends IntegrationTestCase
     public function create()
     {
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'account/create'])
         );
 
@@ -676,7 +619,6 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'account/delete/100'])
         );
 
@@ -698,7 +640,6 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'account/edit/' . self::$faker->randomNumber(3)])
         );
 
@@ -715,7 +656,6 @@ class AccountTest extends IntegrationTestCase
     public function index()
     {
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'account'])
         );
 
@@ -737,7 +677,6 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'account/requestAccess/' . self::$faker->randomNumber(3)])
         );
 
@@ -750,6 +689,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[InjectCrypt]
     public function saveCopy()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -758,12 +698,6 @@ class AccountTest extends IntegrationTestCase
             AccountView::class,
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );
-
-        $crypt = $this->createStub(CryptInterface::class);
-        $crypt->method('decrypt')->willReturn('some_data');
-        $crypt->method('encrypt')->willReturn('some_data');
-
-        $this->definitions[CryptInterface::class] = $crypt;
 
         $account = $accountDataGenerator->buildAccount();
 
@@ -794,7 +728,6 @@ class AccountTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('post', 'index.php', ['r' => 'account/saveCopy'], $paramsPost)
         );
 
@@ -811,6 +744,7 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[InjectCrypt]
     public function saveCreate()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -819,12 +753,6 @@ class AccountTest extends IntegrationTestCase
             AccountView::class,
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );
-
-        $crypt = $this->createStub(CryptInterface::class);
-        $crypt->method('decrypt')->willReturn('some_data');
-        $crypt->method('encrypt')->willReturn('some_data');
-
-        $this->definitions[CryptInterface::class] = $crypt;
 
         $account = $accountDataGenerator->buildAccount();
 
@@ -855,7 +783,6 @@ class AccountTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('post', 'index.php', ['r' => 'account/saveCreate'], $paramsPost)
         );
 
@@ -866,32 +793,10 @@ class AccountTest extends IntegrationTestCase
         );
     }
 
-    /**
-     * @throws FileException
-     * @throws InvalidClassException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->definitions = $this->getModuleDefinitions();
-    }
-
     protected function getUserDataDto(): UserDto
     {
         $userPreferences = UserDataGenerator::factory()->buildUserPreferencesData()->mutate(['topNavbar' => true]);
         return parent::getUserDataDto()->mutate(['preferences' => $userPreferences]);
-    }
-
-    protected function getContext(): SessionContext|Stub
-    {
-        $vault = self::createStub(VaultInterface::class);
-        $vault->method('getData')->willReturn('some_data');
-
-        $context = parent::getContext();
-        $context->method('getVault')->willReturn($vault);
-
-        return $context;
     }
 
     protected function getUserProfile(): ProfileData

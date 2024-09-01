@@ -32,9 +32,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Client\Models\Client;
-use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\File\FileException;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\ClientGenerator;
 use SP\Tests\IntegrationTestCase;
@@ -46,8 +44,6 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class ClientTest extends IntegrationTestCase
 {
-    private array $definitions;
-
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -58,7 +54,6 @@ class ClientTest extends IntegrationTestCase
     public function create()
     {
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'client/create'])
         );
 
@@ -74,7 +69,6 @@ class ClientTest extends IntegrationTestCase
     public function deleteMultiple()
     {
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'client/delete', 'items' => [100, 200, 300]])
         );
 
@@ -92,7 +86,6 @@ class ClientTest extends IntegrationTestCase
     public function deleteSingle()
     {
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'client/delete/100'])
         );
 
@@ -116,7 +109,6 @@ class ClientTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'client/edit/100'])
         );
 
@@ -138,7 +130,6 @@ class ClientTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('post', 'index.php', ['r' => 'client/saveCreate'], $data)
         );
 
@@ -162,7 +153,6 @@ class ClientTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('post', 'index.php', ['r' => 'client/saveEdit/100'], $data)
         );
 
@@ -194,7 +184,6 @@ class ClientTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'client/search', 'search' => 'test'])
         );
 
@@ -216,22 +205,10 @@ class ClientTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->definitions,
             $this->buildRequest('get', 'index.php', ['r' => 'client/view/100'])
         );
 
         $this->runApp($container);
-    }
-
-    /**
-     * @throws FileException
-     * @throws InvalidClassException
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->definitions = $this->getModuleDefinitions();
     }
 
     /**

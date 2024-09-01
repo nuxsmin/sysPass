@@ -39,7 +39,6 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionAttribute;
-use ReflectionException;
 use ReflectionMethod;
 use ReflectionObject;
 use SP\Core\Bootstrap\Path;
@@ -52,12 +51,15 @@ use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Auth\Ports\LdapConnectionInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeContextInterface;
@@ -73,10 +75,8 @@ use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
-use SP\Mvc\View\OutputHandlerInterface;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserProfileDataGenerator;
-use SP\Tests\Stubs\OutputHandlerStub;
 
 use function DI\autowire;
 use function DI\factory;
@@ -87,8 +87,10 @@ use function DI\factory;
 abstract class IntegrationTestCase extends TestCase
 {
     protected static Generator $faker;
+    private static array $definitionsCache;
     protected readonly string $passwordSalt;
-    protected Closure|null    $databaseQueryResolver = null;
+    protected Closure|null $databaseQueryResolver = null;
+    protected array $definitions;
     /**
      * @var array<string, QueryResult> $databaseMapperResolvers
      */
@@ -99,13 +101,39 @@ abstract class IntegrationTestCase extends TestCase
         parent::setUpBeforeClass();
 
         self::$faker = Factory::create();
+        self::$definitionsCache = array_merge(
+            DomainDefinitions::getDefinitions(),
+            CoreDefinitions::getDefinitions(REAL_APP_ROOT, 'web')
+        );
     }
 
     /**
      * @throws Exception
      * @throws \Exception
      */
-    protected function buildContainer(array $definitions = [], Request $request = null): ContainerInterface
+    protected function buildContainer(Request $request): ContainerInterface
+    {
+        $this->definitions[Request::class] = $request;
+
+        $testDefinitions = array_merge($this->definitions, $this->getMockedDefinitions());
+
+        $this->processAttributes(
+            $this->getClassAttributesMap($testDefinitions),
+            $this->getMethodAttributesMap($testDefinitions)
+        );
+
+        $containerBuilder = new ContainerBuilder();
+        $containerBuilder->addDefinitions(self::$definitionsCache, $testDefinitions);
+
+        return $containerBuilder->build();
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     * @throws SPException
+     */
+    private function getMockedDefinitions(): array
     {
         $configData = $this->getConfigData();
 
@@ -122,7 +150,7 @@ abstract class IntegrationTestCase extends TestCase
         $database->method('endTransaction')->willReturn(true);
         $database->method('rollbackTransaction')->willReturn(true);
 
-        $acl = self::createMock(AclInterface::class);
+        $acl = $this->createMock(AclInterface::class);
         $acl->method('checkUserAccess')->willReturn(true);
         $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId) => (string)$actionId);
 
@@ -138,7 +166,7 @@ abstract class IntegrationTestCase extends TestCase
                        return $accountPermission;
                    });
 
-        $mockedDefinitions = [
+        return [
             ConfigFileService::class => $configFileService,
             LdapConnectionInterface::class => self::createStub(LdapConnectionInterface::class),
             'backup.dbArchiveHandler' => self::createStub(ArchiveHandler::class),
@@ -159,44 +187,6 @@ abstract class IntegrationTestCase extends TestCase
             AclInterface::class => $acl,
             AccountAclService::class => $accountAcl,
         ];
-
-        $outputChecker = $this->getOutputChecker();
-
-        if ($outputChecker !== null) {
-            $definitions[OutputHandlerInterface::class] = new OutputHandlerStub($outputChecker->bindTo($this));
-        }
-
-        $bodyChecker = $this->getBodyChecker();
-
-        if ($bodyChecker !== null) {
-            $response = $this->getMockBuilder(Response::class)->onlyMethods(['body'])->getMock();
-            $response->method('body')
-                     ->with(
-                         self::callback(static function (string $output) use ($bodyChecker) {
-                             self::assertNotEmpty($output);
-
-                             $bodyChecker($output);
-
-                             return true;
-                         })
-                     );
-
-            $definitions[Response::class] = $response;
-        }
-
-        if ($request) {
-            $definitions += [Request::class => $request];
-        }
-
-        $containerBuilder = new ContainerBuilder();
-        $containerBuilder->addDefinitions(
-            DomainDefinitions::getDefinitions(),
-            CoreDefinitions::getDefinitions(REAL_APP_ROOT, 'web'),
-            $definitions,
-            $mockedDefinitions
-        );
-
-        return $containerBuilder->build();
     }
 
     /**
@@ -271,44 +261,103 @@ abstract class IntegrationTestCase extends TestCase
         return UserProfileDataGenerator::factory()->buildProfileData();
     }
 
-    /**
-     * @throws ReflectionException
-     */
-    private function getOutputChecker(): ?Closure
+    private function processAttributes(array $classAtrributes, array $methodAttributes): void
     {
-        $reflection = new ReflectionObject($this);
-        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            if ($this->name() === $method->name) {
-                /** @var array<ReflectionAttribute<OutputChecker>> $attributes */
-                $attributes = $method->getAttributes(OutputChecker::class);
+        $object = new ReflectionObject($this);
 
-                if (count($attributes) === 1) {
-                    return (new ReflectionMethod($this, $attributes[0]->newInstance()->target))->getClosure($this);
-                }
-            }
+        if (!empty($classAtrributes)) {
+            $this->invokeAttributes($object, $classAtrributes);
         }
 
-        return null;
+        if (!empty($methodAttributes)) {
+            $methods = array_filter(
+                $object->getMethods(),
+                fn(ReflectionMethod $method) => $method->name === $this->name()
+            );
+
+            foreach ($methods as $method) {
+                $this->invokeAttributes($method, $methodAttributes);
+            }
+        }
+    }
+
+    private function invokeAttributes(ReflectionObject|ReflectionMethod $reflection, array $attributeMap): void
+    {
+        foreach ($reflection->getAttributes() as $attribute) {
+            $callable = $attributeMap[$attribute->getName()] ?? null;
+
+            if (is_callable($callable)) {
+                $callable($attribute);
+            }
+        }
+    }
+
+    private function getClassAttributesMap(array &$definitions): array
+    {
+        return [
+            InjectVault::class => function () use (&$definitions): void {
+                $vault = self::createStub(VaultInterface::class);
+                $vault->method('getData')->willReturn('some_data');
+
+                /** @var Context|Stub $context */
+                $context = $definitions[Context::class];
+                $context->method('getVault')->willReturn($vault);
+            }
+        ];
     }
 
     /**
-     * @throws ReflectionException
+     * @param array $definitions
+     * @return Closure[]
      */
-    private function getBodyChecker(): ?Closure
+    private function getMethodAttributesMap(array &$definitions): array
     {
-        $reflection = new ReflectionObject($this);
-        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            if ($this->name() === $method->name) {
-                /** @var array<ReflectionAttribute<BodyChecker>> $attributes */
-                $attributes = $method->getAttributes(BodyChecker::class);
+        return [
+            BodyChecker::class =>
+                function (ReflectionAttribute $attribute) use (&$definitions): void {
+                    /** @var ReflectionAttribute<BodyChecker> $attribute */
+                    $bodyChecker = (new ReflectionMethod($this, $attribute->newInstance()->target))
+                        ->getClosure($this);
 
-                if (count($attributes) === 1) {
-                    return (new ReflectionMethod($this, $attributes[0]->newInstance()->target))->getClosure($this);
+                    $response = $this->getMockBuilder(Response::class)->onlyMethods(['body'])->getMock();
+                    $response->method('body')
+                             ->with(
+                                 self::callback(static function (string $output) use ($bodyChecker) {
+                                     self::assertNotEmpty($output);
+
+                                     $bodyChecker($output);
+
+                                     return true;
+                                 })
+                             );
+
+                    $definitions[Response::class] = $response;
+                },
+            InjectCrypt::class => function (ReflectionAttribute $attribute) use (&$definitions): void {
+                /** @var ReflectionAttribute<InjectCrypt> $attribute */
+                $value = $attribute->newInstance()->returnValue;
+
+                $crypt = $this->createStub(CryptInterface::class);
+                $crypt->method('decrypt')->willReturn($value);
+                $crypt->method('encrypt')->willReturn($value);
+
+                $definitions[CryptInterface::class] = $crypt;
+            },
+            InjectConfigParam::class => function (ReflectionAttribute $attribute) use (&$definitions): void {
+                /** @var ReflectionAttribute<InjectConfigParam> $attribute */
+                $value = $attribute->newInstance()->returnValue;
+
+                $configService = self::createStub(ConfigService::class);
+
+                if ($value) {
+                    $configService->method('getByParam')->willReturn($value);
+                } else {
+                    $configService->method('getByParam')->willReturnArgument(0);
                 }
-            }
-        }
 
-        return null;
+                $definitions[ConfigService::class] = $configService;
+            }
+        ];
     }
 
     final protected function addDatabaseMapperResolver(string $className, QueryResult $queryResult): void
@@ -345,15 +394,6 @@ abstract class IntegrationTestCase extends TestCase
     }
 
     /**
-     * @param callable $outputChecker
-     * @return OutputHandlerInterface
-     */
-    protected function setupOutputHandler(callable $outputChecker): OutputHandlerInterface
-    {
-        return new OutputHandlerStub($outputChecker(...)->bindTo($this));
-    }
-
-    /**
      * @param ContainerInterface $container
      * @return void
      * @throws ContainerExceptionInterface
@@ -368,15 +408,13 @@ abstract class IntegrationTestCase extends TestCase
      * @throws FileException
      * @throws InvalidClassException
      */
-    protected function getModuleDefinitions(): array
-    {
-        return FileSystem::require(FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'web', 'module.php'));
-    }
-
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->passwordSalt = self::$faker->sha1();
+        $this->definitions = FileSystem::require(
+            FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'web', 'module.php')
+        );
     }
 }

@@ -24,89 +24,74 @@
 
 namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
-
-use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\MasterPassService;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class RefreshController
  */
 final class RefreshController extends SimpleControllerBase
 {
-    use JsonTrait;
-
-    private MasterPassService $masterPassService;
-
     public function __construct(
-        Application $application,
-        SimpleControllerHelper $simpleControllerHelper,
-        MasterPassService $masterPassService
+        Application                        $application,
+        SimpleControllerHelper             $simpleControllerHelper,
+        private readonly MasterPassService $masterPassService
     ) {
         parent::__construct($application, $simpleControllerHelper);
-
-        $this->masterPassService = $masterPassService;
     }
 
     /**
      * Refresh master password hash
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
+     * @throws ConstraintException
+     * @throws CryptException
+     * @throws QueryException
      */
-    public function refreshAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function refreshAction(): ActionResponse
     {
-        try {
-            if ($this->config->getConfigData()->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('Ey, this is a DEMO!!'));
-            }
-
-            $this->masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
-
-            $this->eventDispatcher->notify(
-                'refresh.masterPassword.hash',
-                new Event($this, EventMessage::build()->addDescription(__u('Master password hash updated')))
-            );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Master password hash updated'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('Error while updating the master password hash')
-            );
+        if ($this->config->getConfigData()->isDemoEnabled()) {
+            return ActionResponse::warning(__u('Ey, this is a DEMO!!'));
         }
+
+        $this->masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
+
+        $this->eventDispatcher->notify(
+            'refresh.masterPassword.hash',
+            new Event($this, EventMessage::build()->addDescription(__u('Master password hash updated')))
+        );
+
+        return ActionResponse::ok(__u('Master password hash updated'));
     }
 
     /**
      * @return void
-     * @throws JsonException
      * @throws SessionTimeout
+     * @throws UnauthorizedPageException
+     * @throws SPException
      */
     protected function initialize(): void
     {
-        try {
-            $this->checks();
-            $this->checkAccess(AclActionsInterface::CONFIG_CRYPT);
-        } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            $this->returnJsonResponseException($e);
-        }
+        $this->checks();
+        $this->checkAccess(AclActionsInterface::CONFIG_CRYPT);
     }
 }

@@ -33,9 +33,7 @@ use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\User\Models\ProfileData;
-use SP\Infrastructure\File\FileException;
 use SP\Tests\BodyChecker;
 use SP\Tests\IntegrationTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -47,10 +45,8 @@ use Symfony\Component\DomCrawler\Crawler;
 class IndexControllerTest extends IntegrationTestCase
 {
     /**
-     * @throws Exception
-     * @throws FileException
-     * @throws InvalidClassException
      * @throws ContainerExceptionInterface
+     * @throws Exception
      * @throws NotFoundExceptionInterface
      */
     #[Test]
@@ -58,7 +54,6 @@ class IndexControllerTest extends IntegrationTestCase
     public function index()
     {
         $container = $this->buildContainer(
-            $this->getModuleDefinitions(),
             $this->buildRequest('get', 'index.php', ['r' => 'accessManager/index'])
         );
 
