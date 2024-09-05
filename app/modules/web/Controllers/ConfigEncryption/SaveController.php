@@ -130,13 +130,18 @@ final class SaveController extends SimpleControllerBase
             $this->masterPassService->changeMasterPassword($request);
 
             $this->eventDispatcher->notify('update.masterPassword.end', new Event($this));
+
+            return ActionResponse::ok(__u('Master password updated'), __u('Please, restart the session to update it'));
         } else {
             $this->eventDispatcher->notify('update.masterPassword.hash', new Event($this));
 
             $this->masterPassService->updateConfig(Hash::hashKey($newMasterPass));
-        }
 
-        return ActionResponse::ok(__u('Master password updated'), __u('Please, restart the session to update it'));
+            return ActionResponse::ok(
+                __u('Master password updated'),
+                [__u('No accounts updated, only hash'), __u('Please, restart the session to update it')]
+            );
+        }
     }
 
     /**

@@ -60,9 +60,9 @@ class ConfigEncryptionControllerTest extends IntegrationTestCase
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configEncryption/refresh'])
         );
 
-        IntegrationTestCase::runApp($container);
-
         $this->expectOutputString('{"status":"OK","description":"Master password hash updated","data":null}');
+
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -72,16 +72,16 @@ class ConfigEncryptionControllerTest extends IntegrationTestCase
      */
     #[Test]
     #[InjectConfigParam(['masterPwd' => '$2y$10$6imglyA01feP1AnEmlAgUeQPa7vysHeKQLz0MDA1Zf7iG6ep.7PaC'])]
-    #[TestWith([false], 'Change acoounts encryption')]
+    #[TestWith([false], 'Change accounts encryption')]
     #[TestWith([true], 'Change only hash')]
-    public function save(bool $accountChange)
+    public function save(bool $noAccountChange)
     {
         $data = [
             'current_masterpass' => 'a_password',
             'new_masterpass' => 'a_new_password',
             'new_masterpass_repeat' => 'a_new_password',
             'confirm_masterpass_change' => 'true',
-            'no_account_change' => $accountChange,
+            'no_account_change' => $noAccountChange,
             'isAjax' => 1
         ];
 
@@ -114,11 +114,41 @@ class ConfigEncryptionControllerTest extends IntegrationTestCase
             $definitions
         );
 
-        IntegrationTestCase::runApp($container);
+        if ($noAccountChange) {
+            $this->expectOutputString(
+                '{"status":"OK","description":"Master password updated","data":["No accounts updated, only hash","Please, restart the session to update it"]}'
+            );
+        } else {
+            $this->expectOutputString(
+                '{"status":"OK","description":"Master password updated","data":"Please, restart the session to update it"}'
+            );
+        }
 
-        $this->expectOutputString(
-            '{"status":"OK","description":"Master password updated","data":"Please, restart the session to update it"}'
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
+    #[Test]
+    public function saveTemp()
+    {
+        $data = [
+            'temporary_masterpass_maxtime' => self::$faker->randomNumber(4),
+            'temporary_masterpass_group' => self::$faker->randomNumber(3),
+            'temporary_masterpass_email' => self::$faker->email()
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configEncryption/saveTemp']),
+            $data
         );
+
+        $this->expectOutputString('{"status":"OK","description":"Temporary password generated","data":null}');
+
+        IntegrationTestCase::runApp($container);
     }
 
     protected function getUserDataDto(): UserDto
