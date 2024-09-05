@@ -22,20 +22,28 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-declare(strict_types=1);
+namespace SP\Domain\Core\Ports;
 
-namespace SP\Tests;
-
-use Attribute;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Infrastructure\File\FileException;
 
 /**
- * Class InjectConfigParam
+ * Class AppLock
  */
-#[Attribute(Attribute::TARGET_METHOD)]
-final readonly class InjectConfigParam
+interface AppLockHandler
 {
+    /**
+     * Comprueba si la aplicación está bloqueada
+     *
+     * @throws SPException
+     */
+    public function getLock(): bool|int;
 
-    public function __construct(public ?array $parameterValueMap = null)
-    {
-    }
+    /**
+     * @throws FileException
+     * @throws SPException
+     */
+    public function lock(int $userId, string $subject): void;
+
+    public function unlock(): void;
 }

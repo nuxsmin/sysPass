@@ -37,7 +37,6 @@ use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Config\Models\Config;
-use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
@@ -95,10 +94,15 @@ class AccountManagerTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'accountManager/bulkEdit'], ['items' => [100, 200, 300]])
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'accountManager/bulkEdit'],
+                ['items' => [100, 200, 300]]
+            )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -123,10 +127,10 @@ class AccountManagerTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'accountManager/delete/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountManager/delete/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Account removed","data":null}');
     }
@@ -163,10 +167,15 @@ class AccountManagerTest extends IntegrationTestCase
         };
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'accountManager/delete'], ['items' => [100, 200, 300]])
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'accountManager/delete'],
+                ['items' => [100, 200, 300]]
+            )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Accounts removed","data":null}');
     }
@@ -177,6 +186,7 @@ class AccountManagerTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[InjectConfigParam]
     public function saveBulkEdit()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -190,11 +200,6 @@ class AccountManagerTest extends IntegrationTestCase
             AccountView::class,
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );
-
-        $configService = self::createStub(ConfigService::class);
-        $configService->method('getByParam')->willReturnArgument(0);
-
-        $this->definitions[ConfigService::class] = $configService;
 
         $paramsPost = [
             'itemsId' => '100,200,300',
@@ -212,7 +217,7 @@ class AccountManagerTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->buildRequest(
+            IntegrationTestCase::buildRequest(
                 'post',
                 'index.php',
                 ['r' => 'accountManager/saveBulkEdit'],
@@ -220,7 +225,7 @@ class AccountManagerTest extends IntegrationTestCase
             )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Accounts updated","data":null}');
     }
@@ -248,10 +253,10 @@ class AccountManagerTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'accountManager/search', 'search' => 'test'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountManager/search', 'search' => 'test'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     private function outputCheckerBulkEdit(string $output): void

@@ -64,6 +64,24 @@ use Symfony\Component\DomCrawler\Crawler;
 #[InjectVault]
 class AccountTest extends IntegrationTestCase
 {
+    protected function getUserDataDto(): UserDto
+    {
+        $userPreferences = UserDataGenerator::factory()->buildUserPreferencesData()->mutate(['topNavbar' => true]);
+        return parent::getUserDataDto()->mutate(['preferences' => $userPreferences]);
+    }
+
+    protected function getUserProfile(): ProfileData
+    {
+        return new ProfileData(
+            [
+                'accAdd' => true,
+                'accViewPass' => true,
+                'accViewHistory' => true,
+                'accDelete' => true
+            ]
+        );
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -84,7 +102,7 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest(
+            IntegrationTestCase::buildRequest(
                 'get',
                 'index.php',
                 [
@@ -96,7 +114,7 @@ class AccountTest extends IntegrationTestCase
             )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -119,7 +137,7 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest(
+            IntegrationTestCase::buildRequest(
                 'get',
                 'index.php',
                 [
@@ -131,7 +149,7 @@ class AccountTest extends IntegrationTestCase
             )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -164,10 +182,10 @@ class AccountTest extends IntegrationTestCase
         $this->addDatabaseMapperResolver(PublicLink::class, new QueryResult([$publicLink]));
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -204,10 +222,14 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'account/viewHistory/id/' . self::$faker->randomNumber(3)])
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'account/viewHistory/id/' . self::$faker->randomNumber(3)]
+            )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -236,10 +258,14 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'account/view/id/' . self::$faker->randomNumber(3)])
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'account/view/id/' . self::$faker->randomNumber(3)]
+            )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -259,7 +285,7 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest(
+            IntegrationTestCase::buildRequest(
                 'post',
                 'index.php',
                 ['r' => 'account/search'],
@@ -267,7 +293,7 @@ class AccountTest extends IntegrationTestCase
             )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -287,7 +313,7 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest(
+            IntegrationTestCase::buildRequest(
                 'post',
                 'index.php',
                 ['r' => 'account/saveRequest/100'],
@@ -295,7 +321,7 @@ class AccountTest extends IntegrationTestCase
             )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString(
             '{"status":"OK","description":"Request done","data":{"itemId":100,"nextAction":"1"}}'
@@ -339,7 +365,7 @@ class AccountTest extends IntegrationTestCase
         $accountId = self::$faker->randomNumber(3);
 
         $container = $this->buildContainer(
-            $this->buildRequest(
+            IntegrationTestCase::buildRequest(
                 'post',
                 'index.php',
                 ['r' => sprintf("account/saveEditRestore/%d/%d", $historyId, $accountId)],
@@ -347,7 +373,7 @@ class AccountTest extends IntegrationTestCase
             )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString(
             '{"status":"OK","description":"Account restored","data":{"itemId":'
@@ -387,10 +413,15 @@ class AccountTest extends IntegrationTestCase
         $accountId = self::$faker->randomNumber(3);
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'account/saveEditPass/' . $accountId], $paramsPost)
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'account/saveEditPass/' . $accountId],
+                $paramsPost
+            )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString(
             '{"status":"OK","description":"Password updated","data":{"itemId":' . $accountId .
@@ -450,7 +481,7 @@ class AccountTest extends IntegrationTestCase
         $accountId = self::$faker->randomNumber(3);
 
         $container = $this->buildContainer(
-            $this->buildRequest(
+            IntegrationTestCase::buildRequest(
                 'post',
                 'index.php',
                 ['r' => 'account/saveEdit/' . $accountId],
@@ -458,7 +489,7 @@ class AccountTest extends IntegrationTestCase
             )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString(
             '{"status":"OK","description":"Account updated","data":{"itemId":' . $accountId .
@@ -488,10 +519,10 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'account/saveDelete/1'])
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'account/saveDelete/1'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString(
             '{"status":"OK","description":"Account removed","data":null}'
@@ -524,10 +555,14 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'account/copy/id/' . self::$faker->randomNumber(3)])
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'account/copy/id/' . self::$faker->randomNumber(3)]
+            )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -549,10 +584,14 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'account/copyPass/id/' . self::$faker->randomNumber(3)])
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'account/copyPass/id/' . self::$faker->randomNumber(3)]
+            )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Password copied","data":{"accpass":"some_data"}}');
     }
@@ -576,14 +615,14 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest(
+            IntegrationTestCase::buildRequest(
                 'get',
                 'index.php',
                 ['r' => 'account/copyPassHistory/id/' . self::$faker->randomNumber(3)]
             )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Password copied","data":{"accpass":"some_data"}}');
     }
@@ -598,10 +637,10 @@ class AccountTest extends IntegrationTestCase
     public function create()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'account/create'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/create'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -619,10 +658,10 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'account/delete/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/delete/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -640,10 +679,14 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'account/edit/' . self::$faker->randomNumber(3)])
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'account/edit/' . self::$faker->randomNumber(3)]
+            )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -656,10 +699,10 @@ class AccountTest extends IntegrationTestCase
     public function index()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'account'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -677,10 +720,14 @@ class AccountTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'account/requestAccess/' . self::$faker->randomNumber(3)])
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'account/requestAccess/' . self::$faker->randomNumber(3)]
+            )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -728,10 +775,10 @@ class AccountTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'account/saveCopy'], $paramsPost)
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'account/saveCopy'], $paramsPost)
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString(
             '{"status":"OK","description":"Account created","data":{"itemId":100,"nextAction":"5"}}'
@@ -783,31 +830,13 @@ class AccountTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'account/saveCreate'], $paramsPost)
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'account/saveCreate'], $paramsPost)
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString(
             '{"status":"OK","description":"Account created","data":{"itemId":100,"nextAction":"5"}}'
-        );
-    }
-
-    protected function getUserDataDto(): UserDto
-    {
-        $userPreferences = UserDataGenerator::factory()->buildUserPreferencesData()->mutate(['topNavbar' => true]);
-        return parent::getUserDataDto()->mutate(['preferences' => $userPreferences]);
-    }
-
-    protected function getUserProfile(): ProfileData
-    {
-        return new ProfileData(
-            [
-                'accAdd' => true,
-                'accViewPass' => true,
-                'accViewHistory' => true,
-                'accDelete' => true
-            ]
         );
     }
 

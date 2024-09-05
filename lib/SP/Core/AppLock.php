@@ -26,41 +26,35 @@ declare(strict_types=1);
 
 namespace SP\Core;
 
-use SP\Core\Bootstrap\Path;
-use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
-use SP\Infrastructure\File\FileSystem;
 
 use function SP\logger;
 
 /**
  * Class AppLock
  */
-final readonly class AppLock
+final readonly class AppLock implements AppLockHandler
 {
 
-    private string $lockFile;
-
-    public function __construct(PathsContext $pathsContext)
+    public function __construct(private string $lockFile)
     {
-        $this->lockFile = FileSystem::buildPath($pathsContext[Path::CONFIG], '.lock');
     }
 
     /**
      * Comprueba si la aplicación está bloqueada
      *
-     * @return bool|string
      * @throws SPException
      */
-    public function getLock(): bool|string
+    public function getLock(): bool|int
     {
         try {
             $file = new FileHandler($this->lockFile);
 
-            return Serde::deserializeJson($file->readToString())->userId;
+            return (int)Serde::deserializeJson($file->readToString())->userId;
         } catch (FileException) {
             return false;
         }

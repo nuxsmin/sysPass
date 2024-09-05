@@ -27,8 +27,8 @@ declare(strict_types=1);
 namespace SP\Core;
 
 use Klein\Klein;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Http\Ports\RequestService;
 
 /**
@@ -40,8 +40,8 @@ abstract class HttpModuleBase extends ModuleBase
         Application                       $application,
         ProvidersHelper                   $providersHelper,
         protected readonly RequestService $request,
-        protected readonly Klein   $router,
-        protected readonly AppLock $appLock
+        protected readonly Klein          $router,
+        protected readonly AppLockHandler $appLock
     ) {
         parent::__construct($application, $providersHelper);
     }
@@ -56,13 +56,13 @@ abstract class HttpModuleBase extends ModuleBase
     protected function checkMaintenanceMode(): bool
     {
         if ($this->configData->isMaintenance()) {
-            BootstrapBase::$LOCK = $this->appLock->getLock();
+            $lock = $this->appLock->getLock();
 
             return !$this->request->isAjax()
-                   || !(BootstrapBase::$LOCK !== false
-                        && BootstrapBase::$LOCK->userId > 0
+                   || !($lock !== false
+                        && $lock > 0
                         && $this->context->isLoggedIn()
-                        && BootstrapBase::$LOCK->userId === $this->context->getUserData()->getId());
+                        && $lock === $this->context->getUserData()->id);
         }
 
         return false;

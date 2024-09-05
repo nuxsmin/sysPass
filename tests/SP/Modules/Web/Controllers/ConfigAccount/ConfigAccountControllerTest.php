@@ -67,10 +67,10 @@ class ConfigAccountControllerTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'configAccount/save'], $data)
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configAccount/save'], $data)
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Configuration updated","data":null}');
     }

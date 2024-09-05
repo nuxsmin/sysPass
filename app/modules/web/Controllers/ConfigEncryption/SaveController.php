@@ -92,19 +92,19 @@ final class SaveController extends SimpleControllerBase
         }
 
         if ($confirmPassChange === false) {
-            return ActionResponse::ok(__u('The password update must be confirmed'));
+            return ActionResponse::error(__u('The password update must be confirmed'));
         }
 
         if ($newMasterPass === $currentMasterPass) {
-            return ActionResponse::ok(__u('Passwords are the same'));
+            return ActionResponse::error(__u('Passwords are the same'));
         }
 
         if ($newMasterPass !== $newMasterPassR) {
-            return ActionResponse::ok(__u('Master passwords do not match'));
+            return ActionResponse::error(__u('Master passwords do not match'));
         }
 
         if (!$this->masterPassService->checkMasterPassword($currentMasterPass)) {
-            return ActionResponse::ok(__u('The current master password does not match'));
+            return ActionResponse::error(__u('The current master password does not match'));
         }
 
         if (!$this->config->getConfigData()->isMaintenance()) {

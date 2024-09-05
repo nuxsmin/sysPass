@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
 use JsonException;
 use SP\Core\Application;
-use SP\Core\AppLock;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -37,6 +36,7 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -56,7 +56,7 @@ final class SaveController extends SimpleControllerBase
     public function __construct(
         Application              $application,
         SimpleControllerHelper   $simpleControllerHelper,
-        private readonly AppLock $appLock
+        private readonly AppLockHandler $appLock
     ) {
         parent::__construct($application, $simpleControllerHelper);
     }

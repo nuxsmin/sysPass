@@ -60,7 +60,6 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
-use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
@@ -68,11 +67,9 @@ use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
-use SP\Domain\User\Models\UserPreferences;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\ArchiveHandler;
-use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
 use SP\Tests\Generators\UserDataGenerator;
@@ -87,10 +84,11 @@ use function DI\factory;
 abstract class IntegrationTestCase extends TestCase
 {
     protected static Generator $faker;
-    private static array $definitionsCache;
+    private static array      $definitionsCache;
+    private static string     $moduleFile;
     protected readonly string $passwordSalt;
-    protected Closure|null $databaseQueryResolver = null;
-    protected array $definitions;
+    protected Closure|null    $databaseQueryResolver = null;
+    protected array           $definitions;
     /**
      * @var array<string, QueryResult> $databaseMapperResolvers
      */
@@ -105,17 +103,61 @@ abstract class IntegrationTestCase extends TestCase
             DomainDefinitions::getDefinitions(),
             CoreDefinitions::getDefinitions(REAL_APP_ROOT, 'web')
         );
+        self::$moduleFile = FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'web', 'module.php');
+    }
+
+    protected static function buildRequest(
+        string $method,
+        string $uri,
+        array  $paramsGet = [],
+        array  $paramsPost = [],
+        array  $files = []
+    ): Request {
+        $server = array_merge(
+            $_SERVER,
+            [
+                'REQUEST_METHOD' => strtoupper($method),
+                'REQUEST_URI' => $uri,
+                'HTTP_USER_AGENT' => self::$faker->userAgent(),
+                'HTTP_HOST' => 'localhost'
+                //'QUERY_STRING' => $query
+            ]
+        );
+
+        return new Request(
+            array_merge($_GET, $paramsGet),
+            array_merge($_POST, $paramsPost),
+            $_COOKIE,
+            $server,
+            array_merge($_FILES, $files),
+            null
+        );
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    protected static function runApp(ContainerInterface $container): void
+    {
+        Bootstrap::run($container->get(BootstrapInterface::class), $container->get(ModuleInterface::class));
     }
 
     /**
      * @throws Exception
      * @throws \Exception
      */
-    protected function buildContainer(Request $request): ContainerInterface
+    protected function buildContainer(Request $request, array $definitionsOverride = []): ContainerInterface
     {
-        $this->definitions[Request::class] = $request;
+        $definitionsOverride[Request::class] = $request;
 
-        $testDefinitions = array_merge($this->definitions, $this->getMockedDefinitions());
+        $testDefinitions = array_merge(
+            FileSystem::require(self::$moduleFile),
+            $this->getMockedDefinitions(),
+            $definitionsOverride
+        );
 
         $this->processAttributes(
             $this->getClassAttributesMap($testDefinitions),
@@ -135,7 +177,7 @@ abstract class IntegrationTestCase extends TestCase
      */
     private function getMockedDefinitions(): array
     {
-        $configData = $this->getConfigData();
+        $configData = self::createConfiguredStub(ConfigDataInterface::class, $this->getConfigData());
 
         $configFileService = $this->createStub(ConfigFileService::class);
         $configFileService->method('getConfigData')->willReturn($configData);
@@ -189,18 +231,14 @@ abstract class IntegrationTestCase extends TestCase
         ];
     }
 
-    /**
-     * @throws Exception
-     */
-    protected function getConfigData(): ConfigDataInterface|Stub
+    protected function getConfigData(): array
     {
-        $configData = self::createStub(ConfigDataInterface::class);
-        $configData->method('isInstalled')->willReturn(true);
-        $configData->method('isMaintenance')->willReturn(false);
-        $configData->method('getDbName')->willReturn(self::$faker->colorName());
-        $configData->method('getPasswordSalt')->willReturn($this->passwordSalt);
-
-        return $configData;
+        return [
+            'isInstalled' => true,
+            'isMaintenance' => false,
+            'getDbName' => self::$faker->colorName(),
+            'getPasswordSalt' => $this->passwordSalt
+        ];
     }
 
     protected function getDatabaseReturn(): callable
@@ -241,16 +279,14 @@ abstract class IntegrationTestCase extends TestCase
      */
     protected function getUserDataDto(): UserDto
     {
-        $user = UserDataGenerator::factory()->buildUserData();
-
         $properties = [
             'isAdminApp' => false,
             'isAdminAcc' => false,
-            'userGroupName' => self::$faker->colorName(),
-            'preferences' => $user->hydrate(UserPreferences::class)
+            'userGroupName' => self::$faker->colorName()
         ];
 
-        return UserDto::fromModel($user)->mutate($properties);
+        return UserDto::fromModel(UserDataGenerator::factory()->buildUserData())
+                      ->mutate($properties);
     }
 
     /**
@@ -320,16 +356,17 @@ abstract class IntegrationTestCase extends TestCase
                         ->getClosure($this);
 
                     $response = $this->getMockBuilder(Response::class)->onlyMethods(['body'])->getMock();
-                    $response->method('body')
-                             ->with(
-                                 self::callback(static function (string $output) use ($bodyChecker) {
-                                     self::assertNotEmpty($output);
+                    $response
+                        ->method('body')
+                        ->with(
+                            self::callback(static function (string $output) use ($bodyChecker) {
+                                self::assertNotEmpty($output);
 
-                                     $bodyChecker($output);
+                                $bodyChecker($output);
 
-                                     return true;
-                                 })
-                             );
+                                return true;
+                            })
+                        );
 
                     $definitions[Response::class] = $response;
                 },
@@ -345,14 +382,26 @@ abstract class IntegrationTestCase extends TestCase
             },
             InjectConfigParam::class => function (ReflectionAttribute $attribute) use (&$definitions): void {
                 /** @var ReflectionAttribute<InjectConfigParam> $attribute */
-                $value = $attribute->newInstance()->returnValue;
+                $parameterValueMap = $attribute->newInstance()->parameterValueMap;
 
                 $configService = self::createStub(ConfigService::class);
 
-                if ($value) {
-                    $configService->method('getByParam')->willReturn($value);
+                if (!empty($parameterValueMap)) {
+                    $configService
+                        ->method('getByParam')
+                        ->willReturnCallback(
+                            static function (string $parameter) use ($parameterValueMap): string {
+                                if (array_key_exists($parameter, $parameterValueMap)) {
+                                    return $parameterValueMap[$parameter];
+                                }
+
+                                return self::$faker->colorName();
+                            }
+                        );
                 } else {
-                    $configService->method('getByParam')->willReturnArgument(0);
+                    $configService
+                        ->method('getByParam')
+                        ->willReturnArgument(0);
                 }
 
                 $definitions[ConfigService::class] = $configService;
@@ -365,56 +414,10 @@ abstract class IntegrationTestCase extends TestCase
         $this->databaseMapperResolvers[$className] = $queryResult;
     }
 
-    protected function buildRequest(
-        string $method,
-        string $uri,
-        array  $paramsGet = [],
-        array  $paramsPost = [],
-        array  $files = []
-    ): Request {
-        $server = array_merge(
-            $_SERVER,
-            [
-                'REQUEST_METHOD' => strtoupper($method),
-                'REQUEST_URI' => $uri,
-                'HTTP_USER_AGENT' => self::$faker->userAgent(),
-                'HTTP_HOST' => 'localhost'
-                //'QUERY_STRING' => $query
-            ]
-        );
-
-        return new Request(
-            array_merge($_GET, $paramsGet),
-            array_merge($_POST, $paramsPost),
-            $_COOKIE,
-            $server,
-            array_merge($_FILES, $files),
-            null
-        );
-    }
-
-    /**
-     * @param ContainerInterface $container
-     * @return void
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    protected function runApp(ContainerInterface $container): void
-    {
-        Bootstrap::run($container->get(BootstrapInterface::class), $container->get(ModuleInterface::class));
-    }
-
-    /**
-     * @throws FileException
-     * @throws InvalidClassException
-     */
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->passwordSalt = self::$faker->sha1();
-        $this->definitions = FileSystem::require(
-            FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'web', 'module.php')
-        );
     }
 }

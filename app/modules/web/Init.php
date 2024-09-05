@@ -27,7 +27,6 @@ namespace SP\Modules\Web;
 use Exception;
 use Klein\Klein;
 use SP\Core\Application;
-use SP\Core\AppLock;
 use SP\Core\Context\ContextBase;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\Session;
@@ -47,12 +46,14 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Http\Adapters\Address;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Providers\Uri;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
+use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseUtil;
@@ -133,7 +134,7 @@ final class Init extends HttpModuleBase
         ProvidersHelper                      $providersHelper,
         RequestService                       $request,
         Klein                                $router,
-        AppLock                              $appLock,
+        AppLockHandler $appLock,
         private readonly CsrfHandler         $csrf,
         private readonly LanguageInterface   $language,
         private readonly ItemPresetService   $itemPresetService,
@@ -248,7 +249,9 @@ final class Init extends HttpModuleBase
 
                 // Recargar los permisos del perfil de usuario
                 $this->context->setUserProfile(
-                    $this->userProfileService->getById($this->context->getUserData()->getUserProfileId())->getProfile()
+                    $this->userProfileService
+                        ->getById($this->context->getUserData()->userProfileId)
+                        ->hydrate(ProfileData::class)
                 );
             }
 

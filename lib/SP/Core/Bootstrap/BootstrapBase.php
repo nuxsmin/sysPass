@@ -34,6 +34,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
+use SP\Core\AppLock;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Common\Providers\Environment;
@@ -64,6 +65,9 @@ abstract class BootstrapBase implements BootstrapInterface
     public const CONTEXT_ACTION_NAME = '_actionName';
 
     protected const OOPS_MESSAGE = 'Oops, it looks like this content does not exist...';
+    /**
+     * @deprecated Use {@link AppLock} instead
+     */
     public static mixed $LOCK;
     public static bool  $checkPhpVersion = false;
 

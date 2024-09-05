@@ -54,10 +54,10 @@ class ClientTest extends IntegrationTestCase
     public function create()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'client/create'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'client/create'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -69,10 +69,10 @@ class ClientTest extends IntegrationTestCase
     public function deleteMultiple()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'client/delete', 'items' => [100, 200, 300]])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'client/delete', 'items' => [100, 200, 300]])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Clients deleted","data":null}');
     }
@@ -86,10 +86,10 @@ class ClientTest extends IntegrationTestCase
     public function deleteSingle()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'client/delete/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'client/delete/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Client deleted","data":null}');
     }
@@ -109,10 +109,10 @@ class ClientTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'client/edit/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'client/edit/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -130,10 +130,10 @@ class ClientTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'client/saveCreate'], $data)
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'client/saveCreate'], $data)
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Client added","data":null}');
     }
@@ -153,10 +153,10 @@ class ClientTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'client/saveEdit/100'], $data)
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'client/saveEdit/100'], $data)
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Client updated","data":null}');
     }
@@ -184,10 +184,10 @@ class ClientTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'client/search', 'search' => 'test'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'client/search', 'search' => 'test'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -205,10 +205,10 @@ class ClientTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'client/view/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'client/view/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**

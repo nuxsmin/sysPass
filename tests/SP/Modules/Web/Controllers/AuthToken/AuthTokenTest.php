@@ -54,10 +54,10 @@ class AuthTokenTest extends IntegrationTestCase
     public function create()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'authToken/create'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'authToken/create'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -69,10 +69,14 @@ class AuthTokenTest extends IntegrationTestCase
     public function deleteMultiple()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'authToken/delete', 'items' => [100, 200, 300]])
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'authToken/delete', 'items' => [100, 200, 300]]
+            )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Authorizations deleted","data":null}');
     }
@@ -86,10 +90,10 @@ class AuthTokenTest extends IntegrationTestCase
     public function deleteSingle()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'authToken/delete/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'authToken/delete/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Authorization deleted","data":null}');
     }
@@ -109,10 +113,10 @@ class AuthTokenTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'authToken/edit/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'authToken/edit/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -130,10 +134,10 @@ class AuthTokenTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data)
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data)
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Authorization added","data":null}');
     }
@@ -153,10 +157,10 @@ class AuthTokenTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'authToken/saveEdit/100'], $data)
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveEdit/100'], $data)
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Authorization updated","data":null}');
     }
@@ -184,10 +188,10 @@ class AuthTokenTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'authToken/search', 'search' => 'test'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'authToken/search', 'search' => 'test'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -205,10 +209,10 @@ class AuthTokenTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'authToken/view/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'authToken/view/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**

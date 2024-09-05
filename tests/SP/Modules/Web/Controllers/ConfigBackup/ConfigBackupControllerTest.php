@@ -29,10 +29,8 @@ namespace SP\Tests\Modules\Web\Controllers\ConfigBackup;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Tests\IntegrationTestCase;
 
 /**
@@ -62,12 +60,12 @@ class ConfigBackupControllerTest extends IntegrationTestCase
         file_put_contents($filename, 'test_data_app');
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'configBackup/downloadBackupApp'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configBackup/downloadBackupApp'])
         );
 
         $this->expectOutputString('test_data_app');
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         unlink($filename);
     }
@@ -93,12 +91,12 @@ class ConfigBackupControllerTest extends IntegrationTestCase
         file_put_contents($filename, 'test_data_db');
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'configBackup/downloadBackupDb'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configBackup/downloadBackupDb'])
         );
 
         $this->expectOutputString('test_data_db');
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         unlink($filename);
     }
@@ -124,12 +122,12 @@ class ConfigBackupControllerTest extends IntegrationTestCase
         file_put_contents($filename, 'test_data_export');
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'configBackup/downloadExport'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configBackup/downloadExport'])
         );
 
         $this->expectOutputString('test_data_export');
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         unlink($filename);
     }
@@ -143,12 +141,12 @@ class ConfigBackupControllerTest extends IntegrationTestCase
     public function fileBackup()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'configBackup/fileBackup'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configBackup/fileBackup'])
         );
 
         $this->expectOutputString('{"status":"OK","description":"Backup process finished","data":null}');
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -160,19 +158,19 @@ class ConfigBackupControllerTest extends IntegrationTestCase
     public function xmlExport()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'configBackup/xmlExport'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configBackup/xmlExport'])
         );
 
         $this->expectOutputString('{"status":"OK","description":"Export process finished","data":null}');
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
-    protected function getConfigData(): ConfigDataInterface|Stub
+    protected function getConfigData(): array
     {
         $configData = parent::getConfigData();
-        $configData->method('getBackupHash')->willReturn($this->passwordSalt);
-        $configData->method('getExportHash')->willReturn($this->passwordSalt);
+        $configData['getBackupHash'] = $this->passwordSalt;
+        $configData['getExportHash'] = $this->passwordSalt;
 
         return $configData;
     }

@@ -62,10 +62,10 @@ class AccountHistoryManagerTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/delete/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/delete/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Account removed","data":null}');
     }
@@ -84,7 +84,7 @@ class AccountHistoryManagerTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest(
+            IntegrationTestCase::buildRequest(
                 'post',
                 'index.php',
                 ['r' => 'accountHistoryManager/delete'],
@@ -92,7 +92,7 @@ class AccountHistoryManagerTest extends IntegrationTestCase
             )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Accounts removed","data":null}');
     }
@@ -132,10 +132,10 @@ class AccountHistoryManagerTest extends IntegrationTestCase
         };
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/restore/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/restore/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Account restored","data":null}');
     }
@@ -175,10 +175,10 @@ class AccountHistoryManagerTest extends IntegrationTestCase
         };
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/restore/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/restore/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Account restored","data":null}');
     }
@@ -206,10 +206,10 @@ class AccountHistoryManagerTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/search'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountHistoryManager/search'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**

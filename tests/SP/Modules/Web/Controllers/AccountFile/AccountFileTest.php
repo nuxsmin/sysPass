@@ -29,11 +29,9 @@ namespace SP\Tests\Modules\Web\Controllers\AccountFile;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\File;
-use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\BodyChecker;
@@ -56,10 +54,10 @@ class AccountFileTest extends IntegrationTestCase
     public function deleteSingleFile()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'accountFile/delete/100'])
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'accountFile/delete/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"File deleted","data":null}');
     }
@@ -82,10 +80,15 @@ class AccountFileTest extends IntegrationTestCase
         };
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'accountFile/delete'], ['items' => [100, 200, 300]])
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'accountFile/delete'],
+                ['items' => [100, 200, 300]]
+            )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Files deleted","data":null}');
     }
@@ -109,10 +112,10 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'accountFile/download/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountFile/download/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString($fileData['content']);
     }
@@ -140,10 +143,10 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'accountFile/list/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountFile/list/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -170,10 +173,10 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'accountFile/search'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountFile/search'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -200,10 +203,10 @@ class AccountFileTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'accountFile/upload/100'], [], $files)
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'accountFile/upload/100'], [], $files)
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -224,18 +227,18 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'accountFile/view/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountFile/view/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
-    protected function getConfigData(): ConfigDataInterface|Stub
+    protected function getConfigData(): array
     {
         $configData = parent::getConfigData();
-        $configData->method('isFilesEnabled')->willReturn(true);
-        $configData->method('getFilesAllowedMime')->willReturn(['text/plain']);
-        $configData->method('getFilesAllowedSize')->willReturn(1000);
+        $configData['isFilesEnabled'] = true;
+        $configData['getFilesAllowedMime'] = ['text/plain'];
+        $configData['getFilesAllowedSize'] = 1000;
 
         return $configData;
     }

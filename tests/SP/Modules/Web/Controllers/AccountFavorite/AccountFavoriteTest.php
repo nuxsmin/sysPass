@@ -46,10 +46,10 @@ class AccountFavoriteTest extends IntegrationTestCase
     public function testMarkAction()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'accountFavorite/mark/100'])
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'accountFavorite/mark/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Favorite added","data":null}');
     }
@@ -62,10 +62,10 @@ class AccountFavoriteTest extends IntegrationTestCase
     public function testUnmarkAction()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'accountFavorite/unmark/100'])
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'accountFavorite/unmark/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Favorite deleted","data":null}');
     }

@@ -38,6 +38,7 @@ use Psr\Log\LoggerInterface;
 use SessionHandlerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
+use SP\Core\AppLock;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Bootstrap\RouteContext;
@@ -89,6 +90,7 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\PhpExtensionCheckerService;
+use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
@@ -413,10 +415,15 @@ final class CoreDefinitions
             ),
             OutputHandlerInterface::class => create(OutputHandler::class),
             TemplateResolverInterface::class => autowire(TemplateResolver::class),
-            UpgradeDatabase::class => autowire(UpgradeDatabase::class)->constructorParameter(
-                'sqlPath',
-                factory(static fn(PathsContext $p) => $p[Path::SQL])
-            )
+            UpgradeDatabase::class => autowire(UpgradeDatabase::class)
+                ->constructorParameter(
+                    'sqlPath',
+                    factory(static fn(PathsContext $p) => $p[Path::SQL])
+                ),
+            AppLockHandler::class => create(AppLock::class)
+                ->constructor(
+                    factory(static fn(PathsContext $p) => FileSystem::buildPath($p[Path::CONFIG], '.lock'))
+                )
         ];
     }
 

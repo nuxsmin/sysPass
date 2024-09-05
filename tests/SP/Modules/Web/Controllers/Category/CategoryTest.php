@@ -54,10 +54,10 @@ class CategoryTest extends IntegrationTestCase
     public function create()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'category/create'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'category/create'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -69,10 +69,11 @@ class CategoryTest extends IntegrationTestCase
     public function deleteMultiple()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'category/delete', 'items' => [100, 200, 300]])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'category/delete', 'items' => [100, 200, 300]]
+            )
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Categories deleted","data":null}');
     }
@@ -86,10 +87,10 @@ class CategoryTest extends IntegrationTestCase
     public function deleteSingle()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'category/delete/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'category/delete/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Category deleted","data":null}');
     }
@@ -109,10 +110,10 @@ class CategoryTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'category/edit/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'category/edit/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -129,10 +130,10 @@ class CategoryTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'category/saveCreate'], $data)
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'category/saveCreate'], $data)
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Category added","data":null}');
     }
@@ -151,10 +152,10 @@ class CategoryTest extends IntegrationTestCase
         ];
 
         $container = $this->buildContainer(
-            $this->buildRequest('post', 'index.php', ['r' => 'category/saveEdit/100'], $data)
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'category/saveEdit/100'], $data)
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Category updated","data":null}');
     }
@@ -182,10 +183,10 @@ class CategoryTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'category/search', 'search' => 'test'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'category/search', 'search' => 'test'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -203,10 +204,10 @@ class CategoryTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'category/view/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'category/view/100'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     /**

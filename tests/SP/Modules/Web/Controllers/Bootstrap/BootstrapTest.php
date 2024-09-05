@@ -51,10 +51,10 @@ class BootstrapTest extends IntegrationTestCase
     public function getEnvironment()
     {
         $container = $this->buildContainer(
-            $this->buildRequest('get', 'index.php', ['r' => 'bootstrap/getEnvironment'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'bootstrap/getEnvironment'])
         );
 
-        $this->runApp($container);
+        IntegrationTestCase::runApp($container);
     }
 
     public function getEnvironmentOutputChecker(string $output): void
