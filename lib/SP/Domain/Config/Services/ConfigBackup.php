@@ -56,7 +56,7 @@ readonly class ConfigBackup implements ConfigBackupService
      */
     public static function configToJson(string $configData): string
     {
-        return Serde::serializeJson(Serde::deserialize($configData, ConfigData::class), JSON_PRETTY_PRINT);
+        return Serde::serializeJson(Serde::deserialize($configData), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -95,15 +95,15 @@ readonly class ConfigBackup implements ConfigBackupService
         try {
             $data = $this->configService->getByParam('config_backup');
 
-            if ($data === null) {
-                throw new ServiceException(__u('Unable to restore the configuration'));
+            if ($data === null || ($config = gzuncompress(hex2bin($data))) === false) {
+                throw new ServiceException(__u('Unable to retrieve the configuration'));
             }
 
-            return gzuncompress(hex2bin($data));
+            return $config;
         } catch (NoSuchItemException $e) {
             processException($e);
 
-            throw new ServiceException(__u('Unable to restore the configuration'));
+            throw new ServiceException(__u('Unable to retrieve the configuration'));
         }
     }
 }

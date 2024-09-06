@@ -24,15 +24,15 @@
 
 namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
-use JsonException;
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigUtil;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
@@ -42,10 +42,9 @@ use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__u;
-use function SP\logger;
 
 /**
- * Class ConfigGeneral
+ * Class SaveController
  *
  * @package SP\Modules\Web\Controllers
  */
@@ -54,8 +53,8 @@ final class SaveController extends SimpleControllerBase
     use ConfigTrait;
 
     public function __construct(
-        Application              $application,
-        SimpleControllerHelper   $simpleControllerHelper,
+        Application            $application,
+        SimpleControllerHelper $simpleControllerHelper,
         private readonly AppLockHandler $appLock
     ) {
         parent::__construct($application, $simpleControllerHelper);
@@ -63,34 +62,29 @@ final class SaveController extends SimpleControllerBase
 
 
     /**
-     * @throws JsonException
+     * @return ActionResponse
      * @throws SPException
+     * @throws ValidationException
      */
-    public function saveAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveAction(): ActionResponse
     {
         $configData = $this->config->getConfigData();
         $eventMessage = EventMessage::build();
 
-        try {
-            $this->handleGeneralConfig($configData);
-            $this->handleEventsConfig($configData, $eventMessage);
-            $this->handleProxyConfig($configData, $eventMessage);
-            $this->handleAuthConfig($configData, $eventMessage);
-        } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
-        }
+        $this->handleGeneralConfig($configData);
+        $this->handleEventsConfig($configData, $eventMessage);
+        $this->handleProxyConfig($configData, $eventMessage);
+        $this->handleAuthConfig($configData, $eventMessage);
 
         return $this->saveConfig(
             $configData,
             $this->config,
             function () use ($eventMessage, $configData) {
                 if ($configData->isMaintenance()) {
-                    $this->appLock->lock($this->session->getUserData()->getId(), 'config');
-                }
-
-                if (BootstrapBase::$LOCK !== false && $configData->isMaintenance() === false) {
+                    $this->appLock->lock($this->session->getUserData()->id, 'config');
+                } elseif ($this->appLock->getLock() !== false) {
                     $this->appLock->unlock();
-                    logger('Application unlocked');
                 }
 
                 $this->eventDispatcher->notify('save.config.general', new Event($this, $eventMessage));
@@ -250,13 +244,7 @@ final class SaveController extends SimpleControllerBase
      */
     protected function initialize(): void
     {
-        try {
-            $this->checks();
-            $this->checkAccess(AclActionsInterface::CONFIG_GENERAL);
-        } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            $this->returnJsonResponseException($e);
-        }
+        $this->checks();
+        $this->checkAccess(AclActionsInterface::CONFIG_GENERAL);
     }
 }

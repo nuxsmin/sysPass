@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,87 +24,85 @@
 
 namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
-
 use Klein\Response;
+use RuntimeException;
 use SP\Core\Application;
-use SP\Core\Bootstrap\Path;
-use SP\Core\Bootstrap\PathsContext;
-use SP\Core\Context\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseStatus;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigBackupService;
+use SP\Domain\Config\Services\ConfigBackup;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__;
 use function SP\__u;
 
 /**
- * Class DownloadLogController
+ * Class DownloadConfigBackupController
  */
-final class DownloadLogController extends SimpleControllerBase
+final class DownloadConfigBackupController extends SimpleControllerBase
 {
-    use JsonTrait;
-
     public function __construct(
-        Application                   $application,
-        SimpleControllerHelper        $simpleControllerHelper,
-        private readonly PathsContext $pathsContext
+        Application                            $application,
+        SimpleControllerHelper                 $simpleControllerHelper,
+        protected readonly ConfigBackupService $configBackupService
     ) {
         parent::__construct($application, $simpleControllerHelper);
     }
 
+    /**
+     * @throws ServiceException
+     * @throws SPException
+     */
     #[Action(ResponseType::CALLBACK)]
-    public function downloadLogAction(): ActionResponse
+    public function downloadConfigBackupAction(string $type): ActionResponse
     {
         if ($this->configData->isDemoEnabled()) {
             return ActionResponse::warning(__('Ey, this is a DEMO!!'));
         }
 
-        Session::close();
-
-        $file = new FileHandler($this->pathsContext[Path::LOG_FILE]);
-
         $this->eventDispatcher->notify(
-            'download.logFile',
+            'download.configBackupFile',
             new Event(
                 $this,
-                EventMessage::build(__u('File downloaded'))
-                            ->addDetail(__u('File'), $file->getName())
+                EventMessage::build(__u('File downloaded'))->addDetail(__u('File'), 'config.json')
             )
         );
 
+        if ($type !== 'json') {
+            throw new RuntimeException('Not implemented');
+        }
+
+        $data = ConfigBackup::configToJson($this->configBackupService->getBackup());
+
         return new ActionResponse(
             ResponseStatus::OK,
-            function (Response $response) use ($file) {
+            function (Response $response) use ($data) {
                 $response->header('Cache-Control', 'max-age=60, must-revalidate')
-                         ->header('Content-length', $file->getFileSize())
-                         ->header('Content-type', $file->getFileType())
+                         ->header('Content-length', strlen($data))
+                         ->header('Content-type', 'application/json')
                          ->header('Content-Description', ' sysPass file')
-                         ->header('Content-transfer-encoding', 'chunked')
-                         ->header(
-                             'Content-Disposition',
-                             sprintf("attachment; filename=\"%s\"", basename($file->getName()))
-                         )
+                         ->header('Content-transfer-encoding', 'binary')
+                         ->header('Content-Disposition', 'attachment; filename="config.json"')
                          ->header('Set-Cookie', 'fileDownload=true; path=/')
-                         ->send();
-
-                $file->readChunked();
+                         ->body($data);
             }
         );
     }
 
     /**
-     * @throws SessionTimeout
      * @throws SPException
+     * @throws SessionTimeout
+     * @throws UnauthorizedPageException
      */
     protected function initialize(): void
     {
