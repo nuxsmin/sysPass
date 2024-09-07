@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -80,6 +81,7 @@ class ConfigBackupTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      * @throws FileException
+     * @throws SPException
      */
     public function testRestore()
     {
@@ -112,6 +114,7 @@ class ConfigBackupTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      * @throws FileException
+     * @throws SPException
      */
     public function testRestoreWithNullData()
     {
@@ -129,15 +132,16 @@ class ConfigBackupTest extends UnitaryTestCase
                    ->method('getConfigData');
 
         $this->expectException(ServiceException::class);
-        $this->expectExceptionMessage('Unable to restore the configuration');
+        $this->expectExceptionMessage('Unable to retrieve the configuration');
 
         $this->configBackup->restore($configFile);
     }
 
     /**
      * @throws Exception
-     * @throws ServiceException
      * @throws FileException
+     * @throws SPException
+     * @throws ServiceException
      */
     public function testRestoreWithMissingParam()
     {
@@ -154,7 +158,7 @@ class ConfigBackupTest extends UnitaryTestCase
                    ->method('getConfigData');
 
         $this->expectException(ServiceException::class);
-        $this->expectExceptionMessage('Unable to restore the configuration');
+        $this->expectExceptionMessage('Unable to retrieve the configuration');
 
         $this->configBackup->restore($configFile);
     }
@@ -194,7 +198,7 @@ class ConfigBackupTest extends UnitaryTestCase
                             ->willReturn(null);
 
         $this->expectException(ServiceException::class);
-        $this->expectExceptionMessage('Unable to restore the configuration');
+        $this->expectExceptionMessage('Unable to retrieve the configuration');
 
         $this->configBackup->getBackup();
     }
@@ -206,7 +210,7 @@ class ConfigBackupTest extends UnitaryTestCase
                             ->willThrowException(new NoSuchItemException('test'));
 
         $this->expectException(ServiceException::class);
-        $this->expectExceptionMessage('Unable to restore the configuration');
+        $this->expectExceptionMessage('Unable to retrieve the configuration');
 
         $this->configBackup->getBackup();
     }
@@ -219,6 +223,4 @@ class ConfigBackupTest extends UnitaryTestCase
 
         $this->configBackup = new ConfigBackup($this->configService);
     }
-
-
 }
