@@ -65,7 +65,7 @@ trait ConfigTrait
         } catch (Exception $e) {
             processException($e);
 
-            return ActionResponse::error(__u('Error while saving the configuration'));
+            return ActionResponse::error(__u('Error while saving the configuration'), $e->getMessage());
         }
     }
 }

@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Core;
 
+use RuntimeException;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Ports\AppLockHandler;
@@ -55,7 +56,7 @@ final readonly class AppLock implements AppLockHandler
             $file = new FileHandler($this->lockFile);
 
             return (int)Serde::deserializeJson($file->readToString())->userId;
-        } catch (FileException) {
+        } catch (FileException|RuntimeException) {
             return false;
         }
     }

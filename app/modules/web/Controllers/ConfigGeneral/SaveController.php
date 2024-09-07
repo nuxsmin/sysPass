@@ -62,7 +62,6 @@ final class SaveController extends SimpleControllerBase
 
 
     /**
-     * @return ActionResponse
      * @throws SPException
      * @throws ValidationException
      */
@@ -92,15 +91,10 @@ final class SaveController extends SimpleControllerBase
         );
     }
 
-    /**
-     * @param ConfigDataInterface $configData
-     *
-     * @return void
-     */
     private function handleGeneralConfig(ConfigDataInterface $configData): void
     {
-        $siteLang = $this->request->analyzeString('sitelang');
-        $siteTheme = $this->request->analyzeString('sitetheme', 'material-blue');
+        $siteLang = $this->request->analyzeString('site_lang');
+        $siteTheme = $this->request->analyzeString('site_theme', 'material-blue');
         $sessionTimeout = $this->request->analyzeInt('session_timeout', 300);
         $applicationUrl = $this->request->analyzeString('app_url');
         $httpsEnabled = $this->request->analyzeBool('https_enabled', false);
@@ -123,19 +117,15 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @param ConfigDataInterface $configData
-     * @param EventMessage $eventMessage
-     *
-     * @return void
      * @throws ValidationException
      */
     private function handleEventsConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
     {
         $logEnabled = $this->request->analyzeBool('log_enabled', false);
         $syslogEnabled = $this->request->analyzeBool('syslog_enabled', false);
-        $remoteSyslogEnabled = $this->request->analyzeBool('remotesyslog_enabled', false);
-        $syslogServer = $this->request->analyzeString('remotesyslog_server');
-        $syslogPort = $this->request->analyzeInt('remotesyslog_port', 0);
+        $remoteSyslogEnabled = $this->request->analyzeBool('syslog_remote_enabled', false);
+        $syslogServer = $this->request->analyzeString('syslog_remote_server');
+        $syslogPort = $this->request->analyzeInt('syslog_remote_port', 0);
 
         $configData->setLogEnabled($logEnabled);
         $configData->setLogEvents(
@@ -168,10 +158,6 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @param ConfigDataInterface $configData
-     * @param EventMessage $eventMessage
-     *
-     * @return void
      * @throws ValidationException
      */
     private function handleProxyConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
@@ -206,19 +192,13 @@ final class SaveController extends SimpleControllerBase
         }
     }
 
-    /**
-     * @param ConfigDataInterface $configData
-     * @param EventMessage $eventMessage
-     *
-     * @return void
-     */
     private function handleAuthConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
     {
         $authBasicEnabled = $this->request->analyzeBool('authbasic_enabled', false);
-        $authBasicAutologinEnabled = $this->request->analyzeBool('authbasicautologin_enabled', false);
+        $authBasicAutologinEnabled = $this->request->analyzeBool('authbasic_autologin_enabled', false);
         $authBasicDomain = $this->request->analyzeString('authbasic_domain');
-        $authSsoDefaultGroup = $this->request->analyzeInt('sso_defaultgroup');
-        $authSsoDefaultProfile = $this->request->analyzeInt('sso_defaultprofile');
+        $authSsoDefaultGroup = $this->request->analyzeInt('sso_default_group');
+        $authSsoDefaultProfile = $this->request->analyzeInt('sso_default_profile');
 
         if ($authBasicEnabled) {
             $configData->setAuthBasicEnabled(true);

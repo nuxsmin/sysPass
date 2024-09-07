@@ -44,7 +44,7 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     public const  CHUNK_FACTOR = 3;
 
     /**
-     * FileHandler constructor.
+     * @inheritDoc
      */
     public function __construct(private readonly string $file, string $mode = 'r')
     {

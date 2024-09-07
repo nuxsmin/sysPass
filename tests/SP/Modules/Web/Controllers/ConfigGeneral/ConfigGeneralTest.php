@@ -76,4 +76,58 @@ class ConfigGeneralTest extends IntegrationTestCase
 
         IntegrationTestCase::runApp($container);
     }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
+    #[Test]
+    public function save()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'configGeneral/save'],
+                $this->getConfigParams()
+            )
+        );
+
+        $this->expectOutputString('{"status":"OK","description":"Configuration updated","data":null}');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    private function getConfigParams(): array
+    {
+        return [
+            'site_lang' => self::$faker->languageCode(),
+            'site_theme' => self::$faker->colorName(),
+            'session_timeout' => self::$faker->randomNumber(3),
+            'app_url' => self::$faker->url(),
+            'https_enabled' => self::$faker->boolean(),
+            'debug_enabled' => self::$faker->boolean(),
+            'maintenance_enabled' => self::$faker->boolean(),
+            'check_updates_enabled' => self::$faker->boolean(),
+            'check_notices_enabled' => self::$faker->boolean(),
+            'encrypt_session_enabled' => self::$faker->boolean(),
+            'log_enabled' => true,
+            'syslog_enabled' => true,
+            'syslog_remote_enabled' => true,
+            'syslog_remote_server' => self::$faker->domainName(),
+            'syslog_remote_port' => self::$faker->randomNumber(3),
+            'log_events' => ['test.eventA', 'test.eventB'],
+            'proxy_enabled' => true,
+            'proxy_server' => self::$faker->domainName(),
+            'proxy_port' => self::$faker->randomNumber(3),
+            'proxy_user' => self::$faker->userName(),
+            'proxy_pass' => self::$faker->password(),
+            'authbasic_enabled' => true,
+            'authbasic_autologin_enabled' => true,
+            'authbasic_domain' => self::$faker->domainName(),
+            'sso_default_group' => self::$faker->randomNumber(3),
+            'sso_default_profile' => self::$faker->randomNumber(3),
+        ];
+    }
 }
