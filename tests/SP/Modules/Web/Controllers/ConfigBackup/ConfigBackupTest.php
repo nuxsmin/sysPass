@@ -37,7 +37,7 @@ use SP\Tests\IntegrationTestCase;
  * Class ConfigBackupControllerTest
  */
 #[Group('integration')]
-class ConfigBackupControllerTest extends IntegrationTestCase
+class ConfigBackupTest extends IntegrationTestCase
 {
     /**
      * @throws ContainerExceptionInterface

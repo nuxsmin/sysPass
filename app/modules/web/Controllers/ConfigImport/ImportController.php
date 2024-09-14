@@ -24,106 +24,85 @@
 
 namespace SP\Modules\Web\Controllers\ConfigImport;
 
-use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Context\Session;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Import\Dtos\ImportParamsDto;
-use SP\Domain\Import\Ports\ItemsImportService;
+use SP\Domain\Import\Ports\ImportService;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class ImportController
- *
- * @package SP\Modules\Web\Controllers
  */
 final class ImportController extends SimpleControllerBase
 {
-    use JsonTrait;
-
-    private ItemsImportService $importService;
 
     public function __construct(
-        Application $application,
-        SimpleControllerHelper $simpleControllerHelper,
-        ItemsImportService $importService
+        Application                    $application,
+        SimpleControllerHelper         $simpleControllerHelper,
+        private readonly ImportService $importService
     ) {
         parent::__construct($application, $simpleControllerHelper);
-
-        $this->importService = $importService;
     }
 
     /**
-     * @throws JsonException
      * @throws SPException
      */
-    public function importAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function importAction(): ActionResponse
     {
         if ($this->config->getConfigData()->isDemoEnabled()) {
-            return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+            return ActionResponse::warning(__u('Ey, this is a DEMO!!'));
         }
 
-        try {
-            $this->eventDispatcher->notify('run.import.start', new Event($this));
+        $this->eventDispatcher->notify('run.import.start', new Event($this));
 
-            Session::close();
+        Session::close();
 
-            $counter = $this->importService->doImport($this->getImportParams())->getCounter();
+        $counter = $this->importService->doImport($this->getImportParams())->getCounter();
 
-            $this->eventDispatcher->notify(
-                'run.import.end',
-                new Event(
-                    $this,
-                    EventMessage::build()->addDetail(__u('Accounts imported'), $counter)
-                )
+        $this->eventDispatcher->notify(
+            'run.import.end',
+            new Event(
+                $this,
+                EventMessage::build(__u('Accounts imported'))->addDetail(__u('Accounts imported'), $counter)
+            )
+        );
+
+        if ($counter > 0) {
+            return ActionResponse::ok(
+                __u('Import finished'),
+                __u('Please check out the event log for more details')
             );
-
-            if ($counter > 0) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_SUCCESS,
-                    __u('Import finished'),
-                    [__u('Please check out the event log for more details')]
-                );
-            }
-
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_WARNING,
-                __u('No accounts were imported'),
-                [__u('Please check out the event log for more details')]
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
         }
+
+        return ActionResponse::warning(
+            __u('No accounts were imported'),
+            __u('Please check out the event log for more details')
+        );
     }
 
     /**
-     * @return ImportParamsDto
      * @throws FileException
      */
     private function getImportParams(): ImportParamsDto
     {
         return new ImportParamsDto(
-            $this->getFileFromRequest('inFile'),
-            $this->request->analyzeInt('import_defaultuser', $this->session->getUserData()->getId()),
-            $this->request->analyzeInt('import_defaultgroup', $this->session->getUserData()->getUserGroupId()),
+            $this->getFileFromRequest(),
+            $this->request->analyzeInt('import_defaultuser', $this->session->getUserData()->id),
+            $this->request->analyzeInt('import_defaultgroup', $this->session->getUserData()->userGroupId),
             $this->request->analyzeEncrypted('importPwd'),
             $this->request->analyzeEncrypted('importMasterPwd'),
             $this->request->analyzeString('csvDelimiter')
@@ -131,13 +110,12 @@ final class ImportController extends SimpleControllerBase
     }
 
     /**
-     * @param string $filename
      * @return FileHandler
      * @throws FileException
      */
-    public function getFileFromRequest(string $filename): FileHandler
+    private function getFileFromRequest(): FileHandler
     {
-        $file = $this->request->getFile($filename);
+        $file = $this->request->getFile('inFile');
 
         if (!is_array($file)) {
             throw FileException::error(
@@ -150,19 +128,12 @@ final class ImportController extends SimpleControllerBase
     }
 
     /**
-     * @return void
      * @throws SPException
      * @throws SessionTimeout
      */
     protected function initialize(): void
     {
-        try {
-            $this->checks();
-            $this->checkAccess(AclActionsInterface::CONFIG_IMPORT);
-        } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            $this->returnJsonResponseException($e);
-        }
+        $this->checks();
+        $this->checkAccess(AclActionsInterface::CONFIG_IMPORT);
     }
 }

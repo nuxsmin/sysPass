@@ -37,7 +37,7 @@ use SP\Tests\IntegrationTestCase;
  * Class ConfigAccountControllerTest
  */
 #[Group('integration')]
-class ConfigAccountControllerTest extends IntegrationTestCase
+class ConfigAccountTest extends IntegrationTestCase
 {
 
     /**

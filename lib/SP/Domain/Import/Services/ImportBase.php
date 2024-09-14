@@ -183,7 +183,9 @@ abstract class ImportBase extends Service implements ImportService
     }
 
     /**
+     * @throws ConstraintException
      * @throws DuplicatedItemException
+     * @throws QueryException
      * @throws SPException
      */
     protected function addCategory(Category $category): int
@@ -193,14 +195,21 @@ abstract class ImportBase extends Service implements ImportService
         return $this->getOrSetCache(
             self::ITEM_CATEGORY,
             $key,
-            fn(): int => $this->categoryService->getByName($category->getName())?->getId()
-                         ?? $this->categoryService->create($category)
+            function () use ($category): int {
+                try {
+                    return $this->categoryService->getByName($category->getName())?->getId();
+                } catch (NoSuchItemException) {
+                    return $this->categoryService->create($category);
+                }
+            }
         );
     }
 
     /**
+     * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws SPException
+     * @throws QueryException
      */
     protected function addClient(Client $client): int
     {
@@ -209,13 +218,20 @@ abstract class ImportBase extends Service implements ImportService
         return $this->getOrSetCache(
             self::ITEM_CLIENT,
             $key,
-            fn(): int => $this->clientService->getByName($client->getName())?->getId()
-                         ?? $this->clientService->create($client)
+            function () use ($client): int {
+                try {
+                    return $this->clientService->getByName($client->getName())?->getId();
+                } catch (NoSuchItemException) {
+                    return $this->clientService->create($client);
+                }
+            }
         );
     }
 
     /**
-     * @throws SPException
+     * @throws ConstraintException
+     * @throws DuplicatedItemException
+     * @throws QueryException
      */
     protected function addTag(Tag $tag): int
     {
@@ -224,8 +240,13 @@ abstract class ImportBase extends Service implements ImportService
         return $this->getOrSetCache(
             self::ITEM_TAG,
             $key,
-            fn(): int => $this->tagService->getByName($tag->getName())?->getId()
-                         ?? $this->tagService->create($tag)
+            function () use ($tag): int {
+                try {
+                    return $this->tagService->getByName($tag->getName())?->getId();
+                } catch (NoSuchItemException) {
+                    return $this->tagService->create($tag);
+                }
+            }
         );
     }
 }

@@ -33,6 +33,8 @@ use SP\Domain\Common\Providers\Image;
 use SP\Domain\Export\Ports\XmlVerifyService;
 use SP\Domain\Export\Services\XmlVerify;
 use SP\Domain\Image\Ports\ImageService;
+use SP\Domain\Import\Ports\ImportHelperInterface;
+use SP\Domain\Import\Services\ImportHelper;
 use SP\Infrastructure\Common\Repositories\SimpleRepository;
 use SP\Infrastructure\File\FileSystem;
 
@@ -94,7 +96,8 @@ final class DomainDefinitions
             XmlVerifyService::class => autowire(XmlVerify::class)->constructorParameter(
                 'schema',
                 factory(static fn(PathsContext $p) => $p[Path::XML_SCHEMA])
-            )
+            ),
+            ImportHelperInterface::class => autowire(ImportHelper::class)
         ];
 
         foreach (self::DOMAINS as $domain) {

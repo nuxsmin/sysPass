@@ -45,7 +45,7 @@ use SP\Tests\IntegrationTestCase;
  */
 #[Group('integration')]
 #[InjectVault]
-class ConfigEncryptionControllerTest extends IntegrationTestCase
+class ConfigEncryptionTest extends IntegrationTestCase
 {
 
     /**
