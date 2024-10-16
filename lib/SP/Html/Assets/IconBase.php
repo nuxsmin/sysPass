@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,96 +20,81 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\Assets;
 
-defined('APP_ROOT') || die();
+use function SP\__;
 
 /**
  * Class DataGridIconBase para crear los iconos de la matriz
- *
- * @package SP\Html\DataGrid
  */
 abstract class IconBase implements IconInterface
 {
     /**
-     * El nombre del icono o imagen a utilizar
-     *
-     * @var string
-     */
-    protected $icon = '';
-
-    /**
-     * Título del icono
-     *
-     * @var string
-     */
-    protected $title = '';
-    /**
      * Clases CSS del icono
-     *
-     * @var array
      */
-    protected $class = [];
+    protected ?array $class = null;
 
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return __($this->title);
+    public function __construct(
+        protected string  $icon,
+        string|array|null $class = null,
+        protected ?string $title = null
+    ) {
+        if ($class) {
+            $this->setClass($class);
+        }
     }
 
-    /**
-     * @param $title
-     *
-     * @return $this
-     */
-    public function setTitle($title)
+    private function setClass(string|array $class): void
     {
-        $this->title = $title;
-
-        return $this;
+        if (is_array($class)) {
+            $this->class = $class;
+        } else {
+            $this->class[] = $class;
+        }
     }
 
-    /**
-     * @return string
-     */
-    public function getClass()
+    public function getTitle(): ?string
     {
-        return implode(' ', $this->class);
+        if ($this->title) {
+            return __($this->title);
+        }
+
+        return null;
     }
 
-    /**
-     * @param $class
-     *
-     * @return $this
-     */
-    public function setClass($class)
+    public function getClass(): ?string
     {
-        $this->class[] = $class;
+        if ($this->class) {
+            return implode(' ', $this->class);
+        }
 
-        return $this;
+        return null;
     }
 
-    /**
-     * @return string
-     */
-    public function getIcon()
+    public function getIcon(): string
     {
         return $this->icon;
     }
 
-    /**
-     * @param $icon
-     *
-     * @return $this
-     */
-    public function setIcon($icon)
+    public function mutate(?string $icon = null, string|array|null $class = null, ?string $title = null): IconInterface
     {
-        $this->icon = $icon;
-        return $this;
+        $clone = clone $this;
+
+        if ($icon) {
+            $clone->icon = $icon;
+        }
+
+        if ($class) {
+            $clone->setClass($class);
+        }
+
+        if ($title) {
+            $clone->title = $title;
+        }
+
+        return $clone;
     }
 }

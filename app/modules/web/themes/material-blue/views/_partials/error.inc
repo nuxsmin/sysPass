@@ -1,23 +1,29 @@
 <?php
 /**
  * @var callable $_getvar
- * @var Template $this
+ * @var TemplateInterface $this
  */
 
-use SP\Mvc\View\Template;
+use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
 
 ?>
 <div id="actions" align="center">
-    <?php include $this->includePartial('error-list'); ?>
+    <?php
+    include $this->includePartial('error-list'); ?>
 
-    <?php if (!$_getvar('skipBackButton')): ?>
+    <?php
+    if (!$_getvar('skipBackButton')): ?>
         <div class="buttons">
             <button id="btnBack"
                     class="btn-back mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
                 <i class="material-icons"
                    title="<?php echo __('Back'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-                <?php echo __('Back'); ?>
+                <?php
+                echo __('Back'); ?>
             </button>
         </div>
-    <?php endif; ?>
+    <?php
+    endif; ?>
 </div>

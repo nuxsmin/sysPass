@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,76 +21,56 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Acl;
 
-use RuntimeException;
-use SP\DataModel\ActionData;
-use SP\Storage\File\FileCacheInterface;
-use SP\Storage\File\FileException;
-use SP\Storage\File\XmlFileStorageInterface;
+use SP\Domain\Core\Acl\ActionNotFoundException;
+use SP\Domain\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Models\Action;
+use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\YamlFileStorageService;
+use SP\Infrastructure\File\FileException;
+
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class Actions
- *
- * @package SP\Core\Acl
  */
-final class Actions
+class Actions implements ActionsInterface
 {
-    /**
-     * Cache file name
-     */
-    const ACTIONS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'actions.cache';
     /**
      * Cache expire time
      */
-    const CACHE_EXPIRE = 86400;
+    public const CACHE_EXPIRE = 86400;
     /**
-     * @var int
+     * @var  Action[]|null
      */
-    protected $lastLoadTime;
-    /**
-     * @var  ActionData[]
-     */
-    protected $actions;
-    /**
-     * @var XmlFileStorageInterface
-     */
-    protected $xmlFileStorage;
-    /**
-     * @var FileCacheInterface
-     */
-    private $fileCache;
+    protected ?array $actions = null;
 
     /**
-     * Action constructor.
-     *
-     * @param FileCacheInterface      $fileCache
-     * @param XmlFileStorageInterface $xmlFileStorage
-     *
      * @throws FileException
      */
-    public function __construct(FileCacheInterface $fileCache, XmlFileStorageInterface $xmlFileStorage)
-    {
-        $this->xmlFileStorage = $xmlFileStorage;
-        $this->fileCache = $fileCache;
-
+    public function __construct(
+        private readonly FileCacheService       $fileCache,
+        private readonly YamlFileStorageService $yamlFileStorage
+    ) {
         $this->loadCache();
     }
 
     /**
      * Loads actions from cache file
      *
-     * @return void
      * @throws FileException
      */
-    protected function loadCache()
+    private function loadCache(): void
     {
         try {
             if ($this->fileCache->isExpired(self::CACHE_EXPIRE)
-                || $this->fileCache->isExpiredDate($this->xmlFileStorage->getFileHandler()->getFileTime())
+                || $this->fileCache->isExpiredDate($this->yamlFileStorage->getFileTime())
             ) {
                 $this->mapAndSave();
             } else {
@@ -106,7 +88,7 @@ final class Actions
     /**
      * @throws FileException
      */
-    protected function mapAndSave()
+    private function mapAndSave(): void
     {
         logger('ACTION CACHE MISS', 'INFO');
 
@@ -119,40 +101,21 @@ final class Actions
      *
      * @throws FileException
      */
-    protected function map()
+    private function map(): void
     {
         $this->actions = [];
 
-        foreach ($this->load() as $a) {
-            if (isset($this->actions[$a['id']])) {
-                throw new RuntimeException('Duplicated action id: ' . $a['id']);
-            }
+        $yaml = $this->yamlFileStorage->load();
 
-            $action = new ActionData();
-            $action->id = $a['id'];
-            $action->name = $a['name'];
-            $action->text = $a['text'];
-            $action->route = $a['route'];
-
-            $this->actions[$action->id] = $action;
+        foreach ($yaml['actions'] as $a) {
+            $this->actions[$a['id']] = new Action($a['id'], $a['name'], $a['text'], $a['route']);
         }
-    }
-
-    /**
-     * Loads actions from DB
-     *
-     * @return ActionData[]
-     * @throws FileException
-     */
-    protected function load()
-    {
-        return $this->xmlFileStorage->load('actions')->getItems();
     }
 
     /**
      * Saves actions into cache file
      */
-    protected function saveCache()
+    private function saveCache(): void
     {
         try {
             $this->fileCache->save($this->actions);
@@ -166,12 +129,9 @@ final class Actions
     /**
      * Returns an action by id
      *
-     * @param $id
-     *
-     * @return ActionData
      * @throws ActionNotFoundException
      */
-    public function getActionById($id)
+    public function getActionById(int $id): Action
     {
         if (!isset($this->actions[$id])) {
             throw new ActionNotFoundException(__u('Action not found'));
@@ -183,9 +143,9 @@ final class Actions
     /**
      * @throws FileException
      */
-    public function reset()
+    public function reset(): void
     {
-        @unlink(self::ACTIONS_CACHE_FILE);
+        $this->fileCache->delete();
 
         $this->loadCache();
     }

@@ -1,10 +1,11 @@
 <?php
-/**
+declare(strict_types=1);
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +20,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Mvc\Controller\Validators;
 
 use PHPUnit\Framework\TestCase;
-use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\ItemPreset\Password;
+use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\ItemPreset\Models\Password;
 use SP\Mvc\Controller\Validators\PasswordValidator;
 
 /**
@@ -142,7 +143,7 @@ class PasswordValidatorTest extends TestCase
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->password = new Password();
         $this->password->setLength(10);

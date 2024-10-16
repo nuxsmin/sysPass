@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,31 +19,37 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
 
-defined('APP_ROOT') || die();
-
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
+use SebastianBergmann\RecursionContext\Context;
+use SP\Core\Application;
 use SP\Core\Crypt\Hash;
-use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\Exceptions\SessionTimeout;
-use SP\Core\Exceptions\SPException;
-use SP\DataModel\ProfileData;
-use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
+use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Bootstrap\RouteContextData;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\PhpExtensionCheckerService;
+use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\ProfileData;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
-use SP\Mvc\View\Template;
-use SP\Providers\Auth\Browser\Browser;
-use SP\Services\Auth\AuthException;
-use SP\Services\User\UserLoginResponse;
+use SP\Mvc\Controller\WebControllerHelper;
+use SP\Mvc\View\TemplateInterface;
+
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Clase base para los controladores
@@ -52,194 +58,109 @@ abstract class ControllerBase
 {
     use WebControllerTrait;
 
-    /**
-     * Constantes de errores
-     */
-    const ERR_UNAVAILABLE = 0;
-    const ERR_ACCOUNT_NO_PERMISSION = 1;
-    const ERR_PAGE_NO_PERMISSION = 2;
-    const ERR_UPDATE_MPASS = 3;
-    const ERR_OPERATION_NO_PERMISSION = 4;
-    const ERR_EXCEPTION = 5;
-    /**
-     * @var Template Instancia del motor de plantillas a utilizar
-     */
-    protected $view;
-    /**
-     * @var  UserLoginResponse
-     */
-    protected $userData;
-    /**
-     * @var  ProfileData
-     */
-    protected $userProfileData;
-    /**
-     * @var ContainerInterface
-     */
-    protected $dic;
-    /**
-     * @var bool
-     */
-    protected $isAjax = false;
-    /**
-     * @var string
-     */
-    protected $previousSk;
+    protected const ERR_UNAVAILABLE = 0;
 
-    /**
-     * Constructor
-     *
-     * @param Container $container
-     * @param           $actionName
-     *
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws SessionTimeout
-     */
-    public final function __construct(Container $container, $actionName)
+    protected readonly EventDispatcherInterface    $eventDispatcher;
+    protected readonly ConfigFileService           $config;
+    protected readonly Context|SessionContext      $session;
+    protected readonly ThemeInterface              $theme;
+    protected readonly AclInterface                $acl;
+    protected readonly ConfigDataInterface         $configData;
+    protected readonly RequestService              $request;
+    protected readonly PhpExtensionCheckerService  $extensionChecker;
+    protected readonly TemplateInterface           $view;
+    protected readonly Helpers\LayoutHelper        $layoutHelper;
+    protected readonly UriContextInterface         $uriContext;
+    protected ?UserDto                             $userDto         = null;
+    protected ?ProfileData                         $userProfileData = null;
+    protected readonly bool                        $isAjax;
+    protected readonly RouteContextData            $routeContextData;
+    protected readonly Helpers\JsonResponseHandler $jsonResponse;
+    private readonly BrowserAuthService            $browser;
+
+    public function __construct(Application $application, WebControllerHelper $webControllerHelper)
     {
-        $this->dic = $container;
-        $this->actionName = $actionName;
-
-        $this->setUp($container);
-
-        $this->view = $this->dic->get(Template::class);
-        $this->view->setBase(strtolower($this->controllerName));
+        $this->routeContextData = $webControllerHelper->getRouteContextData();
+        $this->config = $application->getConfig();
+        $this->configData = $this->config->getConfigData();
+        $this->eventDispatcher = $application->getEventDispatcher();
+        $this->session = $application->getContext();
+        $this->theme = $webControllerHelper->getTheme();
+        $this->router = $webControllerHelper->getRouter();
+        $this->acl = $webControllerHelper->getAcl();
+        $this->request = $webControllerHelper->getRequest();
+        $this->extensionChecker = $webControllerHelper->getExtensionChecker();
+        $this->browser = $webControllerHelper->getBrowser();
+        $this->layoutHelper = $webControllerHelper->getLayoutHelper();
+        $this->view = $webControllerHelper->getTemplate();
+        $this->uriContext = $webControllerHelper->getUriContext();
+        $this->jsonResponse = $webControllerHelper->getJsonResponseHandler();
 
         $this->isAjax = $this->request->isAjax();
-        $this->previousSk = $this->session->getSecurityKey();
 
         $loggedIn = $this->session->isLoggedIn();
 
         if ($loggedIn) {
-            $this->userData = clone $this->session->getUserData();
+            $this->userDto = clone $this->session->getUserData();
             $this->userProfileData = clone $this->session->getUserProfile();
         }
 
         $this->setViewVars($loggedIn);
 
-        try {
-            $this->initialize();
-        } catch (SessionTimeout $sessionTimeout) {
-            $this->handleSessionTimeout();
+        $this->setup = true;
 
-            throw $sessionTimeout;
-        }
+        logger(static::class);
     }
 
     /**
      * Set view variables
-     *
-     * @param bool $loggedIn
      */
-    private function setViewVars($loggedIn = false)
+    private function setViewVars(bool $loggedIn = false): void
     {
         $this->view->assign('timeStart', $this->request->getServer('REQUEST_TIME_FLOAT'));
         $this->view->assign('queryTimeStart', microtime());
+        $this->view->assign('isDemo', $this->configData->isDemoEnabled());
+        $this->view->assign('themeUri', $this->theme->getUri());
+        $this->view->assign('configData', $this->configData);
+        $this->view->assign('action', $this->routeContextData->actionName);
 
         if ($loggedIn) {
-            $this->view->assign('ctx_userId', $this->userData->getId());
-            $this->view->assign('ctx_userGroupId', $this->userData->getUserGroupId());
-            $this->view->assign('ctx_userIsAdminApp', $this->userData->getIsAdminApp());
-            $this->view->assign('ctx_userIsAdminAcc', $this->userData->getIsAdminAcc());
+            $this->view->assignWithScope('userId', $this->userDto->id, 'ctx');
+            $this->view->assignWithScope('userGroupId', $this->userDto->userGroupId, 'ctx');
+            $this->view->assignWithScope('userIsAdminApp', $this->userDto->isAdminApp, 'ctx');
+            $this->view->assignWithScope('userIsAdminAcc', $this->userDto->isAdminAcc, 'ctx');
         }
-
-        $this->view->assign('isDemo', $this->configData->isDemoEnabled());
-        $this->view->assign('themeUri', $this->view->getTheme()->getThemeUri());
-        $this->view->assign('configData', $this->configData);
-        $this->view->assign('sk', $loggedIn ? $this->session->generateSecurityKey($this->configData->getPasswordSalt()) : '');
-
-        // Pass the action name to the template as a variable
-        $this->view->assign($this->actionName, true);
-    }
-
-    /**
-     * @return void
-     */
-    protected abstract function initialize();
-
-    /**
-     * @return void
-     */
-    private function handleSessionTimeout()
-    {
-        $this->sessionLogout(
-            $this->request,
-            $this->configData,
-            function ($redirect) {
-                $this->router->response()
-                    ->redirect($redirect)
-                    ->send(true);
-            }
-        );
     }
 
     /**
      * Mostrar los datos de la plantilla
      */
-    protected function view()
+    protected function view(): void
     {
-        try {
-            $this->router->response()
-                ->body($this->view->render())
-                ->send();
-        } catch (FileNotFoundException $e) {
-            processException($e);
-
-            $this->router->response()
-                ->body(__($e->getMessage()))
-                ->send(true);
-        }
+        $this->router->response()->body($this->view->render())->send();
     }
 
     /**
      * Renderizar los datos de la plantilla y devolverlos
      */
-    protected function render()
+    protected function render(): string
     {
-        try {
-            return $this->view->render();
-        } catch (FileNotFoundException $e) {
-            processException($e);
-
-            return $e->getMessage();
-        }
+        return $this->view->render();
     }
 
     /**
      * Upgrades a View to use a full page layout
-     *
-     * @param string $page
      */
-    protected function upgradeView($page = null)
+    protected function upgradeView(?string $page = null): void
     {
         $this->view->upgrade();
-
-        if ($this->view->isUpgraded() === false) {
-            return;
-        }
-
-        $this->view->assign('contentPage', $page ?: strtolower($this->controllerName));
+        $this->view->assign('contentPage', $page ?: strtolower($this->routeContextData->actionName));
 
         try {
-            $this->dic->get(LayoutHelper::class)->getFullLayout('main', $this->acl);
+            $this->layoutHelper->getFullLayout('main', $this->acl);
         } catch (Exception $e) {
             processException($e);
         }
-    }
-
-    /**
-     * Obtener los datos para la vista de depuración
-     */
-    protected function getDebug()
-    {
-        global $memInit;
-
-        $this->view->addTemplate('debug', 'common');
-
-        $this->view->assign('time', getElapsedTime($this->router->request()->server()->get('REQUEST_TIME_FLOAT')));
-        $this->view->assign('memInit', $memInit / 1000);
-        $this->view->assign('memEnd', memory_get_usage() / 1000);
     }
 
     /**
@@ -247,31 +168,24 @@ abstract class ControllerBase
      *
      * @param bool $requireAuthCompleted
      *
-     * @throws AuthException
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws SessionTimeout
+     * @throws AuthException
      */
-    protected function checkLoggedIn($requireAuthCompleted = true)
+    protected function checkLoggedIn(bool $requireAuthCompleted = true): void
     {
-        if ($this->session->isLoggedIn() === false
-            || $this->session->getAuthCompleted() !== $requireAuthCompleted
+        if ($this->session->isLoggedIn() === false || $this->session->getAuthCompleted() !== $requireAuthCompleted
         ) {
             throw new SessionTimeout();
         }
 
+        // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
         if ($this->session->isLoggedIn()
             && $this->session->getAuthCompleted() === $requireAuthCompleted
             && $this->configData->isAuthBasicEnabled()
+            && $this->browser->checkServerAuthUser($this->userDto->login) === false
+            && $this->browser->checkServerAuthUser($this->userDto->ssoLogin) === false
         ) {
-            $browser = $this->dic->get(Browser::class);
-
-            // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-            if ($browser->checkServerAuthUser($this->userData->getLogin()) === false
-                && $browser->checkServerAuthUser($this->userData->getSsoLogin()) === false
-            ) {
-                throw new AuthException('Invalid browser auth');
-            }
+            throw new AuthException('Invalid browser auth');
         }
     }
 
@@ -280,7 +194,7 @@ abstract class ControllerBase
      *
      * Prepares view's variables to pass in a signed URI
      */
-    final protected function prepareSignedUriOnView()
+    final protected function prepareSignedUriOnView(): void
     {
         $from = $this->request->analyzeString('from');
 
@@ -299,12 +213,10 @@ abstract class ControllerBase
     /**
      * Comprobar si está permitido el acceso al módulo/página.
      *
-     * @param null $action La acción a comprobar
-     *
-     * @return bool
+     * @param int $action La acción a comprobar
      */
-    protected function checkAccess($action)
+    protected function checkAccess(int $action): bool
     {
-        return $this->userData->getIsAdminApp() || $this->acl->checkUserAccess($action);
+        return $this->userDto->isAdminApp || $this->acl->checkUserAccess($action);
     }
 }

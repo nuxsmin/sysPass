@@ -3,7 +3,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -205,8 +205,6 @@ sysPass.Actions = function (log) {
                         sysPassApp.requests.getActionCall(opts, function (json) {
                             sysPassApp.msg.out(json);
 
-                            sysPassApp.sk.set(json.csrf);
-
                             account.search($obj);
                         });
                     }
@@ -327,8 +325,6 @@ sysPass.Actions = function (log) {
                 if (json.status === 0
                     && json.data['nextAction'] !== undefined
                 ) {
-                    sysPassApp.sk.set(json.csrf);
-
                     getContent({r: json.data.nextAction}, "account");
                 }
             });
@@ -1616,8 +1612,6 @@ sysPass.Actions = function (log) {
                 } else {
                     $target.html(sysPassApp.msg.html.error(json.description));
                 }
-
-                sysPassApp.sk.set(json.csrf);
             });
         },
         nav: function ($obj, callback) {

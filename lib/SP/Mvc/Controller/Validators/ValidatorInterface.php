@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,10 +20,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\Controller\Validators;
+
+use SP\Domain\ItemPreset\Ports\PresetInterface;
 
 /**
  * Interface ValidatorInterface
@@ -32,9 +35,10 @@ namespace SP\Mvc\Controller\Validators;
 interface ValidatorInterface
 {
     /**
-     * @param string $string
+     * @param  PresetInterface  $preset
+     * @param  string  $string
      *
      * @return bool
      */
-    public function validate(string $string): bool;
+    public function validate(PresetInterface $preset, string $string): bool;
 }

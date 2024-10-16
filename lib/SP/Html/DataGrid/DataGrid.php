@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +20,10 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid;
-
-defined('APP_ROOT') || die();
 
 /**
  * Class DataGrid para crear una matriz de datos
@@ -35,25 +34,15 @@ final class DataGrid extends DataGridBase
 {
     /**
      * Título de la pestaña
-     *
-     * @var string
      */
-    private $title = '';
+    private string $title = '';
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param $title string
-     *
-     * @return DataGrid
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): DataGrid
     {
         $this->title = $title;
 

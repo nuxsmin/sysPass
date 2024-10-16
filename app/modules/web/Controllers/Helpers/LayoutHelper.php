@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,26 +19,32 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers;
 
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use SP\Bootstrap;
-use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
-use SP\Core\AppInfoInterface;
-use SP\Core\Crypt\CryptPKI;
-use SP\Core\Exceptions\SPException;
+use SP\Core\Application;
+use SP\Core\Events\Event;
 use SP\Core\Language;
-use SP\Core\UI\ThemeInterface;
+use SP\Domain\Common\Providers\Version;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Crypt\CryptPKIHandler;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Providers\Uri;
+use SP\Domain\Install\Services\Installer;
 use SP\Html\DataGrid\Action\DataGridAction;
-use SP\Http\Uri;
+use SP\Infrastructure\File\FileSystem;
+use SP\Mvc\View\TemplateInterface;
 use SP\Plugin\PluginManager;
-use SP\Services\Install\Installer;
-use SP\Util\VersionUtil;
+
+use function SP\__;
+use function SP\processException;
 
 /**
  * Class LayoutHelper
@@ -47,24 +53,37 @@ use SP\Util\VersionUtil;
  */
 final class LayoutHelper extends HelperBase
 {
-    /**
-     * @var  bool
-     */
-    protected $loggedIn;
-    /**
-     * @var ThemeInterface
-     */
-    protected $theme;
+    private ThemeInterface  $theme;
+    private CryptPKIHandler $cryptPKI;
+    private bool            $loggedIn;
+
+    public function __construct(
+        Application                          $application,
+        TemplateInterface                    $template,
+        RequestService  $request,
+        ThemeInterface                       $theme,
+        CryptPKIHandler $cryptPKI,
+        private readonly UriContextInterface $uriContext,
+        private readonly AclInterface        $acl
+    ) {
+        parent::__construct($application, $template, $request);
+
+        $this->theme = $theme;
+        $this->cryptPKI = $cryptPKI;
+        $this->loggedIn = $this->context->isLoggedIn();
+
+        $this->view->assign('loggedIn', $this->loggedIn);
+    }
 
     /**
      * Sets a full layout page
      *
      * @param string $page Page/view name
-     * @param Acl    $acl
+     * @param AclInterface|null $acl
      *
      * @return LayoutHelper
      */
-    public function getFullLayout($page, Acl $acl = null)
+    public function getFullLayout(string $page, AclInterface $acl = null): LayoutHelper
     {
         $this->view->addTemplate('main', '_layouts');
         $this->view->assign('useFixedHeader', true);
@@ -85,10 +104,8 @@ final class LayoutHelper extends HelperBase
 
     /**
      * Establecer la variable de página de la vista
-     *
-     * @param $page
      */
-    public function setPage($page)
+    public function setPage(string $page): void
     {
         $this->view->assign('page', $page);
     }
@@ -96,9 +113,9 @@ final class LayoutHelper extends HelperBase
     /**
      * Inicializar las variables para la vista principal de la aplicación
      */
-    public function initBody()
+    public function initBody(): void
     {
-        $baseUrl = $this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI;
+        $baseUrl = $this->configData->getApplicationUrl() ?? $this->uriContext->getWebUri();
 
         $this->view->assign('isInstalled', $this->configData->isInstalled());
         $this->view->assign('app_name', AppInfoInterface::APP_NAME);
@@ -110,19 +127,16 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('logo_no_bg_color', $baseUrl . '/public/images/logo_full_nobg_outline_color.png');
         $this->view->assign('logo_no_bg', $baseUrl . '/public/images/logo_full_nobg_outline.png');
         $this->view->assign('httpsEnabled', $this->request->isHttps());
-        $this->view->assign('homeRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT));
+        $this->view->assign('homeRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT));
 
         $this->loggedIn = $this->context->isLoggedIn();
 
-        $this->view->assign('sk', $this->view->get('sk') ?: $this->context->generateSecurityKey($this->configData->getPasswordSalt()));
         $this->view->assign('loggedIn', $this->loggedIn);
         $this->view->assign('lang', $this->loggedIn ? Language::$userLang : substr(Language::$globalLang, 0, 2));
         $this->view->assign('loadApp', $this->context->getAuthCompleted());
 
-
         try {
-            // Cargar la clave pública en la sesión
-            $this->context->setPublicKey($this->dic->get(CryptPKI::class)->getPublicKey());
+            $this->context->setPublicKey($this->cryptPKI->getPublicKey());
         } catch (SPException $e) {
             processException($e);
         }
@@ -134,90 +148,79 @@ final class LayoutHelper extends HelperBase
     /**
      * Obtener los datos para la cabcera de la página
      */
-    protected function getResourcesLinks()
+    protected function getResourcesLinks(): void
     {
-        $version = VersionUtil::getVersionStringNormalized();
-        $baseUrl = ($this->configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
+        $version = Version::getVersionStringNormalized();
+        $baseUrl = ($this->configData->getApplicationUrl() ?? $this->uriContext->getWebUri()) .
+                   $this->uriContext->getSubUri();
 
-        $jsUri = new Uri($baseUrl);
-        $jsUri->addParam('_r', 'resource/js');
-        $jsUri->addParam('_v', md5($version));
+        $jsUriApp = new Uri($baseUrl);
+        $jsUriApp->addParams(['_r' => 'resource/js', '_v' => sha1($version)]);
 
-        $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
+        $this->view->append('jsLinks', $jsUriApp->getUriSigned($this->configData->getPasswordSalt()));
 
-        $jsUri->resetParams()
-            ->addParam('g', 1);
+        $jsUriVendor = new Uri($baseUrl);
+        $jsUriVendor->addParams(['g' => 1]);
 
-        $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
+        $this->view->append('jsLinks', $jsUriVendor->getUriSigned($this->configData->getPasswordSalt()));
 
-        $themeInfo = $this->theme->getThemeInfo();
+        $themeInfo = $this->theme->getInfo();
 
         if (isset($themeInfo['js'])) {
-            $jsUri->resetParams()
-                ->addParam('b', $this->theme->getThemePath() . DIRECTORY_SEPARATOR . 'js')
-                ->addParam('f', implode(',', $themeInfo['js']));
+            $jsUriTheme = new Uri($baseUrl);
+            $jsUriTheme->addParams(
+                [
+                    'b' => FileSystem::buildPath($this->theme->getPath(), 'js'),
+                    'f' => implode(',', $themeInfo['js'])
+                ]
+            );
 
-            $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
+            $this->view->append('jsLinks', $jsUriTheme->getUriSigned($this->configData->getPasswordSalt()));
         }
 
-        $userPreferences = $this->context->getUserData()->getPreferences();
+        $userPreferences = $this->context->getUserData()->preferences;
 
-        if ($this->loggedIn && $userPreferences->getUserId() > 0) {
+        if ($this->loggedIn
+            && $userPreferences
+            && $userPreferences->getUserId() > 0
+        ) {
             $resultsAsCards = $userPreferences->isResultsAsCards();
         } else {
             $resultsAsCards = $this->configData->isResultsAsCards();
         }
 
-        $cssUri = new Uri($baseUrl);
-        $cssUri->addParam('_r', 'resource/css');
-        $cssUri->addParam('_v', md5($version . $resultsAsCards));
+        $cssUriApp = new Uri($baseUrl);
+        $cssUriApp->addParams(['_r' => 'resource/css', '_v' => sha1($version . $resultsAsCards)]);
 
-        $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
+        $this->view->append('cssLinks', $cssUriApp->getUriSigned($this->configData->getPasswordSalt()));
 
         if (isset($themeInfo['css'])) {
-            $themeInfo['css'][] = $resultsAsCards ? 'search-card.min.css' : 'search-grid.min.css';
+            $themeInfo['css'][] = $resultsAsCards
+                ? 'search-card.min.css'
+                : 'search-grid.min.css';
 
             if ($this->configData->isDokuwikiEnabled()) {
                 $themeInfo['css'][] = 'styles-wiki.min.css';
             }
 
-            $cssUri->resetParams()
-                ->addParam('b', $this->theme->getThemePath() . DIRECTORY_SEPARATOR . 'css')
-                ->addParam('f', implode(',', $themeInfo['css']));
+            $cssUriTheme = new Uri($baseUrl);
+            $cssUriTheme->addParams(
+                [
+                    'b' => FileSystem::buildPath($this->theme->getPath(), 'css'),
+                    'f' => implode(',', $themeInfo['css'])
+                ]
+            );
 
-            $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
+            $this->view->append('cssLinks', $cssUriTheme->getUriSigned($this->configData->getPasswordSalt()));
         }
 
-        // Cargar los recursos de los plugins
-        foreach ($this->dic->get(PluginManager::class)->getLoadedPlugins() as $plugin) {
-            $base = str_replace(APP_ROOT, '', $plugin->getBase());
-            $base .= DIRECTORY_SEPARATOR . 'public';
-
-            $jsResources = $plugin->getJsResources();
-            $cssResources = $plugin->getCssResources();
-
-            if (count($jsResources) > 0) {
-                $jsUri->resetParams()
-                    ->addParam('b', $base . DIRECTORY_SEPARATOR . 'js')
-                    ->addParam('f', implode(',', $jsResources));
-
-                $this->view->append('jsLinks', $jsUri->getUriSigned($this->configData->getPasswordSalt()));
-            }
-
-            if (count($cssResources) > 0) {
-                $cssUri->resetParams()
-                    ->addParam('b', $base . DIRECTORY_SEPARATOR . 'css')
-                    ->addParam('f', implode(',', $cssResources));
-
-                $this->view->append('cssLinks', $cssUri->getUriSigned($this->configData->getPasswordSalt()));
-            }
-        }
+        $this->eventDispatcher->notify('layout.resources.load', new Event($this->view));
     }
 
     /**
      * Establecer las cabeceras HTTP
      */
-    private function setResponseHeaders()
+    private function setResponseHeaders(): void
     {
         // UTF8 Headers
         header('Content-Type: text/html; charset=UTF-8');
@@ -230,128 +233,130 @@ final class LayoutHelper extends HelperBase
     /**
      * Obtener los datos para la mostrar la barra de sesión
      */
-    public function getSessionBar()
+    public function getSessionBar(): void
     {
         $userType = null;
 
-        $userData = $this->context->getUserData();
+        $userDto = $this->context->getUserData();
         $icons = $this->theme->getIcons();
 
-        if ($userData->getIsAdminApp()) {
-            $userType = $icons->getIconAppAdmin();
-        } elseif ($userData->getIsAdminAcc()) {
-            $userType = $icons->getIconAccAdmin();
+        if ($userDto->isAdminApp) {
+            $userType = $icons->appAdmin();
+        } elseif ($userDto->isAdminAcc) {
+            $userType = $icons->accAdmin();
         }
 
         $this->view->assign('ctx_userType', $userType);
-        $this->view->assign('ctx_userLogin', mb_strtoupper($userData->getLogin()));
-        $this->view->assign('ctx_userName', $userData->getName() ?: mb_strtoupper($userData->getLogin()));
-        $this->view->assign('ctx_userGroup', $userData->getUserGroupName());
-        $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $userData->getIsLdap()));
+        $this->view->assign('ctx_userLogin', mb_strtoupper($userDto->login));
+        $this->view->assign('ctx_userName', $userDto->name ?: mb_strtoupper($userDto->login));
+        $this->view->assign('ctx_userGroup', $userDto->userGroupName);
+        $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $userDto->isLdap));
     }
 
     /**
      * Obtener los datos para mostrar el menú de acciones
      *
-     * @param Acl $acl
+     * @param AclInterface $acl
      */
-    public function getMenu(Acl $acl)
+    public function getMenu(AclInterface $acl): void
     {
         $icons = $this->theme->getIcons();
         $actions = [];
 
         $actionSearch = new DataGridAction();
-        $actionSearch->setId(ActionsInterface::ACCOUNT);
+        $actionSearch->setId(AclActionsInterface::ACCOUNT);
         $actionSearch->setTitle(__('Search'));
-        $actionSearch->setIcon($icons->getIconSearch());
+        $actionSearch->setIcon($icons->search());
         $actionSearch->setData([
-            'historyReset' => 1,
-            'view' => 'search',
-            'route' => Acl::getActionRoute(ActionsInterface::ACCOUNT)
-        ]);
+                                   'historyReset' => 1,
+                                   'view' => 'search',
+                                   'route' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT),
+                               ]);
 
         $actions[] = $actionSearch;
 
-        if ($acl->checkUserAccess(ActionsInterface::ACCOUNT_CREATE)) {
+        if ($acl->checkUserAccess(AclActionsInterface::ACCOUNT_CREATE)) {
             $actionNewAccount = new DataGridAction();
-            $actionNewAccount->setId(ActionsInterface::ACCOUNT_CREATE);
+            $actionNewAccount->setId(AclActionsInterface::ACCOUNT_CREATE);
             $actionNewAccount->setTitle(__('New Account'));
-            $actionNewAccount->setIcon($icons->getIconAdd());
+            $actionNewAccount->setIcon($icons->add());
             $actionNewAccount->setData([
-                'historyReset' => 0,
-                'view' => 'account',
-                'route' => Acl::getActionRoute(ActionsInterface::ACCOUNT_CREATE)
-            ]);
+                                           'historyReset' => 0,
+                                           'view' => 'account',
+                                           'route' => $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_CREATE),
+                                       ]);
 
             $actions[] = $actionNewAccount;
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::ACCESS_MANAGE)) {
+        if ($acl->checkUserAccess(AclActionsInterface::ACCESS_MANAGE)) {
             $actionAccessManager = new DataGridAction();
-            $actionAccessManager->setId(ActionsInterface::ACCESS_MANAGE);
-            $actionAccessManager->setTitle(Acl::getActionInfo(ActionsInterface::ACCESS_MANAGE));
-            $actionAccessManager->setIcon($icons->getIconAccount());
+            $actionAccessManager->setId(AclActionsInterface::ACCESS_MANAGE);
+            $actionAccessManager->setTitle($this->acl->getInfoFor(AclActionsInterface::ACCESS_MANAGE));
+            $actionAccessManager->setIcon($icons->account());
             $actionAccessManager->setData([
-                'historyReset' => 0,
-                'view' => 'datatabs',
-                'route' => Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE)
-            ]);
+                                              'historyReset' => 0,
+                                              'view' => 'datatabs',
+                                              'route' => $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE),
+                                          ]);
 
             $actions[] = $actionAccessManager;
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::ITEMS_MANAGE)) {
+        if ($acl->checkUserAccess(AclActionsInterface::ITEMS_MANAGE)) {
             $actionItemManager = new DataGridAction();
-            $actionItemManager->setId(ActionsInterface::ITEMS_MANAGE);
-            $actionItemManager->setTitle(Acl::getActionInfo(ActionsInterface::ITEMS_MANAGE));
-            $actionItemManager->setIcon($icons->getIconGroup());
+            $actionItemManager->setId(AclActionsInterface::ITEMS_MANAGE);
+            $actionItemManager->setTitle($this->acl->getInfoFor(AclActionsInterface::ITEMS_MANAGE));
+            $actionItemManager->setIcon($icons->group());
             $actionItemManager->setData([
-                'historyReset' => 0,
-                'view' => 'datatabs',
-                'route' => Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE)
-            ]);
+                                            'historyReset' => 0,
+                                            'view' => 'datatabs',
+                                            'route' => $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE),
+                                        ]);
 
             $actions[] = $actionItemManager;
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::SECURITY_MANAGE)) {
+        if ($acl->checkUserAccess(AclActionsInterface::SECURITY_MANAGE)) {
             $actionSecurityManager = new DataGridAction();
-            $actionSecurityManager->setId(ActionsInterface::SECURITY_MANAGE);
-            $actionSecurityManager->setTitle(Acl::getActionInfo(ActionsInterface::SECURITY_MANAGE));
+            $actionSecurityManager->setId(AclActionsInterface::SECURITY_MANAGE);
+            $actionSecurityManager->setTitle($this->acl->getInfoFor(AclActionsInterface::SECURITY_MANAGE));
             $actionSecurityManager->setIcon($icons->getIconByName('security'));
             $actionSecurityManager->setData([
-                'historyReset' => 0,
-                'view' => 'datatabs',
-                'route' => Acl::getActionRoute(ActionsInterface::SECURITY_MANAGE)
-            ]);
+                                                'historyReset' => 0,
+                                                'view' => 'datatabs',
+                                                'route' => $this->acl->getRouteFor(
+                                                    AclActionsInterface::SECURITY_MANAGE
+                                                ),
+                                            ]);
 
             $actions[] = $actionSecurityManager;
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::PLUGIN)) {
+        if ($acl->checkUserAccess(AclActionsInterface::PLUGIN)) {
             $actionPlugins = new DataGridAction();
-            $actionPlugins->setId(ActionsInterface::PLUGIN);
+            $actionPlugins->setId(AclActionsInterface::PLUGIN);
             $actionPlugins->setTitle(__('Plugins'));
             $actionPlugins->setIcon($icons->getIconByName('extension'));
             $actionPlugins->setData([
-                'historyReset' => 1,
-                'view' => 'plugin',
-                'route' => Acl::getActionRoute(ActionsInterface::PLUGIN)
-            ]);
+                                        'historyReset' => 1,
+                                        'view' => 'plugin',
+                                        'route' => $this->acl->getRouteFor(AclActionsInterface::PLUGIN),
+                                    ]);
 
             $actions[] = $actionPlugins;
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::CONFIG)) {
+        if ($acl->checkUserAccess(AclActionsInterface::CONFIG)) {
             $actionConfigManager = new DataGridAction();
             $actionConfigManager->setId('config');
             $actionConfigManager->setTitle(__('Configuration'));
-            $actionConfigManager->setIcon($icons->getIconSettings());
+            $actionConfigManager->setIcon($icons->settings());
             $actionConfigManager->setData([
-                'historyReset' => 1,
-                'view' => 'config',
-                'route' => Acl::getActionRoute(ActionsInterface::CONFIG)
-            ]);
+                                              'historyReset' => 1,
+                                              'view' => 'config',
+                                              'route' => $this->acl->getRouteFor(AclActionsInterface::CONFIG),
+                                          ]);
 
             $actions[] = $actionConfigManager;
         }
@@ -368,9 +373,9 @@ final class LayoutHelper extends HelperBase
      *
      * @return LayoutHelper
      */
-    public function getPublicLayout($template, $page = '')
+    public function getPublicLayout(string $template, string $page = ''): LayoutHelper
     {
-        $this->view->addTemplate('main', '_layouts');
+        $this->view->setLayout('main');
         $this->view->addContentTemplate($template);
         $this->view->assign('useFixedHeader', true);
 
@@ -388,27 +393,14 @@ final class LayoutHelper extends HelperBase
      *
      * @return LayoutHelper
      */
-    public function getCustomLayout($template, $page = '')
+    public function getCustomLayout(string $template, string $page = ''): LayoutHelper
     {
-        $this->view->addTemplate('main', '_layouts');
+        $this->view->setLayout('main');
         $this->view->addContentTemplate($template);
 
         $this->setPage($page);
         $this->initBody();
 
         return $this;
-    }
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    protected function initialize()
-    {
-        $this->theme = $this->dic->get(ThemeInterface::class);
-
-        $this->loggedIn = $this->context->isLoggedIn();
-
-        $this->view->assign('loggedIn', $this->loggedIn);
     }
 }

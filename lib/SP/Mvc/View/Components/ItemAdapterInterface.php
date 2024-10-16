@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +20,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\View\Components;
@@ -36,26 +37,26 @@ interface ItemAdapterInterface
      *
      * @return array
      */
-    public function getItemsFromModel();
+    public function getItemsFromModel(): array;
 
     /**
      * Returns a JSON like collection of items for a select component
      *
      * @return string
      */
-    public function getJsonItemsFromModel();
+    public function getJsonItemsFromModel(): string;
 
     /**
      * Returns a collection of items for a select component
      *
      * @return array
      */
-    public function getItemsFromArray();
+    public function getItemsFromArray(): array;
 
     /**
      * Returns a collection of items for a select component
      *
      * @return string
      */
-    public function getJsonItemsFromArray();
+    public function getJsonItemsFromArray(): string;
 }

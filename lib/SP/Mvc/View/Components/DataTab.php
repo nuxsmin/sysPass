@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,66 +20,30 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\View\Components;
 
-use SP\Core\Exceptions\FileNotFoundException;
-use SP\Mvc\View\Template;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Class DataTab
- *
- * @package SP\Mvc\View\Components
  */
-final class DataTab
+final readonly class DataTab
 {
-    /**
-     * @var string
-     */
-    protected $title;
-    /**
-     * @var Template
-     */
-    protected $template;
 
-    /**
-     * DataTab constructor.
-     *
-     * @param string   $title
-     * @param Template $template
-     */
-    public function __construct($title, Template $template)
+    public function __construct(protected string $title, protected TemplateInterface $template)
     {
-        $this->title = $title;
-        $this->template = $template;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     *
-     * @return DataTab
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function render()
+    public function render(): string
     {
         try {
             return $this->template->render();
@@ -86,5 +51,4 @@ final class DataTab
             return $e->getMessage();
         }
     }
-
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,98 +22,116 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Dtos\AccountViewDto;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
+
+use function SP\__;
+
 /**
- * @var callable       $_getvar
- * @var ThemeIcons     $icons
- * @var AccountExtData $accountData
- * @var AccountAcl     $accountAcl
- * @var ConfigData     $configData
+ * @var callable $_getvar
+ * @var ThemeIconsInterface $icons
+ * @var AccountViewDto $accountView
+ * @var AccountPermission $accountAcl
+ * @var ConfigDataInterface $configData
  */
-
-use SP\Config\ConfigData;
-use SP\Core\UI\ThemeIcons;
-use SP\DataModel\AccountExtData;
-use SP\Services\Account\AccountAcl;
-
-/** @var AccountExtData $accountData */
-$accountData = $_getvar('accountData');
+$accountView = $_getvar('accountData');
 ?>
 
 <div id="actions" class="public-link" align="center">
-    <div id="content" class="public-link">
+    <div class="public-link">
         <div id="title" class="titleNormal">
-            <i class="material-icons"><?php echo $_getvar('title')['icon']; ?></i>
-            <?php echo $_getvar('title')['name']; ?>
+            <i class="material-icons"><?php
+                echo $_getvar('title')['icon']; ?></i>
+            <?php
+            echo $_getvar('title')['name']; ?>
         </div>
         <table class="data">
             <tr>
-                <td class="descField"><?php echo __('Name'); ?></td>
+                <td class="descField"><?php
+                    echo __('Name'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo htmlspecialchars($accountData->getName(), ENT_QUOTES); ?>"
+                               value="<?php
+                               echo htmlspecialchars($accountView->getName(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
-                               for="name"><?php echo __('Account name'); ?></label>
+                               for="name"><?php
+                            echo __('Account name'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Client'); ?></td>
+                <td class="descField"><?php
+                    echo __('Client'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlspecialchars($accountData->getClientName(), ENT_QUOTES); ?>"
+                               value="<?php
+                               echo htmlspecialchars($accountView->getClientName(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
-                               for="client"><?php echo __('Client'); ?></label>
+                               for="client"><?php
+                            echo __('Client'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Category'); ?></td>
+                <td class="descField"><?php
+                    echo __('Category'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="category" name="category" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlspecialchars($accountData->getCategoryName(), ENT_QUOTES); ?>"
+                               value="<?php
+                               echo htmlspecialchars($accountView->getCategoryName(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
-                               for="category"><?php echo __('Category'); ?></label>
+                               for="category"><?php
+                            echo __('Category'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('URL / IP'); ?></td>
+                <td class="descField"><?php
+                    echo __('URL / IP'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="url" name="url" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlspecialchars($accountData->getUrl(), ENT_QUOTES); ?>"
+                               value="<?php
+                               echo htmlspecialchars($accountView->getUrl(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
-                               for="url"><?php echo __('URL / IP'); ?></label>
+                               for="url"><?php
+                            echo __('URL / IP'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('User'); ?></td>
+                <td class="descField"><?php
+                    echo __('User'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo htmlspecialchars($accountData->getLogin(), ENT_QUOTES); ?>"
+                               value="<?php
+                               echo htmlspecialchars($accountView->getLogin(), ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
-                               for="login"><?php echo __('User'); ?></label>
+                               for="login"><?php
+                            echo __('User'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Notes'); ?></td>
+                <td class="descField"><?php
+                    echo __('Notes'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea
@@ -121,47 +139,59 @@ $accountData = $_getvar('accountData');
                                 rows="3" id="notes"
                                 name="notes"
                                 maxlength="1000"
-                                readonly><?php echo htmlspecialchars($accountData->getNotes(), ENT_QUOTES); ?></textarea>
+                                readonly><?php
+                            echo htmlspecialchars($accountView->getNotes(), ENT_QUOTES); ?></textarea>
                         <label class="mdl-textfield__label"
-                               for="notes"><?php echo __('Notes about the account'); ?></label>
+                               for="notes"><?php
+                            echo __('Notes about the account'); ?></label>
                     </div>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Password'); ?></td>
+                <td class="descField"><?php
+                    echo __('Password'); ?></td>
                 <td class="valField">
-                    <?php if ($_getvar('useImage')): ?>
-                        <div class="lowres-title"><?php echo __('Password'); ?></div>
+                    <?php
+                    if ($_getvar('useImage')): ?>
+                        <div class="lowres-title"><?php
+                            echo __('Password'); ?></div>
 
                         <img class="account-pass-image"
-                             src="data:image/png;base64,<?php echo $_getvar('accountPassImage'); ?>"/>
-                    <?php else: ?>
+                             src="data:image/png;base64,<?php
+                             echo $_getvar('accountPassImage'); ?>"/>
+                    <?php
+                    else: ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="password" name="password" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo $accountData->getPass(); ?>"
+                                   value="<?php
+                                   echo $accountView->getPass(); ?>"
                                    readonly>
                             <label class="mdl-textfield__label"
-                                   for="password"><?php echo __('Password'); ?></label>
+                                   for="password"><?php
+                                echo __('Password'); ?></label>
                         </div>
-                    <?php endif; ?>
+                    <?php
+                    endif; ?>
             </tr>
         </table>
 
         <div class="item-actions">
             <ul>
-                <?php if (!$_getvar('useImage')): ?>
+                <?php
+                if (!$_getvar('useImage')): ?>
                     <li>
                         <button id="btnClipPass"
                                 class="clip-pass-icon mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
                                 data-clipboard-target="#password"
-                                data-item-id="<?php echo $accountData->getId(); ?>"
-                                data-sk="<?php echo $_getvar('sk'); ?>"
+                                data-item-id="<?php
+                                echo $accountView->getId(); ?>"
                                 data-history="0"
                                 data-onclick="account/copypass">
                             <i class="material-icons">content_paste</i>
                         </button>
                     </li>
-                <?php endif; ?>
+                <?php
+                endif; ?>
             </ul>
         </div>
     </div>

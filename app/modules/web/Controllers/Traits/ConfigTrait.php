@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,17 +19,19 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Traits;
 
 use Exception;
-use SP\Bootstrap;
-use SP\Config\Config;
-use SP\Config\ConfigData;
-use SP\Http\JsonResponse;
-use SP\Util\Util;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Exceptions\SPException;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Trait ConfigTrait
@@ -38,39 +40,32 @@ use SP\Util\Util;
  */
 trait ConfigTrait
 {
-    use JsonTrait;
-
     /**
      * Guardar la configuración
      *
-     * @param ConfigData    $configData
-     * @param Config        $config
-     * @param callable|null $onSuccess
-     *
-     * @return bool
+     * @throws SPException
      */
-    protected function saveConfig(ConfigData $configData, Config $config, callable $onSuccess = null)
-    {
+    protected function saveConfig(
+        ConfigDataInterface $configData,
+        ConfigFileService $config,
+        callable          $onSuccess = null
+    ): ActionResponse {
         try {
             if ($configData->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, this is a DEMO!!'));
+                return ActionResponse::warning(__u('Ey, this is a DEMO!!'));
             }
 
-            $config->saveConfig($configData);
-
-            if ($configData->isMaintenance() === false && Bootstrap::$LOCK !== false) {
-                Util::unlockApp();
-            }
+            $config->save($configData);
 
             if ($onSuccess !== null) {
                 $onSuccess();
             }
 
-            return $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Configuration updated'));
+            return ActionResponse::ok(__u('Configuration updated'));
         } catch (Exception $e) {
             processException($e);
 
-            return $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error while saving the configuration'));
+            return ActionResponse::error(__u('Error while saving the configuration'), $e->getMessage());
         }
     }
 }

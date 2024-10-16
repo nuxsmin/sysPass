@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
-use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\TagData;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Tag\Models\Tag;
 
 /**
  * Class TagForm
@@ -35,24 +35,26 @@ use SP\DataModel\TagData;
  */
 final class TagForm extends FormBase implements FormInterface
 {
-    /**
-     * @var TagData
-     */
-    protected $tagData;
+    protected ?Tag $tagData = null;
 
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param  int  $action
+     * @param  int|null  $id
      *
-     * @return TagForm
+     * @return TagForm|FormInterface
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
-            case ActionsInterface::TAG_CREATE:
-            case ActionsInterface::TAG_EDIT:
+            case AclActionsInterface::TAG_CREATE:
+            case AclActionsInterface::TAG_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -66,9 +68,9 @@ final class TagForm extends FormBase implements FormInterface
      *
      * @return void
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
-        $this->tagData = new TagData();
+        $this->tagData = new Tag();
         $this->tagData->setId($this->itemId);
         $this->tagData->setName($this->request->analyzeString('name'));
     }
@@ -76,17 +78,14 @@ final class TagForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
         if (!$this->tagData->getName()) {
             throw new ValidationException(__u('A tag name is needed'));
         }
     }
 
-    /**
-     * @return TagData
-     */
-    public function getItemData()
+    public function getItemData(): ?Tag
     {
         return $this->tagData;
     }

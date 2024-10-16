@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,15 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
-use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\UserGroupData;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\User\Models\UserGroup;
 
 /**
  * Class UserGroupForm
@@ -35,24 +36,26 @@ use SP\DataModel\UserGroupData;
  */
 final class UserGroupForm extends FormBase implements FormInterface
 {
-    /**
-     * @var UserGroupData
-     */
-    protected $groupData;
+    protected ?UserGroup $groupData = null;
 
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param  int  $action
+     * @param  int|null  $id
      *
-     * @return UserGroupForm
+     * @return UserGroupForm|FormInterface
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
-            case ActionsInterface::GROUP_CREATE:
-            case ActionsInterface::GROUP_EDIT:
+            case AclActionsInterface::GROUP_CREATE:
+            case AclActionsInterface::GROUP_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -66,9 +69,9 @@ final class UserGroupForm extends FormBase implements FormInterface
      *
      * @return void
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
-        $this->groupData = new UserGroupData();
+        $this->groupData = new UserGroup();
         $this->groupData->setId($this->itemId);
         $this->groupData->setName($this->request->analyzeString('name'));
         $this->groupData->setDescription($this->request->analyzeString('description'));
@@ -78,7 +81,7 @@ final class UserGroupForm extends FormBase implements FormInterface
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
         if (!$this->groupData->getName()) {
             throw new ValidationException(__u('A group name is needed'));
@@ -86,10 +89,14 @@ final class UserGroupForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return UserGroupData
+     * @throws SPException
      */
-    public function getItemData()
+    public function getItemData(): UserGroup
     {
+        if (null === $this->groupData) {
+            throw new SPException(__u('Group data not set'));
+        }
+
         return $this->groupData;
     }
 }

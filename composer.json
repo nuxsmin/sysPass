@@ -1,9 +1,4 @@
 {
-  "name": "syspass/syspass",
-  "description": "PHP web based Password Manager for business and personal use.",
-  "homepage": "https://syspass.org",
-  "minimum-stability": "stable",
-  "license": "GPL-3.0",
   "authors": [
     {
       "name": "Rubén Domínguez",
@@ -12,23 +7,41 @@
       "homepage": "https://syspass.org/"
     }
   ],
-  "support": {
-    "issues": "https://github.com/nuxsmin/sysPass/issues",
-    "source": "https://github.com/nuxsmin/sysPass",
-    "docs": "https://doc.syspass.org"
+  "autoload": {
+    "psr-4": {
+      "SP\\": "lib/SP/",
+      "SP\\Modules\\Web\\": "app/modules/web/",
+      "SP\\Modules\\Api\\": "app/modules/api/",
+      "SP\\Modules\\Cli\\": "app/modules/cli/",
+      "SP\\Tests\\": "tests/SP/"
+    }
   },
+  "config": {
+    "classmap-authoritative": false,
+    "platform": {
+      "php": "8.2"
+    },
+    "allow-plugins": {
+      "ocramius/package-versions": true
+    }
+  },
+  "description": "PHP web based Password Manager for business and personal use.",
+  "homepage": "https://syspass.org",
+  "license": "GPL-3.0",
+  "minimum-stability": "stable",
+  "name": "syspass/syspass",
   "require": {
-    "php": "~7.4",
+    "php": "~8.2 || ~8.3",
     "defuse/php-encryption": "^2.1",
     "phpmailer/phpmailer": "^6.0",
     "ademarre/binary-to-text-php": "dev-master",
     "phpseclib/phpseclib": "^2.0",
     "klein/klein": "^2.1",
-    "php-di/php-di": "^6.0",
+    "php-di/php-di": "^7.0",
     "doctrine/common": "^v2.7",
     "guzzlehttp/guzzle": "^6.3",
     "monolog/monolog": "^1.23",
-    "symfony/debug" : "^v3.4",
+    "vlucas/phpdotenv": "^v4.1",
     "ext-pdo": "*",
     "ext-dom": "*",
     "ext-gd": "*",
@@ -37,17 +50,29 @@
     "ext-fileinfo": "*",
     "ext-zlib": "*",
     "ext-libxml": "*",
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "league/fractal": "^0.20",
+    "symfony/console": "^v5.1",
+    "symfony/lock": "^v5.0",
+    "aura/sqlquery": "~3.0",
+    "laminas/laminas-ldap": "^2.17",
+    "symfony/yaml": "@stable"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
-    "phpunit/phpunit": "^6",
-    "phpunit/dbunit": "^3",
-    "fzaninotto/faker": "^v1.8",
-    "fabpot/goutte": "^v3.2.3",
-    "syspass/extension-installer-plugin": "v2.0.0",
-    "nikic/php-parser": "^v4.1",
-    "php-mock/php-mock-phpunit": "^2.6"
+    "symfony/error-handler": "@stable",
+    "phpunit/phpunit": "^11",
+    "fakerphp/faker": "^v1.23",
+    "nikic/php-parser": "^v5",
+    "squizlabs/php_codesniffer": "^3",
+    "phpstan/phpstan": "^1.9",
+    "mikey179/vfsstream": "@stable",
+    "symfony/dom-crawler": "@stable"
+  },
+  "scripts": {
+    "phpcs": "phpcs --standard=PSR2 lib",
+    "phpstan-app": "vendor/bin/phpstan analyse --level 6 lib",
+    "phpstan-test": "vendor/bin/phpstan analyse --level 6 tests"
   },
   "suggest": {
     "syspass/plugin-authenticator": "^v2.2",
@@ -55,18 +80,9 @@
     "ext-curl": "*",
     "ext-xdebug": "*"
   },
-  "autoload": {
-    "psr-4": {
-      "SP\\": "lib/SP/",
-      "SP\\Modules\\Web\\": "app/modules/web/",
-      "SP\\Modules\\Api\\": "app/modules/api/",
-      "SP\\Tests\\": "tests/SP/"
-    }
-  },
-  "config": {
-    "classmap-authoritative": false,
-    "platform": {
-      "php": "7.4"
-    }
+  "support": {
+    "issues": "https://github.com/nuxsmin/sysPass/issues",
+    "source": "https://github.com/nuxsmin/sysPass",
+    "docs": "https://doc.syspass.org"
   }
 }

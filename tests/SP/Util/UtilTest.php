@@ -1,10 +1,12 @@
 <?php
-/**
+
+declare(strict_types=1);
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,82 +21,31 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\SP\Util;
+namespace SP\Tests\Util;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use SP\Tests\UnitaryTestCase;
 use SP\Util\Util;
 
 /**
  * Class UtilTest
- *
- * @package SP\Tests\Util
  */
-class UtilTest extends TestCase
+#[Group('unitary')]
+class UtilTest extends UnitaryTestCase
 {
     /**
      * This method is called after the last test of this test class is run.
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         ini_set('memory_limit', -1);
     }
 
-    public function testCastToClass()
-    {
-        self::markTestIncomplete();
-    }
-
-    public function testUnserialize()
-    {
-        self::markTestIncomplete();
-    }
-
-    /**
-     * @dataProvider unitsProvider
-     *
-     * @param $unit
-     * @param $expected
-     */
-    public function testConvertShortUnit($unit, $expected)
-    {
-        $this->assertEquals($expected, Util::convertShortUnit($unit));
-    }
-
-    public function testGetMaxUpload()
-    {
-        $upload = ini_set('upload_max_filesize', '30M');
-        $post = ini_set('post_max_size', '10M');
-        $memory = ini_set('memory_limit', 15728640);
-
-        if ($upload !== false
-            && $post !== false
-            && $memory !== false
-        ) {
-            $this->assertEquals(10485760, Util::getMaxUpload());
-        } else {
-            self::markTestSkipped('Unable to set PHP\'s ini variables');
-        }
-    }
-
-    /**
-     * @dataProvider boolProvider
-     *
-     * @param $value
-     * @param $expected
-     */
-    public function testBoolval($value, $expected)
-    {
-        $this->assertEquals($expected, Util::boolval($value));
-        $this->assertEquals($expected, Util::boolval($value, true));
-    }
-
-    /**
-     * @return array
-     */
-    public function boolProvider()
+    public static function boolProvider(): array
     {
         return [
             ['false', false],
@@ -112,23 +63,41 @@ class UtilTest extends TestCase
         ];
     }
 
-    public function testGetTempDir()
-    {
-        self::markTestIncomplete();
-    }
-
-    /**
-     * @return array
-     */
-    public function unitsProvider()
+    public static function unitsProvider(): array
     {
         return [
             ['128K', 131072],
             ['128M', 134217728],
             ['128G', 137438953472],
-            [131072, 131072],
-            [134217728, 134217728],
-            [137438953472, 137438953472],
+            ['131072', 131072],
+            ['134217728', 134217728],
+            ['137438953472', 137438953472],
         ];
+    }
+
+    #[DataProvider('unitsProvider')]
+    public function testConvertShortUnit(string $unit, int $expected)
+    {
+        $this->assertEquals($expected, Util::convertShortUnit($unit));
+    }
+
+    public function testGetMaxUpload()
+    {
+        $upload = ini_get('upload_max_filesize',);
+        $post = ini_get('post_max_size');
+        $memory = ini_get('memory_limit');
+
+        $this->assertEquals(min($upload, $post, $memory), Util::getMaxUpload());
+    }
+
+    /**
+     * @param $value
+     * @param $expected
+     */
+    #[DataProvider('boolProvider')]
+    public function testBoolval($value, $expected)
+    {
+        $this->assertEquals($expected, Util::boolval($value));
+        $this->assertEquals($expected, Util::boolval($value, true));
     }
 }

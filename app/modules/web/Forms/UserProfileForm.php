@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
-use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\ProfileData;
-use SP\DataModel\UserProfileData;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\User\Models\ProfileData;
+use SP\Domain\User\Models\UserProfile;
 
 /**
  * Class UserProfileForm
@@ -36,24 +37,26 @@ use SP\DataModel\UserProfileData;
  */
 final class UserProfileForm extends FormBase implements FormInterface
 {
-    /**
-     * @var UserProfileData
-     */
-    protected $userProfileData;
+    protected ?UserProfile $userProfileData = null;
 
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param  int  $action
+     * @param  int|null  $id
      *
-     * @return UserProfileForm
+     * @return UserProfileForm|FormInterface
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
-            case ActionsInterface::PROFILE_CREATE:
-            case ActionsInterface::PROFILE_EDIT:
+            case AclActionsInterface::PROFILE_CREATE:
+            case AclActionsInterface::PROFILE_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -67,7 +70,20 @@ final class UserProfileForm extends FormBase implements FormInterface
      *
      * @return void
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
+    {
+        $profileData = $this->getProfileDataFromRequest();
+
+        $this->userProfileData = new UserProfile();
+        $this->userProfileData->setName($this->request->analyzeString('profile_name'));
+        $this->userProfileData->setId($this->itemId);
+        $this->userProfileData->setProfile($profileData);
+    }
+
+    /**
+     * @return \SP\Domain\User\Models\ProfileData
+     */
+    private function getProfileDataFromRequest(): ProfileData
     {
         $profileData = new ProfileData();
         $profileData->setAccAdd($this->request->analyzeBool('profile_accadd', false));
@@ -101,16 +117,13 @@ final class UserProfileForm extends FormBase implements FormInterface
         $profileData->setMgmTags($this->request->analyzeBool('profile_tags', false));
         $profileData->setEvl($this->request->analyzeBool('profile_eventlog', false));
 
-        $this->userProfileData = new UserProfileData();
-        $this->userProfileData->setName($this->request->analyzeString('profile_name'));
-        $this->userProfileData->setId($this->itemId);
-        $this->userProfileData->setProfile($profileData);
+        return $profileData;
     }
 
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
         if (!$this->userProfileData->getName()) {
             throw new ValidationException(__u('A profile name is needed'));
@@ -118,10 +131,14 @@ final class UserProfileForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return UserProfileData
+     * @throws SPException
      */
-    public function getItemData()
+    public function getItemData(): UserProfile
     {
+        if (null === $this->userProfileData) {
+            throw new SPException(__u('Profile data not set'));
+        }
+
         return $this->userProfileData;
     }
 }

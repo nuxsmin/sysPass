@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,17 +22,18 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
+
 /**
- * @var ThemeIcons $icons
- * @var ConfigData $configData
- * @var callable   $_getvar
- * @var Template   $this
+ * @var ThemeIconsInterface $icons
+ * @var ConfigDataInterface $configData
+ * @var callable $_getvar
+ * @var TemplateInterface $this
  */
-
-use SP\Config\ConfigData;
-use SP\Core\UI\ThemeIcons;
-use SP\Mvc\View\Template;
-
 ?>
 
 <form method="post" name="frmWiki" id="frmWiki" class="form-action"
@@ -42,7 +43,8 @@ use SP\Mvc\View\Template;
 
     <div id="title" class="titleNormal">
         <i class="material-icons">folder</i>
-        <?php echo __('Wiki'); ?>
+        <?php
+        echo __('Wiki'); ?>
     </div>
 
     <table id="tblWiki" class="data tblConfig">
@@ -56,13 +58,18 @@ use SP\Mvc\View\Template;
                                    for="wiki_enabled">
                                 <input type="checkbox" id="wiki_enabled"
                                        class="mdl-switch__input"
-                                       name="wiki_enabled" <?php echo $configData->isWikiEnabled() ? 'checked' : ''; ?>/>
+                                       name="wiki_enabled" <?php
+                                echo $configData->isWikiEnabled() ? 'checked' : ''; ?>/>
                             </label>
                         </div>
 
                         <span class="mdl-list__item-primary-content">
-                            <span><?php echo __('Enable Wiki links'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php echo __('Enables the option to add a link to search for results in an external Wiki.'); ?></span>
+                            <span><?php
+                                echo __('Enable Wiki links'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php
+                                echo __(
+                                    'Enables the option to add a link to search for results in an external Wiki.'
+                                ); ?></span>
                         </span>
                     </li>
                 </ul>
@@ -70,21 +77,27 @@ use SP\Mvc\View\Template;
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Wiki search URL'); ?>
+                <?php
+                echo __('Wiki search URL'); ?>
                 <div id="help-wiki_searchurl"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php
+                     echo $icons->help()->getClass(); ?>"><?php
+                    echo $icons->help()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-wiki_searchurl">
                     <p>
-                        <?php echo __('URL that Wiki uses for making an entry searching.'); ?>
+                        <?php
+                        echo __('URL that Wiki uses for making an entry searching.'); ?>
                     </p>
 
                     <p>
-                        <?php echo __('The client\'s name is used as parameter.'); ?>
+                        <?php
+                        echo __('The client\'s name is used as parameter.'); ?>
                     </p>
 
                     <p>
-                        <?php echo __('Example:'); ?>
+                        <?php
+                        echo __('Example:'); ?>
                     </p>
 
                     <p>
@@ -97,30 +110,37 @@ use SP\Mvc\View\Template;
                     <input id="wiki_searchurl" name="wiki_searchurl" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
-                           value="<?php echo htmlspecialchars($configData->getWikiSearchurl(), ENT_QUOTES); ?>">
+                           value="<?php
+                           echo htmlspecialchars($configData->getWikiSearchurl(), ENT_QUOTES); ?>">
                     <label class="mdl-textfield__label"
-                           for="wiki_searchurl"><?php echo __('Wiki search URL'); ?></label>
+                           for="wiki_searchurl"><?php
+                        echo __('Wiki search URL'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Wiki page URL'); ?>
+                <?php
+                echo __('Wiki page URL'); ?>
                 <div id="help-wiki_pageurl"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(
-                     ); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php
+                     echo $icons->help()->getClass(); ?>"><?php
+                    echo $icons->help()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-wiki_pageurl">
                     <p>
-                        <?php echo __('URL that Wiki uses for accessing to the entry details.'); ?>
+                        <?php
+                        echo __('URL that Wiki uses for accessing to the entry details.'); ?>
                     </p>
 
                     <p>
-                        <?php echo __('Account\'s name is used as parameter of Wiki search variable.'); ?>
+                        <?php
+                        echo __('Account\'s name is used as parameter of Wiki search variable.'); ?>
                     </p>
 
                     <p>
-                        <?php echo __('Example:'); ?>
+                        <?php
+                        echo __('Example:'); ?>
                     </p>
 
                     <p>
@@ -133,34 +153,42 @@ use SP\Mvc\View\Template;
                     <input id="wiki_pageurl" name="wiki_pageurl" type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
-                           value="<?php echo htmlspecialchars($configData->getWikiPageurl(), ENT_QUOTES); ?>">
+                           value="<?php
+                           echo htmlspecialchars($configData->getWikiPageurl(), ENT_QUOTES); ?>">
                     <label class="mdl-textfield__label"
-                           for="wiki_pageurl"><?php echo __('Wiki page URL'); ?></label>
+                           for="wiki_pageurl"><?php
+                        echo __('Wiki page URL'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Account name prefix'); ?>
+                <?php
+                echo __('Account name prefix'); ?>
                 <div id="help-wikifilter"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(
-                     ); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                     class="icon material-icons <?php
+                     echo $icons->help()->getClass(); ?>"><?php
+                    echo $icons->help()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-wikifilter">
                     <p>
-                        <?php echo __('Prefix to determine which accounts have a link to the Wiki.'); ?>
+                        <?php
+                        echo __('Prefix to determine which accounts have a link to the Wiki.'); ?>
                     </p>
 
                     <p>
-                        <?php echo __('Examples:') . ' serv- | srv- | vm-'; ?>
+                        <?php
+                        echo __('Examples:') . ' serv- | srv- | vm-'; ?>
                     </p>
                 </div>
             </td>
             <td class="valField">
-                <div class="lowres-title"><?php echo __('Account name prefix'); ?></div>
+                <div class="lowres-title"><?php
+                    echo __('Account name prefix'); ?></div>
 
                 <input type="text" name="wiki_filter" id="wikifilter"
-                       value="<?php echo implode(',', $configData->getWikiFilter()); ?>"/>
+                       value="<?php
+                       echo implode(',', $configData->getWikiFilter()); ?>"/>
             </td>
         </tr>
     </table>
@@ -170,16 +198,22 @@ use SP\Mvc\View\Template;
     <ul>
         <li>
             <button id="btnBack" type="button"
-                    class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                    title="<?php echo __('Back'); ?>">
-                <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
+                    echo $icons->back()->getClassButton(); ?>"
+                    title="<?php
+                    echo __('Back'); ?>">
+                <i class="material-icons"><?php
+                    echo $icons->back()->getIcon(); ?></i>
             </button>
         </li>
         <li>
             <button form="frmWiki"
-                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-                    title="<?php echo $icons->getIconSave()->getTitle(); ?>">
-                <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
+                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
+                    echo $icons->save()->getClassButton(); ?>"
+                    title="<?php
+                    echo $icons->save()->getTitle(); ?>">
+                <i class="material-icons"><?php
+                    echo $icons->save()->getIcon(); ?></i>
             </button>
         </li>
     </ul>

@@ -1,10 +1,12 @@
 <?php
-/**
+
+declare(strict_types=1);
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,177 +21,136 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests;
 
-use DI\Container;
-use DI\ContainerBuilder;
-use Exception;
-use SP\Core\Context\ContextException;
-use SP\Core\Context\ContextInterface;
-use SP\DataModel\ProfileData;
-use SP\Services\User\UserLoginResponse;
-use SP\Storage\Database\DatabaseConnectionData;
-use SP\Storage\Database\DBStorageInterface;
-use SP\Storage\Database\MySQLHandler;
+use org\bovigo\vfs\vfsStream;
+use RuntimeException;
+use SP\Core\UI\ThemeIcons;
+use SP\Domain\Config\Adapters\ConfigData;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
+use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Infrastructure\Database\MysqlHandler;
+use SP\Infrastructure\File\FileSystem;
 
-define('DEBUG', true);
+use function SP\logger;
 
-define('APP_MODULE', 'tests');
+define('DEBUG', false);
+define('REAL_APP_ROOT', dirname(__DIR__, 2));
+define('APP_ROOT', REAL_APP_ROOT);
 
-define('APP_ROOT', dirname(__DIR__, 2));
-define('TEST_ROOT', dirname(__DIR__));
-define('RESOURCE_DIR', TEST_ROOT . DIRECTORY_SEPARATOR . 'res');
-define('CONFIG_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config');
-define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
-define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
+$testDirectory = vfsStream::setup(
+    'test',
+    750,
+    [
+        'res' => [
+            'cache' => [
+                'secure_session' => [],
+                'icons.cache' => serialize(new ThemeIcons()),
+                'config.cache' => serialize(new ConfigData())
+            ]
+        ],
+        'tmp' => [
+            'test.log' => ''
+        ],
+        'schemas' => [],
+        'app' => [
+            'locales' => [],
+            'modules' => [],
+            'resources' => [],
+            'config' => [],
+            'cache' => [
+                'secure_session' => []
+            ]
+        ]
+    ]
+);
 
-define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
-define('CACHE_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'cache');
-define('TMP_PATH', TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
+$testResources = vfsStream::copyFromFileSystem(dirname(__DIR__) . '/res', $testDirectory->getChild('res'));
+vfsStream::copyFromFileSystem(REAL_APP_ROOT . '/schemas', $testDirectory->getChild('schemas'));
+$appResources = vfsStream::copyFromFileSystem(
+    REAL_APP_ROOT . '/app/resources',
+    $testDirectory->getChild('app/resources')
+);
+vfsStream::copyFromFileSystem(
+    REAL_APP_ROOT . '/app/config',
+    $testDirectory->getChild('app/config')
+);
+vfsStream::copyFromFileSystem(
+    REAL_APP_ROOT . '/app/locales',
+    $testDirectory->getChild('app/locales')
+);
 
-define('LOG_FILE', TMP_PATH . DIRECTORY_SEPARATOR . 'test.log');
+define('TEST_ROOT', $testDirectory->url());
+define('APP_PATH', $testDirectory->getChild('app')->url());
+define('RESOURCE_PATH', $testResources->url());
+define('TMP_PATH', $testDirectory->getChild('tmp')->url());
+
+define('FIXTURE_FILES', [
+    RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'truncate.sql',
+    RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass.sql',
+]);
 define('SELF_IP_ADDRESS', getRealIpAddress());
 define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
+require_once REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+require_once REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
-print 'APP_ROOT=' . APP_ROOT . PHP_EOL;
-print 'TEST_ROOT=' . TEST_ROOT . PHP_EOL;
-print 'SELF_IP_ADDRESS=' . SELF_IP_ADDRESS . PHP_EOL;
-
-// Setup directories
-recreateDir(TMP_PATH);
-recreateDir(CACHE_PATH);
-
-if (is_dir(CONFIG_PATH)
-    && decoct(fileperms(CONFIG_PATH) & 0777) !== '750'
-) {
-    print 'Setting permissions for ' . CONFIG_PATH . PHP_EOL;
-
-    chmod(CONFIG_PATH, 0750);
-}
+logger('APP_PATH=' . APP_PATH);
+logger('TEST_ROOT=' . TEST_ROOT);
+logger('SELF_IP_ADDRESS=' . SELF_IP_ADDRESS);
 
 /**
  * Función para llamadas a gettext
  */
 if (!function_exists('\gettext')) {
-    /**
-     *
-     * @param $str
-     *
-     * @return string
-     */
-    function gettext($str)
+    function gettext(string $str): string
     {
         return $str;
     }
 }
 
-/**
- * @return string
- */
-function getRealIpAddress()
+function getRealIpAddress(): string
 {
     return trim(shell_exec('ip a s eth0 | awk \'$1 == "inet" {print $2}\' | cut -d"/" -f1')) ?: '127.0.0.1';
 }
 
-/**
- * Configura el contexto de la aplicación para los tests
- *
- * @return Container
- * @throws ContextException
- * @throws Exception
- */
-function setupContext()
-{
-    // Instancia del contenedor de dependencias con las definiciones de los objetos necesarios
-    // para la aplicación
-    $builder = new ContainerBuilder();
-//    $builder->setDefinitionCache(new ArrayCache());
-    $builder->addDefinitions(APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Definitions.php');
-    $dic = $builder->build();
-
-    // Inicializar el contexto
-    $context = $dic->get(ContextInterface::class);
-    $context->initialize();
-
-    $context->setTrasientKey('_masterpass', '12345678900');
-
-    $userData = new UserLoginResponse();
-    $userData->setId(1);
-    $userData->setUserGroupId(1);
-    $userData->setIsAdminApp(1);
-    $userData->setLastUpdate(time());
-
-    $context->setUserData($userData);
-
-    $context->setUserProfile(new ProfileData());
-
-    // Inicializar los datos de conexión a la BBDD
-    $dic->set(DBStorageInterface::class, getDbHandler());
-
-    return $dic;
-}
-
-/**
- * @param DatabaseConnectionData|null $connectionData
- *
- * @return MySQLHandler
- */
-function getDbHandler(DatabaseConnectionData $connectionData = null)
+function getDbHandler(?DatabaseConnectionData $connectionData = null): MysqlHandler
 {
     if ($connectionData === null) {
         // Establecer configuración de conexión con la BBDD
-        $connectionData = (new DatabaseConnectionData())
-            ->setDbHost(getenv('DB_SERVER'))
-            ->setDbName(getenv('DB_NAME'))
-            ->setDbUser(getenv('DB_USER'))
-            ->setDbPass(getenv('DB_PASS'));
+        $connectionData = DatabaseConnectionData::getFromEnvironment();
     }
 
-    return new MySQLHandler($connectionData);
+    return new MysqlHandler($connectionData);
+}
+
+function getResource(string $dir, string $file): string
+{
+    return file_get_contents(RESOURCE_PATH . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file) ?: '';
+}
+
+function saveResource(string $dir, string $file, string $data): bool|int
+{
+    return file_put_contents(RESOURCE_PATH . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file, $data);
 }
 
 /**
- * @param $dir
- * @param $file
- *
- * @return string
+ * @throws FileNotFoundException
  */
-function getResource($dir, $file)
+function recreateDir(string $dir): void
 {
-    return file_get_contents(RESOURCE_DIR . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file) ?: '';
-}
+    if (is_dir($dir)) {
+        logger('Deleting ' . $dir);
 
-/**
- * @param $dir
- * @param $file
- * @param $data
- *
- * @return string
- */
-function saveResource($dir, $file, $data)
-{
-    return file_put_contents(RESOURCE_DIR . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $file, $data);
-}
+        FileSystem::rmdirRecursive($dir);
+    }
 
-/**
- * @param $dir
- */
-function recreateDir($dir)
-{
-    if (!is_dir($dir)) {
-        print 'Creating ' . $dir . PHP_EOL;
+    logger('Creating ' . $dir);
 
-        mkdir($dir);
-    } else {
-        print 'Deleting ' . $dir . PHP_EOL;
-
-        // Delete tmp dir ...
-        array_map('unlink', glob($dir . DIRECTORY_SEPARATOR . '*'));
+    if (!mkdir($dir) && !is_dir($dir)) {
+        throw new RuntimeException(sprintf('Directory "%s" was not created', $dir));
     }
 }

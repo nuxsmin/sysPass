@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +20,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\Controller;
 
 
-use SP\Core\Events\EventDispatcherInterface;
-use SP\Mvc\View\Template;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Mvc\View\TemplateInterface;
 
 /**
  * Interface ExtensibleController
@@ -36,14 +37,14 @@ use SP\Mvc\View\Template;
 interface ExtensibleControllerInterface
 {
     /**
-     * @return Template
+     * @return TemplateInterface
      */
-    public function getView(): Template;
+    public function getView(): TemplateInterface;
 
     /**
      * @return void
      */
-    public function displayView();
+    public function displayView(): void;
 
     /**
      * @return EventDispatcherInterface

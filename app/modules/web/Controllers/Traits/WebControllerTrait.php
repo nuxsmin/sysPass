@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,100 +19,42 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Traits;
 
-use Klein\Klein;
-use Psr\Container\ContainerInterface;
-use SP\Config\Config;
-use SP\Config\ConfigData;
-use SP\Core\Acl\Acl;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
-use SP\Core\Events\EventDispatcher;
-use SP\Core\Exceptions\SPException;
-use SP\Core\PhpExtensionChecker;
-use SP\Core\UI\ThemeInterface;
-use SP\Http\Request;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Mvc\Controller\ControllerTrait;
+
+use function SP\processException;
 
 /**
  * Trait ControllerTratit
- *
- * @package SP\Modules\Web\Controllers
  */
 trait WebControllerTrait
 {
     use ControllerTrait;
 
-    /**
-     * @var string Nombre del controlador
-     */
-    protected $controllerName;
-    /**
-     * @var  EventDispatcher
-     */
-    protected $eventDispatcher;
-    /**
-     * @var  Config
-     */
-    protected $config;
-    /**
-     * @var  SessionContext
-     */
-    protected $session;
-    /**
-     * @var  ThemeInterface
-     */
-    protected $theme;
-    /**
-     * @var string
-     */
-    protected $actionName;
-    /**
-     * @var Klein
-     */
-    protected $router;
-    /**
-     * @var Acl
-     */
-    protected $acl;
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
-    /**
-     * @var Request
-     */
-    protected $request;
-    /**
-     * @var PhpExtensionChecker
-     */
-    protected $extensionChecker;
-    /**
-     * @var bool
-     */
-    private $setup = false;
+    private bool $setup = false;
 
     /**
      * Returns the signed URI component after validating its signature.
      * This component is used for deep linking
-     *
-     * @return null|string
      */
-    final protected function getSignedUriFromRequest()
+    final protected function getSignedUriFromRequest(RequestService $request, ConfigDataInterface $configData): ?string
     {
         if (!$this->setup) {
             return null;
         }
 
-        $from = $this->request->analyzeString('from');
+        $from = $request->analyzeString('from');
 
         if ($from) {
             try {
-                $this->request->verifySignature($this->configData->getPasswordSalt(), 'from');
+                $request->verifySignature($configData->getPasswordSalt(), 'from');
             } catch (SPException $e) {
                 processException($e);
 
@@ -124,22 +66,14 @@ trait WebControllerTrait
     }
 
     /**
-     * @param ContainerInterface $dic
+     * @throws SPException
      */
-    private function setUp(ContainerInterface $dic)
+    private function handleSessionTimeout(): void
     {
-        $this->controllerName = $this->getControllerName();
-
-        $this->config = $dic->get(Config::class);
-        $this->configData = $this->config->getConfigData();
-        $this->session = $dic->get(ContextInterface::class);
-        $this->theme = $dic->get(ThemeInterface::class);
-        $this->eventDispatcher = $dic->get(EventDispatcher::class);
-        $this->router = $dic->get(Klein::class);
-        $this->request = $dic->get(Request::class);
-        $this->acl = $dic->get(Acl::class);
-        $this->extensionChecker = $dic->get(PhpExtensionChecker::class);
-
-        $this->setup = true;
+        $this->sessionLogout(
+            $this->request,
+            $this->configData,
+            fn($redirect) => $this->router->response()->redirect($redirect)->send(true)
+        );
     }
 }
