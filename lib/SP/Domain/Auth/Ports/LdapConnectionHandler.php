@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -29,24 +30,12 @@ use SP\Domain\Auth\Providers\Ldap\LdapException;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
 
 /**
- * Interface LdapInterface
- *
- * @package Auth\Ldap
+ * Interface LdapConnectionHandler
  */
-interface LdapConnectionInterface
+interface LdapConnectionHandler
 {
     /**
      * @throws LdapException
      */
-    public function checkConnection(): void;
-
-    /**
-     * @throws LdapException
-     */
-    public function connect(?string $bindDn = null, ?string $bindPass = null): void;
-
-    /**
-     * @throws LdapException
-     */
-    public function mutate(LdapParams $ldapParams): LdapConnectionInterface;
+    public function connect(LdapParams $ldapParams, ?string $username = null, ?string $password = null): void;
 }

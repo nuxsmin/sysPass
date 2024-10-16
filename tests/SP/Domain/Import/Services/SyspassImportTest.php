@@ -86,7 +86,8 @@ class SyspassImportTest extends UnitaryTestCase
         $this->clientService
             ->expects(self::exactly(4))
             ->method('getByName')
-            ->with(...self::withConsecutive(['Apple'], ['CSV Client 1'], ['Google'], ['KK']));
+            ->with(...self::withConsecutive(['Apple'], ['CSV Client 1'], ['Google'], ['KK']))
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->clientService
             ->expects(self::exactly(4))
@@ -97,7 +98,8 @@ class SyspassImportTest extends UnitaryTestCase
         $this->categoryService
             ->expects(self::exactly(5))
             ->method('getByName')
-            ->with(...self::withConsecutive(['CSV Category 1'], ['Linux'], ['SSH'], ['Test'], ['Web']));
+            ->with(...self::withConsecutive(['CSV Category 1'], ['Linux'], ['SSH'], ['Test'], ['Web']))
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->categoryService
             ->expects(self::exactly(5))
@@ -115,7 +117,8 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('getByName')
             ->with(
                 ...self::withConsecutive(['Apache'], ['Debian'], ['JBoss'], ['MySQL'], ['server'], ['SSH'], ['www'])
-            );
+            )
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->tagService
             ->expects(self::exactly(7))
@@ -203,7 +206,8 @@ class SyspassImportTest extends UnitaryTestCase
         $this->clientService
             ->expects(self::exactly(4))
             ->method('getByName')
-            ->with(...self::withConsecutive(['Apple'], ['CSV Client 1'], ['Google'], ['KK']));
+            ->with(...self::withConsecutive(['Apple'], ['CSV Client 1'], ['Google'], ['KK']))
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->clientService
             ->expects(self::exactly(4))
@@ -214,7 +218,8 @@ class SyspassImportTest extends UnitaryTestCase
         $this->categoryService
             ->expects(self::exactly(5))
             ->method('getByName')
-            ->with(...self::withConsecutive(['CSV Category 1'], ['Linux'], ['SSH'], ['Test'], ['Web']));
+            ->with(...self::withConsecutive(['CSV Category 1'], ['Linux'], ['SSH'], ['Test'], ['Web']))
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->categoryService
             ->expects(self::exactly(5))
@@ -232,7 +237,8 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('getByName')
             ->with(
                 ...self::withConsecutive(['Apache'], ['Debian'], ['JBoss'], ['MySQL'], ['server'], ['SSH'], ['www'])
-            );
+            )
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->tagService
             ->expects(self::exactly(7))
@@ -360,7 +366,8 @@ class SyspassImportTest extends UnitaryTestCase
         $this->clientService
             ->expects(self::exactly(4))
             ->method('getByName')
-            ->with(...self::withConsecutive(['Apple'], ['CSV Client 1'], ['Google'], ['KK']));
+            ->with(...self::withConsecutive(['Apple'], ['CSV Client 1'], ['Google'], ['KK']))
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->clientService
             ->expects(self::exactly(4))
@@ -371,7 +378,8 @@ class SyspassImportTest extends UnitaryTestCase
         $this->categoryService
             ->expects(self::exactly(5))
             ->method('getByName')
-            ->with(...self::withConsecutive(['CSV Category 1'], ['Linux'], ['SSH'], ['Test'], ['Web']));
+            ->with(...self::withConsecutive(['CSV Category 1'], ['Linux'], ['SSH'], ['Test'], ['Web']))
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->categoryService
             ->expects(self::exactly(5))
@@ -389,7 +397,8 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('getByName')
             ->with(
                 ...self::withConsecutive(['Apache'], ['Debian'], ['JBoss'], ['MySQL'], ['server'], ['SSH'], ['www'])
-            );
+            )
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->tagService
             ->expects(self::exactly(7))
@@ -612,7 +621,8 @@ class SyspassImportTest extends UnitaryTestCase
         $this->clientService
             ->expects(self::exactly(3))
             ->method('getByName')
-            ->with(...self::withConsecutive(['Amazon'], ['Apple'], ['Google']));
+            ->with(...self::withConsecutive(['Amazon'], ['Apple'], ['Google']))
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->clientService
             ->expects(self::exactly(3))
@@ -623,7 +633,8 @@ class SyspassImportTest extends UnitaryTestCase
         $this->categoryService
             ->expects(self::exactly(4))
             ->method('getByName')
-            ->with(...self::withConsecutive(['AWS'], ['GCP'], ['SSH'], ['Web']));
+            ->with(...self::withConsecutive(['AWS'], ['GCP'], ['SSH'], ['Web']))
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->categoryService
             ->expects(self::exactly(4))
@@ -641,7 +652,8 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('getByName')
             ->with(
                 ...self::withConsecutive(['Apache'], ['Email'], ['JBoss'], ['SaaS'], ['SSH'], ['Tomcat'])
-            );
+            )
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->tagService
             ->expects(self::exactly(6))
@@ -772,7 +784,8 @@ class SyspassImportTest extends UnitaryTestCase
         $this->clientService
             ->expects(self::exactly(4))
             ->method('getByName')
-            ->with(...self::withConsecutive(['Apple'], ['CSV Client 1'], ['Google'], ['KK']));
+            ->with(...self::withConsecutive(['Apple'], ['CSV Client 1'], ['Google'], ['KK']))
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->clientService
             ->expects(self::exactly(4))
@@ -783,7 +796,8 @@ class SyspassImportTest extends UnitaryTestCase
         $this->categoryService
             ->expects(self::exactly(5))
             ->method('getByName')
-            ->with(...self::withConsecutive(['CSV Category 1'], ['Linux'], ['SSH'], ['Test'], ['Web']));
+            ->with(...self::withConsecutive(['CSV Category 1'], ['Linux'], ['SSH'], ['Test'], ['Web']))
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->categoryService
             ->expects(self::exactly(5))
@@ -801,7 +815,8 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('getByName')
             ->with(
                 ...self::withConsecutive(['Apache'], ['Debian'], ['JBoss'], ['MySQL'], ['server'], ['SSH'], ['www'])
-            );
+            )
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->tagService
             ->expects(self::exactly(7))

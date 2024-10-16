@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,38 +26,46 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Services;
 
-use SP\Core\Application;
 use SP\Domain\Auth\Dtos\LdapCheckResults;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapCheckService;
-use SP\Domain\Auth\Ports\LdapConnectionInterface;
+use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Auth\Providers\Ldap\LdapBase;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
-use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
 /**
  * Class LdapCheck
  */
-final class LdapCheck extends Service implements LdapCheckService
+final readonly class LdapCheck implements LdapCheckService
 {
     public function __construct(
-        Application $application,
-        private readonly LdapConnectionInterface $ldapConnection,
-        private readonly LdapActionsService $ldapActions
+        private LdapConnectionHandler $ldapConnection,
+        private LdapActionsService $ldapActions,
+        private EventDispatcherInterface $eventDispatcher
     ) {
-        parent::__construct($application);
     }
 
     /**
      * @throws LdapException
      */
-    public function getObjectsByFilter(string $filter, ?LdapParams $ldapParams = null): LdapCheckResults
+    public function getObjectsByFilter(LdapParams $ldapParams, string $filter): LdapCheckResults
     {
+        $ldap = $this->getLdapService($ldapParams);
+
         return new LdapCheckResults(
-            self::getObjectsWithAttributes($this->getLdap($ldapParams)->actions(), $filter, ['dn'])
+            self::getObjectsWithAttributes($ldap->actions(), $filter, ['dn'])
         );
+    }
+
+    /**
+     * @throws LdapException
+     */
+    private function getLdapService(LdapParams $ldapParams): LdapService
+    {
+        return LdapBase::factory($this->eventDispatcher, $this->ldapConnection, $this->ldapActions, $ldapParams);
     }
 
     /**
@@ -104,14 +113,17 @@ final class LdapCheck extends Service implements LdapCheckService
     /**
      * @throws LdapException
      */
-    public function getObjects(bool $includeGroups = true, ?LdapParams $ldapParams = null): LdapCheckResults
+    public function getObjects(LdapParams $ldapParams, bool $includeGroups = true): LdapCheckResults
     {
-        $ldap = $this->getLdap($ldapParams);
+        $ldap = $this->getLdapService($ldapParams);
 
         $ldapActionsService = $ldap->actions();
 
-        $indirectFilterItems =
-            self::getObjectsWithAttributes($ldapActionsService, $ldap->getGroupMembershipIndirectFilter(), ['dn']);
+        $indirectFilterItems = self::getObjectsWithAttributes(
+            $ldapActionsService,
+            $ldap->getGroupMembershipIndirectFilter(),
+            ['dn']
+        );
 
         $directFilterItems = self::getObjectsWithAttributes(
             $ldapActionsService,
@@ -133,21 +145,5 @@ final class LdapCheck extends Service implements LdapCheckService
         }
 
         return $ldapCheckResults;
-    }
-
-    /**
-     * @param LdapParams $ldapParams
-     *
-     * @return LdapService
-     * @throws LdapException
-     */
-    private function getLdap(LdapParams $ldapParams): LdapService
-    {
-        return LdapBase::factory(
-            $this->eventDispatcher,
-            $this->ldapConnection,
-            $this->ldapActions,
-            $ldapParams
-        );
     }
 }

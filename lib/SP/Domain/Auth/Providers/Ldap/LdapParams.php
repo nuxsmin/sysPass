@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -27,17 +28,17 @@ namespace SP\Domain\Auth\Providers\Ldap;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Http\Ports\RequestService;
 
 use function SP\__u;
 
 /**
  * Class LdapParams
- *
- * @package SP\Domain\Auth\Providers\Ldap
  */
 final class LdapParams
 {
-    private const REGEX_SERVER = '(?<server>(?:(?<proto>ldap|ldaps):\/\/)?[\w\.\-]+)(?::(?<port>\d+))?';
+    private const REGEX_SERVER    = '(?<server>(?:(?<proto>ldap|ldaps):\/\/)?[\w\.\-]+)(?::(?<port>\d+))?';
+    private const REQUIRED_PARAMS = ['server', 'type', 'bindUser', 'bindPass'];
 
     private int     $port                  = 389;
     private ?string $searchBase            = null;
@@ -59,46 +60,85 @@ final class LdapParams
     /**
      * @throws ValidationException
      */
-    public static function getFrom(ConfigDataInterface $configData): LdapParams
+    public static function fromConfig(ConfigDataInterface $configData): LdapParams
     {
-        $data = self::getServerAndPort($configData->getLdapServer());
+        return self::fromArray(
+            [
+                'server' => $configData->getLdapServer(),
+                'type' => $configData->getLdapType(),
+                'bindUser' => $configData->getLdapBindUser(),
+                'bindPass' => $configData->getLdapBindPass(),
+                'searchBase' => $configData->getLdapBase(),
+                'group' => $configData->getLdapGroup(),
+                'tlsEnabled' => $configData->isLdapTlsEnabled(),
+                'filterUserObject' => $configData->getLdapFilterUserObject(),
+                'filterGroupObject' => $configData->getLdapFilterGroupObject(),
+                'filterUserAttributes' => $configData->getLdapFilterUserAttributes(),
+                'filterGroupAttributes' => $configData->getLdapFilterGroupAttributes(),
+            ]
+        );
+    }
 
-        if (count($data) === 0) {
+    /**
+     * @throws ValidationException
+     */
+    public static function fromArray(array $params): LdapParams
+    {
+        $validParams = count(
+            array_filter(array_intersect(self::REQUIRED_PARAMS, array_keys($params)), static fn($v) => !empty($v))
+        );
+
+        if ($validParams !== count(self::REQUIRED_PARAMS)) {
+            throw ValidationException::error(__u('Missing LDAP parameters'));
+        }
+
+        $data = preg_match(sprintf("#%s#i", self::REGEX_SERVER), $params['server'], $serverAndPort);
+
+        if ($data !== 1 || empty($serverAndPort)) {
             throw ValidationException::error(__u('Wrong LDAP parameters'));
         }
 
         $ldapParams = new self(
-            $data['server'],
-            LdapTypeEnum::from($configData->getLdapType()),
-            $configData->getLdapBindUser(),
-            $configData->getLdapBindPass()
+            $serverAndPort['server'],
+            LdapTypeEnum::tryFrom($params['type']) ?: LdapTypeEnum::STD,
+            $params['bindUser'],
+            $params['bindPass']
         );
 
-        $ldapParams->setPort($data['port'] ?? 389);
-        $ldapParams->setSearchBase($configData->getLdapBase());
-        $ldapParams->setGroup($configData->getLdapGroup());
-        $ldapParams->setFilterUserObject($configData->getLdapFilterUserObject());
-        $ldapParams->setFilterGroupObject($configData->getLdapFilterGroupObject());
-        $ldapParams->setFilterUserAttributes($configData->getLdapFilterUserAttributes());
-        $ldapParams->setFilterGroupAttributes($configData->getLdapFilterGroupAttributes());
+        $ldapParams->searchBase = $params['searchBase'];
+        $ldapParams->port = $serverAndPort['port'] ?? 389;
+        $ldapParams->group = $params['group'];
+        $ldapParams->tlsEnabled = $params['tlsEnabled'];
+        $ldapParams->filterUserObject = $params['filterUserObject'];
+        $ldapParams->filterGroupObject = $params['filterGroupObject'];
+        $ldapParams->filterUserAttributes = $params['filterUserAttributes'];
+        $ldapParams->filterGroupAttributes = $params['filterGroupAttributes'];
 
         return $ldapParams;
     }
 
     /**
-     * Devolver el puerto del servidor si está establecido
-     *
-     * @param $server
-     *
-     * @return array
+     * @param RequestService $request
+     * @return LdapParams
+     * @throws ValidationException
      */
-    public static function getServerAndPort($server): array
+    public static function fromRequest(RequestService $request): LdapParams
     {
-        return preg_match(
-            '#' . self::REGEX_SERVER . '#i',
-            $server,
-            $matches
-        ) ? $matches : [];
+        return self::fromArray(
+            [
+                'server' => $request->analyzeString('ldap_server'),
+                'type' => $request->analyzeInt('ldap_server_type'),
+                'bindUser' => $request->analyzeString('ldap_binduser'),
+                'bindPass' => $request->analyzeEncrypted('ldap_bindpass'),
+                'searchBase' => $request->analyzeString('ldap_base'),
+                'group' => $request->analyzeString('ldap_group'),
+                'tlsEnabled' => $request->analyzeBool('ldap_tls_enabled', false),
+                'filterUserObject' => $request->analyzeString('ldap_filter_user_object'),
+                'filterGroupObject' => $request->analyzeString('ldap_filter_group_object'),
+                'filterUserAttributes' => $request->analyzeArray('ldap_filter_user_attributes'),
+                'filterGroupAttributes' => $request->analyzeArray('ldap_filter_group_attributes'),
+            ]
+        );
     }
 
     public function getFilterUserObject(): ?string

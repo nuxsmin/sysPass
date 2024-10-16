@@ -185,16 +185,6 @@ class LdapActionsTest extends UnitaryTestCase
         $this->ldapActions->getAttributes('test');
     }
 
-    public function testMutate(): void
-    {
-        $ldapParams =
-            new LdapParams(self::$faker->domainName, LdapTypeEnum::ADS, self::$faker->company, self::$faker->password);
-
-        $this->ldapActions->mutate($ldapParams);
-
-        $this->assertTrue(true);
-    }
-
     /**
      * @throws LdapException
      * @throws Exception
@@ -281,7 +271,7 @@ class LdapActionsTest extends UnitaryTestCase
         $ldapParams =
             new LdapParams(self::$faker->domainName, LdapTypeEnum::STD, self::$faker->userName, self::$faker->password);
 
-        $this->ldapActions = new LdapActions($this->ldap, $ldapParams, $this->eventDispatcher);
+        $this->ldapActions = new LdapActions($this->ldap, $this->eventDispatcher);
     }
 
 }

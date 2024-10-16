@@ -44,6 +44,7 @@ use SP\Domain\Import\Services\CsvImport;
 use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\Tag\Ports\TagService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\UnitaryTestCase;
 
@@ -80,6 +81,11 @@ class CsvImportTest extends UnitaryTestCase
             ->with($params->getDelimiter())
             ->willReturnCallback($accounts);
 
+        $this->clientService
+            ->expects(self::exactly(2))
+            ->method('getByName')
+            ->willThrowException(NoSuchItemException::error('test'));
+
         $clientServiceCounter = new InvokedCount(2);
 
         $this->clientService
@@ -94,6 +100,11 @@ class CsvImportTest extends UnitaryTestCase
                 })
             )
             ->willReturn(100);
+
+        $this->categoryService
+            ->expects(self::exactly(2))
+            ->method('getByName')
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $categoryServiceCounter = new InvokedCount(2);
 
@@ -217,6 +228,11 @@ class CsvImportTest extends UnitaryTestCase
 
         $this->clientService
             ->expects(self::once())
+            ->method('getByName')
+            ->willThrowException(NoSuchItemException::error('test'));
+
+        $this->clientService
+            ->expects(self::once())
             ->method('create')
             ->with(
                 new Callback(static function (Client $client) {
@@ -224,6 +240,11 @@ class CsvImportTest extends UnitaryTestCase
                 })
             )
             ->willReturn(100);
+
+        $this->categoryService
+            ->expects(self::once())
+            ->method('getByName')
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->categoryService
             ->expects(self::once())
@@ -273,6 +294,11 @@ class CsvImportTest extends UnitaryTestCase
 
         $this->clientService
             ->expects(self::once())
+            ->method('getByName')
+            ->willThrowException(NoSuchItemException::error('test'));
+
+        $this->clientService
+            ->expects(self::once())
             ->method('create')
             ->with(
                 new Callback(static function (Client $client) {
@@ -280,6 +306,11 @@ class CsvImportTest extends UnitaryTestCase
                 })
             )
             ->willReturn(100);
+
+        $this->categoryService
+            ->expects(self::once())
+            ->method('getByName')
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->categoryService
             ->expects(self::once())

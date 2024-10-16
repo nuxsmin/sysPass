@@ -59,7 +59,8 @@ use SP\Core\UI\ThemeContext;
 use SP\Core\UI\ThemeIcons;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapAuthService;
-use SP\Domain\Auth\Ports\LdapConnectionInterface;
+use SP\Domain\Auth\Ports\LdapConnectionHandler;
+use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Auth\Providers\AclHandler;
 use SP\Domain\Auth\Providers\AuthProvider;
 use SP\Domain\Auth\Providers\AuthProviderService;
@@ -237,11 +238,11 @@ final class CoreDefinitions
                 ->constructorParameter('base', factory(static fn(RouteContextData $r) => $r->controller)),
             DatabaseAuthService::class => autowire(DatabaseAuth::class),
             BrowserAuthService::class => autowire(BrowserAuth::class),
-            LdapParams::class => factory([LdapParams::class, 'getFrom']),
-            LdapConnectionInterface::class => autowire(LdapConnection::class),
+            LdapParams::class => factory([LdapParams::class, 'fromConfig']),
+            LdapService::class => factory([LdapBase::class, 'factory']),
+            LdapConnectionHandler::class => autowire(LdapConnection::class),
             LdapActionsService::class => autowire(LdapActions::class),
-            LdapAuthService::class => autowire(LdapAuth::class)
-                ->constructorParameter('ldap', factory([LdapBase::class, 'factory'])),
+            LdapAuthService::class => autowire(LdapAuth::class),
             AuthProviderService::class => factory(
                 static function (
                     AuthProvider        $authProvider,

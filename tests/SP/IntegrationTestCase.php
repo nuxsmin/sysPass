@@ -48,7 +48,7 @@ use SP\Core\Definitions\DomainDefinitions;
 use SP\Core\UI\ThemeContext;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Ports\AccountAclService;
-use SP\Domain\Auth\Ports\LdapConnectionInterface;
+use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
@@ -210,7 +210,7 @@ abstract class IntegrationTestCase extends TestCase
 
         return [
             ConfigFileService::class => $configFileService,
-            LdapConnectionInterface::class => self::createStub(LdapConnectionInterface::class),
+            LdapConnectionHandler::class => self::createStub(LdapConnectionHandler::class),
             'backup.dbArchiveHandler' => self::createStub(ArchiveHandler::class),
             'backup.appArchiveHandler' => self::createStub(ArchiveHandler::class),
             \SP\Infrastructure\Database\DatabaseUtil::class => $databaseUtil,

@@ -73,13 +73,15 @@ final class LdapActions implements LdapActionsService
 
     /**
      * @param LaminasLdap $ldap
-     * @param LdapParams $ldapParams
      * @param EventDispatcherInterface $eventDispatcher
+     * @param string|null $searchBase
+     * @param string|null $group
      */
     public function __construct(
-        private readonly LaminasLdap $ldap,
-        private readonly LdapParams  $ldapParams,
-        private readonly EventDispatcherInterface $eventDispatcher
+        private readonly LaminasLdap              $ldap,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly ?string                  $searchBase = null,
+        private readonly ?string                  $group = null,
     ) {
     }
 
@@ -109,8 +111,7 @@ final class LdapActions implements LdapActionsService
                 'ldap.search.group',
                 new Event(
                     $this,
-                    EventMessage::build()
-                                ->addDescription(__u('Error while searching the group RDN'))
+                    EventMessage::build(__u('Error while searching the group RDN'))
                                 ->addDetail(__u('Group'), $group)
                                 ->addDetail('LDAP ERROR', $this->ldap->getLastError())
                                 ->addDetail('LDAP FILTER', $filter)
@@ -142,17 +143,15 @@ final class LdapActions implements LdapActionsService
 
     private function getGroupFromParams(): string
     {
-        $group = $this->ldapParams->getGroup();
-
-        if ($group === null) {
+        if ($this->group === null) {
             return '*';
         }
 
-        if (stripos($group, 'cn') === 0) {
-            return LdapUtil::getGroupName($group) ?: '';
+        if (stripos($this->group, 'cn') === 0) {
+            return LdapUtil::getGroupName($this->group) ?: '';
         }
 
-        return $group;
+        return $this->group;
     }
 
     /**
@@ -171,7 +170,7 @@ final class LdapActions implements LdapActionsService
         ?string $searchBase = null
     ): Collection {
         if (empty($searchBase)) {
-            $searchBase = $this->ldapParams->getSearchBase();
+            $searchBase = $this->searchBase;
         }
 
         try {
@@ -241,10 +240,5 @@ final class LdapActions implements LdapActionsService
         $results = $this->getResults($filter, $attributes, $searchBase);
 
         return new LdapResults($results->count(), $results);
-    }
-
-    public function mutate(LdapParams $ldapParams): LdapActionsService
-    {
-        return new self($this->ldap, $ldapParams, $this->eventDispatcher);
     }
 }

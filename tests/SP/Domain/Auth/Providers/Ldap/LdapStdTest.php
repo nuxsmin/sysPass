@@ -30,7 +30,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Ports\LdapActionsService;
-use SP\Domain\Auth\Ports\LdapConnectionInterface;
+use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Auth\Providers\Ldap\LdapResults;
@@ -49,8 +49,8 @@ use SP\Tests\UnitaryTestCase;
 class LdapStdTest extends UnitaryTestCase
 {
 
-    private LdapConnectionInterface|MockObject  $ldapConnection;
-    private LdapActionsService|MockObject $ldapActions;
+    private LdapConnectionHandler|MockObject $ldapConnection;
+    private LdapActionsService|MockObject    $ldapActions;
     private EventDispatcherInterface|MockObject $eventDispatcher;
     private LdapStd                             $ldap;
     private LdapParams                          $ldapParams;
@@ -72,7 +72,7 @@ class LdapStdTest extends UnitaryTestCase
         $user = self::$faker->userName;
         $password = self::$faker->password;
 
-        $this->ldapConnection->expects(self::once())->method('connect')->with($user, $password);
+        $this->ldapConnection->expects(self::once())->method('connect')->with($this->ldapParams, $user, $password);
 
         $this->ldap->connect($user, $password);
     }
@@ -82,7 +82,7 @@ class LdapStdTest extends UnitaryTestCase
      */
     public function testConnectWithNull()
     {
-        $this->ldapConnection->expects(self::once())->method('connect')->with(null, null);
+        $this->ldapConnection->expects(self::once())->method('connect')->with($this->ldapParams, null, null);
 
         $this->ldap->connect();
     }
@@ -372,7 +372,7 @@ class LdapStdTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->ldapConnection = $this->createMock(LdapConnectionInterface::class);
+        $this->ldapConnection = $this->createMock(LdapConnectionHandler::class);
         $this->ldapActions = $this->createMock(LdapActionsService::class);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 

@@ -24,34 +24,27 @@
 
 namespace SP\Modules\Web\Controllers\ConfigLdap;
 
-
-use Exception;
-use JsonException;
 use SP\Core\Application;
-use SP\Core\Events\Event;
 use SP\Domain\Auth\Ports\LdapCheckService;
+use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\UnauthorizedPageException;
-use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 use SP\Mvc\View\TemplateInterface;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class CheckController
  */
 final class CheckController extends SimpleControllerBase
 {
-    use ConfigLdapTrait;
-    use JsonTrait;
 
     public function __construct(
         Application                        $application,
@@ -63,62 +56,37 @@ final class CheckController extends SimpleControllerBase
     }
 
     /**
-     * @return bool
-     * @throws JsonException
      * @throws SPException
      */
-    public function checkAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function checkAction(bool $useConfigParams): ActionResponse
     {
-        try {
-            $ldapParams = $this->getLdapParamsFromRequest($this->request);
-
-            // Valores para la configuración de LDAP
-            if (!($ldapParams->getServer()
-                  || $ldapParams->getSearchBase()
-                  || $ldapParams->getBindDn())
-            ) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('Missing LDAP parameters')
-                );
-            }
-
-            $data = $this->ldapCheckService->getObjects(false, $ldapParams);
-
-            $this->template->addTemplate('results', 'itemshow');
-            $this->template->assign('header', __('Results'));
-
-            return $this->returnJsonResponseData(
-                ['template' => $this->template->render(), 'items' => $data->getResults()],
-                JsonMessage::JSON_SUCCESS,
-                __u('LDAP connection OK'),
-                [sprintf(__('Objects found: %d'), $data->count())]
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if ($useConfigParams) {
+            $ldapParams = LdapParams::fromConfig($this->configData);
+        } else {
+            $ldapParams = LdapParams::fromRequest($this->request);
         }
+
+        $data = $this->ldapCheckService->getObjects($ldapParams, false);
+
+        $this->template->addTemplate('results', 'itemshow');
+        $this->template->assign('header', __('Results'));
+
+        return ActionResponse::ok(
+            [__u('LDAP connection OK'), sprintf(__('Objects found: %d'), $data->count())],
+            ['template' => $this->template->render(), 'items' => $data->getResults()],
+        );
     }
 
     /**
-     * @return void
      * @throws SessionTimeout
      * @throws SPException
      */
     protected function initialize(): void
     {
-        try {
-            $this->checks();
-            $this->checkAccess(AclActionsInterface::CONFIG_LDAP);
+        $this->checks();
+        $this->checkAccess(AclActionsInterface::CONFIG_LDAP);
 
-            $this->extensionChecker->checkLdap(true);
-        } catch (UnauthorizedPageException|CheckException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            $this->returnJsonResponseException($e);
-        }
+        $this->extensionChecker->checkLdap(true);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,9 +26,9 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Ports;
 
-
 use SP\Domain\Auth\Dtos\LdapCheckResults;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
+use SP\Domain\Auth\Providers\Ldap\LdapParams;
 
 /**
  * Class LdapCheckService
@@ -39,10 +40,10 @@ interface LdapCheckService
     /**
      * @throws LdapException
      */
-    public function getObjects(bool $includeGroups = true): LdapCheckResults;
+    public function getObjects(LdapParams $ldapParams, bool $includeGroups = true): LdapCheckResults;
 
     /**
      * @throws LdapException
      */
-    public function getObjectsByFilter(string $filter): LdapCheckResults;
+    public function getObjectsByFilter(LdapParams $ldapParams, string $filter): LdapCheckResults;
 }

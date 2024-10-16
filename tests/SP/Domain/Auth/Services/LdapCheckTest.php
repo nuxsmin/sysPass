@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -29,12 +30,12 @@ use ArrayIterator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Ports\LdapActionsService;
-use SP\Domain\Auth\Ports\LdapConnectionInterface;
-use SP\Domain\Auth\Services\LdapCheck;
+use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Auth\Providers\Ldap\LdapResults;
 use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Auth\Services\LdapCheck;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -44,17 +45,15 @@ use SP\Tests\UnitaryTestCase;
 class LdapCheckTest extends UnitaryTestCase
 {
 
-    private LdapCheck                          $ldapCheck;
-    private LdapConnectionInterface|MockObject $ldapConnection;
-    private MockObject|LdapActionsService      $ldapActionsService;
+    private LdapCheck                        $ldapCheck;
+    private LdapConnectionHandler|MockObject $ldapConnection;
+    private MockObject|LdapActionsService    $ldapActionsService;
 
     /**
      * @throws LdapException
      */
     public function testGetObjectsByFilterWithParams()
     {
-        $ldapParams = new LdapParams('a_server', LdapTypeEnum::STD, 'a_dn', 'a_pass');
-
         $ldapData = $this->getLdapData();
 
         $ldapResults = new LdapResults(10, new ArrayIterator($ldapData));
@@ -65,7 +64,7 @@ class LdapCheckTest extends UnitaryTestCase
             ->with('a_filter', ['dn'])
             ->willReturn($ldapResults);
 
-        $out = $this->ldapCheck->getObjectsByFilter('a_filter', $ldapParams);
+        $out = $this->ldapCheck->getObjectsByFilter($this->getLdapParams(), 'a_filter');
 
         $this->assertEquals(5, $out->count());
 
@@ -95,25 +94,31 @@ class LdapCheckTest extends UnitaryTestCase
     }
 
     /**
+     * @return LdapParams
+     */
+    private function getLdapParams(): LdapParams
+    {
+        return new LdapParams('a_server', LdapTypeEnum::STD, 'a_dn', 'a_pass');
+    }
+
+    /**
      * @throws LdapException
      */
     public function testGetObjectsByFilterWithConnectionException()
     {
-        $ldapParams = new LdapParams('a_server', LdapTypeEnum::STD, 'a_dn', 'a_pass');
-
         $this->ldapActionsService
             ->expects($this->never())
             ->method('getObjects');
 
         $this->ldapConnection
             ->expects($this->once())
-            ->method('checkConnection')
+            ->method('connect')
             ->willThrowException(LdapException::error('test'));
 
         $this->expectException(LdapException::class);
         $this->expectExceptionMessage('test');
 
-        $this->ldapCheck->getObjectsByFilter('a_filter', $ldapParams);
+        $this->ldapCheck->getObjectsByFilter($this->getLdapParams(), 'a_filter');
     }
 
     /**
@@ -121,8 +126,6 @@ class LdapCheckTest extends UnitaryTestCase
      */
     public function testGetObjectsByFilterWithObjectsException()
     {
-        $ldapParams = new LdapParams('a_server', LdapTypeEnum::STD, 'a_dn', 'a_pass');
-
         $this->ldapActionsService
             ->expects($this->once())
             ->method('getObjects')
@@ -131,7 +134,7 @@ class LdapCheckTest extends UnitaryTestCase
         $this->expectException(LdapException::class);
         $this->expectExceptionMessage('test');
 
-        $this->ldapCheck->getObjectsByFilter('a_filter', $ldapParams);
+        $this->ldapCheck->getObjectsByFilter($this->getLdapParams(), 'a_filter');
     }
 
     /**
@@ -139,7 +142,7 @@ class LdapCheckTest extends UnitaryTestCase
      */
     public function testGetObjectsWithParams()
     {
-        $ldapParams = new LdapParams('a_server', LdapTypeEnum::STD, 'a_dn', 'a_pass');
+        $ldapParams = $this->getLdapParams();
         $ldapParams->setFilterUserObject('a_user_filter');
         $ldapParams->setFilterGroupObject('a_group_filter');
 
@@ -160,7 +163,7 @@ class LdapCheckTest extends UnitaryTestCase
             )
             ->willReturn($ldapResults);
 
-        $out = $this->ldapCheck->getObjects(true, $ldapParams);
+        $out = $this->ldapCheck->getObjects($ldapParams);
 
         $this->assertEquals(10, $out->count());
 
@@ -176,8 +179,6 @@ class LdapCheckTest extends UnitaryTestCase
      */
     public function testGetObjectsWithNoParams()
     {
-        $ldapParams = new LdapParams('a_server', LdapTypeEnum::STD, 'a_dn', 'a_pass');
-
         $ldapDataUsers = $this->getLdapData();
         $ldapDataGroups = $this->getLdapData();
 
@@ -200,7 +201,7 @@ class LdapCheckTest extends UnitaryTestCase
             )
             ->willReturn($ldapResultsUsers, $ldapResultsUsers, $ldapResultsGroups);
 
-        $out = $this->ldapCheck->getObjects(true, $ldapParams);
+        $out = $this->ldapCheck->getObjects($this->getLdapParams());
 
         $this->assertEquals(10, $out->count());
 
@@ -220,21 +221,19 @@ class LdapCheckTest extends UnitaryTestCase
      */
     public function testGetObjectsWitConnectionException()
     {
-        $ldapParams = new LdapParams('a_server', LdapTypeEnum::STD, 'a_dn', 'a_pass');
-
         $this->ldapActionsService
             ->expects($this->never())
             ->method('getObjects');
 
         $this->ldapConnection
             ->expects($this->once())
-            ->method('checkConnection')
+            ->method('connect')
             ->willThrowException(LdapException::error('test'));
 
         $this->expectException(LdapException::class);
         $this->expectExceptionMessage('test');
 
-        $this->ldapCheck->getObjects(true, $ldapParams);
+        $this->ldapCheck->getObjects($this->getLdapParams());
     }
 
     /**
@@ -242,8 +241,6 @@ class LdapCheckTest extends UnitaryTestCase
      */
     public function testGetObjectsWitObjectsException()
     {
-        $ldapParams = new LdapParams('a_server', LdapTypeEnum::STD, 'a_dn', 'a_pass');
-
         $this->ldapActionsService
             ->expects($this->once())
             ->method('getObjects')
@@ -252,18 +249,20 @@ class LdapCheckTest extends UnitaryTestCase
         $this->expectException(LdapException::class);
         $this->expectExceptionMessage('test');
 
-        $this->ldapCheck->getObjects(true, $ldapParams);
+        $this->ldapCheck->getObjects($this->getLdapParams());
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->ldapConnection = $this->createMock(LdapConnectionInterface::class);
-        $this->ldapConnection->method('mutate')->willReturnSelf();
+        $this->ldapConnection = $this->createMock(LdapConnectionHandler::class);
         $this->ldapActionsService = $this->createMock(LdapActionsService::class);
-        $this->ldapActionsService->method('mutate')->willReturnSelf();
 
-        $this->ldapCheck = new LdapCheck($this->application, $this->ldapConnection, $this->ldapActionsService);
+        $this->ldapCheck = new LdapCheck(
+            $this->ldapConnection,
+            $this->ldapActionsService,
+            $this->application->getEventDispatcher()
+        );
     }
 }

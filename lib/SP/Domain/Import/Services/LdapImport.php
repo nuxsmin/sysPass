@@ -30,7 +30,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Ports\LdapActionsService;
-use SP\Domain\Auth\Ports\LdapConnectionInterface;
+use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Auth\Providers\Ldap\LdapBase;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
@@ -59,7 +59,7 @@ final class LdapImport extends Service implements LdapImportService
         private readonly UserService $userService,
         private readonly UserGroupService        $userGroupService,
         private readonly LdapActionsService      $ldapActionsService,
-        private readonly LdapConnectionInterface $ldapConnection
+        private readonly LdapConnectionHandler $ldapConnection
     ) {
         parent::__construct($application);
     }

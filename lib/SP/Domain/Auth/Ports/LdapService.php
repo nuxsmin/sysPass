@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -25,13 +26,10 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Ports;
 
-
 use SP\Domain\Auth\Providers\Ldap\LdapException;
 
 /**
- * Interface LdapInterface
- *
- * @package SP\Domain\Auth\Providers\Ldap
+ * Interface LdapService
  */
 interface LdapService
 {

@@ -31,13 +31,13 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Auth\Ports\LdapActionsService;
-use SP\Domain\Auth\Ports\LdapConnectionInterface;
-use SP\Domain\Import\Dtos\LdapImportParamsDto;
-use SP\Domain\Import\Services\LdapImport;
+use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Auth\Providers\Ldap\LdapResults;
 use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Import\Dtos\LdapImportParamsDto;
+use SP\Domain\Import\Services\LdapImport;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
@@ -55,8 +55,8 @@ class LdapImportTest extends UnitaryTestCase
     private LdapImport                  $ldapImport;
     private UserService|MockObject      $userService;
     private UserGroupService|MockObject $userGroupService;
-    private LdapActionsService|MockObject   $ldapActionsService;
-    private LdapConnectionInterface|MockObject   $ldapConnection;
+    private LdapActionsService|MockObject    $ldapActionsService;
+    private LdapConnectionHandler|MockObject $ldapConnection;
 
     public static function emptyNameOrLoginProvider(): array
     {
@@ -140,18 +140,6 @@ class LdapImportTest extends UnitaryTestCase
 
         $this->ldapActionsService
             ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapActionsService);
-
-        $this->ldapConnection
-            ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapConnection);
-
-        $this->ldapActionsService
-            ->expects($this->once())
             ->method('getObjects')
             ->with('test_filter')
             ->willReturn(new LdapResults(100, new ArrayIterator($entry)));
@@ -209,18 +197,6 @@ class LdapImportTest extends UnitaryTestCase
 
         $this->ldapActionsService
             ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapActionsService);
-
-        $this->ldapConnection
-            ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapConnection);
-
-        $this->ldapActionsService
-            ->expects($this->once())
             ->method('getObjects')
             ->with($filter)
             ->willReturn(new LdapResults(100, new ArrayIterator($entry)));
@@ -265,18 +241,6 @@ class LdapImportTest extends UnitaryTestCase
 
         $this->ldapActionsService
             ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapActionsService);
-
-        $this->ldapConnection
-            ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapConnection);
-
-        $this->ldapActionsService
-            ->expects($this->once())
             ->method('getObjects')
             ->with('test_filter')
             ->willReturn(new LdapResults(100, new ArrayIterator($entry)));
@@ -313,18 +277,6 @@ class LdapImportTest extends UnitaryTestCase
                 ]
             ]
         ];
-
-        $this->ldapActionsService
-            ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapActionsService);
-
-        $this->ldapConnection
-            ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapConnection);
 
         $this->ldapActionsService
             ->expects($this->once())
@@ -379,18 +331,6 @@ class LdapImportTest extends UnitaryTestCase
 
         $this->ldapActionsService
             ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapActionsService);
-
-        $this->ldapConnection
-            ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapConnection);
-
-        $this->ldapActionsService
-            ->expects($this->once())
             ->method('getObjects')
             ->with('test_filter')
             ->willReturn(new LdapResults(100, new ArrayIterator($entry)));
@@ -436,18 +376,6 @@ class LdapImportTest extends UnitaryTestCase
 
         $this->ldapActionsService
             ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapActionsService);
-
-        $this->ldapConnection
-            ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapConnection);
-
-        $this->ldapActionsService
-            ->expects($this->once())
             ->method('getObjects')
             ->with($filter)
             ->willReturn(new LdapResults(100, new ArrayIterator($entry)));
@@ -483,18 +411,6 @@ class LdapImportTest extends UnitaryTestCase
         );
         $ldapImportParams = new LdapImportParamsDto(100, 200, 'test_login', 'test_user', 'test_group', 'test_filter');
         $entry = [[]];
-
-        $this->ldapActionsService
-            ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapActionsService);
-
-        $this->ldapConnection
-            ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapConnection);
 
         $this->ldapActionsService
             ->expects($this->once())
@@ -535,18 +451,6 @@ class LdapImportTest extends UnitaryTestCase
 
         $this->ldapActionsService
             ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapActionsService);
-
-        $this->ldapConnection
-            ->expects($this->once())
-            ->method('mutate')
-            ->with($ldapParams)
-            ->willReturn($this->ldapConnection);
-
-        $this->ldapActionsService
-            ->expects($this->once())
             ->method('getObjects')
             ->with('test_filter')
             ->willReturn(new LdapResults(100, new ArrayIterator($entry)));
@@ -578,7 +482,7 @@ class LdapImportTest extends UnitaryTestCase
         $this->userService = $this->createMock(UserService::class);
         $this->userGroupService = $this->createMock(UserGroupService::class);
         $this->ldapActionsService = $this->createMock(LdapActionsService::class);
-        $this->ldapConnection = $this->createMock(LdapConnectionInterface::class);
+        $this->ldapConnection = $this->createMock(LdapConnectionHandler::class);
 
         $this->ldapImport = new LdapImport(
             $this->application,
@@ -588,6 +492,4 @@ class LdapImportTest extends UnitaryTestCase
             $this->ldapConnection
         );
     }
-
-
 }

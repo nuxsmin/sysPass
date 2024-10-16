@@ -34,7 +34,7 @@ use PHPUnit\Framework\TestCase;
 use SP\Core\Application;
 use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
-use SP\Domain\Auth\Ports\LdapConnectionInterface;
+use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\File\ArchiveHandler;
@@ -79,7 +79,7 @@ class DefinitionsTest extends TestCase
         $mockedDefinitions = [
             ConfigDataInterface::class => $configData,
             RequestService::class => $requestService,
-            LdapConnectionInterface::class => $this->createStub(LdapConnectionInterface::class),
+            LdapConnectionHandler::class => $this->createStub(LdapConnectionHandler::class),
             'backup.dbArchiveHandler' => $this->createStub(ArchiveHandler::class),
             'backup.appArchiveHandler' => $this->createStub(ArchiveHandler::class)
         ];

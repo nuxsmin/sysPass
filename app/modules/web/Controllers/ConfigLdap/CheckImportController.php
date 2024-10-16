@@ -24,35 +24,27 @@
 
 namespace SP\Modules\Web\Controllers\ConfigLdap;
 
-
-use Exception;
-use JsonException;
 use SP\Core\Application;
-use SP\Core\Events\Event;
 use SP\Domain\Auth\Ports\LdapCheckService;
+use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\UnauthorizedPageException;
-use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 use SP\Mvc\View\TemplateInterface;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class CheckImportController
  */
 final class CheckImportController extends SimpleControllerBase
 {
-    use JsonTrait;
-    use ConfigLdapTrait;
-
     public function __construct(
         Application                        $application,
         SimpleControllerHelper             $simpleControllerHelper,
@@ -63,69 +55,51 @@ final class CheckImportController extends SimpleControllerBase
     }
 
     /**
-     * @return bool
-     * @throws JsonException
      * @throws SPException
      */
-    public function checkImportAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function checkImportAction(): ActionResponse
     {
-        try {
-            $ldapParams = $this->getLdapParamsFromRequest($this->request);
+        $ldapParams = LdapParams::fromRequest($this->request);
 
-            // Valores para la configuración de LDAP
-            if (!($ldapParams->getServer()
-                  || $ldapParams->getSearchBase()
-                  || $ldapParams->getBindDn())
-            ) {
-                return $this->returnJsonResponse(JsonMessage::JSON_ERROR, __u('Missing LDAP parameters'));
-            }
-
-            $filter = $this->request->analyzeString('ldap_import_filter');
-
-            if (empty($filter)) {
-                $data = $this->ldapCheckService->getObjects(
-                    $this->request->analyzeBool('ldap_import_groups', false),
-                    $ldapParams
-                );
-            } else {
-                $data = $this->ldapCheckService->getObjectsByFilter($filter, $ldapParams);
-            }
-
-            $this->template->addTemplate('results', 'itemshow');
-            $this->template->assign('header', __('Results'));
-            $this->template->assign('results', $data->getResults());
-
-            return $this->returnJsonResponseData(
-                ['template' => $this->template->render(), 'items' => $data->getResults()],
-                JsonMessage::JSON_SUCCESS,
-                __u('LDAP connection OK'),
-                [sprintf(__('Objects found: %d'), $data->count())]
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        // Valores para la configuración de LDAP
+        if (!($ldapParams->getServer()
+              || $ldapParams->getSearchBase()
+              || $ldapParams->getBindDn())
+        ) {
+            return ActionResponse::error(__u('Missing LDAP parameters'));
         }
+
+        $filter = $this->request->analyzeString('ldap_import_filter');
+
+        if (empty($filter)) {
+            $data = $this->ldapCheckService->getObjects(
+                $ldapParams,
+                $this->request->analyzeBool('ldap_import_groups', false)
+            );
+        } else {
+            $data = $this->ldapCheckService->getObjectsByFilter($ldapParams, $filter);
+        }
+
+        $this->template->addTemplate('results', 'itemshow');
+        $this->template->assign('header', __('Results'));
+        $this->template->assign('results', $data->getResults());
+
+        return ActionResponse::ok(
+            [__u('LDAP connection OK'), sprintf(__('Objects found: %d'), $data->count())],
+            ['template' => $this->template->render(), 'items' => $data->getResults()],
+        );
     }
 
     /**
-     * @return void
      * @throws SPException
      * @throws SessionTimeout
      */
     protected function initialize(): void
     {
-        try {
-            $this->checks();
-            $this->checkAccess(AclActionsInterface::CONFIG_LDAP);
+        $this->checks();
+        $this->checkAccess(AclActionsInterface::CONFIG_LDAP);
 
-            $this->extensionChecker->checkLdap(true);
-        } catch (UnauthorizedPageException|CheckException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            $this->returnJsonResponseException($e);
-        }
+        $this->extensionChecker->checkLdap(true);
     }
 }

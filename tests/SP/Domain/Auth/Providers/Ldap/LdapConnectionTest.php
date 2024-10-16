@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /*
  * sysPass
@@ -35,6 +36,7 @@ use SP\Domain\Auth\Providers\Ldap\LdapException;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Tests\UnitaryTestCase;
 
 use function PHPUnit\Framework\once;
@@ -66,7 +68,7 @@ class LdapConnectionTest extends UnitaryTestCase
             ->method('notify')
             ->with('ldap.check.connection');
 
-        $this->ldapConnection->checkConnection();
+        $this->ldapConnection->connect($this->ldapParams);
     }
 
     /**
@@ -76,7 +78,7 @@ class LdapConnectionTest extends UnitaryTestCase
     {
         $this->expectConnectError();
 
-        $this->ldapConnection->checkConnection();
+        $this->ldapConnection->connect($this->ldapParams);
     }
 
     /**
@@ -122,7 +124,7 @@ class LdapConnectionTest extends UnitaryTestCase
             ->method('bind')
             ->with($this->ldapParams->getBindDn(), $this->ldapParams->getBindPass());
 
-        $this->ldapConnection->connect();
+        $this->ldapConnection->connect($this->ldapParams);
     }
 
     /**
@@ -132,57 +134,14 @@ class LdapConnectionTest extends UnitaryTestCase
     {
         $this->expectConnectError();
 
-        $this->ldapConnection->connect();
+        $this->ldapConnection->connect($this->ldapParams);
     }
 
     /**
-     * @throws LdapException
-     */
-    public function testMutate(): void
-    {
-        $ldapParams = new LdapParams(
-            self::$faker->domainName,
-            LdapTypeEnum::STD,
-            'cn=test1,dc=example,dc=com',
-            self::$faker->password
-        );
-
-        $ldapConnection = $this->ldapConnection->mutate($ldapParams);
-
-        $this->ldap
-            ->expects(self::once())
-            ->method('bind')
-            ->with($ldapParams->getBindDn(), $ldapParams->getBindPass());
-
-        $ldapConnection->connect();
-    }
-
-    /**
-     * @throws LdapException
-     */
-    public function testCreateInstanceError(): void
-    {
-        $message = self::$faker->colorName;
-        $errorCode = self::$faker->randomNumber();
-
-        $this->ldap
-            ->expects(self::once())
-            ->method('setOptions')
-            ->willThrowException(
-                new \Laminas\Ldap\Exception\LdapException(null, $message, $errorCode)
-            );
-
-        $this->expectException(LdapException::class);
-        $this->expectExceptionMessage($message);
-        $this->expectExceptionCode($errorCode);
-
-        new LdapConnection($this->ldap, $this->ldapParams, $this->eventDispatcher, true);
-    }
-
-    /**
-     * @throws Exception
      * @throws ContextException
+     * @throws Exception
      * @throws LdapException
+     * @throws SPException
      */
     protected function setUp(): void
     {
@@ -203,7 +162,7 @@ class LdapConnectionTest extends UnitaryTestCase
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $this->ldapConnection =
-            new LdapConnection($this->ldap, $this->ldapParams, $this->eventDispatcher, true);
+            new LdapConnection($this->ldap, $this->eventDispatcher, true);
     }
 
 }

@@ -24,33 +24,32 @@
 
 namespace SP\Modules\Web\Controllers\ConfigLdap;
 
-
-use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Auth\Providers\Ldap\LdapException;
+use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
-use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Ports\LdapImportService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class ImportController
  */
 final class ImportController extends SimpleControllerBase
 {
-    use ConfigLdapTrait;
-    use JsonTrait;
-
     public function __construct(
         Application                        $application,
         SimpleControllerHelper             $simpleControllerHelper,
@@ -60,64 +59,54 @@ final class ImportController extends SimpleControllerBase
     }
 
     /**
-     * importAction
-     *
-     * @return bool
-     * @throws JsonException
+     * @throws ValidationException
+     * @throws LdapException
+     * @throws SPException
      */
-    public function importAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function importAction(): ActionResponse
     {
-        try {
-            if ($this->configData->isDemoEnabled()) {
-                return $this->returnJsonResponse(JsonMessage::JSON_WARNING, __u('Ey, this is a DEMO!!'));
-            }
-
-            [$ldapImportParams, $checkImportGroups] = $this->getImportParams();
-
-            $ldapParams = $this->getLdapParamsFromRequest($this->request);
-
-            $this->eventDispatcher->notify(
-                'import.ldap.start',
-                new Event($this, EventMessage::build()->addDescription(__u('LDAP Import')))
-            );
-
-            $userImportResults = $this->ldapImportService->importUsers($ldapParams, $ldapImportParams);
-            $totalObjects = $userImportResults->getTotalObjects();
-
-            if ($checkImportGroups === true) {
-                $groupsImportResults = $this->ldapImportService->importGroups($ldapParams, $ldapImportParams);
-                $totalObjects += $groupsImportResults->getTotalObjects();
-            }
-
-            $this->eventDispatcher->notify(
-                'import.ldap.end',
-                new Event($this, EventMessage::build()->addDescription(__u('Import finished')))
-            );
-
-            if ($totalObjects === 0) {
-                throw new SPException(__u('There aren\'t any objects to synchronize'));
-            }
-
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_SUCCESS,
-                __u('LDAP users import finished'),
-                [
-                    sprintf(
-                        __('Imported users: %d / %d'),
-                        $userImportResults->getSyncedObjects(),
-                        $userImportResults->getTotalObjects()
-                    ),
-                    sprintf(__('Errors: %d'), $userImportResults->getErrorObjects()),
-
-                ]
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if ($this->configData->isDemoEnabled()) {
+            return ActionResponse::warning(__u('Ey, this is a DEMO!!'));
         }
+
+        [$ldapImportParams, $checkImportGroups] = $this->getImportParams();
+
+        $ldapParams = LdapParams::fromRequest($this->request);
+
+        $this->eventDispatcher->notify(
+            'import.ldap.start',
+            new Event($this, EventMessage::build(__u('LDAP Import')))
+        );
+
+        $userImportResults = $this->ldapImportService->importUsers($ldapParams, $ldapImportParams);
+        $totalObjects = $userImportResults->getTotalObjects();
+
+        if ($checkImportGroups === true) {
+            $groupsImportResults = $this->ldapImportService->importGroups($ldapParams, $ldapImportParams);
+            $totalObjects += $groupsImportResults->getTotalObjects();
+        }
+
+        $this->eventDispatcher->notify(
+            'import.ldap.end',
+            new Event($this, EventMessage::build(__u('Import finished')))
+        );
+
+        if ($totalObjects === 0) {
+            throw SPException::warning(__u('There aren\'t any objects to synchronize'));
+        }
+
+        return ActionResponse::ok(
+            __u('LDAP users import finished'),
+            [
+                sprintf(
+                    __('Imported users: %d / %d'),
+                    $userImportResults->getSyncedObjects(),
+                    $userImportResults->getTotalObjects()
+                ),
+                sprintf(__('Errors: %d'), $userImportResults->getErrorObjects()),
+            ]
+        );
     }
 
     /**
@@ -143,28 +132,22 @@ final class ImportController extends SimpleControllerBase
              || empty($ldapImportParams->getDefaultUserProfile()))
             && ($checkImportGroups === true && empty($ldapImportParams->getUserGroupNameAttribute()))
         ) {
-            throw new ValidationException(__u('Wrong LDAP parameters'));
+            throw ValidationException::error(__u('Wrong LDAP parameters'));
         }
 
         return array($ldapImportParams, $checkImportGroups);
     }
 
     /**
-     * @return void
-     * @throws JsonException
      * @throws SessionTimeout
+     * @throws UnauthorizedPageException
+     * @throws SPException
      */
     protected function initialize(): void
     {
-        try {
-            $this->checks();
-            $this->checkAccess(AclActionsInterface::CONFIG_LDAP);
+        $this->checks();
+        $this->checkAccess(AclActionsInterface::CONFIG_LDAP);
 
-            $this->extensionChecker->checkLdap(true);
-        } catch (UnauthorizedPageException|CheckException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            $this->returnJsonResponseException($e);
-        }
+        $this->extensionChecker->checkLdap(true);
     }
 }

@@ -26,10 +26,9 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Providers\Ldap;
 
-use Exception;
 use SP\Core\Events\EventDispatcher;
 use SP\Domain\Auth\Ports\LdapActionsService;
-use SP\Domain\Auth\Ports\LdapConnectionInterface;
+use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 
@@ -37,24 +36,14 @@ use function SP\__u;
 
 /**
  * Class LdapBase
- *
- * @package SP\Domain\Auth\Providers\Ldap
  */
 abstract class LdapBase implements LdapService
 {
-    protected string $server;
+    protected readonly string $server;
 
-    /**
-     * LdapBase constructor.
-     *
-     * @param LdapConnectionInterface $ldapConnection
-     * @param LdapActionsService $ldapActions
-     * @param LdapParams $ldapParams
-     * @param EventDispatcher $eventDispatcher
-     */
     public function __construct(
-        protected readonly LdapConnectionInterface  $ldapConnection,
-        protected readonly LdapActionsService $ldapActions,
+        protected readonly LdapConnectionHandler $ldapConnection,
+        protected readonly LdapActionsService    $ldapActions,
         protected readonly LdapParams               $ldapParams,
         protected readonly EventDispatcherInterface $eventDispatcher
     ) {
@@ -65,41 +54,25 @@ abstract class LdapBase implements LdapService
 
     /**
      * @param EventDispatcher $eventDispatcher
-     * @param LdapConnectionInterface $ldapConnection
+     * @param LdapConnectionHandler $ldapConnection
      * @param LdapActionsService $ldapActions
-     * @param LdapParams|null $ldapParams
+     * @param LdapParams $ldapParams
      * @return LdapService
      * @throws LdapException
-     * @throws Exception
      */
     public static function factory(
         EventDispatcherInterface $eventDispatcher,
-        LdapConnectionInterface  $ldapConnection,
-        LdapActionsService $ldapActions,
-        ?LdapParams              $ldapParams = null
+        LdapConnectionHandler $ldapConnection,
+        LdapActionsService    $ldapActions,
+        LdapParams            $ldapParams
     ): LdapService {
-        if (null !== $ldapParams) {
-            $ldapConnection = $ldapConnection->mutate($ldapParams);
-            $ldapActions = $ldapActions->mutate($ldapParams);
-        }
+        $ldapConnection->connect($ldapParams);
 
-        $ldapConnection->checkConnection();
-
-        switch ($ldapParams->getType()) {
-            case LdapTypeEnum::STD:
-                return new LdapStd($ldapConnection, $ldapActions, $ldapParams, $eventDispatcher);
-            case LdapTypeEnum::ADS:
-                return new LdapMsAds($ldapConnection, $ldapActions, $ldapParams, $eventDispatcher);
-            case LdapTypeEnum::AZURE:
-                throw new LdapException(__u('To be implemented'));
-        }
-
-        throw LdapException::error(__u('LDAP type not set'));
-    }
-
-    public function actions(): LdapActionsService
-    {
-        return $this->ldapActions;
+        return match ($ldapParams->getType()) {
+            LdapTypeEnum::STD => new LdapStd($ldapConnection, $ldapActions, $ldapParams, $eventDispatcher),
+            LdapTypeEnum::ADS => new LdapMsAds($ldapConnection, $ldapActions, $ldapParams, $eventDispatcher),
+            default => throw LdapException::warning(__u('Not implemented')),
+        };
     }
 
     /**
@@ -107,7 +80,12 @@ abstract class LdapBase implements LdapService
      */
     public function connect(?string $bindDn = null, ?string $bindPass = null): void
     {
-        $this->ldapConnection->connect($bindDn, $bindPass);
+        $this->ldapConnection->connect($this->ldapParams, $bindDn, $bindPass);
+    }
+
+    public function actions(): LdapActionsService
+    {
+        return $this->ldapActions;
     }
 
     public function getServer(): string

@@ -41,6 +41,7 @@ use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\Import\Services\KeepassImport;
 use SP\Domain\Tag\Ports\TagService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -70,7 +71,7 @@ class KeepassImportTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('getByName')
             ->with('KeePass')
-            ->willReturn(null);
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->clientService
             ->expects(self::once())
@@ -81,7 +82,7 @@ class KeepassImportTest extends UnitaryTestCase
         $this->categoryService
             ->expects(self::exactly(9))
             ->method('getByName')
-            ->willReturn(null);
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->categoryService
             ->expects(self::exactly(9))
@@ -113,7 +114,7 @@ class KeepassImportTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('getByName')
             ->with('KeePass')
-            ->willReturn(null);
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->clientService
             ->expects(self::once())
@@ -124,7 +125,7 @@ class KeepassImportTest extends UnitaryTestCase
         $this->categoryService
             ->expects(self::exactly(9))
             ->method('getByName')
-            ->willReturn(null);
+            ->willThrowException(NoSuchItemException::error('test'));
 
         $this->categoryService
             ->expects(self::exactly(9))

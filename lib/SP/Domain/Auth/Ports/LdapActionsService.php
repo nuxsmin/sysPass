@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -27,7 +28,6 @@ namespace SP\Domain\Auth\Ports;
 
 use SP\Domain\Auth\Providers\Ldap\AttributeCollection;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Auth\Providers\Ldap\LdapResults;
 
 /**
@@ -65,6 +65,4 @@ interface LdapActionsService
         array $attributes = [],
         ?string $searchBase = null
     ): LdapResults;
-
-    public function mutate(LdapParams $ldapParams): LdapActionsService;
 }
