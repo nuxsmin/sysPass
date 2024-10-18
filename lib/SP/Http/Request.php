@@ -488,8 +488,8 @@ final class Request
      */
     public function getXForwardedData()
     {
-        $forwardedHost = $this->getHeader('X_FORWARDED_HOST');
-        $forwardedProto = $this->getHeader('X_FORWARDED_PROTO');
+        $forwardedHost = $this->getHeader('HTTP_X_FORWARDED_HOST');
+        $forwardedProto = $this->getHeader('HTTP_X_FORWARDED_PROTO');
 
         // Check (deprecated) de facto standard
         if (!empty($forwardedHost) && !empty($forwardedProto)) {
