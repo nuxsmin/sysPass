@@ -182,7 +182,7 @@ final class Request
         }
 
         // eg: X-Forwarded-For: 192.0.2.43, 2001:db8:cafe::17
-        $xForwarded = $this->headers->get('HTTP_X_FORWARDED_FOR');
+        $xForwarded = $this->headers->get('X_FORWARDED_FOR');
 
         if ($xForwarded !== null) {
             $matches = preg_split('/(?<=[\w])+,\s?/i',
