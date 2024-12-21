@@ -1,26 +1,30 @@
 <?php
 /**
  * @var SP\Html\DataGrid\DataGridTab $data
- * @var Template                     $this
- * @var callable                     $_getvar
+ * @var TemplateInterface $this
+ * @var callable $_getvar
  */
 
-use SP\Html\Html;
-use SP\Mvc\View\Template;
+use SP\Domain\Html\Html;
+use SP\Mvc\View\TemplateInterface;
 
 if (!isset($data)) {
     $data = $_getvar('data');
 }
+
+$dataGridData = $data->getData();
 ?>
 
-    <!-- Rows -->
-<?php if ($data->getData()->getDataCount() > 0):
+<!-- Rows -->
+<?php
+if ($dataGridData->getDataCount() > 0):
     $numFields = count($data->getData()->getDataRowSources());
-    foreach ($data->getData()->getData() as $dataIndex => $dataItem):
-        $itemId = $dataItem->{$data->getData()->getDataRowSourceId()};
+    foreach ($dataGridData->getData() as $dataIndex => $dataItem):
+        $itemId = $dataItem->{$dataGridData->getDataRowSourceId()};
         ?>
         <tr data-item-id="<?php echo $itemId; ?>">
-            <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
+            <?php
+            foreach ($dataGridData->getDataRowSources() as $rowSrc): ?>
                 <?php
                 if ($rowSrc['isMethod'] === true
                     && method_exists($dataItem, $rowSrc['name'])
@@ -34,7 +38,7 @@ if (!isset($data)) {
                     $value = $rowSrc['filter']($value);
                 endif;
 
-                if ($value !== ''):
+                if (!empty($value)):
                     if ($rowSrc['truncate'] === true):
                         $value = Html::truncate($value, 150 / $numFields);
                     endif;
@@ -42,27 +46,39 @@ if (!isset($data)) {
                     $value = '&nbsp;';
                 endif;
                 ?>
-                <td class="cell-data"><?php echo $value; ?></td>
-            <?php endforeach; ?>
+                <td class="cell-data"><?php
+                    echo $value; ?></td>
+            <?php
+            endforeach; ?>
 
             <?php
-            $rowIcons = $data->getData()->getDataRowSourcesWithIcon();
+            $rowIcons = $dataGridData->getDataRowSourcesWithIcon();
 
             if (count($rowIcons) > 0): ?>
                 <td class="cell-nodata">
-                    <?php foreach ($rowIcons as $rowSrcIcon): ?>
-                        <?php if ($dataItem->{$rowSrcIcon['field']} == $rowSrcIcon['value']): ?>
-                            <i class="material-icons <?php echo $rowSrcIcon['icon']->getClass(); ?>"
-                               title="<?php echo $rowSrcIcon['icon']->getTitle(); ?>"><?php echo $rowSrcIcon['icon']->getIcon(); ?></i>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+                    <?php
+                    foreach ($rowIcons as $rowSrcIcon): ?>
+                        <?php
+                        if ($dataItem->{$rowSrcIcon['field']} == $rowSrcIcon['value']): ?>
+                            <i class="material-icons <?php
+                            echo $rowSrcIcon['icon']->getClass(); ?>"
+                               title="<?php
+                               echo $rowSrcIcon['icon']->getTitle(); ?>"><?php
+                                echo $rowSrcIcon['icon']->getIcon(); ?></i>
+                        <?php
+                        endif; ?>
+                    <?php
+                    endforeach; ?>
                 </td>
-            <?php endif; ?>
+            <?php
+            endif; ?>
 
-            <?php if ($data->getDataActionsCount() > 0): ?>
+            <?php
+            if ($data->getDataActionsCount() > 0): ?>
                 <td class="cell-actions">
                     <div>
-                        <?php foreach ($data->getDataActions() as $action):
+                        <?php
+                        foreach ($data->getDataActions() as $action):
                             if (!$action->isSkip()):
                                 $actionUid = uniqid('btn-action-', true);
                                 $filter = $action->getFilterRowSource();
@@ -82,21 +98,34 @@ if (!isset($data)) {
                                     $nodeData = $action->getData();
                                 endif;
                                 ?>
-                                <i id="<?php echo $actionUid; ?>"
-                                   class="btn-action material-icons <?php echo $action->getIcon()->getClass(); ?>"
-                                   data-item-id="<?php echo $itemId; ?>"
-                                   data-onclick="<?php echo $action->getOnClick(); ?>"
-                                    <?php foreach ($nodeData as $dataName => $dataValue):
+                                <i id="<?php
+                                echo $actionUid; ?>"
+                                   class="btn-action material-icons <?php
+                                   echo $action->getIcon()->getClass(); ?>"
+                                   data-item-id="<?php
+                                   echo $itemId; ?>"
+                                   data-onclick="<?php
+                                   echo $action->getOnClick(); ?>"
+                                    <?php
+                                    foreach ($nodeData as $dataName => $dataValue):
                                         echo 'data-', $dataName, '=', '"', $dataValue, '"';
-                                    endforeach; ?>><?php echo $action->getIcon()->getIcon(); ?></i>
+                                    endforeach; ?>><?php
+                                    echo $action->getIcon()->getIcon(); ?></i>
                                 <span
-                                        for="<?php echo $actionUid; ?>"
-                                        class="mdl-tooltip mdl-tooltip--top"><?php echo $action->getTitle(); ?></span>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+                                        for="<?php
+                                        echo $actionUid; ?>"
+                                        class="mdl-tooltip mdl-tooltip--top"><?php
+                                    echo $action->getTitle(); ?></span>
+                            <?php
+                            endif; ?>
+                        <?php
+                        endforeach; ?>
                     </div>
                 </td>
-            <?php endif; ?>
+            <?php
+            endif; ?>
         </tr>
-    <?php endforeach; ?>
-<?php endif; ?>
+    <?php
+    endforeach; ?>
+<?php
+endif; ?>

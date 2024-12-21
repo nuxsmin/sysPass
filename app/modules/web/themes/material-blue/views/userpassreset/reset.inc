@@ -1,21 +1,47 @@
 <?php
-/**
- * @var ThemeIcons $icons
- * @var ConfigData $configData
- * @var callable   $_getvar
- * @var Template   $this
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Config\ConfigData;
-use SP\Core\UI\ThemeIcons;
-use SP\Mvc\View\Template;
+/**
+ * @var ThemeIconsInterface $icons
+ * @var ConfigDataInterface $configData
+ * @var callable $_getvar
+ * @var TemplateInterface $this
+ */
+
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
 
 ?>
 
 <div id="box-pub-noheader">
     <div class="box-spacer"></div>
     <div class="box-header">
-        <?php echo __('Request Password Change'); ?>
+        <?php
+        echo __('Request Password Change'); ?>
     </div>
     <div id="box-passreset" class="box-form round">
         <form id="frmUserPassReset" action="" method="post" class="form-action"
@@ -31,7 +57,8 @@ use SP\Mvc\View\Template;
                                value="" maxlength="255"
                                autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="password"><?php echo __('Password'); ?></label>
+                               for="password"><?php
+                            echo __('Password'); ?></label>
                     </div>
                 </div>
                 <div class="form-control">
@@ -43,12 +70,13 @@ use SP\Mvc\View\Template;
                                value="" maxlength="255"
                                autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="password_repeat"><?php echo __('Password (repeat)'); ?></label>
+                               for="password_repeat"><?php
+                            echo __('Password (repeat)'); ?></label>
                     </div>
                 </div>
                 <input type="hidden" name="hash"
-                       value="<?php echo $_getvar('hash'); ?>">
-                <input type="hidden" name="sk" value="<?php echo $sk; ?>">
+                       value="<?php
+                       echo $_getvar('hash'); ?>">
                 <input type="hidden" name="isAjax" value="1">
             </fieldset>
 
@@ -56,15 +84,21 @@ use SP\Mvc\View\Template;
                 <button id="btnBack" type="button"
                         class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
                     <i class="material-icons"
-                       title="<?php echo __('Go back to login'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-                    <?php echo __('Back'); ?>
+                       title="<?php
+                       echo __('Go back to login'); ?>"><?php
+                        echo $icons->back()->getIcon(); ?></i>
+                    <?php
+                    echo __('Back'); ?>
                 </button>
 
                 <button id="btnChange"
                         class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
-                    <?php echo __('Change'); ?>
+                    <?php
+                    echo __('Change'); ?>
                     <i class="material-icons"
-                       title="<?php echo __('Change'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
+                       title="<?php
+                       echo __('Change'); ?>"><?php
+                        echo $icons->play()->getIcon(); ?></i>
                 </button>
             </div>
         </form>

@@ -1,7 +1,7 @@
 <?php
 /**
- * @var DataGridTab                         $data
- * @var Template                            $this
+ * @var DataGridTab $data
+ * @var \SP\Mvc\View\TemplateInterface $this
  * @var DataGridAction|DataGridActionSearch $action
  */
 

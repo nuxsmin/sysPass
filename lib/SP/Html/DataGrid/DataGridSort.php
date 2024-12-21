@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +20,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid;
 
 use SP\Html\Assets\IconInterface;
-
-defined('APP_ROOT') || die();
 
 /**
  * Class DataGridSort para la definición de campos de ordenación
@@ -35,145 +34,79 @@ defined('APP_ROOT') || die();
  */
 final class DataGridSort implements DataGridSortInterface
 {
-    /**
-     * @var int
-     */
-    private $sortKey = 0;
-    /**
-     * @var string
-     */
-    private $title = '';
-    /**
-     * @var string
-     */
-    private $name = '';
-    /**
-     * @var array
-     */
-    private $class = array();
-    /**
-     * @var IconInterface
-     */
-    private $iconUp;
-    /**
-     * @var IconInterface
-     */
-    private $iconDown;
+    private int    $sortKey = 0;
+    private string $title   = '';
+    private string $name    = '';
+    private array  $class   = [];
+    private IconInterface $iconUp;
+    private IconInterface $iconDown;
 
-    /**
-     * @return int
-     */
-    public function getSortKey()
+    public function getSortKey(): int
     {
         return $this->sortKey;
     }
 
-    /**
-     * @param $key int
-     *
-     * @return $this
-     */
-    public function setSortKey($key)
+    public function setSortKey(int $key): DataGridSortInterface
     {
         $this->sortKey = $key;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param $title string
-     *
-     * @return $this
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): DataGridSortInterface
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param $name string
-     *
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): DataGridSortInterface
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getClass()
+    public function getClass(): string
     {
         return implode(' ', $this->class);
     }
 
-    /**
-     * @param $class string
-     *
-     * @return $this
-     */
-    public function setClass($class)
+    public function setClass(string $class): DataGridSortInterface
     {
         $this->class[] = $class;
 
         return $this;
     }
 
-    /**
-     * @return IconInterface
-     */
-    public function getIconUp()
+    public function getIconUp(): ?IconInterface
     {
         return $this->iconUp;
     }
 
-    /**
-     * @param IconInterface $icon
-     *
-     * @return $this
-     */
-    public function setIconUp(IconInterface $icon)
+    public function setIconUp(IconInterface $icon): DataGridSortInterface
     {
         $this->iconUp = $icon;
 
         return $this;
     }
 
-    /**
-     * @return IconInterface
-     */
-    public function getIconDown()
+    public function getIconDown(): ?IconInterface
     {
         return $this->iconDown;
     }
 
-    /**
-     * @param IconInterface $icon
-     *
-     * @return $this
-     */
-    public function setIconDown(IconInterface $icon)
+    public function setIconDown(IconInterface $icon): DataGridSortInterface
     {
         $this->iconDown = $icon;
 

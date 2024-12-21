@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
+use SP\Domain\Common\Adapters\Date;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Html\Html;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionInterface;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
@@ -35,9 +38,10 @@ use SP\Html\DataGrid\DataGrid;
 use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\Layout\DataGridHeader;
-use SP\Html\Html;
-use SP\Storage\Database\QueryResult;
-use SP\Util\DateUtil;
+use SP\Infrastructure\Database\QueryResult;
+
+use function SP\__;
+use function SP\getElapsedTime;
 
 /**
  * Class NotificationGrid
@@ -46,14 +50,8 @@ use SP\Util\DateUtil;
  */
 final class NotificationGrid extends GridBase
 {
-    /**
-     * @var QueryResult
-     */
-    private $queryResult;
-    /**
-     * @var bool
-     */
-    private $isAdminApp;
+    private ?QueryResult $queryResult = null;
+    private ?bool $isAdminApp = null;
 
     /**
      * @param QueryResult $queryResult
@@ -71,7 +69,7 @@ final class NotificationGrid extends GridBase
         $grid->addDataAction($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
-        $this->isAdminApp = (bool)$this->context->getUserData()->getIsAdminApp();
+        $this->isAdminApp = $this->context->getUserData()->getIsAdminApp();
 
         if ($this->isAdminApp) {
             $grid->addDataAction($this->getCreateAction());
@@ -88,10 +86,12 @@ final class NotificationGrid extends GridBase
         $grid->addDataAction(
             $this->setNonAdminFilter(
                 $this->getDeleteAction()
-                    ->setTitle(__('Delete Selected'))
-                    ->setName(__('Delete Selected'))
-                    ->setIsSelection(true)),
-            true);
+                     ->setTitle(__('Delete Selected'))
+                     ->setName(__('Delete Selected'))
+                     ->setIsSelection(true)
+            ),
+            true
+        );
 
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
@@ -105,7 +105,7 @@ final class NotificationGrid extends GridBase
     protected function getGridLayout(): DataGridInterface
     {
         // Grid
-        $dataGrid = new DataGrid($this->view->getTheme());
+        $dataGrid = new DataGrid($this->theme);
         $dataGrid->setId('tblNotifications');
         $dataGrid->setDataRowTemplate('datagrid-rows', 'grid');
         $dataGrid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -135,24 +135,43 @@ final class NotificationGrid extends GridBase
 
     /**
      * @return DataGridData
+     * @throws SPException
      */
     protected function getData(): DataGridData
     {
         // Grid Data
         $gridData = new DataGridData();
         $gridData->setDataRowSourceId('id');
-        $gridData->addDataRowSource('date', false,
+        $gridData->addDataRowSource(
+            'date',
+            false,
             function ($value) {
-                return DateUtil::getDateFromUnix($value);
-            });
+                return Date::getDateFromUnix($value);
+            }
+        );
         $gridData->addDataRowSource('type');
         $gridData->addDataRowSource('component');
-        $gridData->addDataRowSource('description', false, function ($data) {
-            return Html::stripTags($data);
-        });
-        $gridData->addDataRowSourceWithIcon('checked', $this->icons->getIconEnabled()->setTitle(__('Read')));
-        $gridData->addDataRowSourceWithIcon('onlyAdmin', $this->icons->getIconAppAdmin()->setTitle(__('Only Admins')));
-        $gridData->addDataRowSourceWithIcon('sticky', $this->icons->getIconGroup()->setTitle(__('Global')));
+        $gridData->addDataRowSource(
+            'description',
+            false,
+            function ($data) {
+                return Html::stripTags($data);
+            }
+        );
+        $gridData->addDataRowSourceWithIcon(
+            'checked',
+            $this->icons->enabled()->mutate(title: __('Read'))
+        );
+        $gridData->addDataRowSourceWithIcon(
+            'onlyAdmin',
+            $this->icons->appAdmin()->mutate(
+                title: __('Only Admins')
+            )
+        );
+        $gridData->addDataRowSourceWithIcon(
+            'sticky',
+            $this->icons->group()->mutate(title: __('Global'))
+        );
         $gridData->setData($this->queryResult);
 
         return $gridData;
@@ -161,16 +180,19 @@ final class NotificationGrid extends GridBase
     /**
      * @return DataGridActionSearch
      */
-    private function getSearchAction()
+    private function getSearchAction(): DataGridActionSearch
     {
         // Grid Actions
         $gridActionSearch = new DataGridActionSearch();
-        $gridActionSearch->setId(ActionsInterface::NOTIFICATION_SEARCH);
+        $gridActionSearch->setId(AclActionsInterface::NOTIFICATION_SEARCH);
         $gridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $gridActionSearch->setName('frmSearchNotification');
         $gridActionSearch->setTitle(__('Search for Notification'));
         $gridActionSearch->setOnSubmitFunction('notification/search');
-        $gridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_SEARCH));
+        $gridActionSearch->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::NOTIFICATION_SEARCH)
+        );
 
         return $gridActionSearch;
     }
@@ -178,17 +200,20 @@ final class NotificationGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getCreateAction()
+    private function getCreateAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::NOTIFICATION_CREATE);
+        $gridAction->setId(AclActionsInterface::NOTIFICATION_CREATE);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setName(__('New Notification'));
         $gridAction->setTitle(__('New Notification'));
-        $gridAction->setIcon($this->icons->getIconAdd());
+        $gridAction->setIcon($this->icons->add());
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('notification/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_CREATE));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::NOTIFICATION_CREATE)
+        );
 
         return $gridAction;
     }
@@ -196,16 +221,19 @@ final class NotificationGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getViewAction()
+    private function getViewAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::NOTIFICATION_VIEW);
+        $gridAction->setId(AclActionsInterface::NOTIFICATION_VIEW);
         $gridAction->setType(DataGridActionType::VIEW_ITEM);
         $gridAction->setName(__('View Notification'));
         $gridAction->setTitle(__('View Notification'));
-        $gridAction->setIcon($this->icons->getIconView());
+        $gridAction->setIcon($this->icons->view());
         $gridAction->setOnClickFunction('notification/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_VIEW));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::NOTIFICATION_VIEW)
+        );
 
         return $gridAction;
     }
@@ -215,8 +243,9 @@ final class NotificationGrid extends GridBase
      *
      * @return DataGridActionInterface
      */
-    private function setNonAdminFilter(DataGridActionInterface $gridAction)
-    {
+    private function setNonAdminFilter(
+        DataGridActionInterface $gridAction
+    ): DataGridActionInterface {
         if (!$this->isAdminApp) {
             $gridAction->setFilterRowSource('sticky');
         }
@@ -227,17 +256,23 @@ final class NotificationGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getCheckAction()
+    private function getCheckAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::NOTIFICATION_CHECK);
+        $gridAction->setId(AclActionsInterface::NOTIFICATION_CHECK);
         $gridAction->setName(__('Checkout Notification'));
         $gridAction->setTitle(__('Checkout Notification'));
-        $gridAction->setIcon($this->icons->getIconEnabled());
+        $gridAction->setIcon($this->icons->enabled());
         $gridAction->setOnClickFunction('notification/check');
         $gridAction->setFilterRowSource('checked');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_CHECK));
-        $gridAction->addData('action-next', Acl::getActionRoute(ActionsInterface::NOTIFICATION));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::NOTIFICATION_CHECK)
+        );
+        $gridAction->addData(
+            'action-next',
+            Acl::getActionRoute(AclActionsInterface::NOTIFICATION)
+        );
 
         return $gridAction;
     }
@@ -245,15 +280,18 @@ final class NotificationGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getEditAction()
+    private function getEditAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::NOTIFICATION_EDIT);
+        $gridAction->setId(AclActionsInterface::NOTIFICATION_EDIT);
         $gridAction->setName(__('Edit Notification'));
         $gridAction->setTitle(__('Edit Notification'));
-        $gridAction->setIcon($this->icons->getIconEdit());
+        $gridAction->setIcon($this->icons->edit());
         $gridAction->setOnClickFunction('notification/show');
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_EDIT));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::NOTIFICATION_EDIT)
+        );
 
         return $gridAction;
     }
@@ -261,18 +299,24 @@ final class NotificationGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getDeleteAction()
+    private function getDeleteAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
-        $gridAction->setId(ActionsInterface::NOTIFICATION_DELETE);
+        $gridAction->setId(AclActionsInterface::NOTIFICATION_DELETE);
         $gridAction->setType(DataGridActionType::DELETE_ITEM);
         $gridAction->setName(__('Delete Notification'));
         $gridAction->setTitle(__('Delete Notification'));
-        $gridAction->setIcon($this->icons->getIconDelete());
+        $gridAction->setIcon($this->icons->delete());
         $gridAction->setOnClickFunction('notification/delete');
         $gridAction->setFilterRowSource('checked', 0);
-        $gridAction->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_DELETE));
-        $gridAction->addData('action-next', Acl::getActionRoute(ActionsInterface::NOTIFICATION));
+        $gridAction->addData(
+            'action-route',
+            Acl::getActionRoute(AclActionsInterface::NOTIFICATION_DELETE)
+        );
+        $gridAction->addData(
+            'action-next',
+            Acl::getActionRoute(AclActionsInterface::NOTIFICATION)
+        );
 
         return $gridAction;
     }

@@ -22,6 +22,8 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use function SP\__;
+
 return [
     0 => __('Error while querying'),
     1 => __('There was an error'),

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -20,83 +22,50 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Acl;
 
-use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Acl\ActionNotFoundException;
+use SP\Domain\Core\Acl\ActionsInterface;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
-defined('APP_ROOT') || die();
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
  */
-final class Acl implements ActionsInterface
+final readonly class Acl implements AclActionsInterface, AclInterface
 {
-    /**
-     * @var Actions
-     */
-    protected static $action;
-    /**
-     * @var SessionContext
-     */
-    private $context;
-    /**
-     * @var EventDispatcher
-     */
-    private $eventDispatcher;
-
-    /**
-     * Acl constructor.
-     *
-     * @param ContextInterface $context
-     * @param EventDispatcher  $eventDispatcher
-     * @param Actions|null     $action
-     */
-    public function __construct(ContextInterface $context, EventDispatcher $eventDispatcher, Actions $action = null)
-    {
-        $this->context = $context;
-        $this->eventDispatcher = $eventDispatcher;
-
-        self::$action = $action;
-    }
-
-    /**
-     * Returns action route
-     *
-     * @param $actionId
-     *
-     * @return string
-     */
-    public static function getActionRoute($actionId)
-    {
-        try {
-            return self::$action !== null ? self::$action->getActionById($actionId)->getRoute() : '';
-        } catch (ActionNotFoundException $e) {
-            processException($e);
-        }
-
-        return '';
+    public function __construct(
+        private Context                  $context,
+        private EventDispatcherInterface $eventDispatcher,
+        private ActionsInterface         $actions
+    ) {
     }
 
     /**
      * Obtener el nombre de la acción indicada
      *
-     * @param int  $actionId El id de la acción
+     * @param int $actionId El id de la acción
      * @param bool $translate
      *
      * @return string
-     * @internal param bool $shortName Si se devuelve el nombre corto de la acción
+     * @internal param bool $translate Si se devuelve el nombre corto de la acción
      */
-    public static function getActionInfo($actionId, $translate = true)
+    public function getInfoFor(int $actionId, bool $translate = true): string
     {
         try {
-            $text = self::$action->getActionById($actionId)->getText();
+            $text = $this->actions->getActionById($actionId)->getText();
+
             return $translate ? __($text) : $text;
         } catch (ActionNotFoundException $e) {
             processException($e);
@@ -106,58 +75,69 @@ final class Acl implements ActionsInterface
     }
 
     /**
-     * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
-     *
-     * @param int $action con el Id de la acción
-     * @param int $userId opcional, con el Id del usuario
-     *
-     * @return bool
+     * Returns action route
      */
-    public function checkUserAccess($action, $userId = 0)
+    public function getRouteFor(int $actionId): string
     {
-        if (!($userProfile = $this->context->getUserProfile())) {
+        try {
+            return $this->actions->getActionById($actionId)->getRoute();
+        } catch (ActionNotFoundException $e) {
+            processException($e);
+        }
+
+        return '';
+    }
+
+    /**
+     * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
+     */
+    public function checkUserAccess(int $actionId, int $userId = 0): bool
+    {
+        $userProfile = $this->context->getUserProfile();
+
+        if (!$userProfile) {
             return false;
         }
 
-        $userData = $this->context->getUserData();
+        $userDto = $this->context->getUserData();
 
-        if ($userData->getIsAdminApp()) {
+        if ($userDto->isAdminApp) {
             return true;
         }
 
-        switch ($action) {
+        switch ($actionId) {
             case self::ACCOUNT_VIEW:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccView() || $userProfile->isAccEdit());
+                return $userDto->isAdminAcc || $userProfile->isAccView() || $userProfile->isAccEdit();
             case self::ACCOUNT_VIEW_PASS:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccViewPass());
+                return $userDto->isAdminAcc || $userProfile->isAccViewPass();
             case self::ACCOUNT_HISTORY_VIEW:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccViewHistory());
+                return $userDto->isAdminAcc || $userProfile->isAccViewHistory();
             case self::ACCOUNT_EDIT:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccEdit());
+                return $userDto->isAdminAcc || $userProfile->isAccEdit();
             case self::ACCOUNT_EDIT_PASS:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccEditPass());
+                return $userDto->isAdminAcc || $userProfile->isAccEditPass();
             case self::ACCOUNT_CREATE:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccAdd());
+                return $userDto->isAdminAcc || $userProfile->isAccAdd();
             case self::ACCOUNT_COPY:
-                return ($userData->getIsAdminAcc() || ($userProfile->isAccAdd() && $userProfile->isAccView()));
+                return $userDto->isAdminAcc || ($userProfile->isAccAdd() && $userProfile->isAccView());
             case self::ACCOUNT_DELETE:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccDelete());
+                return $userDto->isAdminAcc || $userProfile->isAccDelete();
             case self::ACCOUNT_FILE:
-                return ($userData->getIsAdminAcc() || $userProfile->isAccFiles());
+                return $userDto->isAdminAcc || $userProfile->isAccFiles();
             case self::ITEMS_MANAGE:
-                return ($userData->getIsAdminAcc()
-                    || $userProfile->isMgmCategories()
-                    || $userProfile->isMgmCustomers()
-                    || $userProfile->isMgmAccounts()
-                    || $userProfile->isMgmFiles()
-                    || $userProfile->isMgmTags()
-                    || $userProfile->isMgmCustomFields()
-                    || $userProfile->isMgmPublicLinks());
+                return $userDto->isAdminAcc
+                       || $userProfile->isMgmCategories()
+                       || $userProfile->isMgmCustomers()
+                       || $userProfile->isMgmAccounts()
+                       || $userProfile->isMgmFiles()
+                       || $userProfile->isMgmTags()
+                       || $userProfile->isMgmCustomFields()
+                       || $userProfile->isMgmPublicLinks();
             case self::CONFIG:
-                return ($userProfile->isConfigGeneral()
-                    || $userProfile->isConfigEncryption()
-                    || $userProfile->isConfigBackup()
-                    || $userProfile->isConfigImport());
+                return $userProfile->isConfigGeneral()
+                       || $userProfile->isConfigEncryption()
+                       || $userProfile->isConfigBackup()
+                       || $userProfile->isConfigImport();
             case self::CONFIG_GENERAL:
             case self::CONFIG_ACCOUNT:
             case self::CONFIG_WIKI:
@@ -201,12 +181,12 @@ final class Acl implements ActionsInterface
                 return $userProfile->isMgmPublicLinks();
             case self::PUBLICLINK_CREATE:
             case self::PUBLICLINK_REFRESH:
-                return ($userProfile->isMgmPublicLinks() || $userProfile->isAccPublicLinks());
+            return $userProfile->isMgmPublicLinks() || $userProfile->isAccPublicLinks();
             case self::ACCOUNTMGR:
             case self::ACCOUNTMGR_SEARCH:
             case self::ACCOUNTMGR_HISTORY:
             case self::ACCOUNTMGR_HISTORY_SEARCH:
-                return ($userData->getIsAdminAcc() || $userProfile->isMgmAccounts());
+            return $userDto->isAdminAcc || $userProfile->isMgmAccounts();
             case self::FILE:
             case self::FILE_SEARCH:
             case self::FILE_DELETE:
@@ -225,13 +205,13 @@ final class Acl implements ActionsInterface
             case self::CONFIG_BACKUP:
                 return $userProfile->isConfigBackup();
             case self::ACCESS_MANAGE:
-                return ($userProfile->isMgmUsers()
-                    || $userProfile->isMgmGroups()
-                    || $userProfile->isMgmProfiles()
-                    || $userProfile->isMgmApiTokens());
+                return $userProfile->isMgmUsers()
+                       || $userProfile->isMgmGroups()
+                       || $userProfile->isMgmProfiles()
+                       || $userProfile->isMgmApiTokens();
             case self::SECURITY_MANAGE:
                 return $userProfile->isEvl()
-                    || $userProfile->isMgmUsers();
+                       || $userProfile->isMgmUsers();
             case self::USER:
             case self::USER_SEARCH:
             case self::USER_VIEW:
@@ -245,7 +225,7 @@ final class Acl implements ActionsInterface
                 return $userProfile->isMgmUsers();
             case self::USER_EDIT_PASS:
                 // Comprobar si el usuario es distinto al de la sesión
-                return ($userId === $userData->getId() || $userProfile->isMgmUsers());
+                return $userId === $userDto->id || $userProfile->isMgmUsers();
             case self::GROUP:
             case self::GROUP_SEARCH:
             case self::GROUP_VIEW:
@@ -279,7 +259,7 @@ final class Acl implements ActionsInterface
             case self::EVENTLOG_CLEAR:
                 return $userProfile->isEvl();
             case self::CUSTOMFIELD_VIEW_PASS:
-                return ($userData->getIsAdminApp() || $userProfile->isAccViewPass());
+                return $userProfile->isAccViewPass();
             case self::ACCOUNT_REQUEST:
             case self::NOTIFICATION:
             case self::NOTIFICATION_VIEW:
@@ -289,16 +269,20 @@ final class Acl implements ActionsInterface
         }
 
         try {
-            $actionName = self::$action->getActionById($action)->getName();
-        } catch (ActionNotFoundException $e) {
+            $actionName = $this->actions->getActionById($actionId)->getName();
+        } catch (ActionNotFoundException) {
             $actionName = __u('N/A');
         }
 
-        $this->eventDispatcher->notifyEvent('acl.deny',
-            new Event($this, EventMessage::factory()
-                ->addDescription(__u('Access denied'))
-                ->addDetail(__u('Action'), $actionName)
-                ->addDetail(__u('User'), $userData->getLogin()))
+        $this->eventDispatcher->notify(
+            'acl.deny',
+            new Event(
+                $this,
+                EventMessage::build()
+                            ->addDescription(__u('Access denied'))
+                            ->addDetail(__u('Action'), $actionName)
+                    ->addDetail(__u('User'), $userDto->login)
+            )
         );
 
         return false;

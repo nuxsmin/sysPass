@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 
 language: php
 
@@ -11,6 +11,7 @@ php:
 branches:
   only:
   - master
+  - develop
   - /^v?\d+\.\d+(\.\d+)?(-\S*)?$/
 
 addons:

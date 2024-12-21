@@ -119,6 +119,18 @@
 }
 
 #content, #box-popup {
+  tr.header {
+    td {
+      width: 100%;
+      padding: 7px;
+      background-color: $color-bluegrey-bg;
+      color: $color-bluegrey-fg;
+      font-size: 17px;
+      letter-spacing: .2em;
+      font-weight: bold;
+    }
+  }
+
   td.descField {
     text-align: right;
     padding-right: 20px;
@@ -1208,6 +1220,7 @@ fieldset.warning {
   /*margin: auto auto 50px;*/
   line-height: 2em;
   margin-bottom: 5em;
+  padding-bottom: 5em;
 
   #logo {
     display: flex;

@@ -1,10 +1,11 @@
 <?php
-/**
+declare(strict_types=1);
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,18 +20,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests;
 
-use PDO;
-use PHPUnit\DbUnit\Database\DefaultConnection;
-use PHPUnit\DbUnit\DataSet\IDataSet;
-use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\Framework\TestCase;
-use SP\Core\Exceptions\SPException;
-use SP\Storage\Database\DatabaseConnectionData;
+
+define('APP_MODULE', 'web-test');
 
 /**
  * Class DatabaseBaseTest
@@ -41,51 +38,14 @@ use SP\Storage\Database\DatabaseConnectionData;
  */
 abstract class DatabaseTestCase extends TestCase
 {
-    use TestCaseTrait;
+    use DatabaseTrait;
 
-    /**
-     * @var DatabaseConnectionData
-     */
-    protected static $databaseConnectionData;
-    /**
-     * @var string
-     */
-    protected static $dataset = 'syspass.xml';
-    /**
-     * @var PDO
-     */
-    private static $pdo;
-    /**
-     * @var DefaultConnection
-     */
-    protected $conn;
-
-    /**
-     * Returns the test database connection.
-     *
-     * @return DefaultConnection
-     * @throws SPException
-     */
-    final public function getConnection()
+    protected function setUp(): void
     {
-        if ($this->conn === null) {
-            if (self::$pdo === null) {
-                self::$pdo = getDbHandler()->getConnection();
-            }
+        parent::setUp();
 
-            $this->conn = $this->createDefaultDBConnection(self::$pdo, 'syspass');
+        if (self::$loadFixtures) {
+            self::loadFixtures();
         }
-
-        return $this->conn;
-    }
-
-    /**
-     * Returns the test dataset.
-     *
-     * @return IDataSet
-     */
-    protected function getDataSet()
-    {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . self::$dataset);
     }
 }

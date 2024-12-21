@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,10 +21,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Messages;
+
+use SP\Domain\Core\Messages\FormatterInterface;
+
+use function SP\__;
 
 /**
  * Class TextFormatter
@@ -31,51 +37,34 @@ namespace SP\Core\Messages;
  */
 final class TextFormatter implements FormatterInterface
 {
-    /**
-     * @var string
-     */
-    private $delimiter;
+    private string $delimiter;
 
-    /**
-     * TextFormatter constructor.
-     *
-     * @param string $delimiter
-     */
-    public function __construct($delimiter = PHP_EOL)
+    public function __construct(string $delimiter = PHP_EOL)
     {
         $this->delimiter = $delimiter;
     }
 
-    /**
-     * @param array $text
-     * @param bool  $translate
-     *
-     * @return string
-     */
     public function formatDetail(array $text, bool $translate = false): string
     {
         return implode(
             $this->delimiter,
-            array_map(function ($value) use ($translate) {
-                return sprintf(
-                    '%s: %s',
-                    $translate ? __($value[0]) : $value[0]
-                    , $translate ? __($value[1]) : $value[1]
-                );
-            }, $text));
-
+            array_map(
+                static function ($value) use ($translate) {
+                    return sprintf(
+                        '%s: %s',
+                        $translate ? __($value[0]) : $value[0],
+                        $translate ? __($value[1]) : $value[1]
+                    );
+                },
+                $text
+            )
+        );
     }
 
-    /**
-     * @param array $text
-     * @param bool  $translate
-     *
-     * @return string
-     */
     public function formatDescription(array $text, bool $translate = false): string
     {
         if ($translate === true) {
-            return implode($this->delimiter, array_map('__', $text));
+            return implode($this->delimiter, array_map(__(...), $text));
         }
 
         return implode($this->delimiter, $text);

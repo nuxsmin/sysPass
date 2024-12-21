@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +20,15 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Messages;
 
-use SP\Html\Html;
+use SP\Domain\Core\Messages\FormatterInterface;
+use SP\Domain\Html\Html;
+
+use function SP\__;
 
 /**
  * Class HtmlFormatter
@@ -34,59 +38,57 @@ use SP\Html\Html;
 final class HtmlFormatter implements FormatterInterface
 {
 
-    /**
-     * @param array $text
-     * @param bool  $translate
-     *
-     * @return string
-     */
     public function formatDetail(array $text, bool $translate = false): string
     {
         return implode(
             '',
-            array_map(function ($value) use ($translate) {
-                $right = $this->buildLink($value[1]);
-                $left = $translate ? __($value[0]) : $value[0];
+            array_map(
+                function ($value) use ($translate) {
+                    $right = $this->buildLink($value[1]);
+                    $left = $translate ? __($value[0]) : $value[0];
 
-                if (strpos($right, '<a') === false) {
-                    $right = $translate ? __($right) : $right;
-                }
+                    if (!str_contains($right, '<a')) {
+                        $right = $translate ? __($right) : $right;
+                    }
 
-                return '<div class="detail">'
-                    . '<span class="detail-left">' . $left . '</span>'
-                    . '<span class="detail-right">' . $right . '</span>'
-                    . '</div>';
-            }, $text));
+                    return '<div class="detail">'
+                           . '<span class="detail-left">' . $left . '</span>'
+                           . '<span class="detail-right">' . $right . '</span>'
+                           . '</div>';
+                },
+                $text
+            )
+        );
     }
 
     /**
      * Detects a link within the string and builds an HTML link
-     *
-     * @param string $text
-     *
-     * @return string
      */
-    private function buildLink(string $text)
+    private function buildLink(string $text): string
     {
         if (preg_match('#^https?://.*$#', $text, $matches)) {
-            return sprintf('<a href="%s">%s</a>', $matches[0], Html::truncate($matches[0], 30));
+            return sprintf(
+                '<a href="%s">%s</a>',
+                $matches[0],
+                Html::truncate($matches[0], 30)
+            );
         }
 
         return $text;
     }
 
-    /**
-     * @param array $text
-     * @param bool  $translate
-     *
-     * @return string
-     */
-    public function formatDescription(array $text, bool $translate = false): string
-    {
+    public function formatDescription(
+        array $text,
+        bool  $translate = false
+    ): string {
         return implode(
             '',
-            array_map(function ($value) use ($translate) {
-                return '<div class="description-line">' . ($translate ? __($value) : $value) . '</div>';
-            }, $text));
+            array_map(
+                static function ($value) use ($translate) {
+                    return '<div class="description-line">' . ($translate ? __($value) : $value) . '</div>';
+                },
+                $text
+            )
+        );
     }
 }

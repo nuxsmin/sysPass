@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,74 +19,85 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
 
-use Psr\Container\ContainerInterface;
-use SP\Core\Acl\ActionsInterface;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\ValidationException;
-use SP\Services\Account\AccountPresetService;
-use SP\Services\Account\AccountRequest;
+use SP\Core\Application;
+use SP\Domain\Account\Dtos\AccountCreateDto;
+use SP\Domain\Account\Dtos\AccountDto;
+use SP\Domain\Account\Dtos\AccountUpdateDto;
+use SP\Domain\Account\Ports\AccountPresetService;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Util\Chainable;
+
+use function SP\__u;
 
 /**
  * Class AccountForm
- *
- * @package SP\Account
  */
 final class AccountForm extends FormBase implements FormInterface
 {
-    /**
-     * @var AccountRequest
-     */
-    protected $accountRequest;
-    /**
-     * @var AccountPresetService
-     */
-    private $accountPresetService;
+    private null|AccountCreateDto|AccountUpdateDto $accountDto = null;
+
+    public function __construct(
+        Application                           $application,
+        RequestService                        $request,
+        private readonly AccountPresetService $accountPresetService,
+        ?int                                  $itemId = null
+    ) {
+        parent::__construct($application, $request, $itemId);
+    }
 
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param int $action
+     * @param int|null $id
      *
-     * @return AccountForm
-     * @throws ValidationException
-     * @throws ConstraintException
-     * @throws NoSuchPropertyException
-     * @throws QueryException
+     * @return FormInterface
      */
-    public function validate($action)
+    public function validateFor(int $action, ?int $id = null): FormInterface
     {
-        switch ($action) {
-            case ActionsInterface::ACCOUNT_EDIT_PASS:
-                $this->analyzeRequestData();
-                $this->checkPassword();
-                $this->accountPresetService->checkPasswordPreset($this->accountRequest);
-                break;
-            case ActionsInterface::ACCOUNT_EDIT:
-                $this->analyzeRequestData();
-                $this->analyzeItems();
-                $this->checkCommon();
-                break;
-            case ActionsInterface::ACCOUNT_CREATE:
-            case ActionsInterface::ACCOUNT_COPY:
-                $this->analyzeRequestData();
-                $this->analyzeItems();
-                $this->checkCommon();
-                $this->checkPassword();
-                $this->accountPresetService->checkPasswordPreset($this->accountRequest);
-                break;
-            case ActionsInterface::ACCOUNTMGR_BULK_EDIT:
-                $this->analyzeRequestData();
-                $this->analyzeItems();
-                $this->analyzeBulkEdit();
-                break;
+        if ($id !== null) {
+            $this->itemId = $id;
         }
+
+        $chain = new Chainable(fn() => $this->analyzeRequestData(), $this);
+
+        $this->accountDto = match ($action) {
+            AclActionsInterface::ACCOUNT_EDIT_PASS =>
+            $chain->next(fn(AccountDto $dto) => $this->checkPassword($dto))
+                  ->next(
+                      fn(AccountDto $dto) => $this->accountPresetService->checkPasswordPreset(
+                          $dto
+                      )
+                  )
+                  ->resolve(),
+            AclActionsInterface::ACCOUNT_EDIT =>
+            $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
+                  ->next(fn(AccountDto $dto) => $this->checkCommon($dto))
+                  ->resolve(),
+            AclActionsInterface::ACCOUNT_CREATE,
+            AclActionsInterface::ACCOUNT_COPY =>
+            $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
+                  ->next(fn(AccountDto $dto) => $this->checkCommon($dto))
+                  ->next(fn(AccountDto $dto) => $this->checkPassword($dto))
+                  ->next(
+                      fn(AccountDto $dto) => $this->accountPresetService->checkPasswordPreset(
+                          $dto
+                      )
+                  )
+                  ->resolve(),
+            AclActionsInterface::ACCOUNTMGR_BULK_EDIT =>
+            $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
+                  ->next(fn(AccountDto $dto) => $this->analyzeBulkEdit($dto))
+                  ->resolve()
+        };
 
         return $this;
     }
@@ -94,129 +105,128 @@ final class AccountForm extends FormBase implements FormInterface
     /**
      * Analizar los datos de la petición HTTP
      *
-     * @return void
+     * @return AccountCreateDto|AccountUpdateDto
+     * @throws SPException
      */
-    protected function analyzeRequestData()
+    private function analyzeRequestData(): AccountCreateDto|AccountUpdateDto
     {
-        $this->accountRequest->id = $this->itemId;
-        $this->accountRequest->name = $this->request->analyzeString('name');
-        $this->accountRequest->clientId = $this->request->analyzeInt('client_id');
-        $this->accountRequest->categoryId = $this->request->analyzeInt('category_id');
-        $this->accountRequest->login = $this->request->analyzeString('login');
-        $this->accountRequest->url = $this->request->analyzeString('url');
-        $this->accountRequest->notes = $this->request->analyzeUnsafeString('notes');
-        $this->accountRequest->userEditId = $this->context->getUserData()->getId();
-        $this->accountRequest->pass = $this->request->analyzeEncrypted('password');
-        $this->accountRequest->isPrivate = (int)$this->request->analyzeBool('private_enabled', false);
-        $this->accountRequest->isPrivateGroup = (int)$this->request->analyzeBool('private_group_enabled', false);
+        $properties = [
+            'name' => $this->request->analyzeString('name'),
+            'login' => $this->request->analyzeString('login'),
+            'clientId' => $this->request->analyzeInt('client_id'),
+            'categoryId' => $this->request->analyzeInt('category_id'),
+            'pass' => $this->request->analyzeEncrypted('password'),
+            'userId' => $this->request->analyzeInt('owner_id', $this->context->getUserData()->id),
+            'url' => $this->request->analyzeString('url'),
+            'notes' => $this->request->analyzeUnsafeString('notes'),
+            'private' => (int)$this->request->analyzeBool('private_enabled', false),
+            'privateGroup' => (int)$this->request->analyzeBool('private_group_enabled', false),
+            'passDateChange' => $this->request->analyzeInt('password_date_expire_unix'),
+            'parentId' => $this->request->analyzeInt('parent_account_id'),
+            'userGroupId' => $this->request->analyzeInt('main_usergroup_id'),
+        ];
 
-        if ($this->request->analyzeInt('password_date_expire')) {
-            $this->accountRequest->passDateChange = $this->request->analyzeInt('password_date_expire_unix');
-        }
-
-        $this->accountRequest->parentId = $this->request->analyzeInt('parent_account_id');
-        $this->accountRequest->userId = $this->request->analyzeInt('owner_id');
-        $this->accountRequest->userGroupId = $this->request->analyzeInt('main_usergroup_id');
+        return $this->itemId === null ? AccountCreateDto::fromArray($properties) : AccountUpdateDto::fromArray(
+            $properties
+        );
     }
 
     /**
      * @throws ValidationException
      */
-    private function checkPassword()
+    private function checkPassword(AccountDto $accountDto): AccountDto
     {
-        if ($this->accountRequest->parentId > 0) {
-            return;
+        if ($accountDto->parentId > 0) {
+            return $accountDto;
         }
 
-        if (!$this->accountRequest->pass) {
+        if (!$accountDto->pass) {
             throw new ValidationException(__u('A key is needed'));
         }
 
-        if ($this->request->analyzeEncrypted('password_repeat') !== $this->accountRequest->pass) {
+        if ($this->request->analyzeEncrypted('password_repeat') !== $accountDto->pass) {
             throw new ValidationException(__u('Passwords do not match'));
         }
+
+        return $accountDto;
     }
 
     /**
-     * analyzeItems
+     * @throws SPException
      */
-    private function analyzeItems()
+    private function analyzeItems(AccountDto $accountDto): AccountDto
     {
         if ($this->request->analyzeInt('other_users_view_update') === 1) {
-            $this->accountRequest->usersView = $this->request->analyzeArray('other_users_view', null, []);
+            $accountDto = $accountDto->withUsersView($this->request->analyzeArray('other_users_view', null, []));
         }
 
         if ($this->request->analyzeInt('other_users_edit_update') === 1) {
-            $this->accountRequest->usersEdit = $this->request->analyzeArray('other_users_edit', null, []);
+            $accountDto = $accountDto->withUsersEdit($this->request->analyzeArray('other_users_edit', null, []));
         }
 
         if ($this->request->analyzeInt('other_usergroups_view_update') === 1) {
-            $this->accountRequest->userGroupsView = $this->request->analyzeArray('other_usergroups_view', null, []);
+            $accountDto =
+                $accountDto->withUserGroupsView($this->request->analyzeArray('other_usergroups_view', null, []));
         }
 
         if ($this->request->analyzeInt('other_usergroups_edit_update') === 1) {
-            $this->accountRequest->userGroupsEdit = $this->request->analyzeArray('other_usergroups_edit', null, []);
+            $accountDto =
+                $accountDto->withUserGroupsEdit($this->request->analyzeArray('other_usergroups_edit', null, []));
         }
 
         if ($this->request->analyzeInt('tags_update') === 1) {
-            $this->accountRequest->tags = $this->request->analyzeArray('tags', null, []);
+            $accountDto = $accountDto->withTags($this->request->analyzeArray('tags', null, []));
         }
+
+        return $accountDto;
     }
 
     /**
      * @throws ValidationException
      */
-    private function checkCommon()
+    private function checkCommon(AccountDto $accountDto): AccountDto
     {
-        if (!$this->accountRequest->name) {
+        if (!$accountDto->name) {
             throw new ValidationException(__u('An account name needed'));
         }
 
-        if (!$this->accountRequest->clientId) {
-            throw new ValidationException(__u('A client name needed'));
+        if (!$accountDto->clientId) {
+            throw new ValidationException(__u('A client is needed'));
         }
 
-        if (!$this->accountRequest->categoryId) {
+        if (!$accountDto->categoryId) {
             throw new ValidationException(__u('A category is needed'));
         }
+
+        return $accountDto;
     }
 
     /**
-     * analyzeBulkEdit
+     * @throws SPException
      */
-    private function analyzeBulkEdit()
+    private function analyzeBulkEdit(AccountDto $accountDto): AccountDto
     {
         if ($this->request->analyzeBool('clear_permission_users_view', false)) {
-            $this->accountRequest->usersView = [];
+            $accountDto = $accountDto->withUsersView([]);
         }
 
         if ($this->request->analyzeBool('clear_permission_users_edit', false)) {
-            $this->accountRequest->usersEdit = [];
+            $accountDto = $accountDto->withUsersEdit([]);
         }
 
         if ($this->request->analyzeBool('clear_permission_usergroups_view', false)) {
-            $this->accountRequest->userGroupsView = [];
+            $accountDto = $accountDto->withUserGroupsView([]);
         }
 
         if ($this->request->analyzeBool('clear_permission_usergroups_edit', false)) {
-            $this->accountRequest->userGroupsEdit = [];
+            $accountDto = $accountDto->withUserGroupsEdit([]);
         }
+
+        return $accountDto;
     }
 
-    /**
-     * @return AccountRequest
-     */
-    public function getItemData()
+    public function getItemData(): AccountCreateDto|AccountUpdateDto|null
     {
-        return $this->accountRequest;
-    }
-
-    /**
-     * @param ContainerInterface $dic
-     */
-    protected function initialize($dic)
-    {
-        $this->accountPresetService = $dic->get(AccountPresetService::class);
-        $this->accountRequest = new AccountRequest();
+        return $this->accountDto;
     }
 }

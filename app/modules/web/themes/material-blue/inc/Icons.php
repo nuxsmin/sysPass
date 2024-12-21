@@ -27,6 +27,8 @@ defined('APP_ROOT') || die();
 use SP\Core\UI\ThemeIcons;
 use SP\Html\Assets\FontIcon;
 
+use function SP\__u;
+
 $themeIcons = new ThemeIcons();
 $themeIcons->addIcon('add', new FontIcon('add', 'mdl-color-text--indigo-A200', __u('Add')));
 $themeIcons->addIcon('view', new FontIcon('visibility', 'mdl-color-text--indigo-A200', __u('View Details')));

@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,116 +19,137 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web;
 
-use Defuse\Crypto\Exception\CryptoException;
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
-use Psr\Container\ContainerInterface;
-use SP\Bootstrap;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
-use SP\Core\Crypt\CryptSessionHandler;
+use Klein\Klein;
+use SP\Core\Application;
+use SP\Core\Context\ContextBase;
+use SP\Core\Context\ContextException;
+use SP\Core\Context\Session;
+use SP\Core\Context\SessionLifecycleHandler;
 use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\Crypt\UUIDCookie;
-use SP\Core\Exceptions\ConstraintException;
-use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\NoSuchPropertyException;
-use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
-use SP\Core\Language;
-use SP\Core\ModuleBase;
-use SP\Core\UI\ThemeInterface;
-use SP\DataModel\ItemPreset\SessionTimeout;
-use SP\Http\Address;
-use SP\Plugin\PluginManager;
-use SP\Repositories\NoSuchItemException;
-use SP\Services\Crypt\SecureSessionService;
-use SP\Services\ItemPreset\ItemPresetInterface;
-use SP\Services\ItemPreset\ItemPresetService;
-use SP\Services\Upgrade\UpgradeAppService;
-use SP\Services\Upgrade\UpgradeDatabaseService;
-use SP\Services\Upgrade\UpgradeUtil;
-use SP\Services\UserProfile\UserProfileService;
-use SP\Storage\Database\DatabaseUtil;
-use SP\Storage\File\FileException;
-use SP\Util\HttpUtil;
+use SP\Core\HttpModuleBase;
+use SP\Core\ProvidersHelper;
+use SP\Domain\Common\Providers\Http;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Crypt\CsrfHandler;
+use SP\Domain\Core\Exceptions\ConfigException;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\InitializationException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\NoSuchPropertyException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Core\Ports\AppLockHandler;
+use SP\Domain\Http\Adapters\Address;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Providers\Uri;
+use SP\Domain\ItemPreset\Models\SessionTimeout;
+use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
+use SP\Domain\ItemPreset\Ports\ItemPresetService;
+use SP\Domain\User\Models\ProfileData;
+use SP\Domain\User\Ports\UserProfileService;
+use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Modules\Web\Controllers\Bootstrap\GetEnvironmentController;
+use SP\Modules\Web\Controllers\Error\DatabaseConnectionController;
+use SP\Modules\Web\Controllers\Error\DatabaseErrorController;
+use SP\Modules\Web\Controllers\Error\IndexController as ErrorIndexController;
+use SP\Modules\Web\Controllers\Install\InstallController;
+use SP\Modules\Web\Controllers\Items\AccountsUserController;
+use SP\Modules\Web\Controllers\Items\CategoriesController;
+use SP\Modules\Web\Controllers\Items\ClientsController;
+use SP\Modules\Web\Controllers\Items\NotificationsController;
+use SP\Modules\Web\Controllers\Items\TagsController;
+use SP\Modules\Web\Controllers\Login\LoginController;
+use SP\Modules\Web\Controllers\Resource\CssController;
+use SP\Modules\Web\Controllers\Resource\JsController;
+use SP\Modules\Web\Controllers\Status\CheckNotices;
+use SP\Modules\Web\Controllers\Status\StatusController;
+use SP\Modules\Web\Controllers\Task\TrackStatusController;
+use SP\Modules\Web\Controllers\Upgrade\IndexController as UpgradeIndexController;
+use SP\Modules\Web\Controllers\Upgrade\UpgradeController;
+
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class Init
- *
- * @property  itemPresetService
- * @package SP\Modules\Web
  */
-final class Init extends ModuleBase
+final class Init extends HttpModuleBase
 {
     /**
      * List of controllers that don't need to perform fully initialization
      * like: install/database checks, session/event handlers initialization
      */
-    const PARTIAL_INIT = [
-        'resource',
-        'install',
-        'bootstrap',
-        'status',
-        'upgrade',
-        'error',
-        'task'
+    private const PARTIAL_INIT = [
+        CssController::class,
+        JsController::class,
+        InstallController::class,
+        GetEnvironmentController::class,
+        CheckNotices::class,
+        StatusController::class,
+        UpgradeIndexController::class,
+        UpgradeController::class,
+        DatabaseConnectionController::class,
+        DatabaseErrorController::class,
+        ErrorIndexController::class,
+        TrackStatusController::class,
     ];
     /**
      * List of controllers that don't need to update the user's session activity
      */
-    const NO_SESSION_ACTIVITY = ['items', 'login'];
+    private const NO_SESSION_ACTIVITY = [
+        AccountsUserController::class,
+        CategoriesController::class,
+        ClientsController::class,
+        NotificationsController::class,
+        TagsController::class,
+        LoginController::class,
+    ];
+    /**
+     * List of controllers that needs to keep the session opened
+     */
+    private const NO_SESSION_CLOSE = [LoginController::class];
+    /**
+     * Routes
+     */
+    public const  ROUTE_INSTALL                   = 'install';
+    public const  ROUTE_ERROR_DATABASE_CONNECTION = 'error/databaseConnection';
+    public const  ROUTE_ERROR_MAINTENANCE         = 'error/maintenanceError';
+    public const  ROUTE_ERROR_DATABASE            = 'error/databaseError';
+    public const  ROUTE_UPGRADE                   = 'upgrade';
 
-    /**
-     * @var SessionContext
-     */
-    private $context;
-    /**
-     * @var ThemeInterface
-     */
-    private $theme;
-    /**
-     * @var Language
-     */
-    private $language;
-    /**
-     * @var SecureSessionService
-     */
-    private $secureSessionService;
-    /**
-     * @var PluginManager
-     */
-    private $pluginManager;
-    /**
-     * @var ItemPresetService
-     */
-    private $itemPresetService;
-    /**
-     * @var bool
-     */
-    private $isIndex = false;
 
-    /**
-     * Init constructor.
-     *
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct($container);
+    private bool $isIndex = false;
 
-        $this->context = $container->get(ContextInterface::class);
-        $this->theme = $container->get(ThemeInterface::class);
-        $this->language = $container->get(Language::class);
-        $this->secureSessionService = $container->get(SecureSessionService::class);
-        $this->pluginManager = $container->get(PluginManager::class);
-        $this->itemPresetService = $container->get(ItemPresetService::class);
+    public function __construct(
+        Application                          $application,
+        ProvidersHelper                      $providersHelper,
+        RequestService                       $request,
+        Klein                                $router,
+        AppLockHandler $appLock,
+        private readonly CsrfHandler         $csrf,
+        private readonly LanguageInterface   $language,
+        private readonly ItemPresetService   $itemPresetService,
+        private readonly DatabaseUtil        $databaseUtil,
+        private readonly UserProfileService  $userProfileService,
+        private readonly UriContextInterface $uriContext,
+
+    ) {
+        parent::__construct(
+            $application,
+            $providersHelper,
+            $request,
+            $router,
+            $appLock
+        );
     }
 
     /**
@@ -136,23 +157,21 @@ final class Init extends ModuleBase
      *
      * @param string $controller
      *
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws EnvironmentIsBrokenException
      * @throws ConstraintException
+     * @throws InitializationException
+     * @throws NoSuchItemException
      * @throws QueryException
      * @throws SPException
-     * @throws NoSuchItemException
-     * @throws Exception
+     * @throws ContextException
+     * @throws ConfigException
      */
-    public function initialize($controller)
+    public function initialize(string $controller): void
     {
         logger(__METHOD__);
 
         $this->isIndex = $controller === 'index';
 
-        // Iniciar la sesión de PHP
-        $this->initSession($this->configData->isEncryptSession());
+        $this->context->initialize();
 
         $isReload = $this->request->checkReload();
 
@@ -160,132 +179,93 @@ final class Init extends ModuleBase
         if ($isReload) {
             logger('Browser reload');
 
-            $this->context->setAppStatus(SessionContext::APP_STATUS_RELOADED);
-
-            // Cargar la configuración
-            $this->config->loadConfig(true);
+            $this->context->setAppStatus(ContextBase::APP_STATUS_RELOADED);
+            $this->config->reload();
         }
 
         // Setup language
         $this->language->setLanguage($isReload);
 
-        // Setup theme
-        $this->theme->initTheme($isReload);
-
         // Comprobar si es necesario cambiar a HTTPS
-        HttpUtil::checkHttps($this->configData, $this->request);
+        Http::checkHttps($this->configData, $this->request);
 
-        if (in_array($controller, self::PARTIAL_INIT, true) === false) {
-            $databaseUtil = $this->container->get(DatabaseUtil::class);
+        $partialInit = in_array($controller, self::PARTIAL_INIT, true);
 
+        // Initialize event handlers
+        $this->initEventHandlers($partialInit);
+
+        if ($partialInit === false) {
             // Checks if sysPass is installed
             if (!$this->checkInstalled()) {
                 logger('Not installed', 'ERROR');
 
-                $this->router->response()
-                    ->redirect('index.php?r=install/index')
-                    ->send();
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_INSTALL))->send();
 
-                return;
+                throw new InitializationException('Not installed');
             }
 
             // Checks if the database is set up
-            if (!$databaseUtil->checkDatabaseConnection()) {
+            if (!$this->databaseUtil->checkDatabaseConnection()) {
                 logger('Database connection error', 'ERROR');
 
-                $this->router->response()
-                    ->redirect('index.php?r=error/databaseConnection')
-                    ->send();
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_DATABASE_CONNECTION))->send();
 
-                return;
+                throw new InitializationException('Database connection error');
             }
 
             // Checks if maintenance mode is turned on
-            if ($this->checkMaintenanceMode($this->context)) {
+            if ($this->checkMaintenanceMode()) {
                 logger('Maintenance mode', 'INFO');
 
-                $this->router->response()
-                    ->redirect('index.php?r=error/maintenanceError')
-                    ->send();
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_MAINTENANCE))->send();
 
-                return;
+                throw new InitializationException('Maintenance mode');
             }
 
-            // Checks if upgrade is needed
-            if ($this->checkUpgrade()) {
-                logger('Upgrade needed', 'ERROR');
-
-                $this->config->generateUpgradeKey();
-
-                $this->router->response()
-                    ->redirect('index.php?r=upgrade/index')
-                    ->send();
-
-                return;
+            if ($this->checkUpgradeNeeded()) {
+                throw new InitializationException('Upgrade needed');
             }
 
             // Checks if the database is set up
-            if (!$databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
+            if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
                 logger('Database checking error', 'ERROR');
 
-                $this->router->response()
-                    ->redirect('index.php?r=error/databaseError')
-                    ->send();
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_DATABASE))->send();
 
-                return;
+                throw new InitializationException('Database checking error');
             }
-
-            // Initialize event handlers
-            $this->initEventHandlers();
 
             if (!in_array($controller, self::NO_SESSION_ACTIVITY)) {
                 // Initialize user session context
                 $this->initUserSession();
             }
 
-            // Load plugins
-            $this->pluginManager->loadPlugins();
+            //TODO:Load plugins
 
             if ($this->context->isLoggedIn()
-                && $this->context->getAppStatus() === SessionContext::APP_STATUS_RELOADED
+                && $this->context->getAppStatus() === ContextBase::APP_STATUS_RELOADED
             ) {
                 logger('Reload user profile');
+
                 // Recargar los permisos del perfil de usuario
                 $this->context->setUserProfile(
-                    $this->container->get(UserProfileService::class)
-                        ->getById($this->context->getUserData()
-                            ->getUserProfileId())->getProfile());
+                    $this->userProfileService
+                        ->getById($this->context->getUserData()->userProfileId)
+                        ->hydrate(ProfileData::class)
+                );
             }
 
-            return;
+            if (!$this->csrf->check()) {
+                throw new InitializationException('Invalid request token');
+            }
+
+            // Initialize CSRF
+            $this->csrf->initialize();
         }
 
         // Do not keep the PHP's session opened
-        SessionContext::close();
-    }
-
-    /**
-     * Iniciar la sesión PHP
-     *
-     * @param bool $encrypt Encriptar la sesión de PHP
-     *
-     * @throws Exception
-     */
-    private function initSession($encrypt = false)
-    {
-        if ($encrypt === true
-            && Bootstrap::$checkPhpVersion
-            && ($key = $this->secureSessionService->getKey(UUIDCookie::factory($this->request))) !== false) {
-            session_set_save_handler(new CryptSessionHandler($key), true);
-        }
-
-
-        try {
-            $this->context->initialize();
-        } catch (Exception $e) {
-            $this->router->response()->header('HTTP/1.1', '500 Internal Server Error');
-
-            throw $e;
+        if (!in_array($controller, self::NO_SESSION_CLOSE, true)) {
+            Session::close();
         }
     }
 
@@ -293,31 +273,23 @@ final class Init extends ModuleBase
      * Comprueba que la aplicación esté instalada
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
      */
-    private function checkInstalled()
+    private function checkInstalled(): bool
     {
         return $this->configData->isInstalled()
-            && $this->router->request()->param('r') !== 'install/index';
+               && $this->router->request()->param('r') !== 'install/index';
     }
 
-    /**
-     * Comprobar si es necesario actualizar componentes
-     *
-     * @throws FileException
-     */
-    private function checkUpgrade()
+    private function getUriFor(string $route): string
     {
-        UpgradeUtil::fixAppUpgrade($this->configData, $this->config);
-
-        return $this->configData->getUpgradeKey()
-            || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion()) ||
-                UpgradeAppService::needsUpgrade($this->configData->getAppVersion()));
+        return (new Uri($this->uriContext->getWebRoot()))->addParam('r', $route)->getUri();
     }
 
     /**
      * Inicializar la sesión de usuario
      *
+     * @throws SPException
      */
-    private function initUserSession()
+    private function initUserSession(): void
     {
         $lastActivity = $this->context->getLastActivity();
         $inMaintenance = $this->configData->isMaintenance();
@@ -325,13 +297,9 @@ final class Init extends ModuleBase
         // Session timeout
         if ($lastActivity > 0
             && !$inMaintenance
-            && time() > ($lastActivity + $this->getSessionLifeTime())
+            && time() > $lastActivity + $this->getSessionLifeTime()
         ) {
-            if ($this->router->request()->cookies()->get(session_name()) !== null) {
-                $this->router->response()->cookie(session_name(), '', time() - 42000);
-            }
-
-            SessionContext::restart();
+            SessionLifecycleHandler::restart();
         } else {
             $sidStartTime = $this->context->getSidStartTime();
 
@@ -339,16 +307,17 @@ final class Init extends ModuleBase
             if ($sidStartTime === 0) {
                 // Try to set PHP's session lifetime
                 @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
-            } else if (!$inMaintenance
-                && time() > ($sidStartTime + SessionContext::MAX_SID_TIME)
-                && $this->context->isLoggedIn()
+            } elseif (!$inMaintenance
+                      && SessionLifecycleHandler::needsRegenerate($sidStartTime)
+                      && $this->context->isLoggedIn()
             ) {
                 try {
                     CryptSession::reKey($this->context);
-                } catch (CryptoException $e) {
+                } catch (CryptException $e) {
                     logger($e->getMessage());
 
-                    SessionContext::restart();
+                    SessionLifecycleHandler::restart();
+
                     return;
                 }
             }
@@ -362,7 +331,7 @@ final class Init extends ModuleBase
      *
      * @return int con el tiempo en segundos
      */
-    private function getSessionLifeTime()
+    private function getSessionLifeTime(): int
     {
         $timeout = $this->context->getSessionTimeout();
 
@@ -382,28 +351,34 @@ final class Init extends ModuleBase
     }
 
     /**
-     * @param int $default
-     *
-     * @return int
      * @throws ConstraintException
      * @throws InvalidArgumentException
      * @throws NoSuchPropertyException
      * @throws QueryException
+     * @throws SPException
      */
-    private function getSessionTimeoutForUser(int $default = null)
+    private function getSessionTimeoutForUser(?int $default = null): ?int
     {
         if ($this->context->isLoggedIn()) {
             $itemPreset = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT);
 
-            if ($itemPreset !== null) {
-                $sessionTimeout = $itemPreset->hydrate(SessionTimeout::class);
-
-                if (Address::check($this->request->getClientAddress(), $sessionTimeout->getAddress(), $sessionTimeout->getMask())) {
+            if ($itemPreset !== null && ($sessionTimeout = $itemPreset->hydrate(SessionTimeout::class)) !== null) {
+                if (Address::check(
+                    $this->request->getClientAddress(),
+                    $sessionTimeout->getAddress(),
+                    $sessionTimeout->getMask()
+                )
+                ) {
                     return $sessionTimeout->getTimeout();
                 }
             }
         }
 
         return $default;
+    }
+
+    public function getName(): string
+    {
+        return 'web';
     }
 }

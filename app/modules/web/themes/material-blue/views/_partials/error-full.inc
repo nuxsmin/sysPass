@@ -1,6 +1,6 @@
 <main class="mdl-layout__content">
     <div id="content">
-        <?php /** @var Template $this */
+        <?php /** @var \SP\Mvc\View\TemplateInterface $this */
 
         use SP\Mvc\View\Template;
 

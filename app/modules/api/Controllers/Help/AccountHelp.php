@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,10 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api\Controllers\Help;
+
+use function SP\__;
 
 /**
  * Class AccountHelp
@@ -36,18 +38,20 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function view()
+    public static function view(): array
     {
         return
             [
-                self::getItem('id', __('Account Id'), true)
+                self::getItem('id', __('Account Id'), true),
+                self::getItem('customFields', __('Get custom fields for the account within the response')),
+                self::getItem('tokenPass', __('Token\'s password when custom fields are retrieved'), true)
             ];
     }
 
     /**
      * @return array
      */
-    public static function viewPass()
+    public static function viewPass(): array
     {
         return
             [
@@ -60,7 +64,7 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function editPass()
+    public static function editPass(): array
     {
         return
             [
@@ -74,7 +78,7 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function create()
+    public static function create(): array
     {
         return
             [
@@ -98,7 +102,7 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function edit()
+    public static function edit(): array
     {
         return
             [
@@ -121,7 +125,7 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function search()
+    public static function search(): array
     {
         return
             [
@@ -137,7 +141,7 @@ final class AccountHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function delete()
+    public static function delete(): array
     {
         return
             [

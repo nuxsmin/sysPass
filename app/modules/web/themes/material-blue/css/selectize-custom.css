@@ -89,7 +89,7 @@
   vertical-align: middle;
   display: inline-block;
   padding: 1px 0 0 0;
-  border-left: 1px solid transparent;
+  border-left: 1px solid rgba(0, 0, 0, 0);
   -webkit-border-radius: 0 2px 2px 0;
   -moz-border-radius: 0 2px 2px 0;
   border-radius: 0 2px 2px 0;
@@ -101,7 +101,7 @@
   background: rgba(0, 0, 0, 0.05); }
 
 .selectize-control.plugin-remove_button [data-value].active .remove {
-  border-left-color: transparent; }
+  border-left-color: rgba(0, 0, 0, 0); }
 
 .selectize-control.plugin-remove_button .disabled [data-value] .remove:hover {
   background: none; }
@@ -180,12 +180,12 @@
   padding: 1px 3px;
   background: #5c6bc0;
   color: #fff;
-  border: 0 solid transparent; }
+  border: 0 solid rgba(0, 0, 0, 0); }
 
 .selectize-control.multi .selectize-input > div.active {
   background: #607d8b;
   color: #ffffff;
-  border: 0 solid transparent; }
+  border: 0 solid rgba(0, 0, 0, 0); }
 
 .selectize-control.multi .selectize-input.disabled > div,
 .selectize-control.multi .selectize-input.disabled > div.active {

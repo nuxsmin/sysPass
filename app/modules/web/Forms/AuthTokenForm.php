@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
-use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\AuthTokenData;
-use SP\Services\AuthToken\AuthTokenService;
+use SP\Domain\Auth\Models\AuthToken;
+use SP\Domain\Auth\Services\AuthToken as AuthTokenService;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\ValidationException;
+
+use function SP\__u;
 
 /**
  * Class ApiTokenForm
@@ -36,28 +38,27 @@ use SP\Services\AuthToken\AuthTokenService;
  */
 final class AuthTokenForm extends FormBase implements FormInterface
 {
-    /**
-     * @var AuthTokenData
-     */
-    protected $authTokenData;
-    /**
-     * @var bool
-     */
-    protected $refresh = false;
+    protected ?AuthToken $authTokenData = null;
+    protected bool       $refresh       = false;
 
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param int $action
+     * @param int|null $id
      *
-     * @return AuthTokenForm
+     * @return FormInterface
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
-            case ActionsInterface::AUTHTOKEN_CREATE:
-            case ActionsInterface::AUTHTOKEN_EDIT:
+            case AclActionsInterface::AUTHTOKEN_CREATE:
+            case AclActionsInterface::AUTHTOKEN_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -71,21 +72,24 @@ final class AuthTokenForm extends FormBase implements FormInterface
      *
      * @return void
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
         $this->refresh = $this->request->analyzeBool('refreshtoken', false);
 
-        $this->authTokenData = new AuthTokenData();
-        $this->authTokenData->setId($this->itemId);
-        $this->authTokenData->setUserId($this->request->analyzeInt('users'));
-        $this->authTokenData->setActionId($this->request->analyzeInt('actions'));
-        $this->authTokenData->setHash($this->request->analyzeEncrypted('pass'));
+        $this->authTokenData = new AuthToken(
+            [
+                'id' => $this->itemId,
+                'userId' => $this->request->analyzeInt('users'),
+                'actionId' => $this->request->analyzeInt('actions'),
+                'hash' => $this->request->analyzeEncrypted('pass'),
+            ]
+        );
     }
 
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
         if (0 === $this->authTokenData->getUserId()) {
             throw new ValidationException(__u('User not set'));
@@ -95,25 +99,20 @@ final class AuthTokenForm extends FormBase implements FormInterface
             throw new ValidationException(__u('Action not set'));
         }
 
-        if ((AuthTokenService::isSecuredAction($this->authTokenData->getActionId()) || $this->isRefresh())
-            && empty($this->authTokenData->getHash())
+        if (empty($this->authTokenData->getHash())
+            && (AuthTokenService::isSecuredAction($this->authTokenData->getActionId())
+                || $this->isRefresh())
         ) {
             throw new ValidationException(__u('Password cannot be blank'));
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function isRefresh()
+    public function isRefresh(): bool
     {
         return $this->refresh;
     }
 
-    /**
-     * @return AuthTokenData
-     */
-    public function getItemData()
+    public function getItemData(): ?AuthToken
     {
         return $this->authTokenData;
     }

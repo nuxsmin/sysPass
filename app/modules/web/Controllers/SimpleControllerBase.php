@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,111 +19,93 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Controllers;
 
-use DI\Container;
-use Psr\Container\ContainerInterface;
-use SP\Core\Acl\UnauthorizedPageException;
-use SP\Core\Exceptions\SessionTimeout;
+use SP\Core\Application;
+use SP\Core\Events\EventDispatcher;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\PhpExtensionCheckerService;
+use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
+use SP\Mvc\Controller\SimpleControllerHelper;
 
 /**
  * Class SimpleControllerBase
- *
- * @package SP\Modules\Web\Controllers
  */
 abstract class SimpleControllerBase
 {
     use WebControllerTrait;
 
-    /**
-     * @var ContainerInterface
-     */
-    protected $dic;
-    /**
-     * @var string
-     */
-    protected $previousSk;
+    protected readonly EventDispatcher            $eventDispatcher;
+    protected readonly ConfigFileService          $config;
+    protected readonly SessionContext             $session;
+    protected readonly ThemeInterface             $theme;
+    protected readonly AclInterface               $acl;
+    protected readonly RequestService             $request;
+    protected readonly PhpExtensionCheckerService $extensionChecker;
+    protected readonly ConfigDataInterface        $configData;
+    protected readonly UriContextInterface        $uriContext;
 
     /**
-     * SimpleControllerBase constructor.
-     *
-     * @param Container $container
-     * @param           $actionName
-     *
      * @throws SessionTimeout
      */
-    public function __construct(Container $container, $actionName)
-    {
-        $this->dic = $container;
-        $this->actionName = $actionName;
+    public function __construct(
+        Application $application,
+        SimpleControllerHelper $simpleControllerHelper
+    ) {
+        $this->theme = $simpleControllerHelper->getTheme();
+        $this->router = $simpleControllerHelper->getRouter();
+        $this->acl = $simpleControllerHelper->getAcl();
+        $this->request = $simpleControllerHelper->getRequest();
+        $this->extensionChecker = $simpleControllerHelper->getExtensionChecker();
+        $this->uriContext = $simpleControllerHelper->getUriContext();
+        $this->config = $application->getConfig();
+        $this->configData = $this->config->getConfigData();
+        $this->eventDispatcher = $application->getEventDispatcher();
+        $this->session = $application->getContext();
+        $this->setup = true;
 
-        $this->setUp($container);
-
-        $this->previousSk = $this->session->getSecurityKey();
-
-        try {
+        if (method_exists($this, 'initialize')) {
             $this->initialize();
-        } catch (SessionTimeout $sessionTimeout) {
-            $this->handleSessionTimeout();
-
-            throw $sessionTimeout;
         }
-    }
-
-    /**
-     * @return void
-     */
-    protected abstract function initialize();
-
-    /**
-     * @return void
-     */
-    public function handleSessionTimeout()
-    {
-        $this->sessionLogout(
-            $this->request,
-            $this->configData,
-            function ($redirect) {
-                $this->router->response()
-                    ->redirect($redirect)
-                    ->send(true);
-            }
-        );
     }
 
     /**
      * Comprobaciones
      *
+     * @throws SPException
      * @throws SessionTimeout
      */
-    protected function checks()
+    protected function checks(): void
     {
-        if ($this->session->isLoggedIn() === false
-            || $this->session->getAuthCompleted() !== true
-        ) {
+        if ($this->session->isLoggedIn() === false || $this->session->getAuthCompleted() !== true) {
+            $this->handleSessionTimeout();
+
             throw new SessionTimeout();
         }
-
 //        $this->checkSecurityToken($this->session, $this->request);
     }
 
     /**
      * Comprobar si está permitido el acceso al módulo/página.
      *
-     * @param null $action La acción a comprobar
-     *
      * @throws UnauthorizedPageException
      */
-    protected function checkAccess($action)
+    protected function checkAccess(int $action): void
     {
-        if (!$this->session->getUserData()->getIsAdminApp()
-            && !$this->acl->checkUserAccess($action)
-        ) {
-            throw new UnauthorizedPageException(UnauthorizedPageException::INFO);
+        if (!$this->acl->checkUserAccess($action) && !$this->session->getUserData()->isAdminApp) {
+            throw new UnauthorizedPageException(SPException::INFO);
         }
     }
 }

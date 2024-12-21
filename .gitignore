@@ -61,7 +61,8 @@ doc/*
 build/*
 tests/_output/*
 
-.phpstorm.meta.php
 composer.phar
+
+.env
 
 !.blank

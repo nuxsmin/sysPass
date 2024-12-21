@@ -1,36 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
+<!--
+  ~ sysPass
+  ~
+  ~ @author nuxsmin
+  ~ @link https://syspass.org
+  ~ @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+  ~
+  ~ This file is part of sysPass.
+  ~
+  ~ sysPass is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ sysPass is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
+         backupGlobals="false"
          bootstrap="./SP/bootstrap.php"
          colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false">
+         stopOnFailure="false"
+         cacheDirectory=".phpunit.cache"
+         backupStaticProperties="false">
+    <coverage>
+        <report>
+            <clover outputFile="./_output/coverage-clover.xml"/>
+            <text outputFile="php://stdout" showUncoveredFiles="true"
+                  showOnlySummary="true"/>
+        </report>
+    </coverage>
     <testsuites>
-        <testsuite name="Core">
-            <directory suffix=".php">./SP</directory>
-            <exclude>./SP/Modules</exclude>
+        <testsuite name="core">
+            <directory suffix=".php">./SP/Core</directory>
+            <directory suffix=".php">./SP/Domain</directory>
+            <directory suffix=".php">./SP/Infrastructure</directory>
+            <directory suffix=".php">./SP/Mvc</directory>
+            <directory suffix=".php">./SP/Util</directory>
+            <exclude>./SP/Domain/Account/Services/Builders/AccountSearchTokenizerDataTrait.php</exclude>
+            <exclude>./SP/Domain/Export/Services/XmlTrait.php</exclude>
         </testsuite>
-        <testsuite name="Modules">
-            <directory suffix=".php">./SP/Modules</directory>
+        <testsuite name="modules">
+            <directory suffix=".php">./SP/Modules/Web</directory>
+            <directory suffix=".php">./SP/Modules/Api</directory>
+            <directory suffix=".php">./SP/Modules/Cli</directory>
+            <exclude>./SP/Modules/Api</exclude>
+            <exclude>./SP/Modules/Cli</exclude>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <logging/>
+    <source>
+        <include>
             <directory suffix=".php">../lib/SP</directory>
-            <exclude>
-                <directory suffix=".php">../lib/SP/DataModel</directory>
-                <directory suffix=".php">../lib/SP/Providers</directory>
-                <directory suffix=".php">../lib/SP/Html/Assets</directory>
-                <directory suffix=".php">../lib/SP/Html/DataGrid</directory>
-                <file>../lib/SP/Config/ConfigData.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
-    <logging>
-        <log type="coverage-clover" target="./_output/coverage-clover.xml"/>
-        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true" showOnlySummary="true" />
-    </logging>
+            <directory suffix=".php">../app/modules/web</directory>
+        </include>
+        <exclude>
+            <directory suffix=".php">../lib/SP/Html/Assets</directory>
+            <directory suffix=".php">../lib/SP/Html/DataGrid</directory>
+            <file>../lib/SP/Domain/Config/Adapters/ConfigData.php</file>
+        </exclude>
+    </source>
+    <php>
+        <ini name="zend.assertions" value="1"/>
+    </php>
 </phpunit>

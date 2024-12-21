@@ -1,10 +1,11 @@
 <?php
-/**
+declare(strict_types=1);
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +20,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Modules\Api\Controllers;
 
-use SP\Tests\Modules\Api\ApiTest;
-use SP\Tests\WebTestCase;
+use DI\DependencyException;
+use DI\NotFoundException;
+use JsonException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
 /**
@@ -33,171 +38,347 @@ use stdClass;
  *
  * @package SP\Tests\Modules\Api\Controllers
  */
-class TagControllerTest extends WebTestCase
+class TagControllerTest extends ApiTestCase
 {
+    private const PARAMS = [
+        'name' => 'API Tag'
+    ];
+
     /**
-     * @return int
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
-    public function testCreateAction()
+    public function testCreateAction(): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'tag/create',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'name' => 'API Tag',
-                'description' => "API test\ndescription"
-            ],
-            'id' => 1
-        ];
+        $response = $this->createTag(self::PARAMS);
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertNull($response->result->count);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals(4, $response->result->itemId);
+        $this->assertEquals('Tag added', $response->result->resultMessage);
 
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals(7, $result->result->itemId);
-        $this->assertEquals('Tag added', $result->result->resultMessage);
-        $this->assertInstanceOf(stdClass::class, $result->result->result);
+        $resultItem = $response->result->result;
 
-        return $result->result->itemId;
+        $this->assertEquals($response->result->itemId, $resultItem->id);
+        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
     }
 
     /**
-     * @depends testCreateAction
-     *
-     * @param $id
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
-    public function testViewAction($id)
+    private function createTag(?array $params = null): stdClass
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'tag/view',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'id' => $id
-            ],
-            'id' => 1
-        ];
+        $api = $this->callApi(
+            AclActionsInterface::TAG_CREATE,
+            $params ?? self::PARAMS
+        );
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals($id, $result->result->result->id);
-        $this->assertEquals('API Tag', $result->result->result->name);
+        return self::processJsonResponse($api);
     }
 
     /**
-     * @depends testCreateAction
-     *
-     * @param int $id
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
-    public function testEditAction($id)
+    public function testCreateActionDuplicated(): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'tag/edit',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'id' => $id,
-                'name' => 'API Tag edit'
-            ],
-            'id' => 1
-        ];
+        $response = $this->createTag(['name' => 'linux']);
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals($id, $result->result->itemId);
-        $this->assertEquals('Tag updated', $result->result->resultMessage);
-        $this->assertInstanceOf(stdClass::class, $result->result->result);
-    }
-
-    public function testSearchAction()
-    {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'tag/search',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN
-            ],
-            'id' => 1
-        ];
-
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertEquals(7, $result->result->count);
-        $this->assertCount(7, $result->result->result);
-
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'tag/search',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'count' => 1
-            ],
-            'id' => 1
-        ];
-
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertEquals(1, $result->result->count);
-        $this->assertCount(1, $result->result->result);
-    }
-
-    public function testSearchByTextAction()
-    {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'tag/search',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'text' => 'API Tag edit'
-            ],
-            'id' => 1
-        ];
-
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
-
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertEquals(1, $result->result->count);
-        $this->assertCount(1, $result->result->result);
-        $this->assertEquals('API Tag edit', $result->result->result[0]->name);
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Duplicated tag', $response->error->message);
     }
 
     /**
-     * @depends testCreateAction
-     *
-     * @param int $id
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
      */
-    public function testDeleteAction($id)
+    public function testCreateActionRequiredParameters(): void
     {
-        $data = [
-            'jsonrpc' => '2.0',
-            'method' => 'tag/delete',
-            'params' => [
-                'authToken' => ApiTest::API_TOKEN,
-                'id' => $id,
-            ],
-            'id' => 1
+        $response = $this->createTag([]);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Wrong parameters', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $response->error->data);
+        $this->assertIsArray($response->error->data->help);
+
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    public function testViewAction(): void
+    {
+        $response = $this->createTag(self::PARAMS);
+
+        $id = $response->result->itemId;
+
+        $api = $this->callApi(
+            AclActionsInterface::TAG_VIEW,
+            ['id' => $id]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals($id, $response->result->itemId);
+
+        $resultItem = $response->result->result;
+
+        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    public function testViewActionNonExistant(): void
+    {
+        $api = $this->callApi(
+            AclActionsInterface::TAG_VIEW,
+            ['id' => 10]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Tag not found', $response->error->message);
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    public function testEditAction(): void
+    {
+        $response = $this->createTag(self::PARAMS);
+
+        $id = $response->result->itemId;
+
+        $params = [
+            'id' => $id,
+            'name' => 'API test edit'
         ];
 
-        $result = self::checkAndProcessJsonResponse(self::postJson(ApiTest::API_URL, $data));
+        $api = $this->callApi(
+            AclActionsInterface::TAG_EDIT,
+            $params
+        );
 
-        $this->assertInstanceOf(stdClass::class, $result);
-        $this->assertEquals(0, $result->result->resultCode);
-        $this->assertNull($result->result->count);
-        $this->assertEquals($id, $result->result->itemId);
-        $this->assertEquals('Tag removed', $result->result->resultMessage);
-        $this->assertInstanceOf(stdClass::class, $result->result->result);
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals('Tag updated', $response->result->resultMessage);
+        $this->assertEquals($id, $response->result->itemId);
+
+        $api = $this->callApi(
+            AclActionsInterface::TAG_VIEW,
+            ['id' => $id]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals($id, $response->result->itemId);
+
+        $resultItem = $response->result->result;
+
+        $this->assertEquals($params['name'], $resultItem->name);
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    public function testEditActionDuplicated(): void
+    {
+        $response = $this->createTag(self::PARAMS);
+
+        $id = $response->result->itemId;
+
+        $params = [
+            'id' => $id,
+            'name' => 'linux'
+        ];
+
+        $api = $this->callApi(
+            AclActionsInterface::TAG_EDIT,
+            $params
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Duplicated tag', $response->error->message);
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    public function testEditActionWrongParameters(): void
+    {
+        $response = $this->createTag(self::PARAMS);
+
+        $id = $response->result->itemId;
+
+        $params = [
+            'id' => $id
+        ];
+
+        $api = $this->callApi(
+            AclActionsInterface::TAG_EDIT,
+            $params
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Wrong parameters', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $response->error->data);
+        $this->assertIsArray($response->error->data->help);
+
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    public function testEditActionNonExistant(): void
+    {
+        $params = [
+            'id' => 10,
+            'name' => 'API test edit'
+        ];
+
+        $api = $this->callApi(
+            AclActionsInterface::TAG_EDIT,
+            $params
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals(0, $response->result->count);
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws JsonException
+     * @throws NotFoundException
+     */
+    #[DataProvider('searchProvider')]
+    public function testSearchActionByFilter(array $filter, int $resultsCount): void
+    {
+        $api = $this->callApi(
+            AclActionsInterface::TAG_SEARCH,
+            $filter
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals($resultsCount, $response->result->count);
+        $this->assertCount($resultsCount, $response->result->result);
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    public function testDeleteAction(): void
+    {
+        $response = $this->createTag();
+
+        $id = $response->result->itemId;
+
+        $api = $this->callApi(
+            AclActionsInterface::TAG_DELETE,
+            ['id' => $id]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertInstanceOf(stdClass::class, $response->result);
+        $this->assertEquals('Tag removed', $response->result->resultMessage);
+        $this->assertEquals($id, $response->result->itemId);
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    public function testDeleteActionNonExistant(): void
+    {
+        $api = $this->callApi(
+            AclActionsInterface::TAG_DELETE,
+            ['id' => 10]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Tag not found', $response->error->message);
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    public function testDeleteActionRequiredParameters(): void
+    {
+        $api = $this->callApi(
+            AclActionsInterface::TAG_DELETE,
+            []
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals('Wrong parameters', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $response->error->data);
+        $this->assertIsArray($response->error->data->help);
+
+    }
+
+    public static function searchProvider(): array
+    {
+        return [
+            [
+                [],
+                3
+            ],
+            [
+                ['count' => 1],
+                1
+            ],
+            [
+                ['text' => 'Linux'],
+                1
+            ],
+            [
+                ['text' => 'Google'],
+                0
+            ]
+        ];
     }
 }

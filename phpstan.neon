@@ -1,0 +1,3 @@
+parameters:
+    bootstrapFiles:
+        - lib/Base.php

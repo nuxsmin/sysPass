@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,19 +20,22 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
 
-use SP\Core\Exceptions\CheckException;
+use RuntimeException;
+use SP\Domain\Core\Exceptions\CheckException;
+use SP\Domain\Core\PhpExtensionCheckerService;
+
+use function SP\__u;
+use function SP\logger;
 
 /**
  * Class PhpExtensionChecker
- *
- * @package SP\Core
  */
-final class PhpExtensionChecker
+final class PhpExtensionChecker implements PhpExtensionCheckerService
 {
     /**
      * Array of extensions needed by sysPass.
@@ -39,7 +43,7 @@ final class PhpExtensionChecker
      * true  -> required
      * false -> not required
      */
-    const EXTENSIONS = [
+    public const EXTENSIONS = [
         'ldap' => false,
         'curl' => false,
         'simplexml' => false,
@@ -53,21 +57,18 @@ final class PhpExtensionChecker
         'openssl' => true,
         'pcre' => true,
         'session' => true,
-        'mcrypt' => false,
         'gd' => false,
         'mbstring' => true,
         'pdo_mysql' => true,
         'fileinfo' => true
     ];
 
-    const MSG_NOT_AVAILABLE = 'Oops, it seems that some extensions are not available: \'%s\'';
+    public const MSG_NOT_AVAILABLE = 'Oops, it seems that some extensions are not available: \'%s\'';
 
     /**
      * Available extensions
-     *
-     * @var array
      */
-    private $available;
+    private ?array $available = null;
 
     /**
      * PhpExtensionChecker constructor.
@@ -80,36 +81,42 @@ final class PhpExtensionChecker
     /**
      * Check for available extensions
      */
-    public function checkExtensions()
+    private function checkExtensions(): void
     {
-        $this->available = array_intersect(array_keys(self::EXTENSIONS), array_map('strtolower', get_loaded_extensions()));
+        $this->available = array_intersect(
+            array_keys(self::EXTENSIONS),
+            array_map('strtolower', get_loaded_extensions())
+        );
     }
 
     /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
      * @throws CheckException
      */
-    public function checkCurlAvailable($exception = false)
+    public function __call(string $name, array $arguments)
     {
-        return $this->checkIsAvailable('curl', $exception);
+        if (str_contains($name, 'check')) {
+            $extension = strtolower(str_replace('check', '', $name));
+
+            return $this->checkIsAvailable($extension, ...$arguments);
+        } else {
+            throw new RuntimeException(__u('Unknown magic method'));
+        }
     }
 
     /**
      * Checks if the extension is installed
      *
      * @param string $extension
-     * @param bool   $exception Throws an exception if the extension is not available
+     * @param bool $exception Throws an exception if the extension is not available
      *
      * @return bool
      * @throws CheckException
      */
-    public function checkIsAvailable(string $extension, $exception = false)
-    {
-        $result = in_array(strtolower($extension), $this->available);
+    public function checkIsAvailable(
+        string $extension,
+        bool   $exception = false
+    ): bool {
+        $result = in_array(strtolower($extension), $this->available, true);
 
         if (!$result && $exception) {
             throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, $extension));
@@ -119,143 +126,17 @@ final class PhpExtensionChecker
     }
 
     /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
      * @throws CheckException
      */
-    public function checkLdapAvailable($exception = false)
+    public function checkMandatory(): void
     {
-        return $this->checkIsAvailable('ldap', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkSimpleXmlAvailable($exception = false)
-    {
-        return $this->checkIsAvailable('simplexml', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkXmlAvailable($exception = false)
-    {
-        return $this->checkIsAvailable('xml', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkPharAvailable($exception = false)
-    {
-        return $this->checkIsAvailable('phar', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkJsonAvailable($exception = false)
-    {
-        return $this->checkIsAvailable('json', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkPdoAvailable($exception = false)
-    {
-        return $this->checkIsAvailable('pdo', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkGettextAvailable($exception = false)
-    {
-        return $this->checkIsAvailable('gettext', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkOpenSslAvailable($exception = false)
-    {
-        return $this->checkIsAvailable('openssl', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkGdAvailable($exception = false)
-    {
-        return $this->checkIsAvailable('gd', $exception);
-    }
-
-    /**
-     * Checks if the extension is installed
-     *
-     * @param bool $exception
-     *
-     * @return bool
-     * @throws CheckException
-     */
-    public function checkMbstringAvailable($exception = false)
-    {
-        return $this->checkIsAvailable('mbstring', $exception);
-    }
-
-    /**
-     * @throws CheckException
-     */
-    public function checkMandatory()
-    {
-        $missing = array_filter(self::EXTENSIONS, function ($v, $k) {
-            return $v === true && !in_array($k, $this->available);
-        }, ARRAY_FILTER_USE_BOTH);
+        $missing = array_filter(
+            self::EXTENSIONS,
+            function ($v, $k) {
+                return $v === true && !in_array($k, $this->available, true);
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
 
         if (count($missing) > 0) {
             throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, implode(',', array_keys($missing))));
@@ -266,13 +147,15 @@ final class PhpExtensionChecker
 
     /**
      * Returns missing extensions
-     *
-     * @return array
      */
-    public function getMissing()
+    public function getMissing(): array
     {
-        return array_filter(self::EXTENSIONS, function ($k) {
-            return !in_array($k, $this->available);
-        }, ARRAY_FILTER_USE_KEY);
+        return array_filter(
+            self::EXTENSIONS,
+            function ($k) {
+                return !in_array($k, $this->available, true);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
     }
 }
