@@ -1,0 +1,6 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="notice" value="&amp;#36;project.name&#10;&#10;@author &amp;#36;username &#10;@link https://syspass.org&#10;@copyright 2012-&amp;#36;{today.year}, Rubén Domínguez &amp;#36;username@&amp;#36;syspass.org&#10;&#10;This file is part of &amp;#36;project.name.&#10;&#10;&amp;#36;project.name is free software: you can redistribute it and/or modify&#10;it under the terms of the GNU General Public License as published by&#10;the Free Software Foundation, either version 3 of the License, or&#10;(at your option) any later version.&#10;&#10;&amp;#36;project.name is distributed in the hope that it will be useful,&#10;but WITHOUT ANY WARRANTY; without even the implied warranty of&#10;MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&#10;GNU General Public License for more details.&#10;&#10;You should have received a copy of the GNU General Public License &#10;along with &amp;#36;project.name.  If not, see &lt;http://www.gnu.org/licenses/&gt;." />
+    <option name="myName" value="sysPass" />
+  </copyright>
+</component>

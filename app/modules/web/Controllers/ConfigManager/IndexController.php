@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\ConfigManager;
 
+use RuntimeException;
 use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
@@ -291,7 +292,7 @@ final class IndexController extends ControllerBase
 
         $template->assign(
             'ldapIsAvailable',
-            $this->extensionChecker->checkLdap('ldap')
+            $this->extensionChecker->checkLdap()
         );
         $template->assign(
             'userGroups',
@@ -360,7 +361,7 @@ final class IndexController extends ControllerBase
             SelectItemAdapter::factory($this->userProfileService->getAll())->getItemsFromModel()
         );
 
-        $mailEvents = $this->configData->getMailEvents();
+        $mailEvents = $this->configData->getMailEvents() ?? [];
 
         $events = array_merge(MailEvent::EVENTS, $mailEvents);
 
@@ -395,21 +396,21 @@ final class IndexController extends ControllerBase
 
         $template->assign(
             'lastUpdateMPass',
-            $this->configService->getByParam('lastupdatempass', 0)
+            $this->configService->getByParam('lastupdatempass', '0')
         );
 
         $template->assign(
             'tempMasterPassTime',
-            $this->configService->getByParam(TemporaryMasterPass::PARAM_TIME, 0)
+            $this->configService->getByParam(TemporaryMasterPass::PARAM_TIME, '0')
         );
         $template->assign(
             'tempMasterMaxTime',
-            $this->configService->getByParam(TemporaryMasterPass::PARAM_MAX_TIME, 0)
+            $this->configService->getByParam(TemporaryMasterPass::PARAM_MAX_TIME, '0')
         );
 
         $tempMasterAttempts = sprintf(
             '%d/%d',
-            $this->configService->getByParam(TemporaryMasterPass::PARAM_ATTEMPTS, 0),
+            $this->configService->getByParam(TemporaryMasterPass::PARAM_ATTEMPTS, '0'),
             TemporaryMasterPass::MAX_ATTEMPTS
         );
 
@@ -440,28 +441,15 @@ final class IndexController extends ControllerBase
 
         $backupFiles = $this->backupFiles->withHash($this->configData->getBackupHash() ?? '');
 
-        $backupAppFile = new FileHandler((string)$backupFiles->getAppBackupFile());
-        $backupDbFile = new FileHandler((string)$backupFiles->getDbBackupFile());
-
-        $exportFile = new FileHandler(
-            (string)new BackupFileDto(
-                BackupType::export,
-                $this->configData->getExportHash() ?: '',
-                $this->pathsContext[Path::BACKUP],
-                'gz'
-            )
-        );
-
         try {
-            $backupAppFile->checkFileExists();
-            $backupDbFile->checkFileExists();
+            $backupAppFile = new FileHandler((string)$backupFiles->getAppBackupFile());
 
             $template->assign('hasBackup', true);
             $template->assign(
                 'lastBackupTime',
                 date('r', $backupAppFile->getFileTime())
             );
-        } catch (FileException) {
+        } catch (RuntimeException|FileException) {
             $template->assign('hasBackup', false);
             $template->assign(
                 'lastBackupTime',
@@ -470,14 +458,21 @@ final class IndexController extends ControllerBase
         }
 
         try {
-            $exportFile->checkFileExists();
+            $exportFile = new FileHandler(
+                (string)new BackupFileDto(
+                    BackupType::export,
+                    $this->configData->getExportHash() ?: '',
+                    $this->pathsContext[Path::BACKUP],
+                    'gz'
+                )
+            );
 
             $template->assign('hasExport', true);
             $template->assign(
                 'lastExportTime',
                 date('r', $exportFile->getFileTime())
             );
-        } catch (FileException) {
+        } catch (RuntimeException|FileException) {
             $template->assign('hasExport', false);
             $template->assign(
                 'lastExportTime',
@@ -501,12 +496,12 @@ final class IndexController extends ControllerBase
         $template->assign(
             'userGroups',
             SelectItemAdapter::factory($this->userGroupService->getAll())
-                ->getItemsFromModelSelected([$this->userDto->userGroupId])
+                             ->getItemsFromModelSelected([$this->userDto->userGroupId])
         );
         $template->assign(
             'users',
             SelectItemAdapter::factory($this->userService->getAll())
-                ->getItemsFromModelSelected([$this->userDto->id])
+                             ->getItemsFromModelSelected([$this->userDto->id])
         );
 
         return new DataTab(__('Import Accounts'), $template);
@@ -526,7 +521,7 @@ final class IndexController extends ControllerBase
         $template->assign('dbName', $this->configData->getDbName() . '@' . $this->configData->getDbHost());
         $template->assign(
             'configBackupDate',
-            date('r', $this->configService->getByParam('config_backup_date', 0))
+            date('r', $this->configService->getByParam('config_backup_date', '0'))
         );
         $template->assign(
             'locale',

@@ -249,7 +249,7 @@ use function SP\__;
                 <input type="text" name="mail_recipients" id="mail_recipients"
                        class="select-items-tag"
                        value="<?php
-                       echo implode(',', $configData->getMailRecipients()); ?>"/>
+                       echo implode(',', $configData->getMailRecipients() ?? []); ?>"/>
             </td>
         </tr>
         <tr>

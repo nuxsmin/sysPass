@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpDockerContainerSettings">
+    <list>
+      <map>
+        <entry key="00e8dd54-454b-4248-a237-86984e39f0e0">
+          <value>
+            <DockerContainerSettings>
+              <option name="runCliOptions" value="" />
+              <option name="version" value="1" />
+              <option name="volumeBindings">
+                <list>
+                  <DockerVolumeBindingImpl>
+                    <option name="containerPath" value="/opt/project" />
+                    <option name="hostPath" value="$PROJECT_DIR$" />
+                  </DockerVolumeBindingImpl>
+                </list>
+              </option>
+            </DockerContainerSettings>
+          </value>
+        </entry>
+        <entry key="09c85935-a306-411b-89f3-b0752491b22f">
+          <value>
+            <DockerContainerSettings>
+              <option name="links">
+                <list>
+                  <DockerLinkImpl>
+                    <option name="alias" value="db-test" />
+                    <option name="name" value="build_db-test_1" />
+                  </DockerLinkImpl>
+                </list>
+              </option>
+              <option name="runCliOptions" value="" />
+              <option name="version" value="1" />
+              <option name="volumeBindings">
+                <list>
+                  <DockerVolumeBindingImpl>
+                    <option name="containerPath" value="/opt/project" />
+                    <option name="hostPath" value="$PROJECT_DIR$" />
+                  </DockerVolumeBindingImpl>
+                </list>
+              </option>
+            </DockerContainerSettings>
+          </value>
+        </entry>
+        <entry key="2683adde-386f-4ba5-9a13-4074dcc2d03f">
+          <value>
+            <DockerContainerSettings>
+              <option name="envVars">
+                <list>
+                  <DockerEnvVarImpl>
+                    <option name="name" value="DB_SERVER" />
+                    <option name="value" value="syspass-db-test" />
+                  </DockerEnvVarImpl>
+                  <DockerEnvVarImpl>
+                    <option name="name" value="DB_NAME" />
+                    <option name="value" value="syspass-test" />
+                  </DockerEnvVarImpl>
+                  <DockerEnvVarImpl>
+                    <option name="name" value="DB_USER" />
+                    <option name="value" value="root" />
+                  </DockerEnvVarImpl>
+                  <DockerEnvVarImpl>
+                    <option name="name" value="DB_PASS" />
+                    <option name="value" value="syspass" />
+                  </DockerEnvVarImpl>
+                </list>
+              </option>
+              <option name="links">
+                <list>
+                  <DockerLinkImpl>
+                    <option name="name" value="syspass-db-test" />
+                  </DockerLinkImpl>
+                  <DockerLinkImpl>
+                    <option name="name" value="syspass-app-test" />
+                  </DockerLinkImpl>
+                </list>
+              </option>
+              <option name="version" value="1" />
+              <option name="volumeBindings">
+                <list>
+                  <DockerVolumeBindingImpl>
+                    <option name="containerPath" value="/var/www/html/sysPass" />
+                    <option name="hostPath" value="$PROJECT_DIR$" />
+                  </DockerVolumeBindingImpl>
+                </list>
+              </option>
+            </DockerContainerSettings>
+          </value>
+        </entry>
+        <entry key="462fe5cd-1133-421f-9ec6-aedaadd7050a">
+          <value>
+            <DockerContainerSettings>
+              <option name="version" value="1" />
+              <option name="volumeBindings">
+                <list>
+                  <DockerVolumeBindingImpl>
+                    <option name="containerPath" value="/opt/project" />
+                    <option name="hostPath" value="$PROJECT_DIR$" />
+                  </DockerVolumeBindingImpl>
+                </list>
+              </option>
+            </DockerContainerSettings>
+          </value>
+        </entry>
+        <entry key="95c6cf9c-3336-4969-8272-bbafecfdecb0">
+          <value>
+            <DockerContainerSettings>
+              <option name="version" value="1" />
+              <option name="volumeBindings">
+                <list>
+                  <DockerVolumeBindingImpl>
+                    <option name="containerPath" value="/opt/project" />
+                    <option name="hostPath" value="$PROJECT_DIR$" />
+                  </DockerVolumeBindingImpl>
+                </list>
+              </option>
+            </DockerContainerSettings>
+          </value>
+        </entry>
+        <entry key="f0cfc436-b040-4ef8-acc6-d6b87fc8a825">
+          <value>
+            <DockerContainerSettings>
+              <option name="version" value="1" />
+              <option name="volumeBindings">
+                <list>
+                  <DockerVolumeBindingImpl>
+                    <option name="containerPath" value="/opt/project" />
+                    <option name="hostPath" value="$PROJECT_DIR$" />
+                  </DockerVolumeBindingImpl>
+                </list>
+              </option>
+            </DockerContainerSettings>
+          </value>
+        </entry>
+      </map>
+    </list>
+  </component>
+</project>

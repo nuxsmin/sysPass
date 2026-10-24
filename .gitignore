@@ -66,3 +66,7 @@ composer.phar
 .env
 
 !.blank
+
+tests/.phpunit.cache
+
+*.log

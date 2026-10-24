@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JSLintConfiguration">
+    <option browser="true" />
+    <option devel="true" />
+    <option es6="true" />
+    <option maxerr="1000" />
+  </component>
+</project>
