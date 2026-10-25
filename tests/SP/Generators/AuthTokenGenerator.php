@@ -28,6 +28,7 @@ namespace SP\Tests\Generators;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Auth\Models\AuthToken;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 
 /**
@@ -48,7 +49,7 @@ final class AuthTokenGenerator extends DataGenerator
             'token' => $this->faker->sha1(),
             'createdBy' => $this->faker->randomNumber(3),
             'startDate' => $this->faker->unixTime(),
-            'actionId' => $this->faker->randomNumber(3),
+            'actionId' => AclActionsInterface::ACCOUNT_SEARCH,
             'hash' => $this->faker->sha1(),
             'vault' => serialize($this->getVault())
         ];

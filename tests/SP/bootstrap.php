@@ -78,6 +78,10 @@ vfsStream::copyFromFileSystem(
     REAL_APP_ROOT . '/app/config',
     $testDirectory->getChild('app/config')
 );
+copy(
+    dirname(__DIR__) . '/res/config/config.xml',
+    $testDirectory->getChild('app/config')->url() . '/config.xml'
+);
 vfsStream::copyFromFileSystem(
     REAL_APP_ROOT . '/app/locales',
     $testDirectory->getChild('app/locales')
