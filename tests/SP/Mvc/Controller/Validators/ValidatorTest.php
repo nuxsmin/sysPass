@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Mvc\Controller\Validators;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use SP\Mvc\Controller\Validators\Validator;
 
@@ -33,6 +34,7 @@ use SP\Mvc\Controller\Validators\Validator;
  *
  * @package SP\Tests\Mvc\Controller\Validators
  */
+#[Group('unitary')]
 class ValidatorTest extends TestCase
 {
     public const VALID_STRING = 'abcDE123_!';

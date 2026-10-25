@@ -62,6 +62,6 @@ final class Validator
 
     public static function isRegex(string $regex): bool
     {
-        return @preg_match('#' . str_replace('#', '\#', $regex) . '#', null) !== false;
+        return @preg_match('#' . str_replace('#', '\#', $regex) . '#', '') !== false;
     }
 }

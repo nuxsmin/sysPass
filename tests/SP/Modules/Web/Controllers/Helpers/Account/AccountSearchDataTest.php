@@ -83,7 +83,7 @@ class AccountSearchDataTest extends UnitaryTestCase
         $this->accountToFavoriteService
             ->expects(once())
             ->method('getForUserId')
-            ->with($this->context->getUserData()->getId());
+            ->with($this->context->getUserData()->id);
 
         $this->accountCacheService
             ->expects(exactly($numResults))
@@ -132,7 +132,7 @@ class AccountSearchDataTest extends UnitaryTestCase
         $this->accountToFavoriteService
             ->expects(once())
             ->method('getForUserId')
-            ->with($this->context->getUserData()->getId());
+            ->with($this->context->getUserData()->id);
 
         $this->accountCacheService
             ->expects(exactly($numResults))

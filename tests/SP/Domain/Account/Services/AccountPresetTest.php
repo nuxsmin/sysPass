@@ -189,13 +189,15 @@ class AccountPresetTest extends UnitaryTestCase
                                 ->willReturn($itemPreset);
 
         if ($fixed === 1) {
+            $userData = $this->context->getUserData();
+
             $this->accountToUserRepository
                 ->expects($this->exactly(2))
                 ->method('addByType')
                 ->with(
                     ...self::withConsecutive(
-                    [100, $accountPermission->getUsersView(), false],
-                    [100, $accountPermission->getUsersEdit(), true]
+                    [100, array_diff($accountPermission->getUsersView(), [$userData->id]), false],
+                    [100, array_diff($accountPermission->getUsersEdit(), [$userData->id]), true]
                 )
                 );
 
@@ -204,8 +206,8 @@ class AccountPresetTest extends UnitaryTestCase
                 ->method('addByType')
                 ->with(
                     ...self::withConsecutive(
-                    [100, $accountPermission->getUserGroupsView(), false],
-                    [100, $accountPermission->getUserGroupsEdit(), true]
+                    [100, array_diff($accountPermission->getUserGroupsView(), [$userData->userGroupId]), false],
+                    [100, array_diff($accountPermission->getUserGroupsEdit(), [$userData->userGroupId]), true]
                 )
                 );
         } else {

@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Mvc\Controller\Validators;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Models\Password;
@@ -35,6 +36,7 @@ use SP\Mvc\Controller\Validators\PasswordValidator;
  *
  * @package SP\Tests\Mvc\Controller\Validators
  */
+#[Group('unitary')]
 class PasswordValidatorTest extends TestCase
 {
     /**
@@ -48,7 +50,7 @@ class PasswordValidatorTest extends TestCase
     public function testValidate()
     {
         $validator = new PasswordValidator($this->password);
-        $validator->validate(ValidatorTest::VALID_STRING);
+        $validator->validate($this->password, ValidatorTest::VALID_STRING);
 
         $this->assertTrue(true);
     }
@@ -62,7 +64,7 @@ class PasswordValidatorTest extends TestCase
         $this->expectExceptionMessage('Password needs to be 10 characters long');
 
         $validator = new PasswordValidator($this->password);
-        $validator->validate('12345678');
+        $validator->validate($this->password, '12345678');
     }
 
     /**
@@ -74,7 +76,7 @@ class PasswordValidatorTest extends TestCase
         $this->expectExceptionMessage('Password needs to contain letters');
 
         $validator = new PasswordValidator($this->password);
-        $validator->validate('1234567890');
+        $validator->validate($this->password, '1234567890');
     }
 
     /**
@@ -86,7 +88,7 @@ class PasswordValidatorTest extends TestCase
         $this->expectExceptionMessage('Password needs to contain upper case letters');
 
         $validator = new PasswordValidator($this->password);
-        $validator->validate('1234567890abc');
+        $validator->validate($this->password, '1234567890abc');
     }
 
     /**
@@ -98,7 +100,7 @@ class PasswordValidatorTest extends TestCase
         $this->expectExceptionMessage('Password needs to contain lower case letters');
 
         $validator = new PasswordValidator($this->password);
-        $validator->validate('1234567890ABC');
+        $validator->validate($this->password, '1234567890ABC');
     }
 
     /**
@@ -110,7 +112,7 @@ class PasswordValidatorTest extends TestCase
         $this->expectExceptionMessage('Password needs to contain numbers');
 
         $validator = new PasswordValidator($this->password);
-        $validator->validate('ABCabcABCabcABC');
+        $validator->validate($this->password, 'ABCabcABCabcABC');
     }
 
     /**
@@ -122,7 +124,7 @@ class PasswordValidatorTest extends TestCase
         $this->expectExceptionMessage('Password needs to contain symbols');
 
         $validator = new PasswordValidator($this->password);
-        $validator->validate('1234567890ABCabc');
+        $validator->validate($this->password, '1234567890ABCabc');
     }
 
     /**
@@ -133,10 +135,10 @@ class PasswordValidatorTest extends TestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Password does not contain the required characters');
 
-        $this->password->setRegex(ValidatorTest::VALID_REGEX);
+        $this->password = $this->buildPassword(ValidatorTest::VALID_REGEX);
 
         $validator = new PasswordValidator($this->password);
-        $validator->validate('1234567890ABCabc$');
+        $validator->validate($this->password, '1234567890ABCabc$');
     }
 
     /**
@@ -145,12 +147,22 @@ class PasswordValidatorTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->password = new Password();
-        $this->password->setLength(10);
-        $this->password->setUseLetters(true);
-        $this->password->setUseNumbers(true);
-        $this->password->setUseSymbols(true);
-        $this->password->setUseUpper(true);
-        $this->password->setUseLower(true);
+        $this->password = $this->buildPassword();
+    }
+
+    private function buildPassword(?string $regex = null): Password
+    {
+        return new Password(
+            length: 10,
+            useNumbers: true,
+            useLetters: true,
+            useSymbols: true,
+            useUpper: true,
+            useLower: true,
+            useImage: false,
+            expireTime: 0,
+            score: 0,
+            regex: $regex
+        );
     }
 }

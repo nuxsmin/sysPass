@@ -138,7 +138,9 @@ class AuthTokenTest extends UnitaryTestCase
      */
     public function testCreateWithExistingToken()
     {
-        $authToken = AuthTokenGenerator::factory()->buildAuthToken();
+        $authToken = AuthTokenGenerator::factory()
+            ->buildAuthToken()
+            ->mutate(['actionId' => AclActionsInterface::ACCOUNT_SEARCH]);
 
         $this->authTokenRepository
             ->expects(self::once())

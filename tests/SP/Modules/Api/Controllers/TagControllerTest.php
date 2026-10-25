@@ -29,6 +29,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
@@ -38,6 +39,7 @@ use stdClass;
  *
  * @package SP\Tests\Modules\Api\Controllers
  */
+#[Group('integration')]
 class TagControllerTest extends ApiTestCase
 {
     private const PARAMS = [

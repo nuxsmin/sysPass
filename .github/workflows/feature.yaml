@@ -130,6 +130,9 @@ jobs:
           mysql ${MYSQL_OPTS} -e 'CREATE DATABASE `'"${DB_NAME}"'` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
           mysql ${MYSQL_OPTS} ${DB_NAME} < ./schemas/dbstructure.sql
 
+      - name: Web controller integration tests
+        run: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite modules --group integration --no-coverage
+
       - name: Integration tests
         uses: paambaati/codeclimate-action@v4
         env:

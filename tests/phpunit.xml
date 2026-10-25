@@ -45,6 +45,7 @@
             <directory suffix=".php">./SP/Infrastructure</directory>
             <directory suffix=".php">./SP/Mvc</directory>
             <directory suffix=".php">./SP/Util</directory>
+            <directory suffix="Test.php">./SP/Architecture</directory>
             <exclude>./SP/Domain/Account/Services/Builders/AccountSearchTokenizerDataTrait.php</exclude>
             <exclude>./SP/Domain/Export/Services/XmlTrait.php</exclude>
         </testsuite>

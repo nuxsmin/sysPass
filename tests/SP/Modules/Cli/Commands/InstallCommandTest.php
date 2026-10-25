@@ -37,10 +37,12 @@ use SP\Tests\Modules\Cli\CliTestCase;
 use function SP\Tests\getResource;
 use function SP\Tests\recreateDir;
 use function SP\Tests\saveResource;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  *
  */
+#[Group('integration')]
 class InstallCommandTest extends CliTestCase
 {
     /**

@@ -79,7 +79,7 @@ final class UserDataGenerator extends DataGenerator
     private function getUserPreferencesProperties(): array
     {
         return [
-            'lang' => $this->faker->languageCode(),
+            'lang' => 'en_US',
             'theme' => $this->faker->colorName(),
             'resultsPerPage' => $this->faker->randomNumber(3),
             'accountLink' => $this->faker->boolean(),
