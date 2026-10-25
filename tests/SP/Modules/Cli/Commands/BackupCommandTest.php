@@ -34,10 +34,12 @@ use SP\Modules\Cli\Commands\BackupCommand;
 use SP\Tests\Modules\Cli\CliTestCase;
 
 use function SP\Tests\recreateDir;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  *
  */
+#[Group('integration')]
 class BackupCommandTest extends CliTestCase
 {
     /**

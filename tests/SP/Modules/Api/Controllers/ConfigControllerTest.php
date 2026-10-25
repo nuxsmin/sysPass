@@ -31,12 +31,14 @@ use JsonException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * Class ConfigControllerTest
  *
  * @package SP\Tests\Modules\Api\Controllers
  */
+#[Group('integration')]
 class ConfigControllerTest extends ApiTestCase
 {
     /**

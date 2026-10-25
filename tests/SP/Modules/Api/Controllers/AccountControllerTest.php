@@ -29,6 +29,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Api\Controllers\Account\AccountController;
 use SP\Tests\Modules\Api\ApiTestCase;
@@ -39,6 +40,7 @@ use stdClass;
  *
  * @package SP\Modules\Api\Controllers
  */
+#[Group('integration')]
 class AccountControllerTest extends ApiTestCase
 {
     private const PARAMS = [
