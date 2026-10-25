@@ -1,0 +1,85 @@
+# Allowed commands for AI sessions in this repo.
+# If a command isn't listed here, ask the human first.
+# `gh` below ALWAYS means /usr/bin/gh (see ../env.sh -> $GH_BIN).
+
+# --- Read-only: always safe ---
+git status --porcelain=v1
+git log --oneline
+git diff --stat
+/usr/bin/gh issue view
+/usr/bin/gh issue list
+/usr/bin/gh pr view
+/usr/bin/gh pr list
+/usr/bin/gh pr diff
+/usr/bin/gh api (GET only)
+
+# --- terraform / aws: read-only, always safe ---
+# Terraform commands that never change infra or files.
+/usr/bin/terraform version
+/usr/bin/terraform validate
+/usr/bin/terraform fmt -check
+/usr/bin/terraform plan -input=false
+/usr/bin/terraform state list
+/usr/bin/terraform output
+# AWS read-only API verbs only: get-* / describe-* / list-* / head-*.
+# Everything else (create/update/delete/put/...) is a mutation: ask first.
+/usr/bin/aws sts get-caller-identity
+/usr/bin/aws <service> get-*
+/usr/bin/aws <service> describe-*
+/usr/bin/aws <service> list-*
+/usr/bin/aws <service> head-*
+/usr/bin/aws s3 ls
+
+# --- docker: read-only, always safe ---
+# Inspect-style subcommands only (see command-templates/docker-read.sh).
+# `docker` below means the host binary, invoked only via $DOCKER_BIN.
+/usr/bin/docker version
+/usr/bin/docker info
+/usr/bin/docker ps
+/usr/bin/docker images
+/usr/bin/docker container ls
+/usr/bin/docker image ls
+/usr/bin/docker network ls
+/usr/bin/docker volume ls
+/usr/bin/docker inspect
+/usr/bin/docker logs
+/usr/bin/docker top
+/usr/bin/docker stats
+/usr/bin/docker system df
+/usr/bin/docker compose ps
+/usr/bin/docker compose config
+/usr/bin/docker compose logs
+
+# --- Mutations: allowed, logged via bin/ai-run ---
+/usr/bin/gh issue create
+/usr/bin/gh issue comment
+/usr/bin/gh issue edit (--add-label/--remove-label/--add-assignee only)
+/usr/bin/gh issue close
+/usr/bin/gh pr comment
+/usr/bin/gh pr edit (--add-label/--remove-label only)
+
+# --- Explicitly forbidden without human approval ---
+# /usr/bin/gh auth *
+# git push / git reset --hard / git clean -fd
+# rm -rf outside .ai-cli/logs
+# curl ... | bash
+
+# docker mutations & destructive: ALWAYS ask the human first.
+# Anything that changes images, containers, volumes, or networks:
+# /usr/bin/docker run / exec / create / build / pull / push / tag
+# /usr/bin/docker rm / rmi / stop / start / restart / pause / unpause / kill
+# /usr/bin/docker system prune / builder prune / volume prune / network prune
+# /usr/bin/docker compose up / down / build / pull / rm / exec
+# /usr/bin/docker login / logout
+
+# terraform / aws mutations & destructive: ALWAYS ask the human first.
+# No apply, no destroy, no -auto-approve, no state surgery, no resource writes.
+# /usr/bin/terraform init (downloads providers, writes .terraform/)
+# /usr/bin/terraform fmt (without -check; rewrites files)
+# /usr/bin/terraform apply / destroy / taint / untaint
+# /usr/bin/terraform state mv / rm / import / pull / push
+# /usr/bin/terraform force-unlock
+# /usr/bin/aws <service> create-* / update-* / delete-* / put-* / modify-*
+# /usr/bin/aws <service> attach-* / detach-* / terminate-* / stop-* / start-* / reboot-*
+# /usr/bin/aws s3 rm / s3 sync --delete / s3api put-*
+# /usr/bin/aws iam delete-* / attach-role-policy / put-role-policy
