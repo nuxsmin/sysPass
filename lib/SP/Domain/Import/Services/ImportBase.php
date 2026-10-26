@@ -48,8 +48,8 @@ use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Ports\ImportService;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__u;
 

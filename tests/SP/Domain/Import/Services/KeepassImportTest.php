@@ -41,7 +41,7 @@ use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\Import\Services\KeepassImport;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**

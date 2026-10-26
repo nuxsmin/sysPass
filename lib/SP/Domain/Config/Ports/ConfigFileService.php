@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Config\Ports;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Esta clase es responsable de leer y escribir la configuración del archivo config.php

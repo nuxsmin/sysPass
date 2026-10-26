@@ -28,7 +28,7 @@ namespace SP\Tests;
 use Exception;
 use PDO;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\Database\DatabaseException;
+use SP\Domain\Core\Exceptions\DatabaseException;
 
 /**
  * Trait DatabaseUtil

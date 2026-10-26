@@ -37,7 +37,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Models\Action;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\YamlFileStorageService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 
 use function PHPUnit\Framework\once;

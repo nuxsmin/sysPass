@@ -33,7 +33,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Domain\User\Services\UserPass;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**+

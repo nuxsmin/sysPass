@@ -38,7 +38,7 @@ use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Ports\ItemsImportService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__;
 use function SP\__u;

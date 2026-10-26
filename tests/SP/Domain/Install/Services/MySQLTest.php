@@ -39,7 +39,7 @@ use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Services\MysqlSetup;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 
 use function SP\__;

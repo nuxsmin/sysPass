@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionRepository;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 use function SP\__u;

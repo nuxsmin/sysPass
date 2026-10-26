@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Plugin\Models\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;

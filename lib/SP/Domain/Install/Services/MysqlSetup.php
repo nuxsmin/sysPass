@@ -33,9 +33,9 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Install\Adapters\InstallData;
-use SP\Infrastructure\Database\DatabaseException;
+use SP\Domain\Core\Exceptions\DatabaseException;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__;
 use function SP\__u;

@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers\Upgrade;
 use SP\Core\Acl\Actions;
 use SP\Core\Application;
 use SP\Domain\Core\Acl\ActionsInterface;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 

@@ -49,7 +49,7 @@ use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__u;
 use function SP\processException;

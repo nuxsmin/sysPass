@@ -41,7 +41,7 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
 use SP\Domain\Upgrade\Ports\UpgradeService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use Throwable;
 
 use function SP\__u;

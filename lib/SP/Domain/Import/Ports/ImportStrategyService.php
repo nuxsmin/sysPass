@@ -27,7 +27,7 @@ namespace SP\Domain\Import\Ports;
 
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Services\ImportException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Interface ImportStrategyService

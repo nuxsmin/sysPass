@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests;
 
 use PDO;
-use SP\Infrastructure\Database\DatabaseException;
+use SP\Domain\Core\Exceptions\DatabaseException;
 
 /**
  *

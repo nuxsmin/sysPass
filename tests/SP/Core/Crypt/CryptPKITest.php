@@ -33,7 +33,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\CryptPKI;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 
 use function PHPUnit\Framework\once;

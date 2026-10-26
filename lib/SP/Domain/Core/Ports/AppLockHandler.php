@@ -25,7 +25,7 @@
 namespace SP\Domain\Core\Ports;
 
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class AppLock

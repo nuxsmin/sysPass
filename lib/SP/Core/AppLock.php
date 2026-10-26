@@ -30,7 +30,7 @@ use RuntimeException;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Ports\AppLockHandler;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileHandler;
 
 use function SP\logger;

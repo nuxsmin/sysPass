@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Domain\Notification\Ports\NotificationRepository;
 use SP\Domain\Notification\Ports\NotificationService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 use function SP\__u;

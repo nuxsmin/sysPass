@@ -48,7 +48,7 @@ use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\Import\Services\SyspassImport;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**

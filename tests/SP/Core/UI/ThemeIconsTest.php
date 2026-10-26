@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Html\Assets\FontIcon;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 
 /**

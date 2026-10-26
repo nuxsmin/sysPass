@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Html\Services;
 
 use SP\Domain\Http\Header;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SplObjectStorage;
 
 /**

@@ -37,7 +37,7 @@ use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\logger;

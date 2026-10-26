@@ -32,7 +32,7 @@ use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Providers\Database\DatabaseAuth;
 use SP\Domain\User\Ports\UserPassService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 

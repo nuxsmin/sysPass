@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Core\Acl;
 
 use SP\Domain\Core\Models\Action;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class Actions

@@ -39,7 +39,7 @@ use SP\Domain\Core\Exceptions\InvalidImageException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Image\Ports\ImageService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\FileSystem;
 

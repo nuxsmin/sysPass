@@ -52,7 +52,7 @@ use SP\Domain\Export\Ports\XmlTagExportService;
 use SP\Domain\Export\Services\XmlExport;
 use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Domain\User\Dtos\UserDto;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 

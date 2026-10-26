@@ -34,7 +34,7 @@ use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Html\Assets\FontIcon;
 use SP\Html\Assets\IconInterface;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\logger;

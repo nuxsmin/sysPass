@@ -45,7 +45,7 @@ use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\Common\Repositories\Query;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\__u;

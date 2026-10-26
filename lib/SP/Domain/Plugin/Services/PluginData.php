@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
 use SP\Domain\Plugin\Ports\PluginDataRepository;
 use SP\Domain\Plugin\Ports\PluginDataService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 use function SP\__u;

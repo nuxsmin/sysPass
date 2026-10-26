@@ -37,7 +37,7 @@ use SP\Domain\Common\Adapters\DumpMode;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\UnitaryTestCase;

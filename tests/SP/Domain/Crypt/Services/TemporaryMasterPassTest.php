@@ -42,7 +42,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Services\TemporaryMasterPass;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**

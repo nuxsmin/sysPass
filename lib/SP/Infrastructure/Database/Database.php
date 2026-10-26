@@ -48,6 +48,8 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Database;
 
+use SP\Domain\Core\Exceptions\DatabaseException;
+
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryInterface;
 use Exception;

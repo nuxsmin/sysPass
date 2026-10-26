@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginUpgrader;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\Generators\PluginGenerator;
 use SP\Tests\UnitaryTestCase;
 

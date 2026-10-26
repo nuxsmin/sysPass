@@ -29,7 +29,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use SP\Domain\Config\Services\ConfigFile;
-use SP\Infrastructure\Database\DatabaseException;
+use SP\Domain\Core\Exceptions\DatabaseException;
 use SP\Modules\Cli\Commands\InstallCommand;
 use SP\Tests\DatabaseUtil;
 use SP\Tests\Modules\Cli\CliTestCase;

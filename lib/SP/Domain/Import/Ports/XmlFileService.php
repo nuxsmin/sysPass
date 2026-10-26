@@ -29,7 +29,7 @@ use DOMDocument;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\XmlFormat;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class XmlFileImport

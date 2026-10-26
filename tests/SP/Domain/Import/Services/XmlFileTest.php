@@ -29,7 +29,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\XmlFile;
 use SP\Domain\Import\Services\XmlFormat;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Tests\UnitaryTestCase;
 use PHPUnit\Framework\Attributes\Group;

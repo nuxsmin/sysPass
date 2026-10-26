@@ -42,7 +42,7 @@ use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Crypt\Services\SecureSession;
 use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 
 /**

@@ -28,7 +28,7 @@ namespace SP\Domain\Export\Ports;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Export\Services\VerifyResult;
 use SP\Domain\Import\Services\ImportException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class XmlVerifyService

@@ -40,7 +40,7 @@ use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Services\UserMasterPassStatus;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__u;
 

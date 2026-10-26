@@ -38,7 +38,7 @@ use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Domain\Notification\Ports\NotificationRepository;
 use SP\Domain\Notification\Services\Notification;
 use SP\Domain\User\Dtos\UserDto;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\Generators\NotificationDataGenerator;
 use SP\Tests\Generators\UserDataGenerator;

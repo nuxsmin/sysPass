@@ -43,7 +43,7 @@ use SP\Domain\Export\Ports\XmlVerifyService;
 use SP\Domain\Import\Services\ImportException;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\DirectoryHandler;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
 

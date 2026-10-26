@@ -30,7 +30,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\Database\DatabaseException;
+use SP\Domain\Core\Exceptions\DatabaseException;
 use SP\Infrastructure\Database\DbStorageDriver;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\Database\PDOWrapper;

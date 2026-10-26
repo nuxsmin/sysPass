@@ -27,7 +27,7 @@ namespace SP\Domain\Plugin\Ports;
 
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 /**
  * Class PluginCompatilityInterface

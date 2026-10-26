@@ -31,7 +31,7 @@ use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Models\Action;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\YamlFileStorageService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__u;
 use function SP\logger;
