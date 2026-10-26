@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Crypt\Services;
 
 use Exception;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;

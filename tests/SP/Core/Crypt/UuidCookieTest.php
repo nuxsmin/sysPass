@@ -30,7 +30,7 @@ use Klein\Request;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Core\Crypt\UuidCookie;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Http\Ports\RequestService;

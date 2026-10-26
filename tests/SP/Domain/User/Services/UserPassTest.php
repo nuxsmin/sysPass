@@ -27,7 +27,7 @@ namespace SP\Tests\Domain\User\Services;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User as UserModel;

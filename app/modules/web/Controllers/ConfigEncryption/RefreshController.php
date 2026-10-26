@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
 use SP\Core\Application;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;

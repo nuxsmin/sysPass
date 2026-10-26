@@ -29,7 +29,7 @@ namespace SP\Domain\Api\Services;
 use Exception;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Ports\ApiService;

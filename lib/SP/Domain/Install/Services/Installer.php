@@ -28,7 +28,7 @@ declare(strict_types=1);
 namespace SP\Domain\Install\Services;
 
 use Exception;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Models\Config;
 use SP\Domain\Config\Ports\ConfigDataInterface;

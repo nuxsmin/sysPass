@@ -28,7 +28,7 @@ namespace SP\Domain\Auth\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenRepository;

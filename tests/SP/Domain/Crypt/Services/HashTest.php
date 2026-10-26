@@ -23,11 +23,11 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Core\Crypt;
+namespace SP\Tests\Domain\Crypt\Services;
 
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\Group;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Tests\UnitaryTestCase;
 
 /**

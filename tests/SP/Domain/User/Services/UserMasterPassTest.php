@@ -29,7 +29,7 @@ namespace SP\Tests\Domain\User\Services;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;

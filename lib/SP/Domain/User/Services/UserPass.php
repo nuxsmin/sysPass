@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\User\Services;
 
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;

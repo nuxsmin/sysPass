@@ -32,7 +32,7 @@ use DOMElement;
 use DOMNodeList;
 use DOMXPath;
 use Exception;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;

@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\User\Services;
 
 use JsonException;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;

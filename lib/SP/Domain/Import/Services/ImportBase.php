@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Import\Services;
 
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;

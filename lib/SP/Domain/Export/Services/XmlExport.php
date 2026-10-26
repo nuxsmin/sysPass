@@ -31,7 +31,7 @@ use DOMElement;
 use DOMException;
 use DOMNode;
 use Exception;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;

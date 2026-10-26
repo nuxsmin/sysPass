@@ -29,7 +29,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Csrf;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Http\Method;

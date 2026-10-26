@@ -29,7 +29,7 @@ namespace SP\Domain\Export\Services;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;

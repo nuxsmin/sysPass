@@ -29,7 +29,7 @@ namespace SP\Domain\Http\Services;
 use Exception;
 use Klein\DataCollection\DataCollection;
 use Klein\DataCollection\HeaderDataCollection;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;

@@ -29,7 +29,7 @@ use DOMDocument;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Bootstrap\Path;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;

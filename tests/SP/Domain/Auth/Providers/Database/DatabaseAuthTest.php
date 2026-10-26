@@ -27,7 +27,7 @@ namespace SP\Tests\Domain\Auth\Providers\Database;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Providers\Database\DatabaseAuth;
 use SP\Domain\User\Ports\UserPassService;
