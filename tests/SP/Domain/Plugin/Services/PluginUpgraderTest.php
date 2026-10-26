@@ -50,7 +50,7 @@ class PluginUpgraderTest extends UnitaryTestCase
      */
     public function testUpgradeForWithCompatibleVersion()
     {
-        $pluginModel = PluginGenerator::factory()->buildPlugin();
+        $pluginModel = PluginGenerator::factory()->buildPlugin()->mutate(['versionLevel' => '1000.1']);
 
         $pluginManagerService = $this->createMock(PluginManagerService::class);
 
@@ -63,9 +63,7 @@ class PluginUpgraderTest extends UnitaryTestCase
                              ->method('getByName')
                              ->willReturn($pluginModel);
 
-        [$version, $build] = explode('.', $pluginModel->getVersionLevel());
-
-        $upgradeVersion = sprintf('%d.%d', (int)$version + 100, (int)$build);
+        $upgradeVersion = '1100.1';
 
         $plugin->expects($this->once())
                ->method('onUpgrade')
@@ -85,7 +83,7 @@ class PluginUpgraderTest extends UnitaryTestCase
      */
     public function testUpgradeForWithNoCompatibleVersion()
     {
-        $pluginModel = PluginGenerator::factory()->buildPlugin();
+        $pluginModel = PluginGenerator::factory()->buildPlugin()->mutate(['versionLevel' => '1000.1']);
 
         $pluginManagerService = $this->createMock(PluginManagerService::class);
 
@@ -98,9 +96,7 @@ class PluginUpgraderTest extends UnitaryTestCase
                              ->method('getByName')
                              ->willReturn($pluginModel);
 
-        [$version, $build] = explode('.', $pluginModel->getVersionLevel());
-
-        $upgradeVersion = sprintf('%d.%d', (int)$version - 100, (int)$build);
+        $upgradeVersion = '1000.1';
 
         $plugin->expects($this->never())
                ->method('onUpgrade');
