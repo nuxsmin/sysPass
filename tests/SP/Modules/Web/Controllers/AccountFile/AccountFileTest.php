@@ -275,10 +275,15 @@ class AccountFileTest extends IntegrationTestCase
      */
     private function outputCheckerView(string $output): void
     {
-        $crawler = new Crawler($output);
+        $decoded = json_decode($output, true);
+        $html = is_array($decoded) && isset($decoded['data']['html'])
+            ? $decoded['data']['html']
+            : $output;
+
+        $crawler = new Crawler($html);
         $filter = $crawler->filterXPath('//img|//div[@class="title"]')->count();
 
-        self::assertEquals(2, $filter, substr($output, 0, 2000));
+        self::assertEquals(2, $filter, $output);
     }
 
     /**
