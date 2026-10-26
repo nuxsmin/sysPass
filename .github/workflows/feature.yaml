@@ -22,6 +22,9 @@ jobs:
         run: |
           sudo locale-gen es_ES.UTF-8 en_US.UTF-8 && sudo update-locale
 
+      - name: Install test font
+        run: sudo apt-get update && sudo apt-get install -y fonts-freefont-otf
+
       - name: Setup PHP with tools
         uses: shivammathur/setup-php@v2
         with:
@@ -29,6 +32,7 @@ jobs:
           extensions: mbstring, intl, gd, ldap, gettext, pdo_mysql
           # tools: phpunit
           coverage: xdebug
+          ini-values: zend.assertions=1
         env:
           fail-fast: true
 
@@ -100,8 +104,12 @@ jobs:
           extensions: mbstring, intl, gd, ldap, gettext, pdo_mysql
           # tools: phpunit
           coverage: xdebug
+          ini-values: zend.assertions=1
         env:
           fail-fast: true
+
+      - name: Install test font
+        run: sudo apt-get update && sudo apt-get install -y fonts-freefont-otf
 
       - name: Get composer cache directory
         id: composer-cache
