@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PHPUnit">
+    <option name="directories">
+      <list>
+        <option value="$PROJECT_DIR$/tests/SP/Core" />
+        <option value="$PROJECT_DIR$/tests/SP/Domain" />
+        <option value="$PROJECT_DIR$/tests/SP/Infrastructure" />
+        <option value="$PROJECT_DIR$/tests/SP/Mvc" />
+        <option value="$PROJECT_DIR$/tests/SP/Util" />
+        <option value="$PROJECT_DIR$/tests/SP/Modules/Web" />
+        <option value="$PROJECT_DIR$/tests/SP/Modules/Api" />
+        <option value="$PROJECT_DIR$/tests/SP/Modules/Cli" />
+      </list>
+    </option>
+  </component>
+</project>

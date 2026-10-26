@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,134 +21,66 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
 
-use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
-use Klein\Klein;
-use Psr\Container\ContainerInterface;
-use SP\Bootstrap;
-use SP\Config\Config;
-use SP\Config\ConfigData;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Events\EventDispatcher;
-use SP\Http\Request;
-use SP\Providers\Acl\AclHandler;
-use SP\Providers\Log\DatabaseLogHandler;
-use SP\Providers\Log\FileLogHandler;
-use SP\Providers\Log\RemoteSyslogHandler;
-use SP\Providers\Log\SyslogHandler;
-use SP\Providers\Mail\MailHandler;
-use SP\Providers\Notification\NotificationHandler;
-use SP\Util\Util;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 
 /**
  * Class ModuleBase
- *
- * @package SP\Core
  */
-abstract class ModuleBase
+abstract class ModuleBase implements ModuleInterface
 {
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
-    /**
-     * @var Config
-     */
-    protected $config;
-    /**
-     * @var Klein
-     */
-    protected $router;
-    /**
-     * @var Container
-     */
-    protected $container;
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected ConfigFileService   $config;
+    protected ConfigDataInterface $configData;
+    protected Context             $context;
+    private EventDispatcherInterface $eventDispatcher;
 
     /**
      * Module constructor.
      *
-     * @param ContainerInterface $container
+     * @param Application $application
+     * @param ProvidersHelper $providersHelper
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(Application $application, private readonly ProvidersHelper $providersHelper)
     {
-        $this->container = $container;
-        $this->config = $container->get(Config::class);
+        $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();
-        $this->router = $container->get(Klein::class);
-        $this->request = $container->get(Request::class);
-    }
-
-    /**
-     * @param string $controller
-     *
-     * @return mixed
-     */
-    abstract public function initialize($controller);
-
-    /**
-     * Comprobar si el modo mantenimiento está activado
-     * Esta función comprueba si el modo mantenimiento está activado.
-     *
-     * @param ContextInterface $context
-     *
-     * @return bool
-     */
-    public function checkMaintenanceMode(ContextInterface $context)
-    {
-        if ($this->configData->isMaintenance()) {
-            Bootstrap::$LOCK = Util::getAppLock();
-
-            return !$this->request->isAjax()
-                || !(Bootstrap::$LOCK !== false
-                    && Bootstrap::$LOCK->userId > 0
-                    && $context->isLoggedIn()
-                    && Bootstrap::$LOCK->userId === $context->getUserData()->getId());
-        }
-
-        return false;
+        $this->context = $application->getContext();
+        $this->eventDispatcher = $application->getEventDispatcher();
     }
 
     /**
      * Initializes event handlers
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
      */
-    protected function initEventHandlers()
+    protected function initEventHandlers(bool $partialInit = false): void
     {
-        $eventDispatcher = $this->container->get(EventDispatcher::class);
+        $this->eventDispatcher->attach($this->providersHelper->getLogHandler());
 
-        if (DEBUG || $this->configData->isDebug()) {
-            $eventDispatcher->attach($this->container->get(FileLogHandler::class));
+        if ($partialInit || !$this->configData->isInstalled()) {
+            return;
         }
 
         if ($this->configData->isLogEnabled()) {
-            $eventDispatcher->attach($this->container->get(DatabaseLogHandler::class));
+            $this->eventDispatcher->attach($this->providersHelper->getDatabaseLogHandler());
         }
 
         if ($this->configData->isMailEnabled()) {
-            $eventDispatcher->attach($this->container->get(MailHandler::class));
+            $this->eventDispatcher->attach($this->providersHelper->getMailHandler());
         }
 
-        if ($this->configData->isSyslogEnabled()) {
-            $eventDispatcher->attach($this->container->get(SyslogHandler::class));
-        }
+        $this->eventDispatcher->attach($this->providersHelper->getAclHandler());
+        $this->eventDispatcher->attach($this->providersHelper->getNotificationHandler());
+    }
 
-        if ($this->configData->isSyslogRemoteEnabled()) {
-            $eventDispatcher->attach($this->container->get(RemoteSyslogHandler::class));
-        }
-
-        $eventDispatcher->attach($this->container->get(AclHandler::class));
-        $eventDispatcher->attach($this->container->get(NotificationHandler::class));
+    protected function checkUpgradeNeeded(): bool
+    {
+        return false;
     }
 }

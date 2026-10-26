@@ -1,10 +1,12 @@
 <?php
 /**
  * @var callable $_getvar
- * @var Template $this
+ * @var TemplateInterface $this
  */
 
-use SP\Mvc\View\Template;
+use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
 
 ?>
 <?php if ($_getvar('message')): ?>

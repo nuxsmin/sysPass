@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +20,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid\Layout;
 
 use SP\Html\Assets\IconInterface;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
-
-defined('APP_ROOT') || die();
 
 /**
  * Interface DataGridPagerInterface para la definición del paginador
@@ -41,14 +40,14 @@ interface DataGridPagerInterface
      *
      * @param int $sortKey
      */
-    public function setSortKey($sortKey);
+    public function setSortKey(int $sortKey);
 
     /**
      * Devolver el campo de la búsqueda
      *
      * @return int
      */
-    public function getSortKey();
+    public function getSortKey(): int;
 
     /**
      * Establecer el registro de inicio de la página
@@ -57,14 +56,14 @@ interface DataGridPagerInterface
      *
      * @return static
      */
-    public function setLimitStart($limitStart);
+    public function setLimitStart(int $limitStart): DataGridPagerInterface;
 
     /**
      * Devolver el registro de inicio de la página
      *
      * @return int
      */
-    public function getLimitStart();
+    public function getLimitStart(): int;
 
     /**
      * Establecer el número de registros en una página
@@ -73,7 +72,7 @@ interface DataGridPagerInterface
      *
      * @return static
      */
-    public function setLimitCount($limitCount);
+    public function setLimitCount(int $limitCount): DataGridPagerInterface;
 
     /**
      * Devolver el número de registros en una página
@@ -87,14 +86,14 @@ interface DataGridPagerInterface
      *
      * @param int $totalRows
      */
-    public function setTotalRows($totalRows);
+    public function setTotalRows(int $totalRows);
 
     /**
      * Devolver el número total de registros obtenidos
      *
      * @return int
      */
-    public function getTotalRows();
+    public function getTotalRows(): int;
 
     /**
      * Establecer si está activado el filtro
@@ -103,68 +102,68 @@ interface DataGridPagerInterface
      *
      * @return static
      */
-    public function setFilterOn($filterOn);
+    public function setFilterOn(bool $filterOn): DataGridPagerInterface;
 
     /**
      * Devolver si está activado el filtro
      *
      * @return bool
      */
-    public function getFilterOn();
+    public function getFilterOn(): bool;
 
     /**
      * Establecer la función javascript para paginar
      *
      * @param string $function
      */
-    public function setOnClickFunction($function);
+    public function setOnClickFunction(string $function);
 
     /**
      * Devolver la función javascript para paginar
      *
      * @return string
      */
-    public function getOnClick();
+    public function getOnClick(): string;
 
     /**
      * Establecer los argumentos de la función OnClick
      *
      * @param string $args
      */
-    public function setOnClickArgs($args);
+    public function setOnClickArgs(string $args);
 
     /**
      * Devolver la funcion para ir a la primera página
      *
      * @return string
      */
-    public function getOnClickFirst();
+    public function getOnClickFirst(): string;
 
     /**
      * Devolver la funcion para ir a la última página
      *
      * @return string
      */
-    public function getOnClickLast();
+    public function getOnClickLast(): string;
 
     /**
      * Devolver la funcion para ir a la siguiente página
      *
      * @return string
      */
-    public function getOnClickNext();
+    public function getOnClickNext(): string;
 
     /**
      * Devolver la funcion para ir a la página anterior
      *
      * @return string
      */
-    public function getOnClickPrev();
+    public function getOnClickPrev(): string;
 
     /**
      * @return IconInterface
      */
-    public function getIconPrev();
+    public function getIconPrev(): IconInterface;
 
     /**
      * @param IconInterface $iconPrev
@@ -174,7 +173,7 @@ interface DataGridPagerInterface
     /**
      * @return IconInterface
      */
-    public function getIconNext();
+    public function getIconNext(): IconInterface;
 
     /**
      * @param IconInterface $iconNext
@@ -184,7 +183,7 @@ interface DataGridPagerInterface
     /**
      * @return IconInterface
      */
-    public function getIconFirst();
+    public function getIconFirst(): IconInterface;
 
     /**
      * @param IconInterface $iconFirst
@@ -194,7 +193,7 @@ interface DataGridPagerInterface
     /**
      * @return IconInterface
      */
-    public function getIconLast();
+    public function getIconLast(): IconInterface;
 
     /**
      * @param IconInterface $iconLast
@@ -204,40 +203,40 @@ interface DataGridPagerInterface
     /**
      * @param DataGridActionSearch $sourceAction
      */
-    public function setSourceAction($sourceAction);
+    public function setSourceAction(DataGridActionSearch $sourceAction);
 
     /**
      * @return int
      */
-    public function getSortOrder();
+    public function getSortOrder(): int;
 
     /**
      * @param int $sortOrder
      */
-    public function setSortOrder($sortOrder);
+    public function setSortOrder(int $sortOrder);
 
     /**
      * @return int
      */
-    public function getLast();
+    public function getLast(): int;
 
     /**
      * @return int
      */
-    public function getNext();
+    public function getNext(): int;
 
     /**
      * @return int
      */
-    public function getPrev();
+    public function getPrev(): int;
 
     /**
      * @return int
      */
-    public function getFirst();
+    public function getFirst(): int;
 
     /**
      * @return DataGridActionSearch
      */
-    public function getSourceAction();
+    public function getSourceAction(): DataGridActionSearch;
 }

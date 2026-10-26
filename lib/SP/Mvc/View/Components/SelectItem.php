@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,108 +20,77 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\View\Components;
 
+use JsonSerializable;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
+
 /**
  * Class SelectItem
- *
- * @package SP\Mvc\View\Components
  */
-final class SelectItem
+final class SelectItem implements JsonSerializable
 {
-    /**
-     * @var int
-     */
-    protected $id;
-    /**
-     * @var string
-     */
-    protected $name;
-    /**
-     * @var mixed
-     */
-    protected $item;
-    /**
-     * @var bool
-     */
-    protected $selected = false;
-    /**
-     * @var bool
-     */
-    protected $skip = false;
+    protected bool $selected = false;
+    protected bool $skip     = false;
 
-    /**
-     * SelectItem constructor.
-     *
-     * @param int    $id
-     * @param string $name
-     * @param null   $item
-     */
-    public function __construct($id, $name, $item = null)
-    {
-        $this->id = is_numeric($id) ? (int)$id : $id;
-        $this->name = (string)$name;
-        $this->item = $item;
+    public function __construct(
+        protected readonly int|string              $id,
+        protected readonly string                  $name,
+        protected readonly ?ItemWithIdAndNameModel $item = null
+    ) {
     }
 
     /**
-     * @return int
+     * @return int|string
      */
-    public function getId()
+    public function getId(): int|string
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return bool
-     */
-    public function isSelected()
+    public function isSelected(): bool
     {
         return $this->selected;
     }
 
-    /**
-     * @param bool $selected
-     */
-    public function setSelected($selected)
+    public function setSelected(bool $selected): void
     {
-        $this->selected = (bool)$selected;
+        $this->selected = $selected;
     }
 
     /**
-     * @param $property
+     * @param string $property
      *
      * @return mixed
      */
-    public function getItemProperty($property)
+    public function getItemProperty(string $property): mixed
     {
-        return null !== $this->item && isset($this->item->{$property}) ? $this->item->{$property} : null;
+        return $this->item?->{$property};
     }
 
-    /**
-     * @return bool
-     */
-    public function isSkip()
+    public function isSkip(): bool
     {
         return $this->skip;
     }
 
-    /**
-     * @param bool $skip
-     */
-    public function setSkip($skip)
+    public function setSkip(bool $skip): void
     {
-        $this->skip = (bool)$skip;
+        $this->skip = $skip;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize(): array
+    {
+        return ['id' => $this->id, 'name' => $this->name];
     }
 }

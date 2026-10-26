@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,17 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
 
-use Psr\Container\ContainerInterface;
-use SP\Config\Config;
-use SP\Config\ConfigData;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
-use SP\Http\Request;
+use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Class FormBase
@@ -38,51 +37,32 @@ use SP\Http\Request;
  */
 abstract class FormBase
 {
-    /**
-     * @var int
-     */
-    protected $itemId;
-    /**
-     * @var Config
-     */
-    protected $config;
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
-    /**
-     * @var SessionContext
-     */
-    protected $context;
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected ConfigFileService $config;
+    protected ConfigDataInterface $configData;
+    protected Context           $context;
 
     /**
      * FormBase constructor.
      *
-     * @param ContainerInterface $container
-     * @param int                $itemId
+     * @param Application $application
+     * @param RequestService $request
+     * @param int|null $itemId
      */
-    public function __construct(ContainerInterface $container, $itemId = null)
-    {
-        $this->config = $container->get(Config::class);
+    public function __construct(
+        Application                       $application,
+        protected readonly RequestService $request,
+        protected ?int                    $itemId = null
+    ) {
+        $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();
-        $this->context = $container->get(ContextInterface::class);
-        $this->request = $container->get(Request::class);
-
-        $this->itemId = $itemId;
-
-        if (method_exists($this, 'initialize')) {
-            $this->initialize($container);
-        }
+        $this->context = $application->getContext();
     }
 
     /**
-     * Analizar los datos de la petición HTTP
-     *
-     * @return void
+     * @return int|null
      */
-    abstract protected function analyzeRequestData();
+    public function getItemId(): ?int
+    {
+        return $this->itemId;
+    }
 }

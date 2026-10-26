@@ -1,9 +1,9 @@
 <?php
 /**
- * @var DataGridTab                         $data
- * @var Template                            $this
+ * @var DataGridTab $data
+ * @var \SP\Mvc\View\TemplateInterface $this
  * @var DataGridAction|DataGridActionSearch $action
- * @var callable                            $_getvar
+ * @var callable $_getvar
  */
 
 use SP\Html\DataGrid\Action\DataGridAction;

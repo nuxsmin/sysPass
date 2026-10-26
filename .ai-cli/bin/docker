@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# docker — pinned entry point for the AI kit ($DOCKER_BIN in ../env.sh points here).
+# Inside the Flatpak sandbox: exec host docker via host-spawn.
+# Outside: exec /usr/bin/docker directly, falling back to PATH.
+# Docker commands that mutate (run/exec/build/pull/rm/stop/...) need explicit
+# human approval — see ../allowed-commands.txt.
+set -euo pipefail
+
+if [ "${FLATPAK_IDE_ENV:-}" = "1" ] && [ -x /app/bin/host-spawn ]; then
+  # host-spawn forwards only $HOST_SPAWN_ENV_VARS (default "TERM"), so pass the
+  # caller's variables through explicitly. Some tools hand container env to
+  # docker via `docker create -e KEY` (key only, no value on argv) and rely on
+  # this process's own environment to supply the value — e.g. the Supabase CLI
+  # sends POSTGRES_PASSWORD/JWT_SECRET/JWT_EXP/POSTGRES_HOST this way. If they
+  # are dropped, the container starts with empty values. Forward everything
+  # except vars where the host must keep its own value (PATH, HOME, ...).
+  env_vars=""
+  for name in $(compgen -e || true); do
+    case "$name" in
+      PATH | HOME | PWD | OLDPWD | SHLVL | _ | SHELL | LD_* | XDG_* | DBUS_* | FLATPAK_IDE_ENV | HOST_SPAWN)
+        continue
+        ;;
+    esac
+    env_vars="${env_vars:+$env_vars,}$name"
+  done
+  exec /app/bin/host-spawn -env "$env_vars" docker "$@"
+fi
+
+if [ -x /usr/bin/docker ]; then
+  exec /usr/bin/docker "$@"
+fi
+exec docker "$@"

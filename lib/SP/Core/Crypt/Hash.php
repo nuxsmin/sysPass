@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,10 +20,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
+
+use function SP\logger;
 
 /**
  * Class Hash
@@ -34,17 +37,16 @@ final class Hash
     /**
      * Longitud máxima aceptada para hashing
      */
-    const MAX_KEY_LENGTH = 72;
+    public const  MAX_KEY_LENGTH = 72;
+    private const HASH_ALGO      = 'sha256';
 
     /**
      * Comprobar el hash de una clave.
      *
-     * @param string $key  con la clave a comprobar
-     * @param string $hash con el hash a comprobar
-     *
-     * @return bool
+     * @param  string  $key  con la clave a comprobar
+     * @param  string  $hash  con el hash a comprobar
      */
-    public static function checkHashKey($key, $hash)
+    public static function checkHashKey(string $key, string $hash): bool
     {
         return password_verify(self::getKey($key), $hash);
     }
@@ -52,15 +54,15 @@ final class Hash
     /**
      * Devolver la clave preparada. Se crea un hash si supera la longitud máxima.
      *
-     * @param string $key
-     * @param bool   $isCheck Indica si la operación es de comprobación o no
+     * @param  string  $key
+     * @param  bool  $isCheck  Indica si la operación es de comprobación o no
      *
      * @return string
      */
-    private static function getKey(&$key, $isCheck = true)
+    private static function getKey(string &$key, bool $isCheck = true): string
     {
         if (mb_strlen($key) > self::MAX_KEY_LENGTH) {
-            $key = hash('sha256', $key);
+            $key = hash(self::HASH_ALGO, $key);
 
             if ($isCheck === false) {
                 logger('[INFO] Password string shortened using SHA256 and then BCRYPT');
@@ -73,39 +75,31 @@ final class Hash
     /**
      * Generar un hash de una clave criptográficamente segura
      *
-     * @param string $key con la clave a 'hashear'
+     * @param  string  $key  con la clave a 'hashear'
      *
      * @return string con el hash de la clave
      */
-    public static function hashKey($key)
+    public static function hashKey(string $key): string
     {
         return password_hash(self::getKey($key, false), PASSWORD_BCRYPT);
     }
 
     /**
      * Checks a message with a given key against a hash
-     *
-     * @param $message
-     * @param $key
-     * @param $hash
-     *
-     * @return bool
      */
-    public static function checkMessage($message, $key, $hash)
-    {
+    public static function checkMessage(
+        string $message,
+        string $key,
+        string $hash
+    ): bool {
         return hash_equals($hash, self::signMessage($message, $key));
     }
 
     /**
      * Signs a message with a given key
-     *
-     * @param $message
-     * @param $key
-     *
-     * @return string
      */
-    public static function signMessage($message, $key)
+    public static function signMessage(string $message, string $key): string
     {
-        return hash_hmac('sha256', $message, $key);
+        return hash_hmac(self::HASH_ALGO, $message, $key);
     }
 }

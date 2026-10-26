@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +20,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\Controller;
@@ -34,9 +35,9 @@ interface CrudControllerInterface
     /**
      * View action
      *
-     * @param $id
+     * @param int $id
      */
-    public function viewAction($id);
+    public function viewAction(int $id);
 
     /**
      * Search action
@@ -51,16 +52,16 @@ interface CrudControllerInterface
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id
      */
-    public function editAction($id);
+    public function editAction(int $id);
 
     /**
      * Delete action
      *
-     * @param $id
+     * @param int|null $id
      */
-    public function deleteAction($id = null);
+    public function deleteAction(?int $id = null);
 
     /**
      * Saves create action
@@ -70,7 +71,7 @@ interface CrudControllerInterface
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param int $id
      */
-    public function saveEditAction($id);
+    public function saveEditAction(int $id);
 }

@@ -1,12 +1,14 @@
 <?php
 /**
  * @var callable $_getvar
- * @var Template $this
+ * @var TemplateInterface $this
  */
 
 use SP\Html\Assets\IconInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
-use SP\Mvc\View\Template;
+use SP\Mvc\View\TemplateInterface;
+
+use function SP\__;
 
 ?>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--no-desktop-drawer-button">
@@ -67,8 +69,7 @@ use SP\Mvc\View\Template;
                                 class="btn-action mdl-menu__item"
                                 data-onclick="appMgmt/show"
                                 data-action-route="user/editPass"
-                                data-item-id="<?php echo $_getvar('ctx_userId'); ?>"
-                                data-sk="<?php echo $_getvar('sk'); ?>">
+                                data-item-id="<?php echo $_getvar('ctx_userId'); ?>">
                                 <i class="material-icons">lock</i>
                                 <?php echo __('Change User\'s Password'); ?>
                             </li>
@@ -130,8 +131,7 @@ use SP\Mvc\View\Template;
                        title="<?php echo __('Change User\'s Password'); ?>"
                        data-onclick="appMgmt/show"
                        data-action-route="user/editPass"
-                       data-item-id="<?php echo $_getvar('ctx_userId'); ?>"
-                       data-sk="<?php echo $_getvar('sk'); ?>">
+                       data-item-id="<?php echo $_getvar('ctx_userId'); ?>">
                         <i class="btn-action material-icons">security</i>
                         <?php echo __('Change User\'s Password'); ?>
                     </a>
@@ -169,13 +169,16 @@ use SP\Mvc\View\Template;
                 <span class="mdl-menu__item--full-bleed-divider"></span>
 
                 <a class="mdl-navigation__link" href="#">
-                    <?php if ($_getvar('httpsEnabled')): ?>
+                    <?php
+                    if ($_getvar('httpsEnabled')) : ?>
                         <i class="material-icons mdl-color-text--teal-500">lock</i>
-                    <?php else: ?>
+                    <?php
+                    else : ?>
                         <i class="material-icons mdl-color-text--red-900">lock_open</i>
                     <?php endif; ?>
 
-                    <?php if ($_getvar('isDemo')): ?>
+                    <?php
+                    if ($_getvar('isDemo')) : ?>
                         <span class="status-info"><?php echo __('Demo'); ?></span>
                     <?php endif; ?>
 
@@ -188,11 +191,11 @@ use SP\Mvc\View\Template;
     <main class="mdl-layout__content">
         <div id="content"
              data-page="<?php echo $_getvar('contentPage', ''); ?>">
-            <?php if ($this->hashContentTemplates()):
-                foreach ($this->getContentTemplates() as $template):
-                    include $template;
-                endforeach;
-            endif; ?>
+            <?php
+            foreach ($this->getContentTemplates() as $template) :
+                include $template;
+            endforeach;
+            ?>
         </div>
     </main>
 </div> <!-- Close mdl-layout -->

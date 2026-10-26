@@ -1,10 +1,11 @@
 <?php
-/**
+declare(strict_types=1);
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,11 +20,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Mvc\Controller\Validators;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use SP\Mvc\Controller\Validators\Validator;
 
@@ -32,10 +34,11 @@ use SP\Mvc\Controller\Validators\Validator;
  *
  * @package SP\Tests\Mvc\Controller\Validators
  */
+#[Group('unitary')]
 class ValidatorTest extends TestCase
 {
-    const VALID_STRING = 'abcDE123_!';
-    const VALID_REGEX = '^[a-zA-Z\d_!]+$';
+    public const VALID_STRING = 'abcDE123_!';
+    public const VALID_REGEX  = '^[a-zA-Z\d_!]+$';
 
     public function testMatchRegex()
     {

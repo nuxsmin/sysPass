@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +20,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid;
 
 use SP\Html\Assets\IconInterface;
-use SP\Storage\Database\QueryResult;
-
-defined('APP_ROOT') || die();
+use SP\Infrastructure\Database\QueryResult;
 
 /**
  * Interface DataGridDataInterface
@@ -38,69 +37,55 @@ interface DataGridDataInterface
 {
     /**
      * Establecer los orígenes de datos de la consulta
-     *
-     * @param string        $source
-     * @param bool          $isMethod
-     * @param callable|null $filter
-     * @param bool          $truncate
      */
-    public function addDataRowSource($source, $isMethod = false, callable $filter = null, $truncate = true);
+    public function addDataRowSource(
+        string   $source,
+        bool     $isMethod = false,
+        callable $filter = null,
+        bool     $truncate = true
+    ): void;
 
     /**
      * Devolver los orígenes de datos de la consulta
-     *
-     * @return array
      */
-    public function getDataRowSources();
+    public function getDataRowSources(): array;
 
     /**
      * Establecer el origen de datos utilizado como Id de los elementos
-     *
-     * @param $id string
      */
-    public function setDataRowSourceId($id);
+    public function setDataRowSourceId(string $id): void;
 
     /**
      * Devolver el origen de datos utilizado como Id de los elementos
-     *
-     * @return string
      */
-    public function getDataRowSourceId();
+    public function getDataRowSourceId(): string;
 
     /**
      * Establecer los datos de la consulta
-     *
-     * @param QueryResult $queryResult
      */
-    public function setData(QueryResult $queryResult);
+    public function setData(QueryResult $queryResult): void;
 
     /**
      * Devolver los datos de la consulta
-     *
-     * @return array
      */
-    public function getData();
+    public function getData(): array;
 
     /**
      * Establecer los orígenes de datos que se muestran con iconos
-     *
-     * @param       $source string
-     * @param       $icon   IconInterface
-     * @param mixed $value  Valor para mostrar el icono
      */
-    public function addDataRowSourceWithIcon($source, IconInterface $icon, $value = 1);
+    public function addDataRowSourceWithIcon(
+        string        $source,
+        IconInterface $icon,
+        int           $value = 1
+    ): void;
 
     /**
      * Devolver los orígenes de datos que se muestran con iconos
-     *
-     * @return array
      */
-    public function getDataRowSourcesWithIcon();
+    public function getDataRowSourcesWithIcon(): array;
 
     /**
      * Devolver el número de elementos obtenidos
-     *
-     * @return int
      */
-    public function getDataCount();
+    public function getDataCount(): int;
 }

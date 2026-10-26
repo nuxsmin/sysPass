@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
-use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\CategoryData;
+use SP\Domain\Category\Models\Category;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\ValidationException;
+
+use function SP\__u;
 
 /**
  * Class CategoryForm
@@ -35,24 +37,26 @@ use SP\DataModel\CategoryData;
  */
 final class CategoryForm extends FormBase implements FormInterface
 {
-    /**
-     * @var CategoryData
-     */
-    protected $categoryData;
+    protected ?Category $categoryData = null;
 
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param int $action
+     * @param int|null $id
      *
-     * @return CategoryForm
+     * @return FormInterface
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
-            case ActionsInterface::CATEGORY_CREATE:
-            case ActionsInterface::CATEGORY_EDIT:
+            case AclActionsInterface::CATEGORY_CREATE:
+            case AclActionsInterface::CATEGORY_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -66,28 +70,28 @@ final class CategoryForm extends FormBase implements FormInterface
      *
      * @return void
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
-        $this->categoryData = new CategoryData();
-        $this->categoryData->setId($this->itemId);
-        $this->categoryData->setName($this->request->analyzeString('name'));
-        $this->categoryData->setDescription($this->request->analyzeString('description'));
+        $this->categoryData = new Category(
+            [
+                'id' => $this->itemId,
+                'name' => $this->request->analyzeString('name'),
+                'description' => $this->request->analyzeString('description')
+            ]
+        );
     }
 
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
         if (!$this->categoryData->getName()) {
             throw new ValidationException(__u('A category name needed'));
         }
     }
 
-    /**
-     * @return CategoryData
-     */
-    public function getItemData()
+    public function getItemData(): ?Category
     {
         return $this->categoryData;
     }

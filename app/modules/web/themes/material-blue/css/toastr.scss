@@ -22,15 +22,19 @@
 .toast {
   background-color: #030303;
 }
+
 .toast-success {
   background-color: $color-teal-fg;
 }
+
 .toast-error {
   background-color: $color-red-fg;
 }
+
 .toast-info {
   background-color: $color-blue-fg;
 }
+
 .toast-warning {
   background-color: $color-amber-fg;
   color: $color-grey;

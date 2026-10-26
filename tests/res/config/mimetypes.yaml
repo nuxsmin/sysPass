@@ -1,0 +1,126 @@
+mimetypes:
+  - type: application/x-abiword
+    description: AbiWord document
+    extension: abw
+  - type: application/octet-stream
+    description: Archive document (multiple files embedded)
+    extension: arc
+  - type: application/vnd.amazon.ebook
+    description: Amazon Kindle eBook format
+    extension: azw
+  - type: application/octet-stream
+    description: Any kind of binary data
+    extension: bin
+  - type: image/bmp
+    description: Windows OS/2 Bitmap Graphics
+    extension: bmp
+  - type: application/x-bzip
+    description: BZip archive
+    extension: bz
+  - type: application/x-bzip2
+    description: BZip2 archive
+    extension: bz2
+  - type: application/x-csh
+    description: C-Shell script
+    extension: csh
+  - type: text/csv
+    description: Comma-separated values (CSV)
+    extension: csv
+  - type: application/msword
+    description: Microsoft Word
+    extension: doc
+  - type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    description: Microsoft Word (OpenXML)
+    extension: docx
+  - type: application/vnd.ms-fontobject
+    description: MS Embedded OpenType fonts
+    extension: eot
+  - type: application/epub+zip
+    description: Electronic publication (EPUB)
+    extension: epub
+  - type: image/gif
+    description: Graphics Interchange Format (GIF)
+    extension: gif
+  - type: text/html
+    description: HyperText Markup Language (HTML)
+    extension: html
+  - type: text/calendar
+    description: iCalendar format
+    extension: ics
+  - type: application/java-archive
+    description: Java Archive (JAR)
+    extension: jar
+  - type: image/jpeg
+    description: JPEG images
+    extension: jpg
+  - type: application/json
+    description: JSON format
+    extension: json
+  - type: application/vnd.apple.installer+xml
+    description: Apple Installer Package
+    extension: mpkg
+  - type: application/vnd.oasis.opendocument.presentation
+    description: OpenDocument presentation document
+    extension: odp
+  - type: application/vnd.oasis.opendocument.spreadsheet
+    description: OpenDocument spreadsheet document
+    extension: ods
+  - type: application/vnd.oasis.opendocument.text
+    description: OpenDocument text document
+    extension: odt
+  - type: image/png
+    description: Portable Network Graphics
+    extension: png
+  - type: application/pdf
+    description: Adobe Portable Document Format (PDF)
+    extension: pdf
+  - type: application/vnd.ms-powerpoint
+    description: Microsoft PowerPoint
+    extension: ppt
+  - type: >-
+      application/vnd.openxmlformats-officedocument.presentationml.presentation
+    description: Microsoft PowerPoint (OpenXML)
+    extension: pptx
+  - type: application/x-rar-compressed
+    description: RAR archive
+    extension: rar
+  - type: application/rtf
+    description: Rich Text Format (RTF)
+    extension: rtf
+  - type: application/x-sh
+    description: Bourne shell script
+    extension: sh
+  - type: image/svg+xml
+    description: Scalable Vector Graphics (SVG)
+    extension: svg
+  - type: application/x-tar
+    description: Tape Archive (TAR)
+    extension: tar
+  - type: text/plain
+    description: 'Text, (generally ASCII or ISO 8859-n)'
+    extension: txt
+  - type: application/vnd.visio
+    description: Microsoft Visio
+    extension: vsd
+  - type: application/xhtml+xml
+    description: XHTML
+    extension: xhtml
+  - type: application/vnd.ms-excel
+    description: Microsoft Excel
+    extension: xls
+  - type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+    description: Microsoft Excel (OpenXML)
+    extension: xlsx
+  - type: application/xml
+    description: XML
+    extension: xml
+  - type: application/vnd.mozilla.xul+xml
+    description: XUL
+    extension: xul
+  - type: application/zip
+    description: ZIP archive
+    extension: zip
+  - type: application/x-7z-compressed
+    description: 7-zip archive
+    extension: 7z
+    

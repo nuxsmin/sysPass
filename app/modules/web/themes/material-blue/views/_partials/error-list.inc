@@ -1,11 +1,11 @@
 <?php
 /**
  * @var callable $_getvar
- * @var Template $this
+ * @var TemplateInterface $this
  */
 
-use SP\Core\Exceptions\SPException;
-use SP\Mvc\View\Template;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Mvc\View\TemplateInterface;
 
 ?>
 <?php if (count($_getvar('errors')) > 0): ?>

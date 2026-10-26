@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,119 +20,91 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
 
-use Defuse\Crypto\Exception\CryptoException;
+use RuntimeException;
+use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Crypt\VaultInterface;
+use SP\Domain\Core\Exceptions\CryptException;
 
 /**
  * Class Vault
  *
  * @package SP\Core\Crypt
  */
-final class Vault
+final class Vault implements VaultInterface
 {
-    /**
-     * @var string
-     */
-    private $data;
-    /**
-     * @var string
-     */
-    private $key;
-    /**
-     * @var int
-     */
-    private $timeSet = 0;
-    /**
-     * @var int
-     */
-    private $timeUpdated = 0;
+    private ?string $data    = null;
+    private ?string $key     = null;
+    private int     $timeSet = 0;
 
-    /**
-     * @return static
-     */
-    public static function getInstance()
+    private function __construct(private readonly CryptInterface $crypt)
     {
-        return new static();
+    }
+
+    public static function factory(CryptInterface $crypt): VaultInterface
+    {
+        return new self($crypt);
     }
 
     /**
-     * Regenerar la clave de sesión
+     * Re-key this vault
      *
-     * @param string $newSeed
-     * @param string $oldSeed
-     *
-     * @return Vault
-     * @throws CryptoException
+     * @throws CryptException
      */
-    public function reKey($newSeed, $oldSeed)
+    public function reKey(string $newSeed, string $oldSeed): VaultInterface
     {
-        $this->timeUpdated = time();
-        $sessionMPass = $this->getData($oldSeed);
-
-        $this->saveData($sessionMPass, $newSeed);
-
-        return $this;
+        return $this->saveData($this->getData($oldSeed), $newSeed);
     }
 
     /**
-     * Devolver la clave maestra de la sesión
+     * Create a new vault with the saved data
      *
-     * @param string $key
-     *
-     * @return string
-     * @throws CryptoException
+     * @throws CryptException
      */
-    public function getData($key)
+    public function saveData(string $data, string $key): VaultInterface
     {
-        return Crypt::decrypt($this->data, $this->key, $key);
+        $vault = new Vault($this->crypt);
+        $vault->timeSet = time();
+        $vault->key = $this->crypt->makeSecuredKey($key);
+        $vault->data = $this->crypt->encrypt($data, $vault->key, $key);
+
+        return $vault;
     }
 
     /**
-     * Guardar la clave maestra en la sesión
+     * Get the data decrypted
      *
-     * @param mixed  $data
-     * @param string $key
-     *
-     * @return $this
-     * @throws CryptoException
+     * @throws CryptException
      */
-    public function saveData($data, $key)
+    public function getData(string $key): string
     {
-        if ($this->timeSet === 0) {
-            $this->timeSet = time();
+        if ($this->data === null || $this->key === null) {
+            throw new RuntimeException('Either data or key must be set');
         }
 
-        $this->key = Crypt::makeSecuredKey($key);
-        $this->data = Crypt::encrypt($data, $this->key, $key);
-
-        return $this;
+        return $this->crypt->decrypt($this->data, $this->key, $key);
     }
 
     /**
+     * Serialize the current vault
+     */
+    public function getSerialized(): string
+    {
+        return Serde::serialize($this);
+    }
+
+    /**
+     * Get the last time the key and data were set
+     *
      * @return int
      */
-    public function getTimeSet()
+    public function getTimeSet(): int
     {
         return $this->timeSet;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTimeUpdated()
-    {
-        return $this->timeUpdated;
-    }
-
-    /**
-     * Serializaes the current object
-     */
-    public function getSerialized()
-    {
-        return serialize($this);
     }
 }

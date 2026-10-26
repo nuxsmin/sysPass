@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,32 +21,32 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Messages;
+
+use SP\Domain\Core\Messages\FormatterInterface;
 
 /**
  * Class MailMessage
  *
  * @package SP\Core\Messages
  */
-final class MailMessage extends MessageBase implements MessageInterface
+final class MailMessage extends MessageBase
 {
     /**
      * Adds a blank description line
      */
-    public function addDescriptionLine()
+    public function addDescriptionLine(): void
     {
         $this->description[] = '';
     }
 
     /**
      * Componer un mensaje en formato HTML
-     *
-     * @return string
      */
-    public function composeHtml()
+    public function composeHtml(): string
     {
         $formatter = new HtmlFormatter();
 
@@ -57,32 +59,25 @@ final class MailMessage extends MessageBase implements MessageInterface
         return $message;
     }
 
-    /**
-     * @param FormatterInterface $formatter
-     * @param bool               $translate
-     *
-     * @return string
-     */
-    public function getDescription(FormatterInterface $formatter, $translate = false): string
+    public function getDescription(
+        FormatterInterface $formatter,
+        bool               $translate
+    ): string
     {
         return $formatter->formatDescription($this->description, $translate);
     }
 
     /**
      * Componer un mensaje en formato texto
-     *
-     * @param string $delimiter
-     *
-     * @return string
      */
-    public function composeText($delimiter = PHP_EOL)
+    public function composeText(string $delimiter = PHP_EOL): string
     {
         $formatter = new TextFormatter($delimiter);
 
         return $this->title
-            . $delimiter
-            . $this->getDescription($formatter, true)
-            . $delimiter
-            . implode($delimiter, $this->footer);
+               . $delimiter
+               . $this->getDescription($formatter, true)
+               . $delimiter
+               . implode($delimiter, $this->footer);
     }
 }

@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
-use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\ClientData;
+use SP\Domain\Client\Models\Client;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\ValidationException;
+
+use function SP\__u;
 
 /**
  * Class ClientForm
@@ -35,24 +37,26 @@ use SP\DataModel\ClientData;
  */
 final class ClientForm extends FormBase implements FormInterface
 {
-    /**
-     * @var ClientData
-     */
-    protected $clientData;
+    protected ?Client $clientData = null;
 
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param int $action
+     * @param int|null $id
      *
-     * @return ClientForm
+     * @return FormInterface
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
-            case ActionsInterface::CLIENT_CREATE:
-            case ActionsInterface::CLIENT_EDIT:
+            case AclActionsInterface::CLIENT_CREATE:
+            case AclActionsInterface::CLIENT_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -66,29 +70,30 @@ final class ClientForm extends FormBase implements FormInterface
      *
      * @return void
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
-        $this->clientData = new ClientData();
-        $this->clientData->setId($this->itemId);
-        $this->clientData->setName($this->request->analyzeString('name'));
-        $this->clientData->setDescription($this->request->analyzeString('description'));
-        $this->clientData->setIsGlobal($this->request->analyzeBool('isglobal', false));
+        $this->clientData = new Client(
+            [
+                'id' => $this->itemId,
+                'name' => $this->request->analyzeString('name'),
+                'description' => $this->request->analyzeString('description'),
+                'isglobal' => $this->request->analyzeBool('isglobal', false)
+
+            ]
+        );
     }
 
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
         if (!$this->clientData->getName()) {
             throw new ValidationException(__u('A client name needed'));
         }
     }
 
-    /**
-     * @return ClientData
-     */
-    public function getItemData()
+    public function getItemData(): ?Client
     {
         return $this->clientData;
     }

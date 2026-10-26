@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +20,11 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid\Layout;
 
-defined('APP_ROOT') || die();
-
-use SP\Html\DataGrid\Action\DataGridActionInterface;
 use SP\Html\DataGrid\DataGridSortInterface;
 use SplObjectStorage;
 
@@ -37,55 +35,25 @@ use SplObjectStorage;
  */
 final class DataGridHeaderSort extends DataGridHeaderBase
 {
-    /**
-     * @var DataGridActionInterface[]
-     */
-    private $actions;
+    private SplObjectStorage $sortFields;
+
+    public function __construct()
+    {
+        $this->sortFields = new SplObjectStorage();
+    }
+
 
     /**
-     * @var DataGridSortInterface[]
+     * @return DataGridSortInterface[]|null
      */
-    private $sortFields;
-
-    /**
-     * @return DataGridSortInterface[]
-     */
-    public function getSortFields()
+    public function getSortFields(): ?SplObjectStorage
     {
         return $this->sortFields;
     }
 
-    /**
-     * @return DataGridActionInterface[]
-     */
-    public function getActions()
+
+    public function addSortField(DataGridSortInterface $field): DataGridHeaderSort
     {
-        return $this->actions;
-    }
-
-    /**
-     * @param DataGridActionInterface[] $action
-     */
-    public function addAction($action)
-    {
-        if (null === $this->actions) {
-            $this->actions = new SplObjectStorage();
-        }
-
-        $this->actions->attach($action);
-    }
-
-    /**
-     * @param DataGridSortInterface $field
-     *
-     * @return $this
-     */
-    public function addSortField($field)
-    {
-        if (null === $this->sortFields) {
-            $this->sortFields = new SplObjectStorage();
-        }
-
         $this->sortFields->attach($field);
 
         return $this;

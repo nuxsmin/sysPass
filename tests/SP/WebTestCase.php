@@ -1,10 +1,11 @@
 <?php
-/**
+declare(strict_types=1);
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,55 +20,49 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests;
 
 use Goutte\Client;
+use JsonException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\BrowserKit\Response;
 
 /**
  * Class WebTestCase
- *
- * @package SP\Tests\SP
  */
 abstract class WebTestCase extends TestCase
 {
     /**
-     * @param string $url
-     * @param mixed  $content Unencoded JSON data
-     *
-     * @return Client
+     * @throws JsonException
      */
-    protected static function postJson(string $url, $content = '')
+    protected static function postJson(string $url, $content = ''): Client
     {
         $client = self::createClient();
-        $client->request('POST', $url, [], [], ['HTTP_CONTENT_TYPE' => 'application/json'], json_encode($content));
+        $client->request(
+            'POST',
+            $url,
+            [],
+            [],
+            ['HTTP_CONTENT_TYPE' => 'application/json'],
+            json_encode($content, JSON_THROW_ON_ERROR)
+        );
 
         return $client;
     }
 
-    /**
-     * @param array $server
-     *
-     * @return Client
-     */
-    protected static function createClient(array $server = [])
+    protected static function createClient(array $server = []): Client
     {
         return new Client($server);
     }
 
-    /**
-     * @param Client $client
-     *
-     * @param int    $httpCode
-     *
-     * @return stdClass
-     */
-    protected static function checkAndProcessJsonResponse(Client $client, $httpCode = 200)
+    protected static function checkAndProcessJsonResponse(
+        Client $client,
+        int    $httpCode = 200
+    ): stdClass
     {
         /** @var Response $response */
         $response = $client->getResponse();
@@ -75,6 +70,11 @@ abstract class WebTestCase extends TestCase
         self::assertEquals($httpCode, $response->getStatus());
         self::assertEquals('application/json; charset=utf-8', $response->getHeader('Content-Type'));
 
-        return json_decode($response->getContent());
+        return json_decode(
+            $response->getContent(),
+            false,
+            512,
+            JSON_THROW_ON_ERROR
+        );
     }
 }

@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,76 +21,54 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Events;
 
-use InvalidArgumentException;
-use SP\Core\Exceptions\InvalidClassException;
+use Closure;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 
 /**
  * Class Event
- *
- * @package SP\Core\Events
  */
-final class Event
+readonly class Event
 {
     /**
-     * @var object
+     * @param object $source The emmiter of the event
+     * @param EventMessage|Closure|null $eventMessage An {@link EventMessage} or a {@link Closure} that returns an {@link EventMessage}
      */
-    private $source;
-    /**
-     * @var EventMessage
-     */
-    private $eventMessage;
-
-    /**
-     * Event constructor.
-     *
-     * @param object       $source
-     * @param EventMessage $eventMessage
-     *
-     * @throws InvalidArgumentException
-     */
-    public function __construct($source, EventMessage $eventMessage = null)
-    {
-        if (!is_object($source)) {
-            throw new InvalidArgumentException(__u('An object is needed'));
-        }
-
-        $this->source = $source;
-        $this->eventMessage = $eventMessage;
+    public function __construct(
+        private object                    $source,
+        private EventMessage|Closure|null $eventMessage = null
+    ) {
     }
 
     /**
-     * @param null $type
+     * @template T of object
      *
-     * @return mixed
+     * @param class-string<T>|null $type
+     * @return T&object
      * @throws InvalidClassException
      */
-    public function getSource($type = null)
+    public function getSource(?string $type = null): object
     {
-        if ($type !== null
-            && ($source = get_class($this->source)) !== $type
-            && !is_subclass_of($this->source, $type)
-        ) {
-            throw new InvalidClassException(
+        if ($type !== null && !is_a($this->source, $type)) {
+            throw InvalidClassException::error(
                 'Source type mismatch',
-                InvalidClassException::ERROR,
-                sprintf('Source: %s - Expected: %s', $source, $type)
+                sprintf('Source: %s - Expected: %s', get_class($this->source), $type)
             );
         }
 
         return $this->source;
     }
 
-    /**
-     * @return EventMessage|null
-     */
-    public function getEventMessage()
+    public function getEventMessage(): ?EventMessage
     {
+        if ($this->eventMessage instanceof Closure) {
+            return $this->eventMessage->call($this);
+        }
+
         return $this->eventMessage;
     }
-
 }

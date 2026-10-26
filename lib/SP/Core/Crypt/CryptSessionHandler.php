@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,110 +21,94 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Crypt;
 
-use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Key;
 use SessionHandler;
+use SessionHandlerInterface;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Exceptions\CryptException;
+
+use function SP\logger;
 
 /**
  * Class CryptSessionHandler
- *
- * @package SP\Core\Crypt
  */
-final class CryptSessionHandler extends SessionHandler
+final class CryptSessionHandler implements SessionHandlerInterface
 {
-    /**
-     * @var bool Indica si la sesión está encriptada
-     */
-    public static $isSecured = false;
-    /**
-     * @var Key
-     */
-    private $key;
+    public static bool $isSecured = false;
 
-    /**
-     * Session constructor.
-     *
-     * @param Key $Key
-     */
-    public function __construct(Key $Key)
-    {
-        $this->key = $Key;
+    public function __construct(
+        private readonly Key            $key,
+        private readonly CryptInterface $crypt,
+        private readonly SessionHandler $sessionHandler
+    ) {
     }
 
     /**
-     * Read session data
-     *
-     * @link  http://php.net/manual/en/sessionhandler.read.php
-     *
-     * @param string $id The session id to read data for.
-     *
-     * @return string <p>
-     *                           Returns an encoded string of the read data.
-     *                           If nothing was read, it must return an empty string.
-     *                           Note this value is returned internally to PHP for processing.
-     *                           </p>
-     * @since 5.4.0
+     * @inheritDoc
      */
-    public function read($id)
+    public function read(string $id): string
     {
-        $data = parent::read($id);
+        $data = $this->sessionHandler->read($id);
 
         if (!$data) {
             return '';
-        } else {
-            try {
-                self::$isSecured = true;
+        }
 
-                return Crypt::decrypt($data, $this->key);
-            } catch (CryptoException $e) {
-                self::$isSecured = false;
+        try {
+            self::$isSecured = true;
 
-                logger($e->getMessage());
-                logger('Session data not encrypted.');
+            return $this->crypt->decrypt($data, $this->key);
+        } catch (CryptException $e) {
+            self::$isSecured = false;
 
-                return $data;
-            }
+            logger($e->getMessage());
+            logger('Session data not encrypted.');
+
+            return $data;
         }
     }
 
     /**
-     * Write session data
-     *
-     * @link  http://php.net/manual/en/sessionhandler.write.php
-     *
-     * @param string $id           The session id.
-     * @param string $data         <p>
-     *                             The encoded session data. This data is the
-     *                             result of the PHP internally encoding
-     *                             the $_SESSION superglobal to a serialized
-     *                             string and passing it as this parameter.
-     *                             Please note sessions use an alternative serialization method.
-     *                             </p>
-     *
-     * @return bool <p>
-     *                             The return value (usually TRUE on success, FALSE on failure).
-     *                             Note this value is returned internally to PHP for processing.
-     *                             </p>
-     * @since 5.4.0
+     * @inheritDoc
      */
-    public function write($id, $data)
+    public function write(string $id, string $data): bool
     {
         try {
-            $data = Crypt::encrypt($data, $this->key);
+            $encryptedData = $this->crypt->encrypt($data, $this->key);
 
             self::$isSecured = true;
-        } catch (CryptoException $e) {
+        } catch (CryptException $e) {
             self::$isSecured = false;
 
             logger('Could not encrypt session data.');
             logger($e->getMessage());
         }
 
-        return parent::write($id, $data);
+        return $this->sessionHandler->write($id, $encryptedData ?? $data);
+    }
+
+    public function close(): bool
+    {
+        return $this->sessionHandler->close();
+    }
+
+    public function destroy(string $id): bool
+    {
+        return $this->sessionHandler->destroy($id);
+    }
+
+    public function gc(int $max_lifetime): int|false
+    {
+        return $this->sessionHandler->gc($max_lifetime);
+    }
+
+    public function open(string $path, string $name): bool
+    {
+        return $this->sessionHandler->open($path, $name);
     }
 }

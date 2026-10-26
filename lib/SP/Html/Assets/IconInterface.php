@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,47 +20,21 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\Assets;
 
-defined('APP_ROOT') || die();
-
 /**
  * Interface IconInterface
- *
- * @package SP\Html\Assets
  */
 interface IconInterface
 {
-    /**
-     * @param $title
-     */
-    public function setTitle($title);
+    public function getTitle(): ?string;
 
-    /**
-     * @return string
-     */
-    public function getTitle();
+    public function getClass(): ?string;
 
-    /**
-     * @param $class
-     */
-    public function setClass($class);
+    public function getIcon(): ?string;
 
-    /**
-     * @return string
-     */
-    public function getClass();
-
-    /**
-     * @return string
-     */
-    public function getIcon();
-
-    /**
-     * @param $icon
-     */
-    public function setIcon($icon);
+    public function mutate(?string $icon = null, ?string $class = null, ?string $title = null): IconInterface;
 }

@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,528 +21,201 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mvc\View;
 
-defined('APP_ROOT') || die();
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Exceptions\FileNotFoundException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\Http\Providers\Uri;
 
-use SP\Bootstrap;
-use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\UI\ThemeInterface;
-use SP\Http\Uri;
+use function SP\__u;
+use function SP\logger;
 
 /**
  * Class Template
  *
  * A very basic template engine...
  *
- * Idea original de http://www.sitepoint.com/author/agervasio/
- * publicada en http://www.sitepoint.com/flexible-view-manipulation-1/
+ * Original idea: http://www.sitepoint.com/author/agervasio/
+ * Published on: http://www.sitepoint.com/flexible-view-manipulation-1/
  *
  */
-final class Template
+final class Template implements TemplateInterface
 {
-    const TEMPLATE_EXTENSION = '.inc';
-    const PARTIALS_DIR = '_partials';
-    const LAYOUTS_DIR = '_layouts';
+    private const  PARTIALS_DIR = '_partials';
+    private const  LAYOUTS_DIR  = '_layouts';
+
+    private TemplateCollection $templates;
+    private TemplateCollection $contentTemplates;
+    private TemplateCollection $vars;
+    private bool               $upgraded = false;
+    private readonly string $baseUrl;
+
+    public function __construct(
+        private readonly OutputHandlerInterface    $outputHandler,
+        private readonly TemplateResolverInterface $templateResolver,
+        protected readonly ThemeIconsInterface     $themeIcons,
+        private readonly UriContextInterface       $uriContext,
+        private readonly ConfigDataInterface       $configData,
+        private readonly string                    $base
+    ) {
+        $this->vars = new TemplateCollection();
+        $this->templates = new TemplateCollection();
+        $this->contentTemplates = new TemplateCollection();
+        $this->baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
+                         $this->uriContext->getSubUri();
+    }
 
     /**
-     * @var ThemeInterface
+     * @inheritDoc
+     * @throws FileNotFoundException
      */
-    protected $theme;
-    /**
-     * @var array List of templates to load into the view
-     */
-    private $templates = [];
-    /**
-     * @var TemplateVarCollection Template's variables collection
-     */
-    private $vars;
-    /**
-     * @var string Base path for imcluding templates
-     */
-    private $base;
-    /**
-     * @var array
-     */
-    private $contentTemplates = [];
-    /**
-     * @var bool
-     */
-    private $upgraded = false;
-
-    /**
-     * @param ThemeInterface $theme
-     */
-    public function __construct(ThemeInterface $theme)
+    public function setLayout(string $name): void
     {
-        $this->theme = $theme;
-        $this->vars = new TemplateVarCollection();
+        $this->templates->set($name, $this->templateResolver->getTemplateFor(self::LAYOUTS_DIR, $name));
+    }
+
+    /**
+     * @inheritDoc
+     * @throws FileNotFoundException
+     */
+    public function addPartial(string $name): void
+    {
+        $this->templates->set($name, $this->templateResolver->getTemplateFor(self::PARTIALS_DIR, $name));
+    }
+
+    /**
+     * @inheritDoc
+     * @throws FileNotFoundException
+     */
+    public function addContentTemplate(string $name, ?string $base = null): void
+    {
+        $this->contentTemplates->set($name, $this->templateResolver->getTemplateFor($base ?? $this->base, $name));
+    }
+
+    /**
+     * Removes a template from the stack
+     */
+    public function remove(string $name): void
+    {
+        $this->templates->offsetUnset($name);
+        $this->contentTemplates->offsetUnset($name);
     }
 
     /**
      * Añadir una nueva plantilla al array de plantillas de la clase
      *
      * @param string $name Con el nombre del archivo de plantilla
-     * @param string $base Directorio base para la plantilla
-     *
-     * @return bool
-     */
-    public function addContentTemplate($name, $base = null)
-    {
-        try {
-            $template = $this->checkTemplate($name, $base);
-            $this->setContentTemplate($template, $name);
-        } catch (FileNotFoundException $e) {
-            return '';
-        }
-
-        return $template;
-    }
-
-    /**
-     * Comprobar si un archivo de plantilla existe y se puede leer
-     *
-     * @param string $template Con el nombre del archivo
-     * @param string $base     Directorio base para la plantilla
-     *
-     * @return string La ruta al archivo de la plantilla
+     * @param string|null $base Directorio base para la plantilla
      *
      * @throws FileNotFoundException
      */
-    private function checkTemplate($template, $base = null)
+    public function addTemplate(string $name, ?string $base = null): void
     {
-        $base = null !== $base ? $base : (null !== $this->base ? $this->base : null);
-
-        if ($base === null) {
-            $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
-        } elseif (strpos($base, APP_ROOT) === 0
-            && is_dir($base)
-        ) {
-            $templateFile = $base . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
-        } else {
-            $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $base . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
-        }
-
-        if (!is_readable($templateFile)) {
-            $msg = sprintf(__('Unable to retrieve "%s" template: %s'), $templateFile, $template);
-
-            logger($msg);
-
-            throw new FileNotFoundException($msg);
-        }
-
-        return $templateFile;
+        $this->templates->set($name, $this->templateResolver->getTemplateFor($base ?? $this->base, $name));
     }
 
     /**
-     * Añadir un nuevo archivo de plantilla al array de plantillas de contenido
-     *
-     * @param string $file Con el nombre del archivo
-     * @param string $name Nombre de la plantilla
-     */
-    private function setContentTemplate($file, $name)
-    {
-        $this->contentTemplates[$name] = $file;
-    }
-
-    /**
-     * Removes a template from the stack
-     *
-     * @param $name
-     *
-     * @return Template
-     */
-    public function removeTemplate($name)
-    {
-        unset($this->templates[$name]);
-
-        return $this;
-    }
-
-    /**
-     * Removes a template from the stack
-     *
-     * @param $name
-     *
-     * @return Template
-     */
-    public function removeContentTemplate($name)
-    {
-        unset($this->contentTemplates[$name]);
-
-        return $this;
-    }
-
-    /**
-     * Removes a template from the stack
-     *
-     * @param string $src Source template
-     * @param string $dst Destination template
-     * @param string $base
-     *
-     * @return mixed|string
-     */
-    public function replaceTemplate($src, $dst, $base)
-    {
-        try {
-            if (isset($this->contentTemplates[$dst])) {
-                $this->contentTemplates[$dst] = $this->checkTemplate($src, $base);
-            }
-        } catch (FileNotFoundException $e) {
-            return '';
-        }
-
-        return $this->contentTemplates[$dst];
-    }
-
-    /**
-     * Add partial template
-     *
-     * @param $partial
-     */
-    public function addPartial($partial)
-    {
-        $this->addTemplate($partial, self::PARTIALS_DIR);
-    }
-
-    /**
-     * Añadir una nueva plantilla al array de plantillas de la clase
-     *
-     * @param string $name Con el nombre del archivo de plantilla
-     * @param string $base Directorio base para la plantilla
-     *
-     * @return bool
-     */
-    public function addTemplate($name, $base = null)
-    {
-        try {
-            $template = $this->checkTemplate($name, $base);
-            $this->setTemplate($template, $name);
-        } catch (FileNotFoundException $e) {
-            return '';
-        }
-
-        return $template;
-    }
-
-    /**
-     * Añadir un nuevo archivo de plantilla al array de plantillas
-     *
-     * @param string $file Con el nombre del archivo
-     * @param string $name Nombre de la plantilla
-     */
-    private function setTemplate($file, $name)
-    {
-        $this->templates[$name] = $file;
-    }
-
-    /**
-     * Añadir una nueva plantilla dentro de una plantilla
-     *
-     * @param string $file Con el nombre del archivo de plantilla
-     *
-     * @return bool
-     */
-    public function includePartial($file)
-    {
-        return $this->includeTemplate($file, self::PARTIALS_DIR);
-    }
-
-    /**
-     * Añadir una nueva plantilla dentro de una plantilla
-     *
-     * @param string $file Con el nombre del archivo de plantilla
-     * @param string $base Directorio base para la plantilla
-     *
-     * @return bool
-     */
-    public function includeTemplate($file, $base = null)
-    {
-        try {
-            return $this->checkTemplate($file, $base);
-        } catch (FileNotFoundException $e) {
-            return false;
-        }
-    }
-
-    /**
-     * Overloading para controlar la devolución de atributos dinámicos.
-     *
-     * @param string $name Nombre del atributo
-     *
-     * @return null
-     */
-    public function __get($name)
-    {
-        return $this->get($name);
-    }
-
-    /**
-     * Overloading para añadir nuevas variables en al array de variables dela plantilla
-     * pasadas como atributos dinámicos de la clase
-     *
-     * @param string $name  Nombre del atributo
-     * @param string $value Valor del atributo
-     */
-    public function __set($name, $value)
-    {
-        $this->vars->set($name, $value);
-    }
-
-    /**
-     * Returns a variable value
-     *
-     * @param $name
-     *
-     * @return mixed
-     */
-    public function get($name)
-    {
-        if (!$this->vars->exists($name)) {
-            logger(sprintf(__('Unable to retrieve "%s" variable'), $name), 'ERROR');
-
-            return null;
-//            throw new InvalidArgumentException(sprintf(__('Unable to retrieve "%s" variable'), $name));
-        }
-
-        return $this->vars->get($name);
-    }
-
-    /**
-     * Overloading para comprobar si el atributo solicitado está declarado como variable
-     * en el array de variables de la plantilla.
-     *
-     * @param string $name Nombre del atributo
-     *
-     * @return bool
-     */
-    public function __isset($name)
-    {
-        return $this->vars->exists($name);
-    }
-
-    /**
-     * Overloading para eliminar una variable del array de variables de la plantilla pasado como
-     * atributo dinámico de la clase
-     *
-     * @param string $name Nombre del atributo
-     *
-     * @return $this
-     */
-    public function __unset($name)
-    {
-        if (!$this->vars->exists($name)) {
-            logger(sprintf(__('Unable to unset "%s" variable'), $name));
-
-//            throw new InvalidArgumentException(sprintf(__('Unable to unset "%s" variable'), $name));
-            return $this;
-        }
-
-        $this->vars->remove($name);
-
-        return $this;
-    }
-
-    /**
-     * Mostrar la plantilla solicitada.
-     * La salida se almacena en buffer y se devuelve el contenido
-     *
-     * @return string Con el contenido del buffer de salida
+     * @inheritDoc
      * @throws FileNotFoundException
      */
-    public function render()
+    public function includePartial(string $name): string
     {
-        if (empty($this->templates)) {
-            throw new FileNotFoundException(__('Template does not contain files'));
-        }
-
-        $icons = $this->theme->getIcons();
-        $configData = $this->vars->get('configData');
-        $sk = $this->vars->get('sk');
-
-        // An anonymous proxy function for handling views variables
-        $_getvar = function ($key, $default = null) {
-            if (DEBUG && !$this->vars->exists($key)) {
-                logger(sprintf(__('Unable to retrieve "%s" variable'), $key), 'WARN');
-
-                return $default;
-            }
-
-            return $this->vars->get($key, $default);
-        };
-
-        $_getRoute = function ($path) use ($sk, $configData) {
-            $baseUrl = ($configData->getApplicationUrl() ?: Bootstrap::$WEBURI) . Bootstrap::$SUBURI;
-
-            $uri = new Uri($baseUrl);
-            $uri->addParam('r', $path);
-            $uri->addParam('sk', $sk);
-
-            return $uri->getUri();
-        };
-
-        ob_start();
-
-        // Añadimos las plantillas
-        foreach ($this->templates as $template) {
-            include_once $template;
-        }
-
-        return ob_get_clean();
+        return $this->templateResolver->getTemplateFor(self::PARTIALS_DIR, $name);
     }
 
     /**
-     * Anexar el valor de la variable al array de la misma en el array de variables
-     *
-     * @param      $name  string nombre de la variable
-     * @param      $value mixed valor de la variable
-     * @param      $index string índice del array
-     * @param null $scope string ámbito de la variable
+     * @inheritDoc
+     * @throws FileNotFoundException
      */
-    public function append($name, $value, $scope = null, $index = null)
+    public function includeTemplate(string $name, ?string $base = null): string
     {
-        if (null !== $scope) {
-            $name = $scope . '_' . $name;
+        return $this->templateResolver->getTemplateFor($base ?? $this->base, $name);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function render(): string
+    {
+        if ($this->templates->count() === 0) {
+            logger(__u('Template does not contain files'));
+
+            return '';
         }
 
+        $this->vars->set('configData', $this->configData);
+        $this->vars->set('upgraded', $this->upgraded);
+
+        return $this->outputHandler->bufferedContent($this->includeTemplates(...));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function append(string $name, mixed $value): void
+    {
         $var = $this->vars->get($name, []);
 
-        if (null === $index) {
-            $var[] = $value;
-        } else {
-            $var[$index] = $value;
-        }
+        $var[] = $value;
 
         $this->vars->set($name, $var);
     }
 
     /**
-     * Reset de las plantillas añadidas
+     * @inheritDoc
      */
-    public function resetTemplates()
+    public function reset(): void
     {
-        $this->templates = [];
-
-        return $this;
+        $this->templates->exchangeArray([]);
+        $this->contentTemplates->exchangeArray([]);
     }
 
     /**
-     * Reset de las plantillas añadidas
+     * TODO: remove
      */
-    public function resetContentTemplates()
-    {
-        $this->contentTemplates = [];
-
-        return $this;
-    }
-
-    /**
-     * Reset de las plantillas añadidas
-     */
-    public function resetVariables()
-    {
-        $this->vars = [];
-    }
-
-    /**
-     * @return string
-     */
-    public function getBase()
+    public function getBase(): string
     {
         return $this->base;
     }
 
-    /**
-     * @param string $base
-     */
-    public function setBase($base)
+    public function getContentTemplates(): array
     {
-        $this->base = $base;
-    }
-
-    /**
-     * @return ThemeInterface
-     */
-    public function getTheme()
-    {
-        return $this->theme;
-    }
-
-    /**
-     * Dumps current stored vars
-     */
-    public function dumpVars()
-    {
-        logger($this->vars);
-    }
-
-    /**
-     * @return array
-     */
-    public function getContentTemplates()
-    {
-        return $this->contentTemplates;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hashContentTemplates()
-    {
-        return count($this->contentTemplates) > 0;
-    }
-
-    /**
-     * @return array
-     */
-    public function getTemplates()
-    {
-        return $this->templates;
+        return $this->contentTemplates->getArrayCopy();
     }
 
     /**
      * Assigns the current templates to contentTemplates
-     *
-     * @return $this
      */
-    public function upgrade()
+    public function upgrade(): void
     {
-        if (count($this->templates) > 0) {
-            $this->contentTemplates = $this->templates;
-
-            $this->templates = [];
-
-            $this->upgraded = true;
+        if (!$this->upgraded && $this->templates->count() > 0) {
+            $this->contentTemplates->exchangeArray($this->templates->getArrayCopy());
+            $this->templates->exchangeArray([]);
         }
 
-        return $this;
+        $this->upgraded = true;
     }
 
     /**
-     * Crear la variable y asignarle un valor en el array de variables
-     *
-     * @param      $name  string nombre de la variable
-     * @param      $value mixed valor de la variable
-     * @param null $scope string ámbito de la variable
+     * @inheritDoc
      */
-    public function assign($name, $value = '', $scope = null)
+    public function assign(string $name, mixed $value): void
     {
-        if (null !== $scope) {
-            $name = $scope . '_' . $name;
-        }
-
         $this->vars->set($name, $value);
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
-    public function isUpgraded()
+    public function assignWithScope(string $name, mixed $value, string $scope): void
     {
-        return $this->upgraded;
+        $this->vars->set(sprintf('%s_%s', $scope, $name), $value);
     }
 
     /**
@@ -558,4 +233,28 @@ final class Template
         $this->vars = clone $this->vars;
     }
 
+    /**
+     * @throws SPException
+     */
+    protected function includeTemplates(): void
+    {
+        // These variables will be included in the same scope as included files
+        $icons = $this->themeIcons;
+        $_getvar = $this->vars->get(...);
+        $_getRoute = $this->getRoute(...);
+        $configData = clone $this->configData;
+
+        foreach ($this->templates as $template) {
+            $result = (include $template);
+
+            if ($result === false) {
+                throw SPException::error('Cannot render template file: ' . $template);
+            }
+        }
+    }
+
+    protected function getRoute(string $path): string
+    {
+        return (new Uri($this->baseUrl))->addParam('r', $path)->getUri();
+    }
 }
