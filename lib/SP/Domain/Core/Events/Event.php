@@ -24,7 +24,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Events;
+namespace SP\Domain\Core\Events;
 
 use Closure;
 use SP\Domain\Core\Exceptions\InvalidClassException;

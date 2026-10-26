@@ -24,19 +24,16 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Events;
+namespace SP\Domain\Core\Events;
 
-use SP\Core\Messages\HtmlFormatter;
-use SP\Core\Messages\TextFormatter;
 use SP\Domain\Core\Messages\FormatterInterface;
-use SP\Domain\Core\Messages\MessageInterface;
 
 /**
  * Class EventMessage
  *
  * @template T
  */
-class EventMessage implements MessageInterface
+class EventMessage
 {
     /**
      * @var array Detalles de la acción en formato "detalle : descripción"
@@ -99,26 +96,6 @@ class EventMessage implements MessageInterface
     }
 
     /**
-     * Componer un mensaje en formato texto
-     */
-    public function composeText(string $delimiter = PHP_EOL): string
-    {
-        if ($this->descriptionCounter === 0 && $this->detailsCounter === 0) {
-            return '';
-        }
-
-        $formatter = new TextFormatter($delimiter);
-
-        return implode(
-            $delimiter,
-            array_filter([
-                             $this->getDescription($formatter, true),
-                             $this->getDetails($formatter, true)
-                         ])
-        );
-    }
-
-    /**
      * Devuelve la descripción de la acción realizada
      */
     public function getDescription(
@@ -144,21 +121,6 @@ class EventMessage implements MessageInterface
         }
 
         return $formatter->formatDetail($this->details, $translate);
-    }
-
-    /**
-     * Componer un mensaje en formato HTML
-     */
-    public function composeHtml(): string
-    {
-        $formatter = new HtmlFormatter();
-
-        $message = '<div class="event-message">';
-        $message .= '<div class="event-description">' . $this->getDescription($formatter, true) . '</div>';
-        $message .= '<div class="event-details">' . $this->getDetails($formatter, true) . '</div>';
-        $message .= '</div>';
-
-        return $message;
     }
 
     public function getDescriptionCounter(): int

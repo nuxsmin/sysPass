@@ -26,7 +26,7 @@ namespace SP\Modules\Api\Controllers\Tag;
 
 
 use Exception;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;

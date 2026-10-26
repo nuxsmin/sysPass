@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\PublicLink;
 
 use Exception;
 use JsonException;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Account\PublickLinkType;
 use SP\Domain\Common\Providers\Password;

@@ -28,7 +28,7 @@ namespace SP\Tests\Core\Events;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Tests\UnitaryTestCase;

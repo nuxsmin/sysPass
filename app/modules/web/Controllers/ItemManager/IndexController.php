@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\ItemManager;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;

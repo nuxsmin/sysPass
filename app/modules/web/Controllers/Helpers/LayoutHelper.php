@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Core\Language;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Core\Acl\AclActionsInterface;

@@ -25,9 +25,9 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Providers\Ldap;
 
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LdapService;

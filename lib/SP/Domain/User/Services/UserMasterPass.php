@@ -29,7 +29,7 @@ namespace SP\Domain\User\Services;
 use Exception;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;

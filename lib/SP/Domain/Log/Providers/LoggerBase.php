@@ -29,12 +29,13 @@ namespace SP\Domain\Log\Providers;
 use Exception;
 use Psr\Log\LoggerInterface;
 use SP\Core\Application;
-use SP\Core\Events\Event;
 use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Http\Ports\RequestService;
 
 use function SP\__;
@@ -53,7 +54,8 @@ abstract class LoggerBase extends Provider implements EventReceiver
         Application                          $application,
         protected readonly LoggerInterface $logger,
         protected readonly LanguageInterface $language,
-        protected readonly RequestService  $request
+        protected readonly RequestService  $request,
+        private readonly EventMessageFormatterInterface $messageFormatter
     ) {
         parent::__construct($application);
 
@@ -99,7 +101,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
             $this->logger->debug(
                 $eventType,
                 $this->formatContext(
-                    $eventMessage->composeText(' | '),
+                    $this->messageFormatter->composeText($eventMessage, ' | '),
                     $this->request->getClientAddress(true),
                     $userLogin
                 )

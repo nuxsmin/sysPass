@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Track;
 
 use Exception;
 use JsonException;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Exceptions\SPException;

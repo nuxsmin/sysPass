@@ -28,12 +28,13 @@ namespace SP\Domain\Log\Providers;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Events\Event;
 use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Security\Models\Eventlog;
 use SP\Domain\Security\Ports\EventlogService;
 use Throwable;
@@ -50,9 +51,10 @@ final class DatabaseHandler extends Provider implements EventReceiver
     private readonly string $events;
 
     public function __construct(
-        Application                        $application,
-        private readonly EventlogService   $eventlogService,
-        private readonly LanguageInterface $language
+        Application                                 $application,
+        private readonly EventlogService            $eventlogService,
+        private readonly LanguageInterface          $language,
+        private readonly EventMessageFormatterInterface $messageFormatter
     ) {
         parent::__construct($application);
 
@@ -90,7 +92,11 @@ final class DatabaseHandler extends Provider implements EventReceiver
             $properties['level'] = 'ERROR';
             $properties['description'] = (string)$source;
         } else {
-            $properties['description'] = $event->getEventMessage()?->composeText();
+            $eventMessage = $event->getEventMessage();
+
+            $properties['description'] = $eventMessage !== null
+                ? $this->messageFormatter->composeText($eventMessage)
+                : null;
         }
 
         try {

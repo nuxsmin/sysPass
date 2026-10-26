@@ -25,8 +25,8 @@
 namespace SP\Modules\Web\Controllers\AccountFile;
 
 use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Models\File;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountService;

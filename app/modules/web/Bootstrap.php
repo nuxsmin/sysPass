@@ -34,7 +34,7 @@ use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;

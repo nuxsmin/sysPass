@@ -28,7 +28,7 @@ namespace SP\Tests\Domain\Plugin\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;

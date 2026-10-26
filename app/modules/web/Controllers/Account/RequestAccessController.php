@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Common\Attributes\Action;

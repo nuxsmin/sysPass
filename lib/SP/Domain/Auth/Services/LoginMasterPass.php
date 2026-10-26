@@ -27,8 +27,8 @@ declare(strict_types=1);
 namespace SP\Domain\Auth\Services;
 
 use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LoginMasterPassService;
 use SP\Domain\Common\Services\Service;

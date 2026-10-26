@@ -28,11 +28,12 @@ namespace SP\Domain\Notification\Services;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Events\Event;
 use SP\Domain\Common\Attributes\EventReceiver as EventReceiverAttribute;
 use SP\Domain\Common\Services\EventReceiver as EventReceiverTrait;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventReceiver;
+use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Notification\Models\Notification;
 use SP\Domain\Notification\Ports\NotificationService;
 
@@ -49,8 +50,9 @@ final class NotificationEvent extends Service implements EventReceiver
     use EventReceiverTrait;
 
     public function __construct(
-        Application $application,
-        private readonly NotificationService $notificationService
+        Application                                    $application,
+        private readonly NotificationService           $notificationService,
+        private readonly EventMessageFormatterInterface $messageFormatter
     ) {
         parent::__construct($application);
 
@@ -81,7 +83,12 @@ final class NotificationEvent extends Service implements EventReceiver
     private function requestAccountNotification(Event $event): void
     {
         $eventMessage = $event->getEventMessage();
-        $userIds = $eventMessage?->getExtra('userId') ?? [];
+
+        if ($eventMessage === null) {
+            return;
+        }
+
+        $userIds = $eventMessage->getExtra('userId') ?? [];
 
         foreach ($userIds as $userId) {
             $notification = new Notification(
@@ -89,7 +96,7 @@ final class NotificationEvent extends Service implements EventReceiver
                     'type' => __('Request'),
                     'component' => __('Accounts'),
                     'userId' => $userId,
-                    'description' => $eventMessage->composeHtml()
+                    'description' => $this->messageFormatter->composeHtml($eventMessage)
                 ]
             );
 
@@ -115,8 +122,13 @@ final class NotificationEvent extends Service implements EventReceiver
     private function showAccountLinkNotification(Event $event): void
     {
         $eventMessage = $event->getEventMessage();
-        $notify = $eventMessage?->getExtra('notify')[0] ?? null;
-        $userId = $eventMessage?->getExtra('userId')[0] ?? null;
+
+        if ($eventMessage === null) {
+            return;
+        }
+
+        $notify = $eventMessage->getExtra('notify')[0] ?? null;
+        $userId = $eventMessage->getExtra('userId')[0] ?? null;
 
         if ($notify === true && $userId) {
             $notification = new Notification(
@@ -124,7 +136,7 @@ final class NotificationEvent extends Service implements EventReceiver
                     'type' => __('Notification'),
                     'component' => __('Accounts'),
                     'userId' => $userId,
-                    'description' => $eventMessage->composeHtml()
+                    'description' => $this->messageFormatter->composeHtml($eventMessage)
                 ]
             );
 

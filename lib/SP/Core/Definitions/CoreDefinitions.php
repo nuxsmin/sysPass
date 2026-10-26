@@ -51,6 +51,7 @@ use SP\Core\Crypt\RequestBasedPassword;
 use SP\Core\Crypt\UuidCookie;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Language;
+use SP\Core\Messages\EventMessageFormatter;
 use SP\Core\MimeTypes;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\ProvidersHelper;
@@ -90,6 +91,7 @@ use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Core\UI\ThemeContextInterface;
@@ -164,6 +166,7 @@ final class CoreDefinitions
             UriContextInterface::class => autowire(UriContext::class),
             Context::class => create(Stateless::class),
             EventDispatcherInterface::class => create(EventDispatcher::class),
+            EventMessageFormatterInterface::class => create(EventMessageFormatter::class),
             ConfigFileService::class => create(ConfigFile::class)
                 ->constructor(
                     create(XmlFileStorage::class)

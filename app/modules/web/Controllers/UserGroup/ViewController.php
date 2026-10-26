@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\UserGroup;
 
 use Exception;
 use JsonException;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;

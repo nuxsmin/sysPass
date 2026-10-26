@@ -30,8 +30,9 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Core\Messages\EventMessageFormatter;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\Ports\RequestService;
@@ -80,7 +81,7 @@ class LogHandlerTest extends UnitaryTestCase
             ->with(
                 'test.event',
                 self::callback(function (array $event) use ($eventMessage, $ipv4) {
-                    return $event['message'] === $eventMessage->composeText(' | ')
+                    return $event['message'] === (new EventMessageFormatter())->composeText($eventMessage, ' | ')
                            && $event['address'] === $ipv4
                            && $event['user'] === $this->context->getUserData()->login
                            && !empty($event['caller']);
@@ -182,7 +183,7 @@ class LogHandlerTest extends UnitaryTestCase
     {
         $this->config->getConfigData()->setLogEvents(['test.event_a', 'test.event_b']);
 
-        $logHandler = new LogHandler($this->application, $this->logger, $this->language, $this->request);
+        $logHandler = new LogHandler($this->application, $this->logger, $this->language, $this->request, new EventMessageFormatter());
 
         $out = $logHandler->getEvents();
 
@@ -199,6 +200,6 @@ class LogHandlerTest extends UnitaryTestCase
         $this->language = $this->createMock(LanguageInterface::class);
         $this->request = $this->createMock(RequestService::class);
 
-        $this->logHandler = new LogHandler($this->application, $this->logger, $this->language, $this->request);
+        $this->logHandler = new LogHandler($this->application, $this->logger, $this->language, $this->request, new EventMessageFormatter());
     }
 }

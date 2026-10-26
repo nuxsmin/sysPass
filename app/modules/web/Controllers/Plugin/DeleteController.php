@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers\Plugin;
 use Exception;
 use JsonException;
 use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Plugin\Ports\PluginManagerService;

@@ -29,10 +29,11 @@ namespace SP\Tests\Domain\Log\Providers;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Core\Messages\EventMessageFormatter;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
@@ -67,7 +68,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
 
         $this->configData->setLogEvents([]);
 
-        $databaseHandler = new DatabaseHandler($this->application, $this->eventLogService, $this->language);
+        $databaseHandler = new DatabaseHandler($this->application, $this->eventLogService, $this->language, new EventMessageFormatter());
         $out = $databaseHandler->getEvents();
 
         $this->assertEquals($expected, $out);
@@ -90,7 +91,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
             ->method('create')
             ->with(
                 self::callback(static function (Eventlog $eventlog) use ($eventMessage) {
-                    return $eventlog->getDescription() === $eventMessage->composeText()
+                    return $eventlog->getDescription() === (new EventMessageFormatter())->composeText($eventMessage)
                            && $eventlog->getAction() === 'test_a.update'
                            && $eventlog->getLevel() == 'INFO';
                 })
@@ -202,6 +203,6 @@ class DatabaseHandlerTest extends UnitaryTestCase
         $this->eventLogService = $this->createMock(EventlogService::class);
         $this->language = $this->createMock(LanguageInterface::class);
 
-        $this->databaseHandler = new DatabaseHandler($this->application, $this->eventLogService, $this->language);
+        $this->databaseHandler = new DatabaseHandler($this->application, $this->eventLogService, $this->language, new EventMessageFormatter());
     }
 }

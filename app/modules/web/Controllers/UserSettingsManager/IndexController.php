@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\UserSettingsManager;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Core\Language;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;

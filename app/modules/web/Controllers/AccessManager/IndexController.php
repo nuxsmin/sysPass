@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\AccessManager;
 
 use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Services\AuthException;

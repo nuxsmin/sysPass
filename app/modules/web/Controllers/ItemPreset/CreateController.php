@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\ItemPreset;
 
 use Exception;
 use JsonException;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Http\Dtos\JsonMessage;

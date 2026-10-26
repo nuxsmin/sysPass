@@ -25,8 +25,8 @@
 namespace SP\Modules\Api\Controllers\Account;
 
 use Exception;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountRequest;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;

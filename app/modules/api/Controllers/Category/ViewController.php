@@ -26,8 +26,8 @@ namespace SP\Modules\Api\Controllers\Category;
 
 use Exception;
 use League\Fractal\Resource\Item;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Util\Util;

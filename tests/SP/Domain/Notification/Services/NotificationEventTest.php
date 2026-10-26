@@ -29,8 +29,9 @@ namespace SP\Tests\Domain\Notification\Services;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Core\Messages\EventMessageFormatter;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Notification\Models\Notification;
 use SP\Domain\Notification\Ports\NotificationService;
 use SP\Domain\Notification\Services\NotificationEvent;
@@ -215,6 +216,6 @@ class NotificationEventTest extends UnitaryTestCase
         parent::setUp();
 
         $this->notificationService = $this->createMock(NotificationService::class);
-        $this->notificationEvent = new NotificationEvent($this->application, $this->notificationService);
+        $this->notificationEvent = new NotificationEvent($this->application, $this->notificationService, new EventMessageFormatter());
     }
 }

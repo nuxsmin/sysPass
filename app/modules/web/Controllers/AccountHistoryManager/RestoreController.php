@@ -25,8 +25,8 @@
 namespace SP\Modules\Web\Controllers\AccountHistoryManager;
 
 use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Auth\Services\AuthException;

@@ -27,8 +27,8 @@ final class LayerDependencyTest extends TestCase
      * @var array<string, int>
      */
     private const MAX_ALLOWED = [
-        LayerRules::DOMAIN_ONLY => 213,
-        LayerRules::INFRASTRUCTURE_ONLY => 6,
+        LayerRules::DOMAIN_ONLY => 144,
+        LayerRules::INFRASTRUCTURE_ONLY => 2,
         LayerRules::MODULES_INFRASTRUCTURE => 22,
         LayerRules::MODULES_CONCRETE_SERVICES => 38,
         LayerRules::LIB_MODULES => 2,

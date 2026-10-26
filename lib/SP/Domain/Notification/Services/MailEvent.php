@@ -28,13 +28,14 @@ namespace SP\Domain\Notification\Services;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Events\Event;
 use SP\Core\Messages\MailMessage;
 use SP\Core\Messages\TextFormatter;
 use SP\Domain\Common\Attributes\EventReceiver as EventReceiverAttribute;
 use SP\Domain\Common\Services\EventReceiver as EventReceiverTrait;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventReceiver;
+use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Notification\Ports\MailService;
 
@@ -67,9 +68,10 @@ final class MailEvent extends Service implements EventReceiver
     ];
 
     public function __construct(
-        Application                  $application,
-        private readonly MailService $mailService,
-        private readonly RequestService $request
+        Application                                    $application,
+        private readonly MailService                   $mailService,
+        private readonly RequestService                $request,
+        private readonly EventMessageFormatterInterface $messageFormatter
     ) {
         parent::__construct($application);
 
@@ -115,7 +117,7 @@ final class MailEvent extends Service implements EventReceiver
                 ) {
                     $mailMessage->addDescription(sprintf(__('Event: %s'), $eventType));
                 } else {
-                    $mailMessage->addDescription($eventMessage->composeText('<br>'));
+                    $mailMessage->addDescription($this->messageFormatter->composeText($eventMessage, '<br>'));
                 }
 
                 $mailMessage->addDescriptionLine();

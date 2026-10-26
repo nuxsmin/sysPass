@@ -28,8 +28,8 @@ namespace SP\Domain\Account\Services;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Ports\AccountCryptService;

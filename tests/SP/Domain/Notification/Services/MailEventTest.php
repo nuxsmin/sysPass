@@ -29,11 +29,12 @@ namespace SP\Tests\Domain\Notification\Services;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Core\Messages\EventMessageFormatter;
 use SP\Core\Messages\MailMessage;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\Notification\Services\MailEvent;
@@ -240,7 +241,7 @@ class MailEventTest extends UnitaryTestCase
 
         $this->configData->setMailEvents([]);
 
-        $databaseHandler = new MailEvent($this->application, $this->mailService, $this->requestService);
+        $databaseHandler = new MailEvent($this->application, $this->mailService, $this->requestService, new EventMessageFormatter());
         $out = $databaseHandler->getEvents();
 
         $this->assertEquals($expected, $out);
@@ -264,6 +265,6 @@ class MailEventTest extends UnitaryTestCase
         $this->mailService = $this->createMock(MailService::class);
         $this->requestService = $this->createMock(RequestService::class);
 
-        $this->mailEvent = new MailEvent($this->application, $this->mailService, $this->requestService);
+        $this->mailEvent = new MailEvent($this->application, $this->mailService, $this->requestService, new EventMessageFormatter());
     }
 }

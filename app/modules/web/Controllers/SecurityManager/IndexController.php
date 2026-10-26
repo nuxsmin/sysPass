@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\SecurityManager;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;

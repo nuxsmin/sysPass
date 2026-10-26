@@ -28,8 +28,8 @@ namespace SP\Domain\Upgrade\Services;
 
 use Exception;
 use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\UpgradeVersion;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
