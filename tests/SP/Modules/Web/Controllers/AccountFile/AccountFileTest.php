@@ -278,7 +278,7 @@ class AccountFileTest extends IntegrationTestCase
         $crawler = new Crawler($output);
         $filter = $crawler->filterXPath('//img|//div[@class="title"]')->count();
 
-        self::assertEquals(2, $filter);
+        self::assertEquals(2, $filter, substr($output, 0, 2000));
     }
 
     /**
