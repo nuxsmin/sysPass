@@ -54,13 +54,17 @@ jobs:
             --prefer-dist
 
       - name: Unitary tests
-        uses: paambaati/codeclimate-action@v5
         env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           XDEBUG_MODE: coverage
+        run: ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary --testsuite core
+
+      - name: Upload unit coverage
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary --testsuite core
-          coverageLocations: ./tests/_output/coverage-clover.xml:clover
+          name: coverage-unitary
+          path: ./tests/_output/coverage-clover.xml
+          if-no-files-found: ignore
 
   integration:
     name: Build & Test (IT) ${{ matrix.php }}/${{ matrix.platform }}
@@ -134,10 +138,14 @@ jobs:
         run: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite modules --group integration --no-coverage
 
       - name: Integration tests
-        uses: paambaati/codeclimate-action@v4
         env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           XDEBUG_MODE: coverage
+        run: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite core
+
+      - name: Upload integration coverage
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite core
-          coverageLocations: ./tests/_output/coverage-clover.xml:clover
+          name: coverage-integration-${{ matrix.php }}
+          path: ./tests/_output/coverage-clover.xml
+          if-no-files-found: ignore
