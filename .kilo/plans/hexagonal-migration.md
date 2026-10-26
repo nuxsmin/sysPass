@@ -39,6 +39,13 @@ Goal: `lib/` holds the core logic (Domain + Application + Infrastructure adapter
 4. `lib/` never references `SP\Modules\` (exception: string-based controller resolution in `BootstrapBase`, documented).
 5. No new `Application` injections anywhere (the service locator is being removed).
 6. Domain code never produces user-facing translated text or calls `processException()`; it throws domain exceptions with stable codes/messages (see decision D1).
+7. New or moved code must not introduce constructs deprecated in PHP 8.4/8.5: use explicit `?Type` instead of `Type $x = null`, `SplObjectStorage::offsetSet/offsetExists/offsetUnset` instead of `attach/contains/detach`, and no new `__wakeup()` without `__serialize()/__unserialize()`. This avoids new work for the PHP 8.5 plan (see 1.3).
+8. Serialized classes (`ProfileData`, `UserPreferences`, and any class stored via `serialize()`) must not change fully qualified name without a compatibility path (`class_alias` or an unserialize migration), because stored payloads embed the class name.
+
+### 1.3 Related plans and constraints
+
+- **PHP 8.5 upgrade:** `.kilo/plans/1792956623469-php-8-5-upgrade-assessment.md`. Its decision D3 says its code-change phases start after this plan lands. This plan owns the baseline (P0-1) and the `modules` CI job (P0-2). The PHP 8.5 plan reuses both and only changes the PHP matrix and platform flags. Its Phase 1 deprecation scan must be re-run after P1-1, P1-2, P1-4 and P2-1, because those move the files it edits.
+- **Runtime baseline:** all verification in this plan runs on PHP 8.2 until the PHP 8.5 plan changes the supported range to 8.3–8.5. Code written here must stay valid on 8.2 through 8.5.
 
 ---
 
@@ -124,11 +131,13 @@ Phases are ordered so the guardrails come first, then inward dependency fixes, t
   - Acceptance: one command prints the full table.
 - [x] **P0-6 Test hygiene.** Add `#[Group]` to the 11 untagged test files. Ensure every IT test has `#[Group('integration')]` and every unit test has `#[Group('unitary')]`.
   - Acceptance: M16 = 0.
+- [ ] **P0-7 Make PHPStan runnable.** `composer phpstan-app` fails with `Undefined constant "APP_PATH"` because `BaseFunctions.php` is loaded before `APP_PATH` is defined. Add a PHPStan bootstrap file that defines the constants, or fix the load order. Record the level 6 baseline.
+  - Acceptance: `composer phpstan-app` runs and its baseline is recorded in section 9. This unblocks the slice verification step in section 6.
 
 ### Phase 1: Remove outer-layer types from the Domain (mechanical, no behaviour change)
 
 - [ ] **P1-1 Move Infrastructure exceptions to Domain (D7).** `NoSuchItemException`, `DuplicatedItemException` (`Infrastructure/Common/Repositories`), `FileException` (`Infrastructure/File`), `DatabaseException` (`Infrastructure/Database`). All extend `SP\Domain\Core\Exceptions\SPException` already. Move to `SP\Domain\Core\Exceptions\` (or `Domain\Common\Exceptions\`). Update ~150 imports across Domain, modules, and tests.
-  - Acceptance: no `use SP\Infrastructure\...Exception` in `lib/SP/Domain` or `app/modules`. Full test run green.
+  - Acceptance: no `use SP\Infrastructure\...Exception` in `lib/SP/Domain` or `app/modules`. Full test run green. Applies to any later move of serialized classes too (rule 8): unserialize a stored `ProfileData` and `UserPreferences` payload created before the move.
   - Targets: M7 drops by 48 import lines (36 + 9 + 3). M1 drops for every Domain file whose only outer import is one of these exceptions.
 - [ ] **P1-2 Move `QueryResult` to Domain and remove its translation call.** Move `SP\Infrastructure\Database\QueryResult` to `SP\Domain\Database\Dtos\QueryResult` (depends only on `Domain\Common\Models\Model`). Replace `__u()` in its constructor with a domain exception message. Update the `Infrastructure\Database\QueryData` that builds it.
   - Acceptance: M6 drops to 0 (ports no longer import Infrastructure types). M14 drops for files that only import `QueryResult`.
@@ -250,16 +259,20 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 
 ## 7. Recommended order of execution (first 10 tasks)
 
-1. P0-1 Verified baseline (blocking; needs a PHP environment).
-2. P0-2 Run the modules suite in CI.
-3. P0-3 Architecture test with a shrinking allowlist.
-4. P0-4 Container wiring test.
-5. P1-1 Move Infrastructure exceptions to Domain (mechanical, large, low risk).
-6. P1-2 Move `QueryResult` to Domain.
-7. P2-1 Replace `Application` in `Service` base.
-8. P6-W1 Pilot slice `Tag` (characterisation IT → use case → controller → unit tests), which also validates D1 (P4-2) on a small context.
-9. P1-3 Move `Hash` (after characterisation tests; security review).
-10. P3-1 Port the first batch of concrete services used by `Tag`, `ItemPreset`, `CustomField`.
+Done: P0-1, P0-3, P0-4, P0-5, P0-6. In progress: P0-2. Remaining order:
+
+1. P0-2 Run the modules suite in CI (finish; first green run).
+2. P0-7 Make PHPStan runnable.
+3. P1-1 Move Infrastructure exceptions to Domain (mechanical, large, low risk).
+4. P1-2 Move `QueryResult` to Domain.
+5. P1-4 Move events and messages into the Domain.
+6. P2-1 Replace `Application` in `Service` base.
+7. P1-3 Move `Hash` (after characterisation tests; security review).
+8. P3-1 Port the concrete services used by `Tag` (first batch), then `ItemPreset` and `CustomField`.
+9. P4-2 Translation policy for `Tag` only (needs D1).
+10. P6-W1 Pilot slice `Tag` (characterisation IT → use case → controller → unit tests). It depends on P1-2, P2-1, P3-1 and P4-2 for `Tag`, so it comes after them.
+
+After step 6, the PHP 8.5 plan's code-change phases can start (see 1.3).
 
 ---
 
@@ -273,6 +286,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | Translation policy change alters user-visible text | UX regressions and translation breakage | Snapshot tests of messages per context; keep message keys identical to existing `__u()` strings |
 | Large mechanical edits (P1-1 ~150 imports, P2-1 74 files) are hard to review | Hidden errors | Scripted rewrites with a diff review; run full unit and IT suites after each step |
 | Web controller IT tests were not running in CI | Silent regressions in the work done on this branch since Aug 2024 | P0-2 is blocking for the slice work |
+| Namespace moves break `unserialize()` of stored `ProfileData`/`UserPreferences` payloads | Users lose profile/preference data | Rule 8: `class_alias` or migration, plus a test that unserializes an old payload |
 | Integration tests need MariaDB 10.3 | CI time and flakiness | Keep DB-backed tests in the integration group; unit tests use fakes only |
 
 ---
@@ -289,6 +303,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-25 | P0-2 (in progress) | — | Web controller step added to the integration job. Job stays gated until its first green CI run (D4). Api/Cli stay excluded (see P7-1/P8-1). |
 | 2026-10-25 | P0-6 test hygiene | M16 = 0 | Added the 11 missing `#[Group]` attributes. |
 | 2026-10-25 | Review fixes (1–3) | `domain-presentation-calls` 103 → 126 | Added frozen per-rule allowlist maxima; included `__()` and per-file call counts; made M6 tolerate zero matches. |
+| 2026-10-26 | Plan review | — | Fixed section 7 ordering (P6-W1 after its dependencies). Added P0-7 (PHPStan), rules 7 and 8, section 1.3 (related plans), and the serialization risk. Cross-linked with the PHP 8.5 plan. |
 
 ### Baseline test results (P0-1)
 

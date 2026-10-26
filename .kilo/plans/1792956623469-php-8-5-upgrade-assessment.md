@@ -1,6 +1,8 @@
 # PHP 8.5 upgrade: assessment and plan
 
-Status: draft, implementation-ready once the hexagonal-migration plan has landed (D3). Nothing has been implemented.
+Status: draft, implementation-ready once the hexagonal-migration plan has landed (D3). Nothing has been implemented. D3a (early split) was rejected; the plans run sequentially. Phase 0 (read-only) may run at any time.
+
+Related plan: `.kilo/plans/hexagonal-migration.md` (see "Relationship" and "Ownership split").
 
 ## Verdict
 
@@ -20,6 +22,7 @@ No PHP binary is available in this environment, so nothing below has been execut
 | D1 | Support range PHP 8.3–8.5. PHP 8.2 dropped. | Decided by user |
 | D2 | Library major targets (below) | Proposed; in scope unless user objects |
 | D3 | Sequencing relative to `.kilo/plans/hexagonal-migration.md`: hex plan lands first, PHP 8.5 work starts after | Decided by user |
+| D3a | Refinement of D3: split the work. Early (no wait): Phases 0, 2, 3 and the CI matrix change in Phase 4. After hex plan step "P2-1" (section 7 of the hex plan): Phase 1 code deprecation fixes. | Rejected by user: sequential execution. Revisit only if an external PHP deadline appears (critical path then: runtime gate, `laminas-ldap`, `monolog`, CI on 8.5). |
 | D4 | CI gate before the 8.2 job is removed: unit core + modules + DB-backed integration, all on 8.5 | Decided by user |
 | D5 | `ademarre/binary-to-text-php`: pin current commit, replace only if pinning is impossible | Proposed |
 
@@ -102,21 +105,31 @@ Grep found no matches for these in the sampled output: `$GLOBALS` writes, `(bool
 ### Relationship to `.kilo/plans/hexagonal-migration.md` (D3)
 
 The hexagonal plan is in progress and touches the same files:
-- P0-1 and P0-2 need the same PHP 8.2 baseline and add `modules` to CI.
+- P0-1 and P0-2 need the same PHP 8.2 baseline and add `modules` to CI. This plan reuses them (see "Ownership split" below).
+- P0-3 adds an architecture test that must keep passing after each change here. Phase 1 edits only signatures and calls, so it adds no imports.
 - P1-1, P1-2, P1-4 move exception, `QueryResult`, and event classes in Domain. Phase 1 here edits `AccountPermissionException`, `UnauthorizedPageException`, `UnauthorizedActionException`, `UpdatedMasterPassException`, and `FileHandlerInterface`.
 - P2-1 changes the base class of 70 Domain services.
+- P1-1 and P4-1 move classes that may be serialized (`ProfileData`, `UserPreferences`). The hexagonal plan rule 8 keeps their names stable. Phase 1.4 here must run after any such move or be re-verified.
 
 Decision D3: the hexagonal-migration plan lands first. The PHP 8.5 code changes (Phases 1–5) start only after it is merged. Phase 0 is read-only and may run earlier. Re-run the Phase 0 deprecation scan after the hexagonal plan lands, because it moves exception classes (P1-1), `QueryResult` (P1-2), and event classes (P1-4), and changes the `Service` base class (P2-1). File paths in this document will change accordingly.
+
+Ownership split to avoid duplicated work:
+- The hexagonal plan owns the baseline (P0-1), the `modules` CI job (P0-2) and PHPStan runnability (P0-7). This plan reuses them and does not redo them.
+- This plan owns the PHP version range, the dependency majors, the runtime gate, and the PHP 8.4/8.5 deprecation fixes.
+- The hexagonal plan's rule 7 (section 1.2) keeps new code free of 8.4/8.5 deprecations, so this plan's Phase 1 list does not grow.
+- The hexagonal plan's rule 8 covers moves of serialized classes. Phase 1.4 and Phase 5.5 here verify stored payloads unserialize.
+
+D3a (running Phases 0, 2, 3 early) was rejected. Reasons: dependency upgrades would be validated twice (on the 8.2 pin, then on 8.5), `CoreDefinitions.php` and `cli/module.php` edits would conflict with hex commits, and the hex baseline (PHP 8.2, PHPUnit 11) would lose its value as a regression signal.
 
 ## Ordered plan
 
 ### Phase 0: baseline (no code changes)
 
 1. Provision PHP 8.2 (baseline for comparison) and PHP 8.5 CLI with `mbstring, intl, gd, ldap, gettext, pdo_mysql, fileinfo, zlib, xml, dom, json`. Provision MariaDB 10.3 (CI parity).
-2. On PHP 8.2, `composer install` without `--ignore-platform-reqs`. Record pass/fail and coverage for `--group unitary --testsuite core`, `--testsuite core`, and `--testsuite modules`. Reuse the hexagonal plan P0-1 baseline (`hexagonal-migration.md` section 9) if it exists.
+2. On PHP 8.2, reuse the hexagonal plan P0-1 baseline (`hexagonal-migration.md` section 9: 1978/1993/96 tests, 0 failures). Only run `composer install` without `--ignore-platform-reqs` here to confirm it still resolves on 8.2, and record the result.
 3. On PHP 8.5, `php -l` over `lib/`, `app/`, `tests/`, `public/`, `index.php`, `api.php`, `cli.php`. Save output.
 4. On PHP 8.5, run the same suites with `error_reporting(E_ALL)` and PHPUnit `convertDeprecationsToExceptions`. Save every `Deprecated:` message. This is the authoritative deprecation list.
-5. On PHP 8.2, `vendor/bin/phpstan analyse --level 6 lib`. Record baseline.
+5. On PHP 8.2, `vendor/bin/phpstan analyse --level 6 lib`. Reuse the hexagonal plan P0-7 baseline once it exists. Until then PHPStan is not runnable (`APP_PATH` undefined).
 
 Exit: baseline recorded, deprecation list complete, dependency blockers confirmed with `composer update --dry-run --with-all-dependencies` under platform 8.5.
 
@@ -154,7 +167,7 @@ Exit: baseline recorded, deprecation list complete, dependency blockers confirme
 
 1. Unit job matrix: `['8.3', '8.4', '8.5']`. Remove `--ignore-platform-reqs`.
 2. Integration job matrix: `['8.3', '8.4', '8.5']`. Remove `--ignore-platform-reqs`. Set `TESTS_INTEGRATION_ENABLED` for the 8.5 gate (D4).
-3. Add a `modules` job (`phpunit -c tests/phpunit.xml --testsuite modules`) with DB on 8.5 (D4). This is the first time CI runs it. Note `tests/phpunit.xml` excludes `Api` and `Cli` from `modules`, so only `Web` runs. Coordinate with hexagonal plan P0-2 and P7-1/P8-1 if Api/Cli are enabled there.
+3. Do not add a new `modules` job here. The hexagonal plan P0-2 owns it. Extend its matrix to `['8.3', '8.4', '8.5']` and make it DB-backed on 8.5 (D4). Note `tests/phpunit.xml` excludes `Api` and `Cli` from `modules`, so only `Web` runs. Api and Cli are enabled by hexagonal plan P7-1 and P8-1.
 4. Keep the current 8.2 job green until the full 8.5 gate is green, then remove it.
 
 ### Phase 5: validation (PHP 8.5, MariaDB 10.3)
@@ -187,4 +200,6 @@ Each Phase 2 dependency is its own commit. Keep the current runtime gate and CI 
 
 ## Open questions
 
-None blocking. All decisions D1–D4 are resolved. D5 (binary-to-text pinning) is proposed and can be confirmed during Phase 2.1.
+None blocking. D1, D3 and D4 are resolved. D2 is in scope unless the user objects. D5 (binary-to-text pinning) can be confirmed during Phase 2.1.
+
+D3a is closed (rejected). D3 applies: Phases 1–5 start after the hexagonal plan lands.
