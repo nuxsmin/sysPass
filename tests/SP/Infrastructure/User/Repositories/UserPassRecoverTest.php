@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\User\Models\UserPassRecover as UserPassRecoverModel;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\User\Repositories\UserPassRecover;
 use SP\Tests\UnitaryTestCase;
 

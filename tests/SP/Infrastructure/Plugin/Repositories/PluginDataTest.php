@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\Plugin\Repositories\PluginData;
 use SP\Tests\Generators\PluginDataGenerator;
 use SP\Tests\UnitaryTestCase;

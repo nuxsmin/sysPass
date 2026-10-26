@@ -24,13 +24,11 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Database;
+namespace SP\Domain\Database\Dtos;
 
 use SP\Domain\Common\Models\Model;
 use SplFixedArray;
 use TypeError;
-
-use function SP\__u;
 
 /**
  * Class QueryResult
@@ -91,7 +89,7 @@ class QueryResult
             && (!is_object($this->data->offsetGet(0))
                 || !is_a($this->data->offsetGet(0), $dataType))
         ) {
-            throw new TypeError(sprintf(__u('Invalid data\'s type. Expected: %s'), $dataType));
+            throw new TypeError(sprintf('Invalid data\'s type. Expected: %s', $dataType));
         }
     }
 

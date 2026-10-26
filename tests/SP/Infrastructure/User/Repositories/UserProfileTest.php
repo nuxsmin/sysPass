@@ -41,7 +41,7 @@ use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\User\Models\UserProfile as UserProfileModel;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\User\Repositories\UserProfile;
 use SP\Tests\Generators\UserProfileDataGenerator;
 use SP\Tests\UnitaryTestCase;

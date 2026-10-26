@@ -27,7 +27,6 @@ namespace SP\Domain\Database\Ports;
 
 use Aura\SqlQuery\QueryInterface;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Database\QueryData;
 
 /**
  * Class QueryData
@@ -38,7 +37,7 @@ interface QueryDataInterface
 
     public function getMapClassName(): string;
 
-    public function setMapClassName(string $class): QueryData;
+    public function setMapClassName(string $class): QueryDataInterface;
 
     /**
      * @throws QueryException
@@ -47,5 +46,5 @@ interface QueryDataInterface
 
     public function getOnErrorMessage(): string;
 
-    public function setOnErrorMessage(string $onErrorMessage): QueryData;
+    public function setOnErrorMessage(string $onErrorMessage): QueryDataInterface;
 }

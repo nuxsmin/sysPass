@@ -39,7 +39,7 @@ use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Domain\Account\Services\Builders\AccountSearchTokenizerDataTrait;
 use SP\Tests\UnitaryTestCase;
 

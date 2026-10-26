@@ -41,7 +41,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Database\Ports\QueryDataInterface;
 use SP\Infrastructure\Database\Database;
-use SP\Infrastructure\Database\DbStorageDriver;
+use SP\Domain\Database\Enums\DbStorageDriver;
 use SP\Tests\UnitaryTestCase;
 
 /**

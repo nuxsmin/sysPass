@@ -36,7 +36,7 @@ use SP\Domain\Plugin\Models\PluginData;
 use SP\Domain\Plugin\Ports\PluginDataService;
 use SP\Domain\Plugin\Services\PluginOperation;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\PluginDataGenerator;
 use SP\Tests\Stubs\PluginDataStub;
 use SP\Tests\UnitaryTestCase;

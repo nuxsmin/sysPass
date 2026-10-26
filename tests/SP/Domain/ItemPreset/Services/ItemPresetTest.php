@@ -35,7 +35,7 @@ use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Ports\ItemPresetRepository;
 use SP\Domain\ItemPreset\Services\ItemPreset;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\ItemPresetDataGenerator;
 use SP\Tests\Generators\ItemSearchDataGenerator;
 use SP\Tests\UnitaryTestCase;

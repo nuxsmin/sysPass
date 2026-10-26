@@ -40,7 +40,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\ItemPreset\Repositories\ItemPreset;
 use SP\Tests\Generators\ItemPresetDataGenerator;
 use SP\Tests\UnitaryTestCase;

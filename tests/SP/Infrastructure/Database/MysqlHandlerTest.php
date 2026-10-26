@@ -31,7 +31,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Domain\Core\Exceptions\DatabaseException;
-use SP\Infrastructure\Database\DbStorageDriver;
+use SP\Domain\Database\Enums\DbStorageDriver;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\Database\PDOWrapper;
 use SP\Tests\UnitaryTestCase;

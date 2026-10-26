@@ -37,7 +37,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\User\Repositories\UserToUserGroup;
 use SP\Tests\UnitaryTestCase;
 

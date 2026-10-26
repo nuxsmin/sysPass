@@ -62,7 +62,7 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\logger;

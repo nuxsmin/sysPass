@@ -36,7 +36,7 @@ use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class UserService

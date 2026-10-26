@@ -39,7 +39,7 @@ use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
 use SP\Domain\Plugin\Ports\PluginDataRepository;
 use SP\Domain\Plugin\Services\PluginData;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\PluginDataGenerator;
 use SP\Tests\UnitaryTestCase;
 

@@ -36,7 +36,7 @@ use SP\Domain\User\Ports\UserProfileRepository;
 use SP\Domain\User\Services\UserProfile;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\UserProfileDataGenerator;
 use SP\Tests\UnitaryTestCase;
 

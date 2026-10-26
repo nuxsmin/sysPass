@@ -40,7 +40,7 @@ use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionM
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\CustomField\Repositories\CustomFieldDefinition;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\CustomFieldDefinitionGenerator;
 use SP\Tests\UnitaryTestCase;
 

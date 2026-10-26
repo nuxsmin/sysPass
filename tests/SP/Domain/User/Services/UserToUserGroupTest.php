@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
 use SP\Domain\User\Ports\UserToUserGroupRepository;
 use SP\Domain\User\Services\UserToUserGroup;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
 /**

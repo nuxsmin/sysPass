@@ -38,7 +38,7 @@ use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\processException;
 

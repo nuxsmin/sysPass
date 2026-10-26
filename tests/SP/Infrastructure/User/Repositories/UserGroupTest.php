@@ -41,7 +41,7 @@ use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\User\Repositories\UserGroup;
 use SP\Tests\Generators\UserGroupGenerator;
 use SP\Tests\UnitaryTestCase;

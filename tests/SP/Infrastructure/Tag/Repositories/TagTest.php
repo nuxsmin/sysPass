@@ -43,7 +43,7 @@ use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Tag\Models\Tag as TagModel;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\Tag\Repositories\Tag;
 use SP\Tests\Generators\TagGenerator;
 use SP\Tests\UnitaryTestCase;

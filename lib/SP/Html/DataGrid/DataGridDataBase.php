@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Html\DataGrid;
 
 use SP\Html\Assets\IconInterface;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class DataGridDataBase para establecer el origen de datos de la matriz

@@ -39,7 +39,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\Notification\Repositories\Notification;
 use SP\Tests\Generators\NotificationDataGenerator;
 use SP\Tests\UnitaryTestCase;

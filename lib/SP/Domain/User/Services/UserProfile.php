@@ -37,7 +37,7 @@ use SP\Domain\User\Ports\UserProfileRepository;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 

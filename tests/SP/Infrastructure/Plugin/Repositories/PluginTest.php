@@ -40,7 +40,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\Plugin\Repositories\Plugin;
 use SP\Tests\Generators\PluginGenerator;
 use SP\Tests\UnitaryTestCase;

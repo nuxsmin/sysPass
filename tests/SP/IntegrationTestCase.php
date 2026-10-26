@@ -68,7 +68,7 @@ use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
