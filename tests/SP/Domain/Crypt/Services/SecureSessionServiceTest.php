@@ -205,7 +205,9 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $this->fileCache = $this->createMock(FileCacheService::class);
 
         $this->secureSessionService = new SecureSession(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->crypt,
             $this->fileCache,
             $this->requestBasedPassword

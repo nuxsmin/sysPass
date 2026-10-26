@@ -322,6 +322,12 @@ class ClientTest extends UnitaryTestCase
         $this->accountFilterUser->method('buildFilter')
                                 ->willReturn($select);
 
-        $this->client = new Client($this->application, $this->clientRepository, $this->accountFilterUser);
+        $this->client = new Client(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->clientRepository,
+            $this->accountFilterUser
+        );
     }
 }

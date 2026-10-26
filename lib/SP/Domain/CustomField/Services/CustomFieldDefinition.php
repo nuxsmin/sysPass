@@ -25,10 +25,12 @@ declare(strict_types=1);
 
 namespace SP\Domain\CustomField\Services;
 
-use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
@@ -48,10 +50,12 @@ final class CustomFieldDefinition extends Service implements CustomFieldDefiniti
 {
 
     public function __construct(
-        Application                                      $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly CustomFieldDefinitionRepository $customFieldDefinitionRepository
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

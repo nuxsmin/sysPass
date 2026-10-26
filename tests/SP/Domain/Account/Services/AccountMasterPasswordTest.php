@@ -240,7 +240,9 @@ class AccountMasterPasswordTest extends UnitaryTestCase
 
         $this->accountMasterPassword =
             new AccountMasterPassword(
-                $this->application,
+                $this->config,
+                $this->eventDispatcherStub,
+                $this->context,
                 $this->account,
                 $this->accountHistory,
                 $this->crypt,

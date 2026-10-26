@@ -27,8 +27,10 @@ declare(strict_types=1);
 namespace SP\Domain\Import\Services;
 
 use Exception;
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
@@ -56,13 +58,15 @@ use function SP\processException;
 final class LdapImport extends Service implements LdapImportService
 {
     public function __construct(
-        Application                         $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly UserService        $userService,
         private readonly UserGroupService   $userGroupService,
         private readonly LdapActionsService $ldapActionsService,
         private readonly LdapConnectionHandler $ldapConnection
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

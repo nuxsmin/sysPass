@@ -63,7 +63,12 @@ class PluginRegisterTest extends UnitaryTestCase
                              ->method('create')
             ->with(new PluginModel(['name' => 'test_plugin', 'enabled' => false]));
 
-        $pluginRegister = new PluginRegister($this->application, $pluginManagerService);
+        $pluginRegister = new PluginRegister(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
 
         $pluginRegister->registerFor($plugin);
     }
@@ -86,7 +91,12 @@ class PluginRegisterTest extends UnitaryTestCase
         $pluginManagerService->expects($this->never())
                              ->method('create');
 
-        $pluginRegister = new PluginRegister($this->application, $pluginManagerService);
+        $pluginRegister = new PluginRegister(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
 
         $pluginRegister->registerFor($plugin);
     }

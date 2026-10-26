@@ -122,7 +122,9 @@ class XmlClientExportTest extends UnitaryTestCase
         $this->clientService = $this->createMock(ClientService::class);
 
         $this->xmlClientExport = new XmlClientExport(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->clientService
         );
     }

@@ -28,8 +28,10 @@ namespace SP\Domain\Export\Services;
 
 use DOMElement;
 use Exception;
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Services\ServiceException;
@@ -43,10 +45,12 @@ use function SP\__u;
 final class XmlClientExport extends XmlExportEntityBase implements XmlClientExportService
 {
     public function __construct(
-        Application                    $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly ClientService $clientService
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

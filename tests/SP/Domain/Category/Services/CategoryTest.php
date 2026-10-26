@@ -298,6 +298,11 @@ class CategoryTest extends UnitaryTestCase
         parent::setUp();
 
         $this->categoryRepository = $this->createMock(CategoryRepository::class);
-        $this->category = new Category($this->application, $this->categoryRepository);
+        $this->category = new Category(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->categoryRepository
+        );
     }
 }

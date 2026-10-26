@@ -27,9 +27,11 @@ declare(strict_types=1);
 namespace SP\Domain\Crypt\Services;
 
 use Exception;
-use SP\Core\Application;
 use SP\Core\Crypt\Hash;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Core\Messages\MailMessage;
 use SP\Domain\Common\Providers\Password;
@@ -73,13 +75,15 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
     private ?int $maxTime = null;
 
     public function __construct(
-        Application                     $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly ConfigService  $configService,
         private readonly UserService    $userService,
         private readonly MailService    $mailService,
         private readonly CryptInterface $crypt,
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
 

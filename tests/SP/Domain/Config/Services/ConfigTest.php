@@ -274,6 +274,11 @@ class ConfigTest extends UnitaryTestCase
 
         $this->configRepository = $this->createMock(ConfigRepository::class);
 
-        $this->configService = new Config($this->application, $this->configRepository);
+        $this->configService = new Config(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->configRepository
+        );
     }
 }

@@ -604,6 +604,12 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authTokenRepository = $this->createMock(AuthTokenRepository::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
-        $this->authToken = new AuthToken($this->application, $this->authTokenRepository, $this->crypt);
+        $this->authToken = new AuthToken(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->authTokenRepository,
+            $this->crypt
+        );
     }
 }

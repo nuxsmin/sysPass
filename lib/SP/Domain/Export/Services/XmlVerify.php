@@ -29,12 +29,14 @@ namespace SP\Domain\Export\Services;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
-use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Export\Ports\XmlVerifyService;
 
@@ -54,11 +56,13 @@ final class XmlVerify extends Service implements XmlVerifyService
     private readonly DOMDocument $document;
 
     public function __construct(
-        Application                     $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly CryptInterface $crypt,
         private readonly string $schema
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->document = new DOMDocument('1.0', 'UTF-8');
     }

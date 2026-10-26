@@ -61,7 +61,12 @@ class PluginLoaderTest extends UnitaryTestCase
             ->with('test_plugin')
             ->willReturn($pluginModel);
 
-        $pluginLoader = new PluginLoader($this->application, $pluginManagerService);
+        $pluginLoader = new PluginLoader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
         $pluginLoader->loadFor($plugin);
     }
 
@@ -84,7 +89,12 @@ class PluginLoaderTest extends UnitaryTestCase
             ->with('test_plugin')
             ->willReturn($pluginModel);
 
-        $pluginLoader = new PluginLoader($this->application, $pluginManagerService);
+        $pluginLoader = new PluginLoader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
         $pluginLoader->loadFor($plugin);
     }
 
@@ -104,7 +114,12 @@ class PluginLoaderTest extends UnitaryTestCase
             ->method('getByName')
             ->willThrowException(NoSuchItemException::error('test'));
 
-        $pluginLoader = new PluginLoader($this->application, $pluginManagerService);
+        $pluginLoader = new PluginLoader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
         $pluginLoader->loadFor($plugin);
     }
 }

@@ -304,7 +304,9 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
         $this->customFieldDefinitionRepository = $this->createMock(CustomFieldDefinitionRepository::class);
 
         $this->customFieldDefinition = new CustomFieldDefinition(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->customFieldDefinitionRepository
         );
     }

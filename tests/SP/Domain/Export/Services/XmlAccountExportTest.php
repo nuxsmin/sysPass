@@ -149,7 +149,9 @@ class XmlAccountExportTest extends UnitaryTestCase
         $this->accountToTagService = $this->createMock(AccountToTagService::class);
 
         $this->xmlAccountExport = new XmlAccountExport(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->accountService,
             $this->accountToTagService
         );

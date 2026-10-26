@@ -316,6 +316,11 @@ class ItemPresetTest extends UnitaryTestCase
 
         $this->itemPresetRepository = $this->createMock(ItemPresetRepository::class);
 
-        $this->itemPreset = new ItemPreset($this->application, $this->itemPresetRepository);
+        $this->itemPreset = new ItemPreset(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->itemPresetRepository
+        );
     }
 }

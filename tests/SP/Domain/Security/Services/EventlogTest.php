@@ -128,7 +128,13 @@ class EventlogTest extends UnitaryTestCase
         $this->eventlogRepository = $this->createMock(EventlogRepository::class);
         $this->request = $this->createMock(RequestService::class);
 
-        $this->eventlog = new Eventlog($this->application, $this->eventlogRepository, $this->request);
+        $this->eventlog = new Eventlog(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->eventlogRepository,
+            $this->request
+        );
     }
 
 }

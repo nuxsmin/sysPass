@@ -276,6 +276,11 @@ class UserProfileTest extends UnitaryTestCase
 
         $this->userProfileRepository = $this->createMock(UserProfileRepository::class);
 
-        $this->userProfile = new UserProfile($this->application, $this->userProfileRepository);
+        $this->userProfile = new UserProfile(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->userProfileRepository
+        );
     }
 }

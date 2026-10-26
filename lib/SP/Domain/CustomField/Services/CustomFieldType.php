@@ -25,8 +25,10 @@ declare(strict_types=1);
 
 namespace SP\Domain\CustomField\Services;
 
-use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -41,10 +43,12 @@ final class CustomFieldType extends Service implements CustomFieldTypeService
 {
 
     public function __construct(
-        Application                                $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly CustomFieldTypeRepository $customFieldTypeRepository
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

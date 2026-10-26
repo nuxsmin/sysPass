@@ -114,7 +114,12 @@ class AccountToFavoriteTest extends UnitaryTestCase
         $this->accountToFavoriteRepository = $this->createMock(AccountToFavoriteRepository::class);
 
         $this->accountToFavorite =
-            new AccountToFavorite($this->application, $this->accountToFavoriteRepository);
+            new AccountToFavorite(
+                $this->config,
+                $this->eventDispatcherStub,
+                $this->context,
+                $this->accountToFavoriteRepository
+            );
     }
 
 }

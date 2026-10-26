@@ -583,7 +583,9 @@ class PublicLinkTest extends UnitaryTestCase
 
         $this->publicLink =
             new PublicLink(
-                $this->application,
+                $this->config,
+                $this->eventDispatcherStub,
+                $this->context,
                 $this->publicLinkRepository,
                 $request,
                 $this->accountService,

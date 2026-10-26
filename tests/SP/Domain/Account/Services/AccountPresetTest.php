@@ -260,7 +260,9 @@ class AccountPresetTest extends UnitaryTestCase
 
         $this->accountPreset =
             new AccountPreset(
-                $this->application,
+                $this->config,
+                $this->eventDispatcherStub,
+                $this->context,
                 $this->itemPresetService,
                 $this->accountToUserGroupRepository,
                 $this->accountToUserRepository,

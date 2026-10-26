@@ -27,7 +27,6 @@ declare(strict_types=1);
 namespace SP\Domain\Api\Services;
 
 use Exception;
-use SP\Core\Application;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
@@ -40,8 +39,10 @@ use SP\Domain\Auth\Services\AuthToken;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\VaultInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
@@ -73,14 +74,16 @@ final class Api extends Service implements ApiService
      * @throws InvalidArgumentException
      */
     public function __construct(
-        Application                        $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly TrackService      $trackService,
         private readonly ApiRequestService $apiRequest,
         private readonly AuthTokenService  $authTokenService,
         private readonly UserService       $userService,
         private readonly UserProfileService $userProfileService
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->trackRequest = $trackService->buildTrackRequest(__CLASS__);
     }

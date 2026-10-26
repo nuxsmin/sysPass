@@ -183,7 +183,15 @@ class LogHandlerTest extends UnitaryTestCase
     {
         $this->config->getConfigData()->setLogEvents(['test.event_a', 'test.event_b']);
 
-        $logHandler = new LogHandler($this->application, $this->logger, $this->language, $this->request, new EventMessageFormatter());
+        $logHandler = new LogHandler(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->logger,
+            $this->language,
+            $this->request,
+            new EventMessageFormatter()
+        );
 
         $out = $logHandler->getEvents();
 
@@ -200,6 +208,14 @@ class LogHandlerTest extends UnitaryTestCase
         $this->language = $this->createMock(LanguageInterface::class);
         $this->request = $this->createMock(RequestService::class);
 
-        $this->logHandler = new LogHandler($this->application, $this->logger, $this->language, $this->request, new EventMessageFormatter());
+        $this->logHandler = new LogHandler(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->logger,
+            $this->language,
+            $this->request,
+            new EventMessageFormatter()
+        );
     }
 }

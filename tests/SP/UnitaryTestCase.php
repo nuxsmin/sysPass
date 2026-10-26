@@ -78,6 +78,7 @@ abstract class UnitaryTestCase extends TestCase
     protected readonly ConfigFileService|MockObject $config;
     protected readonly Application                  $application;
     protected readonly Context                      $context;
+    protected readonly EventDispatcherInterface     $eventDispatcherStub;
     protected readonly PathsContext $pathsContext;
 
     public static function setUpBeforeClass(): void
@@ -131,10 +132,11 @@ abstract class UnitaryTestCase extends TestCase
     {
         $this->context = $this->buildContext();
         $this->config = $this->buildConfig();
+        $this->eventDispatcherStub = $this->createStub(EventDispatcherInterface::class);
 
         return new Application(
             $this->config,
-            $this->createStub(EventDispatcherInterface::class),
+            $this->eventDispatcherStub,
             $this->context
         );
     }

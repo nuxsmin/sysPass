@@ -526,7 +526,9 @@ class XmlExportTest extends UnitaryTestCase
         $this->crypt = $this->createMock(CryptInterface::class);
 
         $this->xmlExport = new XmlExport(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->phpExtensionCheckerService,
             $this->xmlClientExportService,
             $this->xmlAccountExportService,

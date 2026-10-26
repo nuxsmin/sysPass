@@ -527,6 +527,11 @@ class NotificationTest extends UnitaryTestCase
 
         $this->notificationRepository = $this->createMock(NotificationRepository::class);
 
-        $this->notification = new Notification($this->application, $this->notificationRepository);
+        $this->notification = new Notification(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->notificationRepository
+        );
     }
 }

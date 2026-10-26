@@ -351,6 +351,12 @@ class PluginDataTest extends UnitaryTestCase
         $this->pluginDataRepository = $this->createMock(PluginDataRepository::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
-        $this->pluginData = new PluginData($this->application, $this->pluginDataRepository, $this->crypt);
+        $this->pluginData = new PluginData(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->pluginDataRepository,
+            $this->crypt
+        );
     }
 }

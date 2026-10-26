@@ -274,7 +274,7 @@ class TagTest extends UnitaryTestCase
 
         $this->tagRepository = $this->createMock(TagRepository::class);
 
-        $this->tag = new Tag($this->application, $this->tagRepository);
+        $this->tag = new Tag($this->config, $this->eventDispatcherStub, $this->context, $this->tagRepository);
     }
 
 

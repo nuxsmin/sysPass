@@ -26,13 +26,15 @@ declare(strict_types=1);
 namespace SP\Domain\Config\Services;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Dtos\ConfigRequest;
 use SP\Domain\Config\Models\Config as ConfigModel;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigRepository;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -47,9 +49,14 @@ use function SP\processException;
 final class Config extends Service implements ConfigService
 {
 
-    public function __construct(Application $application, private readonly ConfigRepository $configRepository)
+    public function __construct(
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
+        private readonly ConfigRepository $configRepository
+    )
     {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

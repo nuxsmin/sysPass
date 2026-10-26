@@ -182,7 +182,12 @@ class UserPassRecoverServiceTest extends UnitaryTestCase
 
         $this->userPassRecoverRepository = $this->createMock(UserPassRecoverRepository::class);
 
-        $this->userPassRecover = new UserPassRecover($this->application, $this->userPassRecoverRepository);
+        $this->userPassRecover = new UserPassRecover(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->userPassRecoverRepository
+        );
     }
 
 

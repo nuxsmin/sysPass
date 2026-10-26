@@ -260,7 +260,9 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->accountHistoryRepository = $this->createMock(AccountHistoryRepository::class);
 
         $this->accountHistory = new AccountHistory(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->accountHistoryRepository
         );
     }

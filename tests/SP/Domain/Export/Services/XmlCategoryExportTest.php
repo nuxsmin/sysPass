@@ -121,7 +121,9 @@ class XmlCategoryExportTest extends UnitaryTestCase
         $this->categoryService = $this->createMock(CategoryService::class);
 
         $this->xmlCategoryExport = new XmlCategoryExport(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->categoryService
         );
     }

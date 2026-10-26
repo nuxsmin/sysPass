@@ -26,8 +26,10 @@ declare(strict_types=1);
 namespace SP\Domain\Notification\Services;
 
 use Exception;
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Core\Messages\MailMessage;
 use SP\Domain\Common\Services\Service;
@@ -49,11 +51,13 @@ use function SP\processException;
 final class Mail extends Service implements MailService
 {
     public function __construct(
-        Application                          $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly MailerInterface     $mailer,
         private readonly UriContextInterface $uriContext
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     public static function getParamsFromConfig(ConfigDataInterface $configData): MailParams

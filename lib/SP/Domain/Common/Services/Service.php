@@ -27,7 +27,6 @@ declare(strict_types=1);
 namespace SP\Domain\Common\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Application;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\Session as SessionContext;
 use SP\Core\Crypt\Session as CryptSession;
@@ -50,11 +49,14 @@ abstract class Service
     protected readonly Context $context;
     protected readonly EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(Application $application)
-    {
-        $this->config = $application->getConfig();
-        $this->context = $application->getContext();
-        $this->eventDispatcher = $application->getEventDispatcher();
+    public function __construct(
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context
+    ) {
+        $this->config = $config;
+        $this->context = $context;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**

@@ -27,13 +27,15 @@ declare(strict_types=1);
 namespace SP\Domain\Crypt\Services;
 
 use Exception;
-use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Account\Ports\AccountMasterPasswordService;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
@@ -52,13 +54,15 @@ final class MasterPass extends Service implements MasterPassService
     public const PARAM_MASTER_PASS_HASH = 'masterPwd';
 
     public function __construct(
-        Application                                   $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly ConfigService                $configService,
         private readonly AccountMasterPasswordService $accountMasterPasswordService,
         private readonly CustomFieldCryptService      $customFieldCryptService,
         private readonly Repository                   $repository
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

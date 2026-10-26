@@ -191,7 +191,9 @@ class FileBackupServiceTest extends UnitaryTestCase
         $this->appArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);
 
         $this->fileBackupService = new BackupFile(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->database,
             $this->createStub(DatabaseUtil::class),
             $this->dbFileHandler,

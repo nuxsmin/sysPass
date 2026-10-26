@@ -150,6 +150,6 @@ class AccountCryptTest extends UnitaryTestCase
 
         $this->crypt = $this->createMock(CryptInterface::class);
 
-        $this->accountCrypt = new AccountCrypt($this->application, $this->crypt);
+        $this->accountCrypt = new AccountCrypt($this->config, $this->eventDispatcherStub, $this->context, $this->crypt);
     }
 }

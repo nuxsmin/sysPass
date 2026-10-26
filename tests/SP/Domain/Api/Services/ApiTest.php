@@ -205,7 +205,9 @@ class ApiTest extends UnitaryTestCase
         $apiRequest->method('getMethod')->willReturn('account/view');
 
         $apiService = new Api(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->trackService,
             $apiRequest,
             $this->authTokenService,
@@ -312,7 +314,9 @@ class ApiTest extends UnitaryTestCase
         $this->apiRequest->method('getMethod')->willReturn(self::$faker->colorName);
 
         $this->apiService = new Api(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->trackService,
             $this->apiRequest,
             $this->authTokenService,

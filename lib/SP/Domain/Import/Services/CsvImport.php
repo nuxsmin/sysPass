@@ -27,8 +27,10 @@ declare(strict_types=1);
 namespace SP\Domain\Import\Services;
 
 use Exception;
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Category\Models\Category;
@@ -52,12 +54,14 @@ final class CsvImport extends ImportBase implements ItemsImportService
     private const NUM_FIELDS = 7;
 
     public function __construct(
-        Application                           $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         ImportHelperInterface $importHelper,
         CryptInterface                        $crypt,
         private readonly FileHandlerInterface $fileHandler
     ) {
-        parent::__construct($application, $importHelper, $crypt);
+        parent::__construct($config, $eventDispatcher, $context, $importHelper, $crypt);
     }
 
     /**

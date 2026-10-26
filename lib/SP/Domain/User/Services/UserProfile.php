@@ -25,10 +25,12 @@ declare(strict_types=1);
 
 namespace SP\Domain\User\Services;
 
-use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User as UserModel;
@@ -47,9 +49,14 @@ use function SP\__u;
 final class UserProfile extends Service implements UserProfileService
 {
 
-    public function __construct(Application $application, private readonly UserProfileRepository $userProfileRepository)
+    public function __construct(
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
+        private readonly UserProfileRepository $userProfileRepository
+    )
     {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

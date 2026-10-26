@@ -31,14 +31,16 @@ use DOMElement;
 use DOMException;
 use DOMNode;
 use Exception;
-use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
@@ -68,7 +70,9 @@ final class XmlExport extends Service implements XmlExportService
      * @throws ServiceException
      */
     public function __construct(
-        Application                                 $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly PhpExtensionCheckerService $extensionChecker,
         private readonly XmlClientExportService     $xmlClientExportService,
         private readonly XmlAccountExportService    $xmlAccountExportService,
@@ -76,7 +80,7 @@ final class XmlExport extends Service implements XmlExportService
         private readonly XmlTagExportService        $xmlTagExportService,
         private readonly CryptInterface             $crypt
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->configData = $this->config->getConfigData();
 

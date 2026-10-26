@@ -113,7 +113,9 @@ class AccountCacheTest extends UnitaryTestCase
         $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
 
         $this->accountCache = new AccountCache(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->accountToUserRepository,
             $this->accountToUserGroupRepository
         );

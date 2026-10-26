@@ -28,8 +28,10 @@ namespace SP\Domain\Export\Services;
 
 use DOMElement;
 use Exception;
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\AccountToTagService;
@@ -45,11 +47,13 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
 {
 
     public function __construct(
-        Application                          $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly AccountService      $accountService,
         private readonly AccountToTagService $accountToTagService
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

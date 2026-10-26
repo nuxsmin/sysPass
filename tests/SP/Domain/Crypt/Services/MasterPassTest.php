@@ -224,7 +224,9 @@ class MasterPassTest extends UnitaryTestCase
         $this->repository = $this->createMock(Repository::class);
 
         $this->masterPass = new MasterPass(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->configService,
             $this->accountMasterPasswordService,
             $this->customFieldCryptService,

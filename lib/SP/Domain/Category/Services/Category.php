@@ -26,13 +26,15 @@ declare(strict_types=1);
 namespace SP\Domain\Category\Services;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Category\Ports\CategoryRepository;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -50,10 +52,12 @@ use function SP\__u;
 final class Category extends Service implements CategoryService
 {
     public function __construct(
-        Application                                  $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly CategoryRepository $categoryRepository
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

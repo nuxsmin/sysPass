@@ -102,6 +102,6 @@ class AccountToTagTest extends UnitaryTestCase
         $this->accountToTagRepository = $this->createMock(AccountToTagRepository::class);
 
         $this->accountToTag =
-            new AccountToTag($this->application, $this->accountToTagRepository);
+            new AccountToTag($this->config, $this->eventDispatcherStub, $this->context, $this->accountToTagRepository);
     }
 }

@@ -701,7 +701,14 @@ class SyspassImportTest extends UnitaryTestCase
                 })
             );
 
-        $sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+        $sysPassImport = new SyspassImport(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $importHelper,
+            $this->crypt,
+            $document
+        );
 
         $out = $sysPassImport->doImport($importParamsDto);
 
@@ -764,7 +771,14 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('create');
 
-        $sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+        $sysPassImport = new SyspassImport(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $importHelper,
+            $this->crypt,
+            $document
+        );
 
         $out = $sysPassImport->doImport($importParamsDto);
 
@@ -861,7 +875,14 @@ class SyspassImportTest extends UnitaryTestCase
         $document = new DOMDocument();
         $document->load(self::SYSPASS_FILE, LIBXML_NOBLANKS);
 
-        $this->sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+        $this->sysPassImport = new SyspassImport(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $importHelper,
+            $this->crypt,
+            $document
+        );
     }
 
 }

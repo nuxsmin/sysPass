@@ -675,6 +675,12 @@ class UserTest extends UnitaryTestCase
         $this->userRepository = $this->createMock(UserRepository::class);
         $this->userMasterPassService = $this->createMock(UserMasterPassService::class);
 
-        $this->user = new User($this->application, $this->userRepository, $this->userMasterPassService);
+        $this->user = new User(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->userRepository,
+            $this->userMasterPassService
+        );
     }
 }

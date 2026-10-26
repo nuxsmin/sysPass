@@ -310,7 +310,9 @@ class AccountItemsTest extends UnitaryTestCase
         $this->accountToTagRepository = $this->createMock(AccountToTagRepository::class);
 
         $this->accountItems = new AccountItems(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->accountToUserGroupRepository,
             $this->accountToUserRepository,
             $this->accountToTagRepository

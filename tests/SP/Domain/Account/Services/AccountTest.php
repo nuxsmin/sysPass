@@ -1475,7 +1475,9 @@ class AccountTest extends UnitaryTestCase
         $this->accountPresetService = $this->createMock(AccountPresetService::class);
 
         $this->account = new Account(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->accountRepository,
             $this->accountToUserGroupRepository,
             $this->accountToUserRepository,

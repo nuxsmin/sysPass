@@ -25,8 +25,10 @@ declare(strict_types=1);
 
 namespace SP\Domain\Plugin\Services;
 
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
@@ -46,10 +48,12 @@ use function SP\__u;
 final class PluginUpgrader extends Service implements PluginUpgraderInterface
 {
     public function __construct(
-        Application                           $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly PluginManagerService $pluginManagerService
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

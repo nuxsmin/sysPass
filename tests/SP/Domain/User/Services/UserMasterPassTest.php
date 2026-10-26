@@ -739,7 +739,9 @@ class UserMasterPassTest extends UnitaryTestCase
         $this->crypt = $this->createMock(CryptInterface::class);
 
         $this->userMasterPass = new UserMasterPass(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->userRepository,
             $this->configService,
             $this->crypt

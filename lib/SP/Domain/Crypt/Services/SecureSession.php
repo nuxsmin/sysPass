@@ -28,13 +28,15 @@ namespace SP\Domain\Crypt\Services;
 
 use Defuse\Crypto\Key;
 use Exception;
-use SP\Core\Application;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Crypt\UuidCookieInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Core\Exceptions\FileException;
@@ -51,12 +53,14 @@ final class SecureSession extends Service implements SecureSessionService
     private const CACHE_EXPIRE_TIME = 86400;
 
     public function __construct(
-        Application                       $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly CryptInterface   $crypt,
         private readonly FileCacheService $fileCache,
         private readonly RequestBasedPasswordInterface $requestBasedPassword
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

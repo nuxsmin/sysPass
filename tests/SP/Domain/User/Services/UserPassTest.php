@@ -65,7 +65,7 @@ class UserPassTest extends UnitaryTestCase
                        )
                        ->willReturn(1);
 
-        $usePass = new UserPass($this->application, $userRepository);
+        $usePass = new UserPass($this->config, $this->eventDispatcherStub, $this->context, $userRepository);
         $usePass->migrateUserPassById(100, 'a_password');
     }
 
@@ -82,7 +82,7 @@ class UserPassTest extends UnitaryTestCase
                        ->method('updatePassById')
                        ->willReturn(0);
 
-        $usePass = new UserPass($this->application, $userRepository);
+        $usePass = new UserPass($this->config, $this->eventDispatcherStub, $this->context, $userRepository);
 
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('User does not exist');

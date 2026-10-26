@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Client\Services;
 
-use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Client\Ports\ClientRepository;
@@ -33,7 +32,10 @@ use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -51,11 +53,13 @@ use function SP\__u;
 final class Client extends Service implements ClientService
 {
     public function __construct(
-        Application                       $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly ClientRepository $clientRepository,
         private readonly AccountFilterBuilder $accountFilterUser
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

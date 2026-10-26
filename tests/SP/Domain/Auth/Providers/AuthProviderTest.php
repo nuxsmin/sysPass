@@ -124,6 +124,6 @@ class AuthProviderTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->authProvider = new AuthProvider($this->application);
+        $this->authProvider = new AuthProvider($this->config, $this->eventDispatcherStub, $this->context);
     }
 }

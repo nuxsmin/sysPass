@@ -159,7 +159,9 @@ class LoginUserTest extends UnitaryTestCase
         $this->userPassRecoverService = $this->createMock(UserPassRecoverService::class);
 
         $this->loginUser = new LoginUser(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->trackService,
             $this->request,
             $this->userPassRecoverService

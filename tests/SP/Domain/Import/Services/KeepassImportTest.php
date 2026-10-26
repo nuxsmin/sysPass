@@ -167,6 +167,13 @@ class KeepassImportTest extends UnitaryTestCase
         $document = new DOMDocument();
         $document->load(self::KEEPASS_FILE, LIBXML_NOBLANKS);
 
-        $this->keepassImport = new KeepassImport($this->application, $importHelper, $crypt, $document);
+        $this->keepassImport = new KeepassImport(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $importHelper,
+            $crypt,
+            $document
+        );
     }
 }

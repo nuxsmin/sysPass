@@ -236,7 +236,9 @@ class AccountSearchTest extends UnitaryTestCase
         $this->accountSearchRepository = $this->createMock(AccountSearchRepository::class);
 
         $this->accountSearch = new AccountSearch(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $userService,
             $userGroupService,
             $this->accountSearchRepository

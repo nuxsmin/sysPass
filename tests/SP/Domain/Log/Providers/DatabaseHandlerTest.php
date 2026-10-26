@@ -68,7 +68,14 @@ class DatabaseHandlerTest extends UnitaryTestCase
 
         $this->configData->setLogEvents([]);
 
-        $databaseHandler = new DatabaseHandler($this->application, $this->eventLogService, $this->language, new EventMessageFormatter());
+        $databaseHandler = new DatabaseHandler(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->eventLogService,
+            $this->language,
+            new EventMessageFormatter()
+        );
         $out = $databaseHandler->getEvents();
 
         $this->assertEquals($expected, $out);
@@ -203,6 +210,13 @@ class DatabaseHandlerTest extends UnitaryTestCase
         $this->eventLogService = $this->createMock(EventlogService::class);
         $this->language = $this->createMock(LanguageInterface::class);
 
-        $this->databaseHandler = new DatabaseHandler($this->application, $this->eventLogService, $this->language, new EventMessageFormatter());
+        $this->databaseHandler = new DatabaseHandler(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->eventLogService,
+            $this->language,
+            new EventMessageFormatter()
+        );
     }
 }

@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Services;
 
-use SP\Core\Application;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName as AccountPassItemWithIdAndNameModel;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
@@ -49,8 +48,11 @@ use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -71,7 +73,9 @@ use function SP\__u;
 final class Account extends Service implements AccountService
 {
     public function __construct(
-        Application                                   $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly AccountRepository            $accountRepository,
         private readonly AccountToUserGroupRepository $accountToUserGroupRepository,
         private readonly AccountToUserRepository      $accountToUserRepository,
@@ -83,7 +87,7 @@ final class Account extends Service implements AccountService
         private readonly ConfigService                $configService,
         private readonly AccountCryptService          $accountCryptService
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

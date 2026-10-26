@@ -26,10 +26,12 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Services;
 
-use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
@@ -58,13 +60,15 @@ final class AccountAcl extends Service implements AccountAclService
     private UserDto $userData;
 
     public function __construct(
-        Application                             $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly AclInterface           $acl,
         private readonly UserToUserGroupService $userToUserGroupService,
         private readonly PathsContext $pathsContext,
         private readonly ?FileCacheService      $fileCache = null
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->userData = $this->context->getUserData();
     }

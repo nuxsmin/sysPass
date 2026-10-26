@@ -92,7 +92,9 @@ class CustomFieldTypeTest extends UnitaryTestCase
         $this->customFieldTypeRepository = $this->createMock(CustomFieldTypeRepository::class);
 
         $this->customFieldType = new CustomFieldType(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->customFieldTypeRepository
         );
     }

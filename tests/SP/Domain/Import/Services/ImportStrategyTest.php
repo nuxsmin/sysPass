@@ -231,7 +231,9 @@ class ImportStrategyTest extends UnitaryTestCase
         $this->xmlFileService = $this->createMock(XmlFileService::class);
 
         $this->importStrategy = new ImportStrategy(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->createStub(ImportHelperInterface::class),
             $this->createStub(CryptInterface::class),
             $this->xmlFileService

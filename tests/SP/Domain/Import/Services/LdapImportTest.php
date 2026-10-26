@@ -503,7 +503,9 @@ class LdapImportTest extends UnitaryTestCase
         $this->ldapActionsService = $this->createMock(LdapActionsService::class);
 
         $this->ldapImport = new LdapImport(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->userService,
             $this->userGroupService,
             $this->ldapActionsService,

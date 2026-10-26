@@ -212,6 +212,12 @@ class UpgradeTest extends UnitaryTestCase
         $fileHandlerProvider = $this->createMock(FileHandlerProvider::class);
         $this->container = $this->createMock(ContainerInterface::class);
 
-        $this->upgrade = new Upgrade($this->application, $fileHandlerProvider, $this->container);
+        $this->upgrade = new Upgrade(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $fileHandlerProvider,
+            $this->container
+        );
     }
 }

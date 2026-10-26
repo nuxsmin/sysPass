@@ -25,9 +25,11 @@ declare(strict_types=1);
 
 namespace SP\Domain\Import\Services;
 
-use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportHelperInterface;
@@ -57,12 +59,14 @@ final class ImportStrategy extends Service implements ImportStrategyService
     ];
 
     public function __construct(
-        private readonly Application           $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly ImportHelperInterface $importHelper,
         private readonly CryptInterface        $crypt,
         private readonly XmlFileService        $xmlFile,
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -84,7 +88,9 @@ final class ImportStrategy extends Service implements ImportStrategyService
 
         return match ($this->checkFile($fileHandler)) {
             'text/plain', 'text/csv' => new CsvImport(
-                $this->application,
+                $this->config,
+                $this->eventDispatcher,
+                $this->context,
                 $this->importHelper,
                 $this->crypt,
                 $fileHandler
@@ -135,14 +141,18 @@ final class ImportStrategy extends Service implements ImportStrategyService
         return match ($xmlFile->detectFormat()) {
             XmlFormat::Syspass =>
             new SyspassImport(
-                $this->application,
+                $this->config,
+                $this->eventDispatcher,
+                $this->context,
                 $this->importHelper,
                 $this->crypt,
                 $xmlFile->getDocument()
             ),
             XmlFormat::Keepass =>
             new KeepassImport(
-                $this->application,
+                $this->config,
+                $this->eventDispatcher,
+                $this->context,
                 $this->importHelper,
                 $this->crypt,
                 $xmlFile->getDocument()

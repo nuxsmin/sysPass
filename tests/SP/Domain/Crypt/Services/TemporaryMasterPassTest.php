@@ -400,7 +400,9 @@ class TemporaryMasterPassTest extends UnitaryTestCase
         $this->crypt = $this->createMock(CryptInterface::class);
 
         $this->temporaryMasterPass = new TemporaryMasterPass(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->configService,
             $this->userService,
             $this->mailService,

@@ -375,7 +375,13 @@ class UserGroupTest extends UnitaryTestCase
         );
         $this->userToUserGroupService = $this->createMock(UserToUserGroupService::class);
 
-        $this->userGroup = new UserGroup($this->application, $this->userGroupRepository, $this->userToUserGroupService);
+        $this->userGroup = new UserGroup(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->userGroupRepository,
+            $this->userToUserGroupService
+        );
     }
 
 

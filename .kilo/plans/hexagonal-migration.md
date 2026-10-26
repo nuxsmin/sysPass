@@ -145,7 +145,7 @@ Phases are ordered so the guardrails come first, then inward dependency fixes, t
 
 ### Phase 2: Remove the service locator and session access from the Domain
 
-- [ ] **P2-1 Replace `Application` in `Domain\Common\Services\Service`.** Constructor takes explicit ports: `ConfigFileService`, `EventDispatcherInterface`, `Context`. Update the 60 subclasses (and 10 with another base). PHP-DI autowires by type, so DI definitions should not change. Verify with P0-4.
+- [x] **P2-1 Replace `Application` in `Domain\Common\Services\Service`.** Constructor takes explicit ports: `ConfigFileService`, `EventDispatcherInterface`, `Context`. Update the 60 subclasses (and 10 with another base). PHP-DI autowires by type, so DI definitions should not change. Verify with P0-4.
   - Acceptance: no `SP\Core\Application` import in `lib/SP/Domain` (M4 = 0).
 - [ ] **P2-2 Master-key handling behind a port.** `Service::getMasterKeyFromContext()` and `setMasterKeyInContext()` currently call `CryptSession` and check `SessionContext`. Introduce `SP\Domain\Crypt\Ports\MasterKeyStore` (get/set/clear). Implement it in Core (session) and Stateless (non-session context). Callers use the port.
   - Acceptance: no `SP\Core\Crypt\Session` or `SP\Core\Context\Session` import in Domain. Auth and account encryption tests still pass.
@@ -289,6 +289,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-25 | P0-2 (in progress) | — | Web controller step added to the integration job. Job stays gated until its first green CI run (D4). Api/Cli stay excluded (see P7-1/P8-1). |
 | 2026-10-25 | P0-6 test hygiene | M16 = 0 | Added the 11 missing `#[Group]` attributes. |
 | 2026-10-25 | Review fixes (1–3) | `domain-presentation-calls` 103 → 126 | Added frozen per-rule allowlist maxima; included `__()` and per-file call counts; made M6 tolerate zero matches. |
+| 2026-10-26 | P2-1 ports in `Service` (verified: unitary, wiring, core, modules) | M4 74 → 0; M1 96 → 45; M3 88 → 32; allowlist domain-only 144 → 70, domain-application 74 → 0 | `Service` takes `ConfigFileService`, `EventDispatcherInterface`, `Context`; 73 Domain subclasses forward the ports (`ImportStrategy` and `XmlImportBase` edited by hand). Tests use `$this->config`, `$this->eventDispatcherStub`, `$this->context`. `php-testing-composer:2.6`: `--group unitary --testsuite core` 2000 tests, 0 failures; `--testsuite core` 2001 tests, 0 failures; `--testsuite modules` 96 tests, 0 failures, 0 errors, 1 skipped (197 assertions vs 199 in the P0-1 baseline, not investigated). The only error in the first two runs is `ImageTest::testConvertText` (`imagefttext()` missing; this image lacks GD FreeType; `Image.php` untouched). `LayerDependencyTest` 7/7 and `ContainerWiringTest` pass. Core and modules ran against the existing `syspass-test-db` (MariaDB 10.3) using a dedicated `syspass_p21` database. Clear `CACHE_PATH/container/` before running with DEBUG off, because compiled containers keep old constructor signatures. |
 
 ### Baseline test results (P0-1)
 

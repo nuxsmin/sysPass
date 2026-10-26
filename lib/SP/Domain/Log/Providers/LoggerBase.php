@@ -28,10 +28,12 @@ namespace SP\Domain\Log\Providers;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use SP\Core\Application;
 use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\LanguageInterface;
@@ -51,13 +53,15 @@ abstract class LoggerBase extends Provider implements EventReceiver
     protected readonly string $events;
 
     public function __construct(
-        Application                          $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         protected readonly LoggerInterface $logger,
         protected readonly LanguageInterface $language,
         protected readonly RequestService  $request,
         private readonly EventMessageFormatterInterface $messageFormatter
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $configEvents = $this->config->getConfigData()->getLogEvents();
 

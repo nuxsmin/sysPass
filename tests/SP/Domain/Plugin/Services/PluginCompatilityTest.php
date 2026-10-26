@@ -103,6 +103,11 @@ class PluginCompatilityTest extends UnitaryTestCase
 
         $this->pluginManagerService = $this->createMock(PluginManagerService::class);
 
-        $this->pluginCompatibility = new PluginCompatility($this->application, $this->pluginManagerService);
+        $this->pluginCompatibility = new PluginCompatility(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->pluginManagerService
+        );
     }
 }

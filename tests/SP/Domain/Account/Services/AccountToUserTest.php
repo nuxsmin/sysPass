@@ -112,6 +112,11 @@ class AccountToUserTest extends UnitaryTestCase
         $this->accountToUserRepository = $this->createMock(AccountToUserRepository::class);
 
         $this->accountToUser =
-            new AccountToUser($this->application, $this->accountToUserRepository);
+            new AccountToUser(
+                $this->config,
+                $this->eventDispatcherStub,
+                $this->context,
+                $this->accountToUserRepository
+            );
     }
 }

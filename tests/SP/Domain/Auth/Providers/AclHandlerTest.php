@@ -226,7 +226,9 @@ class AclHandlerTest extends UnitaryTestCase
         $this->userGroupService = $this->createMock(UserGroupService::class);
 
         $this->aclHandler = new AclHandler(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->userProfileService,
             $this->userGroupService,
             $this->pathsContext

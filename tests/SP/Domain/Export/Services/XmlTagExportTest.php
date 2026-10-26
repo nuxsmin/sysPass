@@ -119,7 +119,9 @@ class XmlTagExportTest extends UnitaryTestCase
         $this->tagService = $this->createMock(TagService::class);
 
         $this->xmlTagExport = new XmlTagExport(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->tagService
         );
     }

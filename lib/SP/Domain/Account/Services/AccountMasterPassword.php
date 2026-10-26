@@ -27,8 +27,10 @@ declare(strict_types=1);
 namespace SP\Domain\Account\Services;
 
 use Exception;
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
@@ -52,13 +54,15 @@ use function SP\logger;
 final class AccountMasterPassword extends Service implements AccountMasterPasswordService
 {
     public function __construct(
-        Application                            $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly AccountService        $accountService,
         private readonly AccountHistoryService $accountHistoryService,
         private readonly CryptInterface        $crypt,
         private readonly AccountCryptService   $accountCryptService
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

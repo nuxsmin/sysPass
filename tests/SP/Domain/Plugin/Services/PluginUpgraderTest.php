@@ -54,7 +54,12 @@ class PluginUpgraderTest extends UnitaryTestCase
 
         $pluginManagerService = $this->createMock(PluginManagerService::class);
 
-        $pluginUpgrader = new PluginUpgrader($this->application, $pluginManagerService);
+        $pluginUpgrader = new PluginUpgrader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
 
         $plugin = self::createMock(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
@@ -87,7 +92,12 @@ class PluginUpgraderTest extends UnitaryTestCase
 
         $pluginManagerService = $this->createMock(PluginManagerService::class);
 
-        $pluginUpgrader = new PluginUpgrader($this->application, $pluginManagerService);
+        $pluginUpgrader = new PluginUpgrader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
 
         $plugin = self::createMock(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
@@ -118,7 +128,12 @@ class PluginUpgraderTest extends UnitaryTestCase
 
         $pluginManagerService = $this->createMock(PluginManagerService::class);
 
-        $pluginUpgrader = new PluginUpgrader($this->application, $pluginManagerService);
+        $pluginUpgrader = new PluginUpgrader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
 
         $plugin = self::createMock(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
@@ -147,7 +162,12 @@ class PluginUpgraderTest extends UnitaryTestCase
     {
         $pluginManagerService = $this->createMock(PluginManagerService::class);
 
-        $pluginUpgrader = new PluginUpgrader($this->application, $pluginManagerService);
+        $pluginUpgrader = new PluginUpgrader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
 
         $plugin = self::createMock(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');

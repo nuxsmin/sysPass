@@ -27,11 +27,13 @@ declare(strict_types=1);
 namespace SP\Domain\Notification\Services;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\EventReceiver as EventReceiverAttribute;
 use SP\Domain\Common\Services\EventReceiver as EventReceiverTrait;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Notification\Models\Notification;
@@ -50,11 +52,13 @@ final class NotificationEvent extends Service implements EventReceiver
     use EventReceiverTrait;
 
     public function __construct(
-        Application                                    $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly NotificationService           $notificationService,
         private readonly EventMessageFormatterInterface $messageFormatter
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->setupEvents();
     }

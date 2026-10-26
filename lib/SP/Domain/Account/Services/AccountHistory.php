@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Services;
 
-use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountHistoryDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
@@ -35,7 +34,10 @@ use SP\Domain\Account\Ports\AccountHistoryRepository;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Database\Dtos\QueryResult;
@@ -48,10 +50,12 @@ use function SP\__u;
 final class AccountHistory extends Service implements AccountHistoryService
 {
     public function __construct(
-        Application                               $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly AccountHistoryRepository $accountHistoryRepository
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

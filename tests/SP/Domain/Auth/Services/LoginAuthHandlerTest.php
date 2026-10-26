@@ -29,7 +29,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Application;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthData;
@@ -228,10 +227,10 @@ class LoginAuthHandlerTest extends UnitaryTestCase
         $config = self::createStub(ConfigFileService::class);
         $config->method('getConfigData')->willReturn($configData);
 
-        $application = new Application($config, $this->createStub(EventDispatcherInterface::class), $this->context);
-
         $loginAuthHandler = new LoginAuthHandler(
-            $application,
+            $config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->trackService,
             $this->request,
             $this->userService
@@ -533,7 +532,9 @@ class LoginAuthHandlerTest extends UnitaryTestCase
         $this->userService = $this->createMock(UserService::class);
 
         $this->loginAuthHandler = new LoginAuthHandler(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->trackService,
             $this->request,
             $this->userService

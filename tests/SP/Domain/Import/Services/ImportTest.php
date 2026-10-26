@@ -77,7 +77,13 @@ class ImportTest extends UnitaryTestCase
             ->with($this->importParamsDto)
             ->willReturn($itemsImportService);
 
-        $import = new Import($this->application, $this->importStrategyService, $this->repository);
+        $import = new Import(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->importStrategyService,
+            $this->repository
+        );
         $import->doImport($this->importParamsDto);
     }
 
@@ -91,7 +97,13 @@ class ImportTest extends UnitaryTestCase
                          ->method('transactionAware')
                          ->willThrowException(new RuntimeException('test'));
 
-        $import = new Import($this->application, $this->importStrategyService, $this->repository);
+        $import = new Import(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->importStrategyService,
+            $this->repository
+        );
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('test');

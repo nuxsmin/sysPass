@@ -520,7 +520,9 @@ class LoginTest extends UnitaryTestCase
         $this->loginAuthHandlerService = $this->createMock(LoginAuthHandlerService::class);
 
         $this->login = new Login(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->trackService,
             $this->request,
             $this->authProviderService,

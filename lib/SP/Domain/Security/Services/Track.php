@@ -27,8 +27,10 @@ declare(strict_types=1);
 namespace SP\Domain\Security\Services;
 
 use Exception;
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -58,11 +60,13 @@ final class Track extends Service implements TrackService
     private const TIME_SLEEP                 = 0.25;
 
     public function __construct(
-        Application                      $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly TrackRepository $trackRepository,
         private readonly RequestService  $request
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
 

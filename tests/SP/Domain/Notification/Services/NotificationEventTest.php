@@ -216,6 +216,12 @@ class NotificationEventTest extends UnitaryTestCase
         parent::setUp();
 
         $this->notificationService = $this->createMock(NotificationService::class);
-        $this->notificationEvent = new NotificationEvent($this->application, $this->notificationService, new EventMessageFormatter());
+        $this->notificationEvent = new NotificationEvent(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->notificationService,
+            new EventMessageFormatter()
+        );
     }
 }

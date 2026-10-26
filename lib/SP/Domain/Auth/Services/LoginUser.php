@@ -27,8 +27,10 @@ declare(strict_types=1);
 namespace SP\Domain\Auth\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Dtos\LoginResponseDto;
 use SP\Domain\Auth\Ports\LoginUserService;
@@ -50,12 +52,14 @@ use function SP\__u;
 final class LoginUser extends LoginBase implements LoginUserService
 {
     public function __construct(
-        Application                             $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         TrackService                            $trackService,
         RequestService $request,
         private readonly UserPassRecoverService $userPassRecoverService
     ) {
-        parent::__construct($application, $trackService, $request);
+        parent::__construct($config, $eventDispatcher, $context, $trackService, $request);
     }
 
     /**

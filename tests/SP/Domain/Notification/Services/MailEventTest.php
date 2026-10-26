@@ -241,7 +241,14 @@ class MailEventTest extends UnitaryTestCase
 
         $this->configData->setMailEvents([]);
 
-        $databaseHandler = new MailEvent($this->application, $this->mailService, $this->requestService, new EventMessageFormatter());
+        $databaseHandler = new MailEvent(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->mailService,
+            $this->requestService,
+            new EventMessageFormatter()
+        );
         $out = $databaseHandler->getEvents();
 
         $this->assertEquals($expected, $out);
@@ -265,6 +272,13 @@ class MailEventTest extends UnitaryTestCase
         $this->mailService = $this->createMock(MailService::class);
         $this->requestService = $this->createMock(RequestService::class);
 
-        $this->mailEvent = new MailEvent($this->application, $this->mailService, $this->requestService, new EventMessageFormatter());
+        $this->mailEvent = new MailEvent(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->mailService,
+            $this->requestService,
+            new EventMessageFormatter()
+        );
     }
 }

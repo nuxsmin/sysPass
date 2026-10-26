@@ -359,6 +359,13 @@ class CsvImportTest extends UnitaryTestCase
         $crypt = $this->createMock(CryptInterface::class);
         $this->fileHandler = $this->createMock(FileHandlerInterface::class);
 
-        $this->csvImport = new CsvImport($this->application, $importHelper, $crypt, $this->fileHandler);
+        $this->csvImport = new CsvImport(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $importHelper,
+            $crypt,
+            $this->fileHandler
+        );
     }
 }

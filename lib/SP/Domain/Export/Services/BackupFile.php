@@ -29,8 +29,10 @@ namespace SP\Domain\Export\Services;
 
 use Exception;
 use PDO;
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -60,14 +62,16 @@ final class BackupFile extends Service implements BackupFileService
     private const        BACKUP_PREFIX        = 'sysPassBackup';
 
     public function __construct(
-        Application                              $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly DatabaseInterface       $database,
         private readonly DatabaseUtil            $databaseUtil,
         private readonly FileHandlerInterface    $dbBackupFile,
         private readonly ArchiveHandlerInterface $dbArchiveHandler,
         private readonly ArchiveHandlerInterface $appArchiveHandler,
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

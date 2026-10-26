@@ -423,7 +423,9 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->temporaryMasterPassService = $this->createMock(TemporaryMasterPassService::class);
 
         $this->loginMasterPass = new LoginMasterPass(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->trackService,
             $this->request,
             $this->userMasterPassService,

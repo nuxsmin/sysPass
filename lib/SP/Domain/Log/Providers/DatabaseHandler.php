@@ -27,10 +27,12 @@ declare(strict_types=1);
 namespace SP\Domain\Log\Providers;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\LanguageInterface;
@@ -51,12 +53,14 @@ final class DatabaseHandler extends Provider implements EventReceiver
     private readonly string $events;
 
     public function __construct(
-        Application                                 $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly EventlogService            $eventlogService,
         private readonly LanguageInterface          $language,
         private readonly EventMessageFormatterInterface $messageFormatter
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $configEvents = $this->config->getConfigData()->getLogEvents();
 

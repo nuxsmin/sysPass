@@ -249,6 +249,12 @@ class XmlVerifyTest extends UnitaryTestCase
 
         $this->crypt = $this->createMock(CryptInterface::class);
 
-        $this->xmlVerify = new XmlVerify($this->application, $this->crypt, $this->pathsContext[Path::XML_SCHEMA]);
+        $this->xmlVerify = new XmlVerify(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->crypt,
+            $this->pathsContext[Path::XML_SCHEMA]
+        );
     }
 }

@@ -219,7 +219,9 @@ class AccountAclTest extends UnitaryTestCase
         AccountPermission $example
     ): void {
         $accountAcl = new AccountAcl(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->acl,
             $this->userToUserGroupService,
             $this->pathsContext
@@ -707,7 +709,9 @@ class AccountAclTest extends UnitaryTestCase
         );
 
         $accountAclService = new AccountAcl(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
             $this->pathsContext,
@@ -747,7 +751,9 @@ class AccountAclTest extends UnitaryTestCase
         $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAcl(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
             $this->pathsContext,
@@ -795,7 +801,9 @@ class AccountAclTest extends UnitaryTestCase
         $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAcl(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
             $this->pathsContext,
@@ -832,7 +840,9 @@ class AccountAclTest extends UnitaryTestCase
         $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAcl(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             new Acl($this->context, $this->application->getEventDispatcher(), $actions),
             $userToUserGroupService,
             $this->pathsContext,

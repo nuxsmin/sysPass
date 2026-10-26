@@ -25,10 +25,12 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Providers;
 
-use SP\Core\Application;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Providers\Provider;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\User\Dtos\UserDto;
 use SplObjectStorage;
 
@@ -48,9 +50,13 @@ final class AuthProvider extends Provider implements AuthProviderService
      */
     protected readonly SplObjectStorage $auths;
 
-    public function __construct(Application $application)
+    public function __construct(
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context
+    )
     {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->auths = new SplObjectStorage();
     }

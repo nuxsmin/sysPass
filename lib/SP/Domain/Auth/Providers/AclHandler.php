@@ -27,12 +27,14 @@ declare(strict_types=1);
 namespace SP\Domain\Auth\Providers;
 
 use Exception;
-use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -62,12 +64,14 @@ final class AclHandler extends Provider implements EventReceiver
     private readonly string $events;
 
     public function __construct(
-        Application                         $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly UserProfileService $userProfileService,
         private readonly UserGroupService $userGroupService,
         private readonly PathsContext     $pathsContext
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->setup();
     }

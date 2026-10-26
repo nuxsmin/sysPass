@@ -499,7 +499,9 @@ class PluginManagerTest extends UnitaryTestCase
         $this->pluginRepository = $this->createMock(PluginRepository::class);
 
         $this->pluginManager = new PluginManager(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->pluginRepository
         );
     }

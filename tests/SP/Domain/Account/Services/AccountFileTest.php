@@ -253,6 +253,12 @@ class AccountFileTest extends UnitaryTestCase
         $this->imageUtil = $this->createMock(ImageService::class);
 
         $this->accountFile =
-            new AccountFile($this->application, $this->accountFileRepository, $this->imageUtil);
+            new AccountFile(
+                $this->config,
+                $this->eventDispatcherStub,
+                $this->context,
+                $this->accountFileRepository,
+                $this->imageUtil
+            );
     }
 }

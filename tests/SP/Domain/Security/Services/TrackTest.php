@@ -262,6 +262,12 @@ class TrackTest extends UnitaryTestCase
         $this->trackRepository = $this->createMock(TrackRepository::class);
         $this->request = $this->createMock(RequestService::class);
 
-        $this->track = new Track($this->application, $this->trackRepository, $this->request);
+        $this->track = new Track(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->trackRepository,
+            $this->request
+        );
     }
 }

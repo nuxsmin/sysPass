@@ -693,7 +693,9 @@ class CustomFieldDataTest extends UnitaryTestCase
         $this->crypt = $this->createMock(CryptInterface::class);
 
         $this->customFieldData = new CustomFieldData(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->customFieldDataRepository,
             $this->customFieldDefinitionRepository,
             $this->crypt
