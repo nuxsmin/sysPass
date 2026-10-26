@@ -23,7 +23,13 @@ jobs:
           sudo locale-gen es_ES.UTF-8 en_US.UTF-8 && sudo update-locale
 
       - name: Install test font
-        run: sudo apt-get update && sudo apt-get install -y fonts-freefont-otf
+        run: |
+          sudo apt-get update && sudo apt-get install -y fonts-freefont-otf || sudo apt-get install -y fonts-freefont-ttf
+          sudo mkdir -p /usr/share/fonts/freefont
+          font=$(find /usr/share/fonts \( -name 'FreeSans.otf' -o -name 'FreeSans.ttf' \) -print -quit)
+          test -n "$font"
+          sudo ln -sf "$font" /usr/share/fonts/freefont/FreeSans.otf
+          ls -l /usr/share/fonts/freefont/FreeSans.otf
 
       - name: Setup PHP with tools
         uses: shivammathur/setup-php@v2
@@ -109,7 +115,13 @@ jobs:
           fail-fast: true
 
       - name: Install test font
-        run: sudo apt-get update && sudo apt-get install -y fonts-freefont-otf
+        run: |
+          sudo apt-get update && sudo apt-get install -y fonts-freefont-otf || sudo apt-get install -y fonts-freefont-ttf
+          sudo mkdir -p /usr/share/fonts/freefont
+          font=$(find /usr/share/fonts \( -name 'FreeSans.otf' -o -name 'FreeSans.ttf' \) -print -quit)
+          test -n "$font"
+          sudo ln -sf "$font" /usr/share/fonts/freefont/FreeSans.otf
+          ls -l /usr/share/fonts/freefont/FreeSans.otf
 
       - name: Get composer cache directory
         id: composer-cache
