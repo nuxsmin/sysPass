@@ -33,6 +33,7 @@ use SP\Domain\Crypt\Services\Hash;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Ports\ApiService;
+use SP\Domain\Api\Ports\HelpProvider;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Services\AuthToken;
@@ -54,7 +55,6 @@ use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Modules\Api\Controllers\Help\HelpInterface;
 
 use function SP\__u;
 use function SP\logger;
@@ -373,7 +373,7 @@ final class Api extends Service implements ApiService
      */
     public function setHelpClass(string $helpClass): void
     {
-        if (class_exists($helpClass) && is_subclass_of($helpClass, HelpInterface::class)) {
+        if (class_exists($helpClass) && is_subclass_of($helpClass, HelpProvider::class)) {
             $this->helpClass = $helpClass;
 
             return;

@@ -15,6 +15,44 @@ Goal: `lib/` holds the core logic (Domain + Application + Infrastructure adapter
 - Re-run the metric commands in section 2 after each task.
 - Status legend: `[ ]` todo, `[~]` in progress, `[x]` done, `[-]` dropped (with reason).
 
+### 0.1 GitHub tracking
+
+Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [#1976](https://github.com/nuxsmin/sysPass/issues/1976), and the board is [Project #1](https://github.com/users/nuxsmin/projects/1). Each issue lists `Blocked by:` and `Blocks:` at the top of its body, and the full dependency order is in #1976. When an issue and this file disagree, the issue wins.
+
+| Task | Issue | State |
+|---|---|---|
+| P0-1 to P0-7 | #1957 to #1963 | done |
+| P1-1 | #1964 | done |
+| P1-5 | #2013 | done (`4495bdb0`) |
+| P1-2 | #1969 | done (`a2a557fa`) |
+| P1-3 | #1972 | done (`ed2649e2`) |
+| P1-4 | #1970 | done (`38101a7e`) |
+| P1-6 | #2012 | done |
+| P1-7 | #2014 | todo |
+| P1-8 | #2051 | todo (last; after all callers are removed) |
+| P2-1 | #1971 | done (`333ae6c8`) |
+| P2-2 | #2023 | todo (security review) |
+| P2-3 | #2029 | todo |
+| P2-4 | #2024 | todo |
+| P3-1 | #1973 | todo |
+| P3-2 | #2030 | todo |
+| P3-3 | #2036 | todo |
+| P4-1 | #2025 | todo |
+| P4-2 | #1974 | todo |
+| P4-3 | #2031 | todo |
+| P4-4 | #2015 | todo |
+| P5-1 | #2026 | todo |
+| P5-2 | #2032 | todo |
+| P5-3 | #2037 | todo |
+| P6-W1 | #1975 | todo (pilot) |
+| P6-W2 to P6-W7 | #2042 to #2048 | todo |
+| P7-1 to P7-4 | #2016, #2027, #2047, #2049 | todo |
+| P8-1, P8-2 | #2017, #2033 | todo |
+| P9-1 to P9-5 | #2038, #2050, #2034, #2052, #2053 | todo |
+| P10-1 to P10-5 | #2035, #2039, #2018, #2019, #2020 | todo |
+| P11-1 to P11-5 | #2021, #2028, #2040, #2041, #2022 | todo |
+| D1, D2, D3, D8, D9 | #1965, #1966, #2011, #1967, #1968 | decision |
+
 ---
 
 ## 1. Target architecture
@@ -127,17 +165,17 @@ Phases are ordered so the guardrails come first, then inward dependency fixes, t
 
 ### Phase 1: Remove outer-layer types from the Domain (mechanical, no behaviour change)
 
-- [ ] **P1-1 Move Infrastructure exceptions to Domain (D7).** `NoSuchItemException`, `DuplicatedItemException` (`Infrastructure/Common/Repositories`), `FileException` (`Infrastructure/File`), `DatabaseException` (`Infrastructure/Database`). All extend `SP\Domain\Core\Exceptions\SPException` already. Move to `SP\Domain\Core\Exceptions\` (or `Domain\Common\Exceptions\`). Update ~150 imports across Domain, modules, and tests.
+- [x] **P1-1 Move Infrastructure exceptions to Domain (D7).** `NoSuchItemException`, `DuplicatedItemException` (`Infrastructure/Common/Repositories`), `FileException` (`Infrastructure/File`), `DatabaseException` (`Infrastructure/Database`). All extend `SP\Domain\Core\Exceptions\SPException` already. Move to `SP\Domain\Core\Exceptions\` (or `Domain\Common\Exceptions\`). Update ~150 imports across Domain, modules, and tests.
   - Acceptance: no `use SP\Infrastructure\...Exception` in `lib/SP/Domain` or `app/modules`. Full test run green.
   - Targets: M7 drops by 48 import lines (36 + 9 + 3). M1 drops for every Domain file whose only outer import is one of these exceptions.
-- [ ] **P1-2 Move `QueryResult` to Domain and remove its translation call.** Move `SP\Infrastructure\Database\QueryResult` to `SP\Domain\Database\Dtos\QueryResult` (depends only on `Domain\Common\Models\Model`). Replace `__u()` in its constructor with a domain exception message. Update the `Infrastructure\Database\QueryData` that builds it.
+- [x] **P1-2 Move `QueryResult` to Domain and remove its translation call.** Move `SP\Infrastructure\Database\QueryResult` to `SP\Domain\Database\Dtos\QueryResult` (depends only on `Domain\Common\Models\Model`). Replace `__u()` in its constructor with a domain exception message. Update the `Infrastructure\Database\QueryData` that builds it.
   - Acceptance: M6 drops to 0 (ports no longer import Infrastructure types). M14 drops for files that only import `QueryResult`.
 - [x] **P1-3 Move `Hash` to the Domain crypto context.** `SP\Core\Crypt\Hash` (static `hashKey`, `checkHashKey`, `signMessage`, `checkMessage`) is used in 16 Domain files and only depends on `logger()`. Move it to `SP\Domain\Crypt\Services\Hash` (or behind a `HashService` port). Add characterization tests first if none exist. This is security code: output bytes must stay identical.
   - Acceptance: byte-for-byte identical hashes for fixed fixtures before and after; no `use SP\Core\Crypt\Hash` in Domain.
-- [ ] **P1-4 Move events and messages into the Domain.** Move `SP\Core\Events\Event` and `EventMessage` value objects to `SP\Domain\Core\Events\` and `SP\Domain\Core\Messages\`. Keep `EventDispatcher` implementation in Core. Replace `HtmlFormatter`/`TextFormatter` concrete references inside `EventMessage` with the existing `Domain\Core\Messages\FormatterInterface`, injected by Core.
+- [x] **P1-4 Move events and messages into the Domain.** Move `SP\Core\Events\Event` and `EventMessage` value objects to `SP\Domain\Core\Events\` and `SP\Domain\Core\Messages\`. Keep `EventDispatcher` implementation in Core. Replace `HtmlFormatter`/`TextFormatter` concrete references inside `EventMessage` with the existing `Domain\Core\Messages\FormatterInterface`, injected by Core.
   - Acceptance: no `use SP\Core\Events\...` in Domain or Infrastructure. This removes the Event/EventMessage imports (39 + 30 Domain files, 5 Infrastructure use lines) from M3.
 - [x] **P1-5 Move `MailMessage` into Domain notification.** `SP\Core\Messages\MailMessage` → `SP\Domain\Notification\...`. Acceptance: no `SP\Core` in `Domain/Notification`.
-- [ ] **P1-6 Invert `HelpInterface` dependency.** Define a `SP\Domain\Api\Ports\HelpProvider` (or similar) in Domain. Implement it in `app/modules/api`. `Domain/Api/Services/Api.php` depends only on the port.
+- [x] **P1-6 Invert `HelpInterface` dependency.** Define a `SP\Domain\Api\Ports\HelpProvider` (or similar) in Domain. Implement it in `app/modules/api`. `Domain/Api/Services/Api.php` depends only on the port.
   - Acceptance: M12 drops by 1 (`Domain/Api` no longer references `SP\Modules`).
 - [ ] **P1-7 Strip presentation from Domain adapters.** Move `ItemTrait` usages out of `Domain/Account/Adapters/Account`, `Domain/Category/Adapters/Category`, `Domain/Client/Adapters/Client`. Move `SelectItemAdapter` out of `Domain/Account/Adapters/Account`. Move `PasswordValidator` usage out of `Domain/Account/Services/AccountPreset` (into the calling controller, or into a Domain validator with a rule port). Replace `IconInterface` in `Domain/Core/UI/ThemeIconsInterface` with a domain icon-key type. Replace `SP\Util\Util` in `Domain/Import/Services/ImportStrategy` and `Domain/Http/Services/Request` with a domain helper.
   - Acceptance: Domain has 0 imports of `SP\Mvc`, `SP\Html`, `SP\Util` and `SP\Modules` (currently 4 + 1 + 2 + 1 files), and M1 drops by the same amount, unless those files also import Core.
@@ -291,6 +329,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-25 | Review fixes (1–3) | `domain-presentation-calls` 103 → 126 | Added frozen per-rule allowlist maxima; included `__()` and per-file call counts; made M6 tolerate zero matches. |
 | 2026-10-26 | P2-1 ports in `Service` (verified: unitary, wiring, core, modules) | M4 74 → 0; M1 96 → 45; M3 88 → 32; allowlist domain-only 144 → 70, domain-application 74 → 0 | `Service` takes `ConfigFileService`, `EventDispatcherInterface`, `Context`; 73 Domain subclasses forward the ports (`ImportStrategy` and `XmlImportBase` edited by hand). Tests use `$this->config`, `$this->eventDispatcherStub`, `$this->context`. `php-testing-composer:2.6`: `--group unitary --testsuite core` 2000 tests, 0 failures; `--testsuite core` 2001 tests, 0 failures; `--testsuite modules` 96 tests, 0 failures, 0 errors, 1 skipped (197 assertions vs 199 in the P0-1 baseline, not investigated). The only error in the first two runs is `ImageTest::testConvertText` (`imagefttext()` missing; this image lacks GD FreeType; `Image.php` untouched). `LayerDependencyTest` 7/7 and `ContainerWiringTest` pass. Core and modules ran against the existing `syspass-test-db` (MariaDB 10.3) using a dedicated `syspass_p21` database. Clear `CACHE_PATH/container/` before running with DEBUG off, because compiled containers keep old constructor signatures. |
 | 2026-10-27 | P1-5 mail message into Domain (verified: unitary, core, modules, architecture, wiring) | M1 35 → 30; M3 19 → 14; allowlist domain-only 54 → 48 | `MailMessage` moved to `SP\Domain\Notification\Dtos`; `MessageBase` moved to `SP\Domain\Core\Messages` and no longer implements `MessageInterface`. Command-side formatting moved behind `MailMessageFormatterInterface` (Core implementation `MailMessageFormatter`), wired in `CoreDefinitions`. `EventMessageFormatterInterface` gained `formatDescription()` so `MailEvent` no longer imports `TextFormatter`. `Mail` now takes `MailMessageFormatterInterface`. `MailMessage` is a pure data DTO; `NotificationMessage` explicitly implements `MessageInterface`. PHPStan unchanged at 1143 errors. Suites: core unitary 2007 tests, core 2008 tests, modules 96 tests, all green (1 skipped, known warnings). |
+| 2026-10-27 | P1-6 invert `HelpInterface` (verified: architecture, API unit, modules) | M12 3 → 2; allowlist domain-only 48 → 47; M6 144 → 145 ports | Added `SP\Domain\Api\Ports\HelpProvider`; `HelpInterface` extends it, so the module help classes implement the Domain port. `Api` now validates against `HelpProvider` and has no `SP\Modules` import. PHPStan reports only the pre-existing errors in `Api.php`; API unit tests 50/50 and modules 96/96 green (1 skipped, known warnings). |
 
 ### Baseline test results (P0-1)
 
