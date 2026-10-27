@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
@@ -142,7 +141,7 @@ final class ItemPresetGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ITEMPRESET_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::ITEMPRESET_SEARCH)
         );
 
         return $gridActionSearch;
@@ -162,7 +161,7 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
 
-        $route = Acl::getActionRoute(AclActionsInterface::ITEMPRESET_CREATE) . '/' .
+        $route = $this->acl->getRouteFor(AclActionsInterface::ITEMPRESET_CREATE) . '/' .
                  ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION;
 
         $gridAction->addData('action-route', $route);
@@ -184,7 +183,7 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
 
-        $route = Acl::getActionRoute(AclActionsInterface::ITEMPRESET_CREATE) . '/' .
+        $route = $this->acl->getRouteFor(AclActionsInterface::ITEMPRESET_CREATE) . '/' .
                  ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE;
 
         $gridAction->addData('action-route', $route);
@@ -206,7 +205,7 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
 
-        $route = Acl::getActionRoute(AclActionsInterface::ITEMPRESET_CREATE) . '/' .
+        $route = $this->acl->getRouteFor(AclActionsInterface::ITEMPRESET_CREATE) . '/' .
                  ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT;
 
         $gridAction->addData('action-route', $route);
@@ -228,7 +227,7 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setSkip(true);
         $gridAction->setOnClickFunction('appMgmt/show');
 
-        $route = Acl::getActionRoute(AclActionsInterface::ITEMPRESET_CREATE) . '/' .
+        $route = $this->acl->getRouteFor(AclActionsInterface::ITEMPRESET_CREATE) . '/' .
                  ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD;
 
         $gridAction->addData('action-route', $route);
@@ -247,7 +246,7 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ITEMPRESET_EDIT)
+            $this->acl->getRouteFor(AclActionsInterface::ITEMPRESET_EDIT)
         );
 
         return $gridAction;
@@ -264,7 +263,7 @@ final class ItemPresetGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::ITEMPRESET_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::ITEMPRESET_DELETE)
         );
 
         return $gridAction;

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,47 +24,44 @@
 
 namespace SP\Modules\Web\Controllers\Track;
 
-
 use Exception;
-use JsonException;
-use SP\Domain\Core\Events\Event;
+use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\UnauthorizedActionException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Security\UseCases\ClearTracksUseCase;
+use SP\Domain\Security\UseCases\Dtos\ClearTracksCommand;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class ClearController
  */
 final class ClearController extends TrackBase
 {
-    use JsonTrait;
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        private readonly ClearTracksUseCase $clearTracksUseCase
+    ) {
+        parent::__construct($application, $webControllerHelper);
+    }
 
-    /**
-     * Clears tracks
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function clearAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function clearAction(): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::TRACK_CLEAR)) {
-                throw new UnauthorizedActionException(SPException::ERROR);
-            }
-
-            $this->trackService->clear();
-
-            $this->eventDispatcher->notify('clear.track', new Event($this));
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Tracks cleared out'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::TRACK_CLEAR)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        try {
+            $this->clearTracksUseCase->execute(new ClearTracksCommand());
+        } catch (Exception $e) {
+            return ActionResponse::error($e->getMessage());
+        }
+
+        return ActionResponse::ok(__u('Tracks cleared out'));
     }
 }

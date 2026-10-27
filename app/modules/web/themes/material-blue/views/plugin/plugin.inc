@@ -37,6 +37,7 @@ use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 use function SP\__;
 
+$plugin = $_getvar('plugin');
 $pluginInfo = $_getvar('pluginInfo');
 ?>
 
@@ -56,7 +57,7 @@ $pluginInfo = $_getvar('pluginInfo');
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo $pluginInfo->getName(); ?>" <?php
+                               echo $pluginInfo ? $pluginInfo->getName() : $plugin->getName(); ?>" <?php
                         echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="name"><?php
@@ -64,7 +65,8 @@ $pluginInfo = $_getvar('pluginInfo');
                     </div>
                 </td>
             </tr>
-            <tr>
+<?php
+            if ($pluginInfo): ?>            <tr>
                 <td class="descField"><?php
                     echo __('Version'); ?></td>
                 <td class="valField">
@@ -137,6 +139,8 @@ $pluginInfo = $_getvar('pluginInfo');
                     </div>
                 </td>
             </tr>
+<?php
+            endif; ?>
         </table>
     </form>
 </div>

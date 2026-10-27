@@ -70,7 +70,7 @@ use SP\Modules\Web\Controllers\Items\TagsController;
 use SP\Modules\Web\Controllers\Login\LoginController;
 use SP\Modules\Web\Controllers\Resource\CssController;
 use SP\Modules\Web\Controllers\Resource\JsController;
-use SP\Modules\Web\Controllers\Status\CheckNotices;
+use SP\Modules\Web\Controllers\Status\CheckNoticesController;
 use SP\Modules\Web\Controllers\Status\StatusController;
 use SP\Modules\Web\Controllers\Task\TrackStatusController;
 use SP\Modules\Web\Controllers\Upgrade\IndexController as UpgradeIndexController;
@@ -93,7 +93,7 @@ final class Init extends HttpModuleBase
         JsController::class,
         InstallController::class,
         GetEnvironmentController::class,
-        CheckNotices::class,
+        CheckNoticesController::class,
         StatusController::class,
         UpgradeIndexController::class,
         UpgradeController::class,

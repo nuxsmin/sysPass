@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,53 +24,47 @@
 
 namespace SP\Modules\Web\Controllers\Notification;
 
-
-use Exception;
-use JsonException;
-use SP\Domain\Core\Events\Event;
+use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Notification\UseCases\GetNotificationUseCase;
+use SP\Domain\User\Ports\UserService;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class ViewController
  */
 final class ViewController extends NotificationViewBase
 {
-    use JsonTrait;
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        GetNotificationUseCase $getNotificationUseCase,
+        UserService $userService
+    ) {
+        parent::__construct($application, $webControllerHelper, $getNotificationUseCase, $userService);
+    }
 
-    /**
-     * View action
-     *
-     * @param  int  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function viewAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function viewAction(int $id): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_VIEW)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $this->view->assign('header', __('View Notification'));
-            $this->view->assign('isView', true);
-
-            $this->setViewData($id);
-
-            $this->eventDispatcher->notify('show.notification', new Event($this));
-
-            return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_VIEW)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        $this->view->assign('header', __('View Notification'));
+        $this->view->assign('isView', true);
+
+        $this->setViewData($id);
+
+        $this->eventDispatcher->notify('show.notification', new Event($this));
+
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 }

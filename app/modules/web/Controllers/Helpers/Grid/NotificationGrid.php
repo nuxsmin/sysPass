@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -69,7 +68,7 @@ final class NotificationGrid extends GridBase
         $grid->addDataAction($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
-        $this->isAdminApp = $this->context->getUserData()->getIsAdminApp();
+        $this->isAdminApp = $this->context->getUserData()->isAdminApp;
 
         if ($this->isAdminApp) {
             $grid->addDataAction($this->getCreateAction());
@@ -191,7 +190,7 @@ final class NotificationGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('notification/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::NOTIFICATION_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::NOTIFICATION_SEARCH)
         );
 
         return $gridActionSearch;
@@ -212,7 +211,7 @@ final class NotificationGrid extends GridBase
         $gridAction->setOnClickFunction('notification/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::NOTIFICATION_CREATE)
+            $this->acl->getRouteFor(AclActionsInterface::NOTIFICATION_CREATE)
         );
 
         return $gridAction;
@@ -232,7 +231,7 @@ final class NotificationGrid extends GridBase
         $gridAction->setOnClickFunction('notification/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::NOTIFICATION_VIEW)
+            $this->acl->getRouteFor(AclActionsInterface::NOTIFICATION_VIEW)
         );
 
         return $gridAction;
@@ -267,11 +266,11 @@ final class NotificationGrid extends GridBase
         $gridAction->setFilterRowSource('checked');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::NOTIFICATION_CHECK)
+            $this->acl->getRouteFor(AclActionsInterface::NOTIFICATION_CHECK)
         );
         $gridAction->addData(
             'action-next',
-            Acl::getActionRoute(AclActionsInterface::NOTIFICATION)
+            $this->acl->getRouteFor(AclActionsInterface::NOTIFICATION)
         );
 
         return $gridAction;
@@ -290,7 +289,7 @@ final class NotificationGrid extends GridBase
         $gridAction->setOnClickFunction('notification/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::NOTIFICATION_EDIT)
+            $this->acl->getRouteFor(AclActionsInterface::NOTIFICATION_EDIT)
         );
 
         return $gridAction;
@@ -311,11 +310,11 @@ final class NotificationGrid extends GridBase
         $gridAction->setFilterRowSource('checked', 0);
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::NOTIFICATION_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::NOTIFICATION_DELETE)
         );
         $gridAction->addData(
             'action-next',
-            Acl::getActionRoute(AclActionsInterface::NOTIFICATION)
+            $this->acl->getRouteFor(AclActionsInterface::NOTIFICATION)
         );
 
         return $gridAction;

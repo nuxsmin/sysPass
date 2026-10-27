@@ -24,11 +24,14 @@
 
 namespace SP\Modules\Web\Controllers\Items;
 
+use Klein\Response;
 use SP\Core\Application;
 use SP\Domain\Client\Ports\ClientService;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseStatus;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Http\Header;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
@@ -38,30 +41,27 @@ use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
  */
 final class ClientsController extends SimpleControllerBase
 {
-    private ClientService $clientService;
-
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        ClientService $clientService
+        private readonly ClientService $clientService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 
         $this->checks();
-
-        $this->clientService = $clientService;
     }
 
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     */
-    public function clientsAction(): void
+    #[Action(ResponseType::CALLBACK)]
+    public function clientsAction(): ActionResponse
     {
-        $this->jsonResponseFactory->create($this->router->response())
-                    ->sendRaw(
-                        SelectItemAdapter::factory($this->clientService->getAllForUser())->getJsonItemsFromModel()
-                    );
+        $data = SelectItemAdapter::factory($this->clientService->getAllForUser())->getJsonItemsFromModel();
+
+        return new ActionResponse(
+            ResponseStatus::OK,
+            function (Response $response) use ($data) {
+                $response->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_JSON->value);
+                $response->body($data);
+            }
+        );
     }
 }

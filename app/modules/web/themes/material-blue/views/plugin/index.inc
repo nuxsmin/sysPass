@@ -1,4 +1,6 @@
-<h5 class="datagrid-header-title"><?php use SP\Modules\Web\Mvc\View\Template;
+<h5 class="datagrid-header-title"><?php
+use SP\Modules\Web\Mvc\View\Template;
+use function SP\__;
 
     echo __('Plugins'); ?></h5>
 <?php

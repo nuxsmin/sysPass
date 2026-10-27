@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,28 +24,28 @@
 
 namespace SP\Modules\Web\Controllers\Status;
 
-
 use JsonException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\CheckException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use Throwable;
+
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class CheckNotices
  */
-final class CheckNotices extends StatusBase
+final class CheckNoticesController extends StatusBase
 {
-    use JsonTrait;
-
     /**
-     * checkNoticesAction
-     *
-     * @return bool
      * @throws JsonException
      */
-    public function checkNoticesAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function checkNoticesAction(): ActionResponse
     {
         try {
             $this->extensionChecker->checkCurl(true);
@@ -68,19 +68,19 @@ final class CheckNotices extends StatusBase
                         ];
                     }
 
-                    return $this->returnJsonResponseData($notices);
+                    return ActionResponse::ok('', $notices);
                 }
 
                 logger($requestData->message);
             }
 
-            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, __u('Notifications not available'));
+            return ActionResponse::error(__u('Notifications not available'));
         } catch (CheckException $e) {
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage(), $e->getHint());
         } catch (Throwable $e) {
             processException($e);
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

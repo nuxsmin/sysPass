@@ -25,6 +25,10 @@
 namespace SP\Modules\Web\Controllers\Resource;
 
 use SP\Core\Bootstrap\Path;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseStatus;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileSystem;
 
@@ -33,7 +37,6 @@ use SP\Infrastructure\File\FileSystem;
  */
 final class JsController extends ResourceBase
 {
-
     private const JS_MIN_FILES = [
         'jquery-3.3.1.min.js',
         'jquery.fileDownload.min.js',
@@ -59,53 +62,51 @@ final class JsController extends ResourceBase
         'app-main.min.js',
     ];
 
-    /**
-     * Return JS resources
-     */
-    public function jsAction(): void
+    #[Action(ResponseType::CALLBACK)]
+    public function jsAction(): ActionResponse
     {
         $file = $this->request->analyzeString('f');
         $base = $this->request->analyzeString('b');
+        $group = $this->request->analyzeInt('g', 0);
 
         if ($file && $base) {
             $files = $this->buildFiles(urldecode($base), explode(',', urldecode($file)), true);
 
-            $this->minify->builder()
-                         ->addFiles($files)
-                         ->getMinified();
-        } else {
-            $group = $this->request->analyzeInt('g', 0);
-
-            if ($group === 0) {
-                $this->minify
-                    ->builder()
-                    ->addFiles(
-                        $this->buildFiles(
-                            FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'vendor', 'js'),
-                            self::JS_MIN_FILES
-                        ),
-                        false
-                    )
-                    ->getMinified();
-            } elseif ($group === 1) {
-                $this->minify
-                    ->builder()
-                    ->addFiles(
-                        $this->buildFiles(
-                            FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'js'),
-                            self::JS_APP_MIN_FILES
-                        ),
-                        false
-                    )
-                    ->getMinified();
-            }
+            return new ActionResponse(
+                ResponseStatus::OK,
+                function () use ($files) {
+                    $this->minify->builder()
+                                 ->addFiles($files)
+                                 ->getMinified();
+                }
+            );
         }
+
+        if ($group === 0) {
+            $files = $this->buildFiles(
+                FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'vendor', 'js'),
+                self::JS_MIN_FILES
+            );
+        } elseif ($group === 1) {
+            $files = $this->buildFiles(
+                FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'js'),
+                self::JS_APP_MIN_FILES
+            );
+        } else {
+            return ActionResponse::ok('');
+        }
+
+        return new ActionResponse(
+            ResponseStatus::OK,
+            function () use ($files) {
+                $this->minify->builder()
+                             ->addFiles($files, false)
+                             ->getMinified();
+            }
+        );
     }
 
     /**
-     * @param string $base
-     * @param array $files
-     * @param bool $insecure
      * @return FileHandler[]
      */
     private function buildFiles(string $base, array $files, bool $insecure = false): array
@@ -113,7 +114,7 @@ final class JsController extends ResourceBase
         $base = $insecure ? $this->request->resolveSecureAppPath($base) : $base;
 
         return array_map(
-            fn(string $file) => new FileHandler(FileSystem::buildPath($base, $file)),
+            static fn(string $file) => new FileHandler(FileSystem::buildPath($base, $file)),
             $files
         );
     }

@@ -25,31 +25,30 @@
 namespace SP\Modules\Web\Controllers\Status;
 
 use JsonException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\CheckException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use Throwable;
+
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class StatusController
- *
- * @package SP\Modules\Web\Controllers
  */
 final class StatusController extends StatusBase
 {
-    use JsonTrait;
-
     private const TAG_VERSION_REGEX = '/v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\.(?P<build>\d+)(?P<pre_release>\-[a-z0-9\.]+)?$/';
 
     /**
-     * checkReleaseAction
-     *
-     * @return bool
      * @throws JsonException
      */
-    public function checkReleaseAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function statusAction(): ActionResponse
     {
         try {
             $this->extensionChecker->checkCurl(true);
@@ -70,7 +69,7 @@ final class StatusController extends StatusBase
                                   $matches['build'];
 
                     if (Version::checkVersion(Version::getVersionStringNormalized(), $pubVersion)) {
-                        return $this->returnJsonResponseData([
+                        return ActionResponse::ok('', [
                             'version'     => $requestData->tag_name,
                             'url'         => $requestData->html_url,
                             'title'       => $requestData->name,
@@ -79,19 +78,19 @@ final class StatusController extends StatusBase
                         ]);
                     }
 
-                    return $this->returnJsonResponseData([]);
+                    return ActionResponse::ok('');
                 }
 
                 logger($requestData->message);
             }
 
-            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, __u('Version unavailable'));
+            return ActionResponse::error(__u('Version unavailable'));
         } catch (CheckException $e) {
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage(), $e->getHint());
         } catch (Throwable $e) {
             processException($e);
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

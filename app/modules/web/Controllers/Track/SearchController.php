@@ -24,76 +24,35 @@
 
 namespace SP\Modules\Web\Controllers\Track;
 
-
-use JsonException;
 use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\UnauthorizedActionException;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Security\Ports\TrackService;
-use SP\Modules\Web\Html\DataGrid\DataGridInterface;
-use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Domain\Security\UseCases\Dtos\SearchTracksCommand;
+use SP\Domain\Security\UseCases\SearchTracksUseCase;
 use SP\Modules\Web\Controllers\Helpers\Grid\TrackGrid;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Controllers\SearchGridControllerBase;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class SearchController
  */
-final class SearchController extends ControllerBase
+final class SearchController extends SearchGridControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
-
-    private TrackService $trackService;
-    private TrackGrid    $trackGrid;
 
     public function __construct(
-        Application  $application,
+        Application $application,
         WebControllerHelper $webControllerHelper,
-        TrackService $trackService,
-        TrackGrid    $trackGrid
+        private readonly SearchTracksUseCase $searchTracksUseCase,
+        private readonly TrackGrid $trackGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->trackService = $trackService;
-        $this->trackGrid = $trackGrid;
     }
 
-    /**
-     * Search action
-     *
-     * @return bool
-     * @throws JsonException
-     * @throws UnauthorizedActionException
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function searchAction(): bool
-    {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::TRACK_SEARCH)) {
-            throw new UnauthorizedActionException(SPException::ERROR);
-        }
-
-        $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
-        $this->view->assign('data', $this->getSearchGrid());
-
-        return $this->returnJsonResponseData(['html' => $this->render()]);
-    }
-
-    /**
-     * getSearchGrid
-     *
-     * @return DataGridInterface
-     * @throws ConstraintException
-     * @throws QueryException
-     */
     protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData(
@@ -101,9 +60,18 @@ final class SearchController extends ControllerBase
             $this->request
         );
 
+        $result = $this->searchTracksUseCase->execute(new SearchTracksCommand($itemSearchData));
+
         return $this->trackGrid->updatePager(
-            $this->trackGrid->getGrid($this->trackService->search($itemSearchData)),
+            $this->trackGrid->getGrid(
+                QueryResult::withTotalNumRows($result->tracks, $result->total)
+            ),
             $itemSearchData
         );
+    }
+
+    protected function getAclAction(): int
+    {
+        return AclActionsInterface::TRACK_SEARCH;
     }
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,33 +24,28 @@
 
 namespace SP\Modules\Web\Controllers\Plugin;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
+
+use function SP\__u;
 
 /**
  * Class IndexController
- *
- * @package web\Controllers
  */
 final class IndexController extends PluginSearchBase
 {
-    /**
-     * indexAction
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN)) {
-            return;
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('index');
-
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->view();
+        return ActionResponse::ok($this->render());
     }
 }

@@ -55,10 +55,10 @@ return [
     ModuleInterface::class => autowire(Init::class),
     CssController::class => autowire(
         CssController::class
-    )->constructorParameter('minify', autowire(CssMinifyService::class)),
+    )->constructorParameter('minify', get(CssMinifyService::class)),
     JsController::class => autowire(
         JsController::class
-    )->constructorParameter('minify', autowire(JsMinifyService::class)),
+    )->constructorParameter('minify', get(JsMinifyService::class)),
     Context::class => factory(
         static function (ConfigDataInterface $configData, SessionHandlerInterface $sessionHandler = null) {
             return new Session($sessionHandler);

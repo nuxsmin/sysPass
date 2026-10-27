@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
@@ -175,7 +174,7 @@ final class EventlogGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::EVENTLOG_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::EVENTLOG_SEARCH)
         );
 
         return $gridActionSearch;
@@ -194,7 +193,7 @@ final class EventlogGrid extends GridBase
         $gridAction->addData('action-form', 'frmSearchEvent');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::EVENTLOG_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::EVENTLOG_SEARCH)
         );
 
         return $gridAction;
@@ -212,7 +211,7 @@ final class EventlogGrid extends GridBase
         $gridAction->setOnClickFunction('eventlog/clear');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::EVENTLOG_CLEAR)
+            $this->acl->getRouteFor(AclActionsInterface::EVENTLOG_CLEAR)
         );
 
         return $gridAction;

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
@@ -148,7 +147,7 @@ final class PluginGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('plugin/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PLUGIN_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::PLUGIN_SEARCH)
         );
 
         return $gridActionSearch;
@@ -169,7 +168,7 @@ final class PluginGrid extends GridBase
         $gridAction->setFilterRowSource('available', 0);
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PLUGIN_VIEW)
+            $this->acl->getRouteFor(AclActionsInterface::PLUGIN_VIEW)
         );
 
         return $gridAction;
@@ -190,7 +189,7 @@ final class PluginGrid extends GridBase
         $gridAction->setFilterRowSource('available', 0);
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PLUGIN_ENABLE)
+            $this->acl->getRouteFor(AclActionsInterface::PLUGIN_ENABLE)
         );
         $gridAction->addData('action-method', 'get');
 
@@ -212,7 +211,7 @@ final class PluginGrid extends GridBase
         $gridAction->setFilterRowSource('available', 0);
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PLUGIN_DISABLE)
+            $this->acl->getRouteFor(AclActionsInterface::PLUGIN_DISABLE)
         );
         $gridAction->addData('action-method', 'get');
 
@@ -233,12 +232,12 @@ final class PluginGrid extends GridBase
         $gridAction->setFilterRowSource('available', 0);
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PLUGIN_RESET)
+            $this->acl->getRouteFor(AclActionsInterface::PLUGIN_RESET)
         );
         $gridAction->addData('action-method', 'get');
         $gridAction->addData(
             'action-next',
-            Acl::getActionRoute(AclActionsInterface::PLUGIN)
+            $this->acl->getRouteFor(AclActionsInterface::PLUGIN)
         );
 
         return $gridAction;
@@ -259,11 +258,11 @@ final class PluginGrid extends GridBase
         $gridAction->setOnClickFunction('plugin/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::PLUGIN_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::PLUGIN_DELETE)
         );
         $gridAction->addData(
             'action-next',
-            Acl::getActionRoute(AclActionsInterface::PLUGIN)
+            $this->acl->getRouteFor(AclActionsInterface::PLUGIN)
         );
 
         return $gridAction;

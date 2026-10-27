@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,20 +24,20 @@
 
 namespace SP\Modules\Web\Controllers\PublicLink;
 
-
-use JsonException;
 use SP\Core\Application;
-use SP\Domain\Account\Ports\PublicLinkService;
+use SP\Domain\Account\UseCases\Dtos\SearchPublicLinksCommand;
+use SP\Domain\Account\UseCases\SearchPublicLinksUseCase;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Html\DataGrid\DataGridInterface;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\PublicLinkGrid;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class SearchController
@@ -45,62 +45,42 @@ use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 final class SearchController extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
-
-    private PublicLinkService $publicLinkService;
-    private PublicLinkGrid    $publicLinkGrid;
 
     public function __construct(
-        Application       $application,
+        Application $application,
         WebControllerHelper $webControllerHelper,
-        PublicLinkService $publicLinkService,
-        PublicLinkGrid    $publicLinkGrid
+        private readonly SearchPublicLinksUseCase $searchPublicLinksUseCase,
+        private readonly PublicLinkGrid $publicLinkGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->publicLinkService = $publicLinkService;
-        $this->publicLinkGrid = $publicLinkGrid;
     }
 
-    /**
-     * Search action
-     *
-     * @return bool
-     * @throws JsonException
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function searchAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function searchAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_SEARCH)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
-            );
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
-        return $this->returnJsonResponseData(['html' => $this->render()]);
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 
-    /**
-     * getSearchGrid
-     *
-     * @return DataGridInterface
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    protected function getSearchGrid(): DataGridInterface
+    private function getSearchGrid(): \SP\Modules\Web\Html\DataGrid\DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
+        $result = $this->searchPublicLinksUseCase->execute(new SearchPublicLinksCommand($itemSearchData));
+
         return $this->publicLinkGrid->updatePager(
-            $this->publicLinkGrid->getGrid($this->publicLinkService->search($itemSearchData)),
+            $this->publicLinkGrid->getGrid(
+                QueryResult::withTotalNumRows($result->publicLinks, $result->total)
+            ),
             $itemSearchData
         );
     }

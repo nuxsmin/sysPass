@@ -24,51 +24,30 @@
 
 namespace SP\Modules\Web\Controllers\UserPassReset;
 
-
 use Exception;
-use JsonException;
 use SP\Core\Application;
-use SP\Domain\Core\Exceptions\InvalidArgumentException;
-use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Domain\User\Ports\UserPassRecoverService;
-use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class UserPassResetSaveBase
  */
 abstract class UserPassResetSaveBase extends ControllerBase
 {
-    protected UserPassRecoverService $userPassRecoverService;
-    protected UserService $userService;
-    protected MailService $mailService;
-    private TrackService  $trackService;
-    private TrackRequest  $trackRequest;
+    private readonly TrackRequest $trackRequest;
 
-    /**
-     * @throws SessionTimeout
-     * @throws InvalidArgumentException
-     * @throws JsonException
-     */
     public function __construct(
-        Application            $application,
-        WebControllerHelper    $webControllerHelper,
-        UserPassRecoverService $userPassRecoverService,
-        UserService $userService,
-        MailService            $mailService,
-        TrackService           $trackService
-
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        private readonly TrackService $trackService
     ) {
         parent::__construct($application, $webControllerHelper);
-        $this->userPassRecoverService = $userPassRecoverService;
-        $this->userService = $userService;
-        $this->mailService = $mailService;
-        $this->trackService = $trackService;
 
         $this->trackRequest = $this->trackService->buildTrackRequest($this->routeContextData->actionName);
     }
@@ -84,9 +63,6 @@ abstract class UserPassResetSaveBase extends ControllerBase
         }
     }
 
-    /**
-     * Añadir un seguimiento
-     */
     final protected function addTracking(): void
     {
         try {

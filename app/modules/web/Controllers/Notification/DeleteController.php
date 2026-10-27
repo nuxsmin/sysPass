@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,14 +24,20 @@
 
 namespace SP\Modules\Web\Controllers\Notification;
 
-
 use Exception;
-use JsonException;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Notification\UseCases\DeleteNotificationUseCase;
+use SP\Domain\Notification\UseCases\DeleteNotificationsUseCase;
+use SP\Domain\Notification\UseCases\Dtos\DeleteNotificationCommand;
+use SP\Domain\Notification\UseCases\Dtos\DeleteNotificationsCommand;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class DeleteController
@@ -39,57 +45,40 @@ use SP\Modules\Web\Mvc\Controller\ItemTrait;
 final class DeleteController extends NotificationSaveBase
 {
     use ItemTrait;
-    use JsonTrait;
 
-    /**
-     * Delete action
-     *
-     * @param  int|null  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function deleteAction(?int $id = null): bool
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        private readonly DeleteNotificationUseCase $deleteNotificationUseCase,
+        private readonly DeleteNotificationsUseCase $deleteNotificationsUseCase
+    ) {
+        parent::__construct($application, $webControllerHelper);
+    }
+
+    #[Action(ResponseType::JSON)]
+    public function deleteAction(?int $id = null): ActionResponse
     {
         try {
             if ($id === null) {
-                if ($this->userDto->getIsAdminApp()) {
-                    $this->notificationService->deleteAdminBatch($this->getItemsIdFromRequest($this->request));
-                } else {
-                    $this->notificationService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
-                }
-
-                $this->eventDispatcher->notify(
-                    'delete.notification.selection',
-                    new Event($this, EventMessage::build()->addDescription(__u('Notifications deleted')))
+                $ids = array_map(
+                    'intval',
+                    $this->request->analyzeArray('items') ?? []
                 );
 
-                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Notifications deleted'));
+                $this->deleteNotificationsUseCase->execute(
+                    new DeleteNotificationsCommand($ids, $this->userDto->isAdminApp)
+                );
+
+                return ActionResponse::ok(__u('Notifications deleted'));
             }
 
-            if ($this->userDto->getIsAdminApp()) {
-                $this->notificationService->deleteAdmin($id);
-            } else {
-                $this->notificationService->delete($id);
-            }
-
-            $this->eventDispatcher->notify(
-                'delete.notification',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Notification deleted'))
-                        ->addDetail(__u('Notification'), $id)
-                )
+            $this->deleteNotificationUseCase->execute(
+                new DeleteNotificationCommand($id, $this->userDto->isAdminApp)
             );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Notification deleted'));
         } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
+
+        return ActionResponse::ok(__u('Notification deleted'));
     }
 }

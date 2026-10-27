@@ -25,66 +25,45 @@
 namespace SP\Modules\Web\Controllers\PublicLink;
 
 use Exception;
-use JsonException;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Account\Models\PublicLink;
-use SP\Domain\Account\PublickLinkType;
-use SP\Domain\Common\Providers\Password;
+use SP\Core\Application;
+use SP\Domain\Account\UseCases\CreateAccountPublicLinkUseCase;
+use SP\Domain\Account\UseCases\Dtos\CreateAccountPublicLinkCommand;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class SaveCreateFromAccountController
  */
 final class SaveCreateFromAccountController extends PublicLinkSaveBase
 {
-    use JsonTrait;
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        private readonly CreateAccountPublicLinkUseCase $createAccountPublicLinkUseCase
+    ) {
+        parent::__construct($application, $webControllerHelper);
+    }
 
-    /**
-     * Saves create action
-     *
-     * @param int $accountId
-     * @param int $notify
-     *
-     * @return bool
-     * @throws JsonException
-     * @throws SPException
-     */
-    public function saveCreateFromAccountAction(int $accountId, int $notify): bool
+    #[Action(ResponseType::JSON)]
+    public function saveCreateFromAccountAction(int $accountId, int $notify): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $publicLinkData = new PublicLink(
-                [
-                    'id' => PublickLinkType::Account->value,
-                    'itemId' => $accountId,
-                    'notify' => (bool)$notify,
-                    'hash' => Password::generateRandomBytes()
-                ]
-            );
-
-            $this->publicLinkService->create($publicLinkData);
-
-            $this->eventDispatcher->notify('create.publicLink.account', new Event($this));
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Link created'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        try {
+            $this->createAccountPublicLinkUseCase->execute(
+                new CreateAccountPublicLinkCommand($accountId, (bool)$notify)
+            );
+        } catch (Exception $e) {
+            return ActionResponse::error($e->getMessage());
+        }
+
+        return ActionResponse::ok(__u('Link created'));
     }
 }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,49 +24,48 @@
 
 namespace SP\Modules\Web\Controllers\Notification;
 
-
 use Exception;
-use JsonException;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
+use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Notification\UseCases\CreateNotificationUseCase;
+use SP\Domain\Notification\UseCases\Dtos\CreateNotificationCommand;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
+use function SP\__u;
+
+/**
+ * Class SaveCreateController
+ */
 final class SaveCreateController extends NotificationSaveBase
 {
-    use JsonTrait;
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        private readonly CreateNotificationUseCase $createNotificationUseCase
+    ) {
+        parent::__construct($application, $webControllerHelper);
+    }
 
-    /**
-     * @return bool
-     * @throws JsonException
-     */
-    public function saveCreateAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveCreateAction(): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
+        if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_CREATE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
 
+        try {
             $this->form->validateFor(AclActionsInterface::NOTIFICATION_CREATE);
 
-            $this->notificationService->create($this->form->getItemData());
-
-            $this->eventDispatcher->notify(
-                'create.notification',
-                new Event($this, EventMessage::build()->addDescription(__u('Notification created')))
+            $this->createNotificationUseCase->execute(
+                new CreateNotificationCommand($this->form->getItemData())
             );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Notification created'));
         } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
+
+        return ActionResponse::ok(__u('Notification created'));
     }
 }

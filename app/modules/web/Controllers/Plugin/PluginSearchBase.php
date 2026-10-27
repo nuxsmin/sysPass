@@ -24,15 +24,13 @@
 
 namespace SP\Modules\Web\Controllers\Plugin;
 
-
 use SP\Core\Application;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Plugin\Ports\PluginManagerService;
-use SP\Modules\Web\Html\DataGrid\DataGridInterface;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Domain\Plugin\UseCases\Dtos\SearchPluginsCommand;
+use SP\Domain\Plugin\UseCases\SearchPluginsUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\PluginGrid;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
@@ -42,32 +40,18 @@ use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 abstract class PluginSearchBase extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
-
-    private PluginManagerService $pluginService;
-    private PluginGrid           $pluginGrid;
 
     public function __construct(
-        Application          $application,
-        WebControllerHelper  $webControllerHelper,
-        PluginManagerService $pluginService,
-        PluginGrid           $pluginGrid
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        private readonly SearchPluginsUseCase $searchPluginsUseCase,
+        private readonly PluginGrid $pluginGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->pluginService = $pluginService;
-        $this->pluginGrid = $pluginGrid;
     }
 
-    /**
-     * getSearchGrid
-     *
-     * @return DataGridInterface
-     * @throws ConstraintException
-     * @throws QueryException
-     */
     protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData(
@@ -75,8 +59,12 @@ abstract class PluginSearchBase extends ControllerBase
             $this->request
         );
 
+        $result = $this->searchPluginsUseCase->execute(new SearchPluginsCommand($itemSearchData));
+
         return $this->pluginGrid->updatePager(
-            $this->pluginGrid->getGrid($this->pluginService->search($itemSearchData)),
+            $this->pluginGrid->getGrid(
+                QueryResult::withTotalNumRows($result->plugins, $result->total)
+            ),
             $itemSearchData
         );
     }

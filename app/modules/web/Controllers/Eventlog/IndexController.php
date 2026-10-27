@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,42 +24,67 @@
 
 namespace SP\Modules\Web\Controllers\Eventlog;
 
-use DI\DependencyException;
-use DI\NotFoundException;
+use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Domain\Security\UseCases\Dtos\SearchEventlogCommand;
+use SP\Domain\Security\UseCases\SearchEventlogUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class IndexController
- *
- * @package SP\Modules\Web\Controllers
  */
 final class IndexController extends ControllerBase
 {
-    /**
-     * indexAction
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     *
-     * TODO: Remove?
-     */
-    public function indexAction(): void
+    use ItemTrait;
+
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        private readonly SearchEventlogUseCase $searchEventlogUseCase,
+        private readonly EventlogGrid $eventlogGrid
+    ) {
+        parent::__construct($application, $webControllerHelper);
+
+        $this->checkLoggedIn();
+    }
+
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::EVENTLOG)) {
-            return;
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('index');
-
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->view();
+        return ActionResponse::ok($this->render());
+    }
+
+    private function getSearchGrid(): DataGridInterface
+    {
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
+
+        $result = $this->searchEventlogUseCase->execute(new SearchEventlogCommand($itemSearchData));
+
+        return $this->eventlogGrid->updatePager(
+            $this->eventlogGrid->getGrid(
+                QueryResult::withTotalNumRows($result->eventlogs, $result->total)
+            ),
+            $itemSearchData
+        );
     }
 }

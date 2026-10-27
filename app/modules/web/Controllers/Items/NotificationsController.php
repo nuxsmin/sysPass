@@ -25,45 +25,45 @@
 namespace SP\Modules\Web\Controllers\Items;
 
 use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Providers\Html;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Common\Providers\Html;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Notification\Ports\NotificationService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
+
+use function SP\__;
 
 /**
  * Class NotificationsController
  */
 final class NotificationsController extends SimpleControllerBase
 {
-    private NotificationService $notificationService;
-
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        NotificationService $notificationService
+        private readonly NotificationService $notificationService
     ) {
         parent::__construct($application, $simpleControllerHelper);
 
         $this->checks();
-
-        $this->notificationService = $notificationService;
     }
-
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
-    public function notificationsAction(): void
+    #[Action(ResponseType::JSON)]
+    public function notificationsAction(): ActionResponse
     {
         $notifications = array_map(
             static function ($notification) {
-                /** @@var $notification \SP\Domain\Notification\Models\Notification */
+                /** @var \SP\Domain\Notification\Models\Notification $notification */
                 return sprintf(
                     '(%s) - %s',
                     $notification->getComponent(),
@@ -75,16 +75,12 @@ final class NotificationsController extends SimpleControllerBase
 
         $count = count($notifications);
 
-        $jsonResponse = new JsonMessage();
-        $jsonResponse->setStatus(0);
-        $jsonResponse->setData([
+        return ActionResponse::ok('', [
             'message'       => __('There aren\'t any pending notifications'),
             'message_has'   => sprintf(__('There are pending notifications: %d'), $count),
             'count'         => $count,
             'notifications' => $notifications,
             'hash'          => sha1(implode('', $notifications)),
         ]);
-
-        $this->jsonResponseFactory->create($this->router->response())->send($jsonResponse);
     }
 }
