@@ -83,7 +83,6 @@ return array (
   'lib-modules' => 
   array (
     0 => 'lib/SP/Core/Bootstrap/BootstrapBase.php => SP\\Modules',
-    1 => 'lib/SP/Mvc/Controller/WebControllerHelper.php => SP\\Modules',
   ),
   'domain-application' => 
   array (

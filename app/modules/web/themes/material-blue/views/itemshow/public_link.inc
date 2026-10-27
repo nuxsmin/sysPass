@@ -33,8 +33,8 @@
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Mvc\View\Components\SelectItem;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\Components\SelectItem;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 use function SP\__;
 

@@ -33,7 +33,7 @@ use SP\Domain\Auth\Ports\LoginService;
 use SP\Domain\Http\Providers\Uri;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class LoginController

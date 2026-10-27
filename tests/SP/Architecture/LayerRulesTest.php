@@ -115,6 +115,48 @@ PHP
         self::assertSame([], $violations);
     }
 
+    public function testModuleImportOutsideTheCompositionRootIsAViolation(): void
+    {
+        file_put_contents(
+            $this->root . '/lib/SP/Core/Foo.php',
+            <<<'PHP'
+<?php
+namespace SP\Core;
+
+use SP\Modules\Web\Mvc\View\Template;
+
+final class Foo
+{
+}
+PHP
+        );
+
+        $violations = LayerRules::collect($this->root)[LayerRules::LIB_MODULES];
+
+        self::assertContains('lib/SP/Core/Foo.php => SP\Modules', $violations);
+    }
+
+    public function testModuleImportInTheCompositionRootIsAllowed(): void
+    {
+        file_put_contents(
+            $this->root . '/lib/SP/Core/Definitions/Foo.php',
+            <<<'PHP'
+<?php
+namespace SP\Core\Definitions;
+
+use SP\Modules\Web\Mvc\View\Template;
+
+final class Foo
+{
+}
+PHP
+        );
+
+        $violations = LayerRules::collect($this->root)[LayerRules::LIB_MODULES];
+
+        self::assertSame([], $violations);
+    }
+
     public function testStaticCallThroughImportAliasIsAViolation(): void
     {
         file_put_contents(

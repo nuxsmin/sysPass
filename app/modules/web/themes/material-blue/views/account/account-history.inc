@@ -28,7 +28,7 @@ use SP\Domain\Account\Dtos\AccountHistoryViewDto;
 use SP\Domain\Account\Dtos\AccountViewDto;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Mvc\View\Components\SelectItem;
+use SP\Modules\Web\Mvc\View\Components\SelectItem;
 
 use function SP\__;
 

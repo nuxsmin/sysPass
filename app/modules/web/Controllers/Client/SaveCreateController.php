@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
 
 use function SP\__u;
 

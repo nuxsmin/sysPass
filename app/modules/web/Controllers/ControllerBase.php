@@ -46,8 +46,8 @@ use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
-use SP\Mvc\Controller\WebControllerHelper;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 use function SP\logger;
 use function SP\processException;

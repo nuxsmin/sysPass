@@ -33,7 +33,7 @@ use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Ports\InstallerService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class InstallController

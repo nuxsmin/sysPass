@@ -34,7 +34,7 @@ use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 /**
  * Class SaveController

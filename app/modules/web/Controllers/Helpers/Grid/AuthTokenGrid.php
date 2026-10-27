@@ -26,13 +26,13 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Html\DataGrid\Action\DataGridAction;
-use SP\Html\DataGrid\Action\DataGridActionSearch;
-use SP\Html\DataGrid\Action\DataGridActionType;
-use SP\Html\DataGrid\DataGridData;
-use SP\Html\DataGrid\DataGridInterface;
-use SP\Html\DataGrid\DataGridTab;
-use SP\Html\DataGrid\Layout\DataGridHeader;
+use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
+use SP\Modules\Web\Html\DataGrid\Action\DataGridActionSearch;
+use SP\Modules\Web\Html\DataGrid\Action\DataGridActionType;
+use SP\Modules\Web\Html\DataGrid\DataGridData;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
+use SP\Modules\Web\Html\DataGrid\DataGridTab;
+use SP\Modules\Web\Html\DataGrid\Layout\DataGridHeader;
 use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__;

@@ -33,11 +33,11 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Html\DataGrid\DataGridInterface;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Controllers\Helpers\Grid\CategoryGrid;
 use SP\Modules\Web\Controllers\SearchGridControllerBase;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * SearchController

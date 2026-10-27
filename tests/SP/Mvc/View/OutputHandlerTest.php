@@ -28,7 +28,7 @@ namespace SP\Tests\Mvc\View;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
-use SP\Mvc\View\OutputHandler;
+use SP\Modules\Web\Mvc\View\OutputHandler;
 
 /**
  * Class OutputHandlerTest

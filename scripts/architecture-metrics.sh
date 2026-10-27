@@ -60,7 +60,7 @@ print_metric() {
 echo "sysPass architecture metrics"
 echo
 
-print_metric "M1" "Domain files importing any outer layer" "$(count_files '^use SP\\(Infrastructure|Core|Mvc|Html|Modules|Util)\\' lib/SP/Domain)"
+print_metric "M1" "Domain files importing any outer layer" "$(count_files '^use SP\\(Infrastructure|Core|Modules|Util)\\' lib/SP/Domain)"
 print_metric "M2" "Domain files importing Infrastructure" "$(count_files '^use SP\\Infrastructure\\' lib/SP/Domain)"
 print_metric "M3" "Domain files importing SP\\Core" "$(count_files '^use SP\\Core\\' lib/SP/Domain)"
 print_metric "M4" "Domain files importing SP\\Core\\Application" "$(count_files '^use SP\\Core\\Application;' lib/SP/Domain)"

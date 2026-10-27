@@ -36,7 +36,7 @@ use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Security\Ports\EventlogService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class ClearController

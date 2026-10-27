@@ -33,11 +33,11 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
-use SP\Mvc\Controller\ExtensibleTabControllerInterface;
-use SP\Mvc\Controller\WebControllerHelper;
-use SP\Mvc\View\Components\DataTab;
-use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\Controller\ExtensibleTabControllerInterface;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\View\Components\DataTab;
+use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 /**
  * Class IndexController

@@ -33,7 +33,7 @@
 use SP\Domain\Account\Dtos\FileDto;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 $fileDto = $_getvar('fileData');
 ?>

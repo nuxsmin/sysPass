@@ -31,7 +31,7 @@ use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 use function SP\__u;
 

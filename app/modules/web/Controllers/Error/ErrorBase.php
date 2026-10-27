@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Error;
 
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 /**
  * Class ErrorBase

@@ -40,7 +40,7 @@ use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 /**
  * Class SimpleControllerBase

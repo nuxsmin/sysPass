@@ -30,7 +30,7 @@ use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
 
 use function SP\__u;
 

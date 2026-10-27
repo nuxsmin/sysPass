@@ -34,8 +34,8 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 use function SP\__;
 use function SP\__u;

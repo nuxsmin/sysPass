@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Domain\Notification\Ports\NotificationService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\NotificationForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class NotificationSaveBase

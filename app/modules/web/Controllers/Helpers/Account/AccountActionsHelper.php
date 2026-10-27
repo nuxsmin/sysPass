@@ -31,10 +31,10 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Html\DataGrid\Action\DataGridAction;
-use SP\Html\DataGrid\Action\DataGridActionType;
+use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
+use SP\Modules\Web\Html\DataGrid\Action\DataGridActionType;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 use function SP\__;
 

@@ -30,13 +30,13 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Html\DataGrid\Action\DataGridActionSearch;
-use SP\Html\DataGrid\DataGridData;
-use SP\Html\DataGrid\DataGridInterface;
-use SP\Html\DataGrid\Layout\DataGridHeader;
-use SP\Html\DataGrid\Layout\DataGridPager;
+use SP\Modules\Web\Html\DataGrid\Action\DataGridActionSearch;
+use SP\Modules\Web\Html\DataGrid\DataGridData;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
+use SP\Modules\Web\Html\DataGrid\Layout\DataGridHeader;
+use SP\Modules\Web\Html\DataGrid\Layout\DataGridPager;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 /**
  * Class GridBase

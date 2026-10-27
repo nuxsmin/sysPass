@@ -37,7 +37,7 @@ use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Ports\UserPassRecoverService;
 use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class UserPassResetSaveBase

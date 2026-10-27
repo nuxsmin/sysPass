@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
 

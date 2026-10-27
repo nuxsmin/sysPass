@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Install;
 use SP\Core\Language;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 
 /**
  * Class IndexController

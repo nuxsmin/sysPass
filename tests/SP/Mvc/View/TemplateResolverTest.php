@@ -33,7 +33,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Mvc\View\TemplateResolver;
+use SP\Modules\Web\Mvc\View\TemplateResolver;
 
 /**
  * Class TemplateResolverTest

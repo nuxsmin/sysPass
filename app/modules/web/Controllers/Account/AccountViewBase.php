@@ -25,10 +25,10 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use SP\Core\Application;
-use SP\Core\UI\ThemeIcons;
+use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * A class for al viewable actions

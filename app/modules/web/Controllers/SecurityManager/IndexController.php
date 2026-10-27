@@ -33,12 +33,12 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Security\Ports\EventlogService;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Html\DataGrid\DataGridTab;
+use SP\Modules\Web\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
 use SP\Modules\Web\Controllers\Helpers\Grid\TrackGrid;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class IndexController

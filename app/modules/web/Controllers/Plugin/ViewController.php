@@ -39,7 +39,7 @@ use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use SP\Plugin\PluginManager;
 
 /**

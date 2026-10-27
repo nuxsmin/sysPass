@@ -29,7 +29,7 @@ namespace SP\Modules\Web\Controllers;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
-use SP\Html\DataGrid\DataGridInterface;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 
 use function SP\__u;
 

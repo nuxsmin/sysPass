@@ -42,7 +42,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Domain\CustomField\Services\CustomFieldItems;
+use SP\Domain\CustomField\Providers\CustomFieldItems;
 
 /**
  * Class Account

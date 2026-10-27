@@ -28,13 +28,13 @@ namespace SP\Tests\Core\UI;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
-use SP\Core\UI\ThemeIcons;
+use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Html\Assets\FontIcon;
+use SP\Modules\Web\Html\Assets\FontIcon;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 

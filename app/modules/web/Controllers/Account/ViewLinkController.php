@@ -28,7 +28,7 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Core\UI\ThemeIcons;
+use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Account\Dtos\AccountViewDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
@@ -47,7 +47,7 @@ use SP\Domain\Http\Providers\Uri;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Web\Util\ErrorUtil;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 use function SP\__;
 use function SP\__u;

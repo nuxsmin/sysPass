@@ -1,15 +1,15 @@
 <?php
 /**
  * @var DataGridTab $data
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var \SP\Modules\Web\Mvc\View\TemplateInterface $this
  * @var DataGridAction|DataGridActionSearch $action
  * @var callable $_getvar
  */
 
-use SP\Html\DataGrid\Action\DataGridAction;
-use SP\Html\DataGrid\Action\DataGridActionSearch;
-use SP\Html\DataGrid\DataGridTab;
-use SP\Mvc\View\Template;
+use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
+use SP\Modules\Web\Html\DataGrid\Action\DataGridActionSearch;
+use SP\Modules\Web\Html\DataGrid\DataGridTab;
+use SP\Modules\Web\Mvc\View\Template;
 
 if (!isset($data)) {
     $data = $_getvar('data');

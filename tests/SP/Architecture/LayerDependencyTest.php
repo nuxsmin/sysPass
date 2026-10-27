@@ -31,7 +31,7 @@ final class LayerDependencyTest extends TestCase
         LayerRules::INFRASTRUCTURE_ONLY => 2,
         LayerRules::MODULES_INFRASTRUCTURE => 22,
         LayerRules::MODULES_CONCRETE_SERVICES => 0,
-        LayerRules::LIB_MODULES => 2,
+        LayerRules::LIB_MODULES => 1,
         LayerRules::DOMAIN_APPLICATION => 0,
         LayerRules::DOMAIN_PRESENTATION_CALLS => 123,
         LayerRules::CORE_INFRASTRUCTURE => 0,

@@ -40,7 +40,7 @@ use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 use function SP\__;
 use function SP\__u;

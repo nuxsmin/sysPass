@@ -30,7 +30,7 @@ use SP\Core\Application;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class IndexController

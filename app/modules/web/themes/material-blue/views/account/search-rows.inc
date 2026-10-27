@@ -28,8 +28,8 @@ use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Html\DataGrid\Action\DataGridActionBase;
-use SP\Html\DataGrid\DataGridTab;
+use SP\Modules\Web\Html\DataGrid\Action\DataGridActionBase;
+use SP\Modules\Web\Html\DataGrid\DataGridTab;
 
 use function SP\__;
 

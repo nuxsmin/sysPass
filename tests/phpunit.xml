@@ -64,8 +64,8 @@
             <directory suffix=".php">../app/modules/web</directory>
         </include>
         <exclude>
-            <directory suffix=".php">../lib/SP/Html/Assets</directory>
-            <directory suffix=".php">../lib/SP/Html/DataGrid</directory>
+            <directory suffix=".php">../app/modules/web/Html/Assets</directory>
+            <directory suffix=".php">../app/modules/web/Html/DataGrid</directory>
             <file>../lib/SP/Domain/Config/Adapters/ConfigData.php</file>
         </exclude>
     </source>

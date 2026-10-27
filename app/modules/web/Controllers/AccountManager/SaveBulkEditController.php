@@ -40,8 +40,8 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\AccountForm;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use SP\Util\Util;
 
 use function SP\__u;

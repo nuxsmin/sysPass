@@ -34,7 +34,7 @@ use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagService;
 use SP\Domain\Tag\Exceptions\TagException;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class TagViewBase

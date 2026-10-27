@@ -37,7 +37,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P3-1 | #1973 | done (`90efe568`) |
 | P3-2 | #2030 | done |
 | P3-3 | #2036 | todo |
-| P4-1 | #2025 | todo |
+| P4-1 | #2025 | done |
 | P4-2 | #1974 | done |
 | P4-3 | #2031 | todo |
 | P4-4 | #2015 | done |
@@ -69,7 +69,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | **Infrastructure** `SP\Infrastructure\` (`lib/SP/Infrastructure`) | Driven adapters: repositories, DB, filesystem, LDAP, SMTP, crypto impl. Implements Domain ports | Domain (ports, models, exceptions), vendor libs | Modules, Mvc, Html |
 | **Core** `SP\Core\` (`lib/SP/Core`) | Composition root and framework glue: bootstrap, DI definitions, `Application` (to be removed), session/context implementation | Domain, Infrastructure, vendor libs | Modules (except controller resolution by convention in bootstrap) |
 | **Modules** `SP\Modules\{Web,Api,Cli}\` (`app/modules`) | Driving adapters: HTTP/JSON/CLI request mapping, response mapping, view/theme rendering, presentation helpers | Domain (ports, models, DTOs, use cases, domain exceptions), Core bootstrap contracts | Infrastructure (except composition files), Domain concrete services (except exceptions/enums) |
-| **Mvc / Html** (currently in `lib/`) | Presentation: templates, DataGrid, icons, select items | Modules only (target) | Domain, Infrastructure |
+| **Mvc / Html** (`app/modules/web`) | Presentation: templates, DataGrid, icons, select items | Domain ports and module code | Domain concrete services, Infrastructure |
 
 ### 1.2 Hard rules (to be enforced by P0-3)
 
@@ -88,7 +88,7 @@ Run from the worktree root. Keep the numbers in the progress log.
 
 | ID | Metric | Command (abbreviated) | Baseline |
 |---|---|---|---|
-| M1 | Domain files importing any outer layer (Infrastructure, Core, Mvc, Html, Modules, Util) | `grep -rlE --include=*.php '^use SP\\(Infrastructure\|Core\|Mvc\|Html\|Modules\|Util)\\' lib/SP/Domain \| wc -l` | **186** |
+| M1 | Domain files importing any outer layer (Infrastructure, Core, Modules, Util) | `grep -rlE --include=*.php '^use SP\\(Infrastructure\|Core\|Modules\|Util)\\' lib/SP/Domain \| wc -l` | **186** |
 | M2 | Domain files importing Infrastructure | `grep -rlE '^use SP\\Infrastructure\\' lib/SP/Domain \| wc -l` | **131** |
 | M3 | Domain files importing `SP\Core` | `grep -rlE '^use SP\\Core\\' lib/SP/Domain \| wc -l` | **96** |
 | M4 | Domain files importing `SP\Core\Application` (service locator) | `grep -rlE '^use SP\\Core\\Application;' lib/SP/Domain \| wc -l` | **74** |
@@ -136,7 +136,7 @@ Each has a recommendation. Decide before the phase that depends on it.
 |---|---|---|---|---|
 | D1 | Where do user-facing messages get translated? | (a) Domain keeps `__u()` as a marker and translation happens at the boundary. (b) Domain throws exceptions with stable error codes and message keys; modules translate. | (b) for new code; migrate contexts one at a time. Keep (a) as a stopgap if a context is too big. | P4-2 |
 | D2 | Where do use cases live? | (a) `SP\Domain\<Ctx>\UseCases`. (b) new top-level `lib/SP/Application/`. | (a). It avoids a third top-level namespace and a second move of the same classes. **Decided: (a).** | P5-* |
-| D3 | Move Mvc and Html out of `lib/`? | Yes into `app/modules/web/` (namespace `SP\Modules\Web\View`, `...\Html`) | Yes | P4-1 |
+| D3 | Move Mvc and Html out of `lib/`? | Yes into `app/modules/web/` (namespace `SP\Modules\Web\Mvc`, `...\Html`) | Yes. **Decided: yes.** | P4-1 |
 | D4 | Run the `modules` suite and integration tests in CI by default? | Yes now / after P0-1 green / keep gated | After P0-1 and P0-2 succeed: make integration job default on | P0-2 |
 | D5 | How to enforce layer rules? | (a) deptrac (new dev dependency). (b) PHPUnit architecture test using `nikic/php-parser` (already in `require-dev`). | (b) first, with an allowlist that can only shrink (ratchet). Consider deptrac later. | P0-3 |
 | D6 | Pilot bounded context for the full pattern | `Tag` (5 core files, 9 controllers, 0 tests, 18 external references) or `ItemPreset` (10 domain files, 9 controllers) | `Tag` | P6-W1 |
@@ -148,6 +148,7 @@ Each has a recommendation. Decide before the phase that depends on it.
 
 - **D1 (2026-10-27): option (b).** Domain exceptions carry a stable code and an untranslated message key; the interface layer translates. Migrate one bounded context at a time, starting with `Tag` (P4-2). Option (a) remains a stopgap for contexts that are too large.
 - **D2 (2026-10-27): option (a).** Use cases live in `SP\Domain\<Ctx>\UseCases`; their Commands and Results live in `SP\Domain\<Ctx>\UseCases\Dtos`. No third top-level namespace.
+- **D3 (2026-10-27): yes.** Presentation code moves out of `lib/`: `SP\Mvc` -> `SP\Modules\Web\Mvc`, `SP\Html` -> `SP\Modules\Web\Html`, and the theme icon service moves with it to `SP\Modules\Web\UI`. `Core/Definitions` remains the composition root and may reference module classes.
 
 ---
 
@@ -210,7 +211,7 @@ Phases are ordered so the guardrails come first, then inward dependency fixes, t
 
 ### Phase 4: Presentation out of `lib/`
 
-- [ ] **P4-1 Move `lib/SP/Mvc` and `lib/SP/Html` into `app/modules/web`.** Namespace `SP\Modules\Web\Mvc\...` and `SP\Modules\Web\Html\...` (decision D3). Move `Core/UI/Theme*` icon usage too. Update `tests/` imports.
+- [x] **P4-1 Move `lib/SP/Mvc` and `lib/SP/Html` into `app/modules/web`.** Namespace `SP\Modules\Web\Mvc\...` and `SP\Modules\Web\Html\...` (decision D3). Move `Core/UI/Theme*` icon usage too. Update `tests/` imports.
   - Acceptance: `lib/SP/Mvc` and `lib/SP/Html` removed; M1 and M12 reduced; `lib/` has no `SP\Mvc`/`SP\Html` references (except as listed in section 1.2).
 - [x] **P4-2 Translation policy (D1).** Per bounded context, replace `__u()` in Domain code with domain exceptions carrying a stable code and an untranslated message key. Translate in the module boundary (exception-to-response mapper in `app/modules/web` and `app/modules/api`). Do one context per task, starting with `Tag` (pilot, see P6-W1).
   - Acceptance: M5 drops per context. A snapshot test of user-visible messages for each migrated context proves no text changed.
@@ -351,6 +352,8 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-27 | P4-2 Tag translation policy (D1) (verified: Tag unit, core unit, architecture, PSR2) | M5 72 → 71 files / 345 → 341 call sites; `domain-presentation-calls` allowlist 124 → 123 | Decided D1 option (b). Added `SP\Domain\Tag\Exceptions\TagException` with stable codes `NOT_FOUND` (1001) and `DELETE_FAILED` (1002) and untranslated keys. `Tag` no longer calls `__u()`; `JsonMessage`/`ActionResponse`/`JsonRpcResponse` translate at the boundary. The API `TagControllerTest` message assertions plus the new stable-code assertions act as the user-visible snapshot. Core unit 2014 tests green (known warnings/deprecations); architecture 12/12. The API integration test still cannot run locally because of the known `vfs://` mysql fixture issue (P7-1). |
 | 2026-10-27 | P9-1 Core ↔ Infrastructure cleanup (verified: architecture 12/12) | M13 stays 0 (+2 composition); no other metric changes | P4-4 already removed the runtime references, so P9-1 adds the guard: a new `core-infrastructure` rule rejects `SP\Infrastructure\` imports from `lib/SP/Core` outside `Core/Definitions`. `LayerDependencyTest` freezes the rule at 0, and `LayerRulesTest` covers both the violating and the composition-root cases. |
 | 2026-10-27 | D2 + P5-1 use case DTO convention (verified: Tag DTO unit, architecture, PSR2) | M6 stays 0/154; other metrics unchanged | Decided D2 option (a): use cases live in `SP\Domain\<Ctx>\UseCases`, DTOs in `SP\Domain\<Ctx>\UseCases\Dtos`. Added the `Command` and `Result` marker contracts in `SP\Domain\Common\Dtos`, the Tag pilot commands and results (create, update, delete single/batch, get, search), and `TagUseCaseDtosTest`, which enforces final readonly classes with promoted public properties and the right contract. |
+
+| 2026-10-27 | P4-1 move Mvc and Html into the web module (D3) (verified: core unit, core, modules, architecture, wiring, PSR2, PHPStan) | M12 stays 2 (composition root + bootstrap); lib-modules allowlist 2 -> 1; M1 23, M6 0/154, M13 0 (+2 composition); PHPStan lib 1143 -> 1015 errors (files moved out of the analysed tree) | Moved `lib/SP/Mvc` (21 files) and `lib/SP/Html` (25 files) to `app/modules/web/Mvc` and `app/modules/web/Html` under `SP\Modules\Web\Mvc` and `SP\Modules\Web\Html`. Moved `ThemeIcons` to `SP\Modules\Web\UI` so Core has no presentation import. Updated all class and template references. `TemplateResolver` no longer uses `FileSystem`; `ControllerTrait` uses the `JsonResponseFactory` port; `CustomFieldItems` moved from Domain Services to Domain Providers so modules do not call a concrete Domain service. The `lib-modules` rule now allows `Core/Definitions` as the composition root and the ratchet dropped to 1 (`BootstrapBase`). |
 
 ### Baseline test results (P0-1)
 

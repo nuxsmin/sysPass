@@ -63,9 +63,9 @@ use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
-use SP\Mvc\Controller\WebControllerHelper;
-use SP\Mvc\View\Components\DataTab;
-use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\View\Components\DataTab;
+use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 use SP\Util\Util;
 
 use function SP\__;

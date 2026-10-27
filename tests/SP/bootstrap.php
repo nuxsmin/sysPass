@@ -28,7 +28,7 @@ namespace SP\Tests;
 
 use org\bovigo\vfs\vfsStream;
 use RuntimeException;
-use SP\Core\UI\ThemeIcons;
+use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Infrastructure\Database\DatabaseConnectionData;

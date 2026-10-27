@@ -22,4 +22,4 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-return new SP\Core\UI\ThemeIcons();
+return new SP\Modules\Web\UI\ThemeIcons();

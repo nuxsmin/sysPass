@@ -45,8 +45,6 @@ final class LayerRules
 
     private const OUTER_LAYER_PREFIXES = [
         'SP\\Core\\',
-        'SP\\Mvc\\',
-        'SP\\Html\\',
         'SP\\Modules\\',
         'SP\\Util\\',
     ];
@@ -88,7 +86,10 @@ final class LayerRules
                 continue;
             }
 
-            if ($layer === 'lib' && str_contains($code, 'SP\\Modules')) {
+            if ($layer === 'lib'
+                && !str_starts_with($relativePath, self::COMPOSITION_ROOT)
+                && str_contains($code, 'SP\\Modules')
+            ) {
                 $violations[self::LIB_MODULES][] = sprintf('%s => SP\\Modules', $relativePath);
             }
 

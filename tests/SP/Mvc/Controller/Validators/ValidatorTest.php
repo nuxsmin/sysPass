@@ -27,7 +27,7 @@ namespace SP\Tests\Mvc\Controller\Validators;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
-use SP\Mvc\Controller\Validators\Validator;
+use SP\Modules\Web\Mvc\Controller\Validators\Validator;
 
 /**
  * Class ValidatorTest

@@ -31,9 +31,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Mvc\View\OutputHandlerInterface;
-use SP\Mvc\View\Template;
-use SP\Mvc\View\TemplateResolverInterface;
+use SP\Modules\Web\Mvc\View\OutputHandlerInterface;
+use SP\Modules\Web\Mvc\View\Template;
+use SP\Modules\Web\Mvc\View\TemplateResolverInterface;
 use SP\Tests\UnitaryTestCase;
 
 /**
