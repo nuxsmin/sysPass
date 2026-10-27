@@ -35,7 +35,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P2-3 | #2029 | done |
 | P2-4 | #2024 | done (`d596e85a`) |
 | P3-1 | #1973 | todo |
-| P3-2 | #2030 | todo |
+| P3-2 | #2030 | done |
 | P3-3 | #2036 | todo |
 | P4-1 | #2025 | todo |
 | P4-2 | #1974 | todo |
@@ -334,6 +334,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-27 | P2-2 master key behind a port (verified: unitary, core, modules, architecture, wiring) | M1 24 → 23; M3 14 → 13; M5 73 files / 348 → 72 files / 345 sites; allowlist domain-only 38 → 35, presentation calls 126 → 125; M6 146 → 147 ports | Added `SP\Domain\Crypt\Ports\MasterKeyStore` with `get()`/`set()`/`clear()` and removed the Core session imports from `Domain\Common\Services\Service`. Core implementations: `SP\Core\Crypt\SessionMasterKeyStore` (encrypted session vault) and `SP\Core\Context\StatelessMasterKeyStore` (transient context key), selected by a factory in `CoreDefinitions` from the injected `Context`. The eight callers (`Api`, `AuthToken`, `TemporaryMasterPass`, `PublicLink`, `AccountCrypt`, `CustomFieldData`, `UserMasterPass`, `PluginData`) now take the port. Suites: core unitary 2007 tests, core 2008 tests, modules 96 tests, architecture 8/8, container wiring green (known warnings/deprecations). |
 | 2026-10-27 | P2-4 logging port (verified: core, modules, architecture, wiring) | presentation calls 125 → 124; allowlist domain-only stays 35; M1 23, M3 13, M6 147 ports | Added `SP\Domain\Core\Log\LoggerInterface` plus `NullLogger`, implemented in Core by `SP\Core\Log\FunctionLogger` (delegates to `logger()` and has no dependencies, avoiding the `ConfigFile`/PSR-logger cycle) and bound in `CoreDefinitions`. All 16 Domain files that called `SP\logger` now use the port; the two static helpers (`Address`, `Hash`) lost their incidental debug lines. PHPStan unchanged. Suites: core 2008 tests, modules 96 tests, architecture 7/7, container wiring green. |
 | 2026-10-27 | P2-3 remove direct superglobal use (verified: Domain Common, architecture) | metrics unchanged; M1 23, M3 13, M6 147 ports | `Http::checkHttps()` now reads the request URI through the existing `RequestService::getServer('REQUEST_URI')` port method instead of `$_SERVER`. The two remaining `$_SESSION` files are already in `SP\Core\Context`, so no superglobal access remains in `lib/` outside Core context or in `app/modules`. `HttpTest` now asserts the port call and that it is skipped when HTTPS is disabled or already in use. |
+| 2026-10-27 | P3-2 static domain helpers (verified: architecture, core unit, Api/AuthToken unit, PSR2) | metrics unchanged; M8 89 (exception imports only), module static calls on Domain service classes = 0 | `ConfigBackup::configToJson()` and `ConfigUtil` normalisers were already moved behind `ConfigBackupService` and `ConfigInput` in P3-1. This task removed the remaining public statics from the `AuthToken` service (`Api` and the service now call the model; `canUseSecureTokenAction()` is private) and extended the `modules-concrete-services` architecture rule to reject static calls on Domain `Services` classes from `app/modules`, resolving imports and aliases while still allowing exception factories. Added `LayerRulesTest` coverage for direct and aliased calls. |
 
 ### Baseline test results (P0-1)
 

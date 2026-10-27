@@ -36,7 +36,6 @@ use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Api\Ports\HelpProvider;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenService;
-use SP\Domain\Auth\Services\AuthToken;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -135,7 +134,7 @@ final class Api extends Service implements ApiService
 
         $this->setupUser();
 
-        if (AuthToken::isSecuredAction($actionId)) {
+        if (AuthTokenModel::isSecuredAction($actionId)) {
             $this->requireMasterPass();
         }
 

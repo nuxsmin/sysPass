@@ -151,8 +151,8 @@ final class AuthToken extends Service implements AuthTokenService
      */
     private function injectSecureData(AuthTokenModel $authToken, string $token): AuthTokenModel
     {
-        if (self::isSecuredAction($authToken->getActionId())
-            || self::canUseSecureTokenAction($authToken->getActionId())
+        if (AuthTokenModel::isSecuredAction($authToken->getActionId())
+            || $this->canUseSecureTokenAction($authToken->getActionId())
         ) {
             $properties = [
                 'vault' => $this->getSecureData($token, $authToken->getHash())->getSerialized(),
@@ -170,12 +170,7 @@ final class AuthToken extends Service implements AuthTokenService
         return $authToken->mutate($properties);
     }
 
-    public static function isSecuredAction(int $action): bool
-    {
-        return AuthTokenModel::isSecuredAction($action);
-    }
-
-    public static function canUseSecureTokenAction(int $action): bool
+    private function canUseSecureTokenAction(int $action): bool
     {
         return in_array($action, self::CAN_USE_SECURE_TOKEN_ACTIONS, true);
     }
