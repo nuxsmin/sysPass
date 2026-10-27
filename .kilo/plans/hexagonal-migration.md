@@ -32,7 +32,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P1-8 | #2051 | todo (last; after all callers are removed) |
 | P2-1 | #1971 | done (`333ae6c8`) |
 | P2-2 | #2023 | done (security review pending) |
-| P2-3 | #2029 | todo |
+| P2-3 | #2029 | done |
 | P2-4 | #2024 | done (`d596e85a`) |
 | P3-1 | #1973 | todo |
 | P3-2 | #2030 | todo |
@@ -187,7 +187,7 @@ Phases are ordered so the guardrails come first, then inward dependency fixes, t
   - Acceptance: no `SP\Core\Application` import in `lib/SP/Domain` (M4 = 0).
 - [x] **P2-2 Master-key handling behind a port.** `Service::getMasterKeyFromContext()` and `setMasterKeyInContext()` currently call `CryptSession` and check `SessionContext`. Introduce `SP\Domain\Crypt\Ports\MasterKeyStore` (get/set/clear). Implement it in Core (session) and Stateless (non-session context). Callers use the port.
   - Acceptance: no `SP\Core\Crypt\Session` or `SP\Core\Context\Session` import in Domain. Auth and account encryption tests still pass.
-- [ ] **P2-3 Remove direct session superglobal use.** `$_SESSION` appears in 2 `lib/` files and `$_SERVER` in 1. Move into Core context implementation.
+- [x] **P2-3 Remove direct session superglobal use.** `$_SESSION` appears in 2 `lib/` files and `$_SERVER` in 1. Move into Core context implementation.
   - Acceptance: superglobal use only in `SP\Core\Context\*` and bootstrap files.
 - [x] **P2-4 Logging port.** Replace `logger()` in 16 Domain files with an injected `Psr\Log\LoggerInterface` (or `SP\Domain\Core\Log\LoggerInterface`). Keep `logger()` in Core.
   - Acceptance: Domain files do not use `function SP\logger`.
@@ -333,6 +333,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-27 | P1-7 strip presentation from Domain adapters (verified: unitary, core, modules, architecture, wiring) | M1 33 → 24; allowlist domain-only 47 → 38; M6 stays 0/146 | `CustomFieldItems` in Domain replaces `ItemTrait` in the Account/Category/Client adapters and backs the Mvc trait. `Account` maps tags/users/groups to plain `{id,name}` arrays instead of `SelectItemAdapter`. `SP\Domain\Account\Ports\PasswordValidator` is the new port; the Mvc validator implements it and is bound in `CoreDefinitions`. `Domain\Core\UI\IconInterface` is the domain icon contract, extended by `SP\Html\Assets\IconInterface`; `ThemeIconsInterface` now uses `FileCacheService`. `Environment::getMaxUpload()`/`convertShortUnit()` and `Filter::getBool()` replace `SP\Util\Util` in Domain; `Util` delegates to them. Also documented the module-specific `HelpProvider` port in `ContainerWiringTest` (P1-6 regression). PHPStan: no new errors in changed files. Suites: core 2008 tests, modules 96 tests, architecture 7/7, wiring green (known warnings/deprecations). |
 | 2026-10-27 | P2-2 master key behind a port (verified: unitary, core, modules, architecture, wiring) | M1 24 → 23; M3 14 → 13; M5 73 files / 348 → 72 files / 345 sites; allowlist domain-only 38 → 35, presentation calls 126 → 125; M6 146 → 147 ports | Added `SP\Domain\Crypt\Ports\MasterKeyStore` with `get()`/`set()`/`clear()` and removed the Core session imports from `Domain\Common\Services\Service`. Core implementations: `SP\Core\Crypt\SessionMasterKeyStore` (encrypted session vault) and `SP\Core\Context\StatelessMasterKeyStore` (transient context key), selected by a factory in `CoreDefinitions` from the injected `Context`. The eight callers (`Api`, `AuthToken`, `TemporaryMasterPass`, `PublicLink`, `AccountCrypt`, `CustomFieldData`, `UserMasterPass`, `PluginData`) now take the port. Suites: core unitary 2007 tests, core 2008 tests, modules 96 tests, architecture 8/8, container wiring green (known warnings/deprecations). |
 | 2026-10-27 | P2-4 logging port (verified: core, modules, architecture, wiring) | presentation calls 125 → 124; allowlist domain-only stays 35; M1 23, M3 13, M6 147 ports | Added `SP\Domain\Core\Log\LoggerInterface` plus `NullLogger`, implemented in Core by `SP\Core\Log\FunctionLogger` (delegates to `logger()` and has no dependencies, avoiding the `ConfigFile`/PSR-logger cycle) and bound in `CoreDefinitions`. All 16 Domain files that called `SP\logger` now use the port; the two static helpers (`Address`, `Hash`) lost their incidental debug lines. PHPStan unchanged. Suites: core 2008 tests, modules 96 tests, architecture 7/7, container wiring green. |
+| 2026-10-27 | P2-3 remove direct superglobal use (verified: Domain Common, architecture) | metrics unchanged; M1 23, M3 13, M6 147 ports | `Http::checkHttps()` now reads the request URI through the existing `RequestService::getServer('REQUEST_URI')` port method instead of `$_SERVER`. The two remaining `$_SESSION` files are already in `SP\Core\Context`, so no superglobal access remains in `lib/` outside Core context or in `app/modules`. `HttpTest` now asserts the port call and that it is skipped when HTTPS is disabled or already in use. |
 
 ### Baseline test results (P0-1)
 
