@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\UserGroup;
 
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -35,6 +34,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
+use SP\Domain\User\UseCases\Dtos\GetUserGroupCommand;
+use SP\Domain\User\UseCases\GetUserGroupUseCase;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -50,6 +51,7 @@ abstract class UserGroupViewBase extends ControllerBase
     use ItemTrait;
 
     private UserGroupService $userGroupService;
+    private GetUserGroupUseCase $getUserGroupUseCase;
     private CustomFieldDataService $customFieldService;
     private UserService $userService;
 
@@ -57,6 +59,7 @@ abstract class UserGroupViewBase extends ControllerBase
         Application         $application,
         WebControllerHelper $webControllerHelper,
         UserGroupService    $userGroupService,
+        GetUserGroupUseCase $getUserGroupUseCase,
         UserService         $userService,
         CustomFieldDataService $customFieldService
     ) {
@@ -65,6 +68,7 @@ abstract class UserGroupViewBase extends ControllerBase
         $this->checkLoggedIn();
 
         $this->userGroupService = $userGroupService;
+        $this->getUserGroupUseCase = $getUserGroupUseCase;
         $this->userService = $userService;
         $this->customFieldService = $customFieldService;
     }
@@ -85,7 +89,7 @@ abstract class UserGroupViewBase extends ControllerBase
         $this->view->addTemplate('user_group', 'itemshow');
 
         $userGroupData = $userGroupId
-            ? $this->userGroupService->getById($userGroupId)
+            ? $this->getUserGroupUseCase->execute(new GetUserGroupCommand($userGroupId))->model
             : new UserGroup();
 
         $this->view->assign('group', $userGroupData);
@@ -103,7 +107,7 @@ abstract class UserGroupViewBase extends ControllerBase
                 : []
         );
 
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE));
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');

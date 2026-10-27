@@ -32,9 +32,10 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;
-use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Domain\CustomField\Ports\CustomFieldTypeService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\CustomField\UseCases\Dtos\GetCustomFieldCommand;
+use SP\Domain\CustomField\UseCases\GetCustomFieldUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
@@ -44,8 +45,8 @@ use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
  */
 abstract class CustomFieldViewBase extends ControllerBase
 {
-    private CustomFieldDefinitionService $customFieldDefService;
-    private CustomFieldTypeService       $customFieldTypeService;
+    private GetCustomFieldUseCase $getCustomFieldUseCase;
+    private CustomFieldTypeService $customFieldTypeService;
 
     /**
      * @throws AuthException
@@ -53,15 +54,15 @@ abstract class CustomFieldViewBase extends ControllerBase
      */
     public function __construct(
         Application                  $application,
-        WebControllerHelper          $webControllerHelper,
-        CustomFieldDefinitionService $customFieldDefService,
+        WebControllerHelper $webControllerHelper,
+        GetCustomFieldUseCase $getCustomFieldUseCase,
         CustomFieldTypeService $customFieldTypeService
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->customFieldDefService = $customFieldDefService;
+        $this->getCustomFieldUseCase = $getCustomFieldUseCase;
         $this->customFieldTypeService = $customFieldTypeService;
     }
 
@@ -79,7 +80,7 @@ abstract class CustomFieldViewBase extends ControllerBase
         $this->view->addTemplate('custom_field', 'itemshow');
 
         $customField = $customFieldId
-            ? $this->customFieldDefService->getById($customFieldId)
+            ? $this->getCustomFieldUseCase->execute(new GetCustomFieldCommand($customFieldId))->model
             : new CustomFieldDefinition();
 
         $this->view->assign('field', $customField);

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,72 +24,61 @@
 
 namespace SP\Modules\Web\Controllers\ItemPreset;
 
-
-use Exception;
-use JsonException;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
+use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Domain\ItemPreset\UseCases\Dtos\DeleteItemPresetCommand;
+use SP\Domain\ItemPreset\UseCases\Dtos\DeleteItemPresetsCommand;
+use SP\Domain\ItemPreset\UseCases\DeleteItemPresetUseCase;
+use SP\Domain\ItemPreset\UseCases\DeleteItemPresetsUseCase;
+use SP\Modules\Web\Controllers\ControllerBase;
+
+use function SP\__u;
 
 /**
  * Class DeleteController
  */
-final class DeleteController extends ItemPresetSaveBase
+final class DeleteController extends ControllerBase
 {
-    use ItemTrait;
-    use JsonTrait;
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        private readonly DeleteItemPresetUseCase $deleteItemPresetUseCase,
+        private readonly DeleteItemPresetsUseCase $deleteItemPresetsUseCase
+    ) {
+        parent::__construct($application, $webControllerHelper);
 
-    /**
-     * Delete action
-     *
-     * @param  int|null  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function deleteAction(?int $id = null): bool
+        $this->checkLoggedIn();
+    }
+
+    #[Action(ResponseType::JSON)]
+    public function deleteAction(?int $id = null): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_DELETE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            if ($id === null) {
-                $this->itemPresetService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
-
-                $this->eventDispatcher->notify(
-                    'delete.itemPreset',
-                    new Event($this, EventMessage::build()->addDescription(__u('Values deleted')))
-                );
-
-                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Values deleted'));
-            }
-
-            $this->itemPresetService->delete($id);
-
-            $this->eventDispatcher->notify(
-                'delete.itemPreset',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Value deleted'))
-                        ->addDetail(__u('ID'), $id)
-                )
-            );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Value deleted'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_DELETE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        try {
+            if ($id === null) {
+                $ids = array_map(
+                    'intval',
+                    $this->request->analyzeArray('items') ?? []
+                );
+
+                $this->deleteItemPresetsUseCase->execute(new DeleteItemPresetsCommand($ids));
+
+                return ActionResponse::ok(__u('Values deleted'));
+            }
+
+            $this->deleteItemPresetUseCase->execute(new DeleteItemPresetCommand($id));
+        } catch (SPException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
+        }
+
+        return ActionResponse::ok(__u('Value deleted'));
     }
 }

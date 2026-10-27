@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,50 +24,35 @@
 
 namespace SP\Modules\Web\Controllers\CustomField;
 
-
-use Exception;
-use JsonException;
-use SP\Domain\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Core\Events\Event;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class CreateController
  */
 final class CreateController extends CustomFieldViewBase
 {
-    use JsonTrait;
-
-    /**
-     * @return bool
-     * @throws JsonException
-     */
-    public function createAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function createAction(): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::CUSTOMFIELD_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $this->view->assign('header', __('New Field'));
-            $this->view->assign('isView', false);
-            $this->view->assign('route', 'customField/saveCreate');
-
-            $this->setViewData();
-
-            $this->eventDispatcher->notify('show.customField.create', new Event($this));
-
-            return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::CUSTOMFIELD_CREATE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        $this->view->assign('header', __('New Field'));
+        $this->view->assign('isView', false);
+        $this->view->assign('route', 'customField/saveCreate');
+
+        $this->setViewData();
+
+        $this->eventDispatcher->notify('show.customField.create', new Event($this));
+
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 }

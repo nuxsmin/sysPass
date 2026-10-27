@@ -45,7 +45,8 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P5-2 | #2032 | done |
 | P5-3 | #2037 | done |
 | P6-W1 | #1975 | done |
-| P6-W2 to P6-W7 | #2042 to #2048 | todo |
+| P6-W2 | #2042 | done |
+| P6-W3 to P6-W7 | #2043 to #2048 | todo |
 | P7-1 to P7-4 | #2016, #2027, #2047, #2049 | todo |
 | P8-1, P8-2 | #2017, #2033 | todo |
 | P9-1 to P9-5 | #2038, #2050, #2034, #2052, #2053 | P9-1 done; rest todo |
@@ -244,7 +245,7 @@ Applied per context in Phase 6 and Phase 7. The steps are in section 6.
 Each slice follows section 6. Waves are ordered by legacy count and risk. Current state: 26 untested areas, 77 legacy controllers (after the Tag pilot).
 
 - [x] **P6-W1 Pilot: `Tag`** (7 legacy of 9). Also the pilot for D1 (P4-2) and the use-case pattern (P5-*). Done: six use cases, thin controllers and the first web IT suite for the area.
-- [ ] **P6-W2 Small CRUD areas: `ItemPreset`** (7 of 9), **`CustomField`** (7 of 9), **`UserGroup`** (7 of 9), **`UserProfile`** (7 of 9).
+- [x] **P6-W2 Small CRUD areas: `ItemPreset`** (7 of 9), **`CustomField`** (7 of 9), **`UserGroup`** (7 of 9), **`UserProfile`** (7 of 9). Done: 24 use cases, thin `ActionResponse` controllers, and unit tests with mocked ports.
 - [ ] **P6-W3 Remaining untested areas:** `Notification` (8 of 11), `PublicLink` (8 of 10), `Plugin` (6 of 8), `Track` (3 of 4), `Eventlog` (2 of 3), `Status` (2 of 3), `Items` (2 of 5), `UserPassReset` (2 of 5), `Resource` (0 of 3), `Error` (0 of 5).
 - [ ] **P6-W4 `User`** (9 of 11). Depends on P3-1 for `User` and `UserPassRecover`.
 - [ ] **P6-W5 Auth and bootstrap entry points: `Login`** (1 of 3), **`Install`** (1 of 2), **`Upgrade`** (1 of 2), **`Task`** (0 of 2), **`Index`**, **`SecurityManager`**, **`ItemManager`**, **`UserSettingsGeneral`**, **`UserSettingsManager`**, **`ConfigWiki`**, **`Traits`**. High risk. `Login` needs IT tests before migration, because `Domain/Auth/Services/LoginAuthHandler.php` mixes Core, Infrastructure, translation and logging calls (32 matches).
@@ -368,6 +369,8 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 
 
 | 2026-10-27 | P10-1 Domain tests use fakes, not Infrastructure (verified: five migrated tests, core unit 2052, modules 104, architecture 14, PSR2 no new errors) | M14 5 → 0; M1 23 → 21; M2 13 → 11; M17 stays 11; M6 0/157 → 0/158 ports | Added `DatabaseUtilInterface` and the `DatabaseTables` constant holder in `Domain\Database`, and moved `DatabaseConnectionData` to `Domain\Database\Dtos` with a primitive `build()` factory so Domain no longer imports the Install adapter. `BackupFile` and `MysqlSetup` now take the port; `CoreDefinitions` binds it. `XmlFile` reads through `FileHandlerInterface::readToString()` and parses with `loadXML()`, so the new `InMemoryFileHandler` stub can back the tests without a filesystem. `FileBackupServiceTest`, `XmlFileTest`, `AccountCacheTest`, `MySQLTest` and `InstallerTest` now import only Domain ports/DTOs/stubs. Pruned the architecture allowlist by three and lowered the `domain-only` ratchet from 35 to 32. |
+
+| 2026-10-27 | P6-W2 small CRUD areas (verified: core unit 2077, modules 104, architecture + wiring 15, PSR2, PHPStan) | M9 81 -> 105/259; M10 77 -> 49; M6 stays 0/158; PHPStan lib 1012 -> 1009 errors | Added 24 use cases (`Create`, `Update`, `Delete`, `DeleteBatch`, `Get`, `Search`) for `ItemPreset`, `CustomField`, `UserGroup` and `UserProfile`, with Command/Result DTOs and events emitted through `EventEmitter` using untranslated keys. Converted the 28 legacy controllers to `#[Action]` + `ActionResponse` and removed `JsonTrait`/`JsonMessage` from the four areas; the view bases read through the `Get` use cases. `UserGroup`/`UserProfile` delete use cases now remove the custom fields of the deleted ids (the old batch path passed `null`). Added four unit test classes (25 cases) with mocked service ports and `InMemoryEventEmitter`. |
 
 ### Baseline test results (P0-1)
 
