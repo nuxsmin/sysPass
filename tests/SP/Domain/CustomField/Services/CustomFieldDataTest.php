@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\CustomField\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
@@ -698,7 +699,8 @@ class CustomFieldDataTest extends UnitaryTestCase
             $this->context,
             $this->customFieldDataRepository,
             $this->customFieldDefinitionRepository,
-            $this->crypt
+            $this->crypt,
+            new StatelessMasterKeyStore($this->context)
         );
     }
 

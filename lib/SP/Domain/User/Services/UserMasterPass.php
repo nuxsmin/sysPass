@@ -37,6 +37,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Dtos\UserMasterPassDto;
@@ -61,7 +62,8 @@ final class UserMasterPass extends Service implements UserMasterPassService
         Context $context,
         private readonly UserRepository $userRepository,
         private readonly ConfigService  $configService,
-        private readonly CryptInterface $crypt
+        private readonly CryptInterface $crypt,
+        private readonly MasterKeyStore $masterKeyStore
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -116,7 +118,7 @@ final class UserMasterPass extends Service implements UserMasterPassService
 
             // Comprobamos el hash de la clave del usuario con la guardada
             if (Hash::checkHashKey($userMasterPass, $systemMasterPassHash)) {
-                $this->setMasterKeyInContext($userMasterPass);
+                $this->masterKeyStore->set($userMasterPass);
 
                 return new UserMasterPassDto(
                     UserMasterPassStatus::Ok,
@@ -175,7 +177,7 @@ final class UserMasterPass extends Service implements UserMasterPassService
 
 //            $this->context->setTrasientKey(self::SESSION_MASTERPASS_UPDATED, true);
 
-                $this->setMasterKeyInContext($userMasterPass);
+                $this->masterKeyStore->set($userMasterPass);
 
                 return $response;
             }

@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Account\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Attributes\Group;
@@ -589,7 +590,8 @@ class PublicLinkTest extends UnitaryTestCase
                 $this->publicLinkRepository,
                 $request,
                 $this->accountService,
-                $this->crypt
+                $this->crypt,
+                new StatelessMasterKeyStore($this->context)
             );
     }
 }

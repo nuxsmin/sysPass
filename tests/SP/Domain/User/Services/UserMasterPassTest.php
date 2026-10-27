@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\User\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -744,7 +745,8 @@ class UserMasterPassTest extends UnitaryTestCase
             $this->context,
             $this->userRepository,
             $this->configService,
-            $this->crypt
+            $this->crypt,
+            new StatelessMasterKeyStore($this->context)
         );
     }
 }

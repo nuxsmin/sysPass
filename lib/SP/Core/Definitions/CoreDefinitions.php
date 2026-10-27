@@ -44,10 +44,12 @@ use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Bootstrap\RouteContext;
 use SP\Core\Bootstrap\UriContext;
 use SP\Core\Context\Stateless;
+use SP\Core\Context\StatelessMasterKeyStore;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\RequestBasedPassword;
+use SP\Core\Crypt\SessionMasterKeyStore;
 use SP\Core\Crypt\UuidCookie;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Language;
@@ -86,6 +88,7 @@ use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
@@ -99,6 +102,7 @@ use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Crypt\Services\SecureSession;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
@@ -170,6 +174,11 @@ final class CoreDefinitions
             PasswordValidator::class => autowire(PasswordValidatorImplementation::class),
             UriContextInterface::class => autowire(UriContext::class),
             Context::class => create(Stateless::class),
+            MasterKeyStore::class => factory(static function (Context $context): MasterKeyStore {
+                return $context instanceof SessionContext
+                    ? new SessionMasterKeyStore($context)
+                    : new StatelessMasterKeyStore($context);
+            }),
             EventDispatcherInterface::class => create(EventDispatcher::class),
             EventMessageFormatterInterface::class => create(EventMessageFormatter::class),
             MailMessageFormatterInterface::class => create(MailMessageFormatter::class),

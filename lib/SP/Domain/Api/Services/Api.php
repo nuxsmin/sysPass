@@ -55,6 +55,7 @@ use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 
 use function SP\__u;
 use function SP\logger;
@@ -81,7 +82,8 @@ final class Api extends Service implements ApiService
         private readonly ApiRequestService $apiRequest,
         private readonly AuthTokenService  $authTokenService,
         private readonly UserService       $userService,
-        private readonly UserProfileService $userProfileService
+        private readonly UserProfileService $userProfileService,
+        private readonly MasterKeyStore    $masterKeyStore
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
@@ -360,7 +362,7 @@ final class Api extends Service implements ApiService
     {
         $this->requireInitialized();
 
-        return $this->getMasterKeyFromContext();
+        return $this->masterKeyStore->get();
     }
 
     public function getRequestId(): int

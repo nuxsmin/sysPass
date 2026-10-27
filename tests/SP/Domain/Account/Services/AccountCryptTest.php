@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Account\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
@@ -150,6 +151,6 @@ class AccountCryptTest extends UnitaryTestCase
 
         $this->crypt = $this->createMock(CryptInterface::class);
 
-        $this->accountCrypt = new AccountCrypt($this->config, $this->eventDispatcherStub, $this->context, $this->crypt);
+        $this->accountCrypt = new AccountCrypt($this->config, $this->eventDispatcherStub, $this->context, $this->crypt, new StatelessMasterKeyStore($this->context));
     }
 }

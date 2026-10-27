@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Plugin\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
@@ -356,7 +357,8 @@ class PluginDataTest extends UnitaryTestCase
             $this->eventDispatcherStub,
             $this->context,
             $this->pluginDataRepository,
-            $this->crypt
+            $this->crypt,
+            new StatelessMasterKeyStore($this->context)
         );
     }
 }

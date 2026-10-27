@@ -32,6 +32,7 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
@@ -56,7 +57,8 @@ final class CustomFieldData extends Service implements CustomFieldDataService
         Context $context,
         private readonly CustomFieldDataRepository       $customFieldDataRepository,
         private readonly CustomFieldDefinitionRepository $customFieldDefinitionRepository,
-        private readonly CryptInterface                  $crypt
+        private readonly CryptInterface                  $crypt,
+        private readonly MasterKeyStore                  $masterKeyStore
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -70,7 +72,7 @@ final class CustomFieldData extends Service implements CustomFieldDataService
     {
         if (!empty($data) && !empty($key)) {
             try {
-                return $this->crypt->decrypt($data, $key, $this->getMasterKeyFromContext());
+                return $this->crypt->decrypt($data, $key, $this->masterKeyStore->get());
             } catch (CryptException $e) {
                 throw ServiceException::from($e);
             }
@@ -158,7 +160,7 @@ final class CustomFieldData extends Service implements CustomFieldDataService
      */
     private function buildSecureData(CustomFieldDataModel $customFieldData, ?string $key = null): CustomFieldDataModel
     {
-        $key = $key ?: $this->getMasterKeyFromContext();
+        $key = $key ?: $this->masterKeyStore->get();
         $securedKey = $this->crypt->makeSecuredKey($key);
 
         if (strlen($securedKey) > 1000) {

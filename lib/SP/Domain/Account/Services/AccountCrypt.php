@@ -34,6 +34,7 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Exceptions\CryptException;
 
 use function SP\__u;
@@ -47,7 +48,8 @@ final class AccountCrypt extends Service implements AccountCryptService
         ConfigFileService $config,
         EventDispatcherInterface $eventDispatcher,
         Context $context,
-        private readonly CryptInterface $crypt
+        private readonly CryptInterface $crypt,
+        private readonly MasterKeyStore $masterKeyStore
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -61,7 +63,7 @@ final class AccountCrypt extends Service implements AccountCryptService
     {
         try {
             if ($masterPass === null) {
-                $masterPass = $this->getMasterKeyFromContext();
+                $masterPass = $this->masterKeyStore->get();
             }
 
             if (empty($masterPass)) {
@@ -84,6 +86,4 @@ final class AccountCrypt extends Service implements AccountCryptService
             throw ServiceException::error(__u('Internal error'), null, $e->getCode(), $e);
         }
     }
-
-
 }

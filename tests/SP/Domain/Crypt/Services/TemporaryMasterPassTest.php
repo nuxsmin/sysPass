@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Crypt\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use PHPMailer\PHPMailer\Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
@@ -406,7 +407,8 @@ class TemporaryMasterPassTest extends UnitaryTestCase
             $this->configService,
             $this->userService,
             $this->mailService,
-            $this->crypt
+            $this->crypt,
+            new StatelessMasterKeyStore($this->context)
         );
     }
 

@@ -32,6 +32,7 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Providers\Password;
@@ -82,6 +83,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
         private readonly UserService    $userService,
         private readonly MailService    $mailService,
         private readonly CryptInterface $crypt,
+        private readonly MasterKeyStore $masterKeyStore,
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -107,7 +109,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
             $configRequest = new ConfigRequest();
             $configRequest->add(
                 self::PARAM_PASS,
-                $this->crypt->encrypt($this->getMasterKeyFromContext(), $secureKey, $randomKey)
+                $this->crypt->encrypt($this->masterKeyStore->get(), $secureKey, $randomKey)
             );
             $configRequest->add(self::PARAM_KEY, $secureKey);
             $configRequest->add(self::PARAM_HASH, Hash::hashKey($randomKey));

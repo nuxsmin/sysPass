@@ -44,6 +44,7 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -82,7 +83,8 @@ final class AuthToken extends Service implements AuthTokenService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly AuthTokenRepository $authTokenRepository,
-        private readonly CryptInterface      $crypt
+        private readonly CryptInterface      $crypt,
+        private readonly MasterKeyStore      $masterKeyStore
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -194,7 +196,7 @@ final class AuthToken extends Service implements AuthTokenService
     {
         return Vault::factory($this->crypt)
                     ->saveData(
-                        $this->getMasterKeyFromContext(),
+                        $this->masterKeyStore->get(),
                         $key . $token
                     );
     }

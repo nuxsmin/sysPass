@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Api\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use Exception;
 use Faker\Factory;
 use JsonException;
@@ -212,7 +213,8 @@ class ApiTest extends UnitaryTestCase
             $apiRequest,
             $this->authTokenService,
             $this->userService,
-            $this->userProfileService
+            $this->userProfileService,
+            new StatelessMasterKeyStore($this->context)
         );
 
         $apiService->setHelpClass(AccountHelp::class);
@@ -321,7 +323,8 @@ class ApiTest extends UnitaryTestCase
             $this->apiRequest,
             $this->authTokenService,
             $this->userService,
-            $this->userProfileService
+            $this->userProfileService,
+            new StatelessMasterKeyStore($this->context)
         );
     }
 

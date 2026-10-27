@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Auth\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
@@ -609,7 +610,8 @@ class AuthTokenTest extends UnitaryTestCase
             $this->eventDispatcherStub,
             $this->context,
             $this->authTokenRepository,
-            $this->crypt
+            $this->crypt,
+            new StatelessMasterKeyStore($this->context)
         );
     }
 }

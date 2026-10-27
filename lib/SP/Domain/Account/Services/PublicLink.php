@@ -44,6 +44,7 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -72,7 +73,8 @@ final class PublicLink extends Service implements PublicLinkService
         private readonly PublicLinkRepository $publicLinkRepository,
         private readonly RequestService $request,
         private readonly AccountService       $accountService,
-        private readonly CryptInterface       $crypt
+        private readonly CryptInterface       $crypt,
+        private readonly MasterKeyStore       $masterKeyStore
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -197,7 +199,7 @@ final class PublicLink extends Service implements PublicLinkService
             'pass' => $this->crypt->decrypt(
                 $account['pass'],
                 $account['key'],
-                $this->getMasterKeyFromContext()
+                $this->masterKeyStore->get()
             ),
             'key' => null,
         ];
