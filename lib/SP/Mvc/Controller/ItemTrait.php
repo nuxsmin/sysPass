@@ -32,7 +32,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Domain\CustomField\Services\CustomFieldItem;
+use SP\Domain\CustomField\Services\CustomFieldItems;
 use SP\Domain\Http\Ports\RequestService;
 
 /**
@@ -51,58 +51,7 @@ trait ItemTrait
         ?int                   $itemId,
         CustomFieldDataService $customFieldDataService
     ): array {
-        $customFields = [];
-
-        foreach ($customFieldDataService->getBy($moduleId, $itemId) as $item) {
-            $valueEncrypted = !empty($item['data']) && !empty($item['key']);
-            $value = $valueEncrypted
-                ? self::formatValue($customFieldDataService->decrypt($item['data'], $item['key']) ?? '')
-                : $item['data'];
-
-            $customField = new CustomFieldItem(
-                required:         (bool)$item['required'],
-                showInList:       (bool)$item['showInList'],
-                help:             $item['help'],
-                definitionId:     (int)$item['definitionId'],
-                definitionName:   $item['definitionName'],
-                typeId:           (int)$item['typeId'],
-                typeName:         $item['typeName'],
-                typeText:         $item['typeText'],
-                moduleId:         (int)$item['moduleId'],
-                formId:           self::getFormIdForName($item['definitionName']),
-                value:            $value,
-                isEncrypted:      (bool)$item['isEncrypted'],
-                isValueEncrypted: $valueEncrypted
-            );
-
-            $customFields[] = $customField;
-        }
-
-        return $customFields;
-    }
-
-    /**
-     * Formatear el valor del campo
-     *
-     * @param $value string El valor del campo
-     *
-     * @return string
-     */
-    private static function formatValue(string $value): string
-    {
-        if (preg_match('#https?://#', $value)) {
-            return sprintf('<a href="%s" target="_blank">%s</a>', $value, $value);
-        }
-
-        return $value;
-    }
-
-    /**
-     * Returns the form Id for a given name
-     */
-    private static function getFormIdForName(string $name): string
-    {
-        return sprintf('cf_%s', strtolower(preg_replace('/\W*/', '', $name)));
+        return CustomFieldItems::getForItem($moduleId, $itemId, $customFieldDataService);
     }
 
     /**

@@ -34,6 +34,7 @@ final class ContainerWiringTest extends IntegrationTestCase
         'SP\Domain\Account\Ports\AccountAdapter' => 'module-specific baseUrl',
         'SP\Domain\Api\Ports\ApiRequestService' => 'API module binding',
         'SP\Domain\Api\Ports\ApiService' => 'API module binding',
+        'SP\Domain\Api\Ports\HelpProvider' => 'module-specific help implementations',
         'SP\Domain\Category\Ports\CategoryAdapter' => 'module-specific baseUrl',
         'SP\Domain\Client\Ports\ClientAdapter' => 'module-specific baseUrl',
         'SP\Domain\CustomField\Ports\CustomFieldAdapter' => 'module-specific baseUrl',

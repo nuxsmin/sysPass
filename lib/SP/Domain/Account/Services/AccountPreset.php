@@ -28,6 +28,7 @@ namespace SP\Domain\Account\Services;
 
 use SP\Domain\Account\Dtos\AccountDto;
 use SP\Domain\Account\Ports\AccountPresetService;
+use SP\Domain\Account\Ports\PasswordValidator;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Common\Services\Service;
@@ -42,7 +43,6 @@ use SP\Domain\ItemPreset\Models\AccountPermission;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Mvc\Controller\Validators\PasswordValidator;
 
 /**
  * Class AccountPreset

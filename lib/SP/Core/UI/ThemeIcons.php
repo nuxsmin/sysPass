@@ -29,11 +29,11 @@ namespace SP\Core\UI;
 use SP\Core\Context\ContextBase;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\UI\IconInterface;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Html\Assets\FontIcon;
-use SP\Html\Assets\IconInterface;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileSystem;
 

@@ -31,6 +31,8 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionUnionType;
+use SP\Domain\Common\Providers\Environment;
+use SP\Domain\Common\Providers\Filter;
 use SP\Infrastructure\File\FileHandler;
 use ValueError;
 
@@ -44,24 +46,12 @@ final class Util
      */
     public static function getMaxUpload(): int
     {
-        return min(
-            self::convertShortUnit(ini_get('upload_max_filesize')),
-            self::convertShortUnit(ini_get('post_max_size')),
-            self::convertShortUnit(ini_get('memory_limit'))
-        );
+        return Environment::getMaxUpload();
     }
 
     public static function convertShortUnit(string $value): int
     {
-        if (preg_match('/(\d+)([KMGkmg])/', $value, $match)) {
-            return match (strtoupper($match[2])) {
-                'K' => (int)$match[1] * 1024,
-                'M' => (int)$match[1] * (1024 ** 2),
-                'G' => (int)$match[1] * (1024 ** 3)
-            };
-        }
-
-        return (int)$value;
+        return Environment::convertShortUnit($value);
     }
 
     /**
@@ -155,23 +145,6 @@ final class Util
      */
     public static function boolval(mixed $in, bool $strict = false): bool
     {
-        $in = is_string($in) ? strtolower($in) : $in;
-
-        // if not strict, we only have to check if something is false
-        if (!$in
-            || in_array($in, ['false', 'no', 'n', '0', 'off', false, 0], true)
-        ) {
-            return false;
-        }
-
-        if ($strict
-            && in_array($in, ['true', 'yes', 'y', '1', 'on', true, 1], true)
-        ) {
-            return true;
-        }
-
-        // not strict? let the regular php bool check figure it out (will
-        // largely default to true)
-        return (bool)$in;
+        return Filter::getBool($in, $strict);
     }
 }

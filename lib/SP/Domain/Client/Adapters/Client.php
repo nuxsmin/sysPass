@@ -41,15 +41,13 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Domain\CustomField\Services\CustomFieldItems;
 
 /**
  * Class Client
  */
 final class Client extends Adapter implements ClientAdapter
 {
-    use ItemTrait;
-
     protected array $availableIncludes = ['customFields'];
 
     public function __construct(
@@ -70,7 +68,7 @@ final class Client extends Adapter implements ClientAdapter
     public function includeCustomFields(ClientModel $client): Collection
     {
         return $this->collection(
-            $this->getCustomFieldsForItem(AclActionsInterface::CLIENT, $client->getId(), $this->customFieldDataService),
+            CustomFieldItems::getForItem(AclActionsInterface::CLIENT, $client->getId(), $this->customFieldDataService),
             new CustomField($this->configData, $this->baseUrl)
         );
     }

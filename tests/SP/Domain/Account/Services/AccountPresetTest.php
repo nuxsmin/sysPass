@@ -30,6 +30,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
+use SP\Domain\Account\Ports\PasswordValidator;
 use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Account\Services\AccountPreset;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -40,8 +41,6 @@ use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Mvc\Controller\Validators\PasswordValidator;
-use SP\Mvc\Controller\Validators\ValidatorInterface;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\ItemPresetDataGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -56,7 +55,7 @@ class AccountPresetTest extends UnitaryTestCase
 
     private ItemPresetService|MockObject            $itemPresetService;
     private AccountPreset                           $accountPreset;
-    private ValidatorInterface|MockObject           $passwordValidator;
+    private PasswordValidator|MockObject           $passwordValidator;
     private MockObject|AccountToUserGroupRepository $accountToUserGroupRepository;
     private AccountToUserRepository|MockObject      $accountToUserRepository;
 

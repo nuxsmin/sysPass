@@ -35,7 +35,6 @@ use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Models\Action;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\CustomFieldGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -79,15 +78,24 @@ class AccountTest extends UnitaryTestCase
 
         $this->assertEquals($accountData->getId(), $out['id']);
         $this->assertEquals(
-            SelectItemAdapter::factory($accountData->getTags())->getItemsFromModel(),
+            array_map(
+                static fn($item) => ['id' => $item->getId(), 'name' => $item->getName()],
+                $accountData->getTags()
+            ),
             $out['tags']
         );
         $this->assertEquals(
-            SelectItemAdapter::factory($accountData->getUsers())->getItemsFromModel(),
+            array_map(
+                static fn($item) => ['id' => $item->getId(), 'name' => $item->getName()],
+                $accountData->getUsers()
+            ),
             $out['users']
         );
         $this->assertEquals(
-            SelectItemAdapter::factory($accountData->getUserGroups())->getItemsFromModel(),
+            array_map(
+                static fn($item) => ['id' => $item->getId(), 'name' => $item->getName()],
+                $accountData->getUserGroups()
+            ),
             $out['userGroups']
         );
 

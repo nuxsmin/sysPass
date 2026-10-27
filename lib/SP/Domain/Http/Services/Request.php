@@ -37,7 +37,6 @@ use SP\Domain\Http\Header;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\File\FileSystem;
-use SP\Util\Util;
 
 use function SP\logger;
 use function SP\processException;
@@ -83,7 +82,7 @@ class Request implements RequestService
     {
         $server = $this->request->server();
 
-        $this->https = Util::boolval($server->get('HTTPS', 'off'))
+        $this->https = Filter::getBool($server->get('HTTPS', 'off'))
                        || $server->get('SERVER_PORT', 0) === 443;
     }
 
@@ -294,7 +293,7 @@ class Request implements RequestService
             return (bool)$default;
         }
 
-        return Util::boolval($this->params->get($param));
+        return Filter::getBool($this->params->get($param));
     }
 
     /**

@@ -30,6 +30,7 @@ use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Ports\AccountAdapter;
 use SP\Domain\Common\Adapters\Adapter;
 use SP\Domain\Common\Dtos\Dto;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Common\Providers\Link;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -41,16 +42,13 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Domain\CustomField\Services\CustomFieldItems;
 
 /**
  * Class Account
  */
 final class Account extends Adapter implements AccountAdapter
 {
-    use ItemTrait;
-
     protected array $availableIncludes = ['customFields'];
 
     public function __construct(
@@ -71,7 +69,7 @@ final class Account extends Adapter implements AccountAdapter
     public function includeCustomFields(AccountEnrichedDto $accountEnrichedDto): Collection
     {
         return $this->collection(
-            $this->getCustomFieldsForItem(
+            CustomFieldItems::getForItem(
                 AclActionsInterface::ACCOUNT,
                 $accountEnrichedDto->getId(),
                 $this->customFieldService
@@ -118,9 +116,9 @@ final class Account extends Adapter implements AccountAdapter
             'passDateChange' => $account->getPassDateChange(),
             'parentId' => $account->getParentId(),
             'publicLinkHash' => $account->getPublicLinkHash(),
-            'tags' => SelectItemAdapter::factory($data->getTags())->getItemsFromModel(),
-            'users' => SelectItemAdapter::factory($data->getUsers())->getItemsFromModel(),
-            'userGroups' => SelectItemAdapter::factory($data->getUserGroups())->getItemsFromModel(),
+            'tags' => self::mapItems($data->getTags()),
+            'users' => self::mapItems($data->getUsers()),
+            'userGroups' => self::mapItems($data->getUserGroups()),
             'customFields' => null,
             'links' => [
                 [
@@ -134,5 +132,20 @@ final class Account extends Adapter implements AccountAdapter
                 ],
             ],
         ];
+    }
+
+    /**
+     * @param ItemWithIdAndNameModel[] $items
+     * @return array<int, array{id: int|null, name: string|null}>
+     */
+    private static function mapItems(array $items): array
+    {
+        return array_map(
+            static fn(ItemWithIdAndNameModel $item) => [
+                'id' => $item->getId(),
+                'name' => $item->getName(),
+            ],
+            $items
+        );
     }
 }

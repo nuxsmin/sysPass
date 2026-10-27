@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Mvc\Controller\Validators;
 
+use SP\Domain\Account\Ports\PasswordValidator as PasswordValidatorPort;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Models\Password;
@@ -39,7 +40,7 @@ use function SP\__u;
  *
  * @package SP\Mvc\Controller
  */
-class PasswordValidator implements ValidatorInterface
+class PasswordValidator implements ValidatorInterface, PasswordValidatorPort
 {
     /**
      * @throws ValidationException

@@ -25,16 +25,11 @@ declare(strict_types=1);
 
 namespace SP\Html\Assets;
 
+use SP\Domain\Core\UI\IconInterface as DomainIconInterface;
+
 /**
  * Interface IconInterface
  */
-interface IconInterface
+interface IconInterface extends DomainIconInterface
 {
-    public function getTitle(): ?string;
-
-    public function getClass(): ?string;
-
-    public function getIcon(): ?string;
-
-    public function mutate(?string $icon = null, ?string $class = null, ?string $title = null): IconInterface;
 }

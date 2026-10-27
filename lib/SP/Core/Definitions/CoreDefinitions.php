@@ -59,6 +59,7 @@ use SP\Core\ProvidersHelper;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeContext;
 use SP\Core\UI\ThemeIcons;
+use SP\Domain\Account\Ports\PasswordValidator;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
@@ -141,6 +142,7 @@ use SP\Mvc\View\Template;
 use SP\Mvc\View\TemplateInterface;
 use SP\Mvc\View\TemplateResolver;
 use SP\Mvc\View\TemplateResolverInterface;
+use SP\Mvc\Controller\Validators\PasswordValidator as PasswordValidatorImplementation;
 
 use function DI\autowire;
 use function DI\create;
@@ -165,6 +167,7 @@ final class CoreDefinitions
             }),
             KleinRequest::class => factory([KleinRequest::class, 'createFromGlobals']),
             RequestService::class => autowire(Request::class),
+            PasswordValidator::class => autowire(PasswordValidatorImplementation::class),
             UriContextInterface::class => autowire(UriContext::class),
             Context::class => create(Stateless::class),
             EventDispatcherInterface::class => create(EventDispatcher::class),
