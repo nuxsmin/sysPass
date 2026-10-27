@@ -46,4 +46,11 @@ interface EventMessageFormatterInterface
      * @param EventMessage<mixed> $message
      */
     public function composeHtml(EventMessage $message): string;
+
+    /**
+     * Compose only the message description as plain text.
+     *
+     * @param EventMessage<mixed> $message
+     */
+    public function formatDescription(EventMessage $message, bool $translate = false): string;
 }

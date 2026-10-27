@@ -54,6 +54,13 @@ final class EventMessageFormatter implements EventMessageFormatterInterface
         );
     }
 
+    public function formatDescription(EventMessage $message, bool $translate = false): string
+    {
+        $formatter = new TextFormatter();
+
+        return $message->getDescription($formatter, $translate);
+    }
+
     /**
      * @param EventMessage<mixed> $message
      */

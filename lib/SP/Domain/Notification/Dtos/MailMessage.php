@@ -24,14 +24,15 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Messages;
+namespace SP\Domain\Notification\Dtos;
 
 use SP\Domain\Core\Messages\FormatterInterface;
+use SP\Domain\Core\Messages\MessageBase;
 
 /**
  * Class MailMessage
  *
- * @package SP\Core\Messages
+ * @package SP\Domain\Notification\Dtos
  */
 final class MailMessage extends MessageBase
 {
@@ -43,41 +44,10 @@ final class MailMessage extends MessageBase
         $this->description[] = '';
     }
 
-    /**
-     * Componer un mensaje en formato HTML
-     */
-    public function composeHtml(): string
-    {
-        $formatter = new HtmlFormatter();
-
-        $message = '<div class="mail-message" style="font-family: Helvetica, Arial, sans-serif">';
-        $message .= '<h3>' . $this->title . '</h3>';
-        $message .= '<div class="mail-description">' . $this->getDescription($formatter, true) . '</div>';
-        $message .= '<footer>' . implode('<br>', $this->footer) . '</footer>';
-        $message .= '</div>';
-
-        return $message;
-    }
-
     public function getDescription(
         FormatterInterface $formatter,
         bool               $translate
-    ): string
-    {
+    ): string {
         return $formatter->formatDescription($this->description, $translate);
-    }
-
-    /**
-     * Componer un mensaje en formato texto
-     */
-    public function composeText(string $delimiter = PHP_EOL): string
-    {
-        $formatter = new TextFormatter($delimiter);
-
-        return $this->title
-               . $delimiter
-               . $this->getDescription($formatter, true)
-               . $delimiter
-               . implode($delimiter, $this->footer);
     }
 }

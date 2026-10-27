@@ -27,8 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Notification\Services;
 
 use Exception;
-use SP\Core\Messages\MailMessage;
-use SP\Core\Messages\TextFormatter;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Attributes\EventReceiver as EventReceiverAttribute;
 use SP\Domain\Common\Services\EventReceiver as EventReceiverTrait;
 use SP\Domain\Common\Services\Service;
@@ -141,7 +140,7 @@ final class MailEvent extends Service implements EventReceiver
                     )
                 );
 
-                $subject = $eventMessage->getDescription(new TextFormatter(), true) ?: $eventType;
+                $subject = $this->messageFormatter->formatDescription($eventMessage, true) ?: $eventType;
 
                 $this->mailService->send($subject, $to, $mailMessage);
             } catch (Exception $e) {

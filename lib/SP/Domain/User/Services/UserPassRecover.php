@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\User\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Core\Messages\MailMessage;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;

@@ -23,23 +23,20 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Messages;
-
-use SP\Domain\Core\Messages\FormatterInterface;
-use SP\Domain\Core\Messages\MessageInterface;
+namespace SP\Domain\Core\Messages;
 
 /**
  * Class MessageBase
  *
- * @package SP\Core\Messages
+ * @package SP\Domain\Core\Messages
  */
-abstract class MessageBase implements MessageInterface
+abstract class MessageBase
 {
     protected string $title = '';
     protected array $footer = [];
     protected array $description = [];
 
-    public static function factory(): MessageBase
+    public static function factory(): static
     {
         return new static();
     }
@@ -49,7 +46,7 @@ abstract class MessageBase implements MessageInterface
         return $this->title;
     }
 
-    public function setTitle(string $title): MessageBase
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
@@ -61,14 +58,14 @@ abstract class MessageBase implements MessageInterface
         bool               $translate
     ): string;
 
-    public function setDescription(array $description): MessageBase
+    public function setDescription(array $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function addDescription(string $description): MessageBase
+    public function addDescription(string $description): static
     {
         $this->description[] = $description;
 
@@ -80,7 +77,7 @@ abstract class MessageBase implements MessageInterface
         return $this->footer;
     }
 
-    public function setFooter(array $footer): MessageBase
+    public function setFooter(array $footer): static
     {
         $this->footer = $footer;
 

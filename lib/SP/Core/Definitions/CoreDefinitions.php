@@ -52,6 +52,7 @@ use SP\Core\Crypt\UuidCookie;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Language;
 use SP\Core\Messages\EventMessageFormatter;
+use SP\Core\Messages\MailMessageFormatter;
 use SP\Core\MimeTypes;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\ProvidersHelper;
@@ -117,6 +118,7 @@ use SP\Domain\Install\Services\MysqlSetup;
 use SP\Domain\Log\Providers\DatabaseHandler;
 use SP\Domain\Log\Providers\LogHandler;
 use SP\Domain\Notification\Ports\MailerInterface;
+use SP\Domain\Notification\Ports\MailMessageFormatterInterface;
 use SP\Domain\Notification\Services\Mail;
 use SP\Domain\Notification\Services\MailEvent;
 use SP\Domain\Notification\Services\NotificationEvent;
@@ -167,6 +169,7 @@ final class CoreDefinitions
             Context::class => create(Stateless::class),
             EventDispatcherInterface::class => create(EventDispatcher::class),
             EventMessageFormatterInterface::class => create(EventMessageFormatter::class),
+            MailMessageFormatterInterface::class => create(MailMessageFormatter::class),
             ConfigFileService::class => create(ConfigFile::class)
                 ->constructor(
                     create(XmlFileStorage::class)

@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Notification\Ports;
 
 use PHPMailer\PHPMailer\Exception;
-use SP\Core\Messages\MailMessage;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Notification\Dtos\MailParams;

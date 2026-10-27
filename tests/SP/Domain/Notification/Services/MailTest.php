@@ -30,7 +30,8 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Core\Context\ContextException;
-use SP\Core\Messages\MailMessage;
+use SP\Core\Messages\MailMessageFormatter;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
@@ -327,6 +328,13 @@ class MailTest extends UnitaryTestCase
 
         $this->mailer = $this->createMock(MailerInterface::class);
         $uriContext = $this->createMock(UriContextInterface::class);
-        $this->mail = new Mail($this->config, $this->eventDispatcherStub, $this->context, $this->mailer, $uriContext);
+        $this->mail = new Mail(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->mailer,
+            $uriContext,
+            new MailMessageFormatter()
+        );
     }
 }

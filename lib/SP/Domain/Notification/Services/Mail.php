@@ -31,7 +31,7 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Core\Messages\MailMessage;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -40,6 +40,7 @@ use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Html\Html;
 use SP\Domain\Notification\Dtos\MailParams;
 use SP\Domain\Notification\Ports\MailerInterface;
+use SP\Domain\Notification\Ports\MailMessageFormatterInterface;
 use SP\Domain\Notification\Ports\MailService;
 
 use function SP\__u;
@@ -54,8 +55,9 @@ final class Mail extends Service implements MailService
         ConfigFileService $config,
         EventDispatcherInterface $eventDispatcher,
         Context $context,
-        private readonly MailerInterface     $mailer,
-        private readonly UriContextInterface $uriContext
+        private readonly MailerInterface               $mailer,
+        private readonly UriContextInterface           $uriContext,
+        private readonly MailMessageFormatterInterface $mailMessageFormatter
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -93,7 +95,7 @@ final class Mail extends Service implements MailService
                 ->isHTML()
                 ->addAddress($to)
                 ->subject($this->getSubjectForAction($mailMessage->getTitle()))
-                ->body($mailMessage->composeHtml())
+                ->body($this->mailMessageFormatter->composeHtml($mailMessage))
                 ->send();
         } catch (Exception $e) {
             processException($e);
@@ -134,10 +136,12 @@ final class Mail extends Service implements MailService
             $this->mailer->addAddress($addr);
         }
 
+        $mailMessage->setFooter($this->getEmailFooter());
+
         $this->mailer
             ->isHTML()
             ->subject($this->getSubjectForAction($subject))
-            ->body($mailMessage->setFooter($this->getEmailFooter())->composeHtml());
+            ->body($this->mailMessageFormatter->composeHtml($mailMessage));
 
         $this->sendMail();
     }

@@ -33,7 +33,7 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Core\Messages\MailMessage;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;

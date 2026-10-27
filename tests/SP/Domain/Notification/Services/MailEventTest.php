@@ -30,7 +30,8 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Core\Messages\EventMessageFormatter;
-use SP\Core\Messages\MailMessage;
+use SP\Core\Messages\MailMessageFormatter;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Events\Event;
@@ -77,7 +78,7 @@ class MailEventTest extends UnitaryTestCase
                 self::callback(static function (MailMessage $mailMessage) {
                     $matches = preg_match(
                         '/\na_description<br>a_detail: a_value\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
-                        $mailMessage->composeText()
+                        (new MailMessageFormatter())->composeText($mailMessage)
                     );
 
                     return empty($mailMessage->getTitle())
@@ -114,7 +115,7 @@ class MailEventTest extends UnitaryTestCase
                 self::callback(static function (MailMessage $mailMessage) {
                     $matches = preg_match(
                         '/\na_description<br>a_detail: a_value\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
-                        $mailMessage->composeText()
+                        (new MailMessageFormatter())->composeText($mailMessage)
                     );
 
                     return empty($mailMessage->getTitle())
@@ -162,7 +163,7 @@ class MailEventTest extends UnitaryTestCase
                 self::callback(static function (MailMessage $mailMessage) {
                     $matches = preg_match(
                         '/\nEvent: test_a.update\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
-                        $mailMessage->composeText()
+                        (new MailMessageFormatter())->composeText($mailMessage)
                     );
 
                     return empty($mailMessage->getTitle())
@@ -198,7 +199,7 @@ class MailEventTest extends UnitaryTestCase
                 self::callback(static function (MailMessage $mailMessage) {
                     $matches = preg_match(
                         '/\na_description<br>a_detail: a_value\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
-                        $mailMessage->composeText()
+                        (new MailMessageFormatter())->composeText($mailMessage)
                     );
 
                     return empty($mailMessage->getTitle())
