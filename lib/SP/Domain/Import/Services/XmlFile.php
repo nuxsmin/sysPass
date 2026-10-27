@@ -67,7 +67,7 @@ final readonly class XmlFile implements XmlFileService
         $fileHandler->checkIsReadable();
 
         $self = new self($this->logger);
-        $self->readXMLFile($fileHandler->getFile());
+        $self->readXMLFile($fileHandler->readToString());
 
         return $self;
     }
@@ -77,11 +77,11 @@ final readonly class XmlFile implements XmlFileService
      *
      * @throws ImportException
      */
-    protected function readXMLFile(string $file): void
+    protected function readXMLFile(string $content): void
     {
         libxml_use_internal_errors(true);
 
-        if ($this->document->load($file, LIBXML_PARSEHUGE) === false) {
+        if ($this->document->loadXML($content, LIBXML_PARSEHUGE) === false) {
             foreach (libxml_get_errors() as $error) {
                 $this->logger->debug(__METHOD__ . ' - ' . $error->message);
             }

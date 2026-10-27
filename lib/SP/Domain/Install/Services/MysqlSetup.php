@@ -32,11 +32,12 @@ use SP\Domain\Common\Providers\Password;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Log\LoggerInterface;
 use SP\Domain\Core\Log\NullLogger;
+use SP\Domain\Database\Dtos\DatabaseTables;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Core\Exceptions\DatabaseException;
-use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__;
@@ -52,7 +53,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
         private DbStorageHandler      $dbStorage,
         private InstallData           $installData,
         private DatabaseFileInterface $databaseFile,
-        private DatabaseUtil          $databaseUtil,
+        private DatabaseUtilInterface $databaseUtil,
         private LoggerInterface       $logger = new NullLogger()
     ) {
     }
@@ -280,7 +281,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
         $dbc = $this->dbStorage->getConnectionSimple();
 
         if ($this->installData->isHostingMode()) {
-            foreach (DatabaseUtil::TABLES as $table) {
+            foreach (DatabaseTables::TABLES as $table) {
                 $dbc->exec(
                     sprintf(
                         'DROP TABLE IF EXISTS `%s`.`%s`',

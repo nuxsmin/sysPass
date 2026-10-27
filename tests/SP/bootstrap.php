@@ -31,7 +31,7 @@ use RuntimeException;
 use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\FileSystem;
 

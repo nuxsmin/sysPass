@@ -43,7 +43,7 @@ use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\User\Services\User;
-use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Tests\UnitaryTestCase;
 
 /**

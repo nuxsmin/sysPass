@@ -48,7 +48,7 @@ use SP\Domain\User\Models\UserProfile;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__u;

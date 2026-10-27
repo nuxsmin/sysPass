@@ -33,12 +33,13 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Database\Dtos\DatabaseTables;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Services\MysqlSetup;
-use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 
@@ -58,7 +59,7 @@ class MySQLTest extends UnitaryTestCase
     private InstallData                      $installData;
     private ConfigDataInterface              $configData;
     private DatabaseFileInterface|MockObject $databaseFile;
-    private DatabaseUtil|MockObject          $databaseUtil;
+    private DatabaseUtilInterface|MockObject $databaseUtil;
 
     /**
      * @throws SPException
@@ -528,7 +529,7 @@ class MySQLTest extends UnitaryTestCase
         $this->installData->setHostingMode(true);
 
         $dropRegex = '/DROP TABLE IF EXISTS `'.$this->installData->getDbName().'`\.`\w+`/';
-        $this->pdo->expects(self::exactly(count(DatabaseUtil::TABLES)))
+        $this->pdo->expects(self::exactly(count(DatabaseTables::TABLES)))
                   ->method('exec')
                   ->with($this->callback(fn($arg) => preg_match($dropRegex, $arg) > 0));
 
@@ -827,7 +828,7 @@ class MySQLTest extends UnitaryTestCase
 
         $this->installData = $this->getInstallData();
         $this->configData = $this->config->getConfigData();
-        $this->databaseUtil = $this->createMock(DatabaseUtil::class);
+        $this->databaseUtil = $this->createMock(DatabaseUtilInterface::class);
         $this->mysqlService = new MysqlSetup(
             $this->dbStorage,
             $this->installData,

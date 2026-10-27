@@ -119,6 +119,7 @@ use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Crypt\Services\SecureSession;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
 use SP\Domain\Export\Dtos\BackupFiles;
@@ -152,8 +153,9 @@ use SP\Domain\File\Ports\FileHandlerFactoryInterface;
 use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Infrastructure\Database\Database;
-use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\ArchiveHandler;
@@ -238,13 +240,21 @@ final class CoreDefinitions
             DatabaseConnectionData::class => factory(
                 static function (ConfigDataInterface $configData, InstallData $installData) {
                     if (!$configData->isInstalled()) {
-                        return DatabaseConnectionData::getFromInstallData($installData);
+                        return DatabaseConnectionData::build(
+                            $installData->getDbSocket(),
+                            $installData->getDbHost(),
+                            $installData->getDbPort(),
+                            $installData->getDbName(),
+                            $installData->getDbAdminUser(),
+                            $installData->getDbAdminPass()
+                        );
                     }
 
                     // TODO: get from env vars
                     return DatabaseConnectionData::getFromConfig($configData);
                 }
             ),
+            DatabaseUtilInterface::class => autowire(DatabaseUtil::class),
             DatabaseFileInterface::class => create(MysqlFileParser::class)
                 ->constructor(
                     create(FileHandler::class)

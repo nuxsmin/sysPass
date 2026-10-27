@@ -49,7 +49,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P7-1 to P7-4 | #2016, #2027, #2047, #2049 | todo |
 | P8-1, P8-2 | #2017, #2033 | todo |
 | P9-1 to P9-5 | #2038, #2050, #2034, #2052, #2053 | P9-1 done; rest todo |
-| P10-1 to P10-5 | #2035, #2039, #2018, #2019, #2020 | todo |
+| P10-1 to P10-5 | #2035, #2039, #2018, #2019, #2020 | P10-1 done; rest todo |
 | P11-1 to P11-5 | #2021, #2028, #2040, #2041, #2022 | todo |
 | D1 | #1965 | decided: option (b) |
 | D2 | #1966 | decided: option (a) |
@@ -275,7 +275,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 
 ### Phase 10: Testing strategy
 
-- [ ] **P10-1 Unit tests for the core use memory fakes, not Infrastructure.** Build in-memory port fakes under `tests/SP/Stubs/` (there are a few already: `AccountRepositoryStub`, `UserGroupRepositoryStub`, `PublicLinkRepositoryStub`). Migrate the 55 Domain test files that import Infrastructure. Acceptance: M14 = 0.
+- [x] **P10-1 Unit tests for the core use memory fakes, not Infrastructure.** Build in-memory port fakes under `tests/SP/Stubs/` (there are a few already: `AccountRepositoryStub`, `UserGroupRepositoryStub`, `PublicLinkRepositoryStub`). Migrate the 55 Domain test files that import Infrastructure. Acceptance: M14 = 0.
 - [ ] **P10-2 Keep Infrastructure tests DB-backed.** The 34 repository tests (1:1 with repositories) stay as `integration` tests. Acceptance: they run in the CI integration job (P0-2).
 - [ ] **P10-3 HTTP-level IT per migrated web area.** Follow the existing `IntegrationTestCase` + `BodyChecker` pattern. Each slice in P6 adds one IT class per controller action, written before the migration (characterisation tests).
 - [ ] **P10-4 Coverage gates per layer.** Record current coverage per layer in section 9. Set target coverage for `Domain\*\UseCases` and `Domain\*\Services` once the baseline is known (decision needed after P0-1).
@@ -366,6 +366,8 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-27 | P5-3 event emission convention (verified: core unit, architecture, wiring, PSR2) | M6 0/155 -> 0/156 ports; no other metric changes | Added `SP\Domain\Common\Ports\EventEmitter` (publish-only) and the `SP\Core\Events\EventDispatcherEmitter` adapter, wired in `CoreDefinitions`. Recorded the convention in section 5: keep the existing event names, use the use case as the source, pass untranslated message keys, support message-less events, preserve receiver extras, and emit only after the state change. Added `InMemoryEventEmitter`, `UseCaseEventEmissionTest` and `EventDispatcherEmitterTest`. Per-area call-site migration starts with the Tag pilot (#1975); no `app/modules` call site changed here, so the `EventMessage::build` count is still 98 files. |
 | 2026-10-27 | P6-W1 Tag pilot (verified: core, modules, architecture, wiring, PSR2, PHPStan) | M9 75 -> 81/259; M10 84 -> 77; M15 27 -> 26/46; M6 stays 0/156; PHPStan lib 1015 -> 1013 errors | Added `CreateTagUseCase`, `UpdateTagUseCase`, `DeleteTagUseCase`, `DeleteTagsUseCase`, `GetTagUseCase` and `SearchTagsUseCase` (Command in, Result out, ports only) with the `create.tag`/`edit.tag`/`delete.tag`/`delete.tag.selection` events emitted through `EventEmitter` using untranslated keys. `TagException` gained the stable `NAME_REQUIRED` code. The seven Tag controllers now use `#[Action]` + `ActionResponse` and are thin; `JsonTrait`, `JsonMessage`, `TagSaveBase`, `TagForm` and the static `Acl::getActionRoute()` calls are gone from the area. Fixed the Tag repository update/delete queries (Aura SQL Query has no `limit()` on them) and the batch delete now removes the custom fields of the deleted ids. Added `TagTest` (8 HTTP IT cases) and `TagUseCasesTest` (13 unit cases with `InMemoryTagRepository` and `InMemoryEventEmitter`).
 
+
+| 2026-10-27 | P10-1 Domain tests use fakes, not Infrastructure (verified: five migrated tests, core unit 2052, modules 104, architecture 14, PSR2 no new errors) | M14 5 → 0; M1 23 → 21; M2 13 → 11; M17 stays 11; M6 0/157 → 0/158 ports | Added `DatabaseUtilInterface` and the `DatabaseTables` constant holder in `Domain\Database`, and moved `DatabaseConnectionData` to `Domain\Database\Dtos` with a primitive `build()` factory so Domain no longer imports the Install adapter. `BackupFile` and `MysqlSetup` now take the port; `CoreDefinitions` binds it. `XmlFile` reads through `FileHandlerInterface::readToString()` and parses with `loadXML()`, so the new `InMemoryFileHandler` stub can back the tests without a filesystem. `FileBackupServiceTest`, `XmlFileTest`, `AccountCacheTest`, `MySQLTest` and `InstallerTest` now import only Domain ports/DTOs/stubs. Pruned the architecture allowlist by three and lowered the `domain-only` ratchet from 35 to 32. |
 
 ### Baseline test results (P0-1)
 

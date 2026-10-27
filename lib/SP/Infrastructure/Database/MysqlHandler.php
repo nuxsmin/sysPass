@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Database;
 
 use SP\Domain\Core\Exceptions\DatabaseException;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
 
 use PDO;
 use SP\Domain\Database\Enums\DbStorageDriver;

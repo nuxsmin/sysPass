@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace SP\Domain\Database\Ports;
 
+use PDO;
+
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Dtos\QueryResult;
@@ -43,9 +45,18 @@ interface DatabaseInterface
     public function runQuery(QueryDataInterface $queryData, bool $fullCount = false): QueryResult;
 
     /**
-     * Don't fetch records and return prepared statement
+     * Don't fetch records and return prepared statement.
+     *
+     * @param array<int, mixed> $options
+     *
+     * @return iterable<int, mixed>
      */
-    public function doFetchWithOptions(QueryDataInterface $queryData): iterable;
+    public function doFetchWithOptions(
+        QueryDataInterface $queryData,
+        array $options = [],
+        int $mode = PDO::FETCH_DEFAULT,
+        ?bool $buffered = true
+    ): iterable;
 
     public function beginTransaction(): bool;
 

@@ -24,10 +24,9 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Database;
+namespace SP\Domain\Database\Dtos;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Install\Adapters\InstallData;
 
 /**
  * Class DatabaseConnectionData
@@ -107,15 +106,21 @@ class DatabaseConnectionData
         return $self;
     }
 
-    public static function getFromInstallData(InstallData $installData): DatabaseConnectionData
-    {
+    public static function build(
+        ?string $dbSocket,
+        ?string $dbHost,
+        ?int $dbPort,
+        ?string $dbName,
+        ?string $dbUser,
+        ?string $dbPass
+    ): DatabaseConnectionData {
         $self = new self();
-        $self->dbSocket = $installData->getDbSocket();
-        $self->dbHost = $installData->getDbHost();
-        $self->dbPort = $installData->getDbPort();
-        $self->dbName = $installData->getDbName();
-        $self->dbUser = $installData->getDbAdminUser();
-        $self->dbPass = $installData->getDbAdminPass();
+        $self->dbSocket = $dbSocket;
+        $self->dbHost = $dbHost;
+        $self->dbPort = $dbPort;
+        $self->dbName = $dbName;
+        $self->dbUser = $dbUser;
+        $self->dbPass = $dbPass;
 
         return $self;
     }

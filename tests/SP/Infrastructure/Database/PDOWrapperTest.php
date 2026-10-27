@@ -27,7 +27,7 @@ namespace SP\Tests\Infrastructure\Database;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
-use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Domain\Core\Exceptions\DatabaseException;
 use SP\Infrastructure\Database\PDOWrapper;
 use SP\Tests\UnitaryTestCase;

@@ -48,7 +48,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DbStorageHandler;
-use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Tests\DatabaseTrait;
 use stdClass;

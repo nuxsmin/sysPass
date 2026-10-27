@@ -27,7 +27,7 @@ namespace SP\Tests;
 
 use Exception;
 use PDO;
-use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Domain\Core\Exceptions\DatabaseException;
 
 /**

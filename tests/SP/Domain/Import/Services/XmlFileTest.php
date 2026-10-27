@@ -30,7 +30,7 @@ use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\XmlFile;
 use SP\Domain\Import\Services\XmlFormat;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\File\FileHandler;
+use SP\Tests\Stubs\InMemoryFileHandler;
 use SP\Tests\UnitaryTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -61,7 +61,7 @@ class XmlFileTest extends UnitaryTestCase
     #[DataProvider('fileFormatProvider')]
     public function testDetectFormat(string $file, XmlFormat $format)
     {
-        $fileHandler = new FileHandler($file);
+        $fileHandler = new InMemoryFileHandler($file, (string)file_get_contents($file));
 
         $xmlFile = new XmlFile();
         $out = $xmlFile->builder($fileHandler)->detectFormat();
@@ -75,8 +75,10 @@ class XmlFileTest extends UnitaryTestCase
      */
     public function testDetectFormatWithException()
     {
-        $fileHandler = new FileHandler(self::$faker->filePath(), 'w');
-        $fileHandler->write('<?xml version="1.0" encoding="utf-8" standalone="yes"?><Test></Test>');
+        $fileHandler = new InMemoryFileHandler(
+            self::$faker->filePath(),
+            '<?xml version="1.0" encoding="utf-8" standalone="yes"?><Test></Test>'
+        );
 
         $xmlFile = new XmlFile();
 
@@ -92,8 +94,10 @@ class XmlFileTest extends UnitaryTestCase
      */
     public function testBuilder()
     {
-        $fileHandler = new FileHandler(self::$faker->filePath(), 'w');
-        $fileHandler->write('<?xml version="1.0" encoding="utf-8" standalone="yes"?><Test></Test>');
+        $fileHandler = new InMemoryFileHandler(
+            self::$faker->filePath(),
+            '<?xml version="1.0" encoding="utf-8" standalone="yes"?><Test></Test>'
+        );
 
         $xmlFile = new XmlFile();
         $out = $xmlFile->builder($fileHandler);
@@ -107,8 +111,10 @@ class XmlFileTest extends UnitaryTestCase
      */
     public function testBuilderWithException()
     {
-        $fileHandler = new FileHandler(self::$faker->filePath(), 'w');
-        $fileHandler->write('<?xml version="1.0" encoding="utf-8" standalone="yes"?><Test>');
+        $fileHandler = new InMemoryFileHandler(
+            self::$faker->filePath(),
+            '<?xml version="1.0" encoding="utf-8" standalone="yes"?><Test>'
+        );
 
         $xmlFile = new XmlFile();
 

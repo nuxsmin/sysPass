@@ -34,7 +34,6 @@ use SP\Domain\Account\Services\AccountCache;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Account\Repositories\AccountToUserGroup;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
@@ -46,8 +45,8 @@ use SP\Tests\UnitaryTestCase;
 class AccountCacheTest extends UnitaryTestCase
 {
 
-    private AccountToUserRepository|MockObject $accountToUserRepository;
-    private AccountToUserGroup|MockObject      $accountToUserGroupRepository;
+    private AccountToUserRepository|MockObject      $accountToUserRepository;
+    private AccountToUserGroupRepository|MockObject $accountToUserGroupRepository;
     private AccountCache                       $accountCache;
 
     /**

@@ -40,12 +40,13 @@ use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Database\Dtos\DatabaseTables;
 use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Export\Ports\BackupFileService;
 use SP\Domain\File\Ports\ArchiveHandlerInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\Common\Repositories\Query;
-use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileSystem;
@@ -66,7 +67,7 @@ final class BackupFile extends Service implements BackupFileService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly DatabaseInterface       $database,
-        private readonly DatabaseUtil            $databaseUtil,
+        private readonly DatabaseUtilInterface   $databaseUtil,
         private readonly FileHandlerInterface    $dbBackupFile,
         private readonly ArchiveHandlerInterface $dbArchiveHandler,
         private readonly ArchiveHandlerInterface $appArchiveHandler,
@@ -248,7 +249,7 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function getTables(): array
     {
-        return array_filter(DatabaseUtil::TABLES, static fn(string $t) => strrpos($t, '_v') === false);
+        return array_filter(DatabaseTables::TABLES, static fn(string $t) => strrpos($t, '_v') === false);
     }
 
     /**
@@ -256,7 +257,7 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function getViews(): array
     {
-        return array_filter(DatabaseUtil::TABLES, static fn(string $t) => strrpos($t, '_v') !== false);
+        return array_filter(DatabaseTables::TABLES, static fn(string $t) => strrpos($t, '_v') !== false);
     }
 
     /**
