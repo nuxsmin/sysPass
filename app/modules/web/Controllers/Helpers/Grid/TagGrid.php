@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Helpers\Grid;
 
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
@@ -139,7 +138,7 @@ final class TagGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::TAG_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::TAG_SEARCH)
         );
 
         return $gridActionSearch;
@@ -160,7 +159,7 @@ final class TagGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::TAG_CREATE)
+            $this->acl->getRouteFor(AclActionsInterface::TAG_CREATE)
         );
 
         return $gridAction;
@@ -180,7 +179,7 @@ final class TagGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/show');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::TAG_EDIT)
+            $this->acl->getRouteFor(AclActionsInterface::TAG_EDIT)
         );
 
         return $gridAction;
@@ -200,7 +199,7 @@ final class TagGrid extends GridBase
         $gridAction->setOnClickFunction('appMgmt/delete');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::TAG_DELETE)
+            $this->acl->getRouteFor(AclActionsInterface::TAG_DELETE)
         );
 
         return $gridAction;

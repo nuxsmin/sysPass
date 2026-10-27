@@ -130,6 +130,8 @@ final class InMemoryTagRepository implements TagRepository
 
     public function search(ItemSearchDto $itemSearchData): QueryResult
     {
-        return new QueryResult(array_values($this->tags));
+        $tags = array_values($this->tags);
+
+        return QueryResult::withTotalNumRows($tags, count($tags));
     }
 }

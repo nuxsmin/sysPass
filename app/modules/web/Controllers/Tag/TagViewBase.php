@@ -25,14 +25,11 @@
 namespace SP\Modules\Web\Controllers\Tag;
 
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Tag\Models\Tag;
-use SP\Domain\Tag\Ports\TagService;
-use SP\Domain\Tag\Exceptions\TagException;
+use SP\Domain\Tag\UseCases\Dtos\GetTagCommand;
+use SP\Domain\Tag\UseCases\GetTagUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
@@ -41,40 +38,32 @@ use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
  */
 abstract class TagViewBase extends ControllerBase
 {
-    private TagService $tagService;
-
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        TagService $tagService
+        private readonly GetTagUseCase $getTagUseCase
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->tagService = $tagService;
     }
 
     /**
      * Sets view data for displaying tag's data
      *
      * @param  int|null  $tagId
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws TagException
      */
     protected function setViewData(?int $tagId = null): void
     {
         $this->view->addTemplate('tag', 'itemshow');
 
-        $tag = $tagId
-            ? $this->tagService->getById($tagId)
+        $tag = $tagId !== null
+            ? $this->getTagUseCase->execute(new GetTagCommand($tagId))->tag
             : new Tag();
 
         $this->view->assign('tag', $tag);
 
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');

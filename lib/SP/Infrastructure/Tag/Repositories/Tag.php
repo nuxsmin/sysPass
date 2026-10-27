@@ -121,7 +121,6 @@ final class Tag extends BaseRepository implements TagRepository
             ->table(TagModel::TABLE)
             ->cols($tag->toArray(null, ['id', 'hash']))
             ->where('id = :id')
-            ->limit(1)
             ->bindValues(
                 [
                     'id' => $tag->getId(),
@@ -268,8 +267,7 @@ final class Tag extends BaseRepository implements TagRepository
             ->newDelete()
             ->from(TagModel::TABLE)
             ->where('id = :id')
-            ->bindValues(['id' => $id])
-            ->limit(1);
+            ->bindValues(['id' => $id]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the tag'));
 

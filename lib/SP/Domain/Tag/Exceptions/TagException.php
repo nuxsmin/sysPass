@@ -37,6 +37,7 @@ final class TagException extends SPException
 {
     public const NOT_FOUND     = 1001;
     public const DELETE_FAILED = 1002;
+    public const NAME_REQUIRED = 1003;
 
     public static function notFound(): self
     {
@@ -46,5 +47,10 @@ final class TagException extends SPException
     public static function deleteFailed(): self
     {
         return self::warning('Error while removing the tags', null, self::DELETE_FAILED);
+    }
+
+    public static function nameRequired(): self
+    {
+        return self::warning('A tag name is needed', null, self::NAME_REQUIRED);
     }
 }

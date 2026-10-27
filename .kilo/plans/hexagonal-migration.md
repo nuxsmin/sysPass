@@ -44,7 +44,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P5-1 | #2026 | done |
 | P5-2 | #2032 | done |
 | P5-3 | #2037 | done |
-| P6-W1 | #1975 | todo (pilot) |
+| P6-W1 | #1975 | done |
 | P6-W2 to P6-W7 | #2042 to #2048 | todo |
 | P7-1 to P7-4 | #2016, #2027, #2047, #2049 | todo |
 | P8-1, P8-2 | #2017, #2033 | todo |
@@ -241,9 +241,9 @@ Applied per context in Phase 6 and Phase 7. The steps are in section 6.
 
 ### Phase 6: Web controller migration by vertical slice
 
-Each slice follows section 6. Waves are ordered by legacy count and risk. Current state: 27 untested areas, 83 legacy controllers.
+Each slice follows section 6. Waves are ordered by legacy count and risk. Current state: 26 untested areas, 77 legacy controllers (after the Tag pilot).
 
-- [ ] **P6-W1 Pilot: `Tag`** (7 legacy of 9). Also the pilot for D1 (P4-2) and the use-case pattern (P5-*). Coordinate with `Account` (18 external references to `Tag`).
+- [x] **P6-W1 Pilot: `Tag`** (7 legacy of 9). Also the pilot for D1 (P4-2) and the use-case pattern (P5-*). Done: six use cases, thin controllers and the first web IT suite for the area.
 - [ ] **P6-W2 Small CRUD areas: `ItemPreset`** (7 of 9), **`CustomField`** (7 of 9), **`UserGroup`** (7 of 9), **`UserProfile`** (7 of 9).
 - [ ] **P6-W3 Remaining untested areas:** `Notification` (8 of 11), `PublicLink` (8 of 10), `Plugin` (6 of 8), `Track` (3 of 4), `Eventlog` (2 of 3), `Status` (2 of 3), `Items` (2 of 5), `UserPassReset` (2 of 5), `Resource` (0 of 3), `Error` (0 of 5).
 - [ ] **P6-W4 `User`** (9 of 11). Depends on P3-1 for `User` and `UserPassRecover`.
@@ -363,6 +363,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-27 | P4-1 move Mvc and Html into the web module (D3) (verified: core unit, core, modules, architecture, wiring, PSR2, PHPStan) | M12 stays 2 (composition root + bootstrap); lib-modules allowlist 2 -> 1; M1 23, M6 0/154, M13 0 (+2 composition); PHPStan lib 1143 -> 1015 errors (files moved out of the analysed tree) | Moved `lib/SP/Mvc` (21 files) and `lib/SP/Html` (25 files) to `app/modules/web/Mvc` and `app/modules/web/Html` under `SP\Modules\Web\Mvc` and `SP\Modules\Web\Html`. Moved `ThemeIcons` to `SP\Modules\Web\UI` so Core has no presentation import. Updated all class and template references. `TemplateResolver` no longer uses `FileSystem`; `ControllerTrait` uses the `JsonResponseFactory` port; `CustomFieldItems` moved from Domain Services to Domain Providers so modules do not call a concrete Domain service. The `lib-modules` rule now allows `Core/Definitions` as the composition root and the ratchet dropped to 1 (`BootstrapBase`). |
 | 2026-10-27 | P5-2 use case base contract (verified: core, architecture, wiring, PSR2, PHPStan) | M6 0/154 -> 0/155 ports; other metrics unchanged | Added `SP\Domain\Common\Ports\UseCase` with one public method `execute(Command $command): Result` and the `TCommand`/`TResult` templates; no HTTP, session, translation or presentation concerns. `UseCaseContractTest` guards the single entry point and the Domain boundary, and runs a use case against the new `InMemoryTagRepository` fake. Documented the marker contract in `ContainerWiringTest`. |
 | 2026-10-27 | P5-3 event emission convention (verified: core unit, architecture, wiring, PSR2) | M6 0/155 -> 0/156 ports; no other metric changes | Added `SP\Domain\Common\Ports\EventEmitter` (publish-only) and the `SP\Core\Events\EventDispatcherEmitter` adapter, wired in `CoreDefinitions`. Recorded the convention in section 5: keep the existing event names, use the use case as the source, pass untranslated message keys, support message-less events, preserve receiver extras, and emit only after the state change. Added `InMemoryEventEmitter`, `UseCaseEventEmissionTest` and `EventDispatcherEmitterTest`. Per-area call-site migration starts with the Tag pilot (#1975); no `app/modules` call site changed here, so the `EventMessage::build` count is still 98 files. |
+| 2026-10-27 | P6-W1 Tag pilot (verified: core, modules, architecture, wiring, PSR2, PHPStan) | M9 75 -> 81/259; M10 84 -> 77; M15 27 -> 26/46; M6 stays 0/156; PHPStan lib 1015 -> 1013 errors | Added `CreateTagUseCase`, `UpdateTagUseCase`, `DeleteTagUseCase`, `DeleteTagsUseCase`, `GetTagUseCase` and `SearchTagsUseCase` (Command in, Result out, ports only) with the `create.tag`/`edit.tag`/`delete.tag`/`delete.tag.selection` events emitted through `EventEmitter` using untranslated keys. `TagException` gained the stable `NAME_REQUIRED` code. The seven Tag controllers now use `#[Action]` + `ActionResponse` and are thin; `JsonTrait`, `JsonMessage`, `TagSaveBase`, `TagForm` and the static `Acl::getActionRoute()` calls are gone from the area. Fixed the Tag repository update/delete queries (Aura SQL Query has no `limit()` on them) and the batch delete now removes the custom fields of the deleted ids. Added `TagTest` (8 HTTP IT cases) and `TagUseCasesTest` (13 unit cases with `InMemoryTagRepository` and `InMemoryEventEmitter`).
 
 
 ### Baseline test results (P0-1)

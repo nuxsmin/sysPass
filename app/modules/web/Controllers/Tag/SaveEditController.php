@@ -25,54 +25,49 @@
 namespace SP\Modules\Web\Controllers\Tag;
 
 
-use Exception;
-use JsonException;
-use SP\Domain\Core\Events\Event;
+use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Tag\UseCases\Dtos\UpdateTagCommand;
+use SP\Domain\Tag\UseCases\UpdateTagUseCase;
+use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class SaveEditController
  */
-final class SaveEditController extends TagSaveBase
+final class SaveEditController extends ControllerBase
 {
-    use JsonTrait;
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        private readonly UpdateTagUseCase $updateTagUseCase
+    ) {
+        parent::__construct($application, $webControllerHelper);
 
-    /**
-     * Saves edit action
-     *
-     * @param  int  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function saveEditAction(int $id): bool
+        $this->checkLoggedIn();
+    }
+
+    #[Action(ResponseType::JSON)]
+    public function saveEditAction(int $id): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_EDIT)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $this->form->validateFor(AclActionsInterface::TAG_EDIT, $id);
-
-            $this->tagService->update($this->form->getItemData());
-
-            $this->eventDispatcher->notify('edit.tag', new Event($this));
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Tag updated'));
-        } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_EDIT)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        try {
+            $this->updateTagUseCase->execute(
+                new UpdateTagCommand($id, $this->request->analyzeString('name') ?? '')
+            );
+        } catch (SPException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
+        }
+
+        return ActionResponse::ok(__u('Tag updated'));
     }
 }
