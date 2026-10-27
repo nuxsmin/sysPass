@@ -42,7 +42,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P4-3 | #2031 | todo |
 | P4-4 | #2015 | done |
 | P5-1 | #2026 | done |
-| P5-2 | #2032 | todo |
+| P5-2 | #2032 | done |
 | P5-3 | #2037 | todo |
 | P6-W1 | #1975 | todo (pilot) |
 | P6-W2 to P6-W7 | #2042 to #2048 | todo |
@@ -228,7 +228,7 @@ Applied per context in Phase 6 and Phase 7. The steps are in section 6.
   - Contracts: Commands implement `SP\Domain\Common\Dtos\Command`; Results implement `SP\Domain\Common\Dtos\Result`.
   - Boundary: Commands hold already parsed primitives, value objects or domain DTOs. No HTTP, session or presentation types; no translation; no logging. Validation and domain exceptions belong to the use case.
   - Pilot inputs: `SP\Domain\Tag\UseCases\Dtos` has the Tag commands and results; `TagUseCaseDtosTest` guards the shape.
-- [ ] **P5-2 Define the use case base contract.** Single public method (`execute(Command): Result`), no HTTP types, no session types, no translation calls. Throws domain exceptions only.
+- [x] **P5-2 Define the use case base contract.** Single public method (`execute(Command): Result`), no HTTP types, no session types, no translation calls. Throws domain exceptions only.
 - [ ] **P5-3 Event emission moves to use cases.** Audit/notification events currently emitted by controllers (226 `->notify()` calls) move into the use case, emitted via `EventDispatcherInterface`. Controllers no longer build `EventMessage`.
   - Acceptance: M-events: `grep -rl "EventMessage::build" app/modules | wc -l` drops per migrated area.
 
@@ -354,6 +354,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-27 | D2 + P5-1 use case DTO convention (verified: Tag DTO unit, architecture, PSR2) | M6 stays 0/154; other metrics unchanged | Decided D2 option (a): use cases live in `SP\Domain\<Ctx>\UseCases`, DTOs in `SP\Domain\<Ctx>\UseCases\Dtos`. Added the `Command` and `Result` marker contracts in `SP\Domain\Common\Dtos`, the Tag pilot commands and results (create, update, delete single/batch, get, search), and `TagUseCaseDtosTest`, which enforces final readonly classes with promoted public properties and the right contract. |
 
 | 2026-10-27 | P4-1 move Mvc and Html into the web module (D3) (verified: core unit, core, modules, architecture, wiring, PSR2, PHPStan) | M12 stays 2 (composition root + bootstrap); lib-modules allowlist 2 -> 1; M1 23, M6 0/154, M13 0 (+2 composition); PHPStan lib 1143 -> 1015 errors (files moved out of the analysed tree) | Moved `lib/SP/Mvc` (21 files) and `lib/SP/Html` (25 files) to `app/modules/web/Mvc` and `app/modules/web/Html` under `SP\Modules\Web\Mvc` and `SP\Modules\Web\Html`. Moved `ThemeIcons` to `SP\Modules\Web\UI` so Core has no presentation import. Updated all class and template references. `TemplateResolver` no longer uses `FileSystem`; `ControllerTrait` uses the `JsonResponseFactory` port; `CustomFieldItems` moved from Domain Services to Domain Providers so modules do not call a concrete Domain service. The `lib-modules` rule now allows `Core/Definitions` as the composition root and the ratchet dropped to 1 (`BootstrapBase`). |
+| 2026-10-27 | P5-2 use case base contract (verified: core, architecture, wiring, PSR2, PHPStan) | M6 0/154 -> 0/155 ports; other metrics unchanged | Added `SP\Domain\Common\Ports\UseCase` with one public method `execute(Command $command): Result` and the `TCommand`/`TResult` templates; no HTTP, session, translation or presentation concerns. `UseCaseContractTest` guards the single entry point and the Domain boundary, and runs a use case against the new `InMemoryTagRepository` fake. Documented the marker contract in `ContainerWiringTest`. |
 
 ### Baseline test results (P0-1)
 

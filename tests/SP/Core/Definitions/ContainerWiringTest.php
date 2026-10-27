@@ -63,6 +63,7 @@ final class ContainerWiringTest extends IntegrationTestCase
         // Marker, value object or multi-implementation ports, not single services.
         'SP\Domain\Account\Ports\AccountSearchConstants' => 'constants interface',
         'SP\Domain\Common\Ports\Dto' => 'value object interface',
+        'SP\Domain\Common\Ports\UseCase' => 'use case marker interface',
         'SP\Domain\Database\Ports\QueryDataInterface' => 'value object interface',
         'SP\Domain\Export\Ports\XmlExportEntityService' => 'abstract/multiple implementations',
         'SP\Domain\Import\Ports\ItemsImportService' => 'multiple implementations',
