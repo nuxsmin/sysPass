@@ -32,6 +32,7 @@ use SP\Core\UI\ThemeIcons;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
+use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Html\Assets\FontIcon;
 use SP\Domain\Core\Exceptions\FileException;
@@ -89,6 +90,7 @@ class ThemeIconsTest extends UnitaryTestCase
     {
         $context = $this->createMock(Context::class);
         $fileCache = $this->createMock(FileCacheService::class);
+        $fileLoader = $this->createMock(PhpFileLoaderInterface::class);
         $themeContext = $this->createMock(ThemeContextInterface::class);
         $themeContext->expects($this->never())
                      ->method('getFullPath');
@@ -105,6 +107,6 @@ class ThemeIconsTest extends UnitaryTestCase
                   ->method('load')
                   ->willReturn(new ThemeIcons());
 
-        ThemeIcons::loadIcons($context, $fileCache, $themeContext);
+        ThemeIcons::loadIcons($context, $fileCache, $themeContext, $fileLoader);
     }
 }

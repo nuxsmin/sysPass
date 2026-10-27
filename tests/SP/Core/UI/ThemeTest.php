@@ -36,6 +36,7 @@ use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -50,6 +51,7 @@ class ThemeTest extends UnitaryTestCase
 
     private ThemeContextInterface|MockObject $themeContext;
     private ThemeIconsInterface|MockObject   $themeIcons;
+    private PhpFileLoaderInterface|MockObject $fileLoader;
     private Theme $theme;
 
     public function testGetIcons()
@@ -182,7 +184,8 @@ class ThemeTest extends UnitaryTestCase
 
         $this->themeContext = $this->createMock(ThemeContextInterface::class);
         $this->themeIcons = $this->createMock(ThemeIconsInterface::class);
+        $this->fileLoader = $this->createMock(PhpFileLoaderInterface::class);
 
-        $this->theme = new Theme($this->themeContext, $this->themeIcons);
+        $this->theme = new Theme($this->themeContext, $this->themeIcons, $this->fileLoader);
     }
 }

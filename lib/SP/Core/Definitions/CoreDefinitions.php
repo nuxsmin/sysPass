@@ -144,6 +144,8 @@ use SP\Domain\Notification\Services\Mail;
 use SP\Domain\Notification\Services\MailEvent;
 use SP\Domain\Notification\Services\NotificationEvent;
 use SP\Domain\Notification\Services\PhpMailerService;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
+use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Infrastructure\Database\Database;
@@ -153,7 +155,9 @@ use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileHandler;
+use SP\Infrastructure\File\FileHandlerFactory;
 use SP\Infrastructure\File\FileSystem;
+use SP\Infrastructure\File\PhpFileLoader;
 use SP\Infrastructure\File\XmlFileStorage;
 use SP\Infrastructure\File\YamlFileStorage;
 use SP\Mvc\View\OutputHandler;
@@ -465,10 +469,13 @@ final class CoreDefinitions
                     'sqlPath',
                     factory(static fn(PathsContext $p) => $p[Path::SQL])
                 ),
-            AppLockHandler::class => create(AppLock::class)
-                ->constructor(
+            AppLockHandler::class => autowire(AppLock::class)
+                ->constructorParameter(
+                    'lockFile',
                     factory(static fn(PathsContext $p) => FileSystem::buildPath($p[Path::CONFIG], '.lock'))
-                )
+                ),
+            FileHandlerFactoryInterface::class => create(FileHandlerFactory::class),
+            PhpFileLoaderInterface::class => create(PhpFileLoader::class)
         ];
     }
 

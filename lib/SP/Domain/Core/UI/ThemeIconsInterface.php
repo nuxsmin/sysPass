@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Core\UI;
 
 use SP\Domain\Core\Context\Context;
+use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
 
 /**
@@ -74,9 +75,10 @@ use SP\Domain\Storage\Ports\FileCacheService;
 interface ThemeIconsInterface
 {
     public static function loadIcons(
-        Context               $context,
-        FileCacheService      $cache,
-        ThemeContextInterface $themeContext
+        Context                $context,
+        FileCacheService       $cache,
+        ThemeContextInterface  $themeContext,
+        PhpFileLoaderInterface $fileLoader
     ): ThemeIconsInterface;
 
     /**

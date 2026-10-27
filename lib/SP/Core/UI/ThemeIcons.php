@@ -32,10 +32,10 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\IconInterface;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Html\Assets\FontIcon;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\File\FileSystem;
 
 use function SP\logger;
 use function SP\processException;
@@ -63,9 +63,10 @@ final class ThemeIcons implements ThemeIconsInterface
      * @throws FileException
      */
     public static function loadIcons(
-        Context          $context,
-        FileCacheService $cache,
-        ThemeContextInterface $themeContext
+        Context                $context,
+        FileCacheService       $cache,
+        ThemeContextInterface  $themeContext,
+        PhpFileLoaderInterface $fileLoader
     ): ThemeIconsInterface {
         try {
             if ($context->getAppStatus() !== ContextBase::APP_STATUS_RELOADED
@@ -75,8 +76,11 @@ final class ThemeIcons implements ThemeIconsInterface
                 // logger('Loaded icons cache', 'INFO');
             }
 
-            $icons = FileSystem::require(
-                FileSystem::buildPath($themeContext->getFullPath(), 'inc', 'Icons.php'),
+            $icons = $fileLoader->load(
+                implode(
+                    DIRECTORY_SEPARATOR,
+                    [$themeContext->getFullPath(), 'inc', 'Icons.php']
+                ),
                 ThemeIconsInterface::class
             );
 
