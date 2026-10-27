@@ -19,6 +19,7 @@ final class LayerRulesTest extends TestCase
         $this->root = sys_get_temp_dir() . '/syspass-layer-rules-' . uniqid('', true);
         mkdir($this->root . '/app/modules/web', 0777, true);
         mkdir($this->root . '/lib', 0777, true);
+        mkdir($this->root . '/lib/SP/Core/Definitions', 0777, true);
     }
 
     protected function tearDown(): void
@@ -67,6 +68,51 @@ PHP
             'app/modules/web/Foo.php => SP\Domain\User\Services\UpdatedMasterPassException::info()',
             $violations
         );
+    }
+
+    public function testInfrastructureImportOutsideTheCompositionRootIsAViolation(): void
+    {
+        file_put_contents(
+            $this->root . '/lib/SP/Core/Foo.php',
+            <<<'PHP'
+<?php
+namespace SP\Core;
+
+use SP\Infrastructure\File\FileSystem;
+
+final class Foo
+{
+}
+PHP
+        );
+
+        $violations = LayerRules::collect($this->root)[LayerRules::CORE_INFRASTRUCTURE];
+
+        self::assertContains(
+            'lib/SP/Core/Foo.php => SP\Infrastructure\File\FileSystem',
+            $violations
+        );
+    }
+
+    public function testInfrastructureImportInTheCompositionRootIsAllowed(): void
+    {
+        file_put_contents(
+            $this->root . '/lib/SP/Core/Definitions/Foo.php',
+            <<<'PHP'
+<?php
+namespace SP\Core\Definitions;
+
+use SP\Infrastructure\File\FileSystem;
+
+final class Foo
+{
+}
+PHP
+        );
+
+        $violations = LayerRules::collect($this->root)[LayerRules::CORE_INFRASTRUCTURE];
+
+        self::assertSame([], $violations);
     }
 
     public function testStaticCallThroughImportAliasIsAViolation(): void

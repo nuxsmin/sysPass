@@ -28,6 +28,7 @@ final class LayerRules
     public const LIB_MODULES = 'lib-modules';
     public const DOMAIN_APPLICATION = 'domain-application';
     public const DOMAIN_PRESENTATION_CALLS = 'domain-presentation-calls';
+    public const CORE_INFRASTRUCTURE = 'core-infrastructure';
 
     public const RULES = [
         self::DOMAIN_ONLY,
@@ -37,7 +38,10 @@ final class LayerRules
         self::LIB_MODULES,
         self::DOMAIN_APPLICATION,
         self::DOMAIN_PRESENTATION_CALLS,
+        self::CORE_INFRASTRUCTURE,
     ];
+
+    private const COMPOSITION_ROOT = 'lib/SP/Core/Definitions/';
 
     private const OUTER_LAYER_PREFIXES = [
         'SP\\Core\\',
@@ -304,6 +308,14 @@ final class LayerRules
         string $import,
         array &$violations
     ): void {
+        if ($layer === 'lib'
+            && str_starts_with($relativePath, 'lib/SP/Core/')
+            && !str_starts_with($relativePath, self::COMPOSITION_ROOT)
+            && str_starts_with($import, 'SP\\Infrastructure\\')
+        ) {
+            $violations[self::CORE_INFRASTRUCTURE][] = sprintf('%s => %s', $relativePath, $import);
+        }
+
         if ($layer === 'domain') {
             if ($import === 'SP\\Core\\Application') {
                 $violations[self::DOMAIN_APPLICATION][] = sprintf('%s => %s', $relativePath, $import);

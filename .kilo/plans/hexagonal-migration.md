@@ -48,7 +48,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P6-W2 to P6-W7 | #2042 to #2048 | todo |
 | P7-1 to P7-4 | #2016, #2027, #2047, #2049 | todo |
 | P8-1, P8-2 | #2017, #2033 | todo |
-| P9-1 to P9-5 | #2038, #2050, #2034, #2052, #2053 | todo |
+| P9-1 to P9-5 | #2038, #2050, #2034, #2052, #2053 | P9-1 done; rest todo |
 | P10-1 to P10-5 | #2035, #2039, #2018, #2019, #2020 | todo |
 | P11-1 to P11-5 | #2021, #2028, #2040, #2041, #2022 | todo |
 | D1, D2, D3, D8, D9 | #1965, #1966, #2011, #1967, #1968 | decision |
@@ -247,7 +247,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 
 ### Phase 9: Core cleanup and composition root
 
-- [ ] **P9-1 Core ↔ Infrastructure cleanup.** Finish P4-4. Keep `Core/Definitions` as the only place that names Infrastructure classes (composition root). Acceptance: M13 = 2 (composition files only).
+- [x] **P9-1 Core ↔ Infrastructure cleanup.** Finish P4-4. Keep `Core/Definitions` as the only place that names Infrastructure classes (composition root). Acceptance: M13 = 2 (composition files only). Enforced by the `core-infrastructure` architecture rule.
 - [ ] **P9-2 Remove `SP\Core\Application`** after all controllers and services stop injecting it (M4 = 0 and modules count = 0). Replace with a web-specific `WebControllerHelper`-style aggregate if needed.
 - [ ] **P9-3 Explicit port bindings (D9).** Replace wildcard `DomainDefinitions` bindings with explicit entries, verified by P0-4.
 - [ ] **P9-4 Remove legacy response types.** `JsonMessage`, `returnJsonResponse`, `JsonTrait`, `Domain\Http\Services\JsonResponse` (once P6 and P7 are done).
@@ -336,6 +336,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-27 | P2-3 remove direct superglobal use (verified: Domain Common, architecture) | metrics unchanged; M1 23, M3 13, M6 147 ports | `Http::checkHttps()` now reads the request URI through the existing `RequestService::getServer('REQUEST_URI')` port method instead of `$_SERVER`. The two remaining `$_SESSION` files are already in `SP\Core\Context`, so no superglobal access remains in `lib/` outside Core context or in `app/modules`. `HttpTest` now asserts the port call and that it is skipped when HTTPS is disabled or already in use. |
 | 2026-10-27 | P3-2 static domain helpers (verified: architecture, core unit, Api/AuthToken unit, PSR2) | metrics unchanged; M8 89 (exception imports only), module static calls on Domain service classes = 0 | `ConfigBackup::configToJson()` and `ConfigUtil` normalisers were already moved behind `ConfigBackupService` and `ConfigInput` in P3-1. This task removed the remaining public statics from the `AuthToken` service (`Api` and the service now call the model; `canUseSecureTokenAction()` is private) and extended the `modules-concrete-services` architecture rule to reject static calls on Domain `Services` classes from `app/modules`, resolving imports and aliases while still allowing exception factories. Added `LayerRulesTest` coverage for direct and aliased calls. |
 | 2026-10-27 | P4-4 remove Core file-system dependencies (verified: core unit, modules, architecture, wiring, PSR2) | M13 4 (+2 composition) → 0 (+2); M6 152 → 154 ports; other metrics unchanged | Added `SP\Domain\File\Ports\PhpFileLoaderInterface` (Infrastructure `PhpFileLoader` wraps `FileSystem::require`) and `SP\Domain\File\Ports\FileHandlerFactoryInterface` (Infrastructure `FileHandlerFactory`). `Theme` and `ThemeIcons` load theme data through the loader, `ThemeContext` joins paths locally, and `AppLock` creates its lock file through the factory so the handler is still constructed lazily. `CoreDefinitions` wires the two adapters. No `SP\Infrastructure\File` import remains in `lib/SP/Core` outside `Core/Definitions`. Added `PhpFileLoaderTest`. |
+| 2026-10-27 | P9-1 Core ↔ Infrastructure cleanup (verified: architecture 12/12) | M13 stays 0 (+2 composition); no other metric changes | P4-4 already removed the runtime references, so P9-1 adds the guard: a new `core-infrastructure` rule rejects `SP\Infrastructure\` imports from `lib/SP/Core` outside `Core/Definitions`. `LayerDependencyTest` freezes the rule at 0, and `LayerRulesTest` covers both the violating and the composition-root cases. |
 
 ### Baseline test results (P0-1)
 
