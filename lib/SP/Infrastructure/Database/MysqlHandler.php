@@ -49,16 +49,20 @@ final class MysqlHandler implements DbStorageHandler
 
     private ?PDO            $pdo = null;
     private readonly string $connectionUri;
+    private readonly string $connectionUriSimple;
 
     public function __construct(
         private readonly DatabaseConnectionData $connectionData,
         private readonly PDOWrapper             $PDOWrapper
     ) {
         $this->connectionUri = self::getConnectionUri($connectionData);
+        $this->connectionUriSimple = self::getConnectionUri($connectionData, false);
     }
 
-    public static function getConnectionUri(DatabaseConnectionData $connectionData): string
-    {
+    public static function getConnectionUri(
+        DatabaseConnectionData $connectionData,
+        bool $withDatabase = true
+    ): string {
         $dsn = ['charset=utf8'];
 
         if (empty($connectionData->getDbSocket())) {
@@ -71,7 +75,7 @@ final class MysqlHandler implements DbStorageHandler
             $dsn[] = sprintf('unix_socket=%s', $connectionData->getDbSocket());
         }
 
-        if (!empty($connectionData->getDbName())) {
+        if ($withDatabase && !empty($connectionData->getDbName())) {
             $dsn[] = sprintf('dbname=%s', $connectionData->getDbName());
         }
 
@@ -94,7 +98,7 @@ final class MysqlHandler implements DbStorageHandler
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ];
 
-            $this->pdo = $this->PDOWrapper->build($this->connectionUri, $this->connectionData, $opts);
+            $this->pdo = $this->PDOWrapper->build($this->connectionUriSimple, $this->connectionData, $opts);
         }
 
         return $this->pdo;

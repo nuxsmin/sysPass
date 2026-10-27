@@ -186,8 +186,11 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
         $query = $this->queryFactory
             ->newSelect()
             ->from(CustomFieldDataModel::TABLE)
-            ->cols(CustomFieldDataModel::getCols())
-            ->where('key IS NOT NULL')
+            ->cols(array_map(
+                static fn(string $col) => $col === 'key' ? '`key`' : $col,
+                CustomFieldDataModel::getCols()
+            ))
+            ->where('`key` IS NOT NULL')
             ->orderBy(['definitionId ASC']);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, CustomFieldDataModel::class));

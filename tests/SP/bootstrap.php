@@ -33,6 +33,7 @@ use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlHandler;
+use SP\Infrastructure\Database\PDOWrapper;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\logger;
@@ -63,7 +64,9 @@ $testDirectory = vfsStream::setup(
             'config' => [],
             'cache' => [
                 'secure_session' => []
-            ]
+            ],
+            'backup' => [],
+            'temp' => []
         ]
     ]
 );
@@ -90,7 +93,29 @@ vfsStream::copyFromFileSystem(
 define('TEST_ROOT', $testDirectory->url());
 define('APP_PATH', $testDirectory->getChild('app')->url());
 define('RESOURCE_PATH', $testResources->url());
-define('TMP_PATH', $testDirectory->getChild('tmp')->url());
+
+$tmpPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'syspass-tests';
+
+if (!is_dir($tmpPath) && !mkdir($tmpPath) && !is_dir($tmpPath)) {
+    throw new RuntimeException(sprintf('Directory "%s" was not created', $tmpPath));
+}
+
+define('TMP_PATH', $tmpPath);
+define('CONFIG_PATH', RESOURCE_PATH . DIRECTORY_SEPARATOR . 'config');
+define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
+define('CACHE_PATH', REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'cache');
+
+register_shutdown_function(static function (): void {
+    $blankFile = CACHE_PATH . DIRECTORY_SEPARATOR . '.blank';
+
+    if (!file_exists($blankFile)) {
+        file_put_contents($blankFile, '');
+    }
+});
+
+putenv('CONFIG_PATH=' . CONFIG_PATH);
+putenv('CONFIG_FILE=' . CONFIG_FILE);
+putenv('LOG_FILE=' . APP_PATH . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'syspass.log');
 
 define('FIXTURE_FILES', [
     RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'truncate.sql',
@@ -128,7 +153,7 @@ function getDbHandler(?DatabaseConnectionData $connectionData = null): MysqlHand
         $connectionData = DatabaseConnectionData::getFromEnvironment();
     }
 
-    return new MysqlHandler($connectionData);
+    return new MysqlHandler($connectionData, new PDOWrapper());
 }
 
 function getResource(string $dir, string $file): string

@@ -55,7 +55,6 @@ final class ContainerWiringTest extends IntegrationTestCase
         'SP\Domain\File\Ports\ArchiveHandlerInterface' => 'runtime path',
         'SP\Domain\File\Ports\DirectoryHandlerService' => 'runtime path',
         'SP\Domain\File\Ports\FileHandlerInterface' => 'runtime path',
-        'SP\Domain\Install\Ports\InstallerService' => 'request-dependent',
         'SP\Domain\Notification\Ports\MailerInterface' => 'request/config-dependent',
         'SP\Domain\Storage\Ports\XmlFileStorageService' => 'runtime path',
         'SP\Domain\Storage\Ports\YamlFileStorageService' => 'runtime path',

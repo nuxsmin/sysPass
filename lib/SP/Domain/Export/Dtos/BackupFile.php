@@ -54,6 +54,11 @@ final class BackupFile extends Dto
         );
     }
 
+    public function getHash(): string
+    {
+        return $this->hash;
+    }
+
     public function withPath(string $path): BackupFile
     {
         return new self($this->backupType, $this->hash, $path, $this->extension);

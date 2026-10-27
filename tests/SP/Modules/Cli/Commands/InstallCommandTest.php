@@ -28,7 +28,7 @@ namespace SP\Tests\Modules\Cli\Commands;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use SP\Domain\Config\Services\ConfigFile;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Exceptions\DatabaseException;
 use SP\Modules\Cli\Commands\InstallCommand;
 use SP\Tests\DatabaseUtil;
@@ -191,7 +191,7 @@ class InstallCommandTest extends CliTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
 
         // Cleanup database
         DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
@@ -225,7 +225,7 @@ class InstallCommandTest extends CliTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
 
         $this->assertEquals($configData->getSiteLang(), $inputData['--language']);
 
@@ -272,7 +272,7 @@ class InstallCommandTest extends CliTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
 
         $this->assertEquals($configData->getDbUser(), $databaseUser);
         $this->assertEquals($configData->getDbPass(), $databasePassword);
@@ -390,6 +390,8 @@ class InstallCommandTest extends CliTestCase
         $this->unsetEnvironmentVariables();
 
         parent::setUp();
+
+        self::buildContainer();
     }
 
     private function unsetEnvironmentVariables(): void

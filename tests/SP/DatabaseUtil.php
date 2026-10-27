@@ -71,10 +71,14 @@ class DatabaseUtil
      */
     public static function getConnection(): PDO
     {
-        $data = (new DatabaseConnectionData())
-            ->setDbHost(getenv('DB_SERVER'))
-            ->setDbUser(getenv('DB_USER'))
-            ->setDbPass(getenv('DB_PASS'));
+        $data = DatabaseConnectionData::build(
+            null,
+            getenv('DB_SERVER') ?: null,
+            getenv('DB_PORT') ? (int)getenv('DB_PORT') : null,
+            getenv('DB_NAME') ?: null,
+            getenv('DB_USER') ?: null,
+            getenv('DB_PASS') ?: null
+        );
 
         return getDbHandler($data)->getConnectionSimple();
     }

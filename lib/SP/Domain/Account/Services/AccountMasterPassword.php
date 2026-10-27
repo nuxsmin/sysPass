@@ -145,7 +145,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
         foreach ($accounts as $account) {
             // No realizar cambios si está en modo demo
             if ($configData->isDemoEnabled()) {
-                $accountsOk[] = $account->getId();
+                $accountsOk[] = $account->id;
                 continue;
             }
 
@@ -166,7 +166,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
 
             if (isset($account->mPassHash) && $account->mPassHash !== $currentMasterPassHash) {
                 $eventMessage->addDescription(__u('The record\'s master password does not match'));
-                $eventMessage->addDetail($account->getName(), $account->getId());
+                $eventMessage->addDetail($account->name, $account->id);
                 continue;
             }
 
@@ -174,17 +174,17 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 $encryptedPassword = $this->accountCryptService
                     ->getPasswordEncrypted(
                         $this->crypt->decrypt(
-                            $account->getPass(),
-                            $account->getKey(),
+                            $account->pass,
+                            $account->key,
                             $updateMasterPassRequest->getCurrentMasterPass()
                         ),
                         $updateMasterPassRequest->getNewMasterPass()
                     );
 
                 // Call the specific updater
-                $passUpdater($account->getId(), $encryptedPassword);
+                $passUpdater($account->id, $encryptedPassword);
 
-                $accountsOk[] = $account->getId();
+                $accountsOk[] = $account->id;
                 $counter++;
             } catch (SPException $e) {
                 $this->eventDispatcher->notify('exception', new Event($e));
@@ -192,7 +192,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 $errorCount++;
 
                 $eventMessage->addDescription(__u('Error while updating the account\'s password'));
-                $eventMessage->addDetail($account->getName(), $account->getId());
+                $eventMessage->addDetail($account->name, $account->id);
             }
         }
 

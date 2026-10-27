@@ -167,10 +167,10 @@ final class Database implements DatabaseInterface
             processException($e);
 
             if ((int)$e->getCode() === 23000) {
-                throw ConstraintException::error(__u('Integrity constraint'), $e->getMessage(), $e->getCode(), $e);
+                throw ConstraintException::error(__u('Integrity constraint'), $e->getMessage(), (int)$e->getCode(), $e);
             }
 
-            throw QueryException::critical($e->getMessage(), (string)$e->getCode(), $e->getCode(), $e);
+            throw QueryException::critical($e->getMessage(), (string)$e->getCode(), (int)$e->getCode(), $e);
         }
     }
 

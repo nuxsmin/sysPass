@@ -96,12 +96,12 @@ class DatabaseConnectionData
     public static function getFromEnvironment(): DatabaseConnectionData
     {
         $self = new self();
-        $self->dbSocket = getenv('DB_SOCKET');
-        $self->dbHost = getenv('DB_SERVER');
-        $self->dbPort = (int)getenv('DB_PORT');
-        $self->dbName = getenv('DB_NAME');
-        $self->dbUser = getenv('DB_USER');
-        $self->dbPass = getenv('DB_PASS');
+        $self->dbSocket = getenv('DB_SOCKET') ?: null;
+        $self->dbHost = getenv('DB_SERVER') ?: null;
+        $self->dbPort = ((int)getenv('DB_PORT')) ?: null;
+        $self->dbName = getenv('DB_NAME') ?: null;
+        $self->dbUser = getenv('DB_USER') ?: null;
+        $self->dbPass = getenv('DB_PASS') ?: null;
 
         return $self;
     }
@@ -123,6 +123,48 @@ class DatabaseConnectionData
         $self->dbPass = $dbPass;
 
         return $self;
+    }
+
+    public function setDbSocket(?string $dbSocket): DatabaseConnectionData
+    {
+        $this->dbSocket = $dbSocket;
+
+        return $this;
+    }
+
+    public function setDbHost(?string $dbHost): DatabaseConnectionData
+    {
+        $this->dbHost = $dbHost;
+
+        return $this;
+    }
+
+    public function setDbPort(?int $dbPort): DatabaseConnectionData
+    {
+        $this->dbPort = $dbPort;
+
+        return $this;
+    }
+
+    public function setDbName(?string $dbName): DatabaseConnectionData
+    {
+        $this->dbName = $dbName;
+
+        return $this;
+    }
+
+    public function setDbUser(?string $dbUser): DatabaseConnectionData
+    {
+        $this->dbUser = $dbUser;
+
+        return $this;
+    }
+
+    public function setDbPass(?string $dbPass): DatabaseConnectionData
+    {
+        $this->dbPass = $dbPass;
+
+        return $this;
     }
 
     public function refreshFromConfig(ConfigDataInterface $configData): DatabaseConnectionData

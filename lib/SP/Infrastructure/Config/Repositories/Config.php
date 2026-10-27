@@ -56,7 +56,6 @@ final class Config extends BaseRepository implements ConfigRepository
             ->table(self::TABLE)
             ->cols($config->toArray(['value']))
             ->where('parameter = :parameter')
-            ->limit(1)
             ->bindValues(
                 [
                     'value' => $config->getValue(),

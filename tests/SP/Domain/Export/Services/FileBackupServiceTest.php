@@ -38,7 +38,9 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Dtos\DatabaseTables;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DatabaseUtilInterface;
-use SP\Domain\Export\Ports\BackupFileHelperService;
+use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
+use SP\Domain\Export\Dtos\BackupFiles;
+use SP\Domain\Export\Dtos\BackupType;
 use SP\Domain\Export\Services\BackupFile;
 use SP\Domain\File\Ports\ArchiveHandlerInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;
@@ -56,7 +58,7 @@ use stdClass;
 class FileBackupServiceTest extends UnitaryTestCase
 {
     private BackupFile                         $fileBackupService;
-    private BackupFileHelperService|MockObject $backupFiles;
+    private BackupFiles $backupFiles;
     private DatabaseInterface|MockObject       $database;
     private MockObject|FileHandlerInterface    $dbFileHandler;
     private ArchiveHandlerInterface|MockObject $dbArchiveHandler;
@@ -186,7 +188,10 @@ class FileBackupServiceTest extends UnitaryTestCase
         parent::setUp();
 
         $this->database = $this->createMock(DatabaseInterface::class);
-        $this->backupFiles = $this->createMock(BackupFileHelperService::class);
+        $this->backupFiles = new BackupFiles(
+            new BackupFileDto(BackupType::app, 'test', TMP_PATH, 'tar'),
+            new BackupFileDto(BackupType::db, 'test', TMP_PATH, 'sql')
+        );
         $this->dbFileHandler = $this->createMock(FileHandlerInterface::class);
         $this->dbArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);
         $this->appArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);
@@ -199,7 +204,8 @@ class FileBackupServiceTest extends UnitaryTestCase
             $this->createStub(DatabaseUtilInterface::class),
             $this->dbFileHandler,
             $this->dbArchiveHandler,
-            $this->appArchiveHandler
+            $this->appArchiveHandler,
+            $this->backupFiles
         );
     }
 }

@@ -52,9 +52,8 @@
         <testsuite name="modules">
             <directory suffix=".php">./SP/Modules/Web</directory>
             <directory suffix=".php">./SP/Modules/Api</directory>
-            <directory suffix=".php">./SP/Modules/Cli</directory>
+            <directory suffix="Test.php">./SP/Modules/Cli</directory>
             <exclude>./SP/Modules/Api</exclude>
-            <exclude>./SP/Modules/Cli</exclude>
         </testsuite>
     </testsuites>
     <logging/>

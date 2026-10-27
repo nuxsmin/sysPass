@@ -818,7 +818,7 @@ class AccountTest extends UnitaryTestCase
     {
         $callback = new Callback(
             function (QueryData $arg) {
-                return $arg->getMapClassName() === AccountModel::class
+                return $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );

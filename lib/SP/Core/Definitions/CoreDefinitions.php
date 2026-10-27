@@ -427,8 +427,7 @@ final class CoreDefinitions
                     factory(
                         static fn(BackupFiles $backupFiles) => (string)$backupFiles->getAppBackupFile()
                     )
-                )
-            ,
+                ),
             BackupFileService::class => autowire(BackupFile::class)
                 ->constructorParameter(
                     'dbBackupFile',
@@ -444,7 +443,8 @@ final class CoreDefinitions
                         )
                 )
                 ->constructorParameter('dbArchiveHandler', get('backup.dbArchiveHandler'))
-                ->constructorParameter('appArchiveHandler', get('backup.appArchiveHandler')),
+                ->constructorParameter('appArchiveHandler', get('backup.appArchiveHandler'))
+                ->constructorParameter('backupFiles', get(BackupFiles::class)),
             RouteContextData::class => factory(static function (KleinRequest $request) {
                 return RouteContext::getRouteContextData(Filter::getString($request->param('r', 'index/index')));
             }),

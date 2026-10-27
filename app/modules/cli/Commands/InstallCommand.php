@@ -40,6 +40,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\StyleInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+use function SP\__;
+use function SP\__u;
+
 /**
  * Class InstallCommand
  *
@@ -68,15 +71,18 @@ final class InstallCommand extends CommandBase
      */
     protected static  $defaultName = 'sp:install';
     private InstallerService $installer;
+    private InstallData $installData;
 
     public function __construct(
         LoggerInterface   $logger,
         ConfigFileService $config,
-        InstallerService $installer
+        InstallerService  $installer,
+        InstallData       $installData
     ) {
         parent::__construct($logger, $config);
 
         $this->installer = $installer;
+        $this->installData = $installData;
     }
 
     protected function configure(): void
@@ -205,7 +211,7 @@ final class InstallCommand extends CommandBase
         $databaseName = self::getEnvVarOrArgument('databaseName', $input);
         $databaseHost = self::getEnvVarOrArgument('databaseHost', $input);
 
-        $installData = new InstallData();
+        $installData = $this->installData;
         $installData->setSiteLang($language);
         $installData->setAdminLogin($adminLogin);
         $installData->setAdminPass($adminPassword);

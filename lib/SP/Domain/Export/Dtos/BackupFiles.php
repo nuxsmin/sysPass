@@ -52,6 +52,11 @@ final readonly class BackupFiles
         return $this->dbBackupFile;
     }
 
+    public function getHash(): string
+    {
+        return $this->appBackupFile->getHash();
+    }
+
     public function withPath(string $path): BackupFiles
     {
         return new self($this->appBackupFile->withPath($path), $this->dbBackupFile->withPath($path));

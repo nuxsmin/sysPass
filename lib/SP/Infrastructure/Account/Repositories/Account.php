@@ -667,10 +667,10 @@ final class Account extends BaseRepository implements AccountRepository
                        'id',
                        'name',
                        'pass',
-                       'key',
+                       '`key`',
                    ])
             ->where('BIT_LENGTH(pass) > 0');
 
-        return $this->db->runQuery(QueryData::buildWithMapper($query, AccountModel::class));
+        return $this->db->runQuery(QueryData::build($query));
     }
 }

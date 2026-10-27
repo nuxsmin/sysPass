@@ -277,7 +277,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
         $query = $this->queryFactory
             ->newInsert()
             ->into(UserGroupModel::TABLE)
-            ->cols($userGroup->toArray(null, ['id']));
+            ->cols($userGroup->toArray(null, ['id', 'users']));
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the group'));
 
@@ -323,7 +323,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
         $query = $this->queryFactory
             ->newUpdate()
             ->table(UserGroupModel::TABLE)
-            ->cols($userGroup->toArray(null, ['id']))
+            ->cols($userGroup->toArray(null, ['id', 'users']))
             ->where('id = :id', ['id' => $userGroup->getId()])
             ->limit(1);
 

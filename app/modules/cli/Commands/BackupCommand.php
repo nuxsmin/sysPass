@@ -91,6 +91,16 @@ final class BackupCommand extends CommandBase
 
             $path = $this->getPath($input, $style);
 
+            if (!is_dir($path) && !@mkdir($path, 0750) && !is_dir($path)) {
+                throw new RuntimeException(
+                    sprintf(__('Unable to create the backups directory ("%s")'), $path)
+                );
+            }
+
+            if (!is_writable($path)) {
+                throw new RuntimeException(__u('Please, check the backup directory permissions'));
+            }
+
             $this->logger->info(sprintf(__u('Backup path set to: %s'), $path));
 
             $this->fileBackupService->doBackup($path, $this->pathsContext[Path::APP]);

@@ -44,6 +44,9 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
 
     use DatabaseTrait;
 
+    private const CURRENT_MASTERPASS = '12345678900';
+    private const NEW_MASTERPASS     = '00123456789';
+
     /**
      * @var string
      */
@@ -52,8 +55,8 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @var string[]
      */
     protected static array $commandInputData = [
-        '--currentMasterPassword' => 'a_pass',
-        '--masterPassword' => 'a_new_pass'
+        '--currentMasterPassword' => self::CURRENT_MASTERPASS,
+        '--masterPassword'        => self::NEW_MASTERPASS
     ];
 
     /**
@@ -121,11 +124,11 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
     {
         putenv(sprintf('%s=%s',
                 UpdateMasterPasswordCommand::$envVarsMapping['currentMasterPassword'],
-                AccountCryptServiceTest::CURRENT_MASTERPASS)
+                self::CURRENT_MASTERPASS)
         );
         putenv(sprintf('%s=%s',
                 UpdateMasterPasswordCommand::$envVarsMapping['masterPassword'],
-                AccountCryptServiceTest::NEW_MASTERPASS)
+                self::NEW_MASTERPASS)
         );
     }
 
@@ -201,8 +204,8 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
     public function testSameMasterPassword(): void
     {
         $inputData = [
-            '--currentMasterPassword' => AccountCryptServiceTest::CURRENT_MASTERPASS,
-            '--masterPassword' => AccountCryptServiceTest::CURRENT_MASTERPASS,
+            '--currentMasterPassword' => self::CURRENT_MASTERPASS,
+            '--masterPassword' => self::CURRENT_MASTERPASS,
             '--update' => null
         ];
 
@@ -224,7 +227,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
     {
         $inputData = [
             '--currentMasterPassword' => uniqid('', true),
-            '--masterPassword' => AccountCryptServiceTest::NEW_MASTERPASS,
+            '--masterPassword' => self::NEW_MASTERPASS,
             '--update' => null
         ];
 

@@ -107,8 +107,14 @@ class UserTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 22
-                       && count(array_diff_assoc($params, $user->toArray(null, ['id', 'hashSalt']))) === 0
+                $expected = array_filter(
+                    $user->toArray(null, ['id']),
+                    static fn($value) => $value !== null
+                );
+                $expected['hashSalt'] = '';
+
+                return count($params) === count($expected)
+                       && count(array_diff_assoc($params, $expected)) === 0
                        && is_a($query, InsertInterface::class)
                        && !empty($query->getStatement());
             }

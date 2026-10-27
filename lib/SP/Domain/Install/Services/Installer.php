@@ -282,6 +282,14 @@ final class Installer implements InstallerService
     {
         $user = null;
 
+        $this->databaseConnectionData
+            ->setDbSocket($this->installData->getDbSocket())
+            ->setDbHost($this->installData->getDbHost())
+            ->setDbPort($this->installData->getDbPort())
+            ->setDbName($this->installData->getDbName())
+            ->setDbUser($this->installData->getDbAdminUser())
+            ->setDbPass($this->installData->getDbAdminPass());
+
         $this->databaseSetup->connectDatabase();
 
         if ($this->installData->isHostingMode()) {

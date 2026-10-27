@@ -27,10 +27,11 @@ namespace SP\Tests\Modules\Cli\Commands;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Domain\Config\Services\ConfigFile;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Domain\Export\Services\BackupFileHelper;
 use SP\Modules\Cli\Commands\BackupCommand;
+use SP\Core\Bootstrap\Path;
 use SP\Tests\Modules\Cli\CliTestCase;
 
 use function SP\Tests\recreateDir;
@@ -49,9 +50,7 @@ class BackupCommandTest extends CliTestCase
     /**
      * @var string[]
      */
-    protected static array $commandInputData = [
-        '--path' => TMP_PATH
-    ];
+    protected static array $commandInputData = [];
 
     /**
      * @throws DependencyException
@@ -97,22 +96,14 @@ class BackupCommandTest extends CliTestCase
 
     private function checkBackupFilesAreCreated(): void
     {
-        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
+        $pathsContext = self::$dic->get(PathsContext::class);
 
-        $this->assertFileExists(
-            BackupFileHelper::getAppBackupFilename(
-                TMP_PATH,
-                $configData->getBackupHash(),
-                true
-            )
-        );
-        $this->assertFileExists(
-            BackupFileHelper::getDbBackupFilename(
-                TMP_PATH,
-                $configData->getBackupHash(),
-                true
-            )
-        );
+        $hash = $configData->getBackupHash();
+        $backupPath = $pathsContext[Path::BACKUP];
+
+        $this->assertNotEmpty(glob(sprintf('%s/sysPass_app-%s*', $backupPath, $hash)) ?: []);
+        $this->assertNotEmpty(glob(sprintf('%s/sysPass_db-%s*', $backupPath, $hash)) ?: []);
     }
 
     /**
@@ -166,7 +157,7 @@ class BackupCommandTest extends CliTestCase
     {
         putenv(sprintf('%s=%s',
                 BackupCommand::$envVarsMapping['path'],
-                TMP_PATH)
+                self::$dic->get(PathsContext::class)[Path::BACKUP])
         );
     }
 
@@ -175,6 +166,8 @@ class BackupCommandTest extends CliTestCase
         $this->unsetEnvironmentVariables();
 
         parent::setUp();
+
+        self::buildContainer();
     }
 
     private function unsetEnvironmentVariables(): void

@@ -101,8 +101,8 @@ final class User extends BaseRepository implements UserRepository
             ->where('id <> :id')
             ->where(
                 'UPPER(:login) = UPPER(login) 
-                OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\'
-                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\''
+                OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\')
+                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\')'
             )
             ->bindValues(
                 [
@@ -279,11 +279,16 @@ final class User extends BaseRepository implements UserRepository
             throw DuplicatedItemException::error(__u('Duplicated user login/email'));
         }
 
+        $userData = array_filter(
+            $user->toArray(null, ['id']),
+            static fn($value) => $value !== null
+        );
+        $userData['hashSalt'] = '';
+
         $query = $this->queryFactory
             ->newInsert()
             ->into(UserModel::TABLE)
-            ->cols($user->toArray(null, ['id', 'hashSalt']))
-            ->set('hashSalt', '');
+            ->cols($userData);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the user'));
 
@@ -307,8 +312,8 @@ final class User extends BaseRepository implements UserRepository
             ->from(UserModel::TABLE)
             ->where(
                 'UPPER(:login) = UPPER(login) 
-                OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\'
-                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\''
+                OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\')
+                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\')'
             )
             ->bindValues(
                 [

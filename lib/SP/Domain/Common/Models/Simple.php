@@ -32,6 +32,22 @@ namespace SP\Domain\Common\Models;
  *
  * It's intended to be used when returned non-well defined objects from the repository.
  */
+#[\AllowDynamicProperties]
 final class Simple extends Model
 {
+    /**
+     * @param mixed $value
+     */
+    public function __set(string $name, $value): void
+    {
+        $this->{$name} = $value;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function __get(string $name)
+    {
+        return get_object_vars($this)[$name] ?? null;
+    }
 }

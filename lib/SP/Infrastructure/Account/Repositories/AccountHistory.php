@@ -381,7 +381,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                     'id',
                     'name',
                     'pass',
-                    'key',
+                    '`key`',
                     'mPassHash',
                 ]
             )

@@ -43,6 +43,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Dtos\DatabaseTables;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DatabaseUtilInterface;
+use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Ports\BackupFileService;
 use SP\Domain\File\Ports\ArchiveHandlerInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;
@@ -60,7 +61,6 @@ final class BackupFile extends Service implements BackupFileService
 {
     public const         BACKUP_INCLUDE_REGEX = /** @lang RegExp */
         '#^(?:[A-Z]:)?(?:/(?!(\.git|backup|cache|temp|vendor|tests))[^/]+)+/[^/]+\.\w+$#Di';
-    private const        BACKUP_PREFIX        = 'sysPassBackup';
 
     public function __construct(
         ConfigFileService $config,
@@ -71,6 +71,7 @@ final class BackupFile extends Service implements BackupFileService
         private readonly FileHandlerInterface    $dbBackupFile,
         private readonly ArchiveHandlerInterface $dbArchiveHandler,
         private readonly ArchiveHandlerInterface $appArchiveHandler,
+        private readonly BackupFiles             $backupFiles,
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -97,7 +98,7 @@ final class BackupFile extends Service implements BackupFileService
             $this->backupTables($configData->getDbName());
             $this->backupApp($applicationPath);
 
-            $this->config->save($configData->setBackupHash($this->buildHash()));
+            $this->config->save($configData->setBackupHash($this->backupFiles->getHash()));
         } catch (Exception $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 
@@ -274,13 +275,5 @@ final class BackupFile extends Service implements BackupFileService
         );
 
         $this->appArchiveHandler->compressDirectory($directory, self::BACKUP_INCLUDE_REGEX);
-    }
-
-    /**
-     * @return string
-     */
-    private function buildHash(): string
-    {
-        return sha1(uniqid(self::BACKUP_PREFIX, true));
     }
 }
