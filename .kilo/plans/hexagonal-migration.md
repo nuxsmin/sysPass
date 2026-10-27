@@ -41,7 +41,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P4-2 | #1974 | done |
 | P4-3 | #2031 | todo |
 | P4-4 | #2015 | done |
-| P5-1 | #2026 | todo |
+| P5-1 | #2026 | done |
 | P5-2 | #2032 | todo |
 | P5-3 | #2037 | todo |
 | P6-W1 | #1975 | todo (pilot) |
@@ -52,7 +52,8 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P10-1 to P10-5 | #2035, #2039, #2018, #2019, #2020 | todo |
 | P11-1 to P11-5 | #2021, #2028, #2040, #2041, #2022 | todo |
 | D1 | #1965 | decided: option (b) |
-| D2, D3, D8, D9 | #1966, #2011, #1967, #1968 | decision |
+| D2 | #1966 | decided: option (a) |
+| D3, D8, D9 | #2011, #1967, #1968 | decision |
 
 ---
 
@@ -134,7 +135,7 @@ Each has a recommendation. Decide before the phase that depends on it.
 | ID | Question | Options | Recommendation | Needed before |
 |---|---|---|---|---|
 | D1 | Where do user-facing messages get translated? | (a) Domain keeps `__u()` as a marker and translation happens at the boundary. (b) Domain throws exceptions with stable error codes and message keys; modules translate. | (b) for new code; migrate contexts one at a time. Keep (a) as a stopgap if a context is too big. | P4-2 |
-| D2 | Where do use cases live? | (a) `SP\Domain\<Ctx>\UseCases`. (b) new top-level `lib/SP/Application/`. | (a). It avoids a third top-level namespace and a second move of the same classes. | P5-* |
+| D2 | Where do use cases live? | (a) `SP\Domain\<Ctx>\UseCases`. (b) new top-level `lib/SP/Application/`. | (a). It avoids a third top-level namespace and a second move of the same classes. **Decided: (a).** | P5-* |
 | D3 | Move Mvc and Html out of `lib/`? | Yes into `app/modules/web/` (namespace `SP\Modules\Web\View`, `...\Html`) | Yes | P4-1 |
 | D4 | Run the `modules` suite and integration tests in CI by default? | Yes now / after P0-1 green / keep gated | After P0-1 and P0-2 succeed: make integration job default on | P0-2 |
 | D5 | How to enforce layer rules? | (a) deptrac (new dev dependency). (b) PHPUnit architecture test using `nikic/php-parser` (already in `require-dev`). | (b) first, with an allowlist that can only shrink (ratchet). Consider deptrac later. | P0-3 |
@@ -146,6 +147,7 @@ Each has a recommendation. Decide before the phase that depends on it.
 **Decision log**
 
 - **D1 (2026-10-27): option (b).** Domain exceptions carry a stable code and an untranslated message key; the interface layer translates. Migrate one bounded context at a time, starting with `Tag` (P4-2). Option (a) remains a stopgap for contexts that are too large.
+- **D2 (2026-10-27): option (a).** Use cases live in `SP\Domain\<Ctx>\UseCases`; their Commands and Results live in `SP\Domain\<Ctx>\UseCases\Dtos`. No third top-level namespace.
 
 ---
 
@@ -219,7 +221,12 @@ Phases are ordered so the guardrails come first, then inward dependency fixes, t
 
 Applied per context in Phase 6 and Phase 7. The steps are in section 6.
 
-- [ ] **P5-1 Define the Command/Result DTO convention** under `SP\Domain\<Ctx>\UseCases\Dtos` (or existing `Dtos`). Document in ADR-003 (section 8).
+- [x] **P5-1 Define the Command/Result DTO convention** under `SP\Domain\<Ctx>\UseCases\Dtos` (D2; or existing `Dtos`). Document in ADR-003 (section 8).
+  - Location and naming: `<Action><Ctx>Command` and `<Action><Ctx>Result` in `SP\Domain\<Ctx>\UseCases\Dtos`. One Command per user intent; a Result even when it only echoes an id or the deleted ids.
+  - Shape: `final readonly class` with public promoted properties. No base `Dto`, no reflection hydration, no getters boilerplate.
+  - Contracts: Commands implement `SP\Domain\Common\Dtos\Command`; Results implement `SP\Domain\Common\Dtos\Result`.
+  - Boundary: Commands hold already parsed primitives, value objects or domain DTOs. No HTTP, session or presentation types; no translation; no logging. Validation and domain exceptions belong to the use case.
+  - Pilot inputs: `SP\Domain\Tag\UseCases\Dtos` has the Tag commands and results; `TagUseCaseDtosTest` guards the shape.
 - [ ] **P5-2 Define the use case base contract.** Single public method (`execute(Command): Result`), no HTTP types, no session types, no translation calls. Throws domain exceptions only.
 - [ ] **P5-3 Event emission moves to use cases.** Audit/notification events currently emitted by controllers (226 `->notify()` calls) move into the use case, emitted via `EventDispatcherInterface`. Controllers no longer build `EventMessage`.
   - Acceptance: M-events: `grep -rl "EventMessage::build" app/modules | wc -l` drops per migrated area.
@@ -343,6 +350,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-27 | P4-4 remove Core file-system dependencies (verified: core unit, modules, architecture, wiring, PSR2) | M13 4 (+2 composition) → 0 (+2); M6 152 → 154 ports; other metrics unchanged | Added `SP\Domain\File\Ports\PhpFileLoaderInterface` (Infrastructure `PhpFileLoader` wraps `FileSystem::require`) and `SP\Domain\File\Ports\FileHandlerFactoryInterface` (Infrastructure `FileHandlerFactory`). `Theme` and `ThemeIcons` load theme data through the loader, `ThemeContext` joins paths locally, and `AppLock` creates its lock file through the factory so the handler is still constructed lazily. `CoreDefinitions` wires the two adapters. No `SP\Infrastructure\File` import remains in `lib/SP/Core` outside `Core/Definitions`. Added `PhpFileLoaderTest`. |
 | 2026-10-27 | P4-2 Tag translation policy (D1) (verified: Tag unit, core unit, architecture, PSR2) | M5 72 → 71 files / 345 → 341 call sites; `domain-presentation-calls` allowlist 124 → 123 | Decided D1 option (b). Added `SP\Domain\Tag\Exceptions\TagException` with stable codes `NOT_FOUND` (1001) and `DELETE_FAILED` (1002) and untranslated keys. `Tag` no longer calls `__u()`; `JsonMessage`/`ActionResponse`/`JsonRpcResponse` translate at the boundary. The API `TagControllerTest` message assertions plus the new stable-code assertions act as the user-visible snapshot. Core unit 2014 tests green (known warnings/deprecations); architecture 12/12. The API integration test still cannot run locally because of the known `vfs://` mysql fixture issue (P7-1). |
 | 2026-10-27 | P9-1 Core ↔ Infrastructure cleanup (verified: architecture 12/12) | M13 stays 0 (+2 composition); no other metric changes | P4-4 already removed the runtime references, so P9-1 adds the guard: a new `core-infrastructure` rule rejects `SP\Infrastructure\` imports from `lib/SP/Core` outside `Core/Definitions`. `LayerDependencyTest` freezes the rule at 0, and `LayerRulesTest` covers both the violating and the composition-root cases. |
+| 2026-10-27 | D2 + P5-1 use case DTO convention (verified: Tag DTO unit, architecture, PSR2) | M6 stays 0/154; other metrics unchanged | Decided D2 option (a): use cases live in `SP\Domain\<Ctx>\UseCases`, DTOs in `SP\Domain\<Ctx>\UseCases\Dtos`. Added the `Command` and `Result` marker contracts in `SP\Domain\Common\Dtos`, the Tag pilot commands and results (create, update, delete single/batch, get, search), and `TagUseCaseDtosTest`, which enforces final readonly classes with promoted public properties and the right contract. |
 
 ### Baseline test results (P0-1)
 
