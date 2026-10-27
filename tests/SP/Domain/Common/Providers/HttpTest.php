@@ -63,6 +63,11 @@ class HttpTest extends TestCase
                 ->method('getHttpHost')
                 ->willReturn('localhost');
 
+        $request->expects($this->once())
+                ->method('getServer')
+                ->with('REQUEST_URI')
+                ->willReturn('/index.php');
+
         Http::checkHttps($configData, $request);
     }
 
@@ -86,6 +91,9 @@ class HttpTest extends TestCase
 
         $request->expects($this->never())
                 ->method('getHttpHost');
+
+        $request->expects($this->never())
+                ->method('getServer');
 
         Http::checkHttps($configData, $request);
     }
@@ -111,6 +119,9 @@ class HttpTest extends TestCase
 
         $request->expects($this->never())
                 ->method('getHttpHost');
+
+        $request->expects($this->never())
+                ->method('getServer');
 
         Http::checkHttps($configData, $request);
     }
