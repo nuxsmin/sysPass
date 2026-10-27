@@ -34,13 +34,13 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P2-2 | #2023 | done (security review pending) |
 | P2-3 | #2029 | done |
 | P2-4 | #2024 | done (`d596e85a`) |
-| P3-1 | #1973 | todo |
+| P3-1 | #1973 | done (`90efe568`) |
 | P3-2 | #2030 | done |
 | P3-3 | #2036 | todo |
 | P4-1 | #2025 | todo |
 | P4-2 | #1974 | todo |
 | P4-3 | #2031 | todo |
-| P4-4 | #2015 | todo |
+| P4-4 | #2015 | done |
 | P5-1 | #2026 | todo |
 | P5-2 | #2032 | todo |
 | P5-3 | #2037 | todo |
@@ -208,7 +208,7 @@ Phases are ordered so the guardrails come first, then inward dependency fixes, t
 - [ ] **P4-2 Translation policy (D1).** Per bounded context, replace `__u()` in Domain code with domain exceptions carrying a stable code and an untranslated message key. Translate in the module boundary (exception-to-response mapper in `app/modules/web` and `app/modules/api`). Do one context per task, starting with `Tag` (pilot, see P6-W1).
   - Acceptance: M5 drops per context. A snapshot test of user-visible messages for each migrated context proves no text changed.
 - [ ] **P4-3 Remove `processException()` from the Domain (30 files).** Domain throws; the module boundary logs and maps. Same per-context approach as P4-2.
-- [ ] **P4-4 Remove `Core/Acl/Actions` and `Core/Crypt` file-system dependencies.** See finding 7. Move the file-based implementations into Infrastructure and keep Core as wiring.
+- [x] **P4-4 Remove `Core/Acl/Actions` and `Core/Crypt` file-system dependencies.** See finding 7. Move the file-based implementations into Infrastructure and keep Core as wiring.
 
 ### Phase 5: Application layer (use cases) — the slice template
 
@@ -335,6 +335,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-27 | P2-4 logging port (verified: core, modules, architecture, wiring) | presentation calls 125 → 124; allowlist domain-only stays 35; M1 23, M3 13, M6 147 ports | Added `SP\Domain\Core\Log\LoggerInterface` plus `NullLogger`, implemented in Core by `SP\Core\Log\FunctionLogger` (delegates to `logger()` and has no dependencies, avoiding the `ConfigFile`/PSR-logger cycle) and bound in `CoreDefinitions`. All 16 Domain files that called `SP\logger` now use the port; the two static helpers (`Address`, `Hash`) lost their incidental debug lines. PHPStan unchanged. Suites: core 2008 tests, modules 96 tests, architecture 7/7, container wiring green. |
 | 2026-10-27 | P2-3 remove direct superglobal use (verified: Domain Common, architecture) | metrics unchanged; M1 23, M3 13, M6 147 ports | `Http::checkHttps()` now reads the request URI through the existing `RequestService::getServer('REQUEST_URI')` port method instead of `$_SERVER`. The two remaining `$_SESSION` files are already in `SP\Core\Context`, so no superglobal access remains in `lib/` outside Core context or in `app/modules`. `HttpTest` now asserts the port call and that it is skipped when HTTPS is disabled or already in use. |
 | 2026-10-27 | P3-2 static domain helpers (verified: architecture, core unit, Api/AuthToken unit, PSR2) | metrics unchanged; M8 89 (exception imports only), module static calls on Domain service classes = 0 | `ConfigBackup::configToJson()` and `ConfigUtil` normalisers were already moved behind `ConfigBackupService` and `ConfigInput` in P3-1. This task removed the remaining public statics from the `AuthToken` service (`Api` and the service now call the model; `canUseSecureTokenAction()` is private) and extended the `modules-concrete-services` architecture rule to reject static calls on Domain `Services` classes from `app/modules`, resolving imports and aliases while still allowing exception factories. Added `LayerRulesTest` coverage for direct and aliased calls. |
+| 2026-10-27 | P4-4 remove Core file-system dependencies (verified: core unit, modules, architecture, wiring, PSR2) | M13 4 (+2 composition) → 0 (+2); M6 152 → 154 ports; other metrics unchanged | Added `SP\Domain\File\Ports\PhpFileLoaderInterface` (Infrastructure `PhpFileLoader` wraps `FileSystem::require`) and `SP\Domain\File\Ports\FileHandlerFactoryInterface` (Infrastructure `FileHandlerFactory`). `Theme` and `ThemeIcons` load theme data through the loader, `ThemeContext` joins paths locally, and `AppLock` creates its lock file through the factory so the handler is still constructed lazily. `CoreDefinitions` wires the two adapters. No `SP\Infrastructure\File` import remains in `lib/SP/Core` outside `Core/Definitions`. Added `PhpFileLoaderTest`. |
 
 ### Baseline test results (P0-1)
 
