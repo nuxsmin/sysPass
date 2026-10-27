@@ -34,6 +34,8 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Common\Attributes\UpgradeVersion;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
@@ -47,7 +49,6 @@ use SP\Domain\Core\Exceptions\FileException;
 use Throwable;
 
 use function SP\__u;
-use function SP\logger;
 
 /**
  * Class Upgrade
@@ -64,7 +65,8 @@ final class Upgrade extends Service implements UpgradeService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         FileHandlerProvider                 $fileHandlerProvider,
-        private readonly ContainerInterface $container
+        private readonly ContainerInterface $container,
+        private readonly LoggerInterface    $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
@@ -97,7 +99,7 @@ final class Upgrade extends Service implements UpgradeService
                 );
             }
 
-            logger('Upgrade: ' . $upgradeHandler::class);
+            $this->logger->debug('Upgrade: ' . $upgradeHandler::class);
 
             $this->config->save($configData);
         }

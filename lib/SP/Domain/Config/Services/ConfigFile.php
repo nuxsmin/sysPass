@@ -39,11 +39,12 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConfigException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Domain\Core\Exceptions\FileException;
 
-use function SP\logger;
 use function SP\processException;
 
 /**
@@ -58,7 +59,8 @@ class ConfigFile implements ConfigFileService
         private readonly XmlFileStorageService $fileStorage,
         private readonly FileCacheService      $fileCache,
         private readonly Context $context,
-        private ?ConfigDataInterface           $configData = null
+        private ?ConfigDataInterface           $configData = null,
+        private readonly LoggerInterface       $logger = new NullLogger()
     ) {
         $this->configData = $configData ?? $this->initialize();
     }
@@ -71,7 +73,7 @@ class ConfigFile implements ConfigFileService
         try {
             $configData = $this->loadFromCache() ?? $this->loadFromFile() ?? $this->generateNewConfig();
 
-            logger('Config loaded');
+            $this->logger->debug('Config loaded');
 
             return $configData;
         } catch (Exception $e) {
@@ -98,7 +100,7 @@ class ConfigFile implements ConfigFileService
             return null;
         }
 
-        logger('Config cache loaded');
+        $this->logger->debug('Config cache loaded');
 
         return $configData;
     }
@@ -207,7 +209,7 @@ class ConfigFile implements ConfigFileService
 
         $this->save($configData);
 
-        logger('Config file created', 'INFO');
+        $this->logger->info('Config file created');
 
         return $configData;
     }
@@ -241,7 +243,7 @@ class ConfigFile implements ConfigFileService
     public function generateUpgradeKey(): ConfigFileService
     {
         if (empty($this->configData->getUpgradeKey())) {
-            logger('Generating upgrade key');
+            $this->logger->debug('Generating upgrade key');
 
             return $this->save($this->configData->setUpgradeKey(Password::generateRandomBytes(16)));
         }

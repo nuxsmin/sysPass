@@ -25,8 +25,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Crypt\Services;
 
-use function SP\logger;
-
 /**
  * Class Hash
  *
@@ -55,18 +53,13 @@ final class Hash
      * Devolver la clave preparada. Se crea un hash si supera la longitud máxima.
      *
      * @param  string  $key
-     * @param  bool  $isCheck  Indica si la operación es de comprobación o no
      *
      * @return string
      */
-    private static function getKey(string &$key, bool $isCheck = true): string
+    private static function getKey(string &$key): string
     {
         if (mb_strlen($key) > self::MAX_KEY_LENGTH) {
             $key = hash(self::HASH_ALGO, $key);
-
-            if ($isCheck === false) {
-                logger('[INFO] Password string shortened using SHA256 and then BCRYPT');
-            }
         }
 
         return $key;
@@ -81,7 +74,7 @@ final class Hash
      */
     public static function hashKey(string $key): string
     {
-        return password_hash(self::getKey($key, false), PASSWORD_BCRYPT);
+        return password_hash(self::getKey($key), PASSWORD_BCRYPT);
     }
 
     /**

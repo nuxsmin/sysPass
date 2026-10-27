@@ -30,10 +30,11 @@ use DOMDocument;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Ports\XmlFileService;
 use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use ValueError;
 
 use function SP\__u;
-use function SP\logger;
 
 /**
  * Class XmlFile
@@ -42,7 +43,7 @@ final readonly class XmlFile implements XmlFileService
 {
     private DOMDocument $document;
 
-    public function __construct()
+    public function __construct(private readonly LoggerInterface $logger = new NullLogger())
     {
         $this->createDocument();
     }
@@ -65,7 +66,7 @@ final readonly class XmlFile implements XmlFileService
     {
         $fileHandler->checkIsReadable();
 
-        $self = new self();
+        $self = new self($this->logger);
         $self->readXMLFile($fileHandler->getFile());
 
         return $self;
@@ -82,7 +83,7 @@ final readonly class XmlFile implements XmlFileService
 
         if ($this->document->load($file, LIBXML_PARSEHUGE) === false) {
             foreach (libxml_get_errors() as $error) {
-                logger(__METHOD__ . ' - ' . $error->message);
+                $this->logger->debug(__METHOD__ . ' - ' . $error->message);
             }
 
             throw ImportException::error(__u('Internal error'), __u('Unable to process the XML file'));

@@ -32,6 +32,8 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -47,7 +49,6 @@ use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__;
 use function SP\__u;
-use function SP\logger;
 use function SP\processException;
 
 /**
@@ -64,7 +65,8 @@ final class Track extends Service implements TrackService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly TrackRepository $trackRepository,
-        private readonly RequestService  $request
+        private readonly RequestService  $request,
+        private readonly LoggerInterface $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -131,7 +133,7 @@ final class Track extends Service implements TrackService
                     )
                 );
 
-                logger('Tracking delay: ' . $delaySeconds . 's');
+                $this->logger->debug('Tracking delay: ' . $delaySeconds . 's');
 
                 sleep($delaySeconds);
 

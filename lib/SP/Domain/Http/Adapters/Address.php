@@ -28,9 +28,7 @@ namespace SP\Domain\Http\Adapters;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\SPException;
 
-use function SP\__;
 use function SP\__u;
-use function SP\logger;
 
 /**
  * Class Address
@@ -47,8 +45,6 @@ final class Address
         if (!filter_var($address, FILTER_VALIDATE_IP)
             || ($binAddress = @inet_pton($address)) === false
         ) {
-            logger(sprintf('%s : %s', __('Invalid IP'), $address));
-
             throw new InvalidArgumentException(__u('Invalid IP'), SPException::ERROR, $address);
         }
 
@@ -63,8 +59,6 @@ final class Address
         $stringAddress = @inet_ntop($address);
 
         if ($stringAddress === false) {
-            logger(sprintf('%s : %s', __('Invalid IP'), $address));
-
             throw new InvalidArgumentException(__u('Invalid IP'), SPException::ERROR, $address);
         }
 

@@ -31,6 +31,8 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportHelperInterface;
@@ -41,7 +43,6 @@ use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__;
 use function SP\__u;
-use function SP\logger;
 
 /**
  * Class ImportStrategy
@@ -65,6 +66,7 @@ final class ImportStrategy extends Service implements ImportStrategyService
         private readonly ImportHelperInterface $importHelper,
         private readonly CryptInterface        $crypt,
         private readonly XmlFileService        $xmlFile,
+        private readonly LoggerInterface       $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -119,7 +121,7 @@ final class ImportStrategy extends Service implements ImportStrategyService
 
             return $fileType;
         } catch (FileException $e) {
-            logger(sprintf('Max. upload size: %s', Environment::getMaxUpload()));
+            $this->logger->debug(sprintf('Max. upload size: %s', Environment::getMaxUpload()));
 
             throw FileException::error(
                 __u('Internal error while reading the file'),

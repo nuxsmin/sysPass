@@ -32,6 +32,8 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Common\Attributes\UpgradeVersion;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -43,7 +45,6 @@ use SP\Infrastructure\File\FileSystem;
 
 use function SP\__;
 use function SP\__u;
-use function SP\logger;
 use function SP\processException;
 
 /**
@@ -57,7 +58,8 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly DatabaseInterface $database,
-        private readonly string $sqlPath
+        private readonly string $sqlPath,
+        private readonly LoggerInterface $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -82,7 +84,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
             } catch (Exception $e) {
                 processException($e);
 
-                logger('SQL: ' . $query);
+                $this->logger->debug('SQL: ' . $query);
 
                 $this->eventDispatcher->notify(
                     'exception',
@@ -99,7 +101,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
         }
 
         if ($count === 0) {
-            logger(__('Update file does not contain data'), 'ERROR');
+            $this->logger->error(__('Update file does not contain data'));
 
             throw UpgradeException::error(__u('Update file does not contain data'), $version);
         }

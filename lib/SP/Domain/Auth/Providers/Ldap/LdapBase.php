@@ -31,6 +31,8 @@ use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 
 use function SP\__u;
 
@@ -45,7 +47,8 @@ abstract class LdapBase implements LdapService
         protected readonly LdapConnectionHandler $ldapConnection,
         protected readonly LdapActionsService    $ldapActions,
         protected readonly LdapParams               $ldapParams,
-        protected readonly EventDispatcherInterface $eventDispatcher
+        protected readonly EventDispatcherInterface $eventDispatcher,
+        protected readonly LoggerInterface          $logger = new NullLogger()
     ) {
         $this->server = $this->pickServer();
     }
@@ -64,13 +67,28 @@ abstract class LdapBase implements LdapService
         EventDispatcherInterface $eventDispatcher,
         LdapConnectionHandler $ldapConnection,
         LdapActionsService    $ldapActions,
-        LdapParams            $ldapParams
+        LdapParams            $ldapParams,
+        ?LoggerInterface      $logger = null
     ): LdapService {
         $ldapConnection->connect($ldapParams);
 
+        $logger ??= new NullLogger();
+
         return match ($ldapParams->getType()) {
-            LdapTypeEnum::STD => new LdapStd($ldapConnection, $ldapActions, $ldapParams, $eventDispatcher),
-            LdapTypeEnum::ADS => new LdapMsAds($ldapConnection, $ldapActions, $ldapParams, $eventDispatcher),
+            LdapTypeEnum::STD => new LdapStd(
+                $ldapConnection,
+                $ldapActions,
+                $ldapParams,
+                $eventDispatcher,
+                $logger
+            ),
+            LdapTypeEnum::ADS => new LdapMsAds(
+                $ldapConnection,
+                $ldapActions,
+                $ldapParams,
+                $eventDispatcher,
+                $logger
+            ),
             default => throw LdapException::warning(__u('Not implemented')),
         };
     }

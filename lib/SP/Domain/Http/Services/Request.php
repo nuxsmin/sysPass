@@ -33,12 +33,13 @@ use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Http\Header;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\File\FileSystem;
 
-use function SP\logger;
 use function SP\processException;
 
 /**
@@ -59,8 +60,11 @@ class Request implements RequestService
     /**
      * Request constructor.
      */
-    public function __construct(private readonly \Klein\Request $request, private readonly CryptPKIHandler $cryptPKI)
-    {
+    public function __construct(
+        private readonly \Klein\Request $request,
+        private readonly CryptPKIHandler $cryptPKI,
+        private readonly LoggerInterface $logger = new NullLogger()
+    ) {
         $this->headers = $this->request->headers();
         $this->method = Method::from($this->request->method());
         $this->params = $this->getParamsForMethod();
@@ -200,7 +204,7 @@ class Request implements RequestService
             $clearData = $this->cryptPKI->decryptRSA(base64_decode($encryptedData));
 
             if ($clearData === null) {
-                logger('No RSA encrypted data from request');
+                $this->logger->debug('No RSA encrypted data from request');
 
                 return $encryptedData;
             }

@@ -53,6 +53,7 @@ use SP\Core\Crypt\SessionMasterKeyStore;
 use SP\Core\Crypt\UuidCookie;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Language;
+use SP\Core\Log\FunctionLogger;
 use SP\Core\Messages\EventMessageFormatter;
 use SP\Core\Messages\MailMessageFormatter;
 use SP\Core\MimeTypes;
@@ -96,6 +97,7 @@ use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Core\Log\LoggerInterface as DomainLoggerInterface;
 use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\Ports\AppLockHandler;
@@ -197,7 +199,9 @@ final class CoreDefinitions
                                 static fn(PathsContext $p) => FileSystem::buildPath($p[Path::CACHE], 'config.cache')
                             )
                         ),
-                    get(Context::class)
+                    get(Context::class),
+                    null,
+                    get(DomainLoggerInterface::class)
                 ),
             ConfigDataInterface::class => factory([ConfigFileService::class, 'getConfigData']),
             InstallData::class => factory([InstallDataFactory::class, 'buildFromRequest']),
@@ -308,6 +312,7 @@ final class CoreDefinitions
 
                 return new Logger('syspass', $handlers);
             }),
+            DomainLoggerInterface::class => create(FunctionLogger::class),
             \GuzzleHttp\Client::class => create(\GuzzleHttp\Client::class)
                 ->constructor(factory([Client::class, 'getOptions'])),
             LanguageInterface::class => autowire(Language::class)->constructorParameter(

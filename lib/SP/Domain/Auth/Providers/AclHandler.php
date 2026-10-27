@@ -38,12 +38,13 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\__u;
-use function SP\logger;
 use function SP\processException;
 
 /**
@@ -69,7 +70,8 @@ final class AclHandler extends Provider implements EventReceiver
         Context $context,
         private readonly UserProfileService $userProfileService,
         private readonly UserGroupService $userGroupService,
-        private readonly PathsContext     $pathsContext
+        private readonly PathsContext     $pathsContext,
+        private readonly LoggerInterface $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
@@ -145,13 +147,13 @@ final class AclHandler extends Provider implements EventReceiver
      */
     private function clearAcl($userId): bool
     {
-        logger(sprintf('Clearing ACL for user ID: %d', $userId));
+        $this->logger->debug(sprintf('Clearing ACL for user ID: %d', $userId));
 
         try {
             $path = FileSystem::buildPath($this->pathsContext[Path::CACHE], 'accountAcl', (string)$userId);
 
             if (FileSystem::rmdirRecursive($path) === false) {
-                logger(sprintf('Unable to delete %s directory', $path));
+                $this->logger->debug(sprintf('Unable to delete %s directory', $path));
 
                 return false;
             }

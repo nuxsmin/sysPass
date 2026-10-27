@@ -31,7 +31,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Adapters\Address;
 
 use function SP\__u;
-use function SP\logger;
 
 /**
  * Class LdapAds
@@ -206,7 +205,7 @@ final class LdapMsAds extends LdapBase
 
         $dnsServerQuery = '_msdcs' . substr($server, strpos($server, '.'));
 
-        logger(sprintf('Querying DNS zone: %s', $dnsServerQuery));
+        $this->logger->debug(sprintf('Querying DNS zone: %s', $dnsServerQuery));
 
         $records = dns_get_record($dnsServerQuery, DNS_NS);
 

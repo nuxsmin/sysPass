@@ -37,12 +37,13 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileSystem;
 
-use function SP\logger;
 use function SP\processException;
 
 /**
@@ -58,7 +59,8 @@ final class SecureSession extends Service implements SecureSessionService
         Context $context,
         private readonly CryptInterface   $crypt,
         private readonly FileCacheService $fileCache,
-        private readonly RequestBasedPasswordInterface $requestBasedPassword
+        private readonly RequestBasedPasswordInterface $requestBasedPassword,
+        private readonly LoggerInterface               $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -89,7 +91,7 @@ final class SecureSession extends Service implements SecureSessionService
     {
         try {
             if ($this->fileCache->isExpired(self::CACHE_EXPIRE_TIME)) {
-                logger('Session key expired or does not exist', 'ERROR');
+                $this->logger->error('Session key expired or does not exist');
 
                 return $this->saveKey();
             }
@@ -124,7 +126,7 @@ final class SecureSession extends Service implements SecureSessionService
 
             $this->fileCache->save($data);
 
-            logger('Saved session key');
+            $this->logger->debug('Saved session key');
 
             return $securedKey;
         } catch (Exception $e) {

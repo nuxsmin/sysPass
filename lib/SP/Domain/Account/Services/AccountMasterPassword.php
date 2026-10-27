@@ -32,6 +32,8 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Ports\AccountCryptService;
@@ -46,7 +48,6 @@ use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 
 use function SP\__;
 use function SP\__u;
-use function SP\logger;
 
 /**
  * Class AccountMasterPassword
@@ -60,7 +61,8 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
         private readonly AccountService        $accountService,
         private readonly AccountHistoryService $accountHistoryService,
         private readonly CryptInterface        $crypt,
-        private readonly AccountCryptService   $accountCryptService
+        private readonly AccountCryptService   $accountCryptService,
+        private readonly LoggerInterface       $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -150,7 +152,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
             if ($counter % 100 === 0) {
                 $eta = self::getETA($startTime, $counter, $numAccounts);
 
-                logger(
+                $this->logger->debug(
                     sprintf(
                         __('Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
                         $counter,

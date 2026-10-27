@@ -35,6 +35,8 @@ use SP\Domain\Auth\Providers\Ldap\LdapBase;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 
 /**
  * Class LdapCheck
@@ -44,7 +46,8 @@ final readonly class LdapCheck implements LdapCheckService
     public function __construct(
         private LdapConnectionHandler $ldapConnection,
         private LdapActionsService $ldapActions,
-        private EventDispatcherInterface $eventDispatcher
+        private EventDispatcherInterface $eventDispatcher,
+        private LoggerInterface $logger = new NullLogger()
     ) {
     }
 
@@ -65,7 +68,13 @@ final readonly class LdapCheck implements LdapCheckService
      */
     private function getLdapService(LdapParams $ldapParams): LdapService
     {
-        return LdapBase::factory($this->eventDispatcher, $this->ldapConnection, $this->ldapActions, $ldapParams);
+        return LdapBase::factory(
+            $this->eventDispatcher,
+            $this->ldapConnection,
+            $this->ldapActions,
+            $ldapParams,
+            $this->logger
+        );
     }
 
     /**

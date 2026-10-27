@@ -48,6 +48,8 @@ use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDto;
@@ -58,7 +60,6 @@ use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Crypt\Ports\MasterKeyStore;
 
 use function SP\__u;
-use function SP\logger;
 use function SP\processException;
 
 /**
@@ -83,7 +84,8 @@ final class Api extends Service implements ApiService
         private readonly AuthTokenService  $authTokenService,
         private readonly UserService       $userService,
         private readonly UserProfileService $userProfileService,
-        private readonly MasterKeyStore    $masterKeyStore
+        private readonly MasterKeyStore    $masterKeyStore,
+        private readonly LoggerInterface   $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
@@ -116,7 +118,7 @@ final class Api extends Service implements ApiService
             $this->authToken = $this->authTokenService
                 ->getTokenByToken($actionId, $this->getParam('authToken'));
         } catch (NoSuchItemException $e) {
-            logger($e->getMessage(), 'ERROR');
+            $this->logger->error($e->getMessage());
 
             // For security reasons there won't be any hint about a not found token...
             throw new ServiceException(

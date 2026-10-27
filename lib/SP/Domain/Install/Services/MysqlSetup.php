@@ -30,6 +30,8 @@ use Exception;
 use PDOException;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Install\Adapters\InstallData;
@@ -39,7 +41,6 @@ use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__;
 use function SP\__u;
-use function SP\logger;
 use function SP\processException;
 
 /**
@@ -51,7 +52,8 @@ final readonly class MysqlSetup implements DatabaseSetupService
         private DbStorageHandler      $dbStorage,
         private InstallData           $installData,
         private DatabaseFileInterface $databaseFile,
-        private DatabaseUtil          $databaseUtil
+        private DatabaseUtil          $databaseUtil,
+        private LoggerInterface       $logger = new NullLogger()
     ) {
     }
 
@@ -133,7 +135,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
             return;
         }
 
-        logger('Creating DB user');
+        $this->logger->debug('Creating DB user');
 
         try {
             $query = 'CREATE USER %s@%s IDENTIFIED BY %s';
@@ -318,7 +320,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
             }
         }
 
-        logger('Rollback');
+        $this->logger->debug('Rollback');
     }
 
     /**
