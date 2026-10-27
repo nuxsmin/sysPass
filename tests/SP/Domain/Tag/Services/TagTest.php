@@ -27,14 +27,13 @@ namespace SP\Tests\Domain\Tag\Services;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Tag\Ports\TagRepository;
 use SP\Domain\Tag\Services\Tag;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Tag\Exceptions\TagException;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\ItemSearchDataGenerator;
 use SP\Tests\Generators\TagGenerator;
@@ -52,7 +51,7 @@ class TagTest extends UnitaryTestCase
 
     /**
      * @throws ConstraintException
-     * @throws NoSuchItemException
+     * @throws TagException
      * @throws QueryException
      */
     public function testDelete()
@@ -82,14 +81,15 @@ class TagTest extends UnitaryTestCase
             ->with($id)
             ->willReturn(new QueryResult());
 
-        $this->expectException(NoSuchItemException::class);
+        $this->expectException(TagException::class);
+        $this->expectExceptionCode(TagException::NOT_FOUND);
         $this->expectExceptionMessage('Tag not found');
 
         $this->tag->delete($id);
     }
 
     /**
-     * @throws NoSuchItemException
+     * @throws TagException
      */
     public function testGetById()
     {
@@ -109,7 +109,7 @@ class TagTest extends UnitaryTestCase
     }
 
     /**
-     * @throws NoSuchItemException
+     * @throws TagException
      */
     public function testGetByIdWithUnknownId()
     {
@@ -121,14 +121,15 @@ class TagTest extends UnitaryTestCase
             ->with($id)
             ->willReturn(new QueryResult([]));
 
-        $this->expectException(NoSuchItemException::class);
+        $this->expectException(TagException::class);
+        $this->expectExceptionCode(TagException::NOT_FOUND);
         $this->expectExceptionMessage('Tag not found');
 
         $this->tag->getById($id);
     }
 
     /**
-     * @throws NoSuchItemException
+     * @throws TagException
      */
     public function testGetByName()
     {
@@ -148,7 +149,7 @@ class TagTest extends UnitaryTestCase
     }
 
     /**
-     * @throws NoSuchItemException
+     * @throws TagException
      */
     public function testGetByNameWithUnknownName()
     {
@@ -160,7 +161,8 @@ class TagTest extends UnitaryTestCase
             ->with($name)
             ->willReturn(new QueryResult([]));
 
-        $this->expectException(NoSuchItemException::class);
+        $this->expectException(TagException::class);
+        $this->expectExceptionCode(TagException::NOT_FOUND);
         $this->expectExceptionMessage('Tag not found');
 
         $this->tag->getByName($name);
@@ -219,7 +221,6 @@ class TagTest extends UnitaryTestCase
     }
 
     /**
-     * @throws ServiceException
      * @throws SPException
      */
     public function testDeleteByIdBatchError()
@@ -232,7 +233,8 @@ class TagTest extends UnitaryTestCase
             ->with($ids)
             ->willReturn(new QueryResult(null, 0));
 
-        $this->expectException(ServiceException::class);
+        $this->expectException(TagException::class);
+        $this->expectExceptionCode(TagException::DELETE_FAILED);
         $this->expectExceptionMessage('Error while removing the tags');
 
         $this->tag->deleteByIdBatch($ids);

@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Tag\Exceptions\TagException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -62,7 +62,7 @@ abstract class TagViewBase extends ControllerBase
      *
      * @throws ConstraintException
      * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws TagException
      */
     protected function setViewData(?int $tagId = null): void
     {

@@ -201,7 +201,6 @@ return array (
     110 => 'lib/SP/Domain/Security/Services/Track.php => __() x1',
     111 => 'lib/SP/Domain/Security/Services/Track.php => __u() x2',
     112 => 'lib/SP/Domain/Security/Services/Track.php => processException() x1',
-    113 => 'lib/SP/Domain/Tag/Services/Tag.php => __u() x4',
     114 => 'lib/SP/Domain/Upgrade/Services/Upgrade.php => __u() x4',
     115 => 'lib/SP/Domain/Upgrade/Services/UpgradeDatabase.php => __() x1',
     116 => 'lib/SP/Domain/Upgrade/Services/UpgradeDatabase.php => __u() x5',

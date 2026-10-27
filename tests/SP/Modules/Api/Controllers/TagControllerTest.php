@@ -31,6 +31,7 @@ use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Tag\Exceptions\TagException;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 
@@ -154,6 +155,7 @@ class TagControllerTest extends ApiTestCase
 
         $this->assertInstanceOf(stdClass::class, $response->error);
         $this->assertEquals('Tag not found', $response->error->message);
+        $this->assertEquals(TagException::NOT_FOUND, $response->error->code);
     }
 
     /**
@@ -339,6 +341,7 @@ class TagControllerTest extends ApiTestCase
 
         $this->assertInstanceOf(stdClass::class, $response->error);
         $this->assertEquals('Tag not found', $response->error->message);
+        $this->assertEquals(TagException::NOT_FOUND, $response->error->code);
     }
 
     /**

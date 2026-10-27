@@ -26,7 +26,6 @@ declare(strict_types=1);
 namespace SP\Domain\Tag\Services;
 
 use SP\Domain\Common\Services\Service;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -34,14 +33,12 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Tag\Exceptions\TagException;
 use SP\Domain\Tag\Models\Tag as TagModel;
 use SP\Domain\Tag\Ports\TagRepository;
 use SP\Domain\Tag\Ports\TagService;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Database\Dtos\QueryResult;
-
-use function SP\__u;
 
 /**
  * Class Tag
@@ -71,14 +68,14 @@ final class Tag extends Service implements TagService
     /**
      * @param int $id
      * @return TagModel
-     * @throws NoSuchItemException
+     * @throws TagException
      */
     public function getById(int $id): TagModel
     {
         $result = $this->tagRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
-            throw NoSuchItemException::info(__u('Tag not found'));
+            throw TagException::notFound();
         }
 
         return $result->getData(TagModel::class);
@@ -87,14 +84,14 @@ final class Tag extends Service implements TagService
     /**
      * @param string $name
      * @return TagModel
-     * @throws NoSuchItemException
+     * @throws TagException
      */
     public function getByName(string $name): TagModel
     {
         $result = $this->tagRepository->getByName($name);
 
         if ($result->getNumRows() === 0) {
-            throw NoSuchItemException::info(__u('Tag not found'));
+            throw TagException::notFound();
         }
 
         return $result->getData(TagModel::class);
@@ -103,12 +100,12 @@ final class Tag extends Service implements TagService
     /**
      * @throws ConstraintException
      * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws TagException
      */
     public function delete(int $id): TagService
     {
         if ($this->tagRepository->delete($id)->getAffectedNumRows() === 0) {
-            throw NoSuchItemException::info(__u('Tag not found'));
+            throw TagException::notFound();
         }
 
         return $this;
@@ -122,7 +119,7 @@ final class Tag extends Service implements TagService
     public function deleteByIdBatch(array $ids): void
     {
         if ($this->tagRepository->deleteByIdBatch($ids)->getAffectedNumRows() !== count($ids)) {
-            throw ServiceException::warning(__u('Error while removing the tags'));
+            throw TagException::deleteFailed();
         }
     }
 

@@ -38,7 +38,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P3-2 | #2030 | done |
 | P3-3 | #2036 | todo |
 | P4-1 | #2025 | todo |
-| P4-2 | #1974 | todo |
+| P4-2 | #1974 | done |
 | P4-3 | #2031 | todo |
 | P4-4 | #2015 | done |
 | P5-1 | #2026 | todo |
@@ -51,7 +51,8 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P9-1 to P9-5 | #2038, #2050, #2034, #2052, #2053 | P9-1 done; rest todo |
 | P10-1 to P10-5 | #2035, #2039, #2018, #2019, #2020 | todo |
 | P11-1 to P11-5 | #2021, #2028, #2040, #2041, #2022 | todo |
-| D1, D2, D3, D8, D9 | #1965, #1966, #2011, #1967, #1968 | decision |
+| D1 | #1965 | decided: option (b) |
+| D2, D3, D8, D9 | #1966, #2011, #1967, #1968 | decision |
 
 ---
 
@@ -142,6 +143,10 @@ Each has a recommendation. Decide before the phase that depends on it.
 | D8 | API migration style | Big bang vs per-controller with a response adapter | Per-controller, behind a thin JSON-RPC/REST response adapter in `app/modules/api` | P7-* |
 | D9 | DI wiring style | Keep wildcard conventions + container test, or explicit bindings per port | Explicit bindings for ports (generated list checked by P0-4) | P9-3 |
 
+**Decision log**
+
+- **D1 (2026-10-27): option (b).** Domain exceptions carry a stable code and an untranslated message key; the interface layer translates. Migrate one bounded context at a time, starting with `Tag` (P4-2). Option (a) remains a stopgap for contexts that are too large.
+
 ---
 
 ## 5. Phased backlog
@@ -205,7 +210,7 @@ Phases are ordered so the guardrails come first, then inward dependency fixes, t
 
 - [ ] **P4-1 Move `lib/SP/Mvc` and `lib/SP/Html` into `app/modules/web`.** Namespace `SP\Modules\Web\Mvc\...` and `SP\Modules\Web\Html\...` (decision D3). Move `Core/UI/Theme*` icon usage too. Update `tests/` imports.
   - Acceptance: `lib/SP/Mvc` and `lib/SP/Html` removed; M1 and M12 reduced; `lib/` has no `SP\Mvc`/`SP\Html` references (except as listed in section 1.2).
-- [ ] **P4-2 Translation policy (D1).** Per bounded context, replace `__u()` in Domain code with domain exceptions carrying a stable code and an untranslated message key. Translate in the module boundary (exception-to-response mapper in `app/modules/web` and `app/modules/api`). Do one context per task, starting with `Tag` (pilot, see P6-W1).
+- [x] **P4-2 Translation policy (D1).** Per bounded context, replace `__u()` in Domain code with domain exceptions carrying a stable code and an untranslated message key. Translate in the module boundary (exception-to-response mapper in `app/modules/web` and `app/modules/api`). Do one context per task, starting with `Tag` (pilot, see P6-W1).
   - Acceptance: M5 drops per context. A snapshot test of user-visible messages for each migrated context proves no text changed.
 - [ ] **P4-3 Remove `processException()` from the Domain (30 files).** Domain throws; the module boundary logs and maps. Same per-context approach as P4-2.
 - [x] **P4-4 Remove `Core/Acl/Actions` and `Core/Crypt` file-system dependencies.** See finding 7. Move the file-based implementations into Infrastructure and keep Core as wiring.
@@ -336,6 +341,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-27 | P2-3 remove direct superglobal use (verified: Domain Common, architecture) | metrics unchanged; M1 23, M3 13, M6 147 ports | `Http::checkHttps()` now reads the request URI through the existing `RequestService::getServer('REQUEST_URI')` port method instead of `$_SERVER`. The two remaining `$_SESSION` files are already in `SP\Core\Context`, so no superglobal access remains in `lib/` outside Core context or in `app/modules`. `HttpTest` now asserts the port call and that it is skipped when HTTPS is disabled or already in use. |
 | 2026-10-27 | P3-2 static domain helpers (verified: architecture, core unit, Api/AuthToken unit, PSR2) | metrics unchanged; M8 89 (exception imports only), module static calls on Domain service classes = 0 | `ConfigBackup::configToJson()` and `ConfigUtil` normalisers were already moved behind `ConfigBackupService` and `ConfigInput` in P3-1. This task removed the remaining public statics from the `AuthToken` service (`Api` and the service now call the model; `canUseSecureTokenAction()` is private) and extended the `modules-concrete-services` architecture rule to reject static calls on Domain `Services` classes from `app/modules`, resolving imports and aliases while still allowing exception factories. Added `LayerRulesTest` coverage for direct and aliased calls. |
 | 2026-10-27 | P4-4 remove Core file-system dependencies (verified: core unit, modules, architecture, wiring, PSR2) | M13 4 (+2 composition) → 0 (+2); M6 152 → 154 ports; other metrics unchanged | Added `SP\Domain\File\Ports\PhpFileLoaderInterface` (Infrastructure `PhpFileLoader` wraps `FileSystem::require`) and `SP\Domain\File\Ports\FileHandlerFactoryInterface` (Infrastructure `FileHandlerFactory`). `Theme` and `ThemeIcons` load theme data through the loader, `ThemeContext` joins paths locally, and `AppLock` creates its lock file through the factory so the handler is still constructed lazily. `CoreDefinitions` wires the two adapters. No `SP\Infrastructure\File` import remains in `lib/SP/Core` outside `Core/Definitions`. Added `PhpFileLoaderTest`. |
+| 2026-10-27 | P4-2 Tag translation policy (D1) (verified: Tag unit, core unit, architecture, PSR2) | M5 72 → 71 files / 345 → 341 call sites; `domain-presentation-calls` allowlist 124 → 123 | Decided D1 option (b). Added `SP\Domain\Tag\Exceptions\TagException` with stable codes `NOT_FOUND` (1001) and `DELETE_FAILED` (1002) and untranslated keys. `Tag` no longer calls `__u()`; `JsonMessage`/`ActionResponse`/`JsonRpcResponse` translate at the boundary. The API `TagControllerTest` message assertions plus the new stable-code assertions act as the user-visible snapshot. Core unit 2014 tests green (known warnings/deprecations); architecture 12/12. The API integration test still cannot run locally because of the known `vfs://` mysql fixture issue (P7-1). |
 | 2026-10-27 | P9-1 Core ↔ Infrastructure cleanup (verified: architecture 12/12) | M13 stays 0 (+2 composition); no other metric changes | P4-4 already removed the runtime references, so P9-1 adds the guard: a new `core-infrastructure` rule rejects `SP\Infrastructure\` imports from `lib/SP/Core` outside `Core/Definitions`. `LayerDependencyTest` freezes the rule at 0, and `LayerRulesTest` covers both the violating and the composition-root cases. |
 
 ### Baseline test results (P0-1)

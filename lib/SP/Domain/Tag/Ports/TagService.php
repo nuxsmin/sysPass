@@ -31,7 +31,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Tag\Models\Tag as TagModel;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Tag\Exceptions\TagException;
 use SP\Domain\Database\Dtos\QueryResult;
 
 /**
@@ -51,12 +51,12 @@ interface TagService
     /**
      * @throws ConstraintException
      * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws TagException
      */
     public function getById(int $id): TagModel;
 
     /**
-     * @throws NoSuchItemException
+     * @throws TagException
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -65,7 +65,7 @@ interface TagService
     /**
      * @throws ConstraintException
      * @throws QueryException
-     * @throws NoSuchItemException
+     * @throws TagException
      */
     public function delete(int $id): TagService;
 
