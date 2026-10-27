@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Import\Services;
 
+use SP\Domain\Auth\Providers\Ldap\LdapFactory;
 use ArrayIterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -33,10 +34,10 @@ use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
-use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
-use SP\Domain\Auth\Providers\Ldap\LdapResults;
-use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Auth\Exceptions\LdapException;
+use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Auth\Dtos\LdapResults;
+use SP\Domain\Auth\Enums\LdapTypeEnum;
 use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Services\LdapImport;
 use SP\Domain\User\Models\User;
@@ -508,8 +509,11 @@ class LdapImportTest extends UnitaryTestCase
             $this->context,
             $this->userService,
             $this->userGroupService,
-            $this->ldapActionsService,
-            $this->createMock(LdapConnectionHandler::class)
+            new LdapFactory(
+                $this->eventDispatcherStub,
+                $this->createMock(LdapConnectionHandler::class),
+                $this->ldapActionsService
+            )
         );
     }
 }

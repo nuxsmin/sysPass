@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\User\Services;
 
-use SP\Domain\Crypt\Services\Hash;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
@@ -49,7 +49,8 @@ final class UserPass extends Service implements UserPassService
         ConfigFileService $config,
         EventDispatcherInterface $eventDispatcher,
         Context $context,
-        private readonly UserRepository $userRepository
+        private readonly UserRepository $userRepository,
+        private readonly HashService $hashService
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -64,7 +65,7 @@ final class UserPass extends Service implements UserPassService
         $user = new User(
             [
                 'id' => $id,
-                'pass' => Hash::hashKey($userPass),
+                'pass' => $this->hashService->hashKey($userPass),
                 'isChangePass' => false,
                 'isChangedPass' => true,
                 'isMigrate' => false

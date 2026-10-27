@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -23,16 +24,31 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Auth\Providers\Ldap;
+namespace SP\Domain\Auth\Dtos;
 
-use SP\Domain\Core\Exceptions\SPException;
+use Iterator;
 
 /**
- * Class LdapException
- *
- * @package SP\Domain\Auth\Providers\Ldap
+ * Class LdapResults
  */
-final class LdapException extends SPException
+readonly class LdapResults
 {
+    private int $count;
 
+    public function __construct(private Iterator $iterator)
+    {
+        $this->count = iterator_count($this->iterator);
+    }
+
+    public function getIterator(): Iterator
+    {
+        $this->iterator->rewind();
+
+        return $this->iterator;
+    }
+
+    public function getCount(): int
+    {
+        return $this->count;
+    }
 }

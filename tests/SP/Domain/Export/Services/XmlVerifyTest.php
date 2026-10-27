@@ -29,6 +29,9 @@ use DOMDocument;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Bootstrap\Path;
+use SP\Domain\Common\Providers\XmlIntegrity;
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Adapters\ConfigData;
@@ -58,6 +61,7 @@ class XmlVerifyTest extends UnitaryTestCase
                                           'data_syspass_invalid_hash.xml';
 
     private CryptInterface|MockObject $crypt;
+    private HashService               $hashService;
     private XmlVerify                 $xmlVerify;
 
     public function testCheckXmlHashWithNoHash()
@@ -67,7 +71,7 @@ class XmlVerifyTest extends UnitaryTestCase
         $document = new DOMDocument();
         $document->loadXML($xml);
 
-        $out = XmlVerify::checkXmlHash($document, 'test');
+        $out = XmlIntegrity::checkHash($document, 'test', $this->hashService);
 
         $this->assertFalse($out);
     }
@@ -79,7 +83,7 @@ class XmlVerifyTest extends UnitaryTestCase
         $document = new DOMDocument();
         $document->loadXML($xml);
 
-        $out = XmlVerify::checkXmlHash($document, 'test');
+        $out = XmlIntegrity::checkHash($document, 'test', $this->hashService);
 
         $this->assertFalse($out);
     }
@@ -91,7 +95,7 @@ class XmlVerifyTest extends UnitaryTestCase
         $document = new DOMDocument();
         $document->loadXML($xml);
 
-        $out = XmlVerify::checkXmlHash($document, 'test');
+        $out = XmlIntegrity::checkHash($document, 'test', $this->hashService);
 
         $this->assertFalse($out);
     }
@@ -104,7 +108,7 @@ class XmlVerifyTest extends UnitaryTestCase
         $document = new DOMDocument();
         $document->loadXML($xml);
 
-        $out = XmlVerify::checkXmlHash($document, 'test_key');
+        $out = XmlIntegrity::checkHash($document, 'test_key', $this->hashService);
 
         $this->assertTrue($out);
     }
@@ -118,7 +122,7 @@ class XmlVerifyTest extends UnitaryTestCase
         $document = new DOMDocument();
         $document->loadXML($xml);
 
-        $out = XmlVerify::checkXmlHash($document, 'test_key');
+        $out = XmlIntegrity::checkHash($document, 'test_key', $this->hashService);
 
         $this->assertTrue($out);
     }
@@ -248,12 +252,14 @@ class XmlVerifyTest extends UnitaryTestCase
         parent::setUp();
 
         $this->crypt = $this->createMock(CryptInterface::class);
+        $this->hashService = new HashServiceAdapter();
 
         $this->xmlVerify = new XmlVerify(
             $this->config,
             $this->eventDispatcherStub,
             $this->context,
             $this->crypt,
+            $this->hashService,
             $this->pathsContext[Path::XML_SCHEMA]
         );
     }

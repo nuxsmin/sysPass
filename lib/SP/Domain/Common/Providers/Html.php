@@ -23,7 +23,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Html;
+namespace SP\Domain\Common\Providers;
 
 /**
  * Class Html

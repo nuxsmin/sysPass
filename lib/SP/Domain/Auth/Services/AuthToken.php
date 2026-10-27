@@ -28,7 +28,6 @@ namespace SP\Domain\Auth\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use SP\Domain\Crypt\Services\Hash;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenRepository;
@@ -44,6 +43,7 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
@@ -78,7 +78,8 @@ final class AuthToken extends Service implements AuthTokenService
         Context $context,
         private readonly AuthTokenRepository $authTokenRepository,
         private readonly CryptInterface      $crypt,
-        private readonly MasterKeyStore      $masterKeyStore
+        private readonly MasterKeyStore      $masterKeyStore,
+        private readonly HashService         $hashService
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -156,7 +157,7 @@ final class AuthToken extends Service implements AuthTokenService
         ) {
             $properties = [
                 'vault' => $this->getSecureData($token, $authToken->getHash())->getSerialized(),
-                'hash' => Hash::hashKey($authToken->getHash())
+                'hash' => $this->hashService->hashKey($authToken->getHash())
             ];
         } else {
             $properties = [
@@ -233,7 +234,7 @@ final class AuthToken extends Service implements AuthTokenService
                 $this->authTokenRepository->refreshVaultByUserId(
                     $authToken->getUserId(),
                     $vault,
-                    Hash::hashKey($authToken->getHash())
+                    $this->hashService->hashKey($authToken->getHash())
                 );
 
                 $secureData = $this->injectSecureData($authToken, $token);

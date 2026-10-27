@@ -47,6 +47,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\AuthTokenGenerator;
 use SP\Tests\Generators\ItemSearchDataGenerator;
@@ -611,7 +612,8 @@ class AuthTokenTest extends UnitaryTestCase
             $this->context,
             $this->authTokenRepository,
             $this->crypt,
-            new StatelessMasterKeyStore($this->context)
+            new StatelessMasterKeyStore($this->context),
+            new HashServiceAdapter()
         );
     }
 }

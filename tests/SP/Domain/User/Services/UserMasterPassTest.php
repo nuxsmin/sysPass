@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\User\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use SP\Core\Context\StatelessMasterKeyStore;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -40,7 +41,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Domain\User\Services\UserMasterPass;
-use SP\Domain\User\Services\UserMasterPassStatus;
+use SP\Domain\User\Models\UserMasterPassStatus;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -746,7 +747,8 @@ class UserMasterPassTest extends UnitaryTestCase
             $this->userRepository,
             $this->configService,
             $this->crypt,
-            new StatelessMasterKeyStore($this->context)
+            new StatelessMasterKeyStore($this->context),
+            new HashServiceAdapter()
         );
     }
 }

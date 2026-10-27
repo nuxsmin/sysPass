@@ -28,7 +28,6 @@ declare(strict_types=1);
 namespace SP\Domain\Install\Services;
 
 use Exception;
-use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Models\Config;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -38,6 +37,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerService;
@@ -62,9 +62,9 @@ final class Installer implements InstallerService
     /**
      * sysPass' version and build number
      */
-    public const VERSION      = [4, 0, 0];
-    public const VERSION_TEXT = '4.0';
-    public const BUILD        = 21031301;
+    public const VERSION      = Version::VERSION;
+    public const VERSION_TEXT = Version::VERSION_TEXT;
+    public const BUILD        = Version::BUILD;
 
     private RequestService $request;
     private ?InstallData   $installData = null;
@@ -77,7 +77,8 @@ final class Installer implements InstallerService
         private readonly UserProfileService     $userProfileService,
         private readonly ConfigService          $configService,
         private readonly DatabaseConnectionData $databaseConnectionData,
-        private readonly DatabaseSetupService $databaseSetup
+        private readonly DatabaseSetupService $databaseSetup,
+        private readonly HashService $hashService
     ) {
         $this->request = $request;
     }
@@ -315,7 +316,7 @@ final class Installer implements InstallerService
                 new Config(
                     [
                         'parameter' => 'masterPwd',
-                        'value' => Hash::hashKey($this->installData->getMasterPassword())
+                        'value' => $this->hashService->hashKey($this->installData->getMasterPassword())
                     ]
                 )
             );

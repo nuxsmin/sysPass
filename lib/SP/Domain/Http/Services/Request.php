@@ -29,12 +29,12 @@ namespace SP\Domain\Http\Services;
 use Exception;
 use Klein\DataCollection\DataCollection;
 use Klein\DataCollection\HeaderDataCollection;
-use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Log\LoggerInterface;
 use SP\Domain\Core\Log\NullLogger;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Http\Header;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\Ports\RequestService;
@@ -63,6 +63,7 @@ class Request implements RequestService
     public function __construct(
         private readonly \Klein\Request $request,
         private readonly CryptPKIHandler $cryptPKI,
+        private readonly HashService $hashService,
         private readonly LoggerInterface $logger = new NullLogger()
     ) {
         $this->headers = $this->request->headers();
@@ -325,7 +326,7 @@ class Request implements RequestService
                 $uri = $this->params->get($param, '');
             }
 
-            $result = Hash::checkMessage($uri, $key, $hash);
+            $result = $this->hashService->checkMessage($uri, $key, $hash);
         }
 
         if ($result === false) {

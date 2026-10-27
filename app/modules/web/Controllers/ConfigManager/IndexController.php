@@ -34,7 +34,7 @@ use SP\Core\Language;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Auth\Providers\Ldap\LdapMsAds;
 use SP\Domain\Auth\Providers\Ldap\LdapStd;
-use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Auth\Enums\LdapTypeEnum;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;

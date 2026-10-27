@@ -32,13 +32,13 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Events\Event;
-use SP\Domain\Auth\Providers\Ldap\AttributeCollection;
+use SP\Domain\Auth\Models\AttributeCollection;
 use SP\Domain\Auth\Providers\Ldap\LdapActions;
 use SP\Domain\Auth\Providers\Ldap\LdapCodeEnum;
-use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
-use SP\Domain\Auth\Providers\Ldap\LdapResults;
-use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Auth\Exceptions\LdapException;
+use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Auth\Dtos\LdapResults;
+use SP\Domain\Auth\Enums\LdapTypeEnum;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Tests\UnitaryTestCase;
 

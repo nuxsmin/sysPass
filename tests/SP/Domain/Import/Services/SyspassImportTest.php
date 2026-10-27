@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Import\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -707,6 +708,7 @@ class SyspassImportTest extends UnitaryTestCase
             $this->context,
             $importHelper,
             $this->crypt,
+            new HashServiceAdapter(),
             $document
         );
 
@@ -777,6 +779,7 @@ class SyspassImportTest extends UnitaryTestCase
             $this->context,
             $importHelper,
             $this->crypt,
+            new HashServiceAdapter(),
             $document
         );
 
@@ -881,6 +884,7 @@ class SyspassImportTest extends UnitaryTestCase
             $this->context,
             $importHelper,
             $this->crypt,
+            new HashServiceAdapter(),
             $document
         );
     }

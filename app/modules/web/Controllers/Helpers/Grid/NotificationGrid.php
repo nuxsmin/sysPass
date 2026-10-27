@@ -29,7 +29,7 @@ use SP\Core\Acl\Acl;
 use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Html\Html;
+use SP\Domain\Common\Providers\Html;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridActionInterface;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridActionSearch;

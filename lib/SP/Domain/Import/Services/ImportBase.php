@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Import\Services;
 
-use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
@@ -39,6 +38,7 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
@@ -78,7 +78,8 @@ abstract class ImportBase extends Service implements ImportService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         ImportHelperInterface $importHelper,
-        protected readonly CryptInterface $crypt
+        protected readonly CryptInterface $crypt,
+        protected readonly HashService $hashService
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
@@ -174,7 +175,7 @@ abstract class ImportBase extends Service implements ImportService
     {
         if (!empty($importParams->getMasterPassword())) {
             try {
-                return Hash::checkHashKey(
+                return $this->hashService->checkHashKey(
                     $importParams->getMasterPassword(),
                     $this->configService->getByParam('masterPwd')
                 );

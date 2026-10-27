@@ -32,15 +32,11 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Core\Log\LoggerInterface;
-use SP\Domain\Core\Log\NullLogger;
-use SP\Domain\Auth\Ports\LdapActionsService;
-use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Ports\LdapService;
-use SP\Domain\Auth\Providers\Ldap\LdapBase;
-use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
-use SP\Domain\Auth\Providers\Ldap\LdapResults;
+use SP\Domain\Auth\Ports\LdapServiceFactory;
+use SP\Domain\Auth\Exceptions\LdapException;
+use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Auth\Dtos\LdapResults;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Dtos\LdapImportResultsDto;
@@ -65,9 +61,7 @@ final class LdapImport extends Service implements LdapImportService
         Context $context,
         private readonly UserService        $userService,
         private readonly UserGroupService   $userGroupService,
-        private readonly LdapActionsService $ldapActionsService,
-        private readonly LdapConnectionHandler $ldapConnection,
-        private readonly LoggerInterface $logger = new NullLogger()
+        private readonly LdapServiceFactory $ldapServiceFactory
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -152,13 +146,7 @@ final class LdapImport extends Service implements LdapImportService
      */
     private function getLdap(LdapParams $ldapParams): LdapService
     {
-        return LdapBase::factory(
-            $this->eventDispatcher,
-            $this->ldapConnection,
-            $this->ldapActionsService,
-            $ldapParams,
-            $this->logger,
-        );
+        return $this->ldapServiceFactory->create($ldapParams);
     }
 
     private function flattenEntry(array|string|null $entry): ?string

@@ -72,6 +72,7 @@ use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Ports\LdapService;
+use SP\Domain\Auth\Ports\LdapServiceFactory;
 use SP\Domain\Auth\Providers\AclHandler;
 use SP\Domain\Auth\Providers\AuthProvider;
 use SP\Domain\Auth\Providers\AuthProviderService;
@@ -84,7 +85,8 @@ use SP\Domain\Auth\Providers\Ldap\LdapActions;
 use SP\Domain\Auth\Providers\Ldap\LdapAuth;
 use SP\Domain\Auth\Providers\Ldap\LdapBase;
 use SP\Domain\Auth\Providers\Ldap\LdapConnection;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Auth\Providers\Ldap\LdapFactory;
+use SP\Domain\Auth\Dtos\LdapParams;
 use SP\Domain\Common\Ports\EventEmitter;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -290,6 +292,7 @@ final class CoreDefinitions
             BrowserAuthService::class => autowire(BrowserAuth::class),
             LdapParams::class => factory([LdapParams::class, 'fromConfig']),
             LdapService::class => factory([LdapBase::class, 'factory']),
+            LdapServiceFactory::class => autowire(LdapFactory::class),
             LdapConnectionHandler::class => autowire(LdapConnection::class),
             LdapActionsService::class => autowire(LdapActions::class),
             LdapAuthService::class => autowire(LdapAuth::class),

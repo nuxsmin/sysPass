@@ -41,7 +41,7 @@ use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Ports\UserMasterPassService;
-use SP\Domain\User\Services\UserMasterPassStatus;
+use SP\Domain\User\Models\UserMasterPassStatus;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__u;

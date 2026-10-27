@@ -30,6 +30,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Log\LoggerInterface;
 use SP\Domain\Core\Log\NullLogger;
@@ -66,6 +67,7 @@ final class ImportStrategy extends Service implements ImportStrategyService
         private readonly ImportHelperInterface $importHelper,
         private readonly CryptInterface        $crypt,
         private readonly XmlFileService        $xmlFile,
+        private readonly HashService           $hashService,
         private readonly LoggerInterface       $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
@@ -95,6 +97,7 @@ final class ImportStrategy extends Service implements ImportStrategyService
                 $this->context,
                 $this->importHelper,
                 $this->crypt,
+                $this->hashService,
                 $fileHandler
             ),
             'text/xml', 'application/xml' => $this->xmlFactory($fileHandler)
@@ -148,6 +151,7 @@ final class ImportStrategy extends Service implements ImportStrategyService
                 $this->context,
                 $this->importHelper,
                 $this->crypt,
+                $this->hashService,
                 $xmlFile->getDocument()
             ),
             XmlFormat::Keepass =>
@@ -157,6 +161,7 @@ final class ImportStrategy extends Service implements ImportStrategyService
                 $this->context,
                 $this->importHelper,
                 $this->crypt,
+                $this->hashService,
                 $xmlFile->getDocument()
             )
         };

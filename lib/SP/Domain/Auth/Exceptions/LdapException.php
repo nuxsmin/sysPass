@@ -23,16 +23,16 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Auth\Providers\Ldap;
+namespace SP\Domain\Auth\Exceptions;
 
-use SP\Core\DataCollection;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
- * Class AttributeCollection
+ * Class LdapException
  *
  * @package SP\Domain\Auth\Providers\Ldap
  */
-final class AttributeCollection extends DataCollection
+final class LdapException extends SPException
 {
 
 }

@@ -32,7 +32,6 @@ use DOMElement;
 use DOMNodeList;
 use DOMXPath;
 use Exception;
-use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;
@@ -40,8 +39,8 @@ use SP\Domain\Account\Models\Account;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Providers\Version;
+use SP\Domain\Common\Providers\XmlIntegrity;
 use SP\Domain\Core\Exceptions\CryptException;
-use SP\Domain\Export\Services\XmlVerify;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Domain\Tag\Models\Tag;
@@ -124,7 +123,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
             ->item(0)
             ?->getAttribute('hash');
 
-        if (!empty($hash) && !Hash::checkHashKey($importParams->getPassword(), $hash)) {
+        if (!empty($hash) && !$this->hashService->checkHashKey($importParams->getPassword(), $hash)) {
             throw ImportException::error(__u('Wrong encryption password'));
         }
 
@@ -185,7 +184,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
     {
         $key = $importParams->getPassword() ?? sha1($this->configData->getPasswordSalt());
 
-        if (!XmlVerify::checkXmlHash($this->document, $key)) {
+        if (!XmlIntegrity::checkHash($this->document, $key, $this->hashService)) {
             $this->eventDispatcher->notify(
                 'run.import.syspass.process.verify',
                 new Event(

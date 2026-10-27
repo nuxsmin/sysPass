@@ -32,7 +32,6 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\Http\Providers\Uri;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 
@@ -89,6 +88,6 @@ abstract class LoginBase extends Service
 
     protected function getUriForRoute(string $route): string
     {
-        return (new Uri('index.php'))->addParam('r', $route)->getUri();
+        return sprintf('index.php?r=%s', urlencode($route));
     }
 }

@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Grid;
 use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Adapters\Address;
+use SP\Domain\Common\Providers\Address;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridActionType;

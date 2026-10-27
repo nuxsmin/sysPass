@@ -23,16 +23,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\User\Services;
+namespace SP\Domain\Auth\Enums;
 
 /**
- * Enum UserMasterPassStatus
+ * Class LdapTypeEnum
  */
-enum UserMasterPassStatus
+enum LdapTypeEnum: int
 {
-    case Invalid;
-    case Ok;
-    case NotSet;
-    case Changed;
-    case CheckOld;
+    case  STD   = 1;
+    case  ADS   = 2;
+    case  AZURE = 3;
 }

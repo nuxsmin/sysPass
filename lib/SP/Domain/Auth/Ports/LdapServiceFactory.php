@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -23,14 +24,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Auth\Providers\Ldap;
+namespace SP\Domain\Auth\Ports;
+
+use SP\Domain\Auth\Dtos\LdapParams;
 
 /**
- * Class LdapTypeEnum
+ * Builds an LDAP service for the given connection parameters.
  */
-enum LdapTypeEnum: int
+interface LdapServiceFactory
 {
-    case  STD   = 1;
-    case  ADS   = 2;
-    case  AZURE = 3;
+    public function create(LdapParams $ldapParams): LdapService;
 }

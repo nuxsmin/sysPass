@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Auth\Providers\Database;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Crypt\Services\Hash;
@@ -256,7 +257,7 @@ class DatabaseAuthTest extends UnitaryTestCase
         $this->userService = $this->createMock(UserService::class);
         $this->userPassService = $this->createMock(UserPassService::class);
 
-        $this->databaseAuth = new DatabaseAuth($this->userService, $this->userPassService);
+        $this->databaseAuth = new DatabaseAuth($this->userService, $this->userPassService, new HashServiceAdapter());
     }
 
 }

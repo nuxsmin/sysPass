@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Import\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -365,6 +366,7 @@ class CsvImportTest extends UnitaryTestCase
             $this->context,
             $importHelper,
             $crypt,
+            new HashServiceAdapter(),
             $this->fileHandler
         );
     }

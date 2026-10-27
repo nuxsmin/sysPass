@@ -32,6 +32,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Import\Ports\ImportHelperInterface;
 
@@ -53,9 +54,10 @@ abstract class XmlImportBase extends ImportBase
         Context $context,
         ImportHelperInterface $importHelper,
         CryptInterface $crypt,
+        HashService $hashService,
         protected readonly DOMDocument $document
     ) {
-        parent::__construct($config, $eventDispatcher, $context, $importHelper, $crypt);
+        parent::__construct($config, $eventDispatcher, $context, $importHelper, $crypt, $hashService);
         $this->configData = $config->getConfigData();
     }
 

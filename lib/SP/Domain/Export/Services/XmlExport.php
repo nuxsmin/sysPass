@@ -31,8 +31,8 @@ use DOMElement;
 use DOMException;
 use DOMNode;
 use Exception;
-use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Providers\Version;
+use SP\Domain\Common\Providers\XmlIntegrity;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -40,6 +40,7 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\PhpExtensionCheckerService;
@@ -61,8 +62,6 @@ use function SP\__u;
  */
 final class XmlExport extends Service implements XmlExportService
 {
-    use XmlTrait;
-
     private ConfigDataInterface $configData;
     private DOMDocument $document;
 
@@ -78,7 +77,8 @@ final class XmlExport extends Service implements XmlExportService
         private readonly XmlAccountExportService    $xmlAccountExportService,
         private readonly XmlCategoryExportService   $xmlCategoryExportService,
         private readonly XmlTagExportService        $xmlTagExportService,
-        private readonly CryptInterface             $crypt
+        private readonly CryptInterface             $crypt,
+        private readonly HashService                $hashService
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
@@ -255,7 +255,7 @@ final class XmlExport extends Service implements XmlExportService
 
         if ($encryptedNode->length === 0) {
             $node = $this->document->createElement('Encrypted');
-            $node->setAttribute('hash', Hash::hashKey($password));
+            $node->setAttribute('hash', $this->hashService->hashKey($password));
 
             return $node;
         }
@@ -269,11 +269,11 @@ final class XmlExport extends Service implements XmlExportService
     private function appendHash(?string $password = null): void
     {
         try {
-            $hash = self::generateHashFromNodes($this->document);
+            $hash = XmlIntegrity::generateHash($this->document);
             $key = $password ?: sha1($this->configData->getPasswordSalt());
 
             $hashNode = $this->document->createElement('Hash', $hash);
-            $hashNode->setAttribute('sign', Hash::signMessage($hash, $key));
+            $hashNode->setAttribute('sign', $this->hashService->signMessage($hash, $key));
 
             $this->document
                 ->documentElement

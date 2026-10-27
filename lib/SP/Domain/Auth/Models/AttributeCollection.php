@@ -23,25 +23,16 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Export\Services;
+namespace SP\Domain\Auth\Models;
 
-use DOMDocument;
-use DOMNode;
-use DOMXPath;
+use SP\Core\DataCollection;
 
 /**
- * Trait XmlTrait
+ * Class AttributeCollection
+ *
+ * @package SP\Domain\Auth\Providers\Ldap
  */
-trait XmlTrait
+final class AttributeCollection extends DataCollection
 {
-    private static function generateHashFromNodes(DOMDocument $document): string
-    {
-        return sha1(
-            array_reduce(
-                iterator_to_array((new DOMXPath($document))->query('/Root/*[not(self::Meta)]')->getIterator()),
-                static fn(string $carry, DOMNode $node) => $carry . $document->saveXML($node),
-                ''
-            )
-        );
-    }
+
 }

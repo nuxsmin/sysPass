@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\User\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use JsonException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -40,7 +41,7 @@ use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Domain\User\Services\User;
-use SP\Domain\User\Services\UserMasterPassStatus;
+use SP\Domain\User\Models\UserMasterPassStatus;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Database\Dtos\QueryResult;
@@ -680,7 +681,8 @@ class UserTest extends UnitaryTestCase
             $this->eventDispatcherStub,
             $this->context,
             $this->userRepository,
-            $this->userMasterPassService
+            $this->userMasterPassService,
+            new HashServiceAdapter()
         );
     }
 }

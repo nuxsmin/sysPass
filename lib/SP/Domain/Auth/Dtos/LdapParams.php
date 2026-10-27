@@ -24,8 +24,9 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Auth\Providers\Ldap;
+namespace SP\Domain\Auth\Dtos;
 
+use SP\Domain\Auth\Enums\LdapTypeEnum;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Http\Ports\RequestService;

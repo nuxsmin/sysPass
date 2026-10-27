@@ -37,7 +37,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Domain\Html\Html;
+use SP\Domain\Common\Providers\Html;
 use SP\Domain\Notification\Dtos\MailParams;
 use SP\Domain\Notification\Ports\MailerInterface;
 use SP\Domain\Notification\Ports\MailMessageFormatterInterface;

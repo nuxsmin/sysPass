@@ -25,6 +25,9 @@ declare(strict_types=1);
  */
 
 namespace SP\Domain\Auth\Providers\Ldap;
+use SP\Domain\Auth\Enums\LdapTypeEnum;
+use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Auth\Exceptions\LdapException;
 
 use SP\Core\Events\EventDispatcher;
 use SP\Domain\Auth\Ports\LdapActionsService;

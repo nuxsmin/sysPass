@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Install\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -147,7 +148,8 @@ class InstallerTest extends UnitaryTestCase
             $this->userProfileService,
             $this->configService,
             new DatabaseConnectionData(),
-            $this->databaseSetup
+            $this->databaseSetup,
+            new HashServiceAdapter()
         );
     }
 

@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Auth\Dtos\LdapParams;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;

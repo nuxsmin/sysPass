@@ -27,7 +27,6 @@ declare(strict_types=1);
 namespace SP\Domain\User\Services;
 
 use Exception;
-use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
@@ -36,10 +35,12 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\UserMasterPassStatus;
 use SP\Domain\User\Dtos\UserMasterPassDto;
 use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Ports\UserRepository;
@@ -63,7 +64,8 @@ final class UserMasterPass extends Service implements UserMasterPassService
         private readonly UserRepository $userRepository,
         private readonly ConfigService  $configService,
         private readonly CryptInterface $crypt,
-        private readonly MasterKeyStore $masterKeyStore
+        private readonly MasterKeyStore $masterKeyStore,
+        private readonly HashService $hashService
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -117,7 +119,7 @@ final class UserMasterPass extends Service implements UserMasterPassService
             $userMasterPass = $this->crypt->decrypt($userDataDto->mPass, $userDataDto->mKey, $key);
 
             // Comprobamos el hash de la clave del usuario con la guardada
-            if (Hash::checkHashKey($userMasterPass, $systemMasterPassHash)) {
+            if ($this->hashService->checkHashKey($userMasterPass, $systemMasterPassHash)) {
                 $this->masterKeyStore->set($userMasterPass);
 
                 return new UserMasterPassDto(
@@ -157,12 +159,12 @@ final class UserMasterPass extends Service implements UserMasterPassService
             $systemMasterPassHash = $this->configService->getByParam(self::PARAM_MASTER_PWD);
 
             if (null === $systemMasterPassHash) {
-                $systemMasterPassHash = Hash::hashKey($userMasterPass);
+                $systemMasterPassHash = $this->hashService->hashKey($userMasterPass);
 
                 $this->configService->save(self::PARAM_MASTER_PWD, $systemMasterPassHash);
             }
 
-            if (Hash::checkHashKey($userMasterPass, $systemMasterPassHash)) {
+            if ($this->hashService->checkHashKey($userMasterPass, $systemMasterPassHash)) {
                 $response = $this->create(
                     $userMasterPass,
                     $userLoginDto->getLoginUser(),

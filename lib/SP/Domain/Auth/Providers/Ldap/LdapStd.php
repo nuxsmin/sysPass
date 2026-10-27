@@ -26,6 +26,7 @@ declare(strict_types=1);
 /** @noinspection PhpComposerExtensionStubsInspection */
 
 namespace SP\Domain\Auth\Providers\Ldap;
+use SP\Domain\Auth\Exceptions\LdapException;
 
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;

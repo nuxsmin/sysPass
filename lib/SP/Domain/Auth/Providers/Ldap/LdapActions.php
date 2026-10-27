@@ -25,6 +25,9 @@ declare(strict_types=1);
  */
 
 namespace SP\Domain\Auth\Providers\Ldap;
+use SP\Domain\Auth\Dtos\LdapResults;
+use SP\Domain\Auth\Models\AttributeCollection;
+use SP\Domain\Auth\Exceptions\LdapException;
 
 use Iterator;
 use Laminas\Ldap\Exception\LdapException as LaminasLdapException;

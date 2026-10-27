@@ -26,8 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Domain\User\Services;
 
+use SP\Domain\Crypt\Ports\HashService;
 use JsonException;
-use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -59,7 +59,8 @@ final class User extends Service implements UserService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly UserRepository        $userRepository,
-        private readonly UserMasterPassService $userMasterPassService
+        private readonly UserMasterPassService $userMasterPassService,
+        private readonly HashService $hashService
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -192,7 +193,7 @@ final class User extends Service implements UserService
     public function create(UserModel $user): int
     {
         if (!empty($user->getPass())) {
-            $user = $user->mutate(['pass' => Hash::hashKey($user->getPass())]);
+            $user = $user->mutate(['pass' => $this->hashService->hashKey($user->getPass())]);
         }
 
         return $this->userRepository
@@ -268,7 +269,7 @@ final class User extends Service implements UserService
         $user = new UserModel(
             [
                 'id' => $userId,
-                'pass' => Hash::hashKey($pass),
+                'pass' => $this->hashService->hashKey($pass),
                 'isChangePass' => false,
                 'isChangedPass' => true
             ]
@@ -303,7 +304,7 @@ final class User extends Service implements UserService
             'name' => $userLoginRequest->getName(),
             'email' => $userLoginRequest->getEmail(),
             'isLdap' => $userLoginRequest->getisLdap(),
-            'pass' => Hash::hashKey($userLoginRequest->getPassword())
+            'pass' => $this->hashService->hashKey($userLoginRequest->getPassword())
 
         ];
 

@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Api\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use SP\Core\Context\StatelessMasterKeyStore;
 use Exception;
 use Faker\Factory;
@@ -214,7 +215,8 @@ class ApiTest extends UnitaryTestCase
             $this->authTokenService,
             $this->userService,
             $this->userProfileService,
-            new StatelessMasterKeyStore($this->context)
+            new StatelessMasterKeyStore($this->context),
+            new HashServiceAdapter()
         );
 
         $apiService->setHelpClass(AccountHelp::class);
@@ -324,7 +326,8 @@ class ApiTest extends UnitaryTestCase
             $this->authTokenService,
             $this->userService,
             $this->userProfileService,
-            new StatelessMasterKeyStore($this->context)
+            new StatelessMasterKeyStore($this->context),
+            new HashServiceAdapter()
         );
     }
 

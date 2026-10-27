@@ -27,7 +27,6 @@ namespace SP\Domain\Export\Ports;
 
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Export\Services\VerifyResult;
-use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Core\Exceptions\FileException;
 
 /**
@@ -41,7 +40,6 @@ interface XmlVerifyService
 {
     /**
      * @throws FileException
-     * @throws ImportException
      * @throws ServiceException
      */
     public function verify(string $xmlFile, ?string $password = null): VerifyResult;

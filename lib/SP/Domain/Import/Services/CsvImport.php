@@ -36,6 +36,7 @@ use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportHelperInterface;
@@ -59,9 +60,10 @@ final class CsvImport extends ImportBase implements ItemsImportService
         Context $context,
         ImportHelperInterface $importHelper,
         CryptInterface                        $crypt,
+        HashService                           $hashService,
         private readonly FileHandlerInterface $fileHandler
     ) {
-        parent::__construct($config, $eventDispatcher, $context, $importHelper, $crypt);
+        parent::__construct($config, $eventDispatcher, $context, $importHelper, $crypt, $hashService);
     }
 
     /**

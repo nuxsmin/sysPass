@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers\ConfigLdap;
 
 use SP\Core\Application;
 use SP\Domain\Auth\Ports\LdapCheckService;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Auth\Dtos\LdapParams;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;

@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Core\Messages;
 
 use SP\Domain\Core\Messages\FormatterInterface;
-use SP\Domain\Html\Html;
+use SP\Domain\Common\Providers\Html;
 
 use function SP\__;
 

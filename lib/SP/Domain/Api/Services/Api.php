@@ -29,7 +29,6 @@ namespace SP\Domain\Api\Services;
 use Exception;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
-use SP\Domain\Crypt\Services\Hash;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Ports\ApiService;
@@ -56,6 +55,7 @@ use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Crypt\Ports\MasterKeyStore;
 
 use function SP\__u;
@@ -84,6 +84,7 @@ final class Api extends Service implements ApiService
         private readonly UserService       $userService,
         private readonly UserProfileService $userProfileService,
         private readonly MasterKeyStore    $masterKeyStore,
+        private readonly HashService       $hashService,
         private readonly LoggerInterface   $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
@@ -256,7 +257,7 @@ final class Api extends Service implements ApiService
         try {
             $tokenPass = $this->getParam('tokenPass', true);
 
-            Hash::checkHashKey($tokenPass, $this->authToken->getHash()) || $this->accessDenied();
+            $this->hashService->checkHashKey($tokenPass, $this->authToken->getHash()) || $this->accessDenied();
 
             /** @var VaultInterface $vault */
             $vault = unserialize($this->authToken->getVault(), ['allowed_classes' => [Vault::class, Crypt::class]]);

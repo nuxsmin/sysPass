@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Export\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
@@ -534,7 +535,8 @@ class XmlExportTest extends UnitaryTestCase
             $this->xmlAccountExportService,
             $this->xmlCategoryExportService,
             $this->xmlTagExportService,
-            $this->crypt
+            $this->crypt,
+            new HashServiceAdapter()
         );
     }
 }

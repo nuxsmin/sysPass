@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\User\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Crypt\Services\Hash;
@@ -65,7 +66,7 @@ class UserPassTest extends UnitaryTestCase
                        )
                        ->willReturn(1);
 
-        $usePass = new UserPass($this->config, $this->eventDispatcherStub, $this->context, $userRepository);
+        $usePass = new UserPass($this->config, $this->eventDispatcherStub, $this->context, $userRepository, new HashServiceAdapter());
         $usePass->migrateUserPassById(100, 'a_password');
     }
 
@@ -82,7 +83,7 @@ class UserPassTest extends UnitaryTestCase
                        ->method('updatePassById')
                        ->willReturn(0);
 
-        $usePass = new UserPass($this->config, $this->eventDispatcherStub, $this->context, $userRepository);
+        $usePass = new UserPass($this->config, $this->eventDispatcherStub, $this->context, $userRepository, new HashServiceAdapter());
 
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('User does not exist');
