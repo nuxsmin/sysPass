@@ -32,9 +32,11 @@ use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchService;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Api\Ports\ApiService;
+use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Modules\Api\Controllers\ControllerBase;
 
 /**
@@ -49,9 +51,18 @@ final class SearchController extends ControllerBase
         Klein        $router,
         ApiService   $apiService,
         AclInterface $acl,
+        JsonRpcResponseFormatter $jsonRpcResponseFormatter,
+        JsonResponseFactory $jsonResponseFactory,
         AccountSearchService $accountSearchService
     ) {
-        parent::__construct($application, $router, $apiService, $acl);
+        parent::__construct(
+            $application,
+            $router,
+            $apiService,
+            $acl,
+            $jsonRpcResponseFormatter,
+            $jsonResponseFactory
+        );
 
         $this->accountSearchService = $accountSearchService;
     }

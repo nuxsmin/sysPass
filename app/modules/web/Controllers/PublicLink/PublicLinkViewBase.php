@@ -31,7 +31,6 @@ use SP\Core\Bootstrap\BootstrapWeb;
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
-use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -92,7 +91,7 @@ abstract class PublicLinkViewBase extends ControllerBase
         if ($this->view->isView === true) {
             $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapWeb::$WEBURI).BootstrapWeb::$SUBURI;
 
-            $this->view->assign('publicLinkURL', PublicLink::getLinkForHash($baseUrl, $publicLink->getHash()));
+            $this->view->assign('publicLinkURL', $this->publicLinkService->buildLinkUrl($baseUrl, $publicLink->getHash()));
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

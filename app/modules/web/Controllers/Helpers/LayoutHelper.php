@@ -37,7 +37,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Providers\Uri;
-use SP\Domain\Install\Services\Installer;
+use SP\Domain\Install\Ports\InstallerService;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\File\FileSystem;
 use SP\Mvc\View\TemplateInterface;
@@ -122,7 +122,7 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('app_desc', AppInfoInterface::APP_DESC);
         $this->view->assign('app_website_url', AppInfoInterface::APP_WEBSITE_URL);
         $this->view->assign('app_blog_url', AppInfoInterface::APP_BLOG_URL);
-        $this->view->assign('app_version', Installer::VERSION_TEXT);
+        $this->view->assign('app_version', InstallerService::VERSION_TEXT);
         $this->view->assign('logo_icon', $baseUrl . '/public/images/logo_icon.png');
         $this->view->assign('logo_no_bg_color', $baseUrl . '/public/images/logo_full_nobg_outline_color.png');
         $this->view->assign('logo_no_bg', $baseUrl . '/public/images/logo_full_nobg_outline.png');

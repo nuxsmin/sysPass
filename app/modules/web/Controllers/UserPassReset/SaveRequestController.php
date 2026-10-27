@@ -31,7 +31,6 @@ use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\User\Services\UserPassRecover;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 /**
@@ -82,7 +81,7 @@ final class SaveRequestController extends UserPassResetSaveBase
             $this->mailService->send(
                 __('Password Change'),
                 $email,
-                UserPassRecover::getMailMessage($hash)
+                $this->userPassRecoverService->getMailMessage($hash, $this->uriContext->getWebUri())
             );
 
             return $this->returnJsonResponse(

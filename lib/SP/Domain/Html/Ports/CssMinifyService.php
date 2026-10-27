@@ -1,10 +1,12 @@
 <?php
-/*
+
+declare(strict_types=1);
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,37 +24,11 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers\Task;
-
-
-use SP\Domain\Task\Services\TaskFactory;
-use SP\Domain\Core\Exceptions\FileException;
+namespace SP\Domain\Html\Ports;
 
 /**
- * Class TestTaskController
+ * CSS minifier port.
  */
-final class TestTaskController
+interface CssMinifyService extends MinifyService
 {
-    /**
-     * @param  string  $taskId
-     *
-     * @throws FileException
-     */
-    public function testTaskAction(string $taskId): void
-    {
-        $task = TaskFactory::register($taskId, $taskId);
-
-        echo $task->getTaskId();
-
-        $count = 0;
-
-        while ($count < 60) {
-            TaskFactory::update($task, TaskFactory::createMessage($task->getTaskId(), "Test Task $count"));
-
-            sleep(1);
-            $count++;
-        }
-
-        TaskFactory::end($task);
-    }
 }

@@ -36,7 +36,6 @@ use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserPassRecoverService;
 use SP\Domain\User\Ports\UserService;
-use SP\Domain\User\Services\UserPassRecover;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserForm;
 use SP\Mvc\Controller\WebControllerHelper;
@@ -89,7 +88,7 @@ abstract class UserSaveBase extends ControllerBase
             $this->mailService->send(
                 __('Password Change'),
                 $userData->getEmail(),
-                UserPassRecover::getMailMessage($hash)
+                $this->userPassRecoverService->getMailMessage($hash, $this->uriContext->getWebUri())
             );
         }
     }

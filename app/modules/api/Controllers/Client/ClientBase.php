@@ -28,10 +28,12 @@ namespace SP\Modules\Api\Controllers\Client;
 use Klein\Klein;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
+use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
 use SP\Domain\Client\Ports\ClientAdapter;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ClientHelp;
 
@@ -51,10 +53,19 @@ abstract class ClientBase extends ControllerBase
         Klein                  $router,
         ApiService    $apiService,
         AclInterface  $acl,
+        JsonRpcResponseFormatter $jsonRpcResponseFormatter,
+        JsonResponseFactory $jsonResponseFactory,
         ClientService $clientService,
         ClientAdapter $clientAdapter
     ) {
-        parent::__construct($application, $router, $apiService, $acl);
+        parent::__construct(
+            $application,
+            $router,
+            $apiService,
+            $acl,
+            $jsonRpcResponseFormatter,
+            $jsonResponseFactory
+        );
 
         $this->clientService = $clientService;
         $this->clientAdapter = $clientAdapter;

@@ -30,7 +30,6 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Http\Services\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
 use stdClass;
@@ -79,6 +78,6 @@ final class AccountsUserController extends SimpleControllerBase
         $jsonResponse->setStatus(0);
         $jsonResponse->setData($outItems);
 
-        JsonResponse::factory($this->router->response())->send($jsonResponse);
+        $this->jsonResponseFactory->create($this->router->response())->send($jsonResponse);
     }
 }

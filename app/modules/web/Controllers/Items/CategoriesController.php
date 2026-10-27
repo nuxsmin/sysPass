@@ -29,7 +29,6 @@ use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Services\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -60,7 +59,7 @@ final class CategoriesController extends SimpleControllerBase
      */
     public function categoriesAction(): void
     {
-        JsonResponse::factory($this->router->response())
+        $this->jsonResponseFactory->create($this->router->response())
                     ->sendRaw(
                         SelectItemAdapter::factory($this->categoryService->getAll())->getJsonItemsFromModel()
                     );

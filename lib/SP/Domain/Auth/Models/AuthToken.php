@@ -27,6 +27,7 @@ namespace SP\Domain\Auth\Models;
 
 use SP\Domain\Common\Models\Model;
 use SP\Domain\Common\Models\SerializedModel;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class AuthToken
@@ -34,6 +35,12 @@ use SP\Domain\Common\Models\SerializedModel;
 class AuthToken extends Model
 {
     use SerializedModel;
+
+    private const SECURED_ACTIONS = [
+        AclActionsInterface::ACCOUNT_VIEW_PASS,
+        AclActionsInterface::ACCOUNT_EDIT_PASS,
+        AclActionsInterface::ACCOUNT_CREATE,
+    ];
 
     protected ?int    $id        = null;
     protected ?int    $userId    = null;
@@ -43,6 +50,11 @@ class AuthToken extends Model
     protected ?int    $actionId  = null;
     protected ?string $hash      = null;
     protected ?string $vault     = null;
+
+    public static function isSecuredAction(int $action): bool
+    {
+        return in_array($action, self::SECURED_ACTIONS, true);
+    }
 
     public function getId(): ?int
     {

@@ -32,6 +32,8 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Http\Ports\RequestService;
 
 /**
@@ -47,7 +49,9 @@ final readonly class SimpleControllerHelper
         private RequestService      $request,
         private PhpExtensionChecker $extensionChecker,
         private UriContextInterface $uriContext,
-        private RouteContextData    $routeContextData
+        private RouteContextData    $routeContextData,
+        private HashService         $hashService,
+        private JsonResponseFactory $jsonResponseFactory
     ) {
     }
 
@@ -84,5 +88,15 @@ final readonly class SimpleControllerHelper
     public function getRouteContextData(): RouteContextData
     {
         return $this->routeContextData;
+    }
+
+    public function getHashService(): HashService
+    {
+        return $this->hashService;
+    }
+
+    public function getJsonResponseFactory(): JsonResponseFactory
+    {
+        return $this->jsonResponseFactory;
     }
 }

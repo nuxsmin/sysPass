@@ -28,12 +28,13 @@ use Exception;
 use Klein\Klein;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Http\Services\JsonResponse;
+use SP\Domain\Http\Ports\JsonResponseFactory;
 
 /**
  * Trait JsonTrait
  *
- * @property Klein $router
+ * @property Klein               $router
+ * @property JsonResponseFactory $jsonResponseFactory
  */
 trait JsonTrait
 {
@@ -57,7 +58,7 @@ trait JsonTrait
             $jsonResponse->setMessages((array)$messages);
         }
 
-        return JsonResponse::factory($this->router->response())->send($jsonResponse);
+        return $this->jsonResponseFactory->create($this->router->response())->send($jsonResponse);
     }
 
     /**
@@ -89,7 +90,7 @@ trait JsonTrait
             $jsonResponse->setMessages($messages);
         }
 
-        return JsonResponse::factory($this->router->response())->send($jsonResponse);
+        return $this->jsonResponseFactory->create($this->router->response())->send($jsonResponse);
     }
 
     /**
@@ -111,6 +112,6 @@ trait JsonTrait
             $jsonResponse->setMessages([$exception->getHint()]);
         }
 
-        return JsonResponse::factory($this->router->response())->send($jsonResponse);
+        return $this->jsonResponseFactory->create($this->router->response())->send($jsonResponse);
     }
 }

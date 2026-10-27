@@ -71,7 +71,7 @@ final class SaveEditController extends ItemPresetSaveBase
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Value updated'))
-                        ->addDetail(__u('Type'), $itemData->getItemPreset()->getType())
+                        ->addDetail(__u('Type'), $itemData->getType())
                         ->addDetail(__u('ID'), $id)
                 )
             );

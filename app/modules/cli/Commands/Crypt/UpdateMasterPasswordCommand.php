@@ -28,14 +28,11 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Domain\Account\Services\Account;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
-use SP\Domain\Config\Services\Config;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Crypt\Ports\MasterPassService;
-use SP\Domain\Crypt\Services\MasterPass;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Cli\Commands\CommandBase;
 use SP\Modules\Cli\Commands\Validators;
@@ -69,8 +66,8 @@ final class UpdateMasterPasswordCommand extends CommandBase
      */
     protected static          $defaultName = 'sp:crypt:update-master-password';
     private MasterPassService $masterPassService;
-    private Config            $configService;
-    private Account $accountService;
+    private ConfigService $configService;
+    private AccountService $accountService;
 
     public function __construct(
         MasterPassService $masterPassService,
@@ -141,7 +138,7 @@ final class UpdateMasterPasswordCommand extends CommandBase
             $request = new UpdateMasterPassRequest(
                 $currentMasterPassword,
                 $masterPassword,
-                $this->configService->getByParam(MasterPass::PARAM_MASTER_PASS_HASH)
+                $this->configService->getByParam(MasterPassService::PARAM_MASTER_PASS_HASH)
             );
 
             if (!$this->getUpdate($input, $style)) {

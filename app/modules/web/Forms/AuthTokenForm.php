@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\Domain\Auth\Models\AuthToken;
-use SP\Domain\Auth\Services\AuthToken as AuthTokenService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 
@@ -100,7 +99,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
         }
 
         if (empty($this->authTokenData->getHash())
-            && (AuthTokenService::isSecuredAction($this->authTokenData->getActionId())
+            && (AuthToken::isSecuredAction($this->authTokenData->getActionId())
                 || $this->isRefresh())
         ) {
             throw new ValidationException(__u('Password cannot be blank'));

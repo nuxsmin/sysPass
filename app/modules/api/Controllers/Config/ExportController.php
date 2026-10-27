@@ -34,10 +34,12 @@ use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Api\Ports\ApiService;
+use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Export\Ports\XmlExportService;
+use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Infrastructure\File\DirectoryHandler;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
@@ -59,10 +61,19 @@ final class ExportController extends ControllerBase
         Klein                             $router,
         ApiService                        $apiService,
         AclInterface                      $acl,
+        JsonRpcResponseFormatter         $jsonRpcResponseFormatter,
+        JsonResponseFactory               $jsonResponseFactory,
         private readonly XmlExportService $xmlExportService,
         private readonly PathsContext     $pathsContext
     ) {
-        parent::__construct($application, $router, $apiService, $acl);
+        parent::__construct(
+            $application,
+            $router,
+            $apiService,
+            $acl,
+            $jsonRpcResponseFormatter,
+            $jsonResponseFactory
+        );
 
         $this->apiService->setHelpClass(ConfigHelp::class);
     }

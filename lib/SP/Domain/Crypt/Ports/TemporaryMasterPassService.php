@@ -39,6 +39,11 @@ use SP\Domain\Core\Exceptions\NoSuchItemException;
  */
 interface TemporaryMasterPassService
 {
+    public const MAX_ATTEMPTS = 50;
+    public const PARAM_TIME     = 'tempmaster_passtime';
+    public const PARAM_MAX_TIME = 'tempmaster_maxtime';
+    public const PARAM_ATTEMPTS = 'tempmaster_attempts';
+
     /**
      * Crea una clave temporal para encriptar la clave maestra y guardarla.
      *

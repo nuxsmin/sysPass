@@ -47,6 +47,8 @@ use SP\Domain\Database\Dtos\QueryResult;
  */
 interface PublicLinkService
 {
+    public function buildLinkUrl(string $baseUrl, string $hash): string;
+
     /**
      * @throws ConstraintException
      * @throws QueryException

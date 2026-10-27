@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Html\Services;
 
+use SP\Domain\Html\Ports\CssMinifyService;
 use SP\Domain\Http\Header;
 use SP\Domain\Core\Exceptions\FileException;
 use SplObjectStorage;
@@ -32,7 +33,7 @@ use SplObjectStorage;
 /**
  * Class MinifyCss
  */
-final class MinifyCss extends Minify
+final class MinifyCss extends Minify implements CssMinifyService
 {
     /**
      * @param SplObjectStorage<MinifyFile> $files

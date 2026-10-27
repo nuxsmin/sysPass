@@ -31,7 +31,7 @@ use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\Services\ConfigUtil;
+use SP\Domain\Config\Dtos\ConfigInput;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -69,7 +69,7 @@ final class CheckController extends SimpleControllerBase
     {
         $mailParams = $this->handleMailConfig();
 
-        $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
+        $mailRecipients = ConfigInput::mailAddresses($this->request->analyzeString('mail_recipients'));
 
         if (empty($mailParams->getServer()) || empty($mailParams->getFrom()) || count($mailRecipients) === 0) {
             throw new ValidationException(SPException::ERROR, __u('Missing Mail parameters'));

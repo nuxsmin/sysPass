@@ -33,6 +33,8 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Modules\Web\Controllers\Helpers\JsonResponseHandler;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
@@ -105,5 +107,15 @@ final readonly class WebControllerHelper
     public function getJsonResponseHandler(): JsonResponseHandler
     {
         return $this->jsonResponseHandler;
+    }
+
+    public function getHashService(): HashService
+    {
+        return $this->simpleControllerHelper->getHashService();
+    }
+
+    public function getJsonResponseFactory(): JsonResponseFactory
+    {
+        return $this->simpleControllerHelper->getJsonResponseFactory();
     }
 }

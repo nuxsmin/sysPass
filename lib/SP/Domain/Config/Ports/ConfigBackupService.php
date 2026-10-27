@@ -33,6 +33,8 @@ use SP\Domain\Core\Exceptions\FileException;
  */
 interface ConfigBackupService
 {
+    public function configToJson(string $configData): string;
+
     /**
      * Backs up the config data into the database
      */

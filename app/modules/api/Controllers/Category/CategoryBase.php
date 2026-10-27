@@ -28,10 +28,12 @@ namespace SP\Modules\Api\Controllers\Category;
 use Klein\Klein;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
+use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
 use SP\Domain\Category\Ports\CategoryAdapter;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\CategoryHelp;
 
@@ -51,10 +53,19 @@ abstract class CategoryBase extends ControllerBase
         Klein           $router,
         ApiService      $apiService,
         AclInterface    $acl,
+        JsonRpcResponseFormatter $jsonRpcResponseFormatter,
+        JsonResponseFactory $jsonResponseFactory,
         CategoryService $categoryService,
         CategoryAdapter $categoryAdapter
     ) {
-        parent::__construct($application, $router, $apiService, $acl);
+        parent::__construct(
+            $application,
+            $router,
+            $apiService,
+            $acl,
+            $jsonRpcResponseFormatter,
+            $jsonResponseFactory
+        );
 
         $this->categoryService = $categoryService;
         $this->categoryAdapter = $categoryAdapter;

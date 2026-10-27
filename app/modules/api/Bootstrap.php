@@ -32,7 +32,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Api\Ports\ApiRequestService;
-use SP\Domain\Api\Services\JsonRpcResponse;
+use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Http\Code;
@@ -71,6 +71,8 @@ final class Bootstrap extends BootstrapBase
     private function manageApiRequest(): Closure
     {
         return function (Request $request, Response $response) {
+            $responseFormatter = $this->buildInstanceFor(JsonRpcResponseFormatter::class);
+
             try {
                 logger('API route');
 
@@ -87,9 +89,9 @@ final class Bootstrap extends BootstrapBase
                     $response->code(Code::NOT_FOUND->value);
 
                     return $response->body(
-                        JsonRpcResponse::getResponseError(
+                        $responseFormatter->getResponseError(
                             self::OOPS_MESSAGE,
-                            JsonRpcResponse::METHOD_NOT_FOUND,
+                            JsonRpcResponseFormatter::METHOD_NOT_FOUND,
                             $apiRequest->getId()
                         )
                     );
@@ -109,7 +111,7 @@ final class Bootstrap extends BootstrapBase
 
                 $response->code(Code::INTERNAL_SERVER_ERROR->value);
 
-                return $response->body(JsonRpcResponse::getResponseException($e, 0));
+                return $response->body($responseFormatter->getResponseException($e, 0));
             } finally {
                 $this->router->skipRemaining();
             }

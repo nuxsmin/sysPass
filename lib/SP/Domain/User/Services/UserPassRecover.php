@@ -67,7 +67,7 @@ final class UserPassRecover extends Service implements UserPassRecoverService
         parent::__construct($config, $eventDispatcher, $context);
     }
 
-    public static function getMailMessage(string $hash, string $baseUri): MailMessage
+    public function getMailMessage(string $hash, string $baseUri): MailMessage
     {
         $mailMessage = new MailMessage();
         $mailMessage->setTitle(__('Password Change'));

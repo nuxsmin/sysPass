@@ -63,6 +63,10 @@ use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeContext;
 use SP\Core\UI\ThemeIcons;
 use SP\Domain\Account\Ports\PasswordValidator;
+use SP\Domain\Api\Adapters\JsonRpcResponseFormatterAdapter;
+use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
+use SP\Domain\Api\Ports\ApiRequestService;
+use SP\Domain\Api\Services\ApiRequest;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
@@ -105,6 +109,8 @@ use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\MasterKeyStore;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Crypt\Services\SecureSession;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
@@ -117,7 +123,15 @@ use SP\Domain\Export\Ports\BackupFileService;
 use SP\Domain\Export\Services\BackupFile;
 use SP\Domain\Http\Client;
 use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\JsonResponseFactory;
+use SP\Domain\Http\Ports\JsonResponseService;
+use SP\Domain\Http\Adapters\JsonResponseFactoryAdapter;
+use SP\Domain\Http\Services\JsonResponse;
 use SP\Domain\Http\Services\Request;
+use SP\Domain\Html\Ports\CssMinifyService;
+use SP\Domain\Html\Ports\JsMinifyService;
+use SP\Domain\Html\Services\MinifyCss;
+use SP\Domain\Html\Services\MinifyJs;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Services\DatabaseSetupService;
@@ -173,6 +187,13 @@ final class CoreDefinitions
             }),
             KleinRequest::class => factory([KleinRequest::class, 'createFromGlobals']),
             RequestService::class => autowire(Request::class),
+            JsonResponseFactory::class => autowire(JsonResponseFactoryAdapter::class),
+            JsonResponseService::class => autowire(JsonResponse::class),
+            CssMinifyService::class => autowire(MinifyCss::class),
+            JsMinifyService::class => autowire(MinifyJs::class),
+            HashService::class => autowire(HashServiceAdapter::class),
+            JsonRpcResponseFormatter::class => autowire(JsonRpcResponseFormatterAdapter::class),
+            ApiRequestService::class => factory(static fn() => ApiRequest::buildFromRequest()),
             PasswordValidator::class => autowire(PasswordValidatorImplementation::class),
             UriContextInterface::class => autowire(UriContext::class),
             Context::class => create(Stateless::class),

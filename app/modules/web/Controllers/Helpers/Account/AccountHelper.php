@@ -32,7 +32,6 @@ use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
-use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Providers\Link;
@@ -199,7 +198,7 @@ final class AccountHelper extends AccountHelperBase
 
                 $this->view->assign(
                     'publicLinkUrl',
-                    PublicLink::getLinkForHash(
+                    $this->publicLinkService->buildLinkUrl(
                         $baseUrl,
                         $publicLinkData['hash']
                     )

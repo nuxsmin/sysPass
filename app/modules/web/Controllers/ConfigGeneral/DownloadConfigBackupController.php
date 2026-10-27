@@ -35,7 +35,6 @@ use SP\Domain\Common\Enums\ResponseStatus;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigBackupService;
-use SP\Domain\Config\Services\ConfigBackup;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -82,7 +81,7 @@ final class DownloadConfigBackupController extends SimpleControllerBase
             throw new RuntimeException('Not implemented');
         }
 
-        $data = ConfigBackup::configToJson($this->configBackupService->getBackup());
+        $data = $this->configBackupService->configToJson($this->configBackupService->getBackup());
 
         return new ActionResponse(
             ResponseStatus::OK,

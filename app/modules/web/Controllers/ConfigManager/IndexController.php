@@ -48,12 +48,12 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\File\MimeType;
 use SP\Domain\Core\File\MimeTypesService;
-use SP\Domain\Crypt\Services\TemporaryMasterPass;
+use SP\Domain\Notification\Ports\MailService;
+use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
 use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Dtos\BackupType;
 use SP\Domain\Log\Providers\LogInterface;
-use SP\Domain\Notification\Services\MailEvent;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
@@ -363,7 +363,7 @@ final class IndexController extends ControllerBase
 
         $mailEvents = $this->configData->getMailEvents() ?? [];
 
-        $events = array_merge(MailEvent::EVENTS, $mailEvents);
+        $events = array_merge(MailService::EVENTS, $mailEvents);
 
         sort($events, SORT_STRING);
 
@@ -401,17 +401,17 @@ final class IndexController extends ControllerBase
 
         $template->assign(
             'tempMasterPassTime',
-            $this->configService->getByParam(TemporaryMasterPass::PARAM_TIME, '0')
+            $this->configService->getByParam(TemporaryMasterPassService::PARAM_TIME, '0')
         );
         $template->assign(
             'tempMasterMaxTime',
-            $this->configService->getByParam(TemporaryMasterPass::PARAM_MAX_TIME, '0')
+            $this->configService->getByParam(TemporaryMasterPassService::PARAM_MAX_TIME, '0')
         );
 
         $tempMasterAttempts = sprintf(
             '%d/%d',
-            $this->configService->getByParam(TemporaryMasterPass::PARAM_ATTEMPTS, '0'),
-            TemporaryMasterPass::MAX_ATTEMPTS
+            $this->configService->getByParam(TemporaryMasterPassService::PARAM_ATTEMPTS, '0'),
+            TemporaryMasterPassService::MAX_ATTEMPTS
         );
 
         $template->assign('tempMasterAttempts', $tempMasterAttempts);

@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Resource;
 
 use SP\Core\Bootstrap\Path;
-use SP\Domain\Http\Services\Request as HttpRequest;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileSystem;
 
@@ -111,7 +110,7 @@ final class JsController extends ResourceBase
      */
     private function buildFiles(string $base, array $files, bool $insecure = false): array
     {
-        $base = $insecure ? HttpRequest::getSecureAppPath($base) : $base;
+        $base = $insecure ? $this->request->resolveSecureAppPath($base) : $base;
 
         return array_map(
             fn(string $file) => new FileHandler(FileSystem::buildPath($base, $file)),

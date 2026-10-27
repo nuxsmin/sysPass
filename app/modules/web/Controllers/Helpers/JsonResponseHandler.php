@@ -29,7 +29,7 @@ namespace SP\Modules\Web\Controllers\Helpers;
 use Exception;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Http\Services\JsonResponse;
+use SP\Domain\Http\Ports\JsonResponseService;
 
 /**
  * Class JsonResponseHandler
@@ -37,7 +37,7 @@ use SP\Domain\Http\Services\JsonResponse;
 final readonly class JsonResponseHandler
 {
 
-    public function __construct(private JsonResponse $response)
+    public function __construct(private JsonResponseService $response)
     {
     }
 

@@ -31,7 +31,7 @@ use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Services\ConfigUtil;
+use SP\Domain\Config\Dtos\ConfigInput;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
@@ -131,7 +131,7 @@ final class SaveController extends SimpleControllerBase
         $configData->setLogEvents(
             $this->request->analyzeArray(
                 'log_events',
-                fn($items) => ConfigUtil::eventsAdapter($items),
+                fn($items) => ConfigInput::events($items),
                 []
             )
         );

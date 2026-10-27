@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
 use SP\Core\Application;
-use SP\Domain\Crypt\Services\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
@@ -73,7 +72,7 @@ final class RefreshController extends SimpleControllerBase
             return ActionResponse::warning(__u('Ey, this is a DEMO!!'));
         }
 
-        $this->masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
+        $this->masterPassService->updateConfig($this->hashService->hashKey(CryptSession::getSessionKey($this->session)));
 
         $this->eventDispatcher->notify(
             'refresh.masterPassword.hash',

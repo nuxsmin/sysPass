@@ -84,7 +84,12 @@ final class PublicLink extends Service implements PublicLinkService
      */
     public static function getLinkForHash(string $baseUrl, string $hash): string
     {
-        return (new Uri($baseUrl))->addParam('r', 'account/viewLink/' . $hash)->getUri();
+        return sprintf('%s/index.php?r=publicLink/view/%s', $baseUrl, $hash);
+    }
+
+    public function buildLinkUrl(string $baseUrl, string $hash): string
+    {
+        return self::getLinkForHash($baseUrl, $hash);
     }
 
     /**

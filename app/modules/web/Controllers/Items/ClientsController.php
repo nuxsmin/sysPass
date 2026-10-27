@@ -29,7 +29,6 @@ use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Services\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -60,7 +59,7 @@ final class ClientsController extends SimpleControllerBase
      */
     public function clientsAction(): void
     {
-        JsonResponse::factory($this->router->response())
+        $this->jsonResponseFactory->create($this->router->response())
                     ->sendRaw(
                         SelectItemAdapter::factory($this->clientService->getAllForUser())->getJsonItemsFromModel()
                     );

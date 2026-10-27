@@ -39,7 +39,6 @@ final class ContainerWiringTest extends IntegrationTestCase
         'SP\Domain\Client\Ports\ClientAdapter' => 'module-specific baseUrl',
         'SP\Domain\CustomField\Ports\CustomFieldAdapter' => 'module-specific baseUrl',
         'SP\Domain\Html\Ports\MinifyService' => 'web module binding (MinifyJs/MinifyCss)',
-        'SP\Domain\Http\Ports\JsonResponseService' => 'web/API response adapter',
         'SP\Domain\Plugin\Ports\Plugin' => 'plugin runtime',
         'SP\Domain\Plugin\Ports\PluginDataStorage' => 'plugin runtime',
         'SP\Domain\Plugin\Ports\PluginOperationInterface' => 'plugin runtime',

@@ -34,6 +34,16 @@ use SP\Domain\Core\Exceptions\FileException;
  */
 interface ImportStrategyService
 {
+    public const ALLOWED_MIME = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-excel',
+        'text/plain',
+        'text/csv',
+        'text/x-csv',
+        'application/xml',
+        'text/xml',
+    ];
+
     /**
      * @throws ImportException
      * @throws FileException

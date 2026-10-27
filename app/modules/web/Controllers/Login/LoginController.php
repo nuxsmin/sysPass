@@ -30,7 +30,6 @@ use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Ports\LoginService;
-use SP\Domain\Auth\Services\Login;
 use SP\Domain\Http\Providers\Uri;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -45,7 +44,7 @@ final class LoginController extends ControllerBase
 {
     use JsonTrait;
 
-    private Login $loginService;
+    private LoginService $loginService;
 
     public function __construct(
         Application  $application,

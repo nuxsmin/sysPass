@@ -62,12 +62,6 @@ use function SP\__u;
  */
 final class AuthToken extends Service implements AuthTokenService
 {
-    private const SECURED_ACTIONS = [
-        AclActionsInterface::ACCOUNT_VIEW_PASS,
-        AclActionsInterface::ACCOUNT_EDIT_PASS,
-        AclActionsInterface::ACCOUNT_CREATE,
-    ];
-
     private const CAN_USE_SECURE_TOKEN_ACTIONS = [
         AclActionsInterface::ACCOUNT_VIEW,
         AclActionsInterface::CATEGORY_VIEW,
@@ -178,7 +172,7 @@ final class AuthToken extends Service implements AuthTokenService
 
     public static function isSecuredAction(int $action): bool
     {
-        return in_array($action, self::SECURED_ACTIONS, true);
+        return AuthTokenModel::isSecuredAction($action);
     }
 
     public static function canUseSecureTokenAction(int $action): bool

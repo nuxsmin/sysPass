@@ -31,7 +31,9 @@ use SP\Domain\Account\Ports\AccountAdapter;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Api\Ports\ApiService;
+use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Api\Controllers\ControllerBase;
@@ -55,12 +57,21 @@ abstract class AccountBase extends ControllerBase
         Klein                   $router,
         ApiService              $apiService,
         AclInterface            $acl,
+        JsonRpcResponseFormatter $jsonRpcResponseFormatter,
+        JsonResponseFactory $jsonResponseFactory,
         AccountPresetService    $accountPresetService,
         AccountService          $accountService,
         CustomFieldDataService $customFieldService,
         AccountAdapter $accountAdapter
     ) {
-        parent::__construct($application, $router, $apiService, $acl);
+        parent::__construct(
+            $application,
+            $router,
+            $apiService,
+            $acl,
+            $jsonRpcResponseFormatter,
+            $jsonResponseFactory
+        );
 
         $this->accountPresetService = $accountPresetService;
         $this->accountService = $accountService;

@@ -32,7 +32,6 @@ use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Ports\UserService;
-use SP\Domain\User\Services\User;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -46,7 +45,7 @@ final class SaveController extends SimpleControllerBase
 {
     use JsonTrait;
 
-    private User $userService;
+    private UserService $userService;
 
     public function __construct(
         Application $application,

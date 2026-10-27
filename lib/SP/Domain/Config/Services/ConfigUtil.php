@@ -40,33 +40,6 @@ use function SP\getFromEnv;
  */
 final class ConfigUtil
 {
-
-    /**
-     * Adaptador para convertir una cadena de direcciones de email a un array
-     */
-    public static function mailAddressesAdapter(string $mailAddresses): array
-    {
-        if (empty($mailAddresses)) {
-            return [];
-        }
-
-        return array_filter(
-            explode(',', $mailAddresses),
-            static fn($value) => filter_var($value, FILTER_VALIDATE_EMAIL)
-        );
-    }
-
-    /**
-     * Adaptador para convertir una cadena de eventos a un array
-     */
-    public static function eventsAdapter(array $events): array
-    {
-        return array_filter(
-            $events,
-            static fn($value) => preg_match('/^[a-z][a-z.]+$/i', $value)
-        );
-    }
-
     /**
      * Comprobar el archivo de configuración.
      * Esta función comprueba que el archivo de configuración exista y los permisos sean correctos.

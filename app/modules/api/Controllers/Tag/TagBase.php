@@ -28,8 +28,10 @@ namespace SP\Modules\Api\Controllers\Tag;
 use Klein\Klein;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
+use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Tag\Ports\TagService;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\TagHelp;
@@ -49,9 +51,18 @@ abstract class TagBase extends ControllerBase
         Klein        $router,
         ApiService   $apiService,
         AclInterface $acl,
+        JsonRpcResponseFormatter $jsonRpcResponseFormatter,
+        JsonResponseFactory $jsonResponseFactory,
         TagService $tagService
     ) {
-        parent::__construct($application, $router, $apiService, $acl);
+        parent::__construct(
+            $application,
+            $router,
+            $apiService,
+            $acl,
+            $jsonRpcResponseFormatter,
+            $jsonResponseFactory
+        );
 
         $this->tagService = $tagService;
 

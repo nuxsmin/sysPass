@@ -36,7 +36,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Import\Services\ImportStrategy;
+use SP\Domain\Import\Ports\ImportStrategyService;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileSystem;
@@ -90,7 +90,7 @@ final class GetEnvironmentController extends SimpleControllerBase
             'authbasic_autologin' => $this->getAuthBasicAutologinEnabled(),
             'pki_key' => $this->getPublicKey(),
             'pki_max_size' => CryptPKI::getMaxDataSize(),
-            'import_allowed_mime' => ImportStrategy::ALLOWED_MIME,
+            'import_allowed_mime' => ImportStrategyService::ALLOWED_MIME,
             'files_allowed_mime' => $this->configData->getFilesAllowedMime(),
             'session_timeout' => $this->configData->getSessionTimeout(),
             'csrf' => $this->getCSRF(),

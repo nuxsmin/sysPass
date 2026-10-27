@@ -168,7 +168,7 @@ class ConfigBackupTest extends UnitaryTestCase
      */
     public function testConfigToJson()
     {
-        $this->assertNotEmpty(ConfigBackup::configToJson(serialize($this->config->getConfigData())));
+        $this->assertNotEmpty($this->configBackup->configToJson(serialize($this->config->getConfigData())));
     }
 
     /**

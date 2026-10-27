@@ -54,7 +54,7 @@ readonly class ConfigBackup implements ConfigBackupService
     /**
      * @throws SPException
      */
-    public static function configToJson(string $configData): string
+    public function configToJson(string $configData): string
     {
         return Serde::serializeJson(Serde::deserialize($configData), JSON_PRETTY_PRINT);
     }

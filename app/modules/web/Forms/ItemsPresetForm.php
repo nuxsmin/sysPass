@@ -33,7 +33,6 @@ use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
-use SP\Domain\ItemPreset\Services\ItemPresetRequest;
 use SP\Mvc\Controller\Validators\Validator;
 
 /**
@@ -43,7 +42,7 @@ use SP\Mvc\Controller\Validators\Validator;
  */
 final class ItemsPresetForm extends FormBase implements FormInterface
 {
-    protected ?ItemPresetRequest $itemPresetRequest = null;
+    protected ?ItemPreset $itemPreset = null;
 
     /**
      * Validar el formulario
@@ -103,20 +102,22 @@ final class ItemsPresetForm extends FormBase implements FormInterface
 
         switch ($itemPresetData->getType()) {
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePermissionPreset());
+                $preset = $this->makePermissionPreset();
                 break;
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePrivatePreset());
+                $preset = $this->makePrivatePreset();
                 break;
             case ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makeSessionTimeoutPreset());
+                $preset = $this->makeSessionTimeoutPreset();
                 break;
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePasswordPreset());
+                $preset = $this->makePasswordPreset();
                 break;
             default:
                 throw new ValidationException(__u('Value type not set or incorrect'));
         }
+
+        $this->itemPreset = $itemPresetData->dehydrate($preset);
     }
 
     /**
@@ -196,7 +197,7 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      */
     protected function checkCommon(): void
     {
-        $itemPresetData = $this->itemPresetRequest->getItemPreset();
+        $itemPresetData = $this->itemPreset;
 
         if (!$itemPresetData->getUserId()
             && !$itemPresetData->getUserGroupId()
@@ -206,8 +207,8 @@ final class ItemsPresetForm extends FormBase implements FormInterface
         }
     }
 
-    public function getItemData(): ?ItemPresetRequest
+    public function getItemData(): ?ItemPreset
     {
-        return $this->itemPresetRequest;
+        return $this->itemPreset;
     }
 }

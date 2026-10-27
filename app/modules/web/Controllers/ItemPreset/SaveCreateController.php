@@ -67,7 +67,7 @@ final class SaveCreateController extends ItemPresetSaveBase
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Value created'))
-                        ->addDetail(__u('Type'), $itemData->getItemPreset()->getType())
+                        ->addDetail(__u('Type'), $itemData->getType())
                         ->addDetail(__u('ID'), $id)
                 )
             );

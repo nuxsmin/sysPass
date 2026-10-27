@@ -31,8 +31,8 @@ use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CsrfHandler;
-use SP\Domain\Html\Services\MinifyCss;
-use SP\Domain\Html\Services\MinifyJs;
+use SP\Domain\Html\Ports\CssMinifyService;
+use SP\Domain\Html\Ports\JsMinifyService;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
@@ -55,10 +55,10 @@ return [
     ModuleInterface::class => autowire(Init::class),
     CssController::class => autowire(
         CssController::class
-    )->constructorParameter('minify', autowire(MinifyCss::class)),
+    )->constructorParameter('minify', autowire(CssMinifyService::class)),
     JsController::class => autowire(
         JsController::class
-    )->constructorParameter('minify', autowire(MinifyJs::class)),
+    )->constructorParameter('minify', autowire(JsMinifyService::class)),
     Context::class => factory(
         static function (ConfigDataInterface $configData, SessionHandlerInterface $sessionHandler = null) {
             return new Session($sessionHandler);

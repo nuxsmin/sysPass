@@ -38,6 +38,16 @@ use SP\Domain\Notification\Dtos\MailParams;
  */
 interface MailService
 {
+    public const EVENTS = [
+        'create.',
+        'delete.',
+        'edit.',
+        'save.',
+        'import.ldap.end',
+        'run.backup.end',
+        'run.import.end',
+    ];
+
     public static function getParamsFromConfig(ConfigDataInterface $configData): MailParams;
 
     /**

@@ -30,7 +30,6 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Html\Html;
 use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Http\Services\JsonResponse;
 use SP\Domain\Notification\Ports\NotificationService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -86,6 +85,6 @@ final class NotificationsController extends SimpleControllerBase
             'hash'          => sha1(implode('', $notifications)),
         ]);
 
-        JsonResponse::factory($this->router->response())->send($jsonResponse);
+        $this->jsonResponseFactory->create($this->router->response())->send($jsonResponse);
     }
 }

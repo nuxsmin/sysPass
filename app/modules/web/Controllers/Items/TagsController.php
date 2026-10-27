@@ -28,7 +28,6 @@ use SP\Core\Application;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Services\JsonResponse;
 use SP\Domain\Tag\Ports\TagService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
@@ -60,7 +59,7 @@ final class TagsController extends SimpleControllerBase
      */
     public function tagsAction(): void
     {
-        JsonResponse::factory($this->router->response())
+        $this->jsonResponseFactory->create($this->router->response())
             ->sendRaw(SelectItemAdapter::factory($this->tagService->getAll())->getJsonItemsFromModel());
     }
 }

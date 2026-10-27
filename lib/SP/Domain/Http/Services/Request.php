@@ -118,6 +118,11 @@ class Request implements RequestService
         return $realPath;
     }
 
+    public function resolveSecureAppPath(string $path, ?string $base = null): string
+    {
+        return self::getSecureAppPath($path, $base);
+    }
+
     public function getClientAddress(bool $fullForwarded = false): string
     {
         $forwarded = $this->getForwardedFor();

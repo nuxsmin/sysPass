@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
 use Exception;
 use SP\Core\Application;
-use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -41,7 +40,6 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Crypt\Ports\MasterPassService;
-use SP\Domain\Crypt\Services\MasterPass;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -122,7 +120,7 @@ final class SaveController extends SimpleControllerBase
             $request = new UpdateMasterPassRequest(
                 $currentMasterPass,
                 $newMasterPass,
-                $this->configService->getByParam(MasterPass::PARAM_MASTER_PASS_HASH),
+                $this->configService->getByParam(MasterPassService::PARAM_MASTER_PASS_HASH),
             );
 
             $this->eventDispatcher->notify('update.masterPassword.start', new Event($this));
@@ -135,7 +133,7 @@ final class SaveController extends SimpleControllerBase
         } else {
             $this->eventDispatcher->notify('update.masterPassword.hash', new Event($this));
 
-            $this->masterPassService->updateConfig(Hash::hashKey($newMasterPass));
+            $this->masterPassService->updateConfig($this->hashService->hashKey($newMasterPass));
 
             return ActionResponse::ok(
                 __u('Master password updated'),

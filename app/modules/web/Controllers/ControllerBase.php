@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers;
 use Exception;
 use SebastianBergmann\RecursionContext\Context;
 use SP\Core\Application;
-use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -41,6 +40,8 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
@@ -71,6 +72,8 @@ abstract class ControllerBase
     protected readonly TemplateInterface           $view;
     protected readonly Helpers\LayoutHelper        $layoutHelper;
     protected readonly UriContextInterface         $uriContext;
+    protected readonly HashService                 $hashService;
+    protected readonly JsonResponseFactory         $jsonResponseFactory;
     protected ?UserDto                             $userDto         = null;
     protected ?ProfileData                         $userProfileData = null;
     protected readonly bool                        $isAjax;
@@ -94,6 +97,8 @@ abstract class ControllerBase
         $this->layoutHelper = $webControllerHelper->getLayoutHelper();
         $this->view = $webControllerHelper->getTemplate();
         $this->uriContext = $webControllerHelper->getUriContext();
+        $this->hashService = $webControllerHelper->getHashService();
+        $this->jsonResponseFactory = $webControllerHelper->getJsonResponseFactory();
         $this->jsonResponse = $webControllerHelper->getJsonResponseHandler();
 
         $this->isAjax = $this->request->isAjax();
@@ -203,7 +208,7 @@ abstract class ControllerBase
                 $this->request->verifySignature($this->configData->getPasswordSalt());
 
                 $this->view->assign('from', $from);
-                $this->view->assign('from_hash', Hash::signMessage($from, $this->configData->getPasswordSalt()));
+                $this->view->assign('from_hash', $this->hashService->signMessage($from, $this->configData->getPasswordSalt()));
             } catch (SPException $e) {
                 processException($e);
             }
