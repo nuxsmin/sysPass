@@ -43,7 +43,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P4-4 | #2015 | done |
 | P5-1 | #2026 | done |
 | P5-2 | #2032 | done |
-| P5-3 | #2037 | todo |
+| P5-3 | #2037 | done |
 | P6-W1 | #1975 | todo (pilot) |
 | P6-W2 to P6-W7 | #2042 to #2048 | todo |
 | P7-1 to P7-4 | #2016, #2027, #2047, #2049 | todo |
@@ -229,8 +229,15 @@ Applied per context in Phase 6 and Phase 7. The steps are in section 6.
   - Boundary: Commands hold already parsed primitives, value objects or domain DTOs. No HTTP, session or presentation types; no translation; no logging. Validation and domain exceptions belong to the use case.
   - Pilot inputs: `SP\Domain\Tag\UseCases\Dtos` has the Tag commands and results; `TagUseCaseDtosTest` guards the shape.
 - [x] **P5-2 Define the use case base contract.** Single public method (`execute(Command): Result`), no HTTP types, no session types, no translation calls. Throws domain exceptions only.
-- [ ] **P5-3 Event emission moves to use cases.** Audit/notification events currently emitted by controllers (226 `->notify()` calls) move into the use case, emitted via `EventDispatcherInterface`. Controllers no longer build `EventMessage`.
-  - Acceptance: M-events: `grep -rl "EventMessage::build" app/modules | wc -l` drops per migrated area.
+- [x] **P5-3 Event emission moves to use cases.** Audit/notification events currently emitted by controllers (226 `->notify()` calls) move into the use case, emitted via `EventDispatcherInterface`. Controllers no longer build `EventMessage`.
+  - Port: use cases depend on `SP\Domain\Common\Ports\EventEmitter` (`emit(eventName, source, ?EventMessage)`). `SP\Core\Events\EventDispatcherEmitter` adapts it to `EventDispatcherInterface`; the port only publishes, so use cases cannot attach or detach receivers.
+  - Event name: keep the existing name exactly (`create.tag`, `delete.tag`, `request.account`, ...). Receivers and the mail event configuration match on it.
+  - Source: the use case instance, not the controller. Receivers only inspect the source to detect a `Throwable`.
+  - Message: descriptions and detail keys are untranslated keys. Receivers translate when composing the event log, mail or notification (D1 policy). Do not call `__()`/`__u()` in a use case.
+  - Message-less events: pass `null` to reproduce the legacy `new Event($this)` emission.
+  - Extras: keep the keys receivers read (`userId`, `userProfileId`, `userGroupId`, `notify`) on the `EventMessage`.
+  - Timing: emit only after the state change succeeded and before returning the Result.
+  - Migration: per area in P6/P7. The metric is `grep -rl "EventMessage::build" app/modules | wc -l`; the Tag pilot is the first area. `UseCaseEventEmissionTest` and `EventDispatcherEmitterTest` guard the convention.
 
 ### Phase 6: Web controller migration by vertical slice
 
@@ -355,6 +362,8 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 
 | 2026-10-27 | P4-1 move Mvc and Html into the web module (D3) (verified: core unit, core, modules, architecture, wiring, PSR2, PHPStan) | M12 stays 2 (composition root + bootstrap); lib-modules allowlist 2 -> 1; M1 23, M6 0/154, M13 0 (+2 composition); PHPStan lib 1143 -> 1015 errors (files moved out of the analysed tree) | Moved `lib/SP/Mvc` (21 files) and `lib/SP/Html` (25 files) to `app/modules/web/Mvc` and `app/modules/web/Html` under `SP\Modules\Web\Mvc` and `SP\Modules\Web\Html`. Moved `ThemeIcons` to `SP\Modules\Web\UI` so Core has no presentation import. Updated all class and template references. `TemplateResolver` no longer uses `FileSystem`; `ControllerTrait` uses the `JsonResponseFactory` port; `CustomFieldItems` moved from Domain Services to Domain Providers so modules do not call a concrete Domain service. The `lib-modules` rule now allows `Core/Definitions` as the composition root and the ratchet dropped to 1 (`BootstrapBase`). |
 | 2026-10-27 | P5-2 use case base contract (verified: core, architecture, wiring, PSR2, PHPStan) | M6 0/154 -> 0/155 ports; other metrics unchanged | Added `SP\Domain\Common\Ports\UseCase` with one public method `execute(Command $command): Result` and the `TCommand`/`TResult` templates; no HTTP, session, translation or presentation concerns. `UseCaseContractTest` guards the single entry point and the Domain boundary, and runs a use case against the new `InMemoryTagRepository` fake. Documented the marker contract in `ContainerWiringTest`. |
+| 2026-10-27 | P5-3 event emission convention (verified: core unit, architecture, wiring, PSR2) | M6 0/155 -> 0/156 ports; no other metric changes | Added `SP\Domain\Common\Ports\EventEmitter` (publish-only) and the `SP\Core\Events\EventDispatcherEmitter` adapter, wired in `CoreDefinitions`. Recorded the convention in section 5: keep the existing event names, use the use case as the source, pass untranslated message keys, support message-less events, preserve receiver extras, and emit only after the state change. Added `InMemoryEventEmitter`, `UseCaseEventEmissionTest` and `EventDispatcherEmitterTest`. Per-area call-site migration starts with the Tag pilot (#1975); no `app/modules` call site changed here, so the `EventMessage::build` count is still 98 files. |
+
 
 ### Baseline test results (P0-1)
 

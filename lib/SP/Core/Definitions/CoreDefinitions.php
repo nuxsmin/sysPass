@@ -52,6 +52,7 @@ use SP\Core\Crypt\RequestBasedPassword;
 use SP\Core\Crypt\SessionMasterKeyStore;
 use SP\Core\Crypt\UuidCookie;
 use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventDispatcherEmitter;
 use SP\Core\Language;
 use SP\Core\Log\FunctionLogger;
 use SP\Core\Messages\EventMessageFormatter;
@@ -84,6 +85,7 @@ use SP\Domain\Auth\Providers\Ldap\LdapAuth;
 use SP\Domain\Auth\Providers\Ldap\LdapBase;
 use SP\Domain\Auth\Providers\Ldap\LdapConnection;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Common\Ports\EventEmitter;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -207,6 +209,7 @@ final class CoreDefinitions
                     : new StatelessMasterKeyStore($context);
             }),
             EventDispatcherInterface::class => create(EventDispatcher::class),
+            EventEmitter::class => autowire(EventDispatcherEmitter::class),
             EventMessageFormatterInterface::class => create(EventMessageFormatter::class),
             MailMessageFormatterInterface::class => create(MailMessageFormatter::class),
             ConfigFileService::class => create(ConfigFile::class)
