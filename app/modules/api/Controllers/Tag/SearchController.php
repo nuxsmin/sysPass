@@ -31,6 +31,7 @@ use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use function SP\processException;
 
 /**
  * Class SearchController

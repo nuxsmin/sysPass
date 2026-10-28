@@ -121,13 +121,9 @@ final class Client extends BaseRepository implements ClientRepository
             ->newUpdate()
             ->table(ClientModel::TABLE)
             ->cols($client->toArray(null, ['id', 'hash']))
+            ->col('hash', $this->makeItemHash($client->getName()))
             ->where('id = :id')
-            ->bindValues(
-                [
-                    'id' => $client->getId(),
-                    'hash' => $this->makeItemHash($client->getName())
-                ]
-            );
+            ->bindValues(['id' => $client->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the client'));
 

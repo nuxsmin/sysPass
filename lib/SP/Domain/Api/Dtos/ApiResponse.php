@@ -57,9 +57,9 @@ final class ApiResponse
      * @return ApiResponse
      */
     public static function makeSuccess(
-        mixed $result,
+        mixed  $result,
         string $message = null,
-        ?int  $itemId = null,
+        ?int   $itemId = null,
     ): ApiResponse {
         return new self($result, self::RESULT_SUCCESS, $message, $itemId);
     }

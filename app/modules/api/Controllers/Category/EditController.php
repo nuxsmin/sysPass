@@ -32,6 +32,9 @@ use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 final class EditController extends CategoryBase
 {
@@ -59,7 +62,7 @@ final class EditController extends CategoryBase
             );
 
             $this->returnResponse(
-                ApiResponse::makeSuccess($categoryData, $categoryData->getId(), __('Category updated'))
+                ApiResponse::makeSuccess($categoryData, __('Category updated'), $categoryData->getId())
             );
         } catch (Exception $e) {
             processException($e);
@@ -74,11 +77,12 @@ final class EditController extends CategoryBase
      */
     private function buildCategoryData(): Category
     {
-        $categoryData = new Category();
-        $categoryData->setId($this->apiService->getParamInt('id', true));
-        $categoryData->setName($this->apiService->getParamString('name', true));
-        $categoryData->setDescription($this->apiService->getParamString('description'));
-
-        return $categoryData;
+        return new Category(
+            [
+                'id'          => $this->apiService->getParamInt('id', true),
+                'name'        => $this->apiService->getParamString('name', true),
+                'description' => $this->apiService->getParamString('description'),
+            ]
+        );
     }
 }

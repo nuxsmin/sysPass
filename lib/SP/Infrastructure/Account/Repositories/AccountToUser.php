@@ -146,7 +146,7 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
                        'AccountToUser.isEdit',
                    ])
             ->from('AccountToUser')
-            ->join('INNER', 'User', 'User.id == AccountToUser.userId')
+            ->join('INNER', 'User', 'User.id = AccountToUser.userId')
             ->where('AccountToUser.accountId = :accountId')
             ->bindValues(['accountId' => $id])
             ->orderBy(['User.name ASC']);

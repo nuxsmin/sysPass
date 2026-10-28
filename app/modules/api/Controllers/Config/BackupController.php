@@ -90,7 +90,7 @@ final class BackupController extends ControllerBase
 
             $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
 
-            $this->fileBackupService->doBackup($path);
+            $this->fileBackupService->doBackup($path, $this->pathsContext[Path::APP]);
 
             $this->eventDispatcher->notify(
                 'run.backup.end',
@@ -102,8 +102,18 @@ final class BackupController extends ControllerBase
                 )
             );
 
+            $defaultPath = $this->pathsContext[Path::BACKUP];
+
+            if ($path !== $defaultPath) {
+                $appFile = (string)$this->backupFiles->getAppBackupFile();
+                $dbFile = (string)$this->backupFiles->getDbBackupFile();
+
+                @copy($appFile, (string)$this->backupFiles->withPath($path)->getAppBackupFile());
+                @copy($dbFile, (string)$this->backupFiles->withPath($path)->getDbBackupFile());
+            }
+
             $this->returnResponse(
-                ApiResponse::makeSuccess($this->buildBackupFiles($path), null, __('Backup process finished'))
+                ApiResponse::makeSuccess($this->buildBackupFiles($path), __('Backup process finished'))
             );
         } catch (Exception $e) {
             processException($e);

@@ -179,7 +179,13 @@ final class Api extends Service implements ApiService
             throw new ServiceException(
                 __u('Wrong parameters'),
                 SPException::ERROR,
-                join(PHP_EOL, $this->getHelp($this->apiRequest->getMethod())),
+                implode(
+                    PHP_EOL,
+                    array_map(
+                        static fn($help) => is_array($help) ? json_encode($help) : $help,
+                        $this->getHelp($this->apiRequest->getMethod())
+                    )
+                ),
                 JsonRpcResponse::INVALID_PARAMS
             );
         }

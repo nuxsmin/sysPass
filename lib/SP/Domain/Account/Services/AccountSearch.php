@@ -93,8 +93,8 @@ final class AccountSearch extends Service implements AccountSearchService
                         $userData = $this->userService->getByLogin(Filter::safeSearchString($text));
 
                         $this->accountSearchRepository->withFilterForUser(
-                            $userData->getId(),
-                            $userData->getUserGroupId()
+                            $userData->id,
+                            $userData->userGroupId
                         );
                         break;
                     case AccountSearchConstants::FILTER_OWNER:

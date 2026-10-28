@@ -31,6 +31,8 @@ use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Exceptions\SPException;
 
+use function SP\__;
+
 /**
  * Class JsonRpcResponse
  */
@@ -66,7 +68,9 @@ final class JsonRpcResponse
 
     public static function getResponseException(Exception $e, int $id): string
     {
-        $data = ($e instanceof SPException) ? $e->getHint() : null;
+        $data = ($e instanceof SPException && $e->getHint() !== null)
+            ? ['help' => explode(PHP_EOL, $e->getHint())]
+            : null;
 
         return self::getResponseError($e->getMessage(), $e->getCode(), $id, $data);
     }

@@ -32,6 +32,9 @@ use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Tag\Models\Tag;
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class EditController
@@ -61,7 +64,7 @@ final class EditController extends TagBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $tagData->getId(), __('Tag updated')));
+            $this->returnResponse(ApiResponse::makeSuccess($tagData, __('Tag updated'), $tagData->getId()));
         } catch (Exception $e) {
             processException($e);
 
@@ -75,10 +78,11 @@ final class EditController extends TagBase
      */
     private function buildTagData(): Tag
     {
-        $tagData = new Tag();
-        $tagData->setId($this->apiService->getParamInt('id', true));
-        $tagData->setName($this->apiService->getParamString('name', true));
-
-        return $tagData;
+        return (new Tag(
+            [
+                'id'   => $this->apiService->getParamInt('id', true),
+                'name' => $this->apiService->getParamString('name', true),
+            ]
+        ))->withHash();
     }
 }

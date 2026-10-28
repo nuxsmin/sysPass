@@ -32,6 +32,9 @@ use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class EditController
@@ -61,7 +64,7 @@ final class EditController extends ClientBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, $clientData->getId(), __('Client updated')));
+            $this->returnResponse(ApiResponse::makeSuccess($clientData, __('Client updated'), $clientData->getId()));
         } catch (Exception $e) {
             processException($e);
 
@@ -75,12 +78,13 @@ final class EditController extends ClientBase
      */
     private function buildClientData(): Client
     {
-        $clientData = new Client();
-        $clientData->setId($this->apiService->getParamInt('id', true));
-        $clientData->setName($this->apiService->getParamString('name', true));
-        $clientData->setDescription($this->apiService->getParamString('description'));
-        $clientData->setIsGlobal($this->apiService->getParamInt('global'));
-
-        return $clientData;
+        return new Client(
+            [
+                'id'          => $this->apiService->getParamInt('id', true),
+                'name'        => $this->apiService->getParamString('name', true),
+                'description' => $this->apiService->getParamString('description'),
+                'isGlobal'    => $this->apiService->getParamInt('global'),
+            ]
+        );
     }
 }

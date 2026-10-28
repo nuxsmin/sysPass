@@ -33,6 +33,8 @@ use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Util\Util;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class ViewController
@@ -82,7 +84,7 @@ final class ViewController extends AccountBase
                 $this->fractal->parseIncludes(['customFields']);
             }
 
-            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), $id));
+            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), null, $id));
         } catch (Exception $e) {
             $this->returnResponseException($e);
 

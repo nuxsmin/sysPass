@@ -30,6 +30,9 @@ use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class DeleteController
@@ -62,7 +65,7 @@ final class DeleteController extends UserGroupBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Group deleted')));
+            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, __('Group deleted'), $id));
         } catch (Exception $e) {
             processException($e);
 

@@ -90,7 +90,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
 
         $query = $this->queryFactory
             ->newInsert()
-            ->into(AccountModel::TABLE)
+            ->into(AccountHistoryModel::TABLE)
             ->cols([
                        'accountId' => $accountData->getId(),
                        'clientId' => $accountData->getClientId(),

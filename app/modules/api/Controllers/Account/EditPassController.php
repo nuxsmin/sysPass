@@ -27,10 +27,13 @@ namespace SP\Modules\Api\Controllers\Account;
 use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class EditPassController
@@ -47,9 +50,9 @@ final class EditPassController extends AccountBase
 
             $accountRequest = $this->buildAccountRequest();
 
-            $this->accountPresetService->checkPasswordPreset($accountRequest);
+            $accountRequest = $this->accountPresetService->checkPasswordPreset($accountRequest);
 
-            $this->accountService->editPassword($accountRequest);
+            $this->accountService->editPassword($accountRequest->id, $accountRequest);
 
             $accountDetails = $this->accountService->getByIdEnriched($accountRequest->id)->getAccountVData();
 
@@ -66,7 +69,7 @@ final class EditPassController extends AccountBase
             );
 
             $this->returnResponse(
-                ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Password updated'))
+                ApiResponse::makeSuccess($accountDetails, __('Password updated'), $accountRequest->id)
             );
         } catch (Exception $e) {
             processException($e);
@@ -76,17 +79,17 @@ final class EditPassController extends AccountBase
     }
 
     /**
-     * @return AccountRequest
      * @throws ServiceException
      */
-    private function buildAccountRequest(): AccountRequest
+    private function buildAccountRequest(): AccountUpdateDto
     {
-        $accountRequest = new AccountRequest();
-        $accountRequest->id = $this->apiService->getParamInt('id', true);
-        $accountRequest->pass = $this->apiService->getParamString('pass', true);
-        $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
-        $accountRequest->userEditId = $this->context->getUserData()->getId();
-
-        return $accountRequest;
+        return AccountUpdateDto::fromArray(
+            [
+                'id'             => $this->apiService->getParamInt('id', true),
+                'pass'           => $this->apiService->getParamString('pass', true),
+                'passDateChange' => $this->apiService->getParamInt('expireDate'),
+                'userEditId'     => $this->context->getUserData()->id,
+            ]
+        );
     }
 }

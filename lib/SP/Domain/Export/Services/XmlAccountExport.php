@@ -69,7 +69,7 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
                 new Event($this, EventMessage::build()->addDescription(__u('Exporting accounts')))
             );
 
-            $accounts = $this->accountService->getAllBasic();
+            $accounts = $this->accountService->getAllForExport();
 
             // Crear el nodo de cuentas
             $nodeAccounts = $this->document->createElement('Accounts');

@@ -62,34 +62,45 @@ final readonly class AccountFilter implements AccountFilterBuilder
             $query = $this->queryFactory->newSelect()->from(AccountHistoryModel::TABLE);
         }
 
+        $bindValues = [];
+
         if ($this->isFilterWithoutGlobalSearch($userData, $useGlobalSearch, $userProfile)) {
             $where = [
-                'AccountHistory.userId = :userId',
-                'AccountHistory.userGroupId = :userGroupId',
-                'AccountHistory.accountId IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = AccountHistory.accountId AND userId = :userId UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = AccountHistory.accountId AND userGroupId = :userGroupId',
-                'AccountHistory.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = AccountHistory.userGroupId AND userId = :userId)',
+                'AccountHistory.userId = :userIdOwner',
+                'AccountHistory.userGroupId = :userGroupIdOwner',
+                'AccountHistory.accountId IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = AccountHistory.accountId AND userId = :userIdAccountUser UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = AccountHistory.accountId AND userGroupId = :userGroupIdAccountGroup)',
+                'AccountHistory.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = AccountHistory.userGroupId AND userId = :userIdGroupMembership)',
+            ];
+
+            $bindValues = [
+                'userIdOwner' => $userData->id,
+                'userGroupIdOwner' => $userData->userGroupId,
+                'userIdAccountUser' => $userData->id,
+                'userGroupIdAccountGroup' => $userData->userGroupId,
+                'userIdGroupMembership' => $userData->id,
             ];
 
             if ($this->configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
                 $where[] =
-                    'AccountHistory.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AccountHistory.accountId AND uug.userId = :userId LIMIT 1)';
+                    'AccountHistory.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AccountHistory.accountId AND uug.userId = :userIdFullGroup LIMIT 1)';
+                $bindValues['userIdFullGroup'] = $userData->id;
             }
 
             $query->where(sprintf('(%s)', join(sprintf(' %s ', AccountSearchConstants::FILTER_CHAIN_OR), $where)));
         }
 
         $query->where(
-            '(AccountHistory.isPrivate IS NULL OR AccountHistory.isPrivate = 0 OR (AccountHistory.isPrivate = 1 AND AccountHistory.userId = :userId))'
+            '(AccountHistory.isPrivate IS NULL OR AccountHistory.isPrivate = 0 OR (AccountHistory.isPrivate = 1 AND AccountHistory.userId = :userIdPrivate))'
         );
         $query->where(
-            '(AccountHistory.isPrivateGroup IS NULL OR AccountHistory.isPrivateGroup = 0 OR (AccountHistory.isPrivateGroup = 1 AND AccountHistory.userGroupId = :userGroupId))'
+            '(AccountHistory.isPrivateGroup IS NULL OR AccountHistory.isPrivateGroup = 0 OR (AccountHistory.isPrivateGroup = 1 AND AccountHistory.userGroupId = :userGroupIdPrivate))'
         );
 
-        $query->bindValues([
-                               'userId' => $userData->id,
-                               'userGroupId' => $userData->userGroupId,
-                           ]);
+        $bindValues['userIdPrivate'] = $userData->id;
+        $bindValues['userGroupIdPrivate'] = $userData->userGroupId;
+
+        $query->bindValues($bindValues);
 
         return $query;
     }
@@ -123,34 +134,45 @@ final readonly class AccountFilter implements AccountFilterBuilder
             $query = $this->queryFactory->newSelect()->from(AccountModel::TABLE);
         }
 
+        $bindValues = [];
+
         if ($this->isFilterWithoutGlobalSearch($userData, $useGlobalSearch, $userProfile)) {
             $where = [
-                'Account.userId = :userId',
-                'Account.userGroupId = :userGroupId',
-                'Account.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = Account.id AND userId = :userId UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = Account.id AND userGroupId = :userGroupId)',
-                'Account.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = :userId)',
+                'Account.userId = :userIdOwner',
+                'Account.userGroupId = :userGroupIdOwner',
+                'Account.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = Account.id AND userId = :userIdAccountUser UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = Account.id AND userGroupId = :userGroupIdAccountGroup)',
+                'Account.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = :userIdGroupMembership)',
+            ];
+
+            $bindValues = [
+                'userIdOwner' => $userData->id,
+                'userGroupIdOwner' => $userData->userGroupId,
+                'userIdAccountUser' => $userData->id,
+                'userGroupIdAccountGroup' => $userData->userGroupId,
+                'userIdGroupMembership' => $userData->id,
             ];
 
             if ($this->configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
                 $where[] =
-                    'Account.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = Account.id AND uug.userId = :userId LIMIT 1)';
+                    'Account.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = Account.id AND uug.userId = :userIdFullGroup LIMIT 1)';
+                $bindValues['userIdFullGroup'] = $userData->id;
             }
 
             $query->where(sprintf('(%s)', join(sprintf(' %s ', AccountSearchConstants::FILTER_CHAIN_OR), $where)));
         }
 
         $query->where(
-            '(Account.isPrivate IS NULL OR Account.isPrivate = 0 OR (Account.isPrivate = 1 AND Account.userId = :userId))'
+            '(Account.isPrivate IS NULL OR Account.isPrivate = 0 OR (Account.isPrivate = 1 AND Account.userId = :userIdPrivate))'
         );
         $query->where(
-            '(Account.isPrivateGroup IS NULL OR Account.isPrivateGroup = 0 OR (Account.isPrivateGroup = 1 AND Account.userGroupId = :userGroupId))'
+            '(Account.isPrivateGroup IS NULL OR Account.isPrivateGroup = 0 OR (Account.isPrivateGroup = 1 AND Account.userGroupId = :userGroupIdPrivate))'
         );
 
-        $query->bindValues([
-                               'userId' => $userData->id,
-                               'userGroupId' => $userData->userGroupId,
-                           ]);
+        $bindValues['userIdPrivate'] = $userData->id;
+        $bindValues['userGroupIdPrivate'] = $userData->userGroupId;
+
+        $query->bindValues($bindValues);
 
         return $query;
     }

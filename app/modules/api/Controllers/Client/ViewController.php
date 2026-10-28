@@ -31,6 +31,8 @@ use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Util\Util;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class ViewController
@@ -76,7 +78,7 @@ final class ViewController extends ClientBase
             }
 
             $this->returnResponse(
-                ApiResponse::makeSuccess($out->toArray(), $id)
+                ApiResponse::makeSuccess($out->toArray(), null, $id)
             );
         } catch (Exception $e) {
             processException($e);

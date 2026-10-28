@@ -27,10 +27,13 @@ namespace SP\Modules\Api\Controllers\Account;
 use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class EditController
@@ -47,7 +50,7 @@ final class EditController extends AccountBase
 
             $accountRequest = $this->buildAccountRequest();
 
-            $this->accountService->update($accountRequest);
+            $this->accountService->update($accountRequest->id, $accountRequest);
 
             $accountDetails = $this->accountService->getByIdEnriched($accountRequest->id)->getAccountVData();
 
@@ -64,7 +67,7 @@ final class EditController extends AccountBase
             );
 
             $this->returnResponse(
-                ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Account updated'))
+                ApiResponse::makeSuccess($accountDetails, __('Account updated'), $accountRequest->id)
             );
         } catch (Exception $e) {
             processException($e);
@@ -74,37 +77,31 @@ final class EditController extends AccountBase
     }
 
     /**
-     * @return AccountRequest
      * @throws ServiceException
      */
-    private function buildAccountRequest(): AccountRequest
+    private function buildAccountRequest(): AccountUpdateDto
     {
-        $accountRequest = new AccountRequest();
-        $accountRequest->id = $this->apiService->getParamInt('id', true);
-        $accountRequest->name = $this->apiService->getParamString('name', true);
-        $accountRequest->clientId = $this->apiService->getParamInt('clientId', true);
-        $accountRequest->categoryId = $this->apiService->getParamInt('categoryId', true);
-        $accountRequest->login = $this->apiService->getParamString('login');
-        $accountRequest->url = $this->apiService->getParamString('url');
-        $accountRequest->notes = $this->apiService->getParamString('notes');
-        $accountRequest->isPrivate = $this->apiService->getParamInt('private');
-        $accountRequest->isPrivateGroup = $this->apiService->getParamInt('privateGroup');
-        $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
-        $accountRequest->parentId = $this->apiService->getParamInt('parentId');
-        $accountRequest->userId = $this->apiService->getParamInt('userId', false);
-        $accountRequest->userGroupId = $this->apiService->getParamInt('userGroupId', false);
-        $accountRequest->userEditId = $this->context->getUserData()->getId();
-
-        $tagsId = array_map(
-            'intval',
-            $this->apiService->getParamArray('tagsId', false, [])
+        return AccountUpdateDto::fromArray(
+            [
+                'id'             => $this->apiService->getParamInt('id', true),
+                'name'           => $this->apiService->getParamString('name', true),
+                'clientId'       => $this->apiService->getParamInt('clientId', true),
+                'categoryId'     => $this->apiService->getParamInt('categoryId', true),
+                'login'          => $this->apiService->getParamString('login'),
+                'url'            => $this->apiService->getParamString('url'),
+                'notes'          => $this->apiService->getParamString('notes'),
+                'isPrivate'      => (bool)$this->apiService->getParamInt('private'),
+                'isPrivateGroup' => (bool)$this->apiService->getParamInt('privateGroup'),
+                'passDateChange' => $this->apiService->getParamInt('expireDate'),
+                'parentId'       => $this->apiService->getParamInt('parentId'),
+                'userId'         => $this->apiService->getParamInt('userId', false),
+                'userGroupId'    => $this->apiService->getParamInt('userGroupId', false),
+                'userEditId'     => $this->context->getUserData()->id,
+                'tags'           => array_map(
+                    'intval',
+                    $this->apiService->getParamArray('tagsId', false, [])
+                ),
+            ]
         );
-
-        if (count($tagsId) !== 0) {
-            $accountRequest->updateTags = true;
-            $accountRequest->tags = $tagsId;
-        }
-
-        return $accountRequest;
     }
 }

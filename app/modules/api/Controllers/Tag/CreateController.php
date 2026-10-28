@@ -32,6 +32,9 @@ use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Tag\Models\Tag;
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class CreateController
@@ -50,7 +53,7 @@ final class CreateController extends TagBase
 
             $id = $this->tagService->create($tagData);
 
-            $tagData->setId($id);
+            $tagData = $tagData->mutate(['id' => $id]);
 
             $this->eventDispatcher->notify(
                 'create.tag',
@@ -63,7 +66,7 @@ final class CreateController extends TagBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $id, __('Tag added')));
+            $this->returnResponse(ApiResponse::makeSuccess($tagData, __('Tag added'), $id));
         } catch (Exception $e) {
             processException($e);
 
@@ -77,9 +80,6 @@ final class CreateController extends TagBase
      */
     private function buildTagData(): Tag
     {
-        $tagData = new Tag();
-        $tagData->setName($this->apiService->getParamString('name', true));
-
-        return $tagData;
+        return (new Tag(['name' => $this->apiService->getParamString('name', true)]))->withHash();
     }
 }

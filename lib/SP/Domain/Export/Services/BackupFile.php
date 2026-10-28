@@ -85,6 +85,10 @@ final class BackupFile extends Service implements BackupFileService
     {
         set_time_limit(0);
 
+        if (!is_dir($backupPath) && !mkdir($backupPath, 0755, true) && !is_dir($backupPath)) {
+            throw ServiceException::error(__u('Unable to create the backups directory'));
+        }
+
         try {
             $this->deleteOldBackups($backupPath);
 
@@ -116,12 +120,24 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function deleteOldBackups(string $backupPath): void
     {
-        FileSystem::deleteByPattern(
-            $backupPath,
+        $currentFiles = [
+            basename((string)$this->backupFiles->getAppBackupFile()),
+            basename((string)$this->backupFiles->getDbBackupFile()),
+        ];
+
+        $patterns = [
             AppInfoInterface::APP_NAME . '_db-*',
             AppInfoInterface::APP_NAME . '_app-*',
             AppInfoInterface::APP_NAME . '*.sql',
-        );
+        ];
+
+        foreach ($patterns as $pattern) {
+            foreach (glob(FileSystem::buildPath($backupPath, $pattern)) ?: [] as $file) {
+                if (!in_array(basename($file), $currentFiles, true)) {
+                    @unlink($file);
+                }
+            }
+        }
     }
 
     /**
@@ -241,8 +257,6 @@ final class BackupFile extends Service implements BackupFileService
         $this->dbBackupFile->write(implode(PHP_EOL, $sqlOut));
 
         $this->dbArchiveHandler->compressFile($this->dbBackupFile->getFile());
-
-        $this->dbBackupFile->delete();
     }
 
     /**

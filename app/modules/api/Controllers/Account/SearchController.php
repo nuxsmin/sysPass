@@ -38,6 +38,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Modules\Api\Controllers\ControllerBase;
+use function SP\processException;
 
 /**
  * Class SearchController
@@ -79,7 +80,7 @@ final class SearchController extends ControllerBase
 
             $this->returnResponse(
                 ApiResponse::makeSuccess(
-                    $this->accountSearchService->getByFilter($accountSearchFilter)->getDataAsArray()
+                    ($this->accountSearchService->getByFilter($accountSearchFilter)->getDataAsArray() ?? [])
                 )
             );
         } catch (Exception $e) {
@@ -95,7 +96,7 @@ final class SearchController extends ControllerBase
      */
     private function buildAccountSearchFilter(): AccountSearchFilterDto
     {
-        $filter = AccountSearchFilterDto::build($this->apiService->getParamString('text'))
+        $filter = AccountSearchFilterDto::build($this->apiService->getParamString('text') ?? '')
                                         ->setCategoryId($this->apiService->getParamInt('categoryId'))
                                         ->setClientId($this->apiService->getParamInt('clientId'))
                                         ->setTagsId(

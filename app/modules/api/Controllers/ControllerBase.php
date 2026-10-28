@@ -39,6 +39,8 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Ports\JsonResponseFactory;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class ControllerBase

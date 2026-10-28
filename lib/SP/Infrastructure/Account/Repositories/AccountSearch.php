@@ -117,8 +117,14 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
     {
         $this->accountFilterUser->buildFilter($accountSearchFilter->getGlobalSearch(), $this->query);
         $this->filterByText($accountSearchFilter);
-        $this->filterByCategory($accountSearchFilter);
-        $this->filterByClient($accountSearchFilter);
+
+        if (AccountSearchConstants::FILTER_CHAIN_OR === $accountSearchFilter->getFilterOperator()) {
+            $this->filterByCategoryOrClient($accountSearchFilter);
+        } else {
+            $this->filterByCategory($accountSearchFilter);
+            $this->filterByClient($accountSearchFilter);
+        }
+
         $this->filterByFavorite($accountSearchFilter);
         $this->filterByTags($accountSearchFilter);
         $this->setOrder($accountSearchFilter);
@@ -185,11 +191,35 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
         if ($accountSearchFilter->getClientId() !== null) {
             $this->query
                 ->where(
-                    'Account.categoryId = :clientId',
+                    'Account.clientId = :clientId',
                     [
-                        'categoryId' => $accountSearchFilter->getClientId(),
+                        'clientId' => $accountSearchFilter->getClientId(),
                     ]
                 );
+        }
+    }
+
+    /**
+     * @param AccountSearchFilterDto $accountSearchFilter
+     * @return void
+     */
+    private function filterByCategoryOrClient(AccountSearchFilterDto $accountSearchFilter): void
+    {
+        $where = [];
+        $bindValues = [];
+
+        if ($accountSearchFilter->getCategoryId() !== null) {
+            $where[] = 'Account.categoryId = :categoryId';
+            $bindValues['categoryId'] = $accountSearchFilter->getCategoryId();
+        }
+
+        if ($accountSearchFilter->getClientId() !== null) {
+            $where[] = 'Account.clientId = :clientId';
+            $bindValues['clientId'] = $accountSearchFilter->getClientId();
+        }
+
+        if ($where !== []) {
+            $this->query->where(sprintf('(%s)', implode(' OR ', $where)), $bindValues);
         }
     }
 
@@ -225,22 +255,29 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
                 'AccountToTag.accountId = Account.id'
             );
 
+            $tagPlaceholders = [];
+            $tagBindValues = [];
+
+            foreach (array_values($accountSearchFilter->getTagsId()) as $index => $tagId) {
+                $placeholder = sprintf('tagId%d', $index);
+                $tagPlaceholders[] = ':' . $placeholder;
+                $tagBindValues[$placeholder] = $tagId;
+            }
+
             $this->query
                 ->where(
-                    'AccountToTag.tagId IN (:tagId)',
-                    [
-                        'tagId' => $accountSearchFilter->getTagsId(),
-                    ]
+                    sprintf('AccountToTag.tagId IN (%s)', implode(', ', $tagPlaceholders)),
+                    $tagBindValues
                 );
 
             if (AccountSearchConstants::FILTER_CHAIN_AND === $accountSearchFilter->getFilterOperator()) {
                 $this->query
                     ->groupBy(['Account.id'])
                     ->having(
-                        'COUNT(DISTINCT AccountToTag.tagId) = :tagsCount',
-                        [
-                            'tagsCount' => count($accountSearchFilter->getTagsId()),
-                        ]
+                        sprintf(
+                            'COUNT(DISTINCT AccountToTag.tagId) = %d',
+                            count($accountSearchFilter->getTagsId())
+                        )
                     );
             }
         }

@@ -73,7 +73,7 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newUpdate()
             ->table(UserModel::TABLE)
-            ->cols($user->toArray(null, ['id', 'hashSalt']))
+            ->cols($user->toArray(null, ['id', 'hashSalt', 'userGroupName']))
             ->set('lastUpdate', 'NOW()')
             ->where('id = :id', ['id' => $user->getId()])
             ->limit(1);
@@ -177,8 +177,8 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE))
-            ->cols(UserGroupModel::getColsWithPreffix(UserGroupModel::TABLE))
+            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName']))
+            ->cols(['UserGroup.name AS userGroupName'])
             ->from(UserModel::TABLE)
             ->innerJoin(
                 UserGroupModel::TABLE,
@@ -239,8 +239,8 @@ final class User extends BaseRepository implements UserRepository
                 UserProfileModel::TABLE,
                 sprintf('%s.id = %s.userProfileId', UserProfileModel::TABLE, UserModel::TABLE)
             )
-            ->cols(UserModel::getCols(['hash']))
-            ->cols(UserGroupModel::getColsWithPreffix(UserGroupModel::TABLE))
+            ->cols(UserModel::getCols(['userGroupName', 'hash']))
+            ->cols(['UserGroup.name AS userGroupName'])
             ->cols(UserProfileModel::getColsWithPreffix(UserProfileModel::TABLE))
             ->orderBy(['name'])
             ->limit($itemSearchData->getLimitCount())
@@ -280,7 +280,7 @@ final class User extends BaseRepository implements UserRepository
         }
 
         $userData = array_filter(
-            $user->toArray(null, ['id']),
+            $user->toArray(null, ['id', 'userGroupName']),
             static fn($value) => $value !== null
         );
         $userData['hashSalt'] = '';
@@ -338,8 +338,8 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE))
-            ->cols(UserGroupModel::getColsWithPreffix(UserGroupModel::TABLE))
+            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName']))
+            ->cols(['UserGroup.name AS userGroupName'])
             ->from(UserModel::TABLE)
             ->innerJoin(
                 UserGroupModel::TABLE,
@@ -365,7 +365,7 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(UserModel::TABLE)
-            ->cols(UserModel::getCols())
+            ->cols(UserModel::getCols(['userGroupName']))
             ->orderBy(['name']);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, UserModel::class));
@@ -508,7 +508,7 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE))
+            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName']))
             ->from(UserModel::TABLE)
             ->innerJoin(
                 UserGroupModel::TABLE,
@@ -544,7 +544,7 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getCols())
+            ->cols(UserModel::getCols(['userGroupName']))
             ->from(UserModel::TABLE)
             ->where('email IS NOT NULL')
             ->where('isDisabled = 0')
@@ -566,7 +566,7 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getCols())
+            ->cols(UserModel::getCols(['userGroupName']))
             ->from(UserModel::TABLE)
             ->where('id IN (:ids)', ['ids' => $ids])
             ->where('email IS NOT NULL')

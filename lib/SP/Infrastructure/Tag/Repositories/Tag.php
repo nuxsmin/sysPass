@@ -120,13 +120,9 @@ final class Tag extends BaseRepository implements TagRepository
             ->newUpdate()
             ->table(TagModel::TABLE)
             ->cols($tag->toArray(null, ['id', 'hash']))
+            ->col('hash', $this->makeItemHash($tag->getName()))
             ->where('id = :id')
-            ->bindValues(
-                [
-                    'id' => $tag->getId(),
-                    'hash' => $this->makeItemHash($tag->getName())
-                ]
-            );
+            ->bindValues(['id' => $tag->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the tag'));
 

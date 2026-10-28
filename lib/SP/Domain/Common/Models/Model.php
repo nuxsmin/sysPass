@@ -111,7 +111,10 @@ abstract class Model implements JsonSerializable, ArrayAccess
 
     final public static function getColsWithPreffix(string $preffix, ?array $exclude = null): array
     {
-        return array_map(static fn(string $name) => sprintf('%s.%s', $preffix, $name), self::getCols($exclude));
+        return array_map(
+            static fn(string $name) => sprintf('%s.%s', $preffix, self::quoteColumn($name)),
+            array_keys((new static())->toArray(null, $exclude))
+        );
     }
 
     /**
@@ -123,7 +126,15 @@ abstract class Model implements JsonSerializable, ArrayAccess
      */
     final public static function getCols(?array $exclude = null): array
     {
-        return array_keys((new static())->toArray(null, $exclude));
+        return array_map(
+            static fn(string $name) => self::quoteColumn($name),
+            array_keys((new static())->toArray(null, $exclude))
+        );
+    }
+
+    private static function quoteColumn(string $name): string
+    {
+        return $name === 'key' ? '`key`' : $name;
     }
 
     public function offsetExists(mixed $offset): bool

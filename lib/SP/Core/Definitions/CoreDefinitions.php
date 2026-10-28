@@ -434,10 +434,7 @@ final class CoreDefinitions
                     create(FileHandler::class)
                         ->constructor(
                             factory(
-                                static fn(PathsContext $pathsContext) => FileSystem::buildPath(
-                                    $pathsContext[Path::BACKUP],
-                                    'database.sql'
-                                )
+                                static fn(BackupFiles $backupFiles) => (string)$backupFiles->getDbBackupFile()
                             ),
                             'wb+'
                         )

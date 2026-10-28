@@ -45,6 +45,7 @@ use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Domain\Account\Ports\AccountToUserRepository;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -132,9 +133,12 @@ final class Account extends Service implements AccountService
      */
     public function withTags(AccountEnrichedDto $accountEnrichedDto): AccountEnrichedDto
     {
-        return $accountEnrichedDto->withTags(
+        $tags = array_map(
+            static fn($tag) => Item::buildFromSimpleModel($tag),
             $this->accountToTagRepository->getTagsByAccountId($accountEnrichedDto->getId())->getDataAsArray()
         );
+
+        return $accountEnrichedDto->withTags($tags);
     }
 
     /**
@@ -604,6 +608,16 @@ final class Account extends Service implements AccountService
     public function getAllBasic(): array
     {
         return $this->accountRepository->getAll()->getDataAsArray();
+    }
+
+    /**
+     * @return array<AccountModel>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getAllForExport(): array
+    {
+        return $this->accountRepository->getAllForExport()->getDataAsArray();
     }
 
     /**

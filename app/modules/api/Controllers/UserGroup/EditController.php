@@ -32,6 +32,9 @@ use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\Models\UserGroup;
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class EditController
@@ -63,7 +66,7 @@ final class EditController extends UserGroupBase
             );
 
             $this->returnResponse(
-                ApiResponse::makeSuccess($userGroupData, $userGroupData->getId(), __('Group updated'))
+                ApiResponse::makeSuccess($userGroupData, __('Group updated'), $userGroupData->getId())
             );
         } catch (Exception $e) {
             processException($e);
@@ -78,12 +81,13 @@ final class EditController extends UserGroupBase
      */
     private function buildUserGroupData(): UserGroup
     {
-        $userGroupData = new UserGroup();
-        $userGroupData->setId($this->apiService->getParamInt('id', true));
-        $userGroupData->setName($this->apiService->getParamString('name', true));
-        $userGroupData->setDescription($this->apiService->getParamString('description'));
-        $userGroupData->setUsers($this->apiService->getParamArray('usersId'));
-
-        return $userGroupData;
+        return new UserGroup(
+            [
+                'id'          => $this->apiService->getParamInt('id', true),
+                'name'        => $this->apiService->getParamString('name', true),
+                'description' => $this->apiService->getParamString('description'),
+                'users'       => $this->apiService->getParamArray('usersId'),
+            ]
+        );
     }
 }

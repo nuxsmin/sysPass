@@ -29,6 +29,7 @@ namespace SP\Infrastructure\Common\Repositories;
 use Aura\SqlQuery\QueryFactory;
 use Closure;
 use Exception;
+use Throwable;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Ports\Repository;
@@ -76,7 +77,7 @@ abstract class BaseRepository implements Repository
                 $this->db->endTransaction();
 
                 return $result;
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 $this->db->rollbackTransaction();
 
                 logger('Transaction:Rollback');
@@ -86,6 +87,10 @@ abstract class BaseRepository implements Repository
                     new Event($this, EventMessage::build()->addDescription(__u('Rollback')))
                 );
                 $this->eventDispatcher->notify('exception', new Event($e));
+
+                if ($e instanceof SPException) {
+                    throw $e;
+                }
 
                 throw new ServiceException(__u('Rollback'), SPException::ERROR, null, $e->getCode(), $e);
             }

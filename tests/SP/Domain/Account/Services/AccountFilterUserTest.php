@@ -47,16 +47,16 @@ class AccountFilterUserTest extends UnitaryTestCase
 {
     private const WHERE_HASHES = [
         'Account' => [
-            'withoutGlobalSearch' => '12fc7a2aa62477d11938d028b5648670252e66dc',
-            'withoutGlobalSearchAndFullGroupAccess' => '703fc200665cebcd102714035189780515eeff39',
-            'withGlobalSearchPrivate' => 'fa13ffe26c4c597a1a7e54486409927a8c722176',
-            'withGlobalSearchPrivateGroup' => '26a211bd03e2a150bd1f2dffd6d78638a94634ea',
+            'withoutGlobalSearch' => 'c14bbb066e19a0a9072fc047617779580f6bd104',
+            'withoutGlobalSearchAndFullGroupAccess' => '0d7be1abdfae8c3f5d99dd169142d734a0219820',
+            'withGlobalSearchPrivate' => '0213f7fd63d743b480dea2760bd0f952e1f022af',
+            'withGlobalSearchPrivateGroup' => '4a87f998abe0e0bd423496fb61a0a8abc1ac1be6',
         ],
         'AccountHistory' => [
-            'withoutGlobalSearch' => 'f5dc834955371863301a516ee7606436d522abdd',
-            'withoutGlobalSearchAndFullGroupAccess' => '3ef96426906a1c96ba6c4e5d768dd182acc35b93',
-            'withGlobalSearchPrivate' => '4daf2520c5b791b66dadf0e83b681d7fea6df17f',
-            'withGlobalSearchPrivateGroup' => 'c5282775ef23fd9130e60223e3613d999fa89094',
+            'withoutGlobalSearch' => 'f175e5a053e2db8013193669d8f6144f8067fa69',
+            'withoutGlobalSearchAndFullGroupAccess' => '231a8527427568438079bcda1a6bf29a2b50a025',
+            'withGlobalSearchPrivate' => '1579e1c2fb88f57c5fe8613870043e3f19bdea8a',
+            'withGlobalSearchPrivateGroup' => 'd3214ff2771ddd85aba2108bfc48da20b1c0064d',
         ],
     ];
     private AccountFilter $accountFilter;
@@ -76,7 +76,11 @@ class AccountFilterUserTest extends UnitaryTestCase
      * @return void
      * @throws Exception
      */
-    private function setExpectationWithoutGlobalSearch(string $tableName, ?array $whereConsecutiveArgs = null): void
+    private function setExpectationWithoutGlobalSearch(
+        string $tableName,
+        ?array $whereConsecutiveArgs = null,
+        bool   $fullGroupAccess = false
+    ): void
     {
         $whereConsecutiveArgs = $whereConsecutiveArgs ?? $this->buildConsecutiveArgsFor($tableName);
 
@@ -89,10 +93,7 @@ class AccountFilterUserTest extends UnitaryTestCase
                ->with(...self::withConsecutive(...$whereConsecutiveArgs))
                ->willReturnSelf();
         $select->expects(self::exactly(1))->method('bindValues')
-               ->with([
-                          'userId' => $this->context->getUserData()->id,
-                          'userGroupId' => $this->context->getUserData()->userGroupId,
-                      ]);
+               ->with($this->buildBindValues($fullGroupAccess));
     }
 
     private function buildConsecutiveArgsFor(string $tableName): array
@@ -110,6 +111,33 @@ class AccountFilterUserTest extends UnitaryTestCase
                 new Callback(static fn($where) => sha1($where)
                                                   === self::WHERE_HASHES[$tableName]['withGlobalSearchPrivateGroup']),
             ],
+        ];
+    }
+
+    private function buildBindValues(bool $fullGroupAccess = false): array
+    {
+        $values = [
+            'userIdOwner' => $this->context->getUserData()->id,
+            'userGroupIdOwner' => $this->context->getUserData()->userGroupId,
+            'userIdAccountUser' => $this->context->getUserData()->id,
+            'userGroupIdAccountGroup' => $this->context->getUserData()->userGroupId,
+            'userIdGroupMembership' => $this->context->getUserData()->id,
+            'userIdPrivate' => $this->context->getUserData()->id,
+            'userGroupIdPrivate' => $this->context->getUserData()->userGroupId,
+        ];
+
+        if ($fullGroupAccess) {
+            $values['userIdFullGroup'] = $this->context->getUserData()->id;
+        }
+
+        return $values;
+    }
+
+    private function buildPrivateBindValues(): array
+    {
+        return [
+            'userIdPrivate' => $this->context->getUserData()->id,
+            'userGroupIdPrivate' => $this->context->getUserData()->userGroupId,
         ];
     }
 
@@ -131,7 +159,7 @@ class AccountFilterUserTest extends UnitaryTestCase
             ]
         );
 
-        $this->setExpectationWithoutGlobalSearch('Account', $whereConsecutiveArgsWithFullGroupAccess);
+        $this->setExpectationWithoutGlobalSearch('Account', $whereConsecutiveArgsWithFullGroupAccess, true);
 
         $this->accountFilter->buildFilter();
     }
@@ -144,10 +172,7 @@ class AccountFilterUserTest extends UnitaryTestCase
         $select->expects(self::never())->method('from');
         $select->expects(self::exactly(3))->method('where')->willReturnSelf();
         $select->expects(self::exactly(1))->method('bindValues')
-               ->with([
-                          'userId' => $this->context->getUserData()->id,
-                          'userGroupId' => $this->context->getUserData()->userGroupId,
-                      ]);
+               ->with($this->buildBindValues());
 
         $this->accountFilter->buildFilter(false, $select);
     }
@@ -186,10 +211,7 @@ class AccountFilterUserTest extends UnitaryTestCase
                ->with(...self::withConsecutive(...$whereConsecutiveArgs))
                ->willReturnSelf();
         $select->expects(self::exactly(1))->method('bindValues')
-               ->with([
-                          'userId' => $this->context->getUserData()->id,
-                          'userGroupId' => $this->context->getUserData()->userGroupId,
-                      ]);
+               ->with($this->buildPrivateBindValues());
     }
 
     /**
@@ -275,10 +297,7 @@ class AccountFilterUserTest extends UnitaryTestCase
         $select->expects(self::never())->method('from');
         $select->expects(self::exactly(3))->method('where')->willReturnSelf();
         $select->expects(self::exactly(1))->method('bindValues')
-               ->with([
-                          'userId' => $this->context->getUserData()->id,
-                          'userGroupId' => $this->context->getUserData()->userGroupId,
-                      ]);
+               ->with($this->buildBindValues());
 
         $this->accountFilter->buildFilterHistory(false, $select);
     }
@@ -301,7 +320,7 @@ class AccountFilterUserTest extends UnitaryTestCase
             ]
         );
 
-        $this->setExpectationWithoutGlobalSearch('AccountHistory', $whereConsecutiveArgsWithFullGroupAccess);
+        $this->setExpectationWithoutGlobalSearch('AccountHistory', $whereConsecutiveArgsWithFullGroupAccess, true);
 
         $this->accountFilter->buildFilterHistory();
     }

@@ -65,9 +65,10 @@ class ItemPresetTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 4
+                return count($params) === 5
                        && $params['type'] === 'test'
                        && $params['userId'] === 100
+                       && $params['userIdGroup'] === 100
                        && $params['userGroupId'] === 200
                        && $params['userProfileId'] === 300
                        && $arg->getMapClassName() === ItemPresetModel::class

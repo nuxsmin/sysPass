@@ -46,6 +46,7 @@ use SP\Modules\Api\Controllers\Help\ConfigHelp;
 
 use function SP\__u;
 use function SP\processException;
+use function SP\__;
 
 /**
  * Class ExportController
@@ -109,7 +110,7 @@ final class ExportController extends ControllerBase
 
             $exportFiles = ['files' => ['xml' => $file]];
 
-            $this->returnResponse(ApiResponse::makeSuccess($exportFiles, null, __('Export process finished')));
+            $this->returnResponse(ApiResponse::makeSuccess($exportFiles, __('Export process finished')));
         } catch (Exception $e) {
             processException($e);
 

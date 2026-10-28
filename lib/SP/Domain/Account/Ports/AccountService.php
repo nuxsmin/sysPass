@@ -238,6 +238,11 @@ interface AccountService
     public function getAllBasic(): array;
 
     /**
+     * @return Account[]
+     */
+    public function getAllForExport(): array;
+
+    /**
      * @param ItemSearchDto $itemSearchData
      *
      * @return QueryResult

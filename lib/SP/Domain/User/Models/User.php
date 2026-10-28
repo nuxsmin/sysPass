@@ -52,6 +52,7 @@ class User extends Model implements ItemWithIdAndNameModel
     protected ?string $email           = null;
     protected ?string $notes           = null;
     protected ?int    $userGroupId     = null;
+    protected ?string $userGroupName   = null;
     protected ?int    $userProfileId   = null;
     protected ?bool   $isAdminApp      = null;
     protected ?bool   $isAdminAcc      = null;

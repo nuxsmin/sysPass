@@ -250,7 +250,7 @@ class AuthTokenTest extends UnitaryTestCase
             )
             ->willReturn(new QueryResult(null, 0, 100));
 
-        $password = $authToken->getHash() . $authToken->getToken();
+        $password = sha1($authToken->getHash() . $authToken->getToken());
 
         $this->crypt
             ->expects(self::once())
@@ -438,7 +438,7 @@ class AuthTokenTest extends UnitaryTestCase
             )
             ->willReturn(true);
 
-        $password = $authToken->getHash() . $authToken->getToken();
+        $password = sha1($authToken->getHash() . $authToken->getToken());
 
         $this->crypt
             ->expects(self::once())

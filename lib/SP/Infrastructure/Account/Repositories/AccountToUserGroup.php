@@ -63,7 +63,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
                        'AccountToUserGroup.isEdit',
                    ])
             ->from('AccountToUserGroup')
-            ->join('INNER', 'UserGroup', 'UserGroup.id == AccountToUserGroup.userGroupId')
+            ->join('INNER', 'UserGroup', 'UserGroup.id = AccountToUserGroup.userGroupId')
             ->where('AccountToUserGroup.accountId = :accountId')
             ->bindValues(['accountId' => $id])
             ->orderBy(['UserGroup.name ASC']);
@@ -90,7 +90,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
                        'AccountToUserGroup.isEdit',
                    ])
             ->from('AccountToUserGroup')
-            ->join('INNER', 'UserGroup', 'UserGroup.id == AccountToUserGroup.userGroupId')
+            ->join('INNER', 'UserGroup', 'UserGroup.id = AccountToUserGroup.userGroupId')
             ->where('AccountToUserGroup.userGroupId = :userGroupId')
             ->bindValues(['userGroupId' => $id])
             ->orderBy(['UserGroup.name ASC']);

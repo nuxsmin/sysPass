@@ -63,8 +63,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
         $query = $this->queryFactory
             ->newDelete()
             ->from(UserGroupModel::TABLE)
-            ->where('id = :id', ['id' => $id])
-            ->limit(1);
+            ->where('id = :id', ['id' => $id]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the group'));
 
@@ -156,7 +155,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserGroupModel::getCols())
+            ->cols(UserGroupModel::getCols(['users']))
             ->from(UserGroupModel::TABLE)
             ->where('id = :id', ['id' => $id])
             ->limit(1);
@@ -177,7 +176,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserGroupModel::getCols())
+            ->cols(UserGroupModel::getCols(['users']))
             ->from(UserGroupModel::TABLE)
             ->where('name = :name', ['name' => $name])
             ->limit(1);
@@ -197,7 +196,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(UserGroupModel::TABLE)
-            ->cols(UserGroupModel::getCols())
+            ->cols(UserGroupModel::getCols(['users']))
             ->orderBy(['name']);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, UserGroupModel::class));
@@ -240,7 +239,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(UserGroupModel::TABLE)
-            ->cols(UserGroupModel::getCols())
+            ->cols(UserGroupModel::getCols(['users']))
             ->orderBy(['name'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
@@ -299,7 +298,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->newSelect()
             ->cols(['id'])
             ->from(UserGroupModel::TABLE)
-            ->where('UPPER(:name) = UPPER(name)', ['name' => $userGroup->getName()]);
+            ->where('name = :name', ['name' => $userGroup->getName()]);
 
         return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
@@ -324,8 +323,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->newUpdate()
             ->table(UserGroupModel::TABLE)
             ->cols($userGroup->toArray(null, ['id', 'users']))
-            ->where('id = :id', ['id' => $userGroup->getId()])
-            ->limit(1);
+            ->where('id = :id', ['id' => $userGroup->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the group'));
 
@@ -348,7 +346,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->cols(['id'])
             ->from(UserGroupModel::TABLE)
             ->where('id <> :id', ['id' => $userGroup->getId()])
-            ->where('UPPER(:name) = UPPER(name)', ['name' => $userGroup->getName()]);
+            ->where('name = :name', ['name' => $userGroup->getName()]);
 
         return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }

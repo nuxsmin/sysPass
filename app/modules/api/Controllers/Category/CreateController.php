@@ -32,6 +32,9 @@ use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class CreateController
@@ -50,7 +53,7 @@ final class CreateController extends CategoryBase
 
             $id = $this->categoryService->create($categoryData);
 
-            $categoryData->setId($id);
+            $categoryData = $categoryData->mutate(['id' => $id]);
 
             $this->eventDispatcher->notify(
                 'create.category',
@@ -63,7 +66,7 @@ final class CreateController extends CategoryBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id, __('Category added')));
+            $this->returnResponse(ApiResponse::makeSuccess($categoryData, __('Category added'), $id));
         } catch (Exception $e) {
             processException($e);
 
@@ -77,10 +80,11 @@ final class CreateController extends CategoryBase
      */
     private function buildCategoryData(): Category
     {
-        $categoryData = new Category();
-        $categoryData->setName($this->apiService->getParamString('name', true));
-        $categoryData->setDescription($this->apiService->getParamString('description'));
-
-        return $categoryData;
+        return new Category(
+            [
+                'name'        => $this->apiService->getParamString('name', true),
+                'description' => $this->apiService->getParamString('description'),
+            ]
+        );
     }
 }

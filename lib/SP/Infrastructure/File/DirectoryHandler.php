@@ -46,7 +46,7 @@ final readonly class DirectoryHandler implements DirectoryHandlerService
     public function checkOrCreate(): void
     {
         if (!$this->isDir() && !$this->create()) {
-            throw CheckException::error(sprintf(__u('Unable to create directory ("%s")'), $this->path));
+            throw CheckException::error(sprintf(__u('Unable to create the directory ("%s")'), $this->path));
         }
 
         if (!$this->isWritable()) {

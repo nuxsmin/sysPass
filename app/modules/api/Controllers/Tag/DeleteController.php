@@ -30,6 +30,9 @@ use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class DeleteController
@@ -61,7 +64,7 @@ final class DeleteController extends TagBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $id, __('Tag removed')));
+            $this->returnResponse(ApiResponse::makeSuccess($tagData, __('Tag removed'), $id));
         } catch (Exception $e) {
             processException($e);
 

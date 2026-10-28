@@ -32,6 +32,13 @@ use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Providers\Image;
 use SP\Domain\Export\Ports\XmlVerifyService;
 use SP\Domain\Export\Services\XmlVerify;
+use SP\Domain\Account\Adapters\Account;
+use SP\Domain\Account\Ports\AccountAdapter;
+use SP\Domain\Category\Adapters\Category;
+use SP\Domain\Category\Ports\CategoryAdapter;
+use SP\Domain\Client\Adapters\Client;
+use SP\Domain\Client\Ports\ClientAdapter;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Services\ImportHelper;
@@ -97,7 +104,13 @@ final class DomainDefinitions
                 'schema',
                 factory(static fn(PathsContext $p) => $p[Path::XML_SCHEMA])
             ),
-            ImportHelperInterface::class => autowire(ImportHelper::class)
+            ImportHelperInterface::class => autowire(ImportHelper::class),
+            AccountAdapter::class => autowire(Account::class)
+                ->constructorParameter('baseUrl', factory([UriContextInterface::class, 'getWebUri'])),
+            CategoryAdapter::class => autowire(Category::class)
+                ->constructorParameter('baseUrl', factory([UriContextInterface::class, 'getWebUri'])),
+            ClientAdapter::class => autowire(Client::class)
+                ->constructorParameter('baseUrl', factory([UriContextInterface::class, 'getWebUri'])),
         ];
 
         foreach (self::DOMAINS as $domain) {

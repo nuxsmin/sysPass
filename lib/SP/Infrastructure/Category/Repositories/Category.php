@@ -122,13 +122,9 @@ final class Category extends BaseRepository implements CategoryRepository
             ->newUpdate()
             ->table(CategoryModel::TABLE)
             ->cols($category->toArray(null, ['id', 'hash']))
+            ->col('hash', $this->makeItemHash($category->getName()))
             ->where('id = :id')
-            ->bindValues(
-                [
-                    'id' => $category->getId(),
-                    'hash' => $this->makeItemHash($category->getName())
-                ]
-            );
+            ->bindValues(['id' => $category->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the category'));
 

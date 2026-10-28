@@ -1113,7 +1113,7 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn(null);
 
         $this->accountRepository->expects(self::once())->method('create')
-            ->with(AccountModel::create($accountCreateDto))
+            ->with(AccountModel::create($accountCreateDto->withEncryptedPassword($encryptedPassword)))
             ->willReturn(new QueryResult(null, 0, $id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')
@@ -1163,7 +1163,7 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn(null);
 
         $this->accountRepository->expects(self::once())->method('create')
-            ->with(AccountModel::create($accountCreateDto))
+            ->with(AccountModel::create($accountCreateDto->withEncryptedPassword($encryptedPassword)))
             ->willReturn(new QueryResult(null, 0, $id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')

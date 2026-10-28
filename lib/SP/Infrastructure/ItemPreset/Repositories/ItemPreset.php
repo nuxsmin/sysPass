@@ -163,13 +163,14 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
                 '(userId = :userId OR userGroupId = :userGroupId  OR userProfileId = :userProfileId
                         OR userGroupId IN (SELECT UserToUserGroup.userGroupId
                         FROM UserToUserGroup
-                        WHERE UserToUserGroup.userId = :userId))'
+                        WHERE UserToUserGroup.userId = :userIdGroup))'
             )
             ->bindValues([
                              'type' => $type,
                              'userId' => $userId,
                              'userGroupId' => $userGroupId,
-                             'userProfileId' => $userProfileId
+                             'userProfileId' => $userProfileId,
+                             'userIdGroup' => $userId
                          ])
             ->orderBy(['score DESC'])
             ->limit(1);

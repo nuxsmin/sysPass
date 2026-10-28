@@ -23,6 +23,8 @@
  */
 
 namespace SP\Modules\Api\Controllers\Help;
+use function SP\__;
+
 
 /**
  * Class ClientHelp

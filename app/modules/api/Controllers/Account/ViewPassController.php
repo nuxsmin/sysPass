@@ -26,11 +26,12 @@ namespace SP\Modules\Api\Controllers\Account;
 
 
 use Exception;
-use SP\Core\Crypt\Crypt;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class ViewController
@@ -47,7 +48,7 @@ final class ViewPassController extends AccountBase
 
             $id = $this->apiService->getParamInt('id', true);
             $accountPassData = $this->accountService->getPasswordForId($id);
-            $password = Crypt::decrypt(
+            $password = $this->crypt->decrypt(
                 $accountPassData->getPass(),
                 $accountPassData->getKey(),
                 $this->apiService->getMasterPass()
@@ -69,7 +70,7 @@ final class ViewPassController extends AccountBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess(["password" => $password], $id));
+            $this->returnResponse(ApiResponse::makeSuccess(["password" => $password], null, $id));
         } catch (Exception $e) {
             processException($e);
 

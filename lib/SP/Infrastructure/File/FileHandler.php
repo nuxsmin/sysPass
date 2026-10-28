@@ -60,7 +60,7 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      */
     public function write(string $data): FileHandlerInterface
     {
-        if ($this->fwrite($data) === false) {
+        if ($this->fwrite($data) === false || $this->fflush() === false) {
             throw FileException::error(sprintf(__('Unable to read/write the file (%s)'), $this->file));
         }
 

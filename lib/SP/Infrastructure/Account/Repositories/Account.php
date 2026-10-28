@@ -94,11 +94,11 @@ final class Account extends BaseRepository implements AccountRepository
         $query = $this->accountFilterUser
             ->buildFilter()
             ->cols([
-                       'Account.id,',
+                       'Account.id',
                        'Account.name',
                        'Account.login',
                        'Account.pass',
-                       'Account.key',
+                       'Account.`key`',
                        'Account.parentId',
                    ])
             ->where('Account.id = :id')
@@ -120,11 +120,11 @@ final class Account extends BaseRepository implements AccountRepository
         $query = $this->accountFilterUser
             ->buildFilterHistory()
             ->cols([
-                       'AccountHistory.id,',
+                       'AccountHistory.id',
                        'AccountHistory.name',
                        'AccountHistory.login',
                        'AccountHistory.pass',
-                       'AccountHistory.key',
+                       'AccountHistory.`key`',
                        'AccountHistory.parentId',
                        'AccountHistory.mPassHash',
                    ])
@@ -170,8 +170,7 @@ final class Account extends BaseRepository implements AccountRepository
             ->newInsert()
             ->into(AccountModel::TABLE)
             ->cols($account->toArray(null, ['countDecrypt', 'countView', 'dateAdd', 'dateEdit', 'id']))
-            ->set('dateAdd', 'NOW()')
-            ->set('passDate', 'UNIX_TIMESTAMP()');
+            ->set('dateAdd', 'NOW()');
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the account'));
 
@@ -479,6 +478,23 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
+     * Returns all the items for exporting
+     *
+     * @return QueryResult<AccountModel>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getAllForExport(): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(AccountModel::TABLE)
+            ->cols(AccountModel::getCols());
+
+        return $this->db->runQuery(QueryData::buildWithMapper($query, AccountModel::class));
+    }
+
+    /**
      * Deletes all the items for given ids
      *
      * @param array $accountsId
@@ -582,7 +598,7 @@ final class Account extends BaseRepository implements AccountRepository
                        'Account.name',
                        'Account.login',
                        'Account.pass',
-                       'Account.key',
+                       'Account.`key`',
                        'Account.url',
                        'Account.notes',
                        'Client.name AS clientName',

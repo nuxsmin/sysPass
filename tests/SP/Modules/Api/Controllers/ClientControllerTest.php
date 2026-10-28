@@ -96,7 +96,7 @@ class ClientControllerTest extends ApiTestCase
         $response = $this->createClient(['name' => 'Google']);
 
         $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Duplicated clientService', $response->error->message);
+        $this->assertEquals('Duplicated client', $response->error->message);
     }
 
     /**
@@ -244,7 +244,7 @@ class ClientControllerTest extends ApiTestCase
         $response = self::processJsonResponse($api);
 
         $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Duplicated clientService', $response->error->message);
+        $this->assertEquals('Duplicated client', $response->error->message);
     }
 
     /**

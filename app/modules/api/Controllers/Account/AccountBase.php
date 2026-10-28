@@ -33,6 +33,7 @@ use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
@@ -48,6 +49,7 @@ abstract class AccountBase extends ControllerBase
     protected AccountService          $accountService;
     protected CustomFieldDataService $customFieldService;
     protected AccountAdapter $accountAdapter;
+    protected CryptInterface $crypt;
 
     /**
      * @throws InvalidClassException
@@ -62,7 +64,8 @@ abstract class AccountBase extends ControllerBase
         AccountPresetService    $accountPresetService,
         AccountService          $accountService,
         CustomFieldDataService $customFieldService,
-        AccountAdapter $accountAdapter
+        AccountAdapter $accountAdapter,
+        CryptInterface          $crypt
     ) {
         parent::__construct(
             $application,
@@ -77,6 +80,7 @@ abstract class AccountBase extends ControllerBase
         $this->accountService = $accountService;
         $this->customFieldService = $customFieldService;
         $this->accountAdapter = $accountAdapter;
+        $this->crypt = $crypt;
 
         $this->apiService->setHelpClass(AccountHelp::class);
     }

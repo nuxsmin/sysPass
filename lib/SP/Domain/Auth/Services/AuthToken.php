@@ -187,7 +187,7 @@ final class AuthToken extends Service implements AuthTokenService
         return Vault::factory($this->crypt)
                     ->saveData(
                         $this->masterKeyStore->get(),
-                        $key . $token
+                        sha1($key . $token)
                     );
     }
 

@@ -238,6 +238,11 @@ interface AccountRepository extends Repository
     public function getAll(): QueryResult;
 
     /**
+     * @return QueryResult<AccountModel>
+     */
+    public function getAllForExport(): QueryResult;
+
+    /**
      * Deletes all the items for given ids
      *
      * @param array $accountsId

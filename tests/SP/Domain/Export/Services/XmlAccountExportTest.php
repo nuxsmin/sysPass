@@ -61,7 +61,7 @@ class XmlAccountExportTest extends UnitaryTestCase
 
         $this->accountService
             ->expects(self::once())
-            ->method('getAllBasic')
+            ->method('getAllForExport')
             ->willReturn([$account]);
 
         $this->accountToTagService
@@ -108,7 +108,7 @@ class XmlAccountExportTest extends UnitaryTestCase
     {
         $this->accountService
             ->expects(self::once())
-            ->method('getAllBasic')
+            ->method('getAllForExport')
             ->willReturn([]);
 
         $this->accountToTagService
@@ -129,7 +129,7 @@ class XmlAccountExportTest extends UnitaryTestCase
     {
         $this->accountService
             ->expects(self::once())
-            ->method('getAllBasic')
+            ->method('getAllForExport')
             ->willThrowException(new RuntimeException('test'));
 
         $this->accountToTagService

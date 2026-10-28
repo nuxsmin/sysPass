@@ -172,8 +172,7 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
             ->newSelect()
             ->cols(UserToUserGroupModel::getCols())
             ->from(UserToUserGroupModel::TABLE)
-            ->where('userGroupId = :userGroupId', ['userGroupId' => $id])
-            ->limit(1);
+            ->where('userGroupId = :userGroupId', ['userGroupId' => $id]);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, UserToUserGroupModel::class));
     }

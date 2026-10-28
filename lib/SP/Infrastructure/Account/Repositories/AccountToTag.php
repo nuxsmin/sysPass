@@ -29,6 +29,7 @@ use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Database\Dtos\QueryResult;
@@ -60,12 +61,12 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
                        'Tag.name',
                    ])
             ->from('AccountToTag')
-            ->join('INNER', 'Tag', 'Tag.id == AccountToTag.tagId')
+            ->join('INNER', 'Tag', 'Tag.id = AccountToTag.tagId')
             ->where('AccountToTag.accountId = :accountId')
             ->bindValues(['accountId' => $id])
             ->orderBy(['Tag.name ASC']);
 
-        return $this->db->runQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, Simple::class));
     }
 
     /**
