@@ -28,6 +28,7 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
@@ -36,7 +37,6 @@ use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Cli\Commands\CommandBase;
 use SP\Modules\Cli\Commands\Validators;
-use SP\Util\Util;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -295,7 +295,7 @@ final class UpdateMasterPasswordCommand extends CommandBase
         $envUpdate = self::getEnvVarForOption($option);
 
         $value = $envUpdate !== false
-            ? Util::boolval($envUpdate)
+            ? Filter::getBool($envUpdate)
             : $input->getOption($option);
 
         if ($value === false) {

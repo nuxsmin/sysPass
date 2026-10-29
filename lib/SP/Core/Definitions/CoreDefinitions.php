@@ -39,6 +39,7 @@ use SessionHandlerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
 use SP\Core\AppLock;
+use SP\Core\Bootstrap\AppPathsAdapter;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Bootstrap\RouteContext;
@@ -54,6 +55,7 @@ use SP\Core\Crypt\UuidCookie;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventDispatcherEmitter;
 use SP\Core\Language;
+use SP\Core\LanguageListAdapter;
 use SP\Core\Log\FunctionLogger;
 use SP\Core\Messages\EventMessageFormatter;
 use SP\Core\Messages\MailMessageFormatter;
@@ -109,6 +111,8 @@ use SP\Domain\Core\Log\LoggerInterface as DomainLoggerInterface;
 use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\Ports\AppLockHandler;
+use SP\Domain\Core\Ports\AppPaths;
+use SP\Domain\Core\Ports\LanguageList;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
@@ -195,6 +199,7 @@ final class CoreDefinitions
 
                 return $pathsContext;
             }),
+            AppPaths::class => autowire(AppPathsAdapter::class),
             KleinRequest::class => factory([KleinRequest::class, 'createFromGlobals']),
             RequestService::class => autowire(Request::class),
             JsonResponseFactory::class => autowire(JsonResponseFactoryAdapter::class),
@@ -362,6 +367,7 @@ final class CoreDefinitions
                     static fn(PathsContext $p) => $p[Path::LOCALES]
                 )
             ),
+            LanguageList::class => autowire(LanguageListAdapter::class),
             DatabaseInterface::class => autowire(Database::class),
             PhpMailerService::class => autowire(PhpMailerService::class),
             MailerInterface::class => factory([PhpMailerService::class, 'configure'])

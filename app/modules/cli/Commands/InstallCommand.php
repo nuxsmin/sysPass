@@ -26,13 +26,13 @@ namespace SP\Modules\Cli\Commands;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use SP\Core\Language;
+use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Exceptions\InstallError;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Ports\LanguageList;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerService;
-use SP\Util\Util;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -72,17 +72,20 @@ final class InstallCommand extends CommandBase
     protected static  $defaultName = 'sp:install';
     private InstallerService $installer;
     private InstallData $installData;
+    private LanguageList $languages;
 
     public function __construct(
         LoggerInterface   $logger,
         ConfigFileService $config,
         InstallerService  $installer,
-        InstallData       $installData
+        InstallData       $installData,
+        LanguageList      $languages
     ) {
         parent::__construct($logger, $config);
 
         $this->installer = $installer;
         $this->installData = $installData;
+        $this->languages = $languages;
     }
 
     protected function configure(): void
@@ -343,7 +346,7 @@ final class InstallCommand extends CommandBase
 
             $language = $style->choice(
                 __('Language'),
-                array_keys(Language::getAvailableLanguages()),
+                array_keys($this->languages->getAvailableLanguages()),
                 'en_US'
             );
         }
@@ -358,7 +361,7 @@ final class InstallCommand extends CommandBase
         $envHostingMode = self::getEnvVarForOption($option);
 
         return $envHostingMode !== false
-            ? Util::boolval($envHostingMode)
+            ? Filter::getBool($envHostingMode)
             : $input->getOption($option);
     }
 
@@ -372,7 +375,7 @@ final class InstallCommand extends CommandBase
         $envForceInstall = self::getEnvVarForOption($option);
 
         $force = $envForceInstall !== false
-            ? Util::boolval($envForceInstall)
+            ? Filter::getBool($envForceInstall)
             : $input->getOption($option);
 
         if ($force === false && $this->configData->isInstalled()) {
@@ -391,7 +394,7 @@ final class InstallCommand extends CommandBase
         $envInstall = self::getEnvVarForOption($option);
 
         $install = $envInstall !== false
-            ? Util::boolval($envInstall)
+            ? Filter::getBool($envInstall)
             : $input->getOption($option);
 
         if ($install === false) {
