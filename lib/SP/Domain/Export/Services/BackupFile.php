@@ -86,7 +86,7 @@ final class BackupFile extends Service implements BackupFileService
         set_time_limit(0);
 
         if (!is_dir($backupPath) && !mkdir($backupPath, 0755, true) && !is_dir($backupPath)) {
-            throw ServiceException::error(__u('Unable to create the backups directory'));
+            throw ServiceException::error('Unable to create the backups directory');
         }
 
         try {
