@@ -31,12 +31,9 @@ final class ContainerWiringTest extends IntegrationTestCase
      */
     private const EXPECTED_UNRESOLVED = [
         // Module-specific adapters need request/base-url data or a module binding.
-        'SP\Domain\Account\Ports\AccountAdapter' => 'module-specific baseUrl',
         'SP\Domain\Api\Ports\ApiRequestService' => 'API module binding',
         'SP\Domain\Api\Ports\ApiService' => 'API module binding',
         'SP\Domain\Api\Ports\HelpProvider' => 'module-specific help implementations',
-        'SP\Domain\Category\Ports\CategoryAdapter' => 'module-specific baseUrl',
-        'SP\Domain\Client\Ports\ClientAdapter' => 'module-specific baseUrl',
         'SP\Domain\CustomField\Ports\CustomFieldAdapter' => 'module-specific baseUrl',
         'SP\Domain\Html\Ports\MinifyService' => 'web module binding (MinifyJs/MinifyCss)',
         'SP\Domain\Plugin\Ports\Plugin' => 'plugin runtime',
