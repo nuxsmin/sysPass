@@ -73,10 +73,9 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newUpdate()
             ->table(UserModel::TABLE)
-            ->cols($user->toArray(null, ['id', 'hashSalt', 'userGroupName']))
+            ->cols($user->toArray(null, ['id', 'hashSalt', 'userGroupName', 'userProfileName']))
             ->set('lastUpdate', 'NOW()')
-            ->where('id = :id', ['id' => $user->getId()])
-            ->limit(1);
+            ->where('id = :id', ['id' => $user->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the user'));
 
@@ -133,8 +132,7 @@ final class User extends BaseRepository implements UserRepository
             ->cols($user->toArray(['pass', 'isChangePass', 'isChangedPass', 'isMigrate']))
             ->set('lastUpdate', 'NOW()')
             ->set('hashSalt', '')
-            ->where('id = :id', ['id' => $user->getId()])
-            ->limit(1);
+            ->where('id = :id', ['id' => $user->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 
@@ -155,8 +153,7 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newDelete()
             ->from(UserModel::TABLE)
-            ->where('id = :id', ['id' => $id])
-            ->limit(1);
+            ->where('id = :id', ['id' => $id]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the user'));
 
@@ -177,7 +174,7 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName']))
+            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName', 'userProfileName']))
             ->cols(['UserGroup.name AS userGroupName'])
             ->from(UserModel::TABLE)
             ->innerJoin(
@@ -239,10 +236,12 @@ final class User extends BaseRepository implements UserRepository
                 UserProfileModel::TABLE,
                 sprintf('%s.id = %s.userProfileId', UserProfileModel::TABLE, UserModel::TABLE)
             )
-            ->cols(UserModel::getCols(['userGroupName', 'hash']))
-            ->cols(['UserGroup.name AS userGroupName'])
-            ->cols(UserProfileModel::getColsWithPreffix(UserProfileModel::TABLE))
-            ->orderBy(['name'])
+            ->cols(UserModel::getCols(['userGroupName', 'userProfileName', 'hash']))
+            ->cols([
+                       'UserGroup.name AS userGroupName',
+                       'UserProfile.name AS userProfileName'
+                   ])
+            ->orderBy([sprintf('%s.name', UserModel::TABLE)])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
@@ -280,7 +279,7 @@ final class User extends BaseRepository implements UserRepository
         }
 
         $userData = array_filter(
-            $user->toArray(null, ['id', 'userGroupName']),
+            $user->toArray(null, ['id', 'userGroupName', 'userProfileName']),
             static fn($value) => $value !== null
         );
         $userData['hashSalt'] = '';
@@ -338,7 +337,7 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName']))
+            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName', 'userProfileName']))
             ->cols(['UserGroup.name AS userGroupName'])
             ->from(UserModel::TABLE)
             ->innerJoin(
@@ -365,7 +364,7 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(UserModel::TABLE)
-            ->cols(UserModel::getCols(['userGroupName']))
+            ->cols(UserModel::getCols(['userGroupName', 'userProfileName']))
             ->orderBy(['name']);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, UserModel::class));
@@ -391,8 +390,7 @@ final class User extends BaseRepository implements UserRepository
             ->set('lastUpdateMPass', 'UNIX_TIMESTAMP()')
             ->set('isMigrate', 0)
             ->set('isChangedPass', 0)
-            ->where('id = :id', ['id' => $id])
-            ->limit(1);
+            ->where('id = :id', ['id' => $id]);
 
         return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
@@ -413,8 +411,7 @@ final class User extends BaseRepository implements UserRepository
             ->table(UserModel::TABLE)
             ->set('lastLogin', 'NOW()')
             ->set('loginCount', 'loginCount + 1')
-            ->where('id = :id', ['id' => $id])
-            ->limit(1);
+            ->where('id = :id', ['id' => $id]);
 
         return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
@@ -463,8 +460,7 @@ final class User extends BaseRepository implements UserRepository
             ->set('loginCount', 'loginCount + 1')
             ->where('UPPER(login) = UPPER(:login)')
             ->where('UPPER(ssoLogin) = UPPER(:login)')
-            ->bindValues(['login' => $user->getLogin()])
-            ->limit(1);
+            ->bindValues(['login' => $user->getLogin()]);
 
         return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
@@ -488,8 +484,7 @@ final class User extends BaseRepository implements UserRepository
             ->newUpdate()
             ->table(UserModel::TABLE)
             ->cols(['preferences' => $userPreferences->toJson()])
-            ->where('id = :id', ['id' => $id])
-            ->limit(1);
+            ->where('id = :id', ['id' => $id]);
 
         return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
@@ -508,7 +503,7 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName']))
+            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName', 'userProfileName']))
             ->from(UserModel::TABLE)
             ->innerJoin(
                 UserGroupModel::TABLE,
@@ -544,7 +539,7 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getCols(['userGroupName']))
+            ->cols(UserModel::getCols(['userGroupName', 'userProfileName']))
             ->from(UserModel::TABLE)
             ->where('email IS NOT NULL')
             ->where('isDisabled = 0')
@@ -566,7 +561,7 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getCols(['userGroupName']))
+            ->cols(UserModel::getCols(['userGroupName', 'userProfileName']))
             ->from(UserModel::TABLE)
             ->where('id IN (:ids)', ['ids' => $ids])
             ->where('email IS NOT NULL')

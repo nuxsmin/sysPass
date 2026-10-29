@@ -35,9 +35,9 @@ use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserPassRecoverService;
-use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserForm;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
@@ -45,7 +45,8 @@ use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
  */
 abstract class UserSaveBase extends ControllerBase
 {
-    protected UserService $userService;
+    use ItemTrait;
+
     protected CustomFieldDataService $customFieldService;
     protected UserForm  $form;
     private MailService            $mailService;
@@ -54,7 +55,6 @@ abstract class UserSaveBase extends ControllerBase
     public function __construct(
         Application            $application,
         WebControllerHelper    $webControllerHelper,
-        UserService $userService,
         CustomFieldDataService $customFieldService,
         MailService            $mailService,
         UserPassRecoverService $userPassRecoverService
@@ -63,7 +63,6 @@ abstract class UserSaveBase extends ControllerBase
 
         $this->checkLoggedIn();
 
-        $this->userService = $userService;
         $this->customFieldService = $customFieldService;
         $this->mailService = $mailService;
         $this->userPassRecoverService = $userPassRecoverService;

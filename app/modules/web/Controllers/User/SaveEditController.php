@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,71 +26,76 @@ namespace SP\Modules\Web\Controllers\User;
 
 
 use Exception;
-use JsonException;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
+use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\Notification\Ports\MailService;
+use SP\Domain\User\Ports\UserPassRecoverService;
+use SP\Domain\User\UseCases\Dtos\UpdateUserCommand;
+use SP\Domain\User\UseCases\UpdateUserUseCase;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class SaveEditController
  */
 final class SaveEditController extends UserSaveBase
 {
-    use ItemTrait;
-    use JsonTrait;
+    public function __construct(
+        Application            $application,
+        WebControllerHelper    $webControllerHelper,
+        private readonly UpdateUserUseCase $updateUserUseCase,
+        CustomFieldDataService $customFieldService,
+        MailService            $mailService,
+        UserPassRecoverService $userPassRecoverService
+    ) {
+        parent::__construct(
+            $application,
+            $webControllerHelper,
+            $customFieldService,
+            $mailService,
+            $userPassRecoverService
+        );
+    }
 
-    /**
-     * Saves edit action
-     *
-     * @param  int  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function saveEditAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function saveEditAction(int $id): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
+        if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
 
+        try {
             $this->form->validateFor(AclActionsInterface::USER_EDIT, $id);
 
-            $itemData = $this->form->getItemData();
-
-            $this->userService->update($itemData);
-
-            $this->eventDispatcher->notify(
-                'edit.user',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('User updated'))
-                        ->addDetail(__u('User'), $itemData->getName())
-                        ->addExtra('userId', $id)
-                )
+            $this->updateUserUseCase->execute(
+                new UpdateUserCommand($this->form->getItemData())
             );
 
-            $this->updateCustomFieldsForItem(AclActionsInterface::USER, $id, $this->request, $this->customFieldService);
+            $this->updateCustomFieldsForItem(
+                AclActionsInterface::USER,
+                $id,
+                $this->request,
+                $this->customFieldService
+            );
 
-            $this->checkChangeUserPass($id, $itemData);
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('User updated'));
-        } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
+            $this->checkChangeUserPass($id, $this->form->getItemData());
+        } catch (SPException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
+
+        return ActionResponse::ok(__u('User updated'));
     }
 }

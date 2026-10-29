@@ -25,76 +25,34 @@
 namespace SP\Modules\Web\Controllers\User;
 
 
-use JsonException;
 use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\User\Ports\UserService;
-use SP\Modules\Web\Html\DataGrid\DataGridInterface;
-use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Domain\User\UseCases\Dtos\SearchUsersCommand;
+use SP\Domain\User\UseCases\SearchUsersUseCase;
 use SP\Modules\Web\Controllers\Helpers\Grid\UserGrid;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Controllers\SearchGridControllerBase;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class SearchController
  */
-final class SearchController extends ControllerBase
+final class SearchController extends SearchGridControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
-
-    private UserService $userService;
-    private UserGrid    $userGrid;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        UserService $userService,
-        UserGrid    $userGrid
+        private readonly SearchUsersUseCase $searchUsersUseCase,
+        private readonly UserGrid $userGrid
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->userService = $userService;
-        $this->userGrid = $userGrid;
     }
 
-    /**
-     * Search action
-     *
-     * @return bool
-     * @throws JsonException
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function searchAction(): bool
-    {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::USER_SEARCH)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
-            );
-        }
-
-        $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
-        $this->view->assign('data', $this->getSearchGrid());
-
-        return $this->returnJsonResponseData(['html' => $this->render()]);
-    }
-
-    /**
-     * getSearchGrid
-     *
-     * @return DataGridInterface
-     * @throws ConstraintException
-     * @throws QueryException
-     */
     protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData(
@@ -102,9 +60,16 @@ final class SearchController extends ControllerBase
             $this->request
         );
 
+        $result = $this->searchUsersUseCase->execute(new SearchUsersCommand($itemSearchData));
+
         return $this->userGrid->updatePager(
-            $this->userGrid->getGrid($this->userService->search($itemSearchData)),
+            $this->userGrid->getGrid($result->result),
             $itemSearchData
         );
+    }
+
+    protected function getAclAction(): int
+    {
+        return AclActionsInterface::USER_SEARCH;
     }
 }
