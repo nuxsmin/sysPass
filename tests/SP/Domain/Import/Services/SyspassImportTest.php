@@ -808,7 +808,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(4))
             ->method('create')
             ->with(self::callback(static fn(Client $client) => !empty($client->getName())))
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 3)));
+            ->willReturn(1001, 1002, 1003, 1004);
 
         $this->categoryService
             ->expects(self::exactly(5))
@@ -825,7 +825,7 @@ class SyspassImportTest extends UnitaryTestCase
                                                      empty($category->getDescription())
                 )
             )
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 4)));
+            ->willReturn(2001, 2002, 2003, 2004, 2005);
 
         $this->tagService
             ->expects(self::exactly(7))
@@ -839,7 +839,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(7))
             ->method('create')
             ->with(self::callback(static fn(Tag $tag) => !empty($tag->getName())))
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 6)));
+            ->willReturn(3001, 3002, 3003, 3004, 3005, 3006, 3007);
 
         $this->crypt
             ->expects(self::never())

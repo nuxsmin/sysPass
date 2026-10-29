@@ -229,9 +229,9 @@ class ConfigTest extends UnitaryTestCase
             ->willReturn(new QueryResult([1]));
 
         $configRequest = new ConfigRequest();
-        $configRequest->add(self::$faker->colorName, self::$faker->text);
-        $configRequest->add(self::$faker->colorName, self::$faker->text);
-        $configRequest->add(self::$faker->colorName, self::$faker->text);
+        $configRequest->add(self::$faker->unique()->colorName, self::$faker->text);
+        $configRequest->add(self::$faker->unique()->colorName, self::$faker->text);
+        $configRequest->add(self::$faker->unique()->colorName, self::$faker->text);
 
         $this->configService->saveBatch($configRequest);
     }
