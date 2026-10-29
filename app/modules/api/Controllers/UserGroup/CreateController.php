@@ -28,7 +28,7 @@ namespace SP\Modules\Api\Controllers\UserGroup;
 use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\Models\UserGroup;
@@ -65,7 +65,7 @@ final class CreateController extends UserGroupBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, __('Group added'), $id));
+            $this->returnResponse(ActionResponse::ok(__('Group added'), $userGroupData, $id));
         } catch (Exception $e) {
             processException($e);
 

@@ -28,7 +28,7 @@ namespace SP\Modules\Api\Controllers\Tag;
 use Klein\Klein;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
-use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
+use SP\Modules\Api\Adapters\ActionResponseAdapter;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Http\Ports\JsonResponseFactory;
@@ -51,7 +51,7 @@ abstract class TagBase extends ControllerBase
         Klein        $router,
         ApiService   $apiService,
         AclInterface $acl,
-        JsonRpcResponseFormatter $jsonRpcResponseFormatter,
+        ActionResponseAdapter $actionResponseAdapter,
         JsonResponseFactory $jsonResponseFactory,
         TagService $tagService
     ) {
@@ -60,7 +60,7 @@ abstract class TagBase extends ControllerBase
             $router,
             $apiService,
             $acl,
-            $jsonRpcResponseFormatter,
+            $actionResponseAdapter,
             $jsonResponseFactory
         );
 

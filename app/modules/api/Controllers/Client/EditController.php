@@ -28,7 +28,7 @@ namespace SP\Modules\Api\Controllers\Client;
 use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -64,7 +64,7 @@ final class EditController extends ClientBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, __('Client updated'), $clientData->getId()));
+            $this->returnResponse(ActionResponse::ok(__('Client updated'), $clientData, $clientData->getId()));
         } catch (Exception $e) {
             processException($e);
 

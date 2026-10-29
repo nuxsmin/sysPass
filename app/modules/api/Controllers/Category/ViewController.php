@@ -28,7 +28,7 @@ use Exception;
 use League\Fractal\Resource\Item;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Util\Util;
 use function SP\__u;
@@ -73,7 +73,7 @@ final class ViewController extends CategoryBase
                 $this->fractal->parseIncludes(['customFields']);
             }
 
-            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), null, $id));
+            $this->returnResponse(ActionResponse::ok('', $out->toArray(), $id));
         } catch (Exception $e) {
             processException($e);
 

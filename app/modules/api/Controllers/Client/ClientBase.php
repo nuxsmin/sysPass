@@ -28,7 +28,7 @@ namespace SP\Modules\Api\Controllers\Client;
 use Klein\Klein;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
-use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
+use SP\Modules\Api\Adapters\ActionResponseAdapter;
 use SP\Domain\Client\Ports\ClientAdapter;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclInterface;
@@ -53,7 +53,7 @@ abstract class ClientBase extends ControllerBase
         Klein                  $router,
         ApiService    $apiService,
         AclInterface  $acl,
-        JsonRpcResponseFormatter $jsonRpcResponseFormatter,
+        ActionResponseAdapter $actionResponseAdapter,
         JsonResponseFactory $jsonResponseFactory,
         ClientService $clientService,
         ClientAdapter $clientAdapter
@@ -63,7 +63,7 @@ abstract class ClientBase extends ControllerBase
             $router,
             $apiService,
             $acl,
-            $jsonRpcResponseFormatter,
+            $actionResponseAdapter,
             $jsonResponseFactory
         );
 

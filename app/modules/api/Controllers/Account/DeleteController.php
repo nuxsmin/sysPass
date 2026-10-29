@@ -28,7 +28,7 @@ namespace SP\Modules\Api\Controllers\Account;
 use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use function SP\__;
 use function SP\__u;
@@ -65,7 +65,7 @@ final class DeleteController extends AccountBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, __('Account removed'), $id));
+            $this->returnResponse(ActionResponse::ok(__('Account removed'), $accountDetails, $id));
         } catch (Exception $e) {
             processException($e);
 

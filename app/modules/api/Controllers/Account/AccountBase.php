@@ -31,7 +31,7 @@ use SP\Domain\Account\Ports\AccountAdapter;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Api\Ports\ApiService;
-use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
+use SP\Modules\Api\Adapters\ActionResponseAdapter;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Http\Ports\JsonResponseFactory;
@@ -59,7 +59,7 @@ abstract class AccountBase extends ControllerBase
         Klein                   $router,
         ApiService              $apiService,
         AclInterface            $acl,
-        JsonRpcResponseFormatter $jsonRpcResponseFormatter,
+        ActionResponseAdapter $actionResponseAdapter,
         JsonResponseFactory $jsonResponseFactory,
         AccountPresetService    $accountPresetService,
         AccountService          $accountService,
@@ -72,7 +72,7 @@ abstract class AccountBase extends ControllerBase
             $router,
             $apiService,
             $acl,
-            $jsonRpcResponseFormatter,
+            $actionResponseAdapter,
             $jsonResponseFactory
         );
 

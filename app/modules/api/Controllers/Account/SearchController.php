@@ -30,9 +30,9 @@ use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchService;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Api\Ports\ApiService;
-use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
+use SP\Modules\Api\Adapters\ActionResponseAdapter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
@@ -52,7 +52,7 @@ final class SearchController extends ControllerBase
         Klein        $router,
         ApiService   $apiService,
         AclInterface $acl,
-        JsonRpcResponseFormatter $jsonRpcResponseFormatter,
+        ActionResponseAdapter $actionResponseAdapter,
         JsonResponseFactory $jsonResponseFactory,
         AccountSearchService $accountSearchService
     ) {
@@ -61,7 +61,7 @@ final class SearchController extends ControllerBase
             $router,
             $apiService,
             $acl,
-            $jsonRpcResponseFormatter,
+            $actionResponseAdapter,
             $jsonResponseFactory
         );
 
@@ -79,7 +79,8 @@ final class SearchController extends ControllerBase
             $accountSearchFilter = $this->buildAccountSearchFilter();
 
             $this->returnResponse(
-                ApiResponse::makeSuccess(
+                ActionResponse::ok(
+                    '',
                     ($this->accountSearchService->getByFilter($accountSearchFilter)->getDataAsArray() ?? [])
                 )
             );

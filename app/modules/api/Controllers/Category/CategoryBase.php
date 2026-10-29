@@ -28,7 +28,7 @@ namespace SP\Modules\Api\Controllers\Category;
 use Klein\Klein;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
-use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
+use SP\Modules\Api\Adapters\ActionResponseAdapter;
 use SP\Domain\Category\Ports\CategoryAdapter;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Core\Acl\AclInterface;
@@ -53,7 +53,7 @@ abstract class CategoryBase extends ControllerBase
         Klein           $router,
         ApiService      $apiService,
         AclInterface    $acl,
-        JsonRpcResponseFormatter $jsonRpcResponseFormatter,
+        ActionResponseAdapter $actionResponseAdapter,
         JsonResponseFactory $jsonResponseFactory,
         CategoryService $categoryService,
         CategoryAdapter $categoryAdapter
@@ -63,7 +63,7 @@ abstract class CategoryBase extends ControllerBase
             $router,
             $apiService,
             $acl,
-            $jsonRpcResponseFormatter,
+            $actionResponseAdapter,
             $jsonResponseFactory
         );
 

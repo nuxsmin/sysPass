@@ -27,7 +27,7 @@ namespace SP\Modules\Api\Controllers\UserGroup;
 use Klein\Klein;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
-use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
+use SP\Modules\Api\Adapters\ActionResponseAdapter;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Core\Exceptions\InvalidClassException;
@@ -50,7 +50,7 @@ abstract class UserGroupBase extends ControllerBase
         Klein        $router,
         ApiService   $apiService,
         AclInterface $acl,
-        JsonRpcResponseFormatter $jsonRpcResponseFormatter,
+        ActionResponseAdapter $actionResponseAdapter,
         JsonResponseFactory $jsonResponseFactory,
         UserGroupService $groupService
     ) {
@@ -59,7 +59,7 @@ abstract class UserGroupBase extends ControllerBase
             $router,
             $apiService,
             $acl,
-            $jsonRpcResponseFormatter,
+            $actionResponseAdapter,
             $jsonResponseFactory
         );
 

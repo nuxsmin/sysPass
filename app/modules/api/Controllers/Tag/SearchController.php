@@ -27,7 +27,7 @@ namespace SP\Modules\Api\Controllers\Tag;
 
 use Exception;
 use SP\Domain\Core\Events\Event;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -50,7 +50,8 @@ final class SearchController extends TagBase
 
             $this->eventDispatcher->notify('search.tag', new Event($this));
             $this->returnResponse(
-                ApiResponse::makeSuccess(
+                ActionResponse::ok(
+                    '',
                     $this->tagService->search($itemSearchData)->getDataAsArray()
                 )
             );

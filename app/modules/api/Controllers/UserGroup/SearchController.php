@@ -27,7 +27,7 @@ namespace SP\Modules\Api\Controllers\UserGroup;
 
 use Exception;
 use SP\Domain\Core\Events\Event;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -51,7 +51,10 @@ final class SearchController extends UserGroupBase
             $this->eventDispatcher->notify('search.userGroup', new Event($this));
 
             $this->returnResponse(
-                ApiResponse::makeSuccess($this->userGroupService->search($itemSearchData)->getDataAsArray())
+                ActionResponse::ok(
+                    '',
+                    $this->userGroupService->search($itemSearchData)->getDataAsArray()
+                )
             );
         } catch (Exception $e) {
             processException($e);

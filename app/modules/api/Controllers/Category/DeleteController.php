@@ -28,7 +28,7 @@ namespace SP\Modules\Api\Controllers\Category;
 use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use function SP\__;
 use function SP\__u;
@@ -64,7 +64,7 @@ final class DeleteController extends CategoryBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($categoryData, __('Category deleted'), $id));
+            $this->returnResponse(ActionResponse::ok(__('Category deleted'), $categoryData, $id));
         } catch (Exception $e) {
             processException($e);
 

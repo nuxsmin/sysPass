@@ -28,7 +28,7 @@ use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use function SP\__;
@@ -68,7 +68,7 @@ final class CreateController extends AccountBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, __('Account created'), $accountId));
+            $this->returnResponse(ActionResponse::ok(__('Account created'), $accountDetails, $accountId));
         } catch (Exception $e) {
             processException($e);
 

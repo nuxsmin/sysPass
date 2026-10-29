@@ -27,7 +27,7 @@ namespace SP\Modules\Api\Controllers\Tag;
 use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use function SP\__u;
 use function SP\processException;
@@ -60,7 +60,7 @@ final class ViewController extends TagBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, null, $id));
+            $this->returnResponse(ActionResponse::ok('', $tagData, $id));
         } catch (Exception $e) {
             processException($e);
 

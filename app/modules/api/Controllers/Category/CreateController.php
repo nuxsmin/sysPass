@@ -28,7 +28,7 @@ namespace SP\Modules\Api\Controllers\Category;
 use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -66,7 +66,7 @@ final class CreateController extends CategoryBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess($categoryData, __('Category added'), $id));
+            $this->returnResponse(ActionResponse::ok(__('Category added'), $categoryData, $id));
         } catch (Exception $e) {
             processException($e);
 

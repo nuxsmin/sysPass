@@ -28,7 +28,7 @@ namespace SP\Modules\Api\Controllers\Account;
 use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use function SP\__u;
 use function SP\processException;
@@ -70,7 +70,7 @@ final class ViewPassController extends AccountBase
                 )
             );
 
-            $this->returnResponse(ApiResponse::makeSuccess(["password" => $password], null, $id));
+            $this->returnResponse(ActionResponse::ok('', ["password" => $password], $id));
         } catch (Exception $e) {
             processException($e);
 

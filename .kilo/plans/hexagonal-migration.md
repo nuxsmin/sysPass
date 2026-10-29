@@ -48,7 +48,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P6-W2 | #2042 | done |
 | P6-W3 | #2043 | done |
 | P6-W4 to P6-W7 | #2044 to #2048 | todo |
-| P7-1 to P7-4 | #2016, #2027, #2047, #2049 | todo |
+| P7-1 to P7-4 | #2016, #2027, #2047, #2049 | P7-1, P7-2 done; rest todo |
 | P8-1, P8-2 | #2017, #2033 | todo |
 | P9-1 to P9-5 | #2038, #2050, #2034, #2052, #2053 | P9-1 done; rest todo |
 | P10-1 to P10-5 | #2035, #2039, #2018, #2019, #2020 | P10-1 done; rest todo |
@@ -260,7 +260,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 ### Phase 7: API module migration
 
 - [ ] **P7-1 Enable API tests.** Remove `Api` from the `<exclude>` in `tests/phpunit.xml` after P0-2 is green. Fix failing API tests first.
-- [ ] **P7-2 API response adapter.** One adapter in `app/modules/api` that maps `ActionResponse` to the JSON-RPC/REST envelope (replaces `JsonRpcResponse`, `ApiResponse::makeSuccess`, 29+20 call sites) (D8).
+- [x] **P7-2 API response adapter.** One adapter in `app/modules/api` that maps `ActionResponse` to the JSON-RPC/REST envelope (replaces `JsonRpcResponse`, `ApiResponse::makeSuccess`, 29+20 call sites) (D8).
 - [ ] **P7-3 Migrate API controllers per resource** (`Account`, `Category`, `Client`, `Tag`, `UserGroup`, `Config`), following section 6. Start with `Tag` to reuse the P6-W1 use cases.
   - Acceptance: M11 = 46/46 or the remaining files listed with reasons.
 - [ ] **P7-4 Delete `Domain/Api/Services/ApiRequest` and `JsonRpcResponse` and `Dtos/ApiResponse`** once unused (or move into `app/modules/api`).
@@ -377,6 +377,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 
 | 2026-10-27 | P6-W2 small CRUD areas (verified: core unit 2077, modules 104, architecture + wiring 15, PSR2, PHPStan) | M9 81 -> 105/259; M10 77 -> 49; M6 stays 0/158; PHPStan lib 1012 -> 1009 errors | Added 24 use cases (`Create`, `Update`, `Delete`, `DeleteBatch`, `Get`, `Search`) for `ItemPreset`, `CustomField`, `UserGroup` and `UserProfile`, with Command/Result DTOs and events emitted through `EventEmitter` using untranslated keys. Converted the 28 legacy controllers to `#[Action]` + `ActionResponse` and removed `JsonTrait`/`JsonMessage` from the four areas; the view bases read through the `Get` use cases. `UserGroup`/`UserProfile` delete use cases now remove the custom fields of the deleted ids (the old batch path passed `null`). Added four unit test classes (25 cases) with mocked service ports and `InMemoryEventEmitter`. |
 | 2026-10-27 | P6-W3 remaining untested areas (verified: core unit 2108, modules integration 152, architecture + wiring, PSR2, PHPStan) | M9 105 -> 151/259; M10 49 -> 16; M15 26 -> 16/46; M8 89; M6 0/158; PHPStan lib 1009 -> 1009 | Added 25 use cases with Command/Result DTOs and use-case events for `Eventlog` (clear/search), `Track` (clear/unlock/search), `Plugin` (toggle/reset/delete single and batch/search), `Notification` (create/update/delete single and batch/check/get/search), `PublicLink` (create/create from account/delete single and batch/refresh/get/search) and `UserPassReset` (request/reset). The eight areas' legacy controllers now return `#[Action]` + `ActionResponse`; `Status`, `Items`, `Resource` and `Error` were converted to `ActionResponse`/`CALLBACK` without new use cases. Added unit test classes for the new use cases (31 cases) and one integration test class per area (10 areas, 44 cases). Fixed latent breakage found by the new tests: static `Acl` calls in five grids, `getIsAdminApp()`/`getIsAdmin()` mismatches, the stale `NotificationForm` model construction, missing `Controller` class suffixes (`SaveCreateController`, `ViewController`, `CheckNoticesController`), missing `statusAction()`, `module.php` minify bindings (`autowire` -> `get`), missing `error/index` template/missing `pluginInfo` guards, and case-sensitive `userPassReset` view path. |
+| 2026-10-29 | P7-2 API response adapter (verified: API IT 119, web+API 274, core unit 2108 except one pre-existing architecture failure, adapter unit 5, PSR2, PHPStan no new adapter errors) | M11 stays 0/46 (per-resource controllers still use legacy action methods until P7-3); other metrics unchanged | Added `SP\Modules\Api\Adapters\ActionResponseAdapter` with JSON-RPC and REST formatting, wired through `ControllerBase` and `Bootstrap`. Migrated all 29 `ApiResponse::makeSuccess()` call sites to `ActionResponse::ok()`, preserved the legacy JSON-RPC result shape (`itemId`, `result`, `resultCode`, `resultMessage`, `count`), and added an optional `itemId` to `ActionResponse`. No `ApiResponse` or `JsonRpcResponseFormatter` reference remains in `app/modules/api`. The architecture run still reports the pre-existing `BackupFile => __u() x6` violation introduced by `a21b5d1e` (allowlist entry is x5). |
 
 ### Baseline test results (P0-1)
 

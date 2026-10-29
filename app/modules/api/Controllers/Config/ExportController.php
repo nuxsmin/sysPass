@@ -32,9 +32,9 @@ use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Api\Ports\ApiService;
-use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
+use SP\Modules\Api\Adapters\ActionResponseAdapter;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
@@ -62,7 +62,7 @@ final class ExportController extends ControllerBase
         Klein                             $router,
         ApiService                        $apiService,
         AclInterface                      $acl,
-        JsonRpcResponseFormatter         $jsonRpcResponseFormatter,
+        ActionResponseAdapter         $actionResponseAdapter,
         JsonResponseFactory               $jsonResponseFactory,
         private readonly XmlExportService $xmlExportService,
         private readonly PathsContext     $pathsContext
@@ -72,7 +72,7 @@ final class ExportController extends ControllerBase
             $router,
             $apiService,
             $acl,
-            $jsonRpcResponseFormatter,
+            $actionResponseAdapter,
             $jsonResponseFactory
         );
 
@@ -110,7 +110,7 @@ final class ExportController extends ControllerBase
 
             $exportFiles = ['files' => ['xml' => $file]];
 
-            $this->returnResponse(ApiResponse::makeSuccess($exportFiles, __('Export process finished')));
+            $this->returnResponse(ActionResponse::ok(__('Export process finished'), $exportFiles));
         } catch (Exception $e) {
             processException($e);
 

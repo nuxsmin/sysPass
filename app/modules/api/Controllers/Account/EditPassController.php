@@ -28,7 +28,7 @@ use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use function SP\__;
@@ -69,7 +69,7 @@ final class EditPassController extends AccountBase
             );
 
             $this->returnResponse(
-                ApiResponse::makeSuccess($accountDetails, __('Password updated'), $accountRequest->id)
+                ActionResponse::ok(__('Password updated'), $accountDetails, $accountRequest->id)
             );
         } catch (Exception $e) {
             processException($e);

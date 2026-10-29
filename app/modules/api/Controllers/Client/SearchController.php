@@ -27,7 +27,7 @@ namespace SP\Modules\Api\Controllers\Client;
 
 use Exception;
 use SP\Domain\Core\Events\Event;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -51,7 +51,8 @@ final class SearchController extends ClientBase
             $this->eventDispatcher->notify('search.client', new Event($this));
 
             $this->returnResponse(
-                ApiResponse::makeSuccess(
+                ActionResponse::ok(
+                    '',
                     $this->clientService->search($itemSearchData)->getDataAsArray()
                 )
             );

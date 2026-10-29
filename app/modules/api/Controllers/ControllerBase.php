@@ -29,8 +29,7 @@ use Klein\Klein;
 use League\Fractal\Manager;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Domain\Api\Dtos\ApiResponse;
-use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -39,6 +38,7 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Ports\JsonResponseFactory;
+use SP\Modules\Api\Adapters\ActionResponseAdapter;
 use function SP\__u;
 use function SP\processException;
 
@@ -64,7 +64,7 @@ abstract class ControllerBase
         protected readonly Klein        $router,
         protected readonly ApiService   $apiService,
         protected readonly AclInterface $acl,
-        protected readonly JsonRpcResponseFormatter $jsonRpcResponseFormatter,
+        protected readonly ActionResponseAdapter $actionResponseAdapter,
         protected readonly JsonResponseFactory $jsonResponseFactory
     ) {
         $this->context = $application->getContext();
@@ -99,14 +99,16 @@ abstract class ControllerBase
      *
      * {"jsonrpc": "2.0", "result": 19, "id": 3}
      */
-    final protected function returnResponse(ApiResponse $apiResponse): void
+    final protected function returnResponse(ActionResponse $actionResponse): void
     {
         try {
             if ($this->isAuthenticated === false) {
                 throw new SPException(__u('Unauthorized access'));
             }
 
-            $this->sendJsonResponse($this->jsonRpcResponseFormatter->getResponse($apiResponse, $this->apiService->getRequestId()));
+            $this->sendJsonResponse(
+                $this->actionResponseAdapter->toJsonRpc($actionResponse, $this->apiService->getRequestId())
+            );
         } catch (SPException $e) {
             processException($e);
 
@@ -124,6 +126,8 @@ abstract class ControllerBase
 
     final protected function returnResponseException(Exception $e): void
     {
-        $this->sendJsonResponse($this->jsonRpcResponseFormatter->getResponseException($e, $this->apiService->getRequestId()));
+        $this->sendJsonResponse(
+            $this->actionResponseAdapter->toJsonRpcException($e, $this->apiService->getRequestId())
+        );
     }
 }

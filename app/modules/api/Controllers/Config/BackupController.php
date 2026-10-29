@@ -31,9 +31,9 @@ use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Api\Ports\ApiService;
-use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
+use SP\Modules\Api\Adapters\ActionResponseAdapter;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
@@ -62,7 +62,7 @@ final class BackupController extends ControllerBase
         Klein                              $router,
         ApiService                         $apiService,
         AclInterface                       $acl,
-        JsonRpcResponseFormatter           $jsonRpcResponseFormatter,
+        ActionResponseAdapter           $actionResponseAdapter,
         JsonResponseFactory                 $jsonResponseFactory,
         private readonly BackupFileService $fileBackupService,
         private readonly BackupFiles  $backupFiles,
@@ -73,7 +73,7 @@ final class BackupController extends ControllerBase
             $router,
             $apiService,
             $acl,
-            $jsonRpcResponseFormatter,
+            $actionResponseAdapter,
             $jsonResponseFactory
         );
 
@@ -113,7 +113,7 @@ final class BackupController extends ControllerBase
             }
 
             $this->returnResponse(
-                ApiResponse::makeSuccess($this->buildBackupFiles($path), __('Backup process finished'))
+                ActionResponse::ok(__('Backup process finished'), $this->buildBackupFiles($path))
             );
         } catch (Exception $e) {
             processException($e);
