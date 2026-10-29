@@ -263,22 +263,24 @@ class InstallCommandTest extends CliTestCase
             ]
         );
 
-        $commandTester = $this->executeCommandTest(
-            InstallCommand::class,
-            $inputData
-        );
+        try {
+            $commandTester = $this->executeCommandTest(
+                InstallCommand::class,
+                $inputData
+            );
 
-        // the output of the command in the console
-        $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('Installation finished', $output);
+            // the output of the command in the console
+            $output = $commandTester->getDisplay();
+            $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
+            $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
 
-        $this->assertEquals($configData->getDbUser(), $databaseUser);
-        $this->assertEquals($configData->getDbPass(), $databasePassword);
-
-        // Cleanup database
-        DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
+            $this->assertEquals($configData->getDbUser(), $databaseUser);
+            $this->assertEquals($configData->getDbPass(), $databasePassword);
+        } finally {
+            // Cleanup database
+            DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
+        }
     }
 
     /**

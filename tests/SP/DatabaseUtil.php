@@ -55,14 +55,24 @@ class DatabaseUtil
         $query = 'GRANT ALL PRIVILEGES ON `%s`.* TO \'%s\'@\'%s\' IDENTIFIED BY \'%s\'';
 
         $conn = self::getConnection();
-        $conn->exec(sprintf($query, $database, $user, SELF_IP_ADDRESS, $pass));
+
+        $hosts = [SELF_IP_ADDRESS, $host];
 
         // Long hostname returned on CI/CD tests
         if (strlen(SELF_HOSTNAME) < 60) {
-            $conn->exec(sprintf($query, $database, $user, SELF_HOSTNAME, $pass));
+            $hosts[] = SELF_HOSTNAME;
         }
 
-        $conn->exec(sprintf($query, $database, $user, $host, $pass));
+        $statement = $conn->query('SELECT SUBSTRING_INDEX(USER(), \'@\', -1)');
+        $clientHost = $statement !== false ? $statement->fetchColumn() : false;
+
+        if (is_string($clientHost) && $clientHost !== '') {
+            $hosts[] = $clientHost;
+        }
+
+        foreach (array_unique($hosts) as $grantHost) {
+            $conn->exec(sprintf($query, $database, $user, $grantHost, $pass));
+        }
     }
 
     /**
