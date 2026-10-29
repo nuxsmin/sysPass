@@ -40,7 +40,6 @@ use SP\Domain\CustomField\Ports\CustomFieldCryptService;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class CustomFieldCrypt
@@ -132,8 +131,6 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
 
                 $success[] = $customFieldData->getItemId();
             } catch (Exception $e) {
-                processException($e);
-
                 $this->eventDispatcher->notify('exception', new Event($e));
 
                 $errors[] = $customFieldData->getItemId();

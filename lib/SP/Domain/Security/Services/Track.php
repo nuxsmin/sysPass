@@ -49,7 +49,6 @@ use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class Track
@@ -140,8 +139,6 @@ final class Track extends Service implements TrackService
                 return true;
             }
         } catch (Exception $e) {
-            processException($e);
-
             throw $e;
         }
 

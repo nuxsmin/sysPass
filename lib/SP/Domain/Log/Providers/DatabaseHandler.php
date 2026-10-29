@@ -36,12 +36,12 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Security\Models\Eventlog;
 use SP\Domain\Security\Ports\EventlogService;
 use Throwable;
-
-use function SP\processException;
 
 /**
  * Class DatabaseHandler
@@ -58,7 +58,8 @@ final class DatabaseHandler extends Provider implements EventReceiver
         Context $context,
         private readonly EventlogService            $eventlogService,
         private readonly LanguageInterface          $language,
-        private readonly EventMessageFormatterInterface $messageFormatter
+        private readonly EventMessageFormatterInterface $messageFormatter,
+        private readonly LoggerInterface            $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
@@ -106,7 +107,7 @@ final class DatabaseHandler extends Provider implements EventReceiver
         try {
             $this->eventlogService->create(new Eventlog($properties));
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         $this->language->unsetAppLocales();

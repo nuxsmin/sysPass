@@ -42,7 +42,6 @@ use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class MysqlSetupService
@@ -71,8 +70,6 @@ final readonly class MysqlSetup implements DatabaseSetupService
         try {
             $this->dbStorage->getConnectionSimple();
         } catch (SPException $e) {
-            processException($e);
-
             throw new SPException(
                 __u('Unable to connect to DB'),
                 SPException::ERROR,
@@ -110,8 +107,6 @@ final readonly class MysqlSetup implements DatabaseSetupService
                 $this->createDBUser($user, $pass);
             }
         } catch (PDOException $e) {
-            processException($e);
-
             throw new SPException(
                 sprintf(__('Unable to check the sysPass user (%s)'), $user),
                 SPException::CRITICAL,
@@ -167,8 +162,6 @@ final readonly class MysqlSetup implements DatabaseSetupService
 
             $dbc->exec('FLUSH PRIVILEGES');
         } catch (PDOException $e) {
-            processException($e);
-
             throw new SPException(
                 sprintf(__u('Error while creating the MySQL connection user \'%s\''), $user),
                 SPException::CRITICAL,
@@ -241,8 +234,6 @@ final readonly class MysqlSetup implements DatabaseSetupService
 
                 $dbc->exec('FLUSH PRIVILEGES');
             } catch (PDOException $e) {
-                processException($e);
-
                 $this->rollback($dbUser);
 
                 throw new SPException(
@@ -366,8 +357,6 @@ final readonly class MysqlSetup implements DatabaseSetupService
                 $dbc->exec($query);
             }
         } catch (PDOException $e) {
-            processException($e);
-
             $this->rollback();
 
             throw new SPException(
@@ -378,8 +367,6 @@ final readonly class MysqlSetup implements DatabaseSetupService
                 $e
             );
         } catch (FileException $e) {
-            processException($e);
-
             $this->rollback();
 
             throw new SPException(

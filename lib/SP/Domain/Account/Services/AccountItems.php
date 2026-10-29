@@ -40,8 +40,8 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-
-use function SP\processException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 
 /**
  * Class AccountItems
@@ -55,6 +55,7 @@ final class AccountItems extends Service implements AccountItemsService
         private readonly AccountToUserGroupRepository $accountToUserGroupRepository,
         private readonly AccountToUserRepository      $accountToUserRepository,
         private readonly AccountToTagRepository       $accountToTagRepository,
+        private readonly LoggerInterface              $logger = new NullLogger(),
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -181,7 +182,7 @@ final class AccountItems extends Service implements AccountItemsService
                 $this->accountToTagRepository->add($accountId, $accountCreateDto->tags);
             }
         } catch (SPException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
     }
 }

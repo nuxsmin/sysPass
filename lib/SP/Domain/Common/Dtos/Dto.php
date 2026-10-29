@@ -40,8 +40,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Dtos\QueryResult;
 use ValueError;
 
-use function SP\processException;
-
 /**
  * Class Dto
  */
@@ -76,8 +74,7 @@ abstract class Dto implements DtoInterface
 
         try {
             return $reflectionClass->newInstanceArgs($parameters);
-        } catch (ReflectionException $e) {
-            processException($e);
+        } catch (ReflectionException) {
         }
 
         return new static();
@@ -177,8 +174,8 @@ abstract class Dto implements DtoInterface
 
                 try {
                     $transformers[$instance->targetProperty] = $method->getClosure();
-                } catch (ReflectionException $e) {
-                    processException($e);
+                } catch (ReflectionException) {
+                    continue;
                 }
             }
         }
@@ -216,8 +213,7 @@ abstract class Dto implements DtoInterface
 
         try {
             return $reflectionClass->newInstanceArgs($parameters);
-        } catch (ReflectionException $e) {
-            processException($e);
+        } catch (ReflectionException) {
         }
 
         return new static();

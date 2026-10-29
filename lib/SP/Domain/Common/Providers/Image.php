@@ -29,12 +29,13 @@ namespace SP\Domain\Common\Providers;
 use GdImage;
 use SP\Domain\Core\Exceptions\InvalidImageException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Infrastructure\File\FileHandler;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class Image
@@ -47,7 +48,8 @@ final class Image implements ImageService
     public function __construct(
         PhpExtensionCheckerService $checker,
         private readonly string    $font,
-        private readonly string    $tempPath
+        private readonly string    $tempPath,
+        private readonly LoggerInterface $logger = new NullLogger()
     ) {
         $checker->checkCurl(true);
     }
@@ -116,7 +118,7 @@ final class Image implements ImageService
 
             return $this->createPngImage($im);
         } catch (SPException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
 
             return false;
         }

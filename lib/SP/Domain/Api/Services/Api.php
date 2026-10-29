@@ -59,7 +59,6 @@ use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Crypt\Ports\MasterKeyStore;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class Api
@@ -152,8 +151,6 @@ final class Api extends Service implements ApiService
         try {
             $this->trackService->add($this->trackRequest);
         } catch (Exception $e) {
-            processException($e);
-
             throw new ServiceException(
                 __u('Internal error'),
                 SPException::ERROR,

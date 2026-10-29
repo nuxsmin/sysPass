@@ -45,7 +45,6 @@ use SP\Domain\User\Ports\UserProfileService;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class AclHandler
@@ -136,7 +135,7 @@ final class AclHandler extends Provider implements EventReceiver
                 }
             }
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
     }
 
@@ -160,7 +159,7 @@ final class AclHandler extends Provider implements EventReceiver
 
             return true;
         } catch (FileNotFoundException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         return false;
@@ -186,7 +185,7 @@ final class AclHandler extends Provider implements EventReceiver
                 }
             }
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
     }
 
@@ -207,7 +206,7 @@ final class AclHandler extends Provider implements EventReceiver
                 }
             }
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
     }
 }

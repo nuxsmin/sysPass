@@ -41,14 +41,14 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserToUserGroupService;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileSystem;
-
-use function SP\processException;
 
 /**
  * Class AccountAcl
@@ -66,7 +66,8 @@ final class AccountAcl extends Service implements AccountAclService
         private readonly AclInterface           $acl,
         private readonly UserToUserGroupService $userToUserGroupService,
         private readonly PathsContext $pathsContext,
-        private readonly ?FileCacheService      $fileCache = null
+        private readonly ?FileCacheService      $fileCache = null,
+        private readonly LoggerInterface        $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
@@ -155,7 +156,7 @@ final class AccountAcl extends Service implements AccountAclService
                 return $acl;
             }
         } catch (FileException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         return null;
@@ -382,7 +383,7 @@ final class AccountAcl extends Service implements AccountAclService
                 $this->getCacheFileForAcl($accountAcl->getAccountId(), $accountAcl->getActionId())
             );
         } catch (FileException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
     }
 }

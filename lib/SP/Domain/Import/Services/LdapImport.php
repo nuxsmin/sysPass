@@ -48,7 +48,6 @@ use SP\Domain\User\Ports\UserService;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class LdapImport
@@ -106,8 +105,6 @@ final class LdapImport extends Service implements LdapImportService
 
                     $importResults->addSyncedObject();
                 } catch (Exception $e) {
-                    processException($e);
-
                     $this->eventDispatcher->notify('exception', new Event($e));
 
                     $importResults->addErrorObject();
@@ -205,8 +202,6 @@ final class LdapImport extends Service implements LdapImportService
 
                     $importResults->addSyncedObject();
                 } catch (Exception $e) {
-                    processException($e);
-
                     $this->eventDispatcher->notify('exception', new Event($e));
 
                     $importResults->addErrorObject();

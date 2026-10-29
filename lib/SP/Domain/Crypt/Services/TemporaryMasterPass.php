@@ -52,7 +52,6 @@ use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class TemporaryMasterPass
@@ -132,8 +131,6 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
 
             return $randomKey;
         } catch (Exception $e) {
-            processException($e);
-
             throw new ServiceException(__u('Error while generating the temporary password'));
         }
     }
@@ -189,8 +186,6 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
         } catch (NoSuchItemException) {
             return false;
         } catch (Exception $e) {
-            processException($e);
-
             throw new ServiceException(__u('Error while checking the temporary password'));
         }
     }

@@ -40,8 +40,6 @@ use SP\Domain\Http\Method;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\File\FileSystem;
 
-use function SP\processException;
-
 /**
  * Class Request
  */
@@ -217,7 +215,7 @@ class Request implements RequestService
 
             return $clearData;
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
 
             return $encryptedData;
         }

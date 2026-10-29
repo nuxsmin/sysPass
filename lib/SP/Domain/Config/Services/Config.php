@@ -41,7 +41,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__;
-use function SP\processException;
 
 /**
  * Class Config
@@ -108,8 +107,6 @@ final class Config extends Service implements ConfigService
                 $this
             );
         } catch (Exception $e) {
-            processException($e);
-
             throw new ServiceException(
                 $e->getMessage(),
                 SPException::ERROR,

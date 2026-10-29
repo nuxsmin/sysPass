@@ -45,7 +45,6 @@ use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class CsvImport
@@ -149,8 +148,6 @@ final class CsvImport extends ImportBase implements ItemsImportService
                     )
                 );
             } catch (Exception $e) {
-                processException($e);
-
                 $this->eventDispatcher->notify(
                     'exception',
                     new Event(

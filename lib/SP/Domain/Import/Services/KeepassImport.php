@@ -42,7 +42,6 @@ use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SplObjectStorage;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class KeepassImport
@@ -215,11 +214,8 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
                     )
                 );
             } catch (SPException $e) {
-                processException($e);
-
                 $this->eventDispatcher->notify('exception', new Event($e));
             }
         }
     }
-
 }

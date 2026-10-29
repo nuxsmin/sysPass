@@ -52,7 +52,6 @@ use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Installer class
@@ -332,8 +331,6 @@ final class Installer implements InstallerService
                 new Config(['parameter' => 'lastupdatempass', 'value' => (string)time()])
             );
         } catch (Exception $e) {
-            processException($e);
-
             $this->databaseSetup->rollback($this->config->getConfigData()->getDbUser());
 
             throw new SPException($e->getMessage(), SPException::CRITICAL, __u('Warn to developer'), $e->getCode(), $e);
@@ -373,8 +370,6 @@ final class Installer implements InstallerService
                 throw new SPException(__u('Error while creating \'admin\' user'));
             }
         } catch (Exception $e) {
-            processException($e);
-
             $this->databaseSetup->rollback($this->config->getConfigData()->getDbUser());
 
             throw new SPException(

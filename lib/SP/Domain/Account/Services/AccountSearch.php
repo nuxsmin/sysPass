@@ -38,11 +38,11 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\Database\Dtos\QueryResult;
-
-use function SP\processException;
 
 /**
  * Class AccountSearch
@@ -55,7 +55,8 @@ final class AccountSearch extends Service implements AccountSearchService
         Context $context,
         private readonly UserService             $userService,
         private readonly UserGroupService        $userGroupService,
-        private readonly AccountSearchRepository $accountSearchRepository
+        private readonly AccountSearchRepository $accountSearchRepository,
+        private readonly LoggerInterface         $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -125,7 +126,7 @@ final class AccountSearch extends Service implements AccountSearchService
                         break;
                 }
             } catch (Exception $e) {
-                processException($e);
+                $this->logger->error($e->getMessage());
             }
         }
     }

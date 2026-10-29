@@ -44,8 +44,6 @@ use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileSystem;
 
-use function SP\processException;
-
 /**
  * Class SecureSession
  */
@@ -102,7 +100,7 @@ final class SecureSession extends Service implements SecureSessionService
         } catch (FileException) {
             return $this->saveKey();
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         return false;
@@ -130,7 +128,7 @@ final class SecureSession extends Service implements SecureSessionService
 
             return $securedKey;
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         return false;

@@ -37,11 +37,12 @@ use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Messages\EventMessageFormatterInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Notification\Ports\MailService;
 
 use function SP\__;
-use function SP\processException;
 
 /**
  * Class MailEvent
@@ -74,7 +75,8 @@ final class MailEvent extends Service implements EventReceiver
         Context $context,
         private readonly MailService                   $mailService,
         private readonly RequestService                $request,
-        private readonly EventMessageFormatterInterface $messageFormatter
+        private readonly EventMessageFormatterInterface $messageFormatter,
+        private readonly LoggerInterface               $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
@@ -144,7 +146,7 @@ final class MailEvent extends Service implements EventReceiver
 
                 $this->mailService->send($subject, $to, $mailMessage);
             } catch (Exception $e) {
-                processException($e);
+                $this->logger->error($e->getMessage());
             }
         }
     }

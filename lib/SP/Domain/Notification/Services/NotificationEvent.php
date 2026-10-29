@@ -36,11 +36,12 @@ use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Messages\EventMessageFormatterInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Notification\Models\Notification;
 use SP\Domain\Notification\Ports\NotificationService;
 
 use function SP\__;
-use function SP\processException;
 
 /**
  * Class NotificationEvent
@@ -56,7 +57,8 @@ final class NotificationEvent extends Service implements EventReceiver
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly NotificationService           $notificationService,
-        private readonly EventMessageFormatterInterface $messageFormatter
+        private readonly EventMessageFormatterInterface $messageFormatter,
+        private readonly LoggerInterface               $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
@@ -116,7 +118,7 @@ final class NotificationEvent extends Service implements EventReceiver
         try {
             $this->notificationService->create($notificationData);
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
     }
 

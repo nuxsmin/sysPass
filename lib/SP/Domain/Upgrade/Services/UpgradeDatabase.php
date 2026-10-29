@@ -45,7 +45,6 @@ use SP\Infrastructure\File\FileSystem;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class UpgradeDatabase
@@ -82,8 +81,6 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
             try {
                 $this->database->runQueryRaw($query);
             } catch (Exception $e) {
-                processException($e);
-
                 $this->logger->debug('SQL: ' . $query);
 
                 $this->eventDispatcher->notify(
@@ -129,8 +126,6 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
         try {
             return (new MysqlFileParser(new FileHandler($filename)))->parse('$$');
         } catch (Exception $e) {
-            processException($e);
-
             throw UpgradeException::error($e->getMessage());
         }
     }

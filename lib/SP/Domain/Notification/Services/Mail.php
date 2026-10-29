@@ -44,7 +44,6 @@ use SP\Domain\Notification\Ports\MailMessageFormatterInterface;
 use SP\Domain\Notification\Ports\MailService;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class Mail
@@ -98,8 +97,6 @@ final class Mail extends Service implements MailService
                 ->body($this->mailMessageFormatter->composeHtml($mailMessage))
                 ->send();
         } catch (Exception $e) {
-            processException($e);
-
             $this->eventDispatcher->notify('exception', new Event($e));
 
             throw ServiceException::error(__u('Error while sending the email'), $e->getMessage(), $e->getCode(), $e);
@@ -183,8 +180,6 @@ final class Mail extends Service implements MailService
                 )
             );
         } catch (Exception $e) {
-            processException($e);
-
             $this->eventDispatcher->notify('exception', new Event($e));
 
             throw ServiceException::error(__u('Error while sending the email'));

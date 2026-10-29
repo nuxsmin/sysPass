@@ -36,7 +36,6 @@ use SP\Domain\Notification\MailerException;
 use SP\Domain\Notification\Ports\MailerInterface;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * A wrapper for PHPMailer
@@ -139,8 +138,6 @@ final readonly class PhpMailerService implements MailerInterface
 
             return new self($mailer, $this->debug, $this->logger);
         } catch (Exception $e) {
-            processException($e);
-
             throw MailerException::error(__u('Unable to initialize'), $e->getMessage(), $e->getCode(), $e);
         }
     }

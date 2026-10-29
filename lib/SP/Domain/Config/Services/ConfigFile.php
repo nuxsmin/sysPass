@@ -45,8 +45,6 @@ use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Domain\Core\Exceptions\FileException;
 
-use function SP\processException;
-
 /**
  * Class ConfigFile
  */
@@ -77,8 +75,6 @@ class ConfigFile implements ConfigFileService
 
             return $configData;
         } catch (Exception $e) {
-            processException($e);
-
             throw ConfigException::critical($e->getMessage(), null, $e->getCode(), $e);
         }
     }
@@ -122,7 +118,7 @@ class ConfigFile implements ConfigFileService
 
             return $configData;
         } catch (ReflectionException|FileException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         return null;

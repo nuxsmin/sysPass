@@ -34,9 +34,10 @@ use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LdapService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class LdapBase
@@ -55,7 +56,8 @@ final readonly class LdapAuth implements LdapAuthService
     public function __construct(
         private LdapService              $ldap,
         private EventDispatcherInterface $eventDispatcher,
-        private ConfigDataInterface      $configData
+        private ConfigDataInterface      $configData,
+        private LoggerInterface          $logger = new NullLogger()
     ) {
     }
 
@@ -91,7 +93,7 @@ final readonly class LdapAuth implements LdapAuthService
 
             return $ldapAuthData->success();
         } catch (LdapException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
 
             $ldapAuthData->setStatusCode($e->getCode());
         }

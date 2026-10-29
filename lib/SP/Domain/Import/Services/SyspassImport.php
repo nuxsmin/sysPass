@@ -47,7 +47,6 @@ use SP\Domain\Tag\Models\Tag;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Import assets from a sysPass exported XML file
@@ -144,8 +143,6 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                     $importParams->getPassword()
                 );
             } catch (CryptException $e) {
-                processException($e);
-
                 $this->eventDispatcher->notify('exception', new Event($e));
 
                 continue;

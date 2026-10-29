@@ -38,12 +38,12 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\CustomField\Ports\CustomFieldCryptService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-
-use function SP\processException;
 
 /**
  * Class MasterPass
@@ -60,7 +60,8 @@ final class MasterPass extends Service implements MasterPassService
         private readonly ConfigService                $configService,
         private readonly AccountMasterPasswordService $accountMasterPasswordService,
         private readonly CustomFieldCryptService      $customFieldCryptService,
-        private readonly Repository                   $repository
+        private readonly Repository                   $repository,
+        private readonly LoggerInterface              $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -73,7 +74,7 @@ final class MasterPass extends Service implements MasterPassService
         try {
             return $userMPassTime >= (int)$this->configService->getByParam(self::PARAM_MASTER_PASS_TIME, '0');
         } catch (ServiceException|NoSuchItemException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         return true;
@@ -90,7 +91,7 @@ final class MasterPass extends Service implements MasterPassService
                 $this->configService->getByParam(self::PARAM_MASTER_PASS_HASH)
             );
         } catch (ServiceException|NoSuchItemException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         return false;
