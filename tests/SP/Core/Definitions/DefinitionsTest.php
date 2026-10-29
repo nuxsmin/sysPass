@@ -98,4 +98,14 @@ class DefinitionsTest extends TestCase
             }
         }
     }
+
+    public function testNoWildcardPortBindings(): void
+    {
+        $wildcards = array_filter(
+            array_keys(DomainDefinitions::getDefinitions()),
+            static fn(mixed $key): bool => is_string($key) && str_contains($key, '*')
+        );
+
+        $this->assertSame([], array_values($wildcards));
+    }
 }

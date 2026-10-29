@@ -13,7 +13,7 @@ use SP\Tests\IntegrationTestCase;
 use Throwable;
 
 /**
- * Verifies that every Domain port has a working container binding.
+ * Verifies that every Domain port has a working explicit container binding.
  *
  * Ports that cannot be resolved yet are listed explicitly with the reason.
  * The list is a ratchet: adding a port without a binding fails the test, and
@@ -55,6 +55,7 @@ final class ContainerWiringTest extends IntegrationTestCase
         'SP\Domain\Notification\Ports\MailerInterface' => 'request/config-dependent',
         'SP\Domain\Storage\Ports\XmlFileStorageService' => 'runtime path',
         'SP\Domain\Storage\Ports\YamlFileStorageService' => 'runtime path',
+        'SP\Domain\Upgrade\Ports\UpgradeService' => 'needs a runtime handler registry',
 
         // Marker, value object or multi-implementation ports, not single services.
         'SP\Domain\Account\Ports\AccountSearchConstants' => 'constants interface',
@@ -67,17 +68,7 @@ final class ContainerWiringTest extends IntegrationTestCase
         'SP\Domain\ItemPreset\Ports\PresetInterface' => 'marker interface',
         'SP\Domain\Log\Ports\FileHandlerProvider' => 'marker interface',
         'SP\Domain\Log\Ports\ProviderInterface' => 'marker interface',
-
-        // Broken wildcard bindings: the target class does not exist (P9-3).
-        'SP\Domain\Auth\Ports\UpgradeAuthTokenService' => 'stale binding',
-        'SP\Domain\CustomField\Ports\UpgradeCustomFieldDataService' => 'stale binding',
-        'SP\Domain\CustomField\Ports\UpgradeCustomFieldDefinitionService' => 'stale binding',
-        'SP\Domain\Export\Ports\BackupFileHelperService' => 'stale binding',
-        'SP\Domain\Import\Ports\XmlImportService' => 'stale binding',
-        'SP\Domain\Plugin\Ports\UpgradePluginService' => 'stale binding',
-        'SP\Domain\Upgrade\Ports\UpgradeConfigService' => 'stale binding',
-        'SP\Domain\Upgrade\Ports\UpgradeHandlerService' => 'stale binding',
-        'SP\Domain\Upgrade\Ports\UpgradeService' => 'unresolved concrete service',
+        'SP\Domain\Upgrade\Ports\UpgradeHandlerService' => 'multiple implementations',
     ];
 
     #[Test]
