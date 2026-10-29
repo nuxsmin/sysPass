@@ -24,13 +24,11 @@
 
 namespace SP\Modules\Api\Controllers\Tag;
 
-use Exception;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use function SP\__u;
-use function SP\processException;
+use SP\Domain\Tag\UseCases\Dtos\GetTagCommand;
 
 /**
  * Class ViewController
@@ -39,32 +37,15 @@ use function SP\processException;
  */
 final class ViewController extends TagBase
 {
-    /**
-     * viewAction
-     */
-    public function viewAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function viewAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::TAG_VIEW);
+        $this->setupApi(AclActionsInterface::TAG_VIEW);
 
-            $id = $this->apiService->getParamInt('id', true);
-            $tagData = $this->tagService->getById($id);
+        $id = $this->apiService->getParamInt('id', true);
 
-            $this->eventDispatcher->notify(
-                'show.tag',
-                new Event(
-                    $this, EventMessage::build()
-                    ->addDescription(__u('Tag displayed'))
-                    ->addDetail(__u('Name'), $tagData->getName())
-                    ->addDetail('ID', $id)
-                )
-            );
+        $tag = $this->getTagUseCase->execute(new GetTagCommand($id))->tag;
 
-            $this->returnResponse(ActionResponse::ok('', $tagData, $id));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok('', $tag, $id);
     }
 }

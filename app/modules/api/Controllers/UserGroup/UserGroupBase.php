@@ -24,47 +24,36 @@
 
 namespace SP\Modules\Api\Controllers\UserGroup;
 
-use Klein\Klein;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
-use SP\Modules\Api\Adapters\ActionResponseAdapter;
-use SP\Domain\Core\Acl\AclInterface;
-use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Domain\User\Ports\UserGroupService;
+use SP\Domain\User\UseCases\CreateUserGroupUseCase;
+use SP\Domain\User\UseCases\DeleteUserGroupUseCase;
+use SP\Domain\User\UseCases\GetUserGroupUseCase;
+use SP\Domain\User\UseCases\SearchUserGroupsUseCase;
+use SP\Domain\User\UseCases\UpdateUserGroupUseCase;
 use SP\Modules\Api\Controllers\ControllerBase;
-use SP\Modules\Api\Controllers\Help\TagHelp;
+use SP\Modules\Api\Controllers\Help\UserGroupHelp;
 
 /**
  * Class UserGroupBase
  */
 abstract class UserGroupBase extends ControllerBase
 {
-    protected UserGroupService $userGroupService;
-
     /**
      * @throws InvalidClassException
      */
     public function __construct(
-        Application  $application,
-        Klein        $router,
-        ApiService   $apiService,
-        AclInterface $acl,
-        ActionResponseAdapter $actionResponseAdapter,
-        JsonResponseFactory $jsonResponseFactory,
-        UserGroupService $groupService
+        Application                    $application,
+        ApiService                     $apiService,
+        protected readonly GetUserGroupUseCase    $getUserGroupUseCase,
+        protected readonly CreateUserGroupUseCase $createUserGroupUseCase,
+        protected readonly UpdateUserGroupUseCase $updateUserGroupUseCase,
+        protected readonly DeleteUserGroupUseCase $deleteUserGroupUseCase,
+        protected readonly SearchUserGroupsUseCase $searchUserGroupsUseCase
     ) {
-        parent::__construct(
-            $application,
-            $router,
-            $apiService,
-            $acl,
-            $actionResponseAdapter,
-            $jsonResponseFactory
-        );
+        parent::__construct($application, $apiService);
 
-        $this->userGroupService = $groupService;
-
-        $this->apiService->setHelpClass(TagHelp::class);
+        $this->apiService->setHelpClass(UserGroupHelp::class);
     }
 }

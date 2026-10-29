@@ -30,9 +30,16 @@ use Klein\Request;
 use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionAttribute;
+use ReflectionMethod;
+use ReflectionNamedType;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Api\Ports\ApiRequestService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Modules\Api\Adapters\ActionResponseAdapter;
+use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Http\Code;
@@ -81,10 +88,12 @@ final class Bootstrap extends BootstrapBase
                 $apiRequest = $this->buildInstanceFor(ApiRequestService::class);
                 [$controllerName, $actionName] = explode('/', $apiRequest->getMethod());
                 $controllerClass = self::getClassFor($this->module->getName(), $controllerName, $actionName);
-                $method = $actionName . 'Action';
+                $methodName = $actionName . 'Action';
 
-                if (!method_exists($controllerClass, $method)) {
-                    logger($controllerClass . '::' . $method);
+                $method = $this->getActionMethod($controllerClass, $methodName);
+
+                if ($method === null) {
+                    logger($controllerClass . '::' . $methodName);
 
                     $response->code(Code::NOT_FOUND->value);
 
@@ -103,18 +112,71 @@ final class Bootstrap extends BootstrapBase
 
                 $this->module->initialize($controllerName);
 
-                logger('Routing call: ' . $controllerClass . '::' . $method);
+                logger('Routing call: ' . $controllerClass . '::' . $methodName);
 
-                return call_user_func([$this->buildInstanceFor($controllerClass), $method]);
+                $controller = $this->buildInstanceFor($controllerClass);
+
+                try {
+                    /** @var ActionResponse $actionResponse */
+                    $actionResponse = $method->invoke($controller);
+
+                    if ($controller instanceof ControllerBase
+                        && $controller->isAuthenticated() === false
+                    ) {
+                        return $response->body(
+                            $actionResponseAdapter->toJsonRpcError(
+                                'Unauthorized access',
+                                ActionResponseAdapter::SERVER_ERROR,
+                                $apiRequest->getId()
+                            )
+                        );
+                    }
+
+                    return $response->body(
+                        $actionResponseAdapter->toJsonRpc($actionResponse, $apiRequest->getId())
+                    );
+                } catch (Exception $e) {
+                    processException($e);
+
+                    return $response->body(
+                        $actionResponseAdapter->toJsonRpcException($e, $apiRequest->getId())
+                    );
+                }
             } catch (Exception $e) {
                 processException($e);
 
                 $response->code(Code::INTERNAL_SERVER_ERROR->value);
 
                 return $response->body($actionResponseAdapter->toJsonRpcException($e, 0));
-            } finally {
-                $this->router->skipRemaining();
             }
         };
+    }
+
+    /**
+     * @return ReflectionMethod|null
+     * @throws \ReflectionException
+     */
+    private function getActionMethod(string $controllerClass, string $methodName): ?ReflectionMethod
+    {
+        if (!method_exists($controllerClass, $methodName)) {
+            return null;
+        }
+
+        $method = new ReflectionMethod($controllerClass, $methodName);
+
+        $returnType = $method->getReturnType();
+
+        if (!$returnType instanceof ReflectionNamedType || $returnType->getName() !== ActionResponse::class) {
+            return null;
+        }
+
+        /** @var ReflectionAttribute<Action>|null $attribute */
+        $attribute = $method->getAttributes(Action::class)[0] ?? null;
+
+        if ($attribute === null || $attribute->newInstance()->responseType !== ResponseType::JSON_RPC) {
+            return null;
+        }
+
+        return $method;
     }
 }

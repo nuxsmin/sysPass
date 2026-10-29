@@ -24,28 +24,23 @@
 
 namespace SP\Modules\Api\Controllers\Config;
 
-
-use Exception;
-use Klein\Klein;
 use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
+use SP\Domain\Api\Ports\ApiService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Common\Dtos\ActionResponse;
-use SP\Domain\Api\Ports\ApiService;
-use SP\Modules\Api\Adapters\ActionResponseAdapter;
-use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Export\Ports\XmlExportService;
-use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Infrastructure\File\DirectoryHandler;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
 
 use function SP\__u;
-use function SP\processException;
 use function SP\__;
 
 /**
@@ -59,62 +54,42 @@ final class ExportController extends ControllerBase
      */
     public function __construct(
         Application                       $application,
-        Klein                             $router,
         ApiService                        $apiService,
-        AclInterface                      $acl,
-        ActionResponseAdapter         $actionResponseAdapter,
-        JsonResponseFactory               $jsonResponseFactory,
         private readonly XmlExportService $xmlExportService,
         private readonly PathsContext     $pathsContext
     ) {
-        parent::__construct(
-            $application,
-            $router,
-            $apiService,
-            $acl,
-            $actionResponseAdapter,
-            $jsonResponseFactory
-        );
+        parent::__construct($application, $apiService);
 
         $this->apiService->setHelpClass(ConfigHelp::class);
     }
 
-    /**
-     * exportAction
-     */
-    public function exportAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function exportAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CONFIG_EXPORT_RUN);
+        $this->setupApi(AclActionsInterface::CONFIG_EXPORT_RUN);
 
-            $password = $this->apiService->getParamString('password');
-            $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
+        $password = $this->apiService->getParamString('password');
+        $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
 
-            $this->eventDispatcher->notify(
-                'run.export.start',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('sysPass XML export'))
-                        ->addDetail(__u('Path'), $path)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'run.export.start',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('sysPass XML export'))
+                    ->addDetail(__u('Path'), $path)
+            )
+        );
 
-            $file = $this->xmlExportService->export(new DirectoryHandler($path), $password);
+        $file = $this->xmlExportService->export(new DirectoryHandler($path), $password);
 
+        $this->eventDispatcher->notify(
+            'run.export.end',
+            new Event($this, EventMessage::build()->addDescription(__u('Export process finished')))
+        );
 
-            $this->eventDispatcher->notify(
-                'run.export.end',
-                new Event($this, EventMessage::build()->addDescription(__u('Export process finished')))
-            );
+        $exportFiles = ['files' => ['xml' => $file]];
 
-            $exportFiles = ['files' => ['xml' => $file]];
-
-            $this->returnResponse(ActionResponse::ok(__('Export process finished'), $exportFiles));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Export process finished'), $exportFiles);
     }
 }

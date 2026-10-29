@@ -24,62 +24,31 @@
 
 namespace SP\Modules\Api\Controllers\Tag;
 
-
-use Exception;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
-use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Tag\Models\Tag;
+use SP\Domain\Tag\UseCases\Dtos\CreateTagCommand;
+use SP\Domain\Tag\UseCases\Dtos\GetTagCommand;
+
 use function SP\__;
-use function SP\__u;
-use function SP\processException;
 
 /**
  * Class CreateController
  */
 final class CreateController extends TagBase
 {
-    /**
-     * createAction
-     */
-    public function createAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function createAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::TAG_CREATE);
+        $this->setupApi(AclActionsInterface::TAG_CREATE);
 
-            $tagData = $this->buildTagData();
+        $name = $this->apiService->getParamString('name', true);
 
-            $id = $this->tagService->create($tagData);
+        $result = $this->createTagUseCase->execute(new CreateTagCommand($name));
 
-            $tagData = $tagData->mutate(['id' => $id]);
+        $tag = $this->getTagUseCase->execute(new GetTagCommand($result->id))->tag;
 
-            $this->eventDispatcher->notify(
-                'create.tag',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Tag added'))
-                        ->addDetail(__u('Name'), $tagData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
-
-            $this->returnResponse(ActionResponse::ok(__('Tag added'), $tagData, $id));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
-    }
-
-    /**
-     * @return Tag
-     * @throws ServiceException
-     */
-    private function buildTagData(): Tag
-    {
-        return (new Tag(['name' => $this->apiService->getParamString('name', true)]))->withHash();
+        return ActionResponse::ok(__('Tag added'), $tag, $result->id);
     }
 }

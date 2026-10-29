@@ -24,28 +24,24 @@
 
 namespace SP\Modules\Api\Controllers\Config;
 
-use Exception;
-use Klein\Klein;
 use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
+use SP\Domain\Api\Ports\ApiService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Common\Dtos\ActionResponse;
-use SP\Domain\Api\Ports\ApiService;
-use SP\Modules\Api\Adapters\ActionResponseAdapter;
-use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Ports\BackupFileService;
-use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class BackupController
@@ -59,67 +55,46 @@ final class BackupController extends ControllerBase
      */
     public function __construct(
         Application                        $application,
-        Klein                              $router,
         ApiService                         $apiService,
-        AclInterface                       $acl,
-        ActionResponseAdapter           $actionResponseAdapter,
-        JsonResponseFactory                 $jsonResponseFactory,
         private readonly BackupFileService $fileBackupService,
-        private readonly BackupFiles  $backupFiles,
-        private readonly PathsContext $pathsContext
+        private readonly BackupFiles       $backupFiles,
+        private readonly PathsContext      $pathsContext
     ) {
-        parent::__construct(
-            $application,
-            $router,
-            $apiService,
-            $acl,
-            $actionResponseAdapter,
-            $jsonResponseFactory
-        );
+        parent::__construct($application, $apiService);
 
         $this->apiService->setHelpClass(ConfigHelp::class);
     }
 
-    /**
-     * backupAction
-     */
-    public function backupAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function backupAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CONFIG_BACKUP_RUN);
+        $this->setupApi(AclActionsInterface::CONFIG_BACKUP_RUN);
 
-            $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
+        $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
 
-            $this->fileBackupService->doBackup($path, $this->pathsContext[Path::APP]);
+        $this->fileBackupService->doBackup($path, $this->pathsContext[Path::APP]);
 
-            $this->eventDispatcher->notify(
-                'run.backup.end',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Application and database backup completed successfully'))
-                        ->addDetail(__u('Path'), $path)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'run.backup.end',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Application and database backup completed successfully'))
+                    ->addDetail(__u('Path'), $path)
+            )
+        );
 
-            $defaultPath = $this->pathsContext[Path::BACKUP];
+        $defaultPath = $this->pathsContext[Path::BACKUP];
 
-            if ($path !== $defaultPath) {
-                $appFile = (string)$this->backupFiles->getAppBackupFile();
-                $dbFile = (string)$this->backupFiles->getDbBackupFile();
+        if ($path !== $defaultPath) {
+            $appFile = (string)$this->backupFiles->getAppBackupFile();
+            $dbFile = (string)$this->backupFiles->getDbBackupFile();
 
-                @copy($appFile, (string)$this->backupFiles->withPath($path)->getAppBackupFile());
-                @copy($dbFile, (string)$this->backupFiles->withPath($path)->getDbBackupFile());
-            }
-
-            $this->returnResponse(
-                ActionResponse::ok(__('Backup process finished'), $this->buildBackupFiles($path))
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
+            @copy($appFile, (string)$this->backupFiles->withPath($path)->getAppBackupFile());
+            @copy($dbFile, (string)$this->backupFiles->withPath($path)->getDbBackupFile());
         }
+
+        return ActionResponse::ok(__('Backup process finished'), $this->buildBackupFiles($path));
     }
 
     /**

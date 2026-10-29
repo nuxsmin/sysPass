@@ -24,64 +24,27 @@
 
 namespace SP\Modules\Api\Controllers\UserGroup;
 
-
-use Exception;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
-use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\Models\UserGroup;
+use SP\Domain\User\UseCases\Dtos\GetUserGroupCommand;
+use SP\Domain\User\UseCases\Dtos\UpdateUserGroupCommand;
+
 use function SP\__;
-use function SP\__u;
-use function SP\processException;
 
 /**
  * Class EditController
  */
 final class EditController extends UserGroupBase
 {
-    /**
-     * editAction
-     */
-    public function editAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function editAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::GROUP_EDIT);
+        $this->setupApi(AclActionsInterface::GROUP_EDIT);
 
-            $userGroupData = $this->buildUserGroupData();
-
-            $this->userGroupService->update($userGroupData);
-
-            $this->eventDispatcher->notify(
-                'edit.userGroup',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Group updated'))
-                        ->addDetail(__u('Name'), $userGroupData->getName())
-                        ->addDetail('ID', $userGroupData->getId())
-                        ->addExtra('userGroupId', $userGroupData->getId())
-                )
-            );
-
-            $this->returnResponse(
-                ActionResponse::ok(__('Group updated'), $userGroupData, $userGroupData->getId())
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
-    }
-
-    /**
-     * @return UserGroup
-     * @throws ServiceException
-     */
-    private function buildUserGroupData(): UserGroup
-    {
-        return new UserGroup(
+        $userGroup = new UserGroup(
             [
                 'id'          => $this->apiService->getParamInt('id', true),
                 'name'        => $this->apiService->getParamString('name', true),
@@ -89,5 +52,13 @@ final class EditController extends UserGroupBase
                 'users'       => $this->apiService->getParamArray('usersId'),
             ]
         );
+
+        $this->updateUserGroupUseCase->execute(new UpdateUserGroupCommand($userGroup));
+
+        $id = (int)$userGroup->getId();
+
+        $userGroup = $this->getUserGroupUseCase->execute(new GetUserGroupCommand($id))->model;
+
+        return ActionResponse::ok(__('Group updated'), $userGroup, $id);
     }
 }

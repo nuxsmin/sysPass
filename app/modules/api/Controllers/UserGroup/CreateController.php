@@ -24,67 +24,38 @@
 
 namespace SP\Modules\Api\Controllers\UserGroup;
 
-
-use Exception;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
-use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\Models\UserGroup;
+use SP\Domain\User\UseCases\Dtos\CreateUserGroupCommand;
+use SP\Domain\User\UseCases\Dtos\GetUserGroupCommand;
+
 use function SP\__;
-use function SP\__u;
-use function SP\processException;
 
 /**
  * Class CreateController
  */
 final class CreateController extends UserGroupBase
 {
-    /**
-     * createAction
-     */
-    public function createAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function createAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::GROUP_CREATE);
+        $this->setupApi(AclActionsInterface::GROUP_CREATE);
 
-            $userGroupData = $this->buildUserGroupData();
-
-            $id = $this->userGroupService->create($userGroupData);
-
-            $userGroupData = $userGroupData->mutate(['id' => $id]);
-
-            $this->eventDispatcher->notify(
-                'create.userGroup',
-                new Event(
-                    $this, EventMessage::build()
-                    ->addDescription(__u('Group added'))
-                    ->addDetail(__u('Name'), $userGroupData->getName())
-                    ->addDetail('ID', $id)
-                )
-            );
-
-            $this->returnResponse(ActionResponse::ok(__('Group added'), $userGroupData, $id));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
-    }
-
-    /**
-     * @return UserGroup
-     * @throws ServiceException
-     */
-    private function buildUserGroupData(): UserGroup
-    {
-        return new UserGroup(
+        $userGroup = new UserGroup(
             [
                 'name'        => $this->apiService->getParamString('name', true),
                 'description' => $this->apiService->getParamString('description'),
                 'users'       => $this->apiService->getParamArray('usersId'),
             ]
         );
+
+        $result = $this->createUserGroupUseCase->execute(new CreateUserGroupCommand($userGroup));
+
+        $userGroup = $this->getUserGroupUseCase->execute(new GetUserGroupCommand($result->id))->model;
+
+        return ActionResponse::ok(__('Group added'), $userGroup, $result->id);
     }
 }

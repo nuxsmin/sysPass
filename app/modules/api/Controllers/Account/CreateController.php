@@ -24,16 +24,16 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class CreateController
@@ -43,37 +43,32 @@ final class CreateController extends AccountBase
     /**
      * createAction
      */
-    public function createAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function createAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::ACCOUNT_CREATE);
+        $this->setupApi(AclActionsInterface::ACCOUNT_CREATE);
 
-            $accountRequest = $this->buildAccountRequest();
+        $accountRequest = $this->buildAccountRequest();
 
-            $accountRequest = $this->accountPresetService->checkPasswordPreset($accountRequest);
+        $accountRequest = $this->accountPresetService->checkPasswordPreset($accountRequest);
 
-            $accountId = $this->accountService->create($accountRequest);
+        $accountId = $this->accountService->create($accountRequest);
 
-            $accountDetails = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
+        $accountDetails = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
 
-            $this->eventDispatcher->notify(
-                'create.account',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Account created'))
-                        ->addDetail(__u('Name'), $accountDetails->getName())
-                        ->addDetail(__u('Client'), $accountDetails->getClientName())
-                        ->addDetail('ID', $accountDetails->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'create.account',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Account created'))
+                    ->addDetail(__u('Name'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    ->addDetail('ID', $accountDetails->getId())
+            )
+        );
 
-            $this->returnResponse(ActionResponse::ok(__('Account created'), $accountDetails, $accountId));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Account created'), $accountDetails, $accountId);
     }
 
     /**

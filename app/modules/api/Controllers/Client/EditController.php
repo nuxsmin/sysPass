@@ -24,17 +24,16 @@
 
 namespace SP\Modules\Api\Controllers\Client;
 
-
-use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class EditController
@@ -44,32 +43,27 @@ final class EditController extends ClientBase
     /**
      * editAction
      */
-    public function editAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function editAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CLIENT_EDIT);
+        $this->setupApi(AclActionsInterface::CLIENT_EDIT);
 
-            $clientData = $this->buildClientData();
+        $clientData = $this->buildClientData();
 
-            $this->clientService->update($clientData);
+        $this->clientService->update($clientData);
 
-            $this->eventDispatcher->notify(
-                'edit.client',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Client updated'))
-                        ->addDetail(__u('Name'), $clientData->getName())
-                        ->addDetail('ID', $clientData->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'edit.client',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Client updated'))
+                    ->addDetail(__u('Name'), $clientData->getName())
+                    ->addDetail('ID', $clientData->getId())
+            )
+        );
 
-            $this->returnResponse(ActionResponse::ok(__('Client updated'), $clientData, $clientData->getId()));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Client updated'), $clientData, $clientData->getId());
     }
 
     /**

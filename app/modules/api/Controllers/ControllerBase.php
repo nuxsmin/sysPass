@@ -24,23 +24,15 @@
 
 namespace SP\Modules\Api\Controllers;
 
-use Exception;
-use Klein\Klein;
 use League\Fractal\Manager;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Ports\JsonResponseFactory;
-use SP\Modules\Api\Adapters\ActionResponseAdapter;
-use function SP\__u;
-use function SP\processException;
 
 /**
  * Class ControllerBase
@@ -60,12 +52,8 @@ abstract class ControllerBase
     private bool                       $isAuthenticated = false;
 
     public function __construct(
-        Application                     $application,
-        protected readonly Klein        $router,
-        protected readonly ApiService   $apiService,
-        protected readonly AclInterface $acl,
-        protected readonly ActionResponseAdapter $actionResponseAdapter,
-        protected readonly JsonResponseFactory $jsonResponseFactory
+        Application                   $application,
+        protected readonly ApiService $apiService
     ) {
         $this->context = $application->getContext();
         $this->configData = $application->getConfig()->getConfigData();
@@ -94,40 +82,8 @@ abstract class ControllerBase
         $this->isAuthenticated = true;
     }
 
-    /**
-     * Devuelve una respuesta en formato JSON con el estado y el mensaje.
-     *
-     * {"jsonrpc": "2.0", "result": 19, "id": 3}
-     */
-    final protected function returnResponse(ActionResponse $actionResponse): void
+    final public function isAuthenticated(): bool
     {
-        try {
-            if ($this->isAuthenticated === false) {
-                throw new SPException(__u('Unauthorized access'));
-            }
-
-            $this->sendJsonResponse(
-                $this->actionResponseAdapter->toJsonRpc($actionResponse, $this->apiService->getRequestId())
-            );
-        } catch (SPException $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
-    }
-
-    /**
-     * Returns a JSON response back to the browser
-     */
-    private function sendJsonResponse(string $response): void
-    {
-        $this->jsonResponseFactory->create($this->router->response())->sendRaw($response);
-    }
-
-    final protected function returnResponseException(Exception $e): void
-    {
-        $this->sendJsonResponse(
-            $this->actionResponseAdapter->toJsonRpcException($e, $this->apiService->getRequestId())
-        );
+        return $this->isAuthenticated;
     }
 }

@@ -24,54 +24,31 @@
 
 namespace SP\Modules\Api\Controllers\Tag;
 
-
-use Exception;
-use SP\Domain\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
-use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
-use function SP\processException;
+use SP\Domain\Tag\UseCases\Dtos\SearchTagsCommand;
 
 /**
  * Class SearchController
  */
 final class SearchController extends TagBase
 {
-    /**
-     * searchAction
-     */
-    public function searchAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function searchAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::TAG_SEARCH);
+        $this->setupApi(AclActionsInterface::TAG_SEARCH);
 
-            $itemSearchData = $this->buildSearchData();
-
-            $this->eventDispatcher->notify('search.tag', new Event($this));
-            $this->returnResponse(
-                ActionResponse::ok(
-                    '',
-                    $this->tagService->search($itemSearchData)->getDataAsArray()
-                )
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
-    }
-
-    /**
-     * @return ItemSearchDto
-     * @throws ServiceException
-     */
-    private function buildSearchData(): ItemSearchDto
-    {
-        return new ItemSearchDto(
+        $itemSearchData = new ItemSearchDto(
             $this->apiService->getParamString('text'),
             0,
             $this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS)
         );
+
+        $result = $this->searchTagsUseCase->execute(new SearchTagsCommand($itemSearchData));
+
+        return ActionResponse::ok('', $result->tags);
     }
 }

@@ -24,51 +24,43 @@
 
 namespace SP\Modules\Api\Controllers\Category;
 
-
-use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 final class EditController extends CategoryBase
 {
     /**
      * editAction
      */
-    public function editAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function editAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CATEGORY_EDIT);
+        $this->setupApi(AclActionsInterface::CATEGORY_EDIT);
 
-            $categoryData = $this->buildCategoryData();
+        $categoryData = $this->buildCategoryData();
 
-            $this->categoryService->update($categoryData);
+        $this->categoryService->update($categoryData);
 
-            $this->eventDispatcher->notify(
-                'edit.category',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Category updated'))
-                        ->addDetail(__u('Name'), $categoryData->getName())
-                        ->addDetail('ID', $categoryData->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'edit.category',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Category updated'))
+                    ->addDetail(__u('Name'), $categoryData->getName())
+                    ->addDetail('ID', $categoryData->getId())
+            )
+        );
 
-            $this->returnResponse(
-                ActionResponse::ok(__('Category updated'), $categoryData, $categoryData->getId())
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Category updated'), $categoryData, $categoryData->getId());
     }
 
     /**

@@ -24,15 +24,14 @@
 
 namespace SP\Modules\Api\Controllers\Category;
 
-
-use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class DeleteController
@@ -42,33 +41,28 @@ final class DeleteController extends CategoryBase
     /**
      * deleteAction
      */
-    public function deleteAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function deleteAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CATEGORY_DELETE);
+        $this->setupApi(AclActionsInterface::CATEGORY_DELETE);
 
-            $id = $this->apiService->getParamInt('id', true);
+        $id = $this->apiService->getParamInt('id', true);
 
-            $categoryData = $this->categoryService->getById($id);
+        $categoryData = $this->categoryService->getById($id);
 
-            $this->categoryService->delete($id);
+        $this->categoryService->delete($id);
 
-            $this->eventDispatcher->notify(
-                'delete.category',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Category deleted'))
-                        ->addDetail(__u('Name'), $categoryData->getName())
-                        ->addDetail('ID', $categoryData->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'delete.category',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Category deleted'))
+                    ->addDetail(__u('Name'), $categoryData->getName())
+                    ->addDetail('ID', $categoryData->getId())
+            )
+        );
 
-            $this->returnResponse(ActionResponse::ok(__('Category deleted'), $categoryData, $id));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Category deleted'), $categoryData, $id);
     }
 }

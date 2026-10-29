@@ -24,71 +24,42 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-use Exception;
-use Klein\Klein;
 use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchService;
-use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Api\Ports\ApiService;
-use SP\Modules\Api\Adapters\ActionResponseAdapter;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\AclInterface;
-use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Modules\Api\Controllers\ControllerBase;
-use function SP\processException;
 
 /**
  * Class SearchController
  */
 final class SearchController extends ControllerBase
 {
-    private AccountSearchService $accountSearchService;
-
     public function __construct(
-        Application  $application,
-        Klein        $router,
-        ApiService   $apiService,
-        AclInterface $acl,
-        ActionResponseAdapter $actionResponseAdapter,
-        JsonResponseFactory $jsonResponseFactory,
-        AccountSearchService $accountSearchService
+        Application                                     $application,
+        ApiService                                      $apiService,
+        private readonly AccountSearchService           $accountSearchService
     ) {
-        parent::__construct(
-            $application,
-            $router,
-            $apiService,
-            $acl,
-            $actionResponseAdapter,
-            $jsonResponseFactory
-        );
-
-        $this->accountSearchService = $accountSearchService;
+        parent::__construct($application, $apiService);
     }
 
-    /**
-     * searchAction
-     */
-    public function searchAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function searchAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::ACCOUNT_SEARCH);
+        $this->setupApi(AclActionsInterface::ACCOUNT_SEARCH);
 
-            $accountSearchFilter = $this->buildAccountSearchFilter();
+        $accountSearchFilter = $this->buildAccountSearchFilter();
 
-            $this->returnResponse(
-                ActionResponse::ok(
-                    '',
-                    ($this->accountSearchService->getByFilter($accountSearchFilter)->getDataAsArray() ?? [])
-                )
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(
+            '',
+            ($this->accountSearchService->getByFilter($accountSearchFilter)->getDataAsArray() ?? [])
+        );
     }
 
     /**
@@ -105,8 +76,8 @@ final class SearchController extends ControllerBase
                                         )
                                         ->setLimitCount($this->apiService->getParamInt('count', false, 50))
                                         ->setSortOrder(
-                $this->apiService->getParamInt('order', false, AccountSearchConstants::SORT_DEFAULT)
-            );
+                                            $this->apiService->getParamInt('order', false, AccountSearchConstants::SORT_DEFAULT)
+                                        );
 
         $op = $this->apiService->getParamString('op', false, AccountSearchConstants::FILTER_CHAIN_AND);
 

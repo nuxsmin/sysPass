@@ -24,17 +24,16 @@
 
 namespace SP\Modules\Api\Controllers\Category;
 
-
-use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class CreateController
@@ -44,34 +43,29 @@ final class CreateController extends CategoryBase
     /**
      * createAction
      */
-    public function createAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function createAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CATEGORY_CREATE);
+        $this->setupApi(AclActionsInterface::CATEGORY_CREATE);
 
-            $categoryData = $this->buildCategoryData();
+        $categoryData = $this->buildCategoryData();
 
-            $id = $this->categoryService->create($categoryData);
+        $id = $this->categoryService->create($categoryData);
 
-            $categoryData = $categoryData->mutate(['id' => $id]);
+        $categoryData = $categoryData->mutate(['id' => $id]);
 
-            $this->eventDispatcher->notify(
-                'create.category',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Category added'))
-                        ->addDetail(__u('Name'), $categoryData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'create.category',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Category added'))
+                    ->addDetail(__u('Name'), $categoryData->getName())
+                    ->addDetail('ID', $id)
+            )
+        );
 
-            $this->returnResponse(ActionResponse::ok(__('Category added'), $categoryData, $id));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Category added'), $categoryData, $id);
     }
 
     /**

@@ -24,52 +24,31 @@
 
 namespace SP\Modules\Api\Controllers\Tag;
 
-
-use Exception;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Tag\UseCases\Dtos\DeleteTagCommand;
+use SP\Domain\Tag\UseCases\Dtos\GetTagCommand;
+
 use function SP\__;
-use function SP\__u;
-use function SP\processException;
 
 /**
  * Class DeleteController
  */
 final class DeleteController extends TagBase
 {
-    /**
-     * deleteAction
-     */
-    public function deleteAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function deleteAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::TAG_DELETE);
+        $this->setupApi(AclActionsInterface::TAG_DELETE);
 
-            $id = $this->apiService->getParamInt('id', true);
+        $id = $this->apiService->getParamInt('id', true);
 
-            $tagData = $this->tagService->getById($id);
+        $tag = $this->getTagUseCase->execute(new GetTagCommand($id))->tag;
 
-            $this->tagService->delete($id);
+        $this->deleteTagUseCase->execute(new DeleteTagCommand($id));
 
-            $this->eventDispatcher->notify(
-                'delete.tag',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Tag removed'))
-                        ->addDetail(__u('Name'), $tagData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
-
-            $this->returnResponse(ActionResponse::ok(__('Tag removed'), $tagData, $id));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Tag removed'), $tag, $id);
     }
-
 }

@@ -24,15 +24,15 @@
 
 namespace SP\Modules\Api\Controllers\Client;
 
-use Exception;
 use League\Fractal\Resource\Item;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Util\Util;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class ViewController
@@ -42,48 +42,41 @@ final class ViewController extends ClientBase
     /**
      * viewAction
      */
-    public function viewAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function viewAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CLIENT_VIEW);
+        $this->setupApi(AclActionsInterface::CLIENT_VIEW);
 
-            $id = $this->apiService->getParamInt('id', true);
+        $id = $this->apiService->getParamInt('id', true);
 
-            $customFields = Util::boolval($this->apiService->getParamString('customFields'));
+        $customFields = Util::boolval($this->apiService->getParamString('customFields'));
 
-            $clientData = $this->clientService->getById($id);
+        $clientData = $this->clientService->getById($id);
 
-            $this->eventDispatcher->notify('show.client', new Event($this));
+        $this->eventDispatcher->notify('show.client', new Event($this));
 
-            $this->eventDispatcher->notify(
-                'show.client',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Client displayed'))
-                        ->addDetail(__u('Name'), $clientData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'show.client',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Client displayed'))
+                    ->addDetail(__u('Name'), $clientData->getName())
+                    ->addDetail('ID', $id)
+            )
+        );
 
-            if ($customFields) {
-                $this->apiService->requireMasterPass();
-            }
-
-            $out = $this->fractal->createData(new Item($clientData, $this->clientAdapter));
-
-            if ($customFields) {
-                $this->apiService->requireMasterPass();
-                $this->fractal->parseIncludes(['customFields']);
-            }
-
-            $this->returnResponse(
-                ActionResponse::ok('', $out->toArray(), $id)
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
+        if ($customFields) {
+            $this->apiService->requireMasterPass();
         }
+
+        $out = $this->fractal->createData(new Item($clientData, $this->clientAdapter));
+
+        if ($customFields) {
+            $this->apiService->requireMasterPass();
+            $this->fractal->parseIncludes(['customFields']);
+        }
+
+        return ActionResponse::ok('', $out->toArray(), $id);
     }
 }

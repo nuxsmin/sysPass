@@ -24,17 +24,12 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-
-use Klein\Klein;
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountAdapter;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Api\Ports\ApiService;
-use SP\Modules\Api\Adapters\ActionResponseAdapter;
-use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Api\Controllers\ControllerBase;
@@ -45,42 +40,19 @@ use SP\Modules\Api\Controllers\Help\AccountHelp;
  */
 abstract class AccountBase extends ControllerBase
 {
-    protected AccountPresetService        $accountPresetService;
-    protected AccountService          $accountService;
-    protected CustomFieldDataService $customFieldService;
-    protected AccountAdapter $accountAdapter;
-    protected CryptInterface $crypt;
-
     /**
      * @throws InvalidClassException
      */
     public function __construct(
         Application             $application,
-        Klein                   $router,
         ApiService              $apiService,
-        AclInterface            $acl,
-        ActionResponseAdapter $actionResponseAdapter,
-        JsonResponseFactory $jsonResponseFactory,
-        AccountPresetService    $accountPresetService,
-        AccountService          $accountService,
-        CustomFieldDataService $customFieldService,
-        AccountAdapter $accountAdapter,
-        CryptInterface          $crypt
+        protected readonly AccountPresetService $accountPresetService,
+        protected readonly AccountService $accountService,
+        protected readonly CustomFieldDataService $customFieldService,
+        protected readonly AccountAdapter $accountAdapter,
+        protected readonly CryptInterface $crypt
     ) {
-        parent::__construct(
-            $application,
-            $router,
-            $apiService,
-            $acl,
-            $actionResponseAdapter,
-            $jsonResponseFactory
-        );
-
-        $this->accountPresetService = $accountPresetService;
-        $this->accountService = $accountService;
-        $this->customFieldService = $customFieldService;
-        $this->accountAdapter = $accountAdapter;
-        $this->crypt = $crypt;
+        parent::__construct($application, $apiService);
 
         $this->apiService->setHelpClass(AccountHelp::class);
     }

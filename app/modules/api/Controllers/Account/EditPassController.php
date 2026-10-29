@@ -24,16 +24,16 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class EditPassController
@@ -43,39 +43,32 @@ final class EditPassController extends AccountBase
     /**
      * viewPassAction
      */
-    public function editPassAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function editPassAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::ACCOUNT_EDIT_PASS);
+        $this->setupApi(AclActionsInterface::ACCOUNT_EDIT_PASS);
 
-            $accountRequest = $this->buildAccountRequest();
+        $accountRequest = $this->buildAccountRequest();
 
-            $accountRequest = $this->accountPresetService->checkPasswordPreset($accountRequest);
+        $accountRequest = $this->accountPresetService->checkPasswordPreset($accountRequest);
 
-            $this->accountService->editPassword($accountRequest->id, $accountRequest);
+        $this->accountService->editPassword($accountRequest->id, $accountRequest);
 
-            $accountDetails = $this->accountService->getByIdEnriched($accountRequest->id)->getAccountVData();
+        $accountDetails = $this->accountService->getByIdEnriched($accountRequest->id)->getAccountVData();
 
-            $this->eventDispatcher->notify(
-                'edit.account.pass',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Password updated'))
-                        ->addDetail(__u('Name'), $accountDetails->getName())
-                        ->addDetail(__u('Client'), $accountDetails->getClientName())
-                        ->addDetail('ID', $accountDetails->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'edit.account.pass',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Password updated'))
+                    ->addDetail(__u('Name'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    ->addDetail('ID', $accountDetails->getId())
+            )
+        );
 
-            $this->returnResponse(
-                ActionResponse::ok(__('Password updated'), $accountDetails, $accountRequest->id)
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Password updated'), $accountDetails, $accountRequest->id);
     }
 
     /**

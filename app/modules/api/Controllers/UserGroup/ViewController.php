@@ -24,13 +24,11 @@
 
 namespace SP\Modules\Api\Controllers\UserGroup;
 
-use Exception;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use function SP\__u;
-use function SP\processException;
+use SP\Domain\User\UseCases\Dtos\GetUserGroupCommand;
 
 /**
  * Class ViewController
@@ -39,35 +37,15 @@ use function SP\processException;
  */
 final class ViewController extends UserGroupBase
 {
-    /**
-     * viewAction
-     */
-    public function viewAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function viewAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::GROUP_VIEW);
+        $this->setupApi(AclActionsInterface::GROUP_VIEW);
 
-            $id = $this->apiService->getParamInt('id', true);
-            $userGroupData = $this->userGroupService->getById($id);
+        $id = $this->apiService->getParamInt('id', true);
 
-            $this->eventDispatcher->notify(
-                'show.userGroup',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Group viewed'))
-                        ->addDetail(__u('Name'), $userGroupData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $userGroup = $this->getUserGroupUseCase->execute(new GetUserGroupCommand($id))->model;
 
-            $this->returnResponse(
-                ActionResponse::ok('', $userGroupData, $id)
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok('', $userGroup, $id);
     }
 }
