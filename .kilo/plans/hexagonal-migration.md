@@ -55,7 +55,9 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P11-1 to P11-5 | #2021, #2028, #2040, #2041, #2022 | todo |
 | D1 | #1965 | decided: option (b) |
 | D2 | #1966 | decided: option (a) |
-| D3, D8, D9 | #2011, #1967, #1968 | decision |
+| D3 | #2011 | decided: yes |
+| D8 | #1967 | decided: per-controller behind a response adapter |
+| D9 | #1968 | decision |
 
 ---
 
@@ -143,7 +145,7 @@ Each has a recommendation. Decide before the phase that depends on it.
 | D5 | How to enforce layer rules? | (a) deptrac (new dev dependency). (b) PHPUnit architecture test using `nikic/php-parser` (already in `require-dev`). | (b) first, with an allowlist that can only shrink (ratchet). Consider deptrac later. | P0-3 |
 | D6 | Pilot bounded context for the full pattern | `Tag` (5 core files, 9 controllers, 0 tests, 18 external references) or `ItemPreset` (10 domain files, 9 controllers) | `Tag` | P6-W1 |
 | D7 | Exception policy | Keep domain exceptions (`ServiceException`, `AuthException`, `ImportException`, `UpdatedMasterPassException`, `SPException` family) as the only Domain types modules may import. Move Infrastructure exceptions to Domain. | Adopt | P1-1 |
-| D8 | API migration style | Big bang vs per-controller with a response adapter | Per-controller, behind a thin JSON-RPC/REST response adapter in `app/modules/api` | P7-* |
+| D8 | API migration style | Big bang vs per-controller with a response adapter | Per-controller, behind a thin JSON-RPC/REST response adapter in `app/modules/api`. **Decided: per-controller.** | P7-* |
 | D9 | DI wiring style | Keep wildcard conventions + container test, or explicit bindings per port | Explicit bindings for ports (generated list checked by P0-4) | P9-3 |
 
 **Decision log**
@@ -151,6 +153,7 @@ Each has a recommendation. Decide before the phase that depends on it.
 - **D1 (2026-10-27): option (b).** Domain exceptions carry a stable code and an untranslated message key; the interface layer translates. Migrate one bounded context at a time, starting with `Tag` (P4-2). Option (a) remains a stopgap for contexts that are too large.
 - **D2 (2026-10-27): option (a).** Use cases live in `SP\Domain\<Ctx>\UseCases`; their Commands and Results live in `SP\Domain\<Ctx>\UseCases\Dtos`. No third top-level namespace.
 - **D3 (2026-10-27): yes.** Presentation code moves out of `lib/`: `SP\Mvc` -> `SP\Modules\Web\Mvc`, `SP\Html` -> `SP\Modules\Web\Html`, and the theme icon service moves with it to `SP\Modules\Web\UI`. `Core/Definitions` remains the composition root and may reference module classes.
+- **D8 (2026-10-29): per-controller.** Migrate API controllers one resource at a time, behind a thin JSON-RPC/REST response adapter in `app/modules/api` (P7-2), instead of a big-bang rewrite. The adapter maps `ActionResponse` to both envelopes and replaces the direct `JsonRpcResponse` / `ApiResponse` calls.
 
 ---
 
