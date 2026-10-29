@@ -25,6 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Modules\Web\Mvc\View\Components\DataTab;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 /**
  * Class TabsHelper
@@ -50,12 +51,20 @@ final class TabsHelper extends HelperBase
      */
     public function renderTabs(string $route, int $activeTab = 0): void
     {
-        $this->view->addTemplate('datatabs', 'common');
+        $this->renderTabsTo($this->view, $route, $activeTab);
+    }
 
-        $this->view->assign('tabs', $this->tabs);
-        $this->view->assign('activeTab', $activeTab);
-        $this->view->assign('maxNumActions', self::MAX_NUM_ACTIONS);
-        $this->view->assign('tabsRoute', $route);
+    /**
+     * Inicializar las plantillas para las pestañas en una vista concreta
+     */
+    public function renderTabsTo(TemplateInterface $view, string $route, int $activeTab = 0): void
+    {
+        $view->addTemplate('datatabs', 'common');
+
+        $view->assign('tabs', $this->tabs);
+        $view->assign('activeTab', $activeTab);
+        $view->assign('maxNumActions', self::MAX_NUM_ACTIONS);
+        $view->assign('tabsRoute', $route);
     }
 
     /**
@@ -67,5 +76,4 @@ final class TabsHelper extends HelperBase
     {
         $this->tabs[] = $tab;
     }
-
 }

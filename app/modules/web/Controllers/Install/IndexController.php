@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,10 +24,17 @@
 
 namespace SP\Modules\Web\Controllers\Install;
 
-use SP\Core\Language;
+use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Ports\LanguageList;
 use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
+
+use function SP\__;
 
 /**
  * Class IndexController
@@ -36,14 +43,23 @@ use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
  */
 final class IndexController extends ControllerBase
 {
-    public function indexAction(): void
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        private readonly LanguageList $languageList
+    ) {
+        parent::__construct($application, $webControllerHelper);
+    }
+
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         $skipInstalled = $this->request->analyzeBool('skipInstalled', false);
 
         if ($skipInstalled === false && $this->configData->isInstalled()) {
             $this->router->response()->redirect('index.php?r=login');
 
-            return;
+            return ActionResponse::ok('');
         }
 
         $this->layoutHelper->getPublicLayout('index', 'install');
@@ -61,10 +77,10 @@ final class IndexController extends ControllerBase
         $this->view->assign('errors', $errors);
         $this->view->assign(
             'langs',
-            SelectItemAdapter::factory(Language::getAvailableLanguages())
-                ->getItemsFromArraySelected([Language::$globalLang])
+            SelectItemAdapter::factory($this->languageList->getAvailableLanguages())
+                             ->getItemsFromArraySelected([$this->configData->getSiteLang()])
         );
 
-        $this->view();
+        return ActionResponse::ok($this->render());
     }
 }

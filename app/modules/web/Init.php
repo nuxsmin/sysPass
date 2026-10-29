@@ -61,6 +61,7 @@ use SP\Modules\Web\Controllers\Bootstrap\GetEnvironmentController;
 use SP\Modules\Web\Controllers\Error\DatabaseConnectionController;
 use SP\Modules\Web\Controllers\Error\DatabaseErrorController;
 use SP\Modules\Web\Controllers\Error\IndexController as ErrorIndexController;
+use SP\Modules\Web\Controllers\Install\IndexController as InstallIndexController;
 use SP\Modules\Web\Controllers\Install\InstallController;
 use SP\Modules\Web\Controllers\Items\AccountsUserController;
 use SP\Modules\Web\Controllers\Items\CategoriesController;
@@ -72,7 +73,6 @@ use SP\Modules\Web\Controllers\Resource\CssController;
 use SP\Modules\Web\Controllers\Resource\JsController;
 use SP\Modules\Web\Controllers\Status\CheckNoticesController;
 use SP\Modules\Web\Controllers\Status\StatusController;
-use SP\Modules\Web\Controllers\Task\TrackStatusController;
 use SP\Modules\Web\Controllers\Upgrade\IndexController as UpgradeIndexController;
 use SP\Modules\Web\Controllers\Upgrade\UpgradeController;
 
@@ -91,6 +91,7 @@ final class Init extends HttpModuleBase
     private const PARTIAL_INIT = [
         CssController::class,
         JsController::class,
+        InstallIndexController::class,
         InstallController::class,
         GetEnvironmentController::class,
         CheckNoticesController::class,
@@ -100,7 +101,6 @@ final class Init extends HttpModuleBase
         DatabaseConnectionController::class,
         DatabaseErrorController::class,
         ErrorIndexController::class,
-        TrackStatusController::class,
     ];
     /**
      * List of controllers that don't need to update the user's session activity
@@ -141,7 +141,6 @@ final class Init extends HttpModuleBase
         private readonly DatabaseUtil        $databaseUtil,
         private readonly UserProfileService  $userProfileService,
         private readonly UriContextInterface $uriContext,
-
     ) {
         parent::__construct(
             $application,

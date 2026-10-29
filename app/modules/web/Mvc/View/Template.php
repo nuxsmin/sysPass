@@ -229,8 +229,10 @@ final class Template implements TemplateInterface
      */
     public function __clone()
     {
-        // Clone TemplateVarCollection to avoid unwanted object references
+        // Clone collections to avoid unwanted object references
         $this->vars = clone $this->vars;
+        $this->templates = clone $this->templates;
+        $this->contentTemplates = clone $this->contentTemplates;
     }
 
     /**

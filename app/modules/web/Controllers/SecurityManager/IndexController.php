@@ -24,8 +24,10 @@
 
 namespace SP\Modules\Web\Controllers\SecurityManager;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -80,9 +82,10 @@ final class IndexController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
-        $this->getGridTabs();
+        return ActionResponse::ok($this->getGridTabs());
     }
 
     /**
@@ -91,9 +94,9 @@ final class IndexController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getGridTabs(): void
+    protected function getGridTabs(): string
     {
-        $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
+        $this->itemSearchData = new ItemSearchDto(null, 0, $this->configData->getAccountCount());
 
         if ($this->checkAccess(AclActionsInterface::EVENTLOG)
             && $this->configData->isLogEnabled()
@@ -111,11 +114,11 @@ final class IndexController extends ControllerBase
         );
 
         $this->tabsGridHelper->renderTabs(
-            Acl::getActionRoute(AclActionsInterface::SECURITY_MANAGE),
+            $this->acl->getRouteFor(AclActionsInterface::SECURITY_MANAGE),
             $this->request->analyzeInt('tabIndex', 0)
         );
 
-        $this->view();
+        return $this->render();
     }
 
     /**

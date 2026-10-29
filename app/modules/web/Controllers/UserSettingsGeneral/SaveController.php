@@ -25,16 +25,20 @@
 namespace SP\Modules\Web\Controllers\UserSettingsGeneral;
 
 use Exception;
-use JsonException;
 use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Events\Event;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class SaveController
@@ -43,8 +47,6 @@ use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
  */
 final class SaveController extends SimpleControllerBase
 {
-    use JsonTrait;
-
     private UserService $userService;
 
     public function __construct(
@@ -59,29 +61,29 @@ final class SaveController extends SimpleControllerBase
         $this->userService = $userService;
     }
 
-    /**
-     * @return bool
-     * @throws JsonException
-     */
-    public function saveAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveAction(): ActionResponse
     {
         try {
             $userData = $this->session->getUserData();
 
             $userPreferencesData = $this->getUserPreferencesData($userData);
 
-            $this->userService->updatePreferencesById($userData->getId(), $userPreferencesData);
+            $this->userService->updatePreferencesById($userData->id, $userPreferencesData);
 
             // Save preferences in current session
-            $userData->setPreferences($userPreferencesData);
+            $this->session->setUserData($userData->mutate(['preferences' => $userPreferencesData]));
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Preferences updated'));
+            return ActionResponse::ok(__u('Preferences updated'));
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error(
+                $e->getMessage(),
+                $e instanceof SPException ? $e->getHint() : null
+            );
         }
     }
 
@@ -92,22 +94,20 @@ final class SaveController extends SimpleControllerBase
      */
     private function getUserPreferencesData(UserDto $userData): UserPreferences
     {
-        $userPreferencesData = clone $userData->getPreferences();
-
-        $userPreferencesData->setUserId($userData->getId());
-        $userPreferencesData->setLang($this->request->analyzeString('userlang'));
-        $userPreferencesData->setTheme($this->request->analyzeString('usertheme', 'material-blue'));
-        $userPreferencesData->setResultsPerPage($this->request->analyzeInt('resultsperpage', 12));
-        $userPreferencesData->setAccountLink($this->request->analyzeBool('account_link', false));
-        $userPreferencesData->setSortViews($this->request->analyzeBool('sort_views', false));
-        $userPreferencesData->setTopNavbar($this->request->analyzeBool('top_navbar', false));
-        $userPreferencesData->setOptionalActions($this->request->analyzeBool('optional_actions', false));
-        $userPreferencesData->setResultsAsCards($this->request->analyzeBool('resultsascards', false));
-        $userPreferencesData->setCheckNotifications($this->request->analyzeBool('check_notifications', false));
-        $userPreferencesData->setShowAccountSearchFilters(
-            $this->request->analyzeBool('show_account_search_filters', false)
+        return ($userData->preferences ?? new UserPreferences())->mutate(
+            [
+                'user_id' => $userData->id,
+                'lang' => $this->request->analyzeString('userlang'),
+                'theme' => $this->request->analyzeString('usertheme', 'material-blue'),
+                'resultsPerPage' => $this->request->analyzeInt('resultsperpage', 12),
+                'accountLink' => $this->request->analyzeBool('account_link', false),
+                'sortViews' => $this->request->analyzeBool('sort_views', false),
+                'topNavbar' => $this->request->analyzeBool('top_navbar', false),
+                'optionalActions' => $this->request->analyzeBool('optional_actions', false),
+                'resultsAsCards' => $this->request->analyzeBool('resultsascards', false),
+                'checkNotifications' => $this->request->analyzeBool('check_notifications', false),
+                'showAccountSearchFilters' => $this->request->analyzeBool('show_account_search_filters', false),
+            ]
         );
-
-        return $userPreferencesData;
     }
 }

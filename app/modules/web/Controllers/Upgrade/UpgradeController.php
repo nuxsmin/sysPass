@@ -26,12 +26,13 @@ namespace SP\Modules\Web\Controllers\Upgrade;
 
 use Exception;
 use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Upgrade\Ports\UpgradeService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
@@ -44,8 +45,6 @@ use function SP\processException;
  */
 final class UpgradeController extends ControllerBase
 {
-    use JsonTrait;
-
     public function __construct(
         Application                     $application,
         WebControllerHelper             $webControllerHelper,
@@ -54,11 +53,8 @@ final class UpgradeController extends ControllerBase
         parent::__construct($application, $webControllerHelper);
     }
 
-    /**
-     * @return bool
-     * @throws SPException
-     */
-    public function upgradeAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function upgradeAction(): ActionResponse
     {
         try {
             $this->checkEnvironment();
@@ -67,32 +63,33 @@ final class UpgradeController extends ControllerBase
             $this->configData->setUpgradeKey(null);
             $this->config->save($this->configData);
 
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_SUCCESS,
+            return ActionResponse::ok(
                 __u('Application successfully updated'),
                 [__u('You will be redirected to log in within 5 seconds')]
             );
         } catch (ValidationException $e) {
-            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, $e->getMessage());
+            return ActionResponse::error($e->getMessage());
         } catch (Exception $e) {
             processException($e);
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error(
+                $e->getMessage(),
+                $e instanceof SPException ? $e->getHint() : null
+            );
         }
     }
 
     /**
-     * @return void
      * @throws ValidationException
      */
     private function checkEnvironment(): void
     {
         if ($this->request->analyzeBool('chkConfirm', false) === false) {
-            throw new ValidationException(SPException::ERROR, __u('The updating need to be confirmed'));
+            throw new ValidationException(__u('The updating need to be confirmed'), SPException::ERROR);
         }
 
         if ($this->request->analyzeString('key') !== $this->configData->getUpgradeKey()) {
-            throw new ValidationException(SPException::ERROR, __u('Wrong security code'));
+            throw new ValidationException(__u('Wrong security code'), SPException::ERROR);
         }
     }
 }

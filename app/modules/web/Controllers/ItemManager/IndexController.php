@@ -24,8 +24,10 @@
 
 namespace SP\Modules\Web\Controllers\ItemManager;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountHistoryService;
@@ -127,9 +129,10 @@ final class IndexController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
-        $this->getGridTabs();
+        return ActionResponse::ok($this->getGridTabs());
     }
 
     /**
@@ -138,7 +141,7 @@ final class IndexController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getGridTabs(): void
+    protected function getGridTabs(): string
     {
         $this->itemSearchData = new ItemSearchDto(null, 0, $this->configData->getAccountCount());
 
@@ -181,11 +184,11 @@ final class IndexController extends ControllerBase
         );
 
         $this->tabsGridHelper->renderTabs(
-            Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE),
+            $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE),
             $this->request->analyzeInt('tabIndex', 0)
         );
 
-        $this->view();
+        return $this->render();
     }
 
     /**

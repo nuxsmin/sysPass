@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,15 +24,18 @@
 
 namespace SP\Modules\Web\Controllers\ConfigWiki;
 
-use JsonException;
+use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\UnauthorizedPageException;
-use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class SaveController
@@ -43,12 +46,22 @@ final class SaveController extends SimpleControllerBase
 {
     use ConfigTrait;
 
-    /**
-     * @return bool
-     * @throws JsonException
-     */
-    public function saveAction(): bool
+    public function __construct(Application $application, SimpleControllerHelper $simpleControllerHelper)
     {
+        parent::__construct($application, $simpleControllerHelper);
+
+        $this->checks();
+    }
+
+    #[Action(ResponseType::JSON)]
+    public function saveAction(): ActionResponse
+    {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::CONFIG_WIKI)
+            && !$this->session->getUserData()->isAdminApp
+        ) {
+            return ActionResponse::error(__u('You don\'t have permission to access this page'));
+        }
+
         $eventMessage = EventMessage::build();
         $configData = $this->config->getConfigData();
 
@@ -58,7 +71,7 @@ final class SaveController extends SimpleControllerBase
         $wikiFilter = $this->request->analyzeString('wiki_filter');
 
         if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
-            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, __u('Missing Wiki parameters'));
+            return ActionResponse::error(__u('Missing Wiki parameters'));
         }
 
         if ($wikiEnabled) {
@@ -75,7 +88,7 @@ final class SaveController extends SimpleControllerBase
 
             $eventMessage->addDescription(__u('Wiki disabled'));
         } else {
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('No changes'));
+            return ActionResponse::ok(__u('No changes'));
         }
 
         return $this->saveConfig(
@@ -85,22 +98,5 @@ final class SaveController extends SimpleControllerBase
                 $this->eventDispatcher->notify('save.config.wiki', new Event($this, $eventMessage));
             }
         );
-    }
-
-    /**
-     * @return void
-     * @throws JsonException
-     * @throws SessionTimeout
-     */
-    protected function initialize(): void
-    {
-        try {
-            $this->checks();
-            $this->checkAccess(AclActionsInterface::CONFIG_WIKI);
-        } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            $this->returnJsonResponseException($e);
-        }
     }
 }

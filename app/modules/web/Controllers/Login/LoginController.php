@@ -25,15 +25,17 @@
 namespace SP\Modules\Web\Controllers\Login;
 
 use Exception;
-use JsonException;
 use SP\Core\Application;
+use SP\Domain\Auth\Ports\LoginService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Auth\Ports\LoginService;
-use SP\Domain\Http\Providers\Uri;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\processException;
 
 /**
  * Class LoginController
@@ -42,8 +44,6 @@ use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
  */
 final class LoginController extends ControllerBase
 {
-    use JsonTrait;
-
     private LoginService $loginService;
 
     public function __construct(
@@ -58,11 +58,9 @@ final class LoginController extends ControllerBase
 
     /**
      * Login action
-     *
-     * @return bool
-     * @throws JsonException
      */
-    public function loginAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function loginAction(): ActionResponse
     {
         try {
             $from = $this->getSignedUriFromRequest($this->request, $this->configData);
@@ -71,33 +69,23 @@ final class LoginController extends ControllerBase
 
             $this->checkForwarded();
 
-            $redirector = function ($route) use ($from) {
-                $uri = new Uri(ltrim($this->uriContext->getSubUri(), '/'));
-                $uri->addParam('r', $route);
-
-                if ($from !== null) {
-                    return $uri->addParam('from', $from)->getUriSigned($this->configData->getPasswordSalt());
-                }
-
-                return $uri->getUri();
-            };
-
             $this->eventDispatcher->notify(
                 'login.finish',
-                new Event($this, EventMessage::build()->addExtra('redirect', $redirector))
+                new Event($this)
             );
 
-            return $this->returnJsonResponseData([
-                                                     'url' => $this->session->getTrasientKey(
-                                                         'redirect'
-                                                     ) ?: $loginResponse->getRedirect(),
-                                                 ]);
+            return ActionResponse::ok(
+                '',
+                [
+                    'url' => $this->session->getTrasientKey('redirect') ?: $loginResponse->getRedirect(),
+                ]
+            );
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponse($e->getCode(), $e->getMessage());
+            return ActionResponse::error($e->getMessage());
         }
     }
 
@@ -114,10 +102,10 @@ final class LoginController extends ControllerBase
                 new Event(
                     $this,
                     EventMessage::build()
-                        ->addDetail(
-                            'Forwarded',
-                            $this->configData->isDemoEnabled() ? '***' : implode(',', $forward)
-                        )
+                                ->addDetail(
+                                    'Forwarded',
+                                    $this->configData->isDemoEnabled() ? '***' : implode(',', $forward)
+                                )
                 )
             );
         }
