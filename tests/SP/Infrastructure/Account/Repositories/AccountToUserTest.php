@@ -29,7 +29,7 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Common\Models\Item;
+use SP\Domain\Account\Models\AccountItem;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DatabaseInterface;
@@ -84,7 +84,7 @@ class AccountToUserTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return $query->getBindValues()['accountId'] === $id
-                       && $arg->getMapClassName() === Item::class
+                       && $arg->getMapClassName() === AccountItem::class
                        && !empty($query->getStatement());
             }
         );

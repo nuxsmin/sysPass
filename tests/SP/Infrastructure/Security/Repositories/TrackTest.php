@@ -142,8 +142,7 @@ class TrackTest extends UnitaryTestCase
                 $params = $query->getBindValues();
                 $searchStringLike = '%' . $item->getSeachString() . '%';
 
-                return count($params) === 2
-                       && $params['time'] === 1000
+                return count($params) === 1
                        && $params['source'] === $searchStringLike
                        && $arg->getMapClassName() === TrackModel::class
                        && is_a($query, SelectInterface::class)
@@ -168,8 +167,7 @@ class TrackTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 1
-                       && $params['time'] === 1000
+                return count($params) === 0
                        && $arg->getMapClassName() === TrackModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());

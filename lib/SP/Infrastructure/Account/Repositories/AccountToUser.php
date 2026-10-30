@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Account\Repositories;
 
 use SP\Domain\Account\Ports\AccountToUserRepository;
-use SP\Domain\Common\Models\Item;
+use SP\Domain\Account\Models\AccountItem;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
@@ -151,6 +151,6 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
             ->bindValues(['accountId' => $id])
             ->orderBy(['User.name ASC']);
 
-        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountItem::class));
     }
 }

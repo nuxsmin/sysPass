@@ -84,20 +84,25 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->newSelect()
             ->from(UserModel::TABLE)
             ->cols(['userGroupId AS id', '"User" AS ref'])
-            ->where('userGroupId = :userGroupId')
+            ->where('userGroupId = :userGroupIdUser')
             ->unionAll()
             ->from(UserToUserGroupModel::TABLE)
             ->cols(['userGroupId AS id', '"UserGroup" AS ref'])
-            ->where('userGroupId = :userGroupId')
+            ->where('userGroupId = :userGroupIdUserToUserGroup')
             ->unionAll()
             ->from(AccountToUserGroupModel::TABLE)
             ->cols(['userGroupId AS id', '"AccountToUserGroup" AS ref'])
-            ->where('userGroupId = :userGroupId')
+            ->where('userGroupId = :userGroupIdAccountToUserGroup')
             ->unionAll()
             ->from(AccountModel::TABLE)
             ->cols(['userGroupId AS id', '"Account" AS ref'])
-            ->where('userGroupId = :userGroupId')
-            ->bindValues(['userGroupId' => $userGroupId]);
+            ->where('userGroupId = :userGroupIdAccount')
+            ->bindValues([
+                'userGroupIdUser' => $userGroupId,
+                'userGroupIdUserToUserGroup' => $userGroupId,
+                'userGroupIdAccountToUserGroup' => $userGroupId,
+                'userGroupIdAccount' => $userGroupId,
+            ]);
 
         return $this->db->runQuery(QueryData::build($query));
     }
@@ -129,15 +134,18 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
                     ->newSelect()
                     ->from(UserModel::TABLE)
                     ->cols(['id', '"User" AS ref'])
-                    ->where('userGroupId = :userGroupId')
+                    ->where('userGroupId = :userGroupIdUser')
                     ->unionAll()
                     ->from(UserToUserGroupModel::TABLE)
                     ->cols(['userId AS id', '"UserGroup" AS ref'])
-                    ->where('userGroupId = :userGroupId'),
+                    ->where('userGroupId = :userGroupIdUserToUserGroup'),
                 'Users'
             )
             ->innerJoin(UserModel::TABLE, sprintf('%s.id = %s.id', UserModel::TABLE, 'Users'))
-            ->bindValues(['userGroupId' => $userGroupId]);
+            ->bindValues([
+                'userGroupIdUser' => $userGroupId,
+                'userGroupIdUserToUserGroup' => $userGroupId,
+            ]);
 
         return $this->db->runQuery(QueryData::build($query));
     }

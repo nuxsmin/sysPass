@@ -139,12 +139,23 @@ abstract class Model implements JsonSerializable, ArrayAccess
 
     public function offsetExists(mixed $offset): bool
     {
-        return array_key_exists($offset, $this->properties);
+        return array_key_exists($offset, $this->getAccessibleProperties());
     }
 
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->properties[$offset];
+        return $this->getAccessibleProperties()[$offset] ?? null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getAccessibleProperties(): array
+    {
+        $properties = get_object_vars($this);
+        unset($properties['properties'], $properties['fields']);
+
+        return $properties + $this->properties;
     }
 
     public function offsetSet(mixed $offset, mixed $value): void

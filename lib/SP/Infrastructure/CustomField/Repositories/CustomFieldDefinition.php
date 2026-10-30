@@ -204,18 +204,18 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
         $query = $this->queryFactory
             ->newSelect()
             ->from(sprintf('%s AS CF_Definition', CustomFieldDefinitionModel::TABLE))
-            ->innerJoin('CustomFieldType AS CF_Type', 'CF_Type.id = CustomFieldDefinition.typeId')
+            ->innerJoin('CustomFieldType AS CF_Type', 'CF_Type.id = CF_Definition.typeId')
             ->cols(CustomFieldDefinitionModel::getColsWithPreffix('CF_Definition'))
             ->orderBy(['CF_Definition.moduleId ASC'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
         if (!empty($itemSearchData->getSeachString())) {
-            $query->where('name LIKE :name OR description LIKE :description');
+            $query->where('(CF_Definition.name LIKE :name OR CF_Definition.help LIKE :help)');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
 
-            $query->bindValues(['name' => $search, 'description' => $search]);
+            $query->bindValues(['name' => $search, 'help' => $search]);
         }
 
         $queryData = QueryData::build($query)->setMapClassName(CustomFieldDefinitionModel::class);

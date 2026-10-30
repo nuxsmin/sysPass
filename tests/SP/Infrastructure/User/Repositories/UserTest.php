@@ -73,8 +73,12 @@ class UserTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
-                           && $params['userId'] === 100;
+                    return count($params) === 5
+                           && $params['userIdAccount'] === 100
+                           && $params['userIdAccountEdit'] === 100
+                           && $params['userIdAccountToUser'] === 100
+                           && $params['userIdUserToUserGroup'] === 100
+                           && $params['userIdPublicLink'] === 100;
                 })
             );
 
@@ -192,10 +196,17 @@ class UserTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                $count = count(array_diff_assoc($params, $user->toArray(['pass', 'name', 'email', 'isLdap', 'login'])));
+                $count = count(
+                    array_diff_assoc(
+                        array_intersect_key($params, $user->toArray(['pass', 'name', 'email', 'isLdap'])),
+                        $user->toArray(['pass', 'name', 'email', 'isLdap'])
+                    )
+                );
 
-                return count($params) === 5
+                return count($params) === 6
                        && $count === 0
+                       && $params['login'] === $user->getLogin()
+                       && $params['ssoLogin'] === $user->getLogin()
                        && is_a($query, UpdateInterface::class)
                        && !empty($query->getStatement());
             }
@@ -393,8 +404,9 @@ class UserTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
+                    return count($params) === 2
                            && $params['login'] === 'a_login'
+                           && $params['ssoLogin'] === 'a_login'
                            && $queryData->getMapClassName() === UserModel::class;
                 })
             );
@@ -535,8 +547,9 @@ class UserTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
-                           && $params['userGroupId'] === 100
+                    return count($params) === 2
+                           && $params['userGroupIdUser'] === 100
+                           && $params['userGroupIdUserToUserGroup'] === 100
                            && $queryData->getMapClassName() === UserModel::class;
                 })
             );

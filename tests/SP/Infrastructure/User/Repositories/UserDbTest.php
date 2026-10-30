@@ -63,6 +63,127 @@ final class UserDbTest extends DatabaseRepositoryTestCase
     }
 
     #[Test]
+    public function getByLoginReturnsTheUserAndItsGroupName(): void
+    {
+        $result = $this->user->getByLogin('user_a');
+
+        self::assertSame(1, $result->getNumRows());
+
+        $user = $result->getData(UserModel::class);
+
+        self::assertSame(3, $user->getId());
+        self::assertSame('User A', $user->getName());
+        self::assertSame('Demo', $user->toArray(['userGroupName'])['userGroupName']);
+    }
+
+    #[Test]
+    public function getByLoginMatchesTheSsoLoginOfAUser(): void
+    {
+        $this->executeSql("UPDATE User SET ssoLogin = 'sso_only' WHERE id = 4");
+
+        $result = $this->user->getByLogin('sso_only');
+
+        self::assertSame(1, $result->getNumRows());
+        self::assertSame(4, $result->getData(UserModel::class)->getId());
+    }
+
+    #[Test]
+    public function updateOnLoginUpdatesTheUserMatchedByLogin(): void
+    {
+        $affected = $this->user->updateOnLogin(new UserModel([
+            'login' => 'user_a',
+            'pass' => 'new_pass',
+            'name' => 'Updated User A',
+            'email' => 'updated@syspass.org',
+            'isLdap' => true,
+        ]));
+
+        self::assertSame(1, $affected);
+
+        $user = $this->user->getById(3)->getData(UserModel::class);
+
+        self::assertSame('new_pass', $user->getPass());
+        self::assertSame('Updated User A', $user->getName());
+        self::assertSame('updated@syspass.org', $user->getEmail());
+        self::assertSame(1, $user->getLoginCount());
+    }
+
+    #[Test]
+    public function updateOnLoginUpdatesTheUserMatchedBySsoLogin(): void
+    {
+        $this->executeSql("UPDATE User SET ssoLogin = 'sso_only' WHERE id = 4");
+
+        $affected = $this->user->updateOnLogin(new UserModel([
+            'login' => 'sso_only',
+            'pass' => 'sso_pass',
+            'name' => 'SSO User B',
+            'email' => 'sso@syspass.org',
+            'isLdap' => true,
+        ]));
+
+        self::assertSame(1, $affected);
+        self::assertSame('SSO User B', $this->user->getById(4)->getData(UserModel::class)->getName());
+    }
+
+    #[Test]
+    public function updatePassByIdClearsTheHashSalt(): void
+    {
+        $affected = $this->user->updatePassById(new UserModel([
+            'id' => 3,
+            'pass' => 'new_pass',
+            'isChangePass' => false,
+            'isChangedPass' => false,
+            'isMigrate' => false,
+        ]));
+
+        self::assertSame(1, $affected);
+
+        $user = $this->user->getById(3)->getData(UserModel::class);
+
+        self::assertSame('new_pass', $user->getPass());
+        self::assertSame('', $user->toArray(['hashSalt'])['hashSalt']);
+    }
+
+    #[Test]
+    public function getUserEmailForGroupReturnsTheEnabledUsersWithEmail(): void
+    {
+        $result = $this->user->getUserEmailForGroup(2);
+
+        self::assertSame(['demo', 'user_a', 'user_b'], array_map(
+            static fn(UserModel $user) => $user->getLogin(),
+            $result->getDataAsArray(UserModel::class)
+        ));
+
+        self::assertSame(['demo@syspass.org', 'user_a@syspass.org', 'user_b@syspass.org'], array_map(
+            static fn(UserModel $user) => $user->getEmail(),
+            $result->getDataAsArray(UserModel::class)
+        ));
+    }
+
+    #[Test]
+    public function getUsageForUserReturnsTheAccountsAndGroupsUsingTheUser(): void
+    {
+        $rows = $this->user->getUsageForUser(3)->getDataAsArray();
+
+        $items = array_map(
+            static fn($row) => [(int)$row->id, $row->ref],
+            $rows
+        );
+
+        sort($items);
+
+        self::assertSame(
+            [
+                [1, 'Account'],
+                [2, 'UserGroup'],
+                [3, 'Account'],
+                [4, 'Account'],
+            ],
+            $items
+        );
+    }
+
+    #[Test]
     public function searchAsAdminIncludesAdminAccounts(): void
     {
         $result = $this->user->search(new ItemSearchDto('admin'));

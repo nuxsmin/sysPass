@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Account\Repositories;
 
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
-use SP\Domain\Common\Models\Item;
+use SP\Domain\Account\Models\AccountItem;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
@@ -68,7 +68,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
             ->bindValues(['accountId' => $id])
             ->orderBy(['UserGroup.name ASC']);
 
-        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountItem::class));
     }
 
     /**
@@ -95,7 +95,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
             ->bindValues(['userGroupId' => $id])
             ->orderBy(['UserGroup.name ASC']);
 
-        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountItem::class));
     }
 
     /**

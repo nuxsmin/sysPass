@@ -50,6 +50,8 @@ class AuthToken extends Model
     protected ?int    $actionId  = null;
     protected ?string $hash      = null;
     protected ?string $vault     = null;
+    protected ?string $name      = null;
+    protected ?string $login     = null;
 
     public static function isSecuredAction(int $action): bool
     {
@@ -94,5 +96,15 @@ class AuthToken extends Model
     public function getHash(): ?string
     {
         return $this->hash;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function getLogin(): ?string
+    {
+        return $this->login;
     }
 }

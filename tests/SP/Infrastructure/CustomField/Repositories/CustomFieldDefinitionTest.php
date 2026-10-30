@@ -229,7 +229,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
 
                 return count($params) === 2
                        && $params['name'] === $searchStringLike
-                       && $params['description'] === $searchStringLike
+                       && $params['help'] === $searchStringLike
                        && $arg->getMapClassName() === CustomFieldDefinitionModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
