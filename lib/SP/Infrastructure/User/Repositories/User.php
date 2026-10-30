@@ -236,7 +236,7 @@ final class User extends BaseRepository implements UserRepository
                 UserProfileModel::TABLE,
                 sprintf('%s.id = %s.userProfileId', UserProfileModel::TABLE, UserModel::TABLE)
             )
-            ->cols(UserModel::getCols(['userGroupName', 'userProfileName', 'hash']))
+            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName', 'userProfileName', 'hash']))
             ->cols([
                        'UserGroup.name AS userGroupName',
                        'UserProfile.name AS userProfileName'
@@ -250,7 +250,7 @@ final class User extends BaseRepository implements UserRepository
         }
 
         if (!empty($itemSearchData->getSeachString())) {
-            $query->where(sprintf('%s.name LIKE :name OR %s.login LIKE :login', UserModel::TABLE, UserModel::TABLE));
+            $query->where(sprintf('(%s.name LIKE :name OR %s.login LIKE :login)', UserModel::TABLE, UserModel::TABLE));
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
 
@@ -429,9 +429,8 @@ final class User extends BaseRepository implements UserRepository
             ->newSelect()
             ->cols(['id'])
             ->from(UserModel::TABLE)
-            ->where('UPPER(login) = UPPER(:login)')
-            ->where('UPPER(ssoLogin) = UPPER(:login)')
-            ->bindValues(['login' => $login]);
+            ->where('(UPPER(login) = UPPER(:login) OR UPPER(ssoLogin) = UPPER(:ssoLogin))')
+            ->bindValues(['login' => $login, 'ssoLogin' => $login]);
 
         return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
