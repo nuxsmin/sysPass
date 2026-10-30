@@ -36,7 +36,6 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 
 use function SP\__u;
@@ -47,7 +46,6 @@ use function SP\__u;
 final class SaveEditController extends ClientSaveBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     /**
      * Saves edit action

@@ -34,7 +34,6 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 
 use function SP\__;
 use function SP\__u;
@@ -44,8 +43,6 @@ use function SP\__u;
  */
 final class ViewController extends CategoryViewBase
 {
-    use JsonTrait;
-
     /**
      * View action
      *

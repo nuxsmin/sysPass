@@ -42,7 +42,6 @@ use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__u;
@@ -52,8 +51,6 @@ use function SP\__u;
  */
 final class SaveController extends SimpleControllerBase
 {
-    use JsonTrait;
-
     public function __construct(
         Application                        $application,
         SimpleControllerHelper             $simpleControllerHelper,

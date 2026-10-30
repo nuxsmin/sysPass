@@ -34,7 +34,6 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 
 use function SP\__u;
@@ -45,7 +44,6 @@ use function SP\__u;
 final class DeleteController extends ClientSaveBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     /**
      * Delete action

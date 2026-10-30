@@ -40,7 +40,6 @@ use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Notification\Dtos\MailParams;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__u;
@@ -50,8 +49,6 @@ use function SP\__u;
  */
 final class CheckController extends SimpleControllerBase
 {
-    use ConfigTrait;
-
     public function __construct(
         Application                  $application,
         SimpleControllerHelper       $simpleControllerHelper,

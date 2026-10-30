@@ -31,7 +31,6 @@ use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AuthTokenForm;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
@@ -42,7 +41,6 @@ use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 abstract class AuthTokenSaveBase extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     protected readonly AuthTokenForm $form;
 

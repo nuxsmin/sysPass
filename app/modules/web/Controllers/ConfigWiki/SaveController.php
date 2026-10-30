@@ -31,8 +31,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\ConfigTrait;
+use SP\Modules\Web\Controllers\ConfigSaveControllerBase;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__u;
@@ -42,10 +41,8 @@ use function SP\__u;
  *
  * @package SP\Modules\Web\Controllers
  */
-final class SaveController extends SimpleControllerBase
+final class SaveController extends ConfigSaveControllerBase
 {
-    use ConfigTrait;
-
     public function __construct(Application $application, SimpleControllerHelper $simpleControllerHelper)
     {
         parent::__construct($application, $simpleControllerHelper);

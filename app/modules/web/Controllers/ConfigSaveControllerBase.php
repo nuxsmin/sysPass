@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers\Traits;
+namespace SP\Modules\Web\Controllers;
 
 use Exception;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -34,21 +34,19 @@ use function SP\__u;
 use function SP\processException;
 
 /**
- * Trait ConfigTrait
- *
- * @package SP\Modules\Web\Controllers\Traits
+ * Shared save behaviour for the configuration controllers.
  */
-trait ConfigTrait
+abstract class ConfigSaveControllerBase extends SimpleControllerBase
 {
     /**
-     * Guardar la configuración
+     * Save the configuration and build the action response.
      *
      * @throws SPException
      */
     protected function saveConfig(
         ConfigDataInterface $configData,
         ConfigFileService $config,
-        callable          $onSuccess = null
+        callable $onSuccess = null
     ): ActionResponse {
         try {
             if ($configData->isDemoEnabled()) {

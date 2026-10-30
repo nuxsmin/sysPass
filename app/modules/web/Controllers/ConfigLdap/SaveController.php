@@ -35,8 +35,7 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\ConfigTrait;
+use SP\Modules\Web\Controllers\ConfigSaveControllerBase;
 
 use function SP\__u;
 
@@ -45,10 +44,8 @@ use function SP\__u;
  *
  * @package SP\Modules\Web\Controllers
  */
-final class SaveController extends SimpleControllerBase
+final class SaveController extends ConfigSaveControllerBase
 {
-    use ConfigTrait;
-
     /**
      * @throws ValidationException
      * @throws SPException
