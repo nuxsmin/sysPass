@@ -234,7 +234,7 @@ class AccountFileTest extends UnitaryTestCase
         $this->accountFile = new AccountFile(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

@@ -418,7 +418,7 @@ class CategoryTest extends UnitaryTestCase
         $this->category = new Category(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

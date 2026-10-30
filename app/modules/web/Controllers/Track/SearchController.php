@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Track;
 
-use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\Security\UseCases\Dtos\SearchTracksCommand;
@@ -43,12 +42,11 @@ final class SearchController extends SearchGridControllerBase
     use ItemTrait;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly SearchTracksUseCase $searchTracksUseCase,
         private readonly TrackGrid $trackGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

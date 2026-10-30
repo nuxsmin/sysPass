@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Api\Controllers\UserGroup;
 
-use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\User\UseCases\CreateUserGroupUseCase;
@@ -32,6 +31,7 @@ use SP\Domain\User\UseCases\DeleteUserGroupUseCase;
 use SP\Domain\User\UseCases\GetUserGroupUseCase;
 use SP\Domain\User\UseCases\SearchUserGroupsUseCase;
 use SP\Domain\User\UseCases\UpdateUserGroupUseCase;
+use SP\Modules\Api\Controllers\ApiControllerHelper;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\UserGroupHelp;
 
@@ -44,15 +44,15 @@ abstract class UserGroupBase extends ControllerBase
      * @throws InvalidClassException
      */
     public function __construct(
-        Application                    $application,
-        ApiService                     $apiService,
-        protected readonly GetUserGroupUseCase    $getUserGroupUseCase,
-        protected readonly CreateUserGroupUseCase $createUserGroupUseCase,
-        protected readonly UpdateUserGroupUseCase $updateUserGroupUseCase,
-        protected readonly DeleteUserGroupUseCase $deleteUserGroupUseCase,
+        ApiControllerHelper                        $controllerHelper,
+        ApiService                                 $apiService,
+        protected readonly GetUserGroupUseCase     $getUserGroupUseCase,
+        protected readonly CreateUserGroupUseCase  $createUserGroupUseCase,
+        protected readonly UpdateUserGroupUseCase  $updateUserGroupUseCase,
+        protected readonly DeleteUserGroupUseCase  $deleteUserGroupUseCase,
         protected readonly SearchUserGroupsUseCase $searchUserGroupsUseCase
     ) {
-        parent::__construct($application, $apiService);
+        parent::__construct($controllerHelper, $apiService);
 
         $this->apiService->setHelpClass(UserGroupHelp::class);
     }

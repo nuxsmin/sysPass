@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Category;
 
-use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Ports\CategoryService;
@@ -52,12 +51,11 @@ abstract class CategoryViewBase extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                             $application,
         WebControllerHelper                     $webControllerHelper,
         private readonly CategoryService        $categoryService,
         private readonly CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

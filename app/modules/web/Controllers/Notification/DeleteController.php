@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Notification;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -47,12 +46,11 @@ final class DeleteController extends NotificationSaveBase
     use ItemTrait;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly DeleteNotificationUseCase $deleteNotificationUseCase,
         private readonly DeleteNotificationsUseCase $deleteNotificationsUseCase
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
     }
 
     #[Action(ResponseType::JSON)]

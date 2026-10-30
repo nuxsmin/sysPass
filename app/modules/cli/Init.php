@@ -25,10 +25,10 @@
 namespace SP\Modules\Cli;
 
 use Exception;
-use SP\Core\Application;
 use SP\Core\Context\ContextException;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
+use SP\Core\ModuleDependencies;
 use SP\Core\ProvidersHelper;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Core\LanguageInterface;
@@ -52,13 +52,13 @@ final class Init extends ModuleBase
     private CliCommandHelper   $cliCommandHelper;
 
     public function __construct(
-        Application $application,
-        ProvidersHelper $providersHelper,
-        LanguageInterface $language,
+        ModuleDependencies $dependencies,
+        ProvidersHelper    $providersHelper,
+        LanguageInterface  $language,
         ConsoleApplication $consoleApplication,
-        InputInterface $input,
-        OutputInterface $output,
-        CliCommandHelper $cliCommandHelper
+        InputInterface     $input,
+        OutputInterface    $output,
+        CliCommandHelper   $cliCommandHelper
     ) {
         $this->language = $language;
         $this->consoleApplication = $consoleApplication;
@@ -67,10 +67,9 @@ final class Init extends ModuleBase
         $this->cliCommandHelper = $cliCommandHelper;
 
         parent::__construct(
-            $application,
+            $dependencies,
             $providersHelper
         );
-
     }
 
     /**

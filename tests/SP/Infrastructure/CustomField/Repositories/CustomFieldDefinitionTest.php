@@ -303,7 +303,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
         $this->customFieldDefinition = new CustomFieldDefinition(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

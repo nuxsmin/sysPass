@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\ConfigWiki;
 
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -43,9 +42,9 @@ use function SP\__u;
  */
 final class SaveController extends ConfigSaveControllerBase
 {
-    public function __construct(Application $application, SimpleControllerHelper $simpleControllerHelper)
+    public function __construct(SimpleControllerHelper $simpleControllerHelper)
     {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
 
         $this->checks();
     }

@@ -524,7 +524,7 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authToken = new AuthToken(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

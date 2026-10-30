@@ -702,6 +702,6 @@ class DatabaseTest extends UnitaryTestCase
 
         $this->dbStorageHandler = $this->createMock(DbStorageHandler::class);
 
-        $this->database = new Database($this->dbStorageHandler, $this->application->getEventDispatcher());
+        $this->database = new Database($this->dbStorageHandler, $this->eventDispatcherStub);
     }
 }

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Dtos\AccountHistoryViewDto;
 use SP\Domain\Account\Ports\AccountHistoryService;
@@ -52,13 +51,11 @@ final class ViewHistoryController extends AccountControllerBase
 {
 
     public function __construct(
-        Application                            $application,
         WebControllerHelper                    $webControllerHelper,
         private readonly AccountHistoryService $accountHistoryService,
         private readonly AccountHistoryHelper  $accountHistoryHelper
     ) {
         parent::__construct(
-            $application,
             $webControllerHelper
         );
     }

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\ConfigLdap;
 
-use SP\Core\Application;
 use SP\Domain\Auth\Ports\LdapCheckService;
 use SP\Domain\Auth\Dtos\LdapParams;
 use SP\Domain\Common\Attributes\Action;
@@ -47,12 +46,11 @@ final class CheckController extends SimpleControllerBase
 {
 
     public function __construct(
-        Application                        $application,
         SimpleControllerHelper             $simpleControllerHelper,
         private readonly LdapCheckService  $ldapCheckService,
         private readonly TemplateInterface $template
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**

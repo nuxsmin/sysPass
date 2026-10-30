@@ -25,9 +25,9 @@
 namespace SP\Modules\Api;
 
 use Klein\Klein;
-use SP\Core\Application;
 use SP\Core\Context\ContextException;
 use SP\Core\HttpModuleBase;
+use SP\Core\ModuleDependencies;
 use SP\Core\Language;
 use SP\Core\ProvidersHelper;
 use SP\Domain\Common\Providers\Http;
@@ -49,16 +49,16 @@ final class Init extends HttpModuleBase
     private DatabaseUtil $databaseUtil;
 
     public function __construct(
-        Application     $application,
-        ProvidersHelper $providersHelper,
-        RequestService  $request,
-        Klein           $router,
-        LanguageInterface $language,
-        DatabaseUtil    $databaseUtil,
-        AppLockHandler  $appLock
+        ModuleDependencies $dependencies,
+        ProvidersHelper    $providersHelper,
+        RequestService     $request,
+        Klein              $router,
+        LanguageInterface  $language,
+        DatabaseUtil       $databaseUtil,
+        AppLockHandler     $appLock
     ) {
         parent::__construct(
-            $application,
+            $dependencies,
             $providersHelper,
             $request,
             $router,

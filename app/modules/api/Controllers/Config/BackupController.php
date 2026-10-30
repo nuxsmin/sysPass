@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Api\Controllers\Config;
 
-use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Api\Ports\ApiService;
@@ -37,6 +36,7 @@ use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Ports\BackupFileService;
+use SP\Modules\Api\Controllers\ApiControllerHelper;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
 
@@ -54,13 +54,13 @@ final class BackupController extends ControllerBase
      * @throws InvalidClassException
      */
     public function __construct(
-        Application                        $application,
+        ApiControllerHelper                $controllerHelper,
         ApiService                         $apiService,
         private readonly BackupFileService $fileBackupService,
         private readonly BackupFiles       $backupFiles,
         private readonly PathsContext      $pathsContext
     ) {
-        parent::__construct($application, $apiService);
+        parent::__construct($controllerHelper, $apiService);
 
         $this->apiService->setHelpClass(ConfigHelp::class);
     }

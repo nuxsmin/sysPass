@@ -310,7 +310,7 @@ class CustomFieldDataTest extends UnitaryTestCase
         $this->customFieldData = new CustomFieldData(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

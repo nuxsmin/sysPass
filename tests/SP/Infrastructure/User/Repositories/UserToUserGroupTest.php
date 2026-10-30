@@ -274,7 +274,7 @@ class UserToUserGroupTest extends UnitaryTestCase
         $this->userToUserGroup = new UserToUserGroup(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

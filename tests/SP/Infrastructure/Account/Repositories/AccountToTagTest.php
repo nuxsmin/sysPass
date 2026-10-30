@@ -149,7 +149,7 @@ class AccountToTagTest extends UnitaryTestCase
         $this->accountToTag = new AccountToTag(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

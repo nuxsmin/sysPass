@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers;
 
 use Exception;
 use SebastianBergmann\RecursionContext\Context;
-use SP\Core\Application;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -81,13 +80,13 @@ abstract class ControllerBase
     protected readonly \SP\Modules\Web\Presenters\Helpers\JsonResponseHandler $jsonResponse;
     private readonly BrowserAuthService            $browser;
 
-    public function __construct(Application $application, WebControllerHelper $webControllerHelper)
+    public function __construct(WebControllerHelper $webControllerHelper)
     {
         $this->routeContextData = $webControllerHelper->getRouteContextData();
-        $this->config = $application->getConfig();
+        $this->config = $webControllerHelper->getConfig();
         $this->configData = $this->config->getConfigData();
-        $this->eventDispatcher = $application->getEventDispatcher();
-        $this->session = $application->getContext();
+        $this->eventDispatcher = $webControllerHelper->getEventDispatcher();
+        $this->session = $webControllerHelper->getContext();
         $this->theme = $webControllerHelper->getTheme();
         $this->router = $webControllerHelper->getRouter();
         $this->acl = $webControllerHelper->getAcl();

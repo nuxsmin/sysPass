@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\User;
 
 
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -46,7 +45,6 @@ use function SP\__u;
 final class SaveEditPassController extends UserSaveBase
 {
     public function __construct(
-        Application            $application,
         WebControllerHelper    $webControllerHelper,
         private readonly UpdateUserPassUseCase $updateUserPassUseCase,
         CustomFieldDataService $customFieldService,
@@ -54,7 +52,6 @@ final class SaveEditPassController extends UserSaveBase
         UserPassRecoverService $userPassRecoverService
     ) {
         parent::__construct(
-            $application,
             $webControllerHelper,
             $customFieldService,
             $mailService,

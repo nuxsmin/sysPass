@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
 use Klein\Response;
 use RuntimeException;
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -51,11 +50,10 @@ use function SP\__u;
 final class DownloadConfigBackupController extends SimpleControllerBase
 {
     public function __construct(
-        Application                            $application,
         SimpleControllerHelper                 $simpleControllerHelper,
         protected readonly ConfigBackupService $configBackupService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**

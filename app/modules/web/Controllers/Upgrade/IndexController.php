@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Upgrade;
 
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -39,11 +38,10 @@ use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 final class IndexController extends ControllerBase
 {
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly ActionsInterface $actions
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
     }
 
     /**

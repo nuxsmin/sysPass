@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\UserGroup;
 
 
-use SP\Core\Application;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -56,14 +55,13 @@ abstract class UserGroupViewBase extends ControllerBase
     private UserService $userService;
 
     public function __construct(
-        Application         $application,
         WebControllerHelper $webControllerHelper,
         UserGroupService    $userGroupService,
         GetUserGroupUseCase $getUserGroupUseCase,
         UserService         $userService,
         CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 

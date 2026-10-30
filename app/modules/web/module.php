@@ -30,6 +30,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CsrfHandler;
 use SP\Domain\Html\Ports\CssMinifyService;
 use SP\Domain\Html\Ports\JsMinifyService;
@@ -64,6 +65,7 @@ return [
             return new Session($sessionHandler);
         }
     ),
+    SessionContext::class => get(Context::class),
     CsrfHandler::class => autowire(Csrf::class)
         ->constructorParameter('context', get(Context::class)),
     AccountSearchData::class => autowire(AccountSearchData::class)

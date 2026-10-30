@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Eventlog;
 
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -47,12 +46,11 @@ final class SearchController extends ControllerBase
     use ItemTrait;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly SearchEventlogUseCase $searchEventlogUseCase,
         private readonly EventlogGrid $eventlogGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

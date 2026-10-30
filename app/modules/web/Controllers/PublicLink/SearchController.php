@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\PublicLink;
 
-use SP\Core\Application;
 use SP\Domain\Account\UseCases\Dtos\SearchPublicLinksCommand;
 use SP\Domain\Account\UseCases\SearchPublicLinksUseCase;
 use SP\Domain\Common\Attributes\Action;
@@ -47,12 +46,11 @@ final class SearchController extends ControllerBase
     use ItemTrait;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly SearchPublicLinksUseCase $searchPublicLinksUseCase,
         private readonly PublicLinkGrid $publicLinkGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Items;
 
 use Klein\Response;
-use SP\Core\Application;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -42,11 +41,10 @@ use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 final class ClientsController extends SimpleControllerBase
 {
     public function __construct(
-        Application $application,
         SimpleControllerHelper $simpleControllerHelper,
         private readonly ClientService $clientService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
 
         $this->checks();
     }

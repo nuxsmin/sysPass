@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\UserPassReset;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
@@ -43,11 +42,10 @@ abstract class UserPassResetSaveBase extends ControllerBase
     private readonly TrackRequest $trackRequest;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly TrackService $trackService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->trackRequest = $this->trackService->buildTrackRequest($this->routeContextData->actionName);
     }

@@ -24,7 +24,9 @@
 
 namespace SP\Modules\Web\Presenters\Helpers\Account;
 
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
@@ -77,7 +79,9 @@ final class AccountHelper extends AccountHelperBase
     private ?int               $accountId         = null;
 
     public function __construct(
-        Application                             $application,
+        ConfigFileService $config,
+        Context $context,
+        EventDispatcherInterface $eventDispatcher,
         TemplateInterface                       $template,
         RequestService                          $request,
         AclInterface                            $acl,
@@ -96,7 +100,7 @@ final class AccountHelper extends AccountHelperBase
         private readonly TagService             $tagService,
         private readonly UriContextInterface    $uriContext
     ) {
-        parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
+        parent::__construct($config, $context, $eventDispatcher, $template, $request, $acl, $accountActionsHelper, $masterPassService);
 
         $this->view->assign('changesHash', '');
         $this->view->assign('chkUserEdit', false);

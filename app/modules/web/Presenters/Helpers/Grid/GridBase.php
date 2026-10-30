@@ -24,7 +24,9 @@
 
 namespace SP\Modules\Web\Presenters\Helpers\Grid;
 
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\UI\ThemeIconsInterface;
@@ -49,13 +51,15 @@ abstract class GridBase extends HelperBase implements GridInterface
     protected ThemeIconsInterface $icons;
 
     public function __construct(
-        Application                       $application,
+        ConfigFileService $config,
+        Context $context,
+        EventDispatcherInterface $eventDispatcher,
         TemplateInterface                 $template,
         RequestService                    $request,
         protected readonly AclInterface   $acl,
         protected readonly ThemeInterface $theme
     ) {
-        parent::__construct($application, $template, $request);
+        parent::__construct($config, $context, $eventDispatcher, $template, $request);
 
         $this->queryTimeStart = microtime(true);
         $this->icons = $this->theme->getIcons();

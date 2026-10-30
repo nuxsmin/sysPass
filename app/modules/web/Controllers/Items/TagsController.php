@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Items;
 
 use Klein\Response;
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseStatus;
@@ -42,11 +41,10 @@ use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 final class TagsController extends SimpleControllerBase
 {
     public function __construct(
-        Application $application,
         SimpleControllerHelper $simpleControllerHelper,
         private readonly TagService $tagService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
 
         $this->checks();
     }

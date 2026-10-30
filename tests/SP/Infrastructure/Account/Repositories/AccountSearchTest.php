@@ -263,7 +263,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->accountSearch = new AccountSearch(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
             $this->accountFilterUser
         );

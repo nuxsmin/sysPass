@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\PublicLink;
 
-use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\UseCases\GetPublicLinkUseCase;
@@ -44,14 +43,12 @@ use function SP\__u;
 final class EditController extends PublicLinkViewBase
 {
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         GetPublicLinkUseCase $getPublicLinkUseCase,
         AccountService $accountService,
         PublicLinkService $publicLinkService
     ) {
         parent::__construct(
-            $application,
             $webControllerHelper,
             $getPublicLinkUseCase,
             $accountService,

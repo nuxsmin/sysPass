@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\ConfigMail;
 
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -50,11 +49,10 @@ use function SP\__u;
 final class CheckController extends SimpleControllerBase
 {
     public function __construct(
-        Application                  $application,
         SimpleControllerHelper       $simpleControllerHelper,
         private readonly MailService $mailService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**

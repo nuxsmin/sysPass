@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Ports\AccountService;
@@ -49,12 +48,11 @@ final class RequestAccessController extends ControllerBase
 {
 
     public function __construct(
-        Application                           $application,
         WebControllerHelper                   $webControllerHelper,
         private readonly AccountService       $accountService,
         private readonly AccountRequestHelper $accountRequestHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
     }
 
     /**

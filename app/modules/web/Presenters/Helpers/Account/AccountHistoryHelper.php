@@ -25,7 +25,9 @@
 namespace SP\Modules\Web\Presenters\Helpers\Account;
 
 use DateTime;
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountHistoryViewDto;
@@ -55,7 +57,9 @@ final class AccountHistoryHelper extends AccountHelperBase
     private ?AccountPermission $accountPermission = null;
 
     public function __construct(
-        Application                                $application,
+        ConfigFileService $config,
+        Context $context,
+        EventDispatcherInterface $eventDispatcher,
         TemplateInterface                          $template,
         RequestService                             $request,
         AclInterface                               $acl,
@@ -68,7 +72,7 @@ final class AccountHistoryHelper extends AccountHelperBase
         private readonly AccountToUserService      $accountToUserService,
         private readonly AccountToUserGroupService $accountToUserGroupService
     ) {
-        parent::__construct($application, $template, $request, $acl, $accountActionsHelper, $masterPassService);
+        parent::__construct($config, $context, $eventDispatcher, $template, $request, $acl, $accountActionsHelper, $masterPassService);
     }
 
     /**

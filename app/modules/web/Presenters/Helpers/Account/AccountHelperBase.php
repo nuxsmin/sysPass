@@ -24,7 +24,9 @@
 
 namespace SP\Modules\Web\Presenters\Helpers\Account;
 
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Crypt\Ports\MasterPassService;
@@ -45,14 +47,16 @@ abstract class AccountHelperBase extends HelperBase
     protected bool $actionGranted = false;
 
     public function __construct(
-        Application                             $application,
+        ConfigFileService $config,
+        Context $context,
+        EventDispatcherInterface $eventDispatcher,
         TemplateInterface                       $template,
         RequestService                          $request,
         protected readonly AclInterface         $acl,
         protected readonly AccountActionsHelper $accountActionsHelper,
         private readonly MasterPassService      $masterPassService
     ) {
-        parent::__construct($application, $template, $request);
+        parent::__construct($config, $context, $eventDispatcher, $template, $request);
     }
 
     /**

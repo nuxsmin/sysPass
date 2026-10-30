@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\AccountManager;
 
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Category\Ports\CategoryService;
@@ -62,7 +61,6 @@ final class BulkEditController extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                       $application,
         WebControllerHelper               $webControllerHelper,
         private readonly CategoryService  $categoryService,
         private readonly ClientService    $clientService,
@@ -70,7 +68,7 @@ final class BulkEditController extends ControllerBase
         private readonly UserService      $userService,
         private readonly UserGroupService $userGroupService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\PublicLink;
 
-use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapWeb;
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Domain\Account\Ports\AccountService;
@@ -42,13 +41,12 @@ use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 abstract class PublicLinkViewBase extends ControllerBase
 {
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly GetPublicLinkUseCase $getPublicLinkUseCase,
         private readonly AccountService $accountService,
         private readonly PublicLinkService $publicLinkService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

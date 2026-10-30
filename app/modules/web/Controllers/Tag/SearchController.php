@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Tag;
 
 
-use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\Tag\UseCases\Dtos\SearchTagsCommand;
@@ -44,12 +43,11 @@ final class SearchController extends SearchGridControllerBase
     use ItemTrait;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly SearchTagsUseCase $searchTagsUseCase,
         private readonly TagGrid $tagGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

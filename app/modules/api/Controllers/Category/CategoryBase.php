@@ -24,11 +24,11 @@
 
 namespace SP\Modules\Api\Controllers\Category;
 
-use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Category\Ports\CategoryAdapter;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Modules\Api\Controllers\ApiControllerHelper;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\CategoryHelp;
 
@@ -41,12 +41,12 @@ abstract class CategoryBase extends ControllerBase
      * @throws InvalidClassException
      */
     public function __construct(
-        Application     $application,
-        ApiService      $apiService,
+        ApiControllerHelper                $controllerHelper,
+        ApiService                         $apiService,
         protected readonly CategoryService $categoryService,
         protected readonly CategoryAdapter $categoryAdapter
     ) {
-        parent::__construct($application, $apiService);
+        parent::__construct($controllerHelper, $apiService);
 
         $this->apiService->setHelpClass(CategoryHelp::class);
     }

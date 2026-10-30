@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -42,11 +41,10 @@ final class IndexController extends AccountControllerBase
 {
 
     public function __construct(
-        Application                          $application,
         WebControllerHelper                  $webControllerHelper,
         private readonly AccountSearchHelper $accountSearchHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
     }
 
     /**

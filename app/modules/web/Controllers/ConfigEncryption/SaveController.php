@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -52,12 +51,11 @@ use function SP\__u;
 final class SaveController extends SimpleControllerBase
 {
     public function __construct(
-        Application                        $application,
         SimpleControllerHelper             $simpleControllerHelper,
         private readonly MasterPassService $masterPassService,
         private readonly ConfigService     $configService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**

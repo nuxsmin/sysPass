@@ -209,7 +209,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
         $this->accountToUserGroup = new AccountToUserGroup(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\AccountManager;
 
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
@@ -62,15 +61,14 @@ final class SaveBulkEditController extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                            $application,
         WebControllerHelper                    $webControllerHelper,
         private readonly AccountService        $accountService,
         private readonly AccountHistoryService $accountHistoryService,
         AccountPresetService                   $accountPresetService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
-        $this->accountForm = new AccountForm($application, $this->request, $accountPresetService);
+        $this->accountForm = new AccountForm($this->config, $this->session, $this->request, $accountPresetService);
 
         $this->checkLoggedIn();
     }

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\CustomField;
 
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -42,11 +41,10 @@ use function SP\__u;
 final class SaveEditController extends CustomFieldSaveBase
 {
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly UpdateCustomFieldUseCase $updateCustomFieldUseCase
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
     }
 
     #[Action(ResponseType::JSON)]

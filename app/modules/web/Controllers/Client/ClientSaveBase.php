@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Client;
 
 
-use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -46,15 +45,14 @@ abstract class ClientSaveBase extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                               $application,
         WebControllerHelper                       $webControllerHelper,
         protected readonly ClientService          $clientService,
         protected readonly CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->form = new ClientForm($application, $this->request);
+        $this->form = new ClientForm($this->config, $this->session, $this->request);
     }
 }

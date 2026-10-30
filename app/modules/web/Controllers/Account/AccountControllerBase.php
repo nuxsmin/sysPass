@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
 use SP\Core\Context\ContextBase;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -42,9 +41,9 @@ abstract class AccountControllerBase extends ControllerBase
      * @throws AuthException
      * @throws SessionTimeout
      */
-    public function __construct(Application $application, WebControllerHelper $webControllerHelper)
+    public function __construct(WebControllerHelper $webControllerHelper)
     {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->initialize();
     }

@@ -28,9 +28,12 @@ namespace SP\Modules\Web\Mvc\Controller;
 
 use Klein\Klein;
 use SP\Core\PhpExtensionChecker;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Http\Ports\JsonResponseFactory;
@@ -43,21 +46,39 @@ final readonly class SimpleControllerHelper
 {
 
     public function __construct(
-        private ThemeInterface      $theme,
-        private Klein               $router,
-        private AclInterface        $acl,
-        private RequestService      $request,
-        private PhpExtensionChecker $extensionChecker,
-        private UriContextInterface $uriContext,
-        private RouteContextData    $routeContextData,
-        private HashService         $hashService,
-        private JsonResponseFactory $jsonResponseFactory
+        private ConfigFileService        $config,
+        private EventDispatcherInterface $eventDispatcher,
+        private SessionContext           $context,
+        private ThemeInterface           $theme,
+        private Klein                    $router,
+        private AclInterface             $acl,
+        private RequestService           $request,
+        private PhpExtensionChecker      $extensionChecker,
+        private UriContextInterface      $uriContext,
+        private RouteContextData         $routeContextData,
+        private HashService              $hashService,
+        private JsonResponseFactory      $jsonResponseFactory
     ) {
     }
 
     public function getTheme(): ThemeInterface
     {
         return $this->theme;
+    }
+
+    public function getConfig(): ConfigFileService
+    {
+        return $this->config;
+    }
+
+    public function getEventDispatcher(): EventDispatcherInterface
+    {
+        return $this->eventDispatcher;
+    }
+
+    public function getContext(): SessionContext
+    {
+        return $this->context;
     }
 
     public function getRouter(): Klein

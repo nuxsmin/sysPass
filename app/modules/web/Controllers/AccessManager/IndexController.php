@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\AccessManager;
 
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Auth\Ports\AuthTokenService;
@@ -62,7 +61,6 @@ final class IndexController extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                         $application,
         WebControllerHelper                 $webControllerHelper,
         protected TabsGridHelper            $tabsGridHelper,
         private readonly UserGrid           $userGrid,
@@ -76,7 +74,7 @@ final class IndexController extends ControllerBase
         private readonly AuthTokenService   $authTokenService,
         private readonly PublicLinkService  $publicLinkService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

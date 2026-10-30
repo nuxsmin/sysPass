@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
-use SP\Core\Application;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
@@ -50,11 +49,10 @@ use function SP\__u;
 final class RefreshController extends SimpleControllerBase
 {
     public function __construct(
-        Application                        $application,
         SimpleControllerHelper             $simpleControllerHelper,
         private readonly MasterPassService $masterPassService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**

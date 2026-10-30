@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\PublicLink;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Account\UseCases\DeletePublicLinkUseCase;
 use SP\Domain\Account\UseCases\DeletePublicLinksUseCase;
 use SP\Domain\Account\UseCases\Dtos\DeletePublicLinkCommand;
@@ -47,12 +46,11 @@ final class DeleteController extends PublicLinkSaveBase
     use ItemTrait;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly DeletePublicLinkUseCase $deletePublicLinkUseCase,
         private readonly DeletePublicLinksUseCase $deletePublicLinksUseCase
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
     }
 
     #[Action(ResponseType::JSON)]

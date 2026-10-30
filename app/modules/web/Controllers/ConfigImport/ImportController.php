@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\ConfigImport;
 
-use SP\Core\Application;
 use SP\Core\Context\Session;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
@@ -50,11 +49,10 @@ final class ImportController extends SimpleControllerBase
 {
 
     public function __construct(
-        Application                    $application,
         SimpleControllerHelper         $simpleControllerHelper,
         private readonly ImportService $importService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Plugin;
 
-use SP\Core\Application;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\Plugin\UseCases\Dtos\SearchPluginsCommand;
 use SP\Domain\Plugin\UseCases\SearchPluginsUseCase;
@@ -42,12 +41,11 @@ abstract class PluginSearchBase extends ControllerBase
     use ItemTrait;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly SearchPluginsUseCase $searchPluginsUseCase,
         private readonly PluginGrid $pluginGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Items;
 
-use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -42,11 +41,10 @@ use stdClass;
 final class AccountsUserController extends SimpleControllerBase
 {
     public function __construct(
-        Application $application,
         SimpleControllerHelper $simpleControllerHelper,
         private readonly AccountService $accountService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
 
         $this->checks();
     }

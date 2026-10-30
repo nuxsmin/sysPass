@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\ItemManager;
 
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -82,7 +81,6 @@ final class IndexController extends ControllerBase
     private ItemPresetGrid                 $itemPresetGrid;
 
     public function __construct(
-        Application                  $application,
         WebControllerHelper          $webControllerHelper,
         Helpers\TabsGridHelper       $tabsGridHelper,
         CategoryService              $categoryService,
@@ -120,7 +118,7 @@ final class IndexController extends ControllerBase
         $this->accountHistoryGrid = $accountHistoryGrid;
         $this->itemPresetGrid = $itemPresetGrid;
 
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

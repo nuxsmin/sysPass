@@ -24,7 +24,9 @@
 
 namespace SP\Modules\Web\Presenters\Helpers\Account;
 
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -44,13 +46,15 @@ use function SP\__;
 final class AccountActionsHelper extends HelperBase
 {
     public function __construct(
-        Application                          $application,
+        ConfigFileService $config,
+        Context $context,
+        EventDispatcherInterface $eventDispatcher,
         TemplateInterface                    $template,
         RequestService                       $request,
         private readonly ThemeIconsInterface $icons,
         private readonly AclInterface        $acl
     ) {
-        parent::__construct($application, $template, $request);
+        parent::__construct($config, $context, $eventDispatcher, $template, $request);
     }
 
     /**

@@ -335,7 +335,7 @@ class ItemPresetTest extends UnitaryTestCase
         $this->itemPreset = new ItemPreset(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

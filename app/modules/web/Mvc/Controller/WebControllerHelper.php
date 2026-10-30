@@ -29,9 +29,12 @@ namespace SP\Modules\Web\Mvc\Controller;
 use Klein\Klein;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Http\Ports\JsonResponseFactory;
@@ -57,6 +60,21 @@ final readonly class WebControllerHelper
     public function getTheme(): ThemeInterface
     {
         return $this->simpleControllerHelper->getTheme();
+    }
+
+    public function getConfig(): ConfigFileService
+    {
+        return $this->simpleControllerHelper->getConfig();
+    }
+
+    public function getEventDispatcher(): EventDispatcherInterface
+    {
+        return $this->simpleControllerHelper->getEventDispatcher();
+    }
+
+    public function getContext(): SessionContext
+    {
+        return $this->simpleControllerHelper->getContext();
     }
 
     public function getRouter(): Klein

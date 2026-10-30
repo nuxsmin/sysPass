@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\PublicLink;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Account\UseCases\CreateAccountPublicLinkUseCase;
 use SP\Domain\Account\UseCases\Dtos\CreateAccountPublicLinkCommand;
 use SP\Domain\Common\Attributes\Action;
@@ -42,11 +41,10 @@ use function SP\__u;
 final class SaveCreateFromAccountController extends PublicLinkSaveBase
 {
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly CreateAccountPublicLinkUseCase $createAccountPublicLinkUseCase
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
     }
 
     #[Action(ResponseType::JSON)]

@@ -168,7 +168,7 @@ class UserPassRecoverTest extends UnitaryTestCase
         $this->userPassRecover = new UserPassRecover(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

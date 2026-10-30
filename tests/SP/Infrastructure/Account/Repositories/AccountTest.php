@@ -844,7 +844,7 @@ class AccountTest extends UnitaryTestCase
             $this->database,
             $this->context,
             $queryFactory,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $this->accountFilterUser
         );
     }

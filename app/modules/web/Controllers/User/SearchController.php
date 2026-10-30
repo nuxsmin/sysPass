@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\User;
 
 
-use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\UseCases\Dtos\SearchUsersCommand;
 use SP\Domain\User\UseCases\SearchUsersUseCase;
@@ -43,12 +42,11 @@ final class SearchController extends SearchGridControllerBase
     use ItemTrait;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly SearchUsersUseCase $searchUsersUseCase,
         private readonly UserGrid $userGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Presenters\Helpers;
 
-use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
@@ -46,13 +45,15 @@ abstract class HelperBase
     protected readonly ConfigFileService        $config;
 
     public function __construct(
-        Application                       $application,
+        ConfigFileService                 $config,
+        Context                           $context,
+        EventDispatcherInterface          $eventDispatcher,
         TemplateInterface                 $template,
         protected readonly RequestService $request
     ) {
-        $this->config = $application->getConfig();
-        $this->context = $application->getContext();
-        $this->eventDispatcher = $application->getEventDispatcher();
+        $this->config = $config;
+        $this->context = $context;
+        $this->eventDispatcher = $eventDispatcher;
         $this->configData = $this->config->getConfigData();
         $this->view = $template;
     }

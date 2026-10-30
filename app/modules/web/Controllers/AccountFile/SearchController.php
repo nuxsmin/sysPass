@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\AccountFile;
 
-use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -52,12 +51,11 @@ final class SearchController extends SearchGridControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                         $application,
         WebControllerHelper                 $webControllerHelper,
         private readonly FileGrid           $fileGrid,
         private readonly AccountFileService $accountFileService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

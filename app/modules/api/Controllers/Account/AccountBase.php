@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountAdapter;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
@@ -32,6 +31,7 @@ use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
+use SP\Modules\Api\Controllers\ApiControllerHelper;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
 
@@ -44,15 +44,15 @@ abstract class AccountBase extends ControllerBase
      * @throws InvalidClassException
      */
     public function __construct(
-        Application             $application,
-        ApiService              $apiService,
-        protected readonly AccountPresetService $accountPresetService,
-        protected readonly AccountService $accountService,
+        ApiControllerHelper                       $controllerHelper,
+        ApiService                                $apiService,
+        protected readonly AccountPresetService   $accountPresetService,
+        protected readonly AccountService         $accountService,
         protected readonly CustomFieldDataService $customFieldService,
-        protected readonly AccountAdapter $accountAdapter,
-        protected readonly CryptInterface $crypt
+        protected readonly AccountAdapter         $accountAdapter,
+        protected readonly CryptInterface         $crypt
     ) {
-        parent::__construct($application, $apiService);
+        parent::__construct($controllerHelper, $apiService);
 
         $this->apiService->setHelpClass(AccountHelp::class);
     }

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\AuthToken;
 
-use SP\Core\Application;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Auth\Ports\AuthTokenActionService;
 use SP\Domain\Auth\Ports\AuthTokenService;
@@ -54,14 +53,13 @@ abstract class AuthTokenViewBase extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                             $application,
         WebControllerHelper                     $webControllerHelper,
         private readonly CustomFieldDataService $customFieldService,
         private readonly UserService            $userService,
         private readonly AuthTokenService       $authTokenService,
         private readonly AuthTokenActionService $authTokenAction,
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

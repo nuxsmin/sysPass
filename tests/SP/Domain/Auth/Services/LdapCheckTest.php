@@ -262,7 +262,7 @@ class LdapCheckTest extends UnitaryTestCase
         $this->ldapCheck = new LdapCheck(
             $this->ldapConnection,
             $this->ldapActionsService,
-            $this->application->getEventDispatcher()
+            $this->eventDispatcherStub
         );
     }
 }

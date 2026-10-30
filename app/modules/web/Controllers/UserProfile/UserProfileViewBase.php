@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\UserProfile;
 
 
-use SP\Core\Application;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -54,13 +53,12 @@ abstract class UserProfileViewBase extends ControllerBase
     private CustomFieldDataService $customFieldService;
 
     public function __construct(
-        Application         $application,
         WebControllerHelper $webControllerHelper,
         UserProfileService  $userProfileService,
         GetUserProfileUseCase $getUserProfileUseCase,
         CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 

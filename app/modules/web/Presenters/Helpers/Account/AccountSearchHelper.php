@@ -24,7 +24,9 @@
 
 namespace SP\Modules\Web\Presenters\Helpers\Account;
 
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
@@ -72,7 +74,9 @@ final class AccountSearchHelper extends HelperBase
     private ?AccountSearchFilterDto $accountSearchFilter = null;
 
     public function __construct(
-        Application                           $application,
+        ConfigFileService $config,
+        Context $context,
+        EventDispatcherInterface $eventDispatcher,
         TemplateInterface                     $template,
         RequestService                        $request,
         private readonly ClientService        $clientService,
@@ -84,7 +88,7 @@ final class AccountSearchHelper extends HelperBase
         private readonly AclInterface         $acl,
         private readonly ThemeInterface       $theme
     ) {
-        parent::__construct($application, $template, $request);
+        parent::__construct($config, $context, $eventDispatcher, $template, $request);
 
         $this->queryTimeStart = microtime(true);
         $this->isIndex = $this->request->analyzeString('r') ===

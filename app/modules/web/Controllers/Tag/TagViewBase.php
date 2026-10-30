@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Tag;
 
 
-use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\UseCases\Dtos\GetTagCommand;
@@ -39,11 +38,10 @@ use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 abstract class TagViewBase extends ControllerBase
 {
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly GetTagUseCase $getTagUseCase
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

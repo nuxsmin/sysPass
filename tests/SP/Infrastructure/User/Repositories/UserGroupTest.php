@@ -436,7 +436,7 @@ class UserGroupTest extends UnitaryTestCase
         $this->userGroup = new UserGroup(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

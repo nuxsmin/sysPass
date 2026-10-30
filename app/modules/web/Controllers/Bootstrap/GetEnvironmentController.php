@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Bootstrap;
 
 use Exception;
-use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Crypt\CryptPKI;
@@ -52,14 +51,13 @@ use function SP\processException;
 final class GetEnvironmentController extends SimpleControllerBase
 {
     public function __construct(
-        Application                           $application,
         SimpleControllerHelper                $simpleControllerHelper,
         private readonly CryptPKIHandler      $cryptPKI,
         private readonly BrowserAuthService   $browser,
         private readonly PluginManagerService $pluginManagerService,
         private readonly PathsContext         $pathsContext
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**

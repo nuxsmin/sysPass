@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Track;
 
-use SP\Core\Application;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
@@ -34,10 +33,9 @@ use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 abstract class TrackBase extends ControllerBase
 {
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

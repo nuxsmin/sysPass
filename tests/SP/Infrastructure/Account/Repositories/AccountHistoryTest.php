@@ -396,7 +396,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->accountHistory = new AccountHistory(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             new QueryFactory('mysql')
         );
     }

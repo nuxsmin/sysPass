@@ -412,7 +412,7 @@ class TagTest extends UnitaryTestCase
         $this->tag = new Tag(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

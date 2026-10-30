@@ -186,7 +186,7 @@ class AccountToUserTest extends UnitaryTestCase
         $this->accountToUser = new AccountToUser(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

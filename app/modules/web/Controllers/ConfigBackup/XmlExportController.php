@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\ConfigBackup;
 
-use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\Session;
@@ -60,13 +59,12 @@ final class XmlExportController extends SimpleControllerBase
      * @throws UnauthorizedPageException
      */
     public function __construct(
-        Application                       $application,
         SimpleControllerHelper            $simpleControllerHelper,
         private readonly XmlExportService $xmlExportService,
         private readonly XmlVerifyService $xmlVerifyService,
         private readonly PathsContext     $pathsContext
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
 
         $this->checks();
         $this->checkAccess(AclActionsInterface::CONFIG_BACKUP);

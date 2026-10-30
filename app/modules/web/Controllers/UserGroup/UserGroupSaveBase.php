@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\UserGroup;
 
 
-use SP\Core\Application;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserGroupForm;
@@ -40,16 +39,15 @@ abstract class UserGroupSaveBase extends ControllerBase
     protected UserGroupForm $form;
 
     public function __construct(
-        Application         $application,
         WebControllerHelper $webControllerHelper,
         CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
         $this->customFieldService = $customFieldService;
-        $this->form = new UserGroupForm($application, $this->request);
+        $this->form = new UserGroupForm($this->config, $this->session, $this->request);
     }
 
 }

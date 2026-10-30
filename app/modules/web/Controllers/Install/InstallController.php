@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Install;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -46,11 +45,10 @@ use function SP\processException;
 final class InstallController extends ControllerBase
 {
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly InstallerService $installer
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
     }
 
     #[Action(ResponseType::JSON)]

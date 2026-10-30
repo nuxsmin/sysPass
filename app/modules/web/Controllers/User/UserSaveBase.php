@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers\User;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPMailer\PHPMailer\Exception;
-use SP\Core\Application;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -53,20 +52,19 @@ abstract class UserSaveBase extends ControllerBase
     private UserPassRecoverService $userPassRecoverService;
 
     public function __construct(
-        Application            $application,
         WebControllerHelper    $webControllerHelper,
         CustomFieldDataService $customFieldService,
         MailService            $mailService,
         UserPassRecoverService $userPassRecoverService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
         $this->customFieldService = $customFieldService;
         $this->mailService = $mailService;
         $this->userPassRecoverService = $userPassRecoverService;
-        $this->form = new UserForm($application, $this->request);
+        $this->form = new UserForm($this->config, $this->session, $this->request);
     }
 
     /**

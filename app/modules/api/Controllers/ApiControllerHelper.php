@@ -24,22 +24,24 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core;
+namespace SP\Modules\Api\Controllers;
 
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 
 /**
- * The Application helper class. It holds all the needed dependencies for the application
+ * Aggregate of the application dependencies shared by the API controllers.
+ *
+ * It is a parameter object, not a service locator: it only exposes the typed
+ * ports that the API controller bases consume.
  */
-final readonly class Application
+final readonly class ApiControllerHelper
 {
     public function __construct(
         private ConfigFileService        $config,
-        private EventDispatcherInterface $eventDispatcher,
-        private Context $context
+        private Context                  $context,
+        private EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -48,13 +50,13 @@ final readonly class Application
         return $this->config;
     }
 
+    public function getContext(): Context
+    {
+        return $this->context;
+    }
+
     public function getEventDispatcher(): EventDispatcherInterface
     {
         return $this->eventDispatcher;
-    }
-
-    public function getContext(): Context|SessionContext
-    {
-        return $this->context;
     }
 }

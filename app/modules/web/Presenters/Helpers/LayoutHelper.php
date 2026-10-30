@@ -24,7 +24,9 @@
 
 namespace SP\Modules\Web\Presenters\Helpers;
 
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\Event;
 use SP\Core\Language;
 use SP\Domain\Common\Providers\Version;
@@ -58,7 +60,9 @@ final class LayoutHelper extends HelperBase
     private bool            $loggedIn;
 
     public function __construct(
-        Application                          $application,
+        ConfigFileService $config,
+        Context $context,
+        EventDispatcherInterface $eventDispatcher,
         TemplateInterface                    $template,
         RequestService  $request,
         ThemeInterface                       $theme,
@@ -66,7 +70,7 @@ final class LayoutHelper extends HelperBase
         private readonly UriContextInterface $uriContext,
         private readonly AclInterface        $acl
     ) {
-        parent::__construct($application, $template, $request);
+        parent::__construct($config, $context, $eventDispatcher, $template, $request);
 
         $this->theme = $theme;
         $this->cryptPKI = $cryptPKI;

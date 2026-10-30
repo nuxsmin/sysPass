@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\CustomField;
 
 use SP\Modules\Web\Presenters\Helpers\CustomFields;
-use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -53,12 +52,11 @@ abstract class CustomFieldViewBase extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                  $application,
         WebControllerHelper $webControllerHelper,
         GetCustomFieldUseCase $getCustomFieldUseCase,
         CustomFieldTypeService $customFieldTypeService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 

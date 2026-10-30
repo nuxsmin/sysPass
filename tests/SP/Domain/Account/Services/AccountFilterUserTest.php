@@ -333,7 +333,7 @@ class AccountFilterUserTest extends UnitaryTestCase
 
         $this->accountFilter = new AccountFilter(
             $this->context,
-            $this->application->getConfig()->getConfigData(),
+            $this->config->getConfigData(),
             $this->queryFactory
         );
     }

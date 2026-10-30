@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Client;
 
 
-use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -51,12 +50,11 @@ final class SearchController extends SearchGridControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                    $application,
         WebControllerHelper            $webControllerHelper,
         private readonly ClientService $clientService,
         private readonly ClientGrid    $clientGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

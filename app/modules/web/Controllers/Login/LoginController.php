@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Login;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Auth\Ports\LoginService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -47,11 +46,10 @@ final class LoginController extends ControllerBase
     private LoginService $loginService;
 
     public function __construct(
-        Application  $application,
         WebControllerHelper $webControllerHelper,
         LoginService $loginService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->loginService = $loginService;
     }

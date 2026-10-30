@@ -734,7 +734,7 @@ class UserTest extends UnitaryTestCase
         $this->user = new User(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

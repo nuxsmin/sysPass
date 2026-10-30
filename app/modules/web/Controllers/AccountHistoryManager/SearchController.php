@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\AccountHistoryManager;
 
-use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -51,12 +50,11 @@ final class SearchController extends SearchGridControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                            $application,
         WebControllerHelper                    $webControllerHelper,
         private readonly AccountHistoryService $accountHistoryService,
         private readonly AccountHistoryGrid    $accountHistoryGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

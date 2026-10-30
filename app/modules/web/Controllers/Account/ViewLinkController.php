@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Modules\Web\UI\ThemeIcons;
@@ -60,13 +59,12 @@ final class ViewLinkController extends AccountControllerBase
     private readonly ThemeIcons $icons;
 
     public function __construct(
-        Application                        $application,
         WebControllerHelper                $webControllerHelper,
         private readonly AccountService    $accountService,
         private readonly PublicLinkService $publicLinkService,
         private readonly ImageService      $imageUtil
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->icons = $this->theme->getIcons();
     }

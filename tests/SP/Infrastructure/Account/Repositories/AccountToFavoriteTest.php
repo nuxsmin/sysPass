@@ -135,7 +135,7 @@ class AccountToFavoriteTest extends UnitaryTestCase
         $this->accountToFavorite = new AccountToFavorite(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

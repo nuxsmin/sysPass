@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Category;
 
 
-use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -51,12 +50,11 @@ final class SearchController extends SearchGridControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                      $application,
         WebControllerHelper              $webControllerHelper,
         private readonly CategoryService $categoryService,
         private readonly CategoryGrid    $categoryGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

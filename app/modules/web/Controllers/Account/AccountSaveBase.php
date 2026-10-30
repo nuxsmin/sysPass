@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
@@ -43,14 +42,13 @@ abstract class AccountSaveBase extends AccountControllerBase
     protected readonly FormInterface $accountForm;
 
     public function __construct(
-        Application                               $application,
         WebControllerHelper                       $webControllerHelper,
         protected readonly AccountService         $accountService,
         AccountPresetService                      $accountPresetService,
         protected readonly CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
-        $this->accountForm = new AccountForm($application, $this->request, $accountPresetService);
+        $this->accountForm = new AccountForm($this->config, $this->session, $this->request, $accountPresetService);
     }
 }

@@ -31,7 +31,6 @@ use Exception;
 use Klein\Request;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
-use SP\Core\Application;
 use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
@@ -89,8 +88,6 @@ class DefinitionsTest extends TestCase
         $containerBuilder = new ContainerBuilder();
         $containerBuilder->addDefinitions(DomainDefinitions::getDefinitions(), $definitions, $mockedDefinitions);
         $out = $containerBuilder->build();
-
-        $this->assertInstanceOf(Application::class, $out->get(Application::class));
 
         foreach (array_keys($definitions) as $definition) {
             if (class_exists($definition)) {

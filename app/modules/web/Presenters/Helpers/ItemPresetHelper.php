@@ -24,7 +24,9 @@
 
 namespace SP\Modules\Web\Presenters\Helpers;
 
-use SP\Core\Application;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
@@ -55,7 +57,9 @@ final class ItemPresetHelper extends HelperBase
     private UserProfileService $userProfileService;
 
     public function __construct(
-        Application       $application,
+        ConfigFileService $config,
+        Context $context,
+        EventDispatcherInterface $eventDispatcher,
         TemplateInterface $template,
         RequestService    $request,
         UserService       $userService,
@@ -63,7 +67,7 @@ final class ItemPresetHelper extends HelperBase
         UserProfileService $userProfileService
 
     ) {
-        parent::__construct($application, $template, $request);
+        parent::__construct($config, $context, $eventDispatcher, $template, $request);
 
         $this->userService = $userService;
         $this->userGroupService = $userGroupService;

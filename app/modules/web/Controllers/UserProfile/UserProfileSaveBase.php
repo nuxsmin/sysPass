@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\UserProfile;
 
 
-use SP\Core\Application;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserProfileForm;
@@ -40,15 +39,14 @@ abstract class UserProfileSaveBase extends ControllerBase
     protected UserProfileForm $form;
 
     public function __construct(
-        Application         $application,
         WebControllerHelper $webControllerHelper,
         CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
         $this->customFieldService = $customFieldService;
-        $this->form = new UserProfileForm($application, $this->request);
+        $this->form = new UserProfileForm($this->config, $this->session, $this->request);
     }
 }

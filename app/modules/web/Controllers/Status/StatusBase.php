@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\Status;
 
 
 use GuzzleHttp\ClientInterface;
-use SP\Core\Application;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
@@ -38,11 +37,10 @@ abstract class StatusBase extends SimpleControllerBase
     protected ClientInterface $client;
 
     public function __construct(
-        Application $application,
         SimpleControllerHelper $simpleControllerHelper,
         ClientInterface $client
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
 
         $this->client = $client;
     }

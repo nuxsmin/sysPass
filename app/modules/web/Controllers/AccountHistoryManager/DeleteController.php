@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\AccountHistoryManager;
 
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountHistoryService;
@@ -54,11 +53,10 @@ final class DeleteController extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                            $application,
         WebControllerHelper                    $webControllerHelper,
         private readonly AccountHistoryService $accountHistoryService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

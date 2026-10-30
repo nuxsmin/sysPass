@@ -712,7 +712,7 @@ class AccountAclTest extends UnitaryTestCase
             $this->config,
             $this->eventDispatcherStub,
             $this->context,
-            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
+            new Acl($this->context, $this->eventDispatcherStub, $actions),
             $userToUserGroupService,
             $this->pathsContext,
             $fileCache
@@ -754,7 +754,7 @@ class AccountAclTest extends UnitaryTestCase
             $this->config,
             $this->eventDispatcherStub,
             $this->context,
-            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
+            new Acl($this->context, $this->eventDispatcherStub, $actions),
             $userToUserGroupService,
             $this->pathsContext,
             $fileCache
@@ -804,7 +804,7 @@ class AccountAclTest extends UnitaryTestCase
             $this->config,
             $this->eventDispatcherStub,
             $this->context,
-            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
+            new Acl($this->context, $this->eventDispatcherStub, $actions),
             $userToUserGroupService,
             $this->pathsContext,
             $fileCache
@@ -843,7 +843,7 @@ class AccountAclTest extends UnitaryTestCase
             $this->config,
             $this->eventDispatcherStub,
             $this->context,
-            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
+            new Acl($this->context, $this->eventDispatcherStub, $actions),
             $userToUserGroupService,
             $this->pathsContext,
             $fileCache
@@ -868,7 +868,7 @@ class AccountAclTest extends UnitaryTestCase
 
         $actions = $this->createMock(ActionsInterface::class);
 
-        $this->acl = new Acl($this->context, $this->application->getEventDispatcher(), $actions);
+        $this->acl = new Acl($this->context, $this->eventDispatcherStub, $actions);
         $this->userToUserGroupService = $this->createMock(UserToUserGroupService::class);
         $this->userToUserGroupService->method('getGroupsForUser')
                                      ->willReturnMap([

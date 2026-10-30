@@ -26,13 +26,13 @@ namespace SP\Modules\Web;
 
 use Exception;
 use Klein\Klein;
-use SP\Core\Application;
 use SP\Core\Context\ContextBase;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\Session;
 use SP\Core\Context\SessionLifecycleHandler;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\HttpModuleBase;
+use SP\Core\ModuleDependencies;
 use SP\Core\ProvidersHelper;
 use SP\Domain\Common\Providers\Http;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
@@ -130,11 +130,11 @@ final class Init extends HttpModuleBase
     private bool $isIndex = false;
 
     public function __construct(
-        Application                          $application,
+        ModuleDependencies                   $dependencies,
         ProvidersHelper                      $providersHelper,
         RequestService                       $request,
         Klein                                $router,
-        AppLockHandler $appLock,
+        AppLockHandler                       $appLock,
         private readonly CsrfHandler         $csrf,
         private readonly LanguageInterface   $language,
         private readonly ItemPresetService   $itemPresetService,
@@ -143,7 +143,7 @@ final class Init extends HttpModuleBase
         private readonly UriContextInterface $uriContext,
     ) {
         parent::__construct(
-            $application,
+            $dependencies,
             $providersHelper,
             $request,
             $router,

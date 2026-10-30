@@ -76,7 +76,7 @@ class CustomFieldTypeTest extends UnitaryTestCase
         $this->customFieldType = new CustomFieldType(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

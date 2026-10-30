@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\ItemPreset;
 
 
-use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
@@ -49,12 +48,11 @@ abstract class ItemPresetViewBase extends ControllerBase
     private ItemPresetHelper $itemPresetHelper;
 
     public function __construct(
-        Application       $application,
         WebControllerHelper $webControllerHelper,
         GetItemPresetUseCase $getItemPresetUseCase,
         ItemPresetHelper $itemPresetHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\SecurityManager;
 
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -57,7 +56,6 @@ final class IndexController extends ControllerBase
     private TrackService    $trackService;
 
     public function __construct(
-        Application         $application,
         WebControllerHelper $webControllerHelper,
         TabsGridHelper      $tabsGridHelper,
         EventlogGrid        $eventlogGrid,
@@ -65,7 +63,7 @@ final class IndexController extends ControllerBase
         EventlogService     $eventlogService,
         TrackService $trackService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 

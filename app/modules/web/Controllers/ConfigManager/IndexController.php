@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\ConfigManager;
 
-use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -47,12 +46,11 @@ final class IndexController extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application             $application,
         WebControllerHelper     $webControllerHelper,
         protected TabsHelper    $tabsHelper,
         private readonly ConfigManagerPresenter $presenter
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

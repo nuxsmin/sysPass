@@ -504,7 +504,7 @@ class PluginTest extends UnitaryTestCase
         $this->plugin = new Plugin(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

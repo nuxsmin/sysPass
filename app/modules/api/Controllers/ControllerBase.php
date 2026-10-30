@@ -25,7 +25,6 @@
 namespace SP\Modules\Api\Controllers;
 
 use League\Fractal\Manager;
-use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Common\Services\ServiceException;
@@ -52,12 +51,12 @@ abstract class ControllerBase
     private bool                       $isAuthenticated = false;
 
     public function __construct(
-        Application                   $application,
+        ApiControllerHelper           $controllerHelper,
         protected readonly ApiService $apiService
     ) {
-        $this->context = $application->getContext();
-        $this->configData = $application->getConfig()->getConfigData();
-        $this->eventDispatcher = $application->getEventDispatcher();
+        $this->context = $controllerHelper->getContext();
+        $this->configData = $controllerHelper->getConfig()->getConfigData();
+        $this->eventDispatcher = $controllerHelper->getEventDispatcher();
 
         $this->fractal = new Manager();
         $this->controllerName = $this->getControllerName();

@@ -172,7 +172,7 @@ class EventlogTest extends UnitaryTestCase
         $this->eventlog = new Eventlog(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

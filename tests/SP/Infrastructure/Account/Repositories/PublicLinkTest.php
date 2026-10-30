@@ -434,7 +434,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLink = new PublicLink(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

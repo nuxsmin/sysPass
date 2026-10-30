@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountHistoryService;
@@ -44,13 +43,11 @@ use function SP\__u;
 final class SaveEditRestoreController extends AccountControllerBase
 {
     public function __construct(
-        Application                            $application,
         WebControllerHelper                    $webControllerHelper,
         private readonly AccountService        $accountService,
         private readonly AccountHistoryService $accountHistoryService
     ) {
         parent::__construct(
-            $application,
             $webControllerHelper
         );
     }

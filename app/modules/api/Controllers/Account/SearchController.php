@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchService;
@@ -34,6 +33,7 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Modules\Api\Controllers\ApiControllerHelper;
 use SP\Modules\Api\Controllers\ControllerBase;
 
 /**
@@ -42,11 +42,11 @@ use SP\Modules\Api\Controllers\ControllerBase;
 final class SearchController extends ControllerBase
 {
     public function __construct(
-        Application                                     $application,
+        ApiControllerHelper                             $controllerHelper,
         ApiService                                      $apiService,
         private readonly AccountSearchService           $accountSearchService
     ) {
-        parent::__construct($application, $apiService);
+        parent::__construct($controllerHelper, $apiService);
     }
 
     #[Action(ResponseType::JSON_RPC)]

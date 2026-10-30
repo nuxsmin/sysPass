@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\ConfigLdap;
 
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Exceptions\LdapException;
@@ -51,11 +50,10 @@ use function SP\__u;
 final class ImportController extends SimpleControllerBase
 {
     public function __construct(
-        Application                        $application,
         SimpleControllerHelper             $simpleControllerHelper,
         private readonly LdapImportService $ldapImportService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**

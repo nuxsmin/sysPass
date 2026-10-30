@@ -180,7 +180,7 @@ class ConfigTest extends UnitaryTestCase
         $this->configRepository = new Config(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

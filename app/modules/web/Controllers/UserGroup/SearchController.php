@@ -40,12 +40,11 @@ final class SearchController extends SearchGridControllerBase
     use ItemTrait;
 
     public function __construct(
-        \SP\Core\Application $application,
         \SP\Modules\Web\Mvc\Controller\WebControllerHelper $webControllerHelper,
         private readonly SearchUserGroupsUseCase $searchUserGroupsUseCase,
         private readonly UserGroupGrid $userGroupGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

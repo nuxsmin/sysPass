@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\UserPassReset;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -45,12 +44,11 @@ use function SP\processException;
 final class SaveResetController extends UserPassResetSaveBase
 {
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         TrackService $trackService,
         private readonly ResetPasswordUseCase $resetPasswordUseCase
     ) {
-        parent::__construct($application, $webControllerHelper, $trackService);
+        parent::__construct($webControllerHelper, $trackService);
     }
 
     #[Action(ResponseType::JSON)]

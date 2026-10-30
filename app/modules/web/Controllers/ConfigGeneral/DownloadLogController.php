@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
 
 use Klein\Response;
-use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\Session;
@@ -52,11 +51,10 @@ use function SP\__u;
 final class DownloadLogController extends SimpleControllerBase
 {
     public function __construct(
-        Application                   $application,
         SimpleControllerHelper        $simpleControllerHelper,
         private readonly PathsContext $pathsContext
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     #[Action(ResponseType::CALLBACK)]

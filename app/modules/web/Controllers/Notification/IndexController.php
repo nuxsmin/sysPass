@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Notification;
 
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -48,12 +47,11 @@ final class IndexController extends ControllerBase
     use ItemTrait;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly SearchNotificationsUseCase $searchNotificationsUseCase,
         private readonly NotificationGrid $notificationGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

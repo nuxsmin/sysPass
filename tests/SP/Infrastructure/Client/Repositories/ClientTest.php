@@ -452,7 +452,7 @@ class ClientTest extends UnitaryTestCase
         $this->client = new Client(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

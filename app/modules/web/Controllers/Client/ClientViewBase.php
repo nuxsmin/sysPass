@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Client;
 
-use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientService;
@@ -52,12 +51,11 @@ abstract class ClientViewBase extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                             $application,
         WebControllerHelper                     $webControllerHelper,
         private readonly ClientService          $clientService,
         private readonly CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

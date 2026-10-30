@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
@@ -55,13 +54,11 @@ final class DeleteController extends AccountControllerBase
     private readonly ThemeIcons $icons;
 
     public function __construct(
-        Application                     $application,
         WebControllerHelper             $webControllerHelper,
         private readonly AccountHelper  $accountHelper,
         private readonly AccountService $accountService
     ) {
         parent::__construct(
-            $application,
             $webControllerHelper
         );
 

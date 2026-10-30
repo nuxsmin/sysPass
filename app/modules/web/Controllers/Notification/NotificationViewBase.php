@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Notification;
 
-use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Notification\Models\Notification;
 use SP\Domain\Notification\UseCases\Dtos\GetNotificationCommand;
@@ -40,12 +39,11 @@ use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 abstract class NotificationViewBase extends ControllerBase
 {
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         private readonly GetNotificationUseCase $getNotificationUseCase,
         private readonly UserService $userService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

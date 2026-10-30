@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\UserSettingsManager;
 
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -53,12 +52,11 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
     private TabsHelper $tabsHelper;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
         TabsHelper $tabsHelper,
         private readonly LanguageList $languageList
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 

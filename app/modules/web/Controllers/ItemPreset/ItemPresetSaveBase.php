@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\ItemPreset;
 
 
-use SP\Core\Application;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\ItemsPresetForm;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
@@ -38,13 +37,12 @@ abstract class ItemPresetSaveBase extends ControllerBase
     protected ItemsPresetForm $form;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->form = new ItemsPresetForm($application, $this->request);
+        $this->form = new ItemsPresetForm($this->config, $this->session, $this->request);
     }
 }

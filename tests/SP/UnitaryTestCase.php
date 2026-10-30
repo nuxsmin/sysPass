@@ -53,7 +53,6 @@ use Faker\Generator;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use SP\Core\Application;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\Stateless;
@@ -76,7 +75,6 @@ abstract class UnitaryTestCase extends TestCase
     protected static Generator $faker;
 
     protected readonly ConfigFileService|MockObject $config;
-    protected readonly Application                  $application;
     protected readonly Context                      $context;
     protected readonly EventDispatcherInterface     $eventDispatcherStub;
     protected readonly PathsContext $pathsContext;
@@ -117,28 +115,11 @@ abstract class UnitaryTestCase extends TestCase
     {
         parent::setUp();
 
-        $this->application = $this->buildApplication();
-
-        $this->getPathsContext();
-    }
-
-    /**
-     * @return Application
-     * @throws Exception
-     * @throws ContextException
-     * @throws SPException
-     */
-    private function buildApplication(): Application
-    {
         $this->context = $this->buildContext();
         $this->config = $this->buildConfig();
         $this->eventDispatcherStub = $this->createStub(EventDispatcherInterface::class);
 
-        return new Application(
-            $this->config,
-            $this->eventDispatcherStub,
-            $this->context
-        );
+        $this->getPathsContext();
     }
 
     /**
