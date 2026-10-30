@@ -27,10 +27,12 @@ namespace SP\Tests;
 
 use Aura\SqlQuery\QueryFactory;
 use SP\Core\Context\Stateless;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Infrastructure\Database\Database;
+use SP\Infrastructure\Database\QueryData;
 
 /**
  * Base class for repository tests that run real SQL against the test database.
@@ -64,5 +66,19 @@ abstract class DatabaseRepositoryTestCase extends DatabaseTestCase
     protected function executeSql(string $sql): void
     {
         getDbHandler()->getConnection()->exec($sql);
+    }
+
+    protected function countRowsForAccount(string $table, int $accountId): int
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from($table)
+            ->cols(['COUNT(*) AS total'])
+            ->where('accountId = :accountId', ['accountId' => $accountId]);
+
+        $row = $this->db->runQuery(QueryData::build($query)->setMapClassName(Simple::class))
+                        ->getData(Simple::class);
+
+        return (int)($row?->total ?? 0);
     }
 }

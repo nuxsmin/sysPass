@@ -98,7 +98,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
         ];
         $this->query = $this->queryFactory
             ->newSelect()
-            ->cols($cols)
+            ->cols(array_map(static fn(string $col) => sprintf('Account.%s', $col), $cols))
             ->from(sprintf('%s AS Account', AccountSearchViewModel::TABLE))
             ->distinct();
     }
