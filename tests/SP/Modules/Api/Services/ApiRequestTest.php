@@ -23,13 +23,13 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Domain\Api\Services;
+namespace SP\Tests\Modules\Api\Services;
 
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use SP\Domain\Api\Services\ApiRequest;
-use SP\Domain\Api\Services\ApiRequestException;
+use SP\Domain\Api\Exceptions\ApiRequestException;
+use SP\Modules\Api\Adapters\ApiRequestAdapter;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -50,7 +50,7 @@ class ApiRequestTest extends UnitaryTestCase
         $jsonRpcRequest = self::buildJsonRpcRequest();
         file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
 
-        $out = ApiRequest::buildFromRequest($stream);
+        $out = ApiRequestAdapter::buildFromRequest($stream);
 
         $this->assertEquals($jsonRpcRequest['method'], $out->getMethod());
         $this->assertEquals($jsonRpcRequest['id'], $out->getId());
@@ -80,7 +80,7 @@ class ApiRequestTest extends UnitaryTestCase
         $this->expectException(ApiRequestException::class);
         $this->expectExceptionMessage('Invalid data');
 
-        ApiRequest::buildFromRequest($stream);
+        ApiRequestAdapter::buildFromRequest($stream);
     }
 
     /**
@@ -96,7 +96,7 @@ class ApiRequestTest extends UnitaryTestCase
         $this->expectException(ApiRequestException::class);
         $this->expectExceptionMessage('Invalid format');
 
-        ApiRequest::buildFromRequest($stream);
+        ApiRequestAdapter::buildFromRequest($stream);
     }
 
     /**
@@ -116,7 +116,7 @@ class ApiRequestTest extends UnitaryTestCase
         $this->expectException(ApiRequestException::class);
         $this->expectExceptionMessage('Invalid format');
 
-        ApiRequest::buildFromRequest($stream);
+        ApiRequestAdapter::buildFromRequest($stream);
     }
 
     /**
@@ -129,7 +129,7 @@ class ApiRequestTest extends UnitaryTestCase
 
         file_put_contents($stream, json_encode(self::buildJsonRpcRequest(), JSON_THROW_ON_ERROR));
 
-        $out = ApiRequest::buildFromRequest($stream);
+        $out = ApiRequestAdapter::buildFromRequest($stream);
 
         $this->assertTrue($out->exists('authToken'));
         $this->assertFalse($out->exists('test'));
@@ -146,7 +146,7 @@ class ApiRequestTest extends UnitaryTestCase
         $jsonRpcRequest = self::buildJsonRpcRequest();
         file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
 
-        $out = ApiRequest::buildFromRequest($stream);
+        $out = ApiRequestAdapter::buildFromRequest($stream);
 
         $this->assertEquals($jsonRpcRequest['id'], $out->getId());
     }
@@ -162,7 +162,7 @@ class ApiRequestTest extends UnitaryTestCase
         $jsonRpcRequest = self::buildJsonRpcRequest();
         file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
 
-        $out = ApiRequest::buildFromRequest($stream);
+        $out = ApiRequestAdapter::buildFromRequest($stream);
 
         $this->assertEquals($jsonRpcRequest['params']['authToken'], $out->get('authToken'));
     }
@@ -178,7 +178,7 @@ class ApiRequestTest extends UnitaryTestCase
         $jsonRpcRequest = self::buildJsonRpcRequest();
         file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
 
-        $out = ApiRequest::buildFromRequest($stream);
+        $out = ApiRequestAdapter::buildFromRequest($stream);
 
         $this->assertEquals($jsonRpcRequest['method'], $out->getMethod());
     }

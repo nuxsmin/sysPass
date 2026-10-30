@@ -94,8 +94,6 @@ return array (
     5 => 'lib/SP/Domain/Account/Services/AccountMasterPassword.php => __u() x12',
     6 => 'lib/SP/Domain/Account/Services/PublicLink.php => __u() x7',
     7 => 'lib/SP/Domain/Api/Services/Api.php => __u() x10',
-    8 => 'lib/SP/Domain/Api/Services/ApiRequest.php => __u() x3',
-    9 => 'lib/SP/Domain/Api/Services/JsonRpcResponse.php => __() x1',
     10 => 'lib/SP/Domain/Auth/Providers/AclHandler.php => __u() x3',
     11 => 'lib/SP/Domain/Auth/Providers/AuthProvider.php => __u() x1',
     12 => 'lib/SP/Domain/Auth/Providers/Ldap/LdapActions.php => __u() x3',

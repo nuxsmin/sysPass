@@ -39,7 +39,6 @@ use RuntimeException;
 use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
 use SP\Domain\Api\Ports\ApiRequestService;
-use SP\Domain\Api\Services\ApiRequest;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Services\AuthToken;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -55,6 +54,7 @@ use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Infrastructure\File\FileSystem;
+use SP\Modules\Api\Adapters\ApiRequestAdapter;
 use SP\Modules\Api\Bootstrap;
 use SP\Tests\DatabaseTrait;
 use stdClass;
@@ -184,7 +184,7 @@ abstract class ApiTestCase extends TestCase
 
                             return $configData;
                         },
-                        ApiRequestService::class => static fn() => ApiRequest::buildFromRequest($requestFile),
+                        ApiRequestService::class => static fn() => ApiRequestAdapter::buildFromRequest($requestFile),
                         Request::class => new Request(
                             [],
                             [],

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 /**
  * sysPass
@@ -24,21 +23,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Api\Ports;
+namespace SP\Domain\Api\Exceptions;
 
-use Exception;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Core\Exceptions\SPException;
 
 /**
- * Formats API responses using the JSON-RPC envelope.
+ * Class ApiRequestException
  */
-interface JsonRpcResponseFormatter
+final class ApiRequestException extends SPException
 {
-    public const METHOD_NOT_FOUND = -32601;
 
-    public function getResponse(ApiResponse $apiResponse, int $id): string;
-
-    public function getResponseException(Exception $e, int $id): string;
-
-    public function getResponseError(string $message, int $code, int $id, mixed $data = null): string;
 }

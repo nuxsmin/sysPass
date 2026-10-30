@@ -22,17 +22,21 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Modules\Api\Adapters\ApiRequestAdapter;
 use SP\Modules\Api\Bootstrap;
 use SP\Modules\Api\Init;
 
 use function DI\autowire;
+use function DI\factory;
 
 const MODULE_PATH = __DIR__;
 const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
 
 return [
     BootstrapInterface::class => autowire(Bootstrap::class),
-    ModuleInterface::class => autowire(Init::class)
+    ModuleInterface::class => autowire(Init::class),
+    ApiRequestService::class => factory(static fn() => ApiRequestAdapter::buildFromRequest())
 ];

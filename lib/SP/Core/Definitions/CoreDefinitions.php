@@ -66,10 +66,6 @@ use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeContext;
 use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Account\Ports\PasswordValidator;
-use SP\Domain\Api\Adapters\JsonRpcResponseFormatterAdapter;
-use SP\Domain\Api\Ports\JsonRpcResponseFormatter;
-use SP\Domain\Api\Ports\ApiRequestService;
-use SP\Domain\Api\Services\ApiRequest;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
@@ -207,8 +203,6 @@ final class CoreDefinitions
             CssMinifyService::class => autowire(MinifyCss::class),
             JsMinifyService::class => autowire(MinifyJs::class),
             HashService::class => autowire(HashServiceAdapter::class),
-            JsonRpcResponseFormatter::class => autowire(JsonRpcResponseFormatterAdapter::class),
-            ApiRequestService::class => factory(static fn() => ApiRequest::buildFromRequest()),
             PasswordValidator::class => autowire(PasswordValidatorImplementation::class),
             UriContextInterface::class => autowire(UriContext::class),
             Context::class => create(Stateless::class),

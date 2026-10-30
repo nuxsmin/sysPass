@@ -30,6 +30,7 @@ use Exception;
 use SP\Core\Context\ContextException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
+use SP\Domain\Api\Enums\JsonRpcErrorCode;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Api\Ports\HelpProvider;
@@ -109,7 +110,7 @@ final class Api extends Service implements ApiService
                 __u('Attempts exceeded'),
                 SPException::ERROR,
                 null,
-                JsonRpcResponse::INTERNAL_ERROR
+                JsonRpcErrorCode::INTERNAL_ERROR
             );
         }
 
@@ -124,7 +125,7 @@ final class Api extends Service implements ApiService
                 __u('Internal error'),
                 SPException::ERROR,
                 null,
-                JsonRpcResponse::INTERNAL_ERROR
+                JsonRpcErrorCode::INTERNAL_ERROR
             );
         }
 
@@ -155,7 +156,7 @@ final class Api extends Service implements ApiService
                 __u('Internal error'),
                 SPException::ERROR,
                 null,
-                JsonRpcResponse::INTERNAL_ERROR
+                JsonRpcErrorCode::INTERNAL_ERROR
             );
         }
     }
@@ -183,7 +184,7 @@ final class Api extends Service implements ApiService
                         $this->getHelp($this->apiRequest->getMethod())
                     )
                 ),
-                JsonRpcResponse::INVALID_PARAMS
+                JsonRpcErrorCode::INVALID_PARAMS
             );
         }
 
@@ -217,7 +218,7 @@ final class Api extends Service implements ApiService
             __u('Unauthorized access'),
             SPException::ERROR,
             null,
-            JsonRpcResponse::INTERNAL_ERROR
+            JsonRpcErrorCode::INTERNAL_ERROR
         );
     }
 
@@ -275,14 +276,14 @@ final class Api extends Service implements ApiService
                 __u('Internal error'),
                 SPException::ERROR,
                 __u('Invalid data'),
-                JsonRpcResponse::INTERNAL_ERROR
+                JsonRpcErrorCode::INTERNAL_ERROR
             );
         } catch (CryptException $e) {
             throw new ServiceException(
                 __u('Internal error'),
                 SPException::ERROR,
                 $e->getMessage(),
-                JsonRpcResponse::INTERNAL_ERROR
+                JsonRpcErrorCode::INTERNAL_ERROR
             );
         }
     }
@@ -297,7 +298,7 @@ final class Api extends Service implements ApiService
                 __u('API not initialized'),
                 SPException::ERROR,
                 __u('Please run setup method before'),
-                JsonRpcResponse::INTERNAL_ERROR
+                JsonRpcErrorCode::INTERNAL_ERROR
             );
         }
     }

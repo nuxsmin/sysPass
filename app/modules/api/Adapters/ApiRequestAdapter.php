@@ -23,19 +23,21 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Api\Services;
+namespace SP\Modules\Api\Adapters;
 
 use JsonException;
 use SP\Domain\Api\Dtos\ApiRequestData;
+use SP\Domain\Api\Enums\JsonRpcErrorCode;
+use SP\Domain\Api\Exceptions\ApiRequestException;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\__u;
 
 /**
- * Class ApiRequest
+ * Builds an API request from the incoming JSON-RPC payload.
  */
-final class ApiRequest implements ApiRequestService
+final class ApiRequestAdapter implements ApiRequestService
 {
     protected ?string         $method = null;
     protected ?int            $id     = null;
@@ -64,7 +66,7 @@ final class ApiRequest implements ApiRequestService
                 __u('Invalid data'),
                 SPException::ERROR,
                 null,
-                JsonRpcResponse::PARSE_ERROR
+                JsonRpcErrorCode::PARSE_ERROR
             );
         }
 
@@ -93,7 +95,7 @@ final class ApiRequest implements ApiRequestService
                 __u('Invalid data'),
                 SPException::ERROR,
                 $e->getMessage(),
-                JsonRpcResponse::PARSE_ERROR
+                JsonRpcErrorCode::PARSE_ERROR
             );
         }
 
@@ -108,11 +110,11 @@ final class ApiRequest implements ApiRequestService
                 __u('Invalid format'),
                 SPException::ERROR,
                 null,
-                JsonRpcResponse::INVALID_REQUEST
+                JsonRpcErrorCode::INVALID_REQUEST
             );
         }
 
-        $apiRequest = new ApiRequest();
+        $apiRequest = new self();
         $apiRequest->method = preg_replace('#[^a-z/]+#i', '', $data['method']);
         $apiRequest->id = filter_var($data['id'], FILTER_VALIDATE_INT) ?: 1;
         $apiRequest->data = new ApiRequestData($data['params']);
