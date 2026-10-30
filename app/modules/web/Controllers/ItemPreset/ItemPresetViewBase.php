@@ -37,7 +37,7 @@ use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\ItemPreset\UseCases\Dtos\GetItemPresetCommand;
 use SP\Domain\ItemPreset\UseCases\GetItemPresetUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\ItemPresetHelper;
+use SP\Modules\Web\Presenters\Helpers\ItemPresetHelper;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**

@@ -34,7 +34,7 @@ use SP\Domain\Core\Ports\LanguageList;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\TabsHelper;
+use SP\Modules\Web\Presenters\Helpers\TabsHelper;
 use SP\Modules\Web\Mvc\Controller\ExtensibleTabControllerInterface;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use SP\Modules\Web\Mvc\View\Components\DataTab;

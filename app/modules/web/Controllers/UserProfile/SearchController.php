@@ -28,7 +28,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\UseCases\Dtos\SearchUserProfilesCommand;
 use SP\Domain\User\UseCases\SearchUserProfilesUseCase;
 use SP\Modules\Web\Controllers\SearchGridControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Grid\UserProfileGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\UserProfileGrid;
 use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 

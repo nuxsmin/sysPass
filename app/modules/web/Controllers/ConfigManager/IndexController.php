@@ -33,7 +33,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\TabsHelper;
+use SP\Modules\Web\Presenters\Helpers\TabsHelper;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use SP\Modules\Web\Presenters\ConfigManagerPresenter;
 

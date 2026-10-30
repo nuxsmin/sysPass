@@ -65,7 +65,7 @@ return array (
     11 => 'app/modules/web/Controllers/ConfigImport/ImportController.php => SP\\Infrastructure\\File\\FileHandler',
     12 => 'app/modules/web/Presenters/ConfigManagerPresenter.php => SP\\Infrastructure\\Database\\DatabaseUtil',
     13 => 'app/modules/web/Presenters/ConfigManagerPresenter.php => SP\\Infrastructure\\File\\FileHandler',
-    14 => 'app/modules/web/Controllers/Helpers/LayoutHelper.php => SP\\Infrastructure\\File\\FileSystem',
+    14 => 'app/modules/web/Presenters/Helpers/LayoutHelper.php => SP\\Infrastructure\\File\\FileSystem',
     15 => 'app/modules/web/Controllers/Resource/CssController.php => SP\\Infrastructure\\File\\FileHandler',
     16 => 'app/modules/web/Controllers/Resource/CssController.php => SP\\Infrastructure\\File\\FileSystem',
     17 => 'app/modules/web/Controllers/Resource/JsController.php => SP\\Infrastructure\\File\\FileHandler',
@@ -86,7 +86,6 @@ return array (
   ),
   'domain-presentation-calls' => 
   array (
-    0 => 'lib/SP/Domain/Account/Services/Account.php => __u() x10',
     1 => 'lib/SP/Domain/Account/Services/AccountCrypt.php => __u() x3',
     2 => 'lib/SP/Domain/Account/Services/AccountFile.php => __u() x3',
     3 => 'lib/SP/Domain/Account/Services/AccountHistory.php => __u() x3',

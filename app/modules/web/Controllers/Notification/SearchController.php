@@ -32,7 +32,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Notification\UseCases\Dtos\SearchNotificationsCommand;
 use SP\Domain\Notification\UseCases\SearchNotificationsUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Grid\NotificationGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\NotificationGrid;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 

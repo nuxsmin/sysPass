@@ -1,0 +1,79 @@
+<?php
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Modules\Web\Presenters\Helpers;
+
+use SP\Modules\Web\Mvc\View\Components\DataTab;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
+
+/**
+ * Class TabsHelper
+ *
+ * @package SP\Modules\Web\Presenters\Helpers
+ */
+final class TabsHelper extends HelperBase
+{
+    /**
+     * Máximo numero de acciones antes de agrupar
+     */
+    private const MAX_NUM_ACTIONS = 3;
+    /**
+     * @var DataTab[]
+     */
+    protected array $tabs = [];
+
+    /**
+     * Inicializar las plantillas para las pestañas
+     *
+     * @param string $route
+     * @param int    $activeTab
+     */
+    public function renderTabs(string $route, int $activeTab = 0): void
+    {
+        $this->renderTabsTo($this->view, $route, $activeTab);
+    }
+
+    /**
+     * Inicializar las plantillas para las pestañas en una vista concreta
+     */
+    public function renderTabsTo(TemplateInterface $view, string $route, int $activeTab = 0): void
+    {
+        $view->addTemplate('datatabs', 'common');
+
+        $view->assign('tabs', $this->tabs);
+        $view->assign('activeTab', $activeTab);
+        $view->assign('maxNumActions', self::MAX_NUM_ACTIONS);
+        $view->assign('tabsRoute', $route);
+    }
+
+    /**
+     * Add a new data tab
+     *
+     * @param DataTab $tab
+     */
+    public function addTab(DataTab $tab): void
+    {
+        $this->tabs[] = $tab;
+    }
+}

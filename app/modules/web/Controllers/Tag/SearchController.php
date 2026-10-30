@@ -30,7 +30,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\Tag\UseCases\Dtos\SearchTagsCommand;
 use SP\Domain\Tag\UseCases\SearchTagsUseCase;
-use SP\Modules\Web\Controllers\Helpers\Grid\TagGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\TagGrid;
 use SP\Modules\Web\Controllers\SearchGridControllerBase;
 use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;

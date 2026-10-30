@@ -42,12 +42,12 @@ use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\PublicLinkGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\UserGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\UserGroupGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\UserProfileGrid;
-use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
+use SP\Modules\Web\Presenters\Helpers\Grid\AuthTokenGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\PublicLinkGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\UserGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\UserGroupGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\UserProfileGrid;
+use SP\Modules\Web\Presenters\Helpers\TabsGridHelper;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**

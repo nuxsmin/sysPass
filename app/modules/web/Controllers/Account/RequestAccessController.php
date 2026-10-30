@@ -39,7 +39,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountRequestHelper;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountRequestHelper;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**

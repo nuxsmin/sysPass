@@ -36,7 +36,7 @@ use SP\Domain\Html\Ports\JsMinifyService;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountSearchData;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountSearchData;
 use SP\Modules\Web\Controllers\Resource\CssController;
 use SP\Modules\Web\Controllers\Resource\JsController;
 use SP\Modules\Web\Init;

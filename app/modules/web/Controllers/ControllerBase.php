@@ -70,7 +70,7 @@ abstract class ControllerBase
     protected readonly RequestService              $request;
     protected readonly PhpExtensionCheckerService  $extensionChecker;
     protected readonly TemplateInterface           $view;
-    protected readonly Helpers\LayoutHelper        $layoutHelper;
+    protected readonly \SP\Modules\Web\Presenters\Helpers\LayoutHelper        $layoutHelper;
     protected readonly UriContextInterface         $uriContext;
     protected readonly HashService                 $hashService;
     protected readonly JsonResponseFactory         $jsonResponseFactory;
@@ -78,7 +78,7 @@ abstract class ControllerBase
     protected ?ProfileData                         $userProfileData = null;
     protected readonly bool                        $isAjax;
     protected readonly RouteContextData            $routeContextData;
-    protected readonly Helpers\JsonResponseHandler $jsonResponse;
+    protected readonly \SP\Modules\Web\Presenters\Helpers\JsonResponseHandler $jsonResponse;
     private readonly BrowserAuthService            $browser;
 
     public function __construct(Application $application, WebControllerHelper $webControllerHelper)

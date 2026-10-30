@@ -33,7 +33,7 @@ use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\Security\UseCases\Dtos\SearchEventlogCommand;
 use SP\Domain\Security\UseCases\SearchEventlogUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Grid\EventlogGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\EventlogGrid;
 use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;

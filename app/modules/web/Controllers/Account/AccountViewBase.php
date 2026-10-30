@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers\Account;
 use SP\Core\Application;
 use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountHelper;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**

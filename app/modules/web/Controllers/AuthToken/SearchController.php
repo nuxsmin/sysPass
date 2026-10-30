@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Modules\Web\Html\DataGrid\DataGridInterface;
-use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\AuthTokenGrid;
 use SP\Modules\Web\Controllers\SearchGridControllerBase;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;

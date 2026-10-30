@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\CustomField;
 
-use Controllers\Helpers\CustomFields;
+use SP\Modules\Web\Presenters\Helpers\CustomFields;
 use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;

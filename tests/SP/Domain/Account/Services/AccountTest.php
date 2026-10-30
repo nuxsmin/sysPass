@@ -44,6 +44,8 @@ use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Account\Services\Account;
+use SP\Domain\Account\Services\AccountReader;
+use SP\Domain\Account\Services\AccountWriter;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
@@ -1482,12 +1484,20 @@ class AccountTest extends UnitaryTestCase
             $this->accountToUserGroupRepository,
             $this->accountToUserRepository,
             $this->accountToTagRepository,
-            $this->itemPresetService,
-            $this->accountHistoryService,
-            $this->accountItemsService,
-            $this->accountPresetService,
-            $this->configService,
-            $this->accountCryptService
+            new AccountReader($this->accountRepository),
+            new AccountWriter(
+                $this->config,
+                $this->eventDispatcherStub,
+                $this->context,
+                $this->accountRepository,
+                $this->itemPresetService,
+                $this->accountHistoryService,
+                $this->accountItemsService,
+                $this->accountPresetService,
+                $this->configService,
+                $this->accountCryptService,
+                new AccountReader($this->accountRepository)
+            )
         );
     }
 }

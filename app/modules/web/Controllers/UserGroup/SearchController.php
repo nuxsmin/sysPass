@@ -28,7 +28,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\UseCases\Dtos\SearchUserGroupsCommand;
 use SP\Domain\User\UseCases\SearchUserGroupsUseCase;
 use SP\Modules\Web\Controllers\SearchGridControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Grid\UserGroupGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\UserGroupGrid;
 use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 

@@ -35,8 +35,8 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountPasswordHelper;
-use SP\Modules\Web\Controllers\Helpers\HelperException;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountPasswordHelper;
+use SP\Modules\Web\Presenters\Helpers\HelperException;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;

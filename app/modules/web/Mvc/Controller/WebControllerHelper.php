@@ -36,8 +36,8 @@ use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Modules\Web\Controllers\Helpers\JsonResponseHandler;
-use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
+use SP\Modules\Web\Presenters\Helpers\JsonResponseHandler;
+use SP\Modules\Web\Presenters\Helpers\LayoutHelper;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 /**

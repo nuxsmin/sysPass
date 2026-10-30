@@ -28,7 +28,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\ItemPreset\UseCases\Dtos\SearchItemPresetsCommand;
 use SP\Domain\ItemPreset\UseCases\SearchItemPresetsUseCase;
 use SP\Modules\Web\Controllers\SearchGridControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Grid\ItemPresetGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\ItemPresetGrid;
 use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 

@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\UseCases\Dtos\SearchUsersCommand;
 use SP\Domain\User\UseCases\SearchUsersUseCase;
-use SP\Modules\Web\Controllers\Helpers\Grid\UserGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\UserGrid;
 use SP\Modules\Web\Controllers\SearchGridControllerBase;
 use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
