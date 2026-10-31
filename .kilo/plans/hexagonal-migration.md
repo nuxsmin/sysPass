@@ -284,7 +284,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 - [x] **P10-1 Unit tests for the core use memory fakes, not Infrastructure.** Build in-memory port fakes under `tests/SP/Stubs/` (there are a few already: `AccountRepositoryStub`, `UserGroupRepositoryStub`, `PublicLinkRepositoryStub`). Migrate the 55 Domain test files that import Infrastructure. Acceptance: M14 = 0.
 - [~] **P10-2 Keep Infrastructure tests DB-backed.** Repository queries with the highest risk run against the real test database (`#[Group('integration')]`, base `SP\Tests\DatabaseRepositoryTestCase`). Done: Tag; User (login lookup/update incl. SSO, usage, group emails, admin-hiding search); UserGroup usage; AccountHistory reads/search; AuthToken search; CustomFieldData/CustomFieldDefinition search; ItemPreset search; Track search; AccountFile reads/search; AccountToUser/AccountToUserGroup permissions; PublicLink listing. The 28 mocked repository tests stay `unitary`, since they only assert generated SQL. Acceptance: DB-backed tests run in the CI integration job (P0-2); the residual P0/P1 test backlog is follow-up work.
 - [ ] **P10-3 HTTP-level IT per migrated web area.** Follow the existing `IntegrationTestCase` + `BodyChecker` pattern. Each slice in P6 adds one IT class per controller action, written before the migration (characterisation tests).
-- [ ] **P10-4 Coverage gates per layer.** Record current coverage per layer in section 9. Set target coverage for `Domain\*\UseCases` and `Domain\*\Services` once the baseline is known (decision needed after P0-1).
+- [x] **P10-4 Coverage gates per layer.** Record current coverage per layer in section 9. Set target coverage for `Domain\*\UseCases` and `Domain\*\Services` once the baseline is known (decision needed after P0-1).
 - [ ] **P10-5 Test naming and attribute standard.** One style for all tests: `#[Test]` attribute plus `#[Group]`. Migrate gradually, inside the slice that touches each file.
 - [ ] **P10-6 Document the test pyramid** in ADR-004 (section 8).
 
@@ -379,6 +379,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-27 | P6-W3 remaining untested areas (verified: core unit 2108, modules integration 152, architecture + wiring, PSR2, PHPStan) | M9 105 -> 151/259; M10 49 -> 16; M15 26 -> 16/46; M8 89; M6 0/158; PHPStan lib 1009 -> 1009 | Added 25 use cases with Command/Result DTOs and use-case events for `Eventlog` (clear/search), `Track` (clear/unlock/search), `Plugin` (toggle/reset/delete single and batch/search), `Notification` (create/update/delete single and batch/check/get/search), `PublicLink` (create/create from account/delete single and batch/refresh/get/search) and `UserPassReset` (request/reset). The eight areas' legacy controllers now return `#[Action]` + `ActionResponse`; `Status`, `Items`, `Resource` and `Error` were converted to `ActionResponse`/`CALLBACK` without new use cases. Added unit test classes for the new use cases (31 cases) and one integration test class per area (10 areas, 44 cases). Fixed latent breakage found by the new tests: static `Acl` calls in five grids, `getIsAdminApp()`/`getIsAdmin()` mismatches, the stale `NotificationForm` model construction, missing `Controller` class suffixes (`SaveCreateController`, `ViewController`, `CheckNoticesController`), missing `statusAction()`, `module.php` minify bindings (`autowire` -> `get`), missing `error/index` template/missing `pluginInfo` guards, and case-sensitive `userPassReset` view path. |
 | 2026-10-29 | P7-2 API response adapter (verified: API IT 119, web+API 274, core unit 2108 except one pre-existing architecture failure, adapter unit 5, PSR2, PHPStan no new adapter errors) | M11 stays 0/46 (per-resource controllers still use legacy action methods until P7-3); other metrics unchanged | Added `SP\Modules\Api\Adapters\ActionResponseAdapter` with JSON-RPC and REST formatting, wired through `ControllerBase` and `Bootstrap`. Migrated all 29 `ApiResponse::makeSuccess()` call sites to `ActionResponse::ok()`, preserved the legacy JSON-RPC result shape (`itemId`, `result`, `resultCode`, `resultMessage`, `count`), and added an optional `itemId` to `ActionResponse`. No `ApiResponse` or `JsonRpcResponseFormatter` reference remains in `app/modules/api`. The architecture run still reports the pre-existing `BackupFile => __u() x6` violation introduced by `a21b5d1e` (allowlist entry is x5). |
 | 2026-10-30 | P9-2 remove `SP\Core\Application` (verified: architecture + wiring 15/15, core unit 2103, module unit 19, Resource/Status controller IT 4, PHPStan level 0 no new arity errors) | M4 stays 0; module references to `SP\Core\Application` 174 files / 202 references -> 0; no metric regression (M1 21, M3 13, M6 0/152, M13 0) | Deleted `lib/SP/Core/Application.php`. Added two immutable parameter objects instead of forwarding the same three deps everywhere: `SP\Core\ModuleDependencies` (config, context, event dispatcher) for `ModuleBase`, `HttpModuleBase` and the web/API/CLI `Init`, and `SP\Modules\Api\Controllers\ApiControllerHelper` for `ApiControllerBase` and its 8 bases. Both are `final readonly`, expose only typed ports and hold no container. Web `ControllerBase`/`SimpleControllerBase` read the deps from `WebControllerHelper`/`SimpleControllerHelper` (the existing web aggregate; `SessionContext` is bound to the web `Context` instance). `FormBase` and `HelperBase` keep explicit `ConfigFileService` + `Context` (+ `EventDispatcherInterface` for helpers) because each class uses them directly. `UnitaryTestCase` no longer builds an `Application`; tests read `$this->config` / `$this->eventDispatcherStub`. Verified: 36/36 API controllers resolve from the container. Full module integration suite still blocked locally by missing `DB_*` environment variables. |
+| 2026-10-31 | P10-4 coverage gates per layer (verified: core unit 2098 tests / 28245 assertions with coverage, gate passes at the declared targets, gate fails when a threshold is raised) | Use cases 91.11% -> gate 90%; Domain services 96.39% -> gate 95%; Domain 89.37%, Core 62.35%, Infrastructure 92.42%, total 53.38% recorded in section 9 | Added `scripts/coverage-gate.php` (Clover parser and per-layer report/gate) and `tests/coverage-thresholds.php` (use case and domain service minimums). The CI unitary job runs `php scripts/coverage-gate.php --gate` after the core unit suite. Only `Domain\*\UseCases` and `Domain\*\Services` are gated, as agreed in the issue; the other layers are reported for visibility. |
 
 ### Baseline test results (P0-1)
 
@@ -394,22 +395,25 @@ Api and Cli remain excluded from `tests/phpunit.xml`. Baseline runs outside the 
 - Api: database fixtures fail because the `mysql` CLI cannot read `vfs://test/res/datasets/truncate.sql`. Fix before P7-1.
 - Cli: 3 errors, `Undefined constant "SP\Tests\APP_DEFINITIONS_FILE"`. Fix before P8-1.
 
-### Coverage per layer (P0-1)
+### Coverage per layer (P10-4)
 
-Unit suite (`XDEBUG_MODE=coverage`), statements only:
+Unit suite (`XDEBUG_MODE=coverage --group unitary --testsuite core`), statements only, refreshed after the P9 cleanup:
 
-| Layer | Lines | Covered | Percent |
-|---|---|---|---|
-| `lib/SP/Domain` | 6598 | 5880 | 89.12% |
-| `lib/SP/Core` | 1362 | 870 | 63.88% |
-| `lib/SP/Infrastructure` | 3518 | 3258 | 92.61% |
-| `lib/SP/Mvc` | 264 | 76 | 28.79% |
-| `lib/SP/Html` | 0 | 0 | 0.00% |
-| `lib/SP/Util` | 57 | 24 | 42.11% |
-| `app/modules/web` | 8357 | 0 | 0.00% |
-| **Total** | **20156** | **10108** | **50.15%** |
+| Layer | Statements | Covered | Percent | Minimum |
+|---|---|---|---|---|
+| `lib/SP/Domain/*/UseCases` | 731 | 666 | 91.11% | 90.00% |
+| `lib/SP/Domain/*/Services` | 4350 | 4193 | 96.39% | 95.00% |
+| `lib/SP/Domain` | 7561 | 6757 | 89.37% | - |
+| `lib/SP/Core` | 1320 | 823 | 62.35% | - |
+| `lib/SP/Infrastructure` | 3482 | 3218 | 92.42% | - |
+| `app/modules/web` | 7991 | 81 | 1.01% | - |
+| `app/modules/api` | 0 | 0 | 0.00% | - |
+| `app/modules/cli` | 0 | 0 | 0.00% | - |
+| **Total** | **20394** | **10886** | **53.38%** | - |
 
-The web modules suite covers `app/modules/web` at 47.80% (3992/8351) and 40.23% overall when run alone. Keep both reports until a merged coverage job exists.
+`scripts/coverage-gate.php` reads `tests/_output/coverage-clover.xml`, aggregates statements per layer and enforces the minimums declared in `tests/coverage-thresholds.php`. The thresholds ratchet the current baseline for use cases (91.11%) and domain services (96.39%) down to 90% and 95%, leaving headroom for refactors. Report only: `php scripts/coverage-gate.php`. Gate: `php scripts/coverage-gate.php --gate`. CI runs the gate in the unitary job after the core unit suite.
+
+The web modules suite covers `app/modules/web` separately (`~47.80%` in the P0-1 baseline); the unit suite intentionally reports it near zero and it is not gated.
 
 ### Baseline fixes and quarantines (P0-1)
 

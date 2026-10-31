@@ -68,6 +68,9 @@ jobs:
           XDEBUG_MODE: coverage
         run: ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary --testsuite core
 
+      - name: Coverage gate
+        run: php scripts/coverage-gate.php --gate
+
       - name: Upload unit coverage
         if: always()
         uses: actions/upload-artifact@v4
