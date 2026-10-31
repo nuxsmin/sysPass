@@ -30,8 +30,8 @@ use RuntimeException;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Ports\AppLockHandler;
-use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandler;
+use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
 
 use function SP\logger;
 
@@ -41,8 +41,10 @@ use function SP\logger;
 final readonly class AppLock implements AppLockHandler
 {
 
-    public function __construct(private string $lockFile)
-    {
+    public function __construct(
+        private string $lockFile,
+        private FileHandlerFactoryInterface $fileHandlerFactory
+    ) {
     }
 
     /**
@@ -53,7 +55,7 @@ final readonly class AppLock implements AppLockHandler
     public function getLock(): bool|int
     {
         try {
-            $file = new FileHandler($this->lockFile);
+            $file = $this->fileHandlerFactory->create($this->lockFile);
 
             return (int)Serde::deserializeJson($file->readToString())->userId;
         } catch (FileException|RuntimeException) {
@@ -69,7 +71,7 @@ final readonly class AppLock implements AppLockHandler
     {
         $data = ['time' => time(), 'userId' => $userId, 'subject' => $subject];
 
-        $file = new FileHandler($this->lockFile);
+        $file = $this->fileHandlerFactory->create($this->lockFile);
         $file->save(Serde::serializeJson($data));
 
         logger('Application locked out');
@@ -77,6 +79,9 @@ final readonly class AppLock implements AppLockHandler
 
     public function unlock(): void
     {
-        @unlink($this->lockFile);
+        try {
+            $this->fileHandlerFactory->create($this->lockFile)->delete();
+        } catch (FileException|RuntimeException) {
+        }
     }
 }

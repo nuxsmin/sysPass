@@ -24,14 +24,13 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountSearchHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountSearchHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * SearchController
@@ -39,11 +38,10 @@ use SP\Mvc\Controller\WebControllerHelper;
 final class SearchController extends AccountControllerBase
 {
     public function __construct(
-        Application                          $application,
         WebControllerHelper                  $webControllerHelper,
         private readonly AccountSearchHelper $accountSearchHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
     }
 
     /**

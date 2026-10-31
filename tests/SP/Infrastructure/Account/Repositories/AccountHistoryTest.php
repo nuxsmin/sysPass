@@ -27,6 +27,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
@@ -39,7 +40,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Account\Repositories\AccountHistory;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -53,6 +54,7 @@ class AccountHistoryTest extends UnitaryTestCase
     private DatabaseInterface|MockObject $database;
     private AccountHistory $accountHistory;
 
+    #[Test]
     public function testGetById(): void
     {
         $id = self::$faker->randomNumber();
@@ -73,6 +75,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->accountHistory->getById($id);
     }
 
+    #[Test]
     public function testGetHistoryForAccount(): void
     {
         $id = self::$faker->randomNumber();
@@ -97,6 +100,7 @@ class AccountHistoryTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testDeleteByIdBatch(): void
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -125,6 +129,7 @@ class AccountHistoryTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testDeleteByIdBatchWithoutIds(): void
     {
         $this->database->expects(self::never())
@@ -137,6 +142,7 @@ class AccountHistoryTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdatePassword(): void
     {
         $id = self::$faker->randomNumber();
@@ -162,6 +168,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->assertTrue($this->accountHistory->updatePassword($id, $encryptedPassword));
     }
 
+    #[Test]
     public function testSearch(): void
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -187,6 +194,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->accountHistory->search($item);
     }
 
+    #[Test]
     public function testSearchWithoutString(): void
     {
         $callback = new Callback(
@@ -206,6 +214,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->accountHistory->search(new ItemSearchDto());
     }
 
+    #[Test]
     public function testGetAccountsPassData(): void
     {
         $callback = new Callback(
@@ -228,6 +237,7 @@ class AccountHistoryTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate(): void
     {
         $dto = $this->buildAccountHistoryCreateDto();
@@ -291,6 +301,7 @@ class AccountHistoryTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete(): void
     {
         $callback = new Callback(
@@ -312,6 +323,7 @@ class AccountHistoryTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteNoResults(): void
     {
         $callback = new Callback(
@@ -329,6 +341,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->assertFalse($this->accountHistory->delete(100));
     }
 
+    #[Test]
     public function testGetAll(): void
     {
         $callback = new Callback(
@@ -351,6 +364,7 @@ class AccountHistoryTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByAccountIdBatch(): void
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -379,6 +393,7 @@ class AccountHistoryTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByAccountIdBatchWithoutIds(): void
     {
         $this->database->expects(self::never())
@@ -396,7 +411,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->accountHistory = new AccountHistory(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             new QueryFactory('mysql')
         );
     }

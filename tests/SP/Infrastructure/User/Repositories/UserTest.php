@@ -33,6 +33,7 @@ use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use JsonException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Simple as SimpleModel;
@@ -43,9 +44,9 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\User as UserModel;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\User\Repositories\User;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -64,6 +65,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testGetUsageForUser()
     {
         $this->database
@@ -73,8 +75,12 @@ class UserTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
-                           && $params['userId'] === 100;
+                    return count($params) === 5
+                           && $params['userIdAccount'] === 100
+                           && $params['userIdAccountEdit'] === 100
+                           && $params['userIdAccountToUser'] === 100
+                           && $params['userIdUserToUserGroup'] === 100
+                           && $params['userIdPublicLink'] === 100;
                 })
             );
 
@@ -84,6 +90,7 @@ class UserTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreate()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -107,8 +114,14 @@ class UserTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 22
-                       && count(array_diff_assoc($params, $user->toArray(null, ['id', 'hashSalt']))) === 0
+                $expected = array_filter(
+                    $user->toArray(null, ['id']),
+                    static fn($value) => $value !== null
+                );
+                $expected['hashSalt'] = '';
+
+                return count($params) === count($expected)
+                       && count(array_diff_assoc($params, $expected)) === 0
                        && is_a($query, InsertInterface::class)
                        && !empty($query->getStatement());
             }
@@ -126,6 +139,7 @@ class UserTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateWithDuplicate()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -156,6 +170,7 @@ class UserTest extends UnitaryTestCase
         $this->user->create($user);
     }
 
+    #[Test]
     public function testGetUserEmail()
     {
         $this->database
@@ -177,6 +192,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateOnLogin()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -186,10 +202,17 @@ class UserTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                $count = count(array_diff_assoc($params, $user->toArray(['pass', 'name', 'email', 'isLdap', 'login'])));
+                $count = count(
+                    array_diff_assoc(
+                        array_intersect_key($params, $user->toArray(['pass', 'name', 'email', 'isLdap'])),
+                        $user->toArray(['pass', 'name', 'email', 'isLdap'])
+                    )
+                );
 
-                return count($params) === 5
+                return count($params) === 6
                        && $count === 0
+                       && $params['login'] === $user->getLogin()
+                       && $params['ssoLogin'] === $user->getLogin()
                        && is_a($query, UpdateInterface::class)
                        && !empty($query->getStatement());
             }
@@ -210,6 +233,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateMasterPassById()
     {
         $callbackUpdate = new Callback(
@@ -241,6 +265,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -264,6 +289,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testGetById()
     {
         $this->database
@@ -286,6 +312,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -317,6 +344,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database
@@ -326,6 +354,7 @@ class UserTest extends UnitaryTestCase
         $this->user->deleteByIdBatch([]);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -349,6 +378,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateLastLoginById()
     {
         $callbackUpdate = new Callback(
@@ -378,6 +408,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByLogin()
     {
         $this->database
@@ -387,8 +418,9 @@ class UserTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
+                    return count($params) === 2
                            && $params['login'] === 'a_login'
+                           && $params['ssoLogin'] === 'a_login'
                            && $queryData->getMapClassName() === UserModel::class;
                 })
             );
@@ -401,6 +433,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -444,6 +477,7 @@ class UserTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testUpdateWithDuplicate()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -475,6 +509,7 @@ class UserTest extends UnitaryTestCase
         $this->user->update($user);
     }
 
+    #[Test]
     public function testGetUserEmailById()
     {
         $this->database
@@ -494,6 +529,7 @@ class UserTest extends UnitaryTestCase
         $this->user->getUserEmailById([100, 200]);
     }
 
+    #[Test]
     public function testCheckExistsByLogin()
     {
         $this->database
@@ -503,8 +539,9 @@ class UserTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
+                    return count($params) === 2
                            && $params['login'] === 'a_login'
+                           && $params['ssoLogin'] === 'a_login'
                            && $queryData->getMapClassName() === SimpleModel::class;
                 })
             )
@@ -519,6 +556,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testGetUserEmailForGroup()
     {
         $this->database
@@ -528,8 +566,9 @@ class UserTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
-                           && $params['userGroupId'] === 100
+                    return count($params) === 2
+                           && $params['userGroupIdUser'] === 100
+                           && $params['userGroupIdUserToUserGroup'] === 100
                            && $queryData->getMapClassName() === UserModel::class;
                 })
             );
@@ -541,6 +580,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -572,6 +612,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearchWithNoString()
     {
         $item = new ItemSearchDto();
@@ -601,6 +642,7 @@ class UserTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testSearchWithAdmin()
     {
         $this->context->setUserData(
@@ -645,6 +687,7 @@ class UserTest extends UnitaryTestCase
      * @throws JsonException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdatePreferencesById()
     {
         $userPreferences = UserDataGenerator::factory()->buildUserPreferencesData();
@@ -675,6 +718,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdatePassById()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -714,7 +758,7 @@ class UserTest extends UnitaryTestCase
         $this->user = new User(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

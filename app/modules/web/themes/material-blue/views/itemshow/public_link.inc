@@ -33,8 +33,8 @@
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Mvc\View\Components\SelectItem;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\Components\SelectItem;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 use function SP\__;
 
@@ -112,7 +112,7 @@ $publicLink = $_getvar('publicLink');
                             echo __('Creation Date'); ?></div>
 
                         <?php
-                        echo $publicLink->getDateAddFormat(); ?>
+                        echo $publicLink->getDateAdd() ? date('Y-m-d H:i:s', $publicLink->getDateAdd()) : '-'; ?>
                     </td>
                 </tr>
                 <tr>
@@ -123,7 +123,7 @@ $publicLink = $_getvar('publicLink');
                             echo __('Expiry Date '); ?></div>
 
                         <?php
-                        echo $publicLink->getDateExpireFormat(); ?>
+                        echo $publicLink->getDateExpire() ? date('Y-m-d H:i:s', $publicLink->getDateExpire()) : '-'; ?>
                     </td>
                 </tr>
                 <tr>
@@ -145,7 +145,7 @@ $publicLink = $_getvar('publicLink');
                             echo __('Visits'); ?></div>
 
                         <?php
-                        echo $publicLink->getCountViewsString(); ?>
+                        printf('%d / %d', $publicLink->getCountViews(), $publicLink->getMaxCountViews()); ?>
                     </td>
                 </tr>
                 <tr>

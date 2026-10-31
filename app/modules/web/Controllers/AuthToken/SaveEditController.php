@@ -27,8 +27,8 @@ namespace SP\Modules\Web\Controllers\AuthToken;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -38,8 +38,8 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__u;
 

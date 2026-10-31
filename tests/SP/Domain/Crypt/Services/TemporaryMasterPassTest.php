@@ -25,12 +25,14 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Crypt\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use PHPMailer\PHPMailer\Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Dtos\ConfigRequest;
 use SP\Domain\Config\Ports\ConfigService;
@@ -42,7 +44,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Services\TemporaryMasterPass;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -65,6 +67,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSendByEmailForAllUsers()
     {
         $key = self::$faker->sha1();
@@ -88,6 +91,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws ServiceException
      */
+    #[Test]
     public function testGetUsingKey()
     {
         $masterPass = self::$faker->password();
@@ -115,6 +119,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSendByEmailForGroup()
     {
         $groupId = self::$faker->randomNumber();
@@ -138,6 +143,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckTempMasterPass()
     {
         $now = time();
@@ -173,6 +179,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckTempMasterPassWithZeroMaxTime()
     {
         $pass = self::$faker->password();
@@ -193,6 +200,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckTempMasterPassWithWrongKey()
     {
         $now = time();
@@ -230,6 +238,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckTempMasterPassWithMaxAttempts()
     {
         $now = time();
@@ -273,6 +282,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckTempMasterPassWithNoConfigItem()
     {
         $pass = self::$faker->password();
@@ -292,6 +302,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckTempMasterPassWithError()
     {
         $pass = self::$faker->password();
@@ -315,6 +326,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws ContextException
      */
+    #[Test]
     public function testCreate()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'test_master_pass');
@@ -352,6 +364,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws ContextException
      */
+    #[Test]
     public function testCreateWithError()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'test_master_pass');
@@ -400,11 +413,14 @@ class TemporaryMasterPassTest extends UnitaryTestCase
         $this->crypt = $this->createMock(CryptInterface::class);
 
         $this->temporaryMasterPass = new TemporaryMasterPass(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->configService,
             $this->userService,
             $this->mailService,
-            $this->crypt
+            $this->crypt,
+            new StatelessMasterKeyStore($this->context)
         );
     }
 

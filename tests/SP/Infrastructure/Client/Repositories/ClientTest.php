@@ -32,6 +32,7 @@ use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
@@ -43,9 +44,9 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Client\Repositories\Client;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\ClientGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -66,6 +67,7 @@ class ClientTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testCreate()
     {
         $client = ClientGenerator::factory()->buildClient();
@@ -111,6 +113,7 @@ class ClientTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws SPException
      */
+    #[Test]
     public function testCreateWithDuplicate()
     {
         $client = ClientGenerator::factory()->buildClient();
@@ -144,6 +147,7 @@ class ClientTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -167,6 +171,7 @@ class ClientTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -198,6 +203,7 @@ class ClientTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database
@@ -207,6 +213,7 @@ class ClientTest extends UnitaryTestCase
         $this->client->deleteByIdBatch([]);
     }
 
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -235,6 +242,7 @@ class ClientTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -265,6 +273,7 @@ class ClientTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testSearchWithoutString(): void
     {
         $callback = new Callback(
@@ -285,6 +294,7 @@ class ClientTest extends UnitaryTestCase
         $this->client->search(new ItemSearchDto());
     }
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -307,6 +317,7 @@ class ClientTest extends UnitaryTestCase
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
+    #[Test]
     public function testGetAllForFilter()
     {
         $callback = new Callback(
@@ -338,6 +349,7 @@ class ClientTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $client = ClientGenerator::factory()->buildClient();
@@ -386,6 +398,7 @@ class ClientTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateWithDuplicate()
     {
         $client = ClientGenerator::factory()->buildClient();
@@ -416,6 +429,7 @@ class ClientTest extends UnitaryTestCase
         $this->client->update($client);
     }
 
+    #[Test]
     public function testGetByName()
     {
         $name = self::$faker->colorName();
@@ -452,7 +466,7 @@ class ClientTest extends UnitaryTestCase
         $this->client = new Client(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

@@ -24,28 +24,38 @@
 
 namespace SP\Modules\Web\Controllers\UserPassReset;
 
-
 use Exception;
-use JsonException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\User\Services\UserPassRecover;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Security\Dtos\TrackRequest;
+use SP\Domain\Security\Ports\TrackService;
+use SP\Domain\User\UseCases\Dtos\RequestPasswordResetCommand;
+use SP\Domain\User\UseCases\RequestPasswordResetUseCase;
+use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class SaveRequestController
  */
 final class SaveRequestController extends UserPassResetSaveBase
 {
-    use JsonTrait;
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        TrackService $trackService,
+        private readonly RequestPasswordResetUseCase $requestPasswordResetUseCase
+    ) {
+        parent::__construct($webControllerHelper, $trackService);
+    }
 
-    /**
-     * @return bool
-     * @throws JsonException
-     */
-    public function saveRequestAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveRequestAction(): ActionResponse
     {
         try {
             $this->checkTracking();
@@ -53,42 +63,13 @@ final class SaveRequestController extends UserPassResetSaveBase
             $login = $this->request->analyzeString('login');
             $email = $this->request->analyzeEmail('email');
 
-            $userData = $this->userService->getByLogin($login);
-
-            if ($userData->getEmail() !== $email) {
-                throw new SPException(__u('Wrong data'), SPException::WARNING);
-            }
-
-            if ($userData->isDisabled() || $userData->isLdap()) {
-                throw new SPException(
-                    __u('Unable to reset the password'),
-                    SPException::WARNING,
-                    __u('Please contact to the administrator')
-                );
-            }
-
-            $hash = $this->userPassRecoverService->requestForUserId($userData->getId());
-
-            $this->eventDispatcher->notify(
-                'request.user.passReset',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Password Recovery'))
-                        ->addDetail(__u('Requested for'), sprintf('%s (%s)', $login, $email))
-                )
+            $this->requestPasswordResetUseCase->execute(
+                new RequestPasswordResetCommand($login, $email, $this->uriContext->getWebUri())
             );
 
-            $this->mailService->send(
-                __('Password Change'),
-                $email,
-                UserPassRecover::getMailMessage($hash)
-            );
-
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_SUCCESS,
+            return ActionResponse::ok(
                 __u('Request sent'),
-                [__u('You will receive an email to complete the request shortly.')]
+                [__('You will receive an email to complete the request shortly.')]
             );
         } catch (Exception $e) {
             processException($e);
@@ -97,7 +78,10 @@ final class SaveRequestController extends UserPassResetSaveBase
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error(
+                $e->getMessage(),
+                $e instanceof SPException ? $e->getHint() : null
+            );
         }
     }
 }

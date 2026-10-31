@@ -25,12 +25,14 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\CustomField\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
@@ -42,7 +44,7 @@ use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionM
 use SP\Domain\CustomField\Ports\CustomFieldDataRepository;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionRepository;
 use SP\Domain\CustomField\Services\CustomFieldData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\CustomFieldDataGenerator;
 use SP\Tests\UnitaryTestCase;
 use TypeError;
@@ -63,6 +65,7 @@ class CustomFieldDataTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testDelete()
     {
         $itemsId = array_map(static fn() => self::$faker->randomNumber(), range(0, 5));
@@ -79,6 +82,7 @@ class CustomFieldDataTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testDeleteWithConstraintError()
     {
         $itemsId = array_map(static fn() => self::$faker->randomNumber(), range(0, 5));
@@ -97,6 +101,7 @@ class CustomFieldDataTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testDeleteWithQueryError()
     {
         $itemsId = array_map(static fn() => self::$faker->randomNumber(), range(0, 5));
@@ -117,6 +122,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws ContextException
      */
+    #[Test]
     public function testCreateWithEncrypted()
     {
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
@@ -165,6 +171,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testCreateWithNoEncrypted()
     {
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
@@ -200,6 +207,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws ContextException
      */
+    #[Test]
     public function testCreateWithEncryptedWithException()
     {
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
@@ -242,6 +250,7 @@ class CustomFieldDataTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetBy()
     {
         $moduleId = self::$faker->randomNumber();
@@ -261,6 +270,7 @@ class CustomFieldDataTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetByWithException()
     {
         $moduleId = self::$faker->randomNumber();
@@ -283,6 +293,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws Exception
      * @throws ContextException
      */
+    #[Test]
     public function testUpdateOrCreateWithNonExisting()
     {
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
@@ -339,6 +350,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws Exception
      * @throws ContextException
      */
+    #[Test]
     public function testUpdateOrCreateWithNonExistingAndException()
     {
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
@@ -390,6 +402,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws Exception
      * @throws ContextException
      */
+    #[Test]
     public function testUpdateOrCreateWithExisting()
     {
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
@@ -446,6 +459,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws Exception
      * @throws ContextException
      */
+    #[Test]
     public function testUpdateOrCreateWithExistingAndException()
     {
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
@@ -496,6 +510,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws ContextException
      */
+    #[Test]
     public function testDecrypt()
     {
         $data = self::$faker->text();
@@ -517,6 +532,7 @@ class CustomFieldDataTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testDecryptWithNoData()
     {
         $key = self::$faker->password();
@@ -533,6 +549,7 @@ class CustomFieldDataTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testDecryptWithNoKey()
     {
         $data = self::$faker->text();
@@ -546,6 +563,7 @@ class CustomFieldDataTest extends UnitaryTestCase
         $this->assertEquals(null, $out);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
@@ -562,6 +580,7 @@ class CustomFieldDataTest extends UnitaryTestCase
         $this->assertEquals([$customFieldData], $out);
     }
 
+    #[Test]
     public function testGetAllWithWrongType()
     {
         $queryResult = new QueryResult([1]);
@@ -576,6 +595,7 @@ class CustomFieldDataTest extends UnitaryTestCase
         $this->customFieldData->getAll();
     }
 
+    #[Test]
     public function testGetAllEncrypted()
     {
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
@@ -592,6 +612,7 @@ class CustomFieldDataTest extends UnitaryTestCase
         $this->assertEquals([$customFieldData], $out);
     }
 
+    #[Test]
     public function testGetAllEncryptedWithWrongType()
     {
         $queryResult = new QueryResult([1]);
@@ -610,6 +631,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateMasterPass()
     {
         $password = self::$faker->password();
@@ -647,6 +669,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateMasterPassWithException()
     {
         $password = self::$faker->password();
@@ -693,10 +716,13 @@ class CustomFieldDataTest extends UnitaryTestCase
         $this->crypt = $this->createMock(CryptInterface::class);
 
         $this->customFieldData = new CustomFieldData(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->customFieldDataRepository,
             $this->customFieldDefinitionRepository,
-            $this->crypt
+            $this->crypt,
+            new StatelessMasterKeyStore($this->context)
         );
     }
 

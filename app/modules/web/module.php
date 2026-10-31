@@ -30,13 +30,14 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CsrfHandler;
-use SP\Domain\Html\Services\MinifyCss;
-use SP\Domain\Html\Services\MinifyJs;
+use SP\Domain\Html\Ports\CssMinifyService;
+use SP\Domain\Html\Ports\JsMinifyService;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountSearchData;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountSearchData;
 use SP\Modules\Web\Controllers\Resource\CssController;
 use SP\Modules\Web\Controllers\Resource\JsController;
 use SP\Modules\Web\Init;
@@ -55,15 +56,16 @@ return [
     ModuleInterface::class => autowire(Init::class),
     CssController::class => autowire(
         CssController::class
-    )->constructorParameter('minify', autowire(MinifyCss::class)),
+    )->constructorParameter('minify', get(CssMinifyService::class)),
     JsController::class => autowire(
         JsController::class
-    )->constructorParameter('minify', autowire(MinifyJs::class)),
+    )->constructorParameter('minify', get(JsMinifyService::class)),
     Context::class => factory(
         static function (ConfigDataInterface $configData, SessionHandlerInterface $sessionHandler = null) {
             return new Session($sessionHandler);
         }
     ),
+    SessionContext::class => get(Context::class),
     CsrfHandler::class => autowire(Csrf::class)
         ->constructorParameter('context', get(Context::class)),
     AccountSearchData::class => autowire(AccountSearchData::class)

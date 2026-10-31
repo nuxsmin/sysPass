@@ -24,8 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Common\Attributes\Action;
@@ -37,10 +36,10 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Services\UpdatedMasterPassException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountRequestHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountRequestHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class RequestAccessController
@@ -49,12 +48,11 @@ final class RequestAccessController extends ControllerBase
 {
 
     public function __construct(
-        Application                           $application,
         WebControllerHelper                   $webControllerHelper,
         private readonly AccountService       $accountService,
         private readonly AccountRequestHelper $accountRequestHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
     }
 
     /**

@@ -25,12 +25,15 @@ declare(strict_types=1);
  */
 
 namespace SP\Domain\Auth\Providers\Ldap;
+use SP\Domain\Auth\Dtos\LdapResults;
+use SP\Domain\Auth\Models\AttributeCollection;
+use SP\Domain\Auth\Exceptions\LdapException;
 
 use Iterator;
 use Laminas\Ldap\Exception\LdapException as LaminasLdapException;
 use Laminas\Ldap\Ldap as LaminasLdap;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 

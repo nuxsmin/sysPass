@@ -32,7 +32,7 @@ use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
 use SP\Domain\User\Ports\UserToUserGroupRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -172,8 +172,7 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
             ->newSelect()
             ->cols(UserToUserGroupModel::getCols())
             ->from(UserToUserGroupModel::TABLE)
-            ->where('userGroupId = :userGroupId', ['userGroupId' => $id])
-            ->limit(1);
+            ->where('userGroupId = :userGroupId', ['userGroupId' => $id]);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, UserToUserGroupModel::class));
     }

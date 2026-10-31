@@ -35,11 +35,12 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class ConfigBackup
@@ -47,14 +48,16 @@ use function SP\processException;
 readonly class ConfigBackup implements ConfigBackupService
 {
 
-    public function __construct(private ConfigService $configService)
-    {
+    public function __construct(
+        private ConfigService $configService,
+        private LoggerInterface $logger = new NullLogger()
+    ) {
     }
 
     /**
      * @throws SPException
      */
-    public static function configToJson(string $configData): string
+    public function configToJson(string $configData): string
     {
         return Serde::serializeJson(Serde::deserialize($configData), JSON_PRETTY_PRINT);
     }
@@ -68,7 +71,7 @@ readonly class ConfigBackup implements ConfigBackupService
             $this->configService->save('config_backup', $this->packConfigData($configData));
             $this->configService->save('config_backup_date', (string)time());
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
     }
 
@@ -101,8 +104,6 @@ readonly class ConfigBackup implements ConfigBackupService
 
             return $config;
         } catch (NoSuchItemException $e) {
-            processException($e);
-
             throw new ServiceException(__u('Unable to retrieve the configuration'));
         }
     }

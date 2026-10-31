@@ -27,9 +27,11 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
+use SP\Domain\Account\Ports\PasswordValidator;
 use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Account\Services\AccountPreset;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -40,8 +42,6 @@ use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Mvc\Controller\Validators\PasswordValidator;
-use SP\Mvc\Controller\Validators\ValidatorInterface;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\ItemPresetDataGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -56,7 +56,7 @@ class AccountPresetTest extends UnitaryTestCase
 
     private ItemPresetService|MockObject            $itemPresetService;
     private AccountPreset                           $accountPreset;
-    private ValidatorInterface|MockObject           $passwordValidator;
+    private PasswordValidator|MockObject           $passwordValidator;
     private MockObject|AccountToUserGroupRepository $accountToUserGroupRepository;
     private AccountToUserRepository|MockObject      $accountToUserRepository;
 
@@ -67,6 +67,7 @@ class AccountPresetTest extends UnitaryTestCase
      * @throws NoSuchPropertyException
      * @throws SPException
      */
+    #[Test]
     public function testCheckPasswordPreset(): void
     {
         $this->config->getConfigData()->setAccountExpireEnabled(true);
@@ -93,6 +94,7 @@ class AccountPresetTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testCheckPasswordPresetThrowsValidatorException(): void
     {
         $this->config->getConfigData()->setAccountExpireEnabled(true);
@@ -122,6 +124,7 @@ class AccountPresetTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testCheckPasswordPresetWithoutFixed(): void
     {
         $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
@@ -145,6 +148,7 @@ class AccountPresetTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testCheckPasswordPresetWithPassDateChangeModified(): void
     {
         $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
@@ -176,6 +180,7 @@ class AccountPresetTest extends UnitaryTestCase
      */
     #[TestWith([0])]
     #[TestWith([1])]
+    #[Test]
     public function testAddPresetPermissions(int $fixed)
     {
         $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
@@ -228,6 +233,7 @@ class AccountPresetTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testAddPresetPermissionsWithNull()
     {
         $this->itemPresetService->expects($this->once())
@@ -260,7 +266,9 @@ class AccountPresetTest extends UnitaryTestCase
 
         $this->accountPreset =
             new AccountPreset(
-                $this->application,
+                $this->config,
+                $this->eventDispatcherStub,
+                $this->context,
                 $this->itemPresetService,
                 $this->accountToUserGroupRepository,
                 $this->accountToUserRepository,

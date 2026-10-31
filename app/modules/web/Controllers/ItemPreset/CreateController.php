@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,59 +24,35 @@
 
 namespace SP\Modules\Web\Controllers\ItemPreset;
 
-
-use Exception;
-use JsonException;
-use SP\Core\Events\Event;
-use SP\Domain\Common\Providers\Filter;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Core\Events\Event;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class CreateController
  */
 final class CreateController extends ItemPresetViewBase
 {
-    use JsonTrait;
-
-    /**
-     * @param  mixed  ...$args
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function createAction(...$args): bool
+    #[Action(ResponseType::JSON)]
+    public function createAction(?string $type = null): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $type = null;
-
-            if (count($args) > 0) {
-                $type = Filter::getString($args[0]);
-            }
-
-            $this->view->assign('header', __('New Value'));
-            $this->view->assign('isView', false);
-            $this->view->assign('route', 'itemPreset/saveCreate');
-
-            $this->setViewData(null, $type);
-
-            $this->eventDispatcher->notify('show.itemPreset.create', new Event($this));
-
-            return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_CREATE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        $this->view->assign('header', __('New Value'));
+        $this->view->assign('isView', false);
+        $this->view->assign('route', 'itemPreset/saveCreate');
+
+        $this->setViewData(null, $type);
+
+        $this->eventDispatcher->notify('show.itemPreset.create', new Event($this));
+
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 }

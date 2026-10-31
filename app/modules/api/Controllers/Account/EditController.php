@@ -24,13 +24,16 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-use Exception;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Dtos\AccountRequest;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Account\Dtos\AccountUpdateDto;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class EditController
@@ -40,71 +43,58 @@ final class EditController extends AccountBase
     /**
      * editAction
      */
-    public function editAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function editAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::ACCOUNT_EDIT);
+        $this->setupApi(AclActionsInterface::ACCOUNT_EDIT);
 
-            $accountRequest = $this->buildAccountRequest();
+        $accountRequest = $this->buildAccountRequest();
 
-            $this->accountService->update($accountRequest);
+        $this->accountService->update($accountRequest->id, $accountRequest);
 
-            $accountDetails = $this->accountService->getByIdEnriched($accountRequest->id)->getAccountVData();
+        $accountDetails = $this->accountService->getByIdEnriched($accountRequest->id)->getAccountVData();
 
-            $this->eventDispatcher->notify(
-                'edit.account',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Account updated'))
-                        ->addDetail(__u('Name'), $accountDetails->getName())
-                        ->addDetail(__u('Client'), $accountDetails->getClientName())
-                        ->addDetail('ID', $accountDetails->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'edit.account',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Account updated'))
+                    ->addDetail(__u('Name'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    ->addDetail('ID', $accountDetails->getId())
+            )
+        );
 
-            $this->returnResponse(
-                ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Account updated'))
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Account updated'), $accountDetails, $accountRequest->id);
     }
 
     /**
-     * @return AccountRequest
      * @throws ServiceException
      */
-    private function buildAccountRequest(): AccountRequest
+    private function buildAccountRequest(): AccountUpdateDto
     {
-        $accountRequest = new AccountRequest();
-        $accountRequest->id = $this->apiService->getParamInt('id', true);
-        $accountRequest->name = $this->apiService->getParamString('name', true);
-        $accountRequest->clientId = $this->apiService->getParamInt('clientId', true);
-        $accountRequest->categoryId = $this->apiService->getParamInt('categoryId', true);
-        $accountRequest->login = $this->apiService->getParamString('login');
-        $accountRequest->url = $this->apiService->getParamString('url');
-        $accountRequest->notes = $this->apiService->getParamString('notes');
-        $accountRequest->isPrivate = $this->apiService->getParamInt('private');
-        $accountRequest->isPrivateGroup = $this->apiService->getParamInt('privateGroup');
-        $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
-        $accountRequest->parentId = $this->apiService->getParamInt('parentId');
-        $accountRequest->userId = $this->apiService->getParamInt('userId', false);
-        $accountRequest->userGroupId = $this->apiService->getParamInt('userGroupId', false);
-        $accountRequest->userEditId = $this->context->getUserData()->getId();
-
-        $tagsId = array_map(
-            'intval',
-            $this->apiService->getParamArray('tagsId', false, [])
+        return AccountUpdateDto::fromArray(
+            [
+                'id'             => $this->apiService->getParamInt('id', true),
+                'name'           => $this->apiService->getParamString('name', true),
+                'clientId'       => $this->apiService->getParamInt('clientId', true),
+                'categoryId'     => $this->apiService->getParamInt('categoryId', true),
+                'login'          => $this->apiService->getParamString('login'),
+                'url'            => $this->apiService->getParamString('url'),
+                'notes'          => $this->apiService->getParamString('notes'),
+                'isPrivate'      => (bool)$this->apiService->getParamInt('private'),
+                'isPrivateGroup' => (bool)$this->apiService->getParamInt('privateGroup'),
+                'passDateChange' => $this->apiService->getParamInt('expireDate'),
+                'parentId'       => $this->apiService->getParamInt('parentId'),
+                'userId'         => $this->apiService->getParamInt('userId', false),
+                'userGroupId'    => $this->apiService->getParamInt('userGroupId', false),
+                'userEditId'     => $this->context->getUserData()->id,
+                'tags'           => array_map(
+                    'intval',
+                    $this->apiService->getParamArray('tagsId', false, [])
+                ),
+            ]
         );
-
-        if (count($tagsId) !== 0) {
-            $accountRequest->updateTags = true;
-            $accountRequest->tags = $tagsId;
-        }
-
-        return $accountRequest;
     }
 }

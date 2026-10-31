@@ -24,66 +24,43 @@
 
 namespace SP\Modules\Web\Controllers\Plugin;
 
-
 use Exception;
-use JsonException;
-use SP\Core\Acl\Acl;
-use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Plugin\Models\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\WebControllerHelper;
-use SP\Plugin\PluginManager;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class ViewController
  */
 final class ViewController extends ControllerBase
 {
-    use JsonTrait;
-
-    private PluginManagerService $pluginService;
-    private PluginManager        $pluginManager;
-
     public function __construct(
-        Application          $application,
-        WebControllerHelper  $webControllerHelper,
-        PluginManagerService $pluginService,
-        PluginManager        $pluginManager
+        WebControllerHelper $webControllerHelper,
+        private readonly PluginManagerService $pluginManagerService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->pluginService = $pluginService;
-        $this->pluginManager = $pluginManager;
     }
 
-    /**
-     * View action
-     *
-     * @param  int  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function viewAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function viewAction(int $id): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN_VIEW)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
+        if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN_VIEW)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
 
+        try {
             $this->view->assign('header', __('View Plugin'));
             $this->view->assign('isView', true);
 
@@ -91,45 +68,26 @@ final class ViewController extends ControllerBase
 
             $this->eventDispatcher->notify('show.plugin', new Event($this));
 
-            return $this->returnJsonResponseData(['html' => $this->render()]);
+            return ActionResponse::ok('', ['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 
-    /**
-     * Sets view data for displaying items's data
-     *
-     * @param  int|null  $pluginId
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
-     */
-    protected function setViewData(?int $pluginId = null): void
+    private function setViewData(int $pluginId): void
     {
         $this->view->addTemplate('plugin');
 
-        $pluginData = $pluginId
-            ? $this->pluginService->getById($pluginId)
-            : new Plugin();
-        $pluginInfo = $this->pluginManager->getPlugin($pluginData->getName());
+        $plugin = $this->pluginManagerService->getById($pluginId) ?? new Plugin();
 
-        $this->view->assign('plugin', $pluginData);
-        $this->view->assign('pluginInfo', $pluginInfo);
-
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE));
-
-        if ($this->view->isView === true) {
-            $this->view->assign('disabled', 'disabled');
-            $this->view->assign('readonly', 'readonly');
-        } else {
-            $this->view->assign('disabled', false);
-            $this->view->assign('readonly', false);
-        }
+        $this->view->assign('plugin', $plugin);
+        $this->view->assign('pluginInfo', null);
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('disabled', 'disabled');
+        $this->view->assign('readonly', 'readonly');
     }
 }

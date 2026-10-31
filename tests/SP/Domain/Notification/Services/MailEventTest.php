@@ -27,13 +27,16 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Notification\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Core\Messages\MailMessage;
+use SP\Core\Messages\EventMessageFormatter;
+use SP\Core\Messages\MailMessageFormatter;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\Notification\Services\MailEvent;
@@ -52,6 +55,7 @@ class MailEventTest extends UnitaryTestCase
     private MailEvent $mailEvent;
     private ConfigData                $configData;
 
+    #[Test]
     public function testUpdate()
     {
         $eventMessage = EventMessage::build()
@@ -76,7 +80,7 @@ class MailEventTest extends UnitaryTestCase
                 self::callback(static function (MailMessage $mailMessage) {
                     $matches = preg_match(
                         '/\na_description<br>a_detail: a_value\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
-                        $mailMessage->composeText()
+                        (new MailMessageFormatter())->composeText($mailMessage)
                     );
 
                     return empty($mailMessage->getTitle())
@@ -88,6 +92,7 @@ class MailEventTest extends UnitaryTestCase
         $this->mailEvent->update('test_a.update', $event);
     }
 
+    #[Test]
     public function testUpdateWithConfiguredEmail()
     {
         $this->configData->setMailRecipients(['an_email']);
@@ -113,7 +118,7 @@ class MailEventTest extends UnitaryTestCase
                 self::callback(static function (MailMessage $mailMessage) {
                     $matches = preg_match(
                         '/\na_description<br>a_detail: a_value\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
-                        $mailMessage->composeText()
+                        (new MailMessageFormatter())->composeText($mailMessage)
                     );
 
                     return empty($mailMessage->getTitle())
@@ -125,6 +130,7 @@ class MailEventTest extends UnitaryTestCase
         $this->mailEvent->update('test_a.update', $event);
     }
 
+    #[Test]
     public function testUpdateWithNoEmail()
     {
         $eventMessage = EventMessage::build()
@@ -140,6 +146,7 @@ class MailEventTest extends UnitaryTestCase
         $this->mailEvent->update('test_a.update', $event);
     }
 
+    #[Test]
     public function testUpdateWithNoDescriptionAndDetails()
     {
         $eventMessage = EventMessage::build()->setExtra('email', ['an_email']);
@@ -161,7 +168,7 @@ class MailEventTest extends UnitaryTestCase
                 self::callback(static function (MailMessage $mailMessage) {
                     $matches = preg_match(
                         '/\nEvent: test_a.update\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
-                        $mailMessage->composeText()
+                        (new MailMessageFormatter())->composeText($mailMessage)
                     );
 
                     return empty($mailMessage->getTitle())
@@ -173,6 +180,7 @@ class MailEventTest extends UnitaryTestCase
         $this->mailEvent->update('test_a.update', $event);
     }
 
+    #[Test]
     public function testUpdateWithEmptyRecipients()
     {
         $eventMessage = EventMessage::build()
@@ -197,7 +205,7 @@ class MailEventTest extends UnitaryTestCase
                 self::callback(static function (MailMessage $mailMessage) {
                     $matches = preg_match(
                         '/\na_description<br>a_detail: a_value\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
-                        $mailMessage->composeText()
+                        (new MailMessageFormatter())->composeText($mailMessage)
                     );
 
                     return empty($mailMessage->getTitle())
@@ -209,6 +217,7 @@ class MailEventTest extends UnitaryTestCase
         $this->mailEvent->update('test_a.update', $event);
     }
 
+    #[Test]
     public function testUpdateWithException()
     {
         $eventMessage = EventMessage::build()
@@ -226,6 +235,7 @@ class MailEventTest extends UnitaryTestCase
         $this->mailEvent->update('test_a.update', $event);
     }
 
+    #[Test]
     public function testGetEventsString()
     {
         $expected = 'test_a\.|test_b\.|clear\.eventlog|refresh\.masterPassword|update\.masterPassword\.start|update\.masterPassword\.end|request\.account|edit\.user\.password|save\.config\.|create\.tempMasterPassword';
@@ -234,13 +244,21 @@ class MailEventTest extends UnitaryTestCase
         $this->assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetEventsStringWithNoConfiguredEvents()
     {
         $expected = 'clear\.eventlog|refresh\.masterPassword|update\.masterPassword\.start|update\.masterPassword\.end|request\.account|edit\.user\.password|save\.config\.|create\.tempMasterPassword';
 
         $this->configData->setMailEvents([]);
 
-        $databaseHandler = new MailEvent($this->application, $this->mailService, $this->requestService);
+        $databaseHandler = new MailEvent(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->mailService,
+            $this->requestService,
+            new EventMessageFormatter()
+        );
         $out = $databaseHandler->getEvents();
 
         $this->assertEquals($expected, $out);
@@ -264,6 +282,13 @@ class MailEventTest extends UnitaryTestCase
         $this->mailService = $this->createMock(MailService::class);
         $this->requestService = $this->createMock(RequestService::class);
 
-        $this->mailEvent = new MailEvent($this->application, $this->mailService, $this->requestService);
+        $this->mailEvent = new MailEvent(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->mailService,
+            $this->requestService,
+            new EventMessageFormatter()
+        );
     }
 }

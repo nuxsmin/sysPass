@@ -25,14 +25,15 @@ declare(strict_types=1);
 
 namespace SP\Domain\Html\Services;
 
+use SP\Domain\Html\Ports\JsMinifyService;
 use SP\Domain\Http\Header;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SplObjectStorage;
 
 /**
  * Class MinifyJs
  */
-final class MinifyJs extends Minify
+final class MinifyJs extends Minify implements JsMinifyService
 {
 
     /**

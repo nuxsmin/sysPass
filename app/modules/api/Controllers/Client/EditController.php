@@ -24,14 +24,16 @@
 
 namespace SP\Modules\Api\Controllers\Client;
 
-
-use Exception;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class EditController
@@ -41,32 +43,27 @@ final class EditController extends ClientBase
     /**
      * editAction
      */
-    public function editAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function editAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CLIENT_EDIT);
+        $this->setupApi(AclActionsInterface::CLIENT_EDIT);
 
-            $clientData = $this->buildClientData();
+        $clientData = $this->buildClientData();
 
-            $this->clientService->update($clientData);
+        $this->clientService->update($clientData);
 
-            $this->eventDispatcher->notify(
-                'edit.client',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Client updated'))
-                        ->addDetail(__u('Name'), $clientData->getName())
-                        ->addDetail('ID', $clientData->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'edit.client',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Client updated'))
+                    ->addDetail(__u('Name'), $clientData->getName())
+                    ->addDetail('ID', $clientData->getId())
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, $clientData->getId(), __('Client updated')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Client updated'), $clientData, $clientData->getId());
     }
 
     /**
@@ -75,12 +72,13 @@ final class EditController extends ClientBase
      */
     private function buildClientData(): Client
     {
-        $clientData = new Client();
-        $clientData->setId($this->apiService->getParamInt('id', true));
-        $clientData->setName($this->apiService->getParamString('name', true));
-        $clientData->setDescription($this->apiService->getParamString('description'));
-        $clientData->setIsGlobal($this->apiService->getParamInt('global'));
-
-        return $clientData;
+        return new Client(
+            [
+                'id'          => $this->apiService->getParamInt('id', true),
+                'name'        => $this->apiService->getParamString('name', true),
+                'description' => $this->apiService->getParamString('description'),
+                'isGlobal'    => $this->apiService->getParamInt('global'),
+            ]
+        );
     }
 }

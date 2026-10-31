@@ -26,19 +26,22 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Import\Services;
 
+use SP\Domain\Auth\Providers\Ldap\LdapFactory;
 use ArrayIterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
-use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
-use SP\Domain\Auth\Providers\Ldap\LdapResults;
-use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Auth\Exceptions\LdapException;
+use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Auth\Dtos\LdapResults;
+use SP\Domain\Auth\Enums\LdapTypeEnum;
 use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Services\LdapImport;
+use SP\Core\Translation\GettextTranslation;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
@@ -115,6 +118,7 @@ class LdapImportTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testImportUsers()
     {
         $ldapParams = new LdapParams(
@@ -172,6 +176,7 @@ class LdapImportTest extends UnitaryTestCase
      * @throws LdapException
      */
     #[DataProvider('userFilterByTypeProvider')]
+    #[Test]
     public function testImportUsersWithFilterByType(LdapTypeEnum $ldapTypeEnum, string $filter)
     {
         $ldapParams = new LdapParams(
@@ -232,6 +237,7 @@ class LdapImportTest extends UnitaryTestCase
      * @throws LdapException
      */
     #[DataProvider('emptyNameOrLoginProvider')]
+    #[Test]
     public function testImportUsersWithEmptyNameOrLogin(array $entry)
     {
         $ldapParams = new LdapParams(
@@ -258,6 +264,7 @@ class LdapImportTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testImportUsersWithException()
     {
         $ldapParams = new LdapParams(
@@ -318,6 +325,7 @@ class LdapImportTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testImportGroups()
     {
         $ldapParams = new LdapParams(
@@ -366,6 +374,7 @@ class LdapImportTest extends UnitaryTestCase
      * @throws LdapException
      */
     #[DataProvider('groupFilterByTypeProvider')]
+    #[Test]
     public function testImportGroupsWithFilterByType(LdapTypeEnum $ldapTypeEnum, string $filter)
     {
         $ldapParams = new LdapParams(
@@ -413,6 +422,7 @@ class LdapImportTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testImportGroupsWithEmptyName()
     {
         $ldapParams = new LdapParams(
@@ -448,6 +458,7 @@ class LdapImportTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testImportGroupsWithException()
     {
         $ldapParams = new LdapParams(
@@ -503,11 +514,17 @@ class LdapImportTest extends UnitaryTestCase
         $this->ldapActionsService = $this->createMock(LdapActionsService::class);
 
         $this->ldapImport = new LdapImport(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->userService,
             $this->userGroupService,
-            $this->ldapActionsService,
-            $this->createMock(LdapConnectionHandler::class)
+            new LdapFactory(
+                $this->eventDispatcherStub,
+                $this->createMock(LdapConnectionHandler::class),
+                $this->ldapActionsService
+            ),
+            new GettextTranslation()
         );
     }
 }

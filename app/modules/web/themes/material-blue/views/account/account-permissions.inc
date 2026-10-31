@@ -28,7 +28,7 @@ use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
-use SP\Mvc\View\Components\SelectItem;
+use SP\Modules\Web\Mvc\View\Components\SelectItem;
 
 use function SP\__;
 

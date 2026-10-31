@@ -39,28 +39,39 @@ use SessionHandlerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\Actions;
 use SP\Core\AppLock;
+use SP\Core\Bootstrap\AppPathsAdapter;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Bootstrap\RouteContext;
 use SP\Core\Bootstrap\UriContext;
 use SP\Core\Context\Stateless;
-use SP\Core\Crypt\Crypt;
+use SP\Core\Context\StatelessMasterKeyStore;
+use SP\Core\Translation\GettextTranslation;
+use SP\Domain\Core\Crypt\Crypt;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\RequestBasedPassword;
+use SP\Core\Crypt\SessionMasterKeyStore;
 use SP\Core\Crypt\UuidCookie;
 use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventDispatcherEmitter;
 use SP\Core\Language;
+use SP\Core\LanguageListAdapter;
+use SP\Core\Log\FunctionLogger;
+use SP\Core\Messages\EventMessageFormatter;
+use SP\Core\Messages\MailMessageFormatter;
 use SP\Core\MimeTypes;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\ProvidersHelper;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeContext;
-use SP\Core\UI\ThemeIcons;
+use SP\Modules\Web\UI\ThemeIcons;
+use SP\Domain\Account\Ports\PasswordValidator;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Ports\LdapService;
+use SP\Domain\Auth\Ports\LdapServiceFactory;
 use SP\Domain\Auth\Providers\AclHandler;
 use SP\Domain\Auth\Providers\AuthProvider;
 use SP\Domain\Auth\Providers\AuthProviderService;
@@ -73,7 +84,10 @@ use SP\Domain\Auth\Providers\Ldap\LdapActions;
 use SP\Domain\Auth\Providers\Ldap\LdapAuth;
 use SP\Domain\Auth\Providers\Ldap\LdapBase;
 use SP\Domain\Auth\Providers\Ldap\LdapConnection;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Auth\Providers\Ldap\LdapFactory;
+use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Common\Ports\EventEmitter;
+use SP\Domain\Common\Ports\TranslationService;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -83,6 +97,7 @@ use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
@@ -90,15 +105,25 @@ use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Core\Log\LoggerInterface as DomainLoggerInterface;
+use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\Ports\AppLockHandler;
+use SP\Domain\Core\Ports\AppPaths;
+use SP\Domain\Core\Ports\LanguageList;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Crypt\Services\SecureSession;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
+use SP\Domain\Database\Ports\DatabaseFileFactoryInterface;
+use SP\Domain\Database\Ports\QueryFactoryInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
 use SP\Domain\Export\Dtos\BackupFiles;
@@ -108,35 +133,59 @@ use SP\Domain\Export\Services\BackupFile;
 use SP\Domain\Http\Client;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Services\Request;
+use SP\Domain\Html\Ports\CssMinifyService;
+use SP\Domain\Html\Ports\JsMinifyService;
+use SP\Domain\Html\Services\MinifyCss;
+use SP\Domain\Html\Services\MinifyJs;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Services\DatabaseSetupService;
 use SP\Domain\Install\Services\MysqlSetup;
+use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Log\Providers\DatabaseHandler;
 use SP\Domain\Log\Providers\LogHandler;
 use SP\Domain\Notification\Ports\MailerInterface;
+use SP\Domain\Notification\Ports\MailMessageFormatterInterface;
 use SP\Domain\Notification\Services\Mail;
 use SP\Domain\Notification\Services\MailEvent;
 use SP\Domain\Notification\Services\NotificationEvent;
 use SP\Domain\Notification\Services\PhpMailerService;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
+use SP\Domain\File\Ports\ArchiveHandlerFactoryInterface;
+use SP\Domain\File\Ports\DirectoryHandlerFactoryInterface;
+use SP\Domain\File\Ports\FileSystemService;
+use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\FileCacheFactoryInterface;
+use SP\Domain\Upgrade\Ports\UpgradeService;
+use SP\Domain\Upgrade\Services\Upgrade;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Infrastructure\Database\Database;
-use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Infrastructure\Database\DatabaseFileFactory;
+use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\Database\MysqlHandler;
+use SP\Infrastructure\Database\QueryFactoryAdapter;
 use SP\Infrastructure\File\ArchiveHandler;
+use SP\Infrastructure\File\ArchiveHandlerFactory;
+use SP\Infrastructure\File\DirectoryHandlerFactory;
 use SP\Infrastructure\File\FileCache;
+use SP\Infrastructure\File\FileCacheFactory;
 use SP\Infrastructure\File\FileHandler;
+use SP\Infrastructure\File\FileHandlerFactory;
 use SP\Infrastructure\File\FileSystem;
+use SP\Infrastructure\File\FileSystemAdapter;
+use SP\Infrastructure\File\PhpFileLoader;
 use SP\Infrastructure\File\XmlFileStorage;
 use SP\Infrastructure\File\YamlFileStorage;
-use SP\Mvc\View\OutputHandler;
-use SP\Mvc\View\OutputHandlerInterface;
-use SP\Mvc\View\Template;
-use SP\Mvc\View\TemplateInterface;
-use SP\Mvc\View\TemplateResolver;
-use SP\Mvc\View\TemplateResolverInterface;
+use SP\Modules\Web\Mvc\View\OutputHandler;
+use SP\Modules\Web\Mvc\View\OutputHandlerInterface;
+use SP\Modules\Web\Mvc\View\Template;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\TemplateResolver;
+use SP\Modules\Web\Mvc\View\TemplateResolverInterface;
+use SP\Modules\Web\Mvc\Controller\Validators\PasswordValidator as PasswordValidatorImplementation;
 
 use function DI\autowire;
 use function DI\create;
@@ -159,11 +208,25 @@ final class CoreDefinitions
 
                 return $pathsContext;
             }),
+            AppPaths::class => autowire(AppPathsAdapter::class),
             KleinRequest::class => factory([KleinRequest::class, 'createFromGlobals']),
             RequestService::class => autowire(Request::class),
+            CssMinifyService::class => autowire(MinifyCss::class),
+            JsMinifyService::class => autowire(MinifyJs::class),
+            HashService::class => autowire(HashServiceAdapter::class),
+            PasswordValidator::class => autowire(PasswordValidatorImplementation::class),
             UriContextInterface::class => autowire(UriContext::class),
             Context::class => create(Stateless::class),
+            MasterKeyStore::class => factory(static function (Context $context): MasterKeyStore {
+                return $context instanceof SessionContext
+                    ? new SessionMasterKeyStore($context)
+                    : new StatelessMasterKeyStore($context);
+            }),
             EventDispatcherInterface::class => create(EventDispatcher::class),
+            EventEmitter::class => autowire(EventDispatcherEmitter::class),
+            TranslationService::class => autowire(GettextTranslation::class),
+            EventMessageFormatterInterface::class => create(EventMessageFormatter::class),
+            MailMessageFormatterInterface::class => create(MailMessageFormatter::class),
             ConfigFileService::class => create(ConfigFile::class)
                 ->constructor(
                     create(XmlFileStorage::class)
@@ -179,25 +242,37 @@ final class CoreDefinitions
                                 static fn(PathsContext $p) => FileSystem::buildPath($p[Path::CACHE], 'config.cache')
                             )
                         ),
-                    get(Context::class)
+                    get(Context::class),
+                    null,
+                    get(DomainLoggerInterface::class)
                 ),
             ConfigDataInterface::class => factory([ConfigFileService::class, 'getConfigData']),
             InstallData::class => factory([InstallDataFactory::class, 'buildFromRequest']),
             DatabaseConnectionData::class => factory(
                 static function (ConfigDataInterface $configData, InstallData $installData) {
                     if (!$configData->isInstalled()) {
-                        return DatabaseConnectionData::getFromInstallData($installData);
+                        return DatabaseConnectionData::build(
+                            $installData->getDbSocket(),
+                            $installData->getDbHost(),
+                            $installData->getDbPort(),
+                            $installData->getDbName(),
+                            $installData->getDbAdminUser(),
+                            $installData->getDbAdminPass()
+                        );
                     }
 
                     // TODO: get from env vars
                     return DatabaseConnectionData::getFromConfig($configData);
                 }
             ),
+            DatabaseUtilInterface::class => autowire(DatabaseUtil::class),
             DatabaseFileInterface::class => create(MysqlFileParser::class)
                 ->constructor(
                     create(FileHandler::class)
                         ->constructor(factory(static fn(PathsContext $pathsContext) => $pathsContext[Path::SQL_FILE]))
                 ),
+            DatabaseFileFactoryInterface::class => autowire(DatabaseFileFactory::class),
+            QueryFactoryInterface::class => autowire(QueryFactoryAdapter::class),
             DbStorageHandler::class => autowire(MysqlHandler::class),
             DatabaseSetupService::class => autowire(MysqlSetup::class),
             ActionsInterface::class =>
@@ -240,6 +315,7 @@ final class CoreDefinitions
             BrowserAuthService::class => autowire(BrowserAuth::class),
             LdapParams::class => factory([LdapParams::class, 'fromConfig']),
             LdapService::class => factory([LdapBase::class, 'factory']),
+            LdapServiceFactory::class => autowire(LdapFactory::class),
             LdapConnectionHandler::class => autowire(LdapConnection::class),
             LdapActionsService::class => autowire(LdapActions::class),
             LdapAuthService::class => autowire(LdapAuth::class),
@@ -290,6 +366,7 @@ final class CoreDefinitions
 
                 return new Logger('syspass', $handlers);
             }),
+            DomainLoggerInterface::class => create(FunctionLogger::class),
             \GuzzleHttp\Client::class => create(\GuzzleHttp\Client::class)
                 ->constructor(factory([Client::class, 'getOptions'])),
             LanguageInterface::class => autowire(Language::class)->constructorParameter(
@@ -298,6 +375,7 @@ final class CoreDefinitions
                     static fn(PathsContext $p) => $p[Path::LOCALES]
                 )
             ),
+            LanguageList::class => autowire(LanguageListAdapter::class),
             DatabaseInterface::class => autowire(Database::class),
             PhpMailerService::class => autowire(PhpMailerService::class),
             MailerInterface::class => factory([PhpMailerService::class, 'configure'])
@@ -363,24 +441,21 @@ final class CoreDefinitions
                     factory(
                         static fn(BackupFiles $backupFiles) => (string)$backupFiles->getAppBackupFile()
                     )
-                )
-            ,
+                ),
             BackupFileService::class => autowire(BackupFile::class)
                 ->constructorParameter(
                     'dbBackupFile',
                     create(FileHandler::class)
                         ->constructor(
                             factory(
-                                static fn(PathsContext $pathsContext) => FileSystem::buildPath(
-                                    $pathsContext[Path::BACKUP],
-                                    'database.sql'
-                                )
+                                static fn(BackupFiles $backupFiles) => (string)$backupFiles->getDbBackupFile()
                             ),
                             'wb+'
                         )
                 )
                 ->constructorParameter('dbArchiveHandler', get('backup.dbArchiveHandler'))
-                ->constructorParameter('appArchiveHandler', get('backup.appArchiveHandler')),
+                ->constructorParameter('appArchiveHandler', get('backup.appArchiveHandler'))
+                ->constructorParameter('backupFiles', get(BackupFiles::class)),
             RouteContextData::class => factory(static function (KleinRequest $request) {
                 return RouteContext::getRouteContextData(Filter::getString($request->param('r', 'index/index')));
             }),
@@ -421,10 +496,24 @@ final class CoreDefinitions
                     'sqlPath',
                     factory(static fn(PathsContext $p) => $p[Path::SQL])
                 ),
-            AppLockHandler::class => create(AppLock::class)
-                ->constructor(
+            UpgradeService::class => factory(static function (ContainerInterface $c): UpgradeService {
+                $upgrade = $c->get(Upgrade::class);
+                $upgrade->registerUpgradeHandler(UpgradeDatabase::class);
+
+                return $upgrade;
+            }),
+            FileHandlerProvider::class => get(LogHandler::class),
+            AppLockHandler::class => autowire(AppLock::class)
+                ->constructorParameter(
+                    'lockFile',
                     factory(static fn(PathsContext $p) => FileSystem::buildPath($p[Path::CONFIG], '.lock'))
-                )
+                ),
+            FileHandlerFactoryInterface::class => create(FileHandlerFactory::class),
+            FileSystemService::class => autowire(FileSystemAdapter::class),
+            DirectoryHandlerFactoryInterface::class => autowire(DirectoryHandlerFactory::class),
+            ArchiveHandlerFactoryInterface::class => autowire(ArchiveHandlerFactory::class),
+            FileCacheFactoryInterface::class => autowire(FileCacheFactory::class),
+            PhpFileLoaderInterface::class => create(PhpFileLoader::class)
         ];
     }
 

@@ -1,12 +1,12 @@
 <?php
 /**
- * @var SP\Html\DataGrid\DataGridTab $data
+ * @var SP\Modules\Web\Html\DataGrid\DataGridTab $data
  * @var TemplateInterface $this
  * @var callable $_getvar
  */
 
-use SP\Domain\Html\Html;
-use SP\Mvc\View\TemplateInterface;
+use SP\Domain\Common\Providers\Html;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 if (!isset($data)) {
     $data = $_getvar('data');

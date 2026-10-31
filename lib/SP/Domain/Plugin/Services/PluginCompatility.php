@@ -25,19 +25,21 @@ declare(strict_types=1);
 
 namespace SP\Domain\Plugin\Services;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Install\Services\Installer;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginCompatilityService;
 use SP\Domain\Plugin\Ports\PluginManagerService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
-use function SP\__;
+use function SP\__u;
 
 /**
  * Class PluginCompatility
@@ -45,10 +47,12 @@ use function SP\__;
 final class PluginCompatility extends Service implements PluginCompatilityService
 {
     public function __construct(
-        Application $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly PluginManagerService $pluginService
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -62,7 +66,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
     public function checkFor(Plugin $plugin): bool
     {
         $pluginVersion = implode('.', $plugin->getCompatibleVersion());
-        $appVersion = implode('.', array_slice(Installer::VERSION, 0, 2));
+        $appVersion = implode('.', array_slice(Version::VERSION, 0, 2));
 
         if (version_compare($pluginVersion, $appVersion, '<')) {
             $this->eventDispatcher->notify(
@@ -72,7 +76,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
                     EventMessage::build()
                                 ->addDescription(
                                     sprintf(
-                                        __('Plugin version not compatible (%s)'),
+                                        __u('Plugin version not compatible (%s)'),
                                         implode('.', $plugin->getVersion())
                                     )
                                 )
@@ -86,7 +90,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
                 new Event(
                     $this,
                     EventMessage::build()
-                                ->addDetail(__('Plugin disabled'), $plugin->getName())
+                                ->addDetail(__u('Plugin disabled'), $plugin->getName())
                 )
             );
 
@@ -100,7 +104,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
                 EventMessage::build()
                             ->addDescription(
                                 sprintf(
-                                    __('Plugin version compatible (%s)'),
+                                    __u('Plugin version compatible (%s)'),
                                     implode('.', $plugin->getVersion())
                                 )
                             )

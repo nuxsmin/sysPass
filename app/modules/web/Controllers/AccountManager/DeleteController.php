@@ -24,9 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\AccountManager;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Attributes\Action;
@@ -37,8 +36,8 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
 
@@ -56,12 +55,11 @@ final class DeleteController extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                             $application,
         WebControllerHelper                     $webControllerHelper,
         private readonly AccountService         $accountService,
         private readonly CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

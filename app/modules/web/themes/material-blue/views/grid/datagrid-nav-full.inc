@@ -1,11 +1,11 @@
 <?php
 /**
- * @var SP\Html\DataGrid\DataGridInterface $data
+ * @var SP\Modules\Web\Html\DataGrid\DataGridInterface $data
  * @var TemplateInterface $this
  * @var callable $_getvar
  */
 
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 use function SP\__;
 

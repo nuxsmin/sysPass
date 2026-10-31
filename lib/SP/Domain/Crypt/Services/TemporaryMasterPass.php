@@ -27,11 +27,14 @@ declare(strict_types=1);
 namespace SP\Domain\Crypt\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Crypt\Hash;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Core\Messages\MailMessage;
+use SP\Domain\Crypt\Services\Hash;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -45,11 +48,9 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
-use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class TemporaryMasterPass
@@ -73,13 +74,16 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
     private ?int $maxTime = null;
 
     public function __construct(
-        Application                     $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly ConfigService  $configService,
         private readonly UserService    $userService,
         private readonly MailService    $mailService,
         private readonly CryptInterface $crypt,
+        private readonly MasterKeyStore $masterKeyStore,
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
 
@@ -103,7 +107,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
             $configRequest = new ConfigRequest();
             $configRequest->add(
                 self::PARAM_PASS,
-                $this->crypt->encrypt($this->getMasterKeyFromContext(), $secureKey, $randomKey)
+                $this->crypt->encrypt($this->masterKeyStore->get(), $secureKey, $randomKey)
             );
             $configRequest->add(self::PARAM_KEY, $secureKey);
             $configRequest->add(self::PARAM_HASH, Hash::hashKey($randomKey));
@@ -126,8 +130,6 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
 
             return $randomKey;
         } catch (Exception $e) {
-            processException($e);
-
             throw new ServiceException(__u('Error while generating the temporary password'));
         }
     }
@@ -183,8 +185,6 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
         } catch (NoSuchItemException) {
             return false;
         } catch (Exception $e) {
-            processException($e);
-
             throw new ServiceException(__u('Error while checking the temporary password'));
         }
     }
@@ -236,15 +236,15 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
     private function getMessageForEmail(string $key): MailMessage
     {
         $mailMessage = new MailMessage();
-        $mailMessage->setTitle(sprintf(__('%s Master Password'), AppInfoInterface::APP_NAME));
+        $mailMessage->setTitle(sprintf(__u('%s Master Password'), AppInfoInterface::APP_NAME));
         $mailMessage->addDescription(
-            __(
+            __u(
                 'A new sysPass master password has been generated, so next time you log into the application it will be requested.'
             )
         );
-        $mailMessage->addDescription(sprintf(__('The new Master Password is: %s'), $key));
-        $mailMessage->addDescription(sprintf(__('This password will be valid until: %s'), date('r', $this->maxTime)));
-        $mailMessage->addDescription(__('Please, don\'t forget to log in as soon as possible to save the changes.'));
+        $mailMessage->addDescription(sprintf(__u('The new Master Password is: %s'), $key));
+        $mailMessage->addDescription(sprintf(__u('This password will be valid until: %s'), date('r', $this->maxTime)));
+        $mailMessage->addDescription(__u('Please, don\'t forget to log in as soon as possible to save the changes.'));
 
         return $mailMessage;
     }

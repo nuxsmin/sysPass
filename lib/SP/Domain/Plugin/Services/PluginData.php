@@ -25,10 +25,13 @@ declare(strict_types=1);
 
 namespace SP\Domain\Plugin\Services;
 
-use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -36,8 +39,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
 use SP\Domain\Plugin\Ports\PluginDataRepository;
 use SP\Domain\Plugin\Ports\PluginDataService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -49,11 +52,14 @@ use function SP\__u;
 final class PluginData extends Service implements PluginDataService
 {
     public function __construct(
-        Application                           $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly PluginDataRepository $pluginDataRepository,
         private readonly CryptInterface       $crypt,
+        private readonly MasterKeyStore       $masterKeyStore,
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
 
@@ -70,7 +76,7 @@ final class PluginData extends Service implements PluginDataService
     public function create(PluginDataModel $pluginData): QueryResult
     {
         return $this->pluginDataRepository->create(
-            $pluginData->encrypt($this->getMasterKeyFromContext(), $this->crypt)
+            $pluginData->encrypt($this->masterKeyStore->get(), $this->crypt)
         );
     }
 
@@ -87,7 +93,7 @@ final class PluginData extends Service implements PluginDataService
     public function update(PluginDataModel $pluginData): int
     {
         return $this->pluginDataRepository->update(
-            $pluginData->encrypt($this->getMasterKeyFromContext(), $this->crypt)
+            $pluginData->encrypt($this->masterKeyStore->get(), $this->crypt)
         );
     }
 
@@ -113,7 +119,7 @@ final class PluginData extends Service implements PluginDataService
 
 
         return $result->getData(PluginDataModel::class)
-                      ->decrypt($this->getMasterKeyFromContext(), $this->crypt);
+                      ->decrypt($this->masterKeyStore->get(), $this->crypt);
     }
 
     /**
@@ -134,7 +140,7 @@ final class PluginData extends Service implements PluginDataService
         }
 
         return array_map(
-            fn(PluginDataModel $pluginData) => $pluginData->decrypt($this->getMasterKeyFromContext(), $this->crypt),
+            fn(PluginDataModel $pluginData) => $pluginData->decrypt($this->masterKeyStore->get(), $this->crypt),
             $result->getDataAsArray(PluginDataModel::class)
         );
     }
@@ -152,7 +158,7 @@ final class PluginData extends Service implements PluginDataService
     public function getAll(): array
     {
         return array_map(
-            fn(PluginDataModel $pluginData) => $pluginData->decrypt($this->getMasterKeyFromContext(), $this->crypt),
+            fn(PluginDataModel $pluginData) => $pluginData->decrypt($this->masterKeyStore->get(), $this->crypt),
             $this->pluginDataRepository->getAll()->getDataAsArray(PluginDataModel::class)
         );
     }

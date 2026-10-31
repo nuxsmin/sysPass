@@ -28,9 +28,12 @@ namespace SP\Domain\Import\Services;
 use DOMDocument;
 use DOMElement;
 use Iterator;
-use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Import\Ports\ImportHelperInterface;
 
 /**
@@ -46,13 +49,16 @@ abstract class XmlImportBase extends ImportBase
      * ImportBase constructor.
      */
     public function __construct(
-        Application                    $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         ImportHelperInterface $importHelper,
-        CryptInterface                 $crypt,
+        CryptInterface $crypt,
+        HashService $hashService,
         protected readonly DOMDocument $document
     ) {
-        parent::__construct($application, $importHelper, $crypt);
-        $this->configData = $application->getConfig()->getConfigData();
+        parent::__construct($config, $eventDispatcher, $context, $importHelper, $crypt, $hashService);
+        $this->configData = $config->getConfigData();
     }
 
     /**

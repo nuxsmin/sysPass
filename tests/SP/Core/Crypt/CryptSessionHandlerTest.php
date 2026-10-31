@@ -28,10 +28,11 @@ namespace SP\Tests\Core\Crypt;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SessionHandler;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
@@ -49,6 +50,7 @@ class CryptSessionHandlerTest extends UnitaryTestCase
     private MockObject|SessionHandler $sessionHandler;
     private Key                       $key;
 
+    #[Test]
     public function testRead()
     {
         $this->sessionHandler
@@ -68,6 +70,7 @@ class CryptSessionHandlerTest extends UnitaryTestCase
         $this->assertEquals('decrypted_session_data', $out);
     }
 
+    #[Test]
     public function testReadWithNodata()
     {
         $this->sessionHandler
@@ -85,6 +88,7 @@ class CryptSessionHandlerTest extends UnitaryTestCase
         $this->assertEmpty($out);
     }
 
+    #[Test]
     public function testReadWithException()
     {
         $this->sessionHandler
@@ -103,6 +107,7 @@ class CryptSessionHandlerTest extends UnitaryTestCase
         $this->assertEquals('session_data', $out);
     }
 
+    #[Test]
     public function testWrite()
     {
         $data = serialize(['a' => 'testA']);
@@ -122,6 +127,7 @@ class CryptSessionHandlerTest extends UnitaryTestCase
         $this->assertTrue($this->cryptSessionHandler->write('test', $data));
     }
 
+    #[Test]
     public function testWriteWithException()
     {
         $data = serialize(['a' => 'testA']);
@@ -140,6 +146,7 @@ class CryptSessionHandlerTest extends UnitaryTestCase
         $this->assertTrue($this->cryptSessionHandler->write('test', $data));
     }
 
+    #[Test]
     public function testClose()
     {
         $this->sessionHandler
@@ -149,6 +156,7 @@ class CryptSessionHandlerTest extends UnitaryTestCase
         $this->cryptSessionHandler->close();
     }
 
+    #[Test]
     public function testDestroy()
     {
         $this->sessionHandler
@@ -159,6 +167,7 @@ class CryptSessionHandlerTest extends UnitaryTestCase
         $this->cryptSessionHandler->destroy('test');
     }
 
+    #[Test]
     public function testGc()
     {
         $this->sessionHandler
@@ -169,6 +178,7 @@ class CryptSessionHandlerTest extends UnitaryTestCase
         $this->cryptSessionHandler->gc(1000);
     }
 
+    #[Test]
     public function testOpen()
     {
         $this->sessionHandler

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace SP\Tests\Architecture;
 
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
@@ -26,6 +28,7 @@ final class LayerRules
     public const LIB_MODULES = 'lib-modules';
     public const DOMAIN_APPLICATION = 'domain-application';
     public const DOMAIN_PRESENTATION_CALLS = 'domain-presentation-calls';
+    public const CORE_INFRASTRUCTURE = 'core-infrastructure';
 
     public const RULES = [
         self::DOMAIN_ONLY,
@@ -35,12 +38,13 @@ final class LayerRules
         self::LIB_MODULES,
         self::DOMAIN_APPLICATION,
         self::DOMAIN_PRESENTATION_CALLS,
+        self::CORE_INFRASTRUCTURE,
     ];
+
+    private const COMPOSITION_ROOT = 'lib/SP/Core/Definitions/';
 
     private const OUTER_LAYER_PREFIXES = [
         'SP\\Core\\',
-        'SP\\Mvc\\',
-        'SP\\Html\\',
         'SP\\Modules\\',
         'SP\\Util\\',
     ];
@@ -82,7 +86,10 @@ final class LayerRules
                 continue;
             }
 
-            if ($layer === 'lib' && str_contains($code, 'SP\\Modules')) {
+            if ($layer === 'lib'
+                && !str_starts_with($relativePath, self::COMPOSITION_ROOT)
+                && str_contains($code, 'SP\\Modules')
+            ) {
                 $violations[self::LIB_MODULES][] = sprintf('%s => SP\\Modules', $relativePath);
             }
 
@@ -93,17 +100,25 @@ final class LayerRules
             }
 
             $imports = self::imports($statements);
+            $aliases = self::importAliases($statements);
             $calls = self::functionCalls($statements);
+            $staticCalls = self::staticCalls($statements, $aliases);
 
             foreach ($imports as $import) {
                 self::checkImport($layer, $relativePath, $import, $violations);
+            }
+
+            if ($layer === 'module') {
+                self::checkStaticCalls($relativePath, $staticCalls, $violations);
             }
 
             if ($layer === 'domain') {
                 $presentationCalls = [];
 
                 foreach ($calls as $call) {
-                    foreach (['__u', '__', 'processException'] as $function) {
+                    // __u() is the gettext extraction marker: it returns the untranslated
+                    // key and performs no translation, so it is not a presentation call.
+                    foreach (['__', 'processException'] as $function) {
                         if (self::isCall($call, $function)) {
                             $presentationCalls[$function] = ($presentationCalls[$function] ?? 0) + 1;
                             break;
@@ -156,6 +171,117 @@ final class LayerRules
 
     /**
      * @param list<Use_|GroupUse> $statements
+     * @return array<string, string> Lowercase alias => fully qualified name
+     */
+    private static function importAliases(array $statements): array
+    {
+        $aliases = [];
+        $finder = new NodeFinder();
+
+        foreach ($finder->findInstanceOf($statements, Use_::class) as $statement) {
+            foreach ($statement->uses as $use) {
+                $name = $use->name->toString();
+                $alias = $use->alias?->toString() ?? self::lastSegment($name);
+                $aliases[strtolower($alias)] = $name;
+            }
+        }
+
+        foreach ($finder->findInstanceOf($statements, GroupUse::class) as $statement) {
+            foreach ($statement->uses as $use) {
+                $name = $statement->prefix->toString() . '\\' . $use->name->toString();
+                $alias = $use->alias?->toString() ?? self::lastSegment($use->name->toString());
+                $aliases[strtolower($alias)] = $name;
+            }
+        }
+
+        return $aliases;
+    }
+
+    private static function lastSegment(string $name): string
+    {
+        $parts = explode('\\', $name);
+
+        return (string)end($parts);
+    }
+
+    /**
+     * Resolve static calls to a class name.
+     *
+     * @param list<Use_|GroupUse> $statements
+     * @param array<string, string> $aliases
+     * @return list<string>
+     */
+    private static function staticCalls(array $statements, array $aliases): array
+    {
+        $calls = [];
+
+        foreach ((new NodeFinder())->findInstanceOf($statements, StaticCall::class) as $call) {
+            if (!$call->class instanceof Name) {
+                continue;
+            }
+
+            $name = $call->class->toString();
+
+            if (in_array(strtolower($name), ['self', 'static', 'parent'], true)) {
+                continue;
+            }
+
+            $resolved = self::resolveName($name, $aliases, $call->class->isFullyQualified());
+            $method = $call->name instanceof Identifier ? $call->name->toString() : '?';
+
+            $calls[] = sprintf('%s::%s()', $resolved, $method);
+        }
+
+        return $calls;
+    }
+
+    /**
+     * @param array<string, string> $aliases
+     */
+    private static function resolveName(string $name, array $aliases, bool $fullyQualified): string
+    {
+        if ($fullyQualified) {
+            return ltrim($name, '\\');
+        }
+
+        $parts = explode('\\', $name);
+        $alias = strtolower($parts[0]);
+
+        if (isset($aliases[$alias])) {
+            $parts[0] = $aliases[$alias];
+
+            return implode('\\', $parts);
+        }
+
+        return $name;
+    }
+
+    /**
+     * @param list<string> $staticCalls
+     * @param array<string, list<string>> $violations
+     */
+    private static function checkStaticCalls(
+        string $relativePath,
+        array $staticCalls,
+        array &$violations
+    ): void {
+        foreach ($staticCalls as $call) {
+            $class = strstr($call, '::', true);
+
+            if ($class === false
+                || !str_starts_with($class, 'SP\\Domain\\')
+                || !str_contains($class, '\\Services\\')
+                || str_ends_with($class, 'Exception')
+            ) {
+                continue;
+            }
+
+            $violations[self::MODULES_CONCRETE_SERVICES][] = sprintf('%s => %s', $relativePath, $call);
+        }
+    }
+
+    /**
+     * @param list<Use_|GroupUse> $statements
      * @return list<string>
      */
     private static function functionCalls(array $statements): array
@@ -185,6 +311,14 @@ final class LayerRules
         string $import,
         array &$violations
     ): void {
+        if ($layer === 'lib'
+            && str_starts_with($relativePath, 'lib/SP/Core/')
+            && !str_starts_with($relativePath, self::COMPOSITION_ROOT)
+            && str_starts_with($import, 'SP\\Infrastructure\\')
+        ) {
+            $violations[self::CORE_INFRASTRUCTURE][] = sprintf('%s => %s', $relativePath, $import);
+        }
+
         if ($layer === 'domain') {
             if ($import === 'SP\\Core\\Application') {
                 $violations[self::DOMAIN_APPLICATION][] = sprintf('%s => %s', $relativePath, $import);
@@ -208,7 +342,11 @@ final class LayerRules
         }
 
         if ($layer === 'module') {
-            if (str_starts_with($import, 'SP\\Infrastructure\\')) {
+            // Module bootstrap files are composition roots: they wire the module's
+            // adapters and ports and are allowed to reference infrastructure.
+            if (!str_ends_with($relativePath, '/module.php')
+                && str_starts_with($import, 'SP\\Infrastructure\\')
+            ) {
                 $violations[self::MODULES_INFRASTRUCTURE][] = sprintf('%s => %s', $relativePath, $import);
             }
 

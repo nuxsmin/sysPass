@@ -30,12 +30,13 @@ use Klein\DataCollection\ServerDataCollection;
 use Klein\Request;
 use Klein\Response;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Http\Header;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 use TypeError;
 
@@ -55,6 +56,7 @@ class MinifyCssTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      */
+    #[Test]
     public function testAddFileWithEtag()
     {
         $this->minifyCss->addFile($this->buildCheckWithEtag()[0], false);
@@ -146,6 +148,7 @@ class MinifyCssTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      */
+    #[Test]
     public function testAddFileWithoutEtag()
     {
         $this->minifyCss->addFile($this->buildCheckWithoutEtag()[0], false);
@@ -228,6 +231,7 @@ class MinifyCssTest extends UnitaryTestCase
         return $files;
     }
 
+    #[Test]
     public function testBuilder()
     {
         $out = $this->minifyCss->builder();
@@ -239,6 +243,7 @@ class MinifyCssTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      */
+    #[Test]
     public function testAddFilesWithEtag()
     {
         $this->minifyCss->addFiles($this->buildCheckWithEtag(2), false);
@@ -249,6 +254,7 @@ class MinifyCssTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      */
+    #[Test]
     public function testAddFilesWithoutEtag()
     {
         $this->minifyCss->addFiles($this->buildCheckWithoutEtag(2), false);
@@ -258,6 +264,7 @@ class MinifyCssTest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testAddFilesWithWrongObject()
     {
         $this->expectException(TypeError::class);
@@ -270,12 +277,14 @@ class MinifyCssTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      */
+    #[Test]
     public function testGetMinifiedWithFiles()
     {
         $this->minifyCss->addFiles($this->buildCheckWithoutEtag());
         $this->minifyCss->getMinified();
     }
 
+    #[Test]
     public function testGetMinifiedWithoutFiles()
     {
         $this->response->expects(self::never())

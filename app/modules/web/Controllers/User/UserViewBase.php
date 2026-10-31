@@ -25,8 +25,6 @@
 namespace SP\Modules\Web\Controllers\User;
 
 
-use SP\Core\Acl\Acl;
-use SP\Core\Application;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -37,10 +35,12 @@ use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
+use SP\Domain\User\UseCases\Dtos\GetUserCommand;
+use SP\Domain\User\UseCases\GetUserUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
-use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 
 /**
  * Class UserViewBase
@@ -49,20 +49,21 @@ abstract class UserViewBase extends ControllerBase
 {
     use ItemTrait;
 
-    protected UserService    $userService;
+    private UserService $userService;
     private UserGroupService $userGroupService;
     private UserProfileService $userProfileService;
     private CustomFieldDataService $customFieldService;
+    private GetUserUseCase $getUserUseCase;
 
     public function __construct(
-        Application            $application,
         WebControllerHelper    $webControllerHelper,
-        UserService        $userService,
+        UserService            $userService,
         UserGroupService       $userGroupService,
-        UserProfileService $userProfileService,
-        CustomFieldDataService $customFieldService
+        UserProfileService     $userProfileService,
+        CustomFieldDataService $customFieldService,
+        GetUserUseCase         $getUserUseCase
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
@@ -70,6 +71,19 @@ abstract class UserViewBase extends ControllerBase
         $this->userGroupService = $userGroupService;
         $this->userProfileService = $userProfileService;
         $this->customFieldService = $customFieldService;
+        $this->getUserUseCase = $getUserUseCase;
+    }
+
+    /**
+     * Returns the user for the given id, or a new one when there is no id.
+     *
+     * @throws SPException
+     */
+    protected function getUser(?int $userId = null): User
+    {
+        return $userId
+            ? $this->getUserUseCase->execute(new GetUserCommand($userId))->model
+            : new User();
     }
 
     /**
@@ -82,13 +96,11 @@ abstract class UserViewBase extends ControllerBase
      * @throws SPException
      * @throws ServiceException
      */
-    protected function setViewData(?int $userId = null): void
+    protected function setViewData(?int $userId = null, bool $isView = false): void
     {
         $this->view->addTemplate('user', 'itemshow');
 
-        $user = $userId
-            ? $this->userService->getById($userId)
-            : new User();
+        $user = $this->getUser($userId);
 
         $this->view->assign('user', $user);
         $this->view->assign(
@@ -106,10 +118,10 @@ abstract class UserViewBase extends ControllerBase
         );
         $this->view->assign(
             'nextAction',
-            Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE)
+            $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE)
         );
 
-        if ($this->view->isView === true
+        if ($isView
             || ($this->configData->isDemoEnabled()
                 && $user->getLogin() === 'demo')
         ) {

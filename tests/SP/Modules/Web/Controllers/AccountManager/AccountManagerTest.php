@@ -41,7 +41,7 @@ use SP\Domain\Tag\Models\Tag;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\CategoryGenerator;

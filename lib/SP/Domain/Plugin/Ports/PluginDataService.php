@@ -31,8 +31,8 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class PluginDataInterface

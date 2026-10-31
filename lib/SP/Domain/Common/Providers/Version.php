@@ -25,19 +25,21 @@ declare(strict_types=1);
 
 namespace SP\Domain\Common\Providers;
 
-use SP\Domain\Install\Services\Installer;
-
 /**
  * Class Version
  */
 final class Version
 {
+    public const VERSION      = [4, 0, 0];
+    public const VERSION_TEXT = '4.0';
+    public const BUILD        = 21031301;
+
     /**
      * Devolver versión normalizada en cadena
      */
     public static function getVersionStringNormalized(): string
     {
-        return implode('', Installer::VERSION) . '.' . Installer::BUILD;
+        return implode('', self::VERSION) . '.' . self::BUILD;
     }
 
     /**
@@ -132,10 +134,10 @@ final class Version
      */
     public static function getVersionArray(bool $retBuild = false): array
     {
-        $version = array_values(Installer::VERSION);
+        $version = array_values(self::VERSION);
 
         if ($retBuild === true) {
-            $version[] = Installer::BUILD;
+            $version[] = self::BUILD;
 
             return $version;
         }

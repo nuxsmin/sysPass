@@ -25,8 +25,10 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Import\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountService;
@@ -41,7 +43,7 @@ use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\Import\Services\KeepassImport;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -63,6 +65,7 @@ class KeepassImportTest extends UnitaryTestCase
      * @throws Exception
      * @throws SPException
      */
+    #[Test]
     public function testDoImport()
     {
         $importParamsDto = $this->createStub(ImportParamsDto::class);
@@ -106,6 +109,7 @@ class KeepassImportTest extends UnitaryTestCase
      * @throws Exception
      * @throws SPException
      */
+    #[Test]
     public function testDoImportWithAccountException()
     {
         $importParamsDto = $this->createStub(ImportParamsDto::class);
@@ -167,6 +171,14 @@ class KeepassImportTest extends UnitaryTestCase
         $document = new DOMDocument();
         $document->load(self::KEEPASS_FILE, LIBXML_NOBLANKS);
 
-        $this->keepassImport = new KeepassImport($this->application, $importHelper, $crypt, $document);
+        $this->keepassImport = new KeepassImport(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $importHelper,
+            $crypt,
+            new HashServiceAdapter(),
+            $document
+        );
     }
 }

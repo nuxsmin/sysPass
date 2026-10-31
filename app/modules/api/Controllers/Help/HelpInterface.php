@@ -24,17 +24,13 @@
 
 namespace SP\Modules\Api\Controllers\Help;
 
+use SP\Domain\Api\Ports\HelpProvider;
+
 /**
  * Interface HelpInterface
  *
  * @package SP\Modules\Api\Controllers\Help
  */
-interface HelpInterface
+interface HelpInterface extends HelpProvider
 {
-    /**
-     * @param string $action
-     *
-     * @return array
-     */
-    public static function getHelpFor(string $action): array;
 }

@@ -27,6 +27,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Models\File as FileModel;
@@ -37,7 +38,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Account\Repositories\AccountFile;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\FileDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -55,6 +56,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch(): void
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -83,6 +85,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database->expects(self::never())
@@ -95,6 +98,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testCreate(): void
     {
         $fileData = FileModel::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
@@ -129,6 +133,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByAccountId(): void
     {
         $id = self::$faker->randomNumber(3);
@@ -155,6 +160,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete(): void
     {
         $callback = new Callback(
@@ -175,6 +181,7 @@ class AccountFileTest extends UnitaryTestCase
         $this->assertTrue($this->accountFile->delete(100));
     }
 
+    #[Test]
     public function testGetById(): void
     {
         $id = self::$faker->randomNumber();
@@ -197,6 +204,7 @@ class AccountFileTest extends UnitaryTestCase
         $this->accountFile->getById($id);
     }
 
+    #[Test]
     public function testSearch(): void
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -234,7 +242,7 @@ class AccountFileTest extends UnitaryTestCase
         $this->accountFile = new AccountFile(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

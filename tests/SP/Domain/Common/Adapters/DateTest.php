@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Common\Adapters;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -34,6 +35,7 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class DateTest extends UnitaryTestCase
 {
+    #[Test]
     public function testGetDateFromUnix()
     {
         $out = \SP\Domain\Common\Adapters\Date::getDateFromUnix(self::$faker->unixTime());
@@ -41,6 +43,7 @@ class DateTest extends UnitaryTestCase
         $this->assertMatchesRegularExpression('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}/', $out);
     }
 
+    #[Test]
     public function testGetDateFromUnixFromString()
     {
         $date = self::$faker->date();

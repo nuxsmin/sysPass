@@ -33,10 +33,10 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -50,6 +50,8 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
     use RepositoryItemTrait;
 
     public const TABLE = 'AuthToken';
+
+    private const SEARCH_ONLY_FIELDS = ['name', 'login'];
 
     /**
      * @param int $id
@@ -84,7 +86,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(AuthTokenModel::getCols())
+            ->cols(AuthTokenModel::getCols(self::SEARCH_ONLY_FIELDS))
             ->where('id = :id')
             ->bindValues(['id' => $authTokenId])
             ->limit(1);
@@ -106,7 +108,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(AuthTokenModel::getCols());
+            ->cols(AuthTokenModel::getCols(self::SEARCH_ONLY_FIELDS));
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, AuthTokenModel::class));
     }
@@ -160,7 +162,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
                        'User.name',
                        'User.login'
                    ])
-            ->orderBy(['name ASC', 'clientName ASC'])
+            ->orderBy(['User.name ASC', 'User.login ASC'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
@@ -194,7 +196,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
         $query = $this->queryFactory
             ->newInsert()
             ->into(self::TABLE)
-            ->cols($authToken->toArray(null, ['id', 'startDate']))
+            ->cols($authToken->toArray(null, array_merge(['id', 'startDate'], self::SEARCH_ONLY_FIELDS)))
             ->set('startDate', 'UNIX_TIMESTAMP()');
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
@@ -243,7 +245,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(AuthTokenModel::getCols())
+            ->cols(AuthTokenModel::getCols(self::SEARCH_ONLY_FIELDS))
             ->where('userId = :userId')
             ->where('token <> \'\'')
             ->bindValues(['userId' => $userId])
@@ -272,7 +274,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
         $query = $this->queryFactory
             ->newUpdate()
             ->table(self::TABLE)
-            ->cols($authToken->toArray(null, ['id', 'startDate']))
+            ->cols($authToken->toArray(null, array_merge(['id', 'startDate'], self::SEARCH_ONLY_FIELDS)))
             ->set('startDate', 'UNIX_TIMESTAMP()')
             ->where('id = :id')
             ->bindValues(['id' => $authToken->getId()]);
@@ -379,7 +381,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(AuthTokenModel::getCols())
+            ->cols(AuthTokenModel::getCols(self::SEARCH_ONLY_FIELDS))
             ->where('actionId = :actionId')
             ->where('token = :token')
             ->bindValues(['actionId' => $actionId, 'token' => $token])

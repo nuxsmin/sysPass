@@ -28,24 +28,24 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Domain\Account\Services\Account;
+use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
-use SP\Domain\Config\Services\Config;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Crypt\Ports\MasterPassService;
-use SP\Domain\Crypt\Services\MasterPass;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Cli\Commands\CommandBase;
 use SP\Modules\Cli\Commands\Validators;
-use SP\Util\Util;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\StyleInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class CryptCommand
@@ -69,8 +69,8 @@ final class UpdateMasterPasswordCommand extends CommandBase
      */
     protected static          $defaultName = 'sp:crypt:update-master-password';
     private MasterPassService $masterPassService;
-    private Config            $configService;
-    private Account $accountService;
+    private ConfigService $configService;
+    private AccountService $accountService;
 
     public function __construct(
         MasterPassService $masterPassService,
@@ -141,7 +141,7 @@ final class UpdateMasterPasswordCommand extends CommandBase
             $request = new UpdateMasterPassRequest(
                 $currentMasterPassword,
                 $masterPassword,
-                $this->configService->getByParam(MasterPass::PARAM_MASTER_PASS_HASH)
+                $this->configService->getByParam(MasterPassService::PARAM_MASTER_PASS_HASH)
             );
 
             if (!$this->getUpdate($input, $style)) {
@@ -295,7 +295,7 @@ final class UpdateMasterPasswordCommand extends CommandBase
         $envUpdate = self::getEnvVarForOption($option);
 
         $value = $envUpdate !== false
-            ? Util::boolval($envUpdate)
+            ? Filter::getBool($envUpdate)
             : $input->getOption($option);
 
         if ($value === false) {

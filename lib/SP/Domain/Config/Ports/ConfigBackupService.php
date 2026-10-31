@@ -26,13 +26,15 @@ declare(strict_types=1);
 namespace SP\Domain\Config\Ports;
 
 use SP\Domain\Common\Services\ServiceException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Interface ConfigBackupService
  */
 interface ConfigBackupService
 {
+    public function configToJson(string $configData): string;
+
     /**
      * Backs up the config data into the database
      */

@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Plugin\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -33,7 +34,7 @@ use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginRegister;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -48,6 +49,7 @@ class PluginRegisterTest extends UnitaryTestCase
      * @throws Exception
      * @throws QueryException
      */
+    #[Test]
     public function testRegisterForWithUnregisteredPlugin()
     {
         $plugin = $this->createStub(Plugin::class);
@@ -63,7 +65,12 @@ class PluginRegisterTest extends UnitaryTestCase
                              ->method('create')
             ->with(new PluginModel(['name' => 'test_plugin', 'enabled' => false]));
 
-        $pluginRegister = new PluginRegister($this->application, $pluginManagerService);
+        $pluginRegister = new PluginRegister(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
 
         $pluginRegister->registerFor($plugin);
     }
@@ -73,6 +80,7 @@ class PluginRegisterTest extends UnitaryTestCase
      * @throws Exception
      * @throws QueryException
      */
+    #[Test]
     public function testRegisterForWithRegisteredPlugin()
     {
         $plugin = $this->createStub(Plugin::class);
@@ -86,7 +94,12 @@ class PluginRegisterTest extends UnitaryTestCase
         $pluginManagerService->expects($this->never())
                              ->method('create');
 
-        $pluginRegister = new PluginRegister($this->application, $pluginManagerService);
+        $pluginRegister = new PluginRegister(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
 
         $pluginRegister->registerFor($plugin);
     }

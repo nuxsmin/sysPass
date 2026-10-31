@@ -82,4 +82,34 @@ final class Filter
     {
         return filter_var(trim($value), FILTER_UNSAFE_RAW);
     }
+
+    /**
+     * Checks a variable to see if it should be considered a boolean true or false.
+     * Also takes into account some text-based representations of true of false,
+     * such as 'false','N','yes','on','off', etc.
+     *
+     * @param mixed $in The variable to check
+     * @param bool $strict If set to false, consider everything that is not false to be true.
+     */
+    public static function getBool(mixed $in, bool $strict = false): bool
+    {
+        $in = is_string($in) ? strtolower($in) : $in;
+
+        // if not strict, we only have to check if something is false
+        if (!$in
+            || in_array($in, ['false', 'no', 'n', '0', 'off', false, 0], true)
+        ) {
+            return false;
+        }
+
+        if ($strict
+            && in_array($in, ['true', 'yes', 'y', '1', 'on', true, 1], true)
+        ) {
+            return true;
+        }
+
+        // not strict? let the regular php bool check figure it out (will
+        // largely default to true)
+        return (bool)$in;
+    }
 }

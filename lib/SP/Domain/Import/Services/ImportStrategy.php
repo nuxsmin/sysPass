@@ -25,21 +25,24 @@ declare(strict_types=1);
 
 namespace SP\Domain\Import\Services;
 
-use SP\Core\Application;
+use SP\Domain\Common\Providers\Environment;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Ports\ImportStrategyService;
 use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Domain\Import\Ports\XmlFileService;
-use SP\Infrastructure\File\FileException;
-use SP\Util\Util;
+use SP\Domain\Core\Exceptions\FileException;
 
-use function SP\__;
 use function SP\__u;
-use function SP\logger;
 
 /**
  * Class ImportStrategy
@@ -57,12 +60,16 @@ final class ImportStrategy extends Service implements ImportStrategyService
     ];
 
     public function __construct(
-        private readonly Application           $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly ImportHelperInterface $importHelper,
         private readonly CryptInterface        $crypt,
         private readonly XmlFileService        $xmlFile,
+        private readonly HashService           $hashService,
+        private readonly LoggerInterface       $logger = new NullLogger()
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -84,9 +91,12 @@ final class ImportStrategy extends Service implements ImportStrategyService
 
         return match ($this->checkFile($fileHandler)) {
             'text/plain', 'text/csv' => new CsvImport(
-                $this->application,
+                $this->config,
+                $this->eventDispatcher,
+                $this->context,
                 $this->importHelper,
                 $this->crypt,
+                $this->hashService,
                 $fileHandler
             ),
             'text/xml', 'application/xml' => $this->xmlFactory($fileHandler)
@@ -106,14 +116,14 @@ final class ImportStrategy extends Service implements ImportStrategyService
 
             if (!in_array($fileType, self::ALLOWED_MIME)) {
                 throw ImportException::error(
-                    sprintf(__('Mime type not supported ("%s")'), $fileType),
+                    sprintf(__u('Mime type not supported ("%s")'), $fileType),
                     __u('Please, check the file format')
                 );
             }
 
             return $fileType;
         } catch (FileException $e) {
-            logger(sprintf('Max. upload size: %s', Util::getMaxUpload()));
+            $this->logger->debug(sprintf('Max. upload size: %s', Environment::getMaxUpload()));
 
             throw FileException::error(
                 __u('Internal error while reading the file'),
@@ -135,16 +145,22 @@ final class ImportStrategy extends Service implements ImportStrategyService
         return match ($xmlFile->detectFormat()) {
             XmlFormat::Syspass =>
             new SyspassImport(
-                $this->application,
+                $this->config,
+                $this->eventDispatcher,
+                $this->context,
                 $this->importHelper,
                 $this->crypt,
+                $this->hashService,
                 $xmlFile->getDocument()
             ),
             XmlFormat::Keepass =>
             new KeepassImport(
-                $this->application,
+                $this->config,
+                $this->eventDispatcher,
+                $this->context,
                 $this->importHelper,
                 $this->crypt,
+                $this->hashService,
                 $xmlFile->getDocument()
             )
         };

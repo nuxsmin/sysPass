@@ -24,15 +24,14 @@
 
 namespace SP\Modules\Web\Controllers\Category;
 
-use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\CategoryForm;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * A base class for all save actions
@@ -48,15 +47,14 @@ abstract class CategorySaveBase extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                               $application,
         WebControllerHelper                       $webControllerHelper,
         protected readonly CategoryService        $categoryService,
         protected readonly CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->form = new CategoryForm($application, $this->request);
+        $this->form = new CategoryForm($this->config, $this->session, $this->request);
     }
 }

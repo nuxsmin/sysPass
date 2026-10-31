@@ -26,13 +26,14 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToFavoriteRepository;
 use SP\Domain\Account\Services\AccountToFavorite;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -51,6 +52,7 @@ class AccountToFavoriteTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testGetForUserId()
     {
         $userId = self::$faker->randomNumber();
@@ -71,6 +73,7 @@ class AccountToFavoriteTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testDelete()
     {
         $accountId = self::$faker->randomNumber();
@@ -91,6 +94,7 @@ class AccountToFavoriteTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testAdd()
     {
         $accountId = self::$faker->randomNumber();
@@ -114,7 +118,12 @@ class AccountToFavoriteTest extends UnitaryTestCase
         $this->accountToFavoriteRepository = $this->createMock(AccountToFavoriteRepository::class);
 
         $this->accountToFavorite =
-            new AccountToFavorite($this->application, $this->accountToFavoriteRepository);
+            new AccountToFavorite(
+                $this->config,
+                $this->eventDispatcherStub,
+                $this->context,
+                $this->accountToFavoriteRepository
+            );
     }
 
 }

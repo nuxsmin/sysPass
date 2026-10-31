@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Security\Services;
 
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -38,8 +39,8 @@ use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Models\Track as TrackModel;
 use SP\Domain\Security\Ports\TrackRepository;
 use SP\Domain\Security\Services\Track;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -53,6 +54,7 @@ class TrackTest extends UnitaryTestCase
     private RequestService|MockObject  $request;
     private Track                      $track;
 
+    #[Test]
     public function testSearch()
     {
         $itemSearchData = new ItemSearchDto('test');
@@ -70,6 +72,7 @@ class TrackTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws Exception
      */
+    #[Test]
     public function testCheckTracking()
     {
         $trackRequest = $this->getTrackRequest();
@@ -103,6 +106,7 @@ class TrackTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws Exception
      */
+    #[Test]
     public function testCheckTrackingWithMaxAttempts()
     {
         $trackRequest = $this->getTrackRequest();
@@ -127,6 +131,7 @@ class TrackTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws Exception
      */
+    #[Test]
     public function testCheckTrackingWithException()
     {
         $trackRequest = $this->getTrackRequest();
@@ -155,6 +160,7 @@ class TrackTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws QueryException
      */
+    #[Test]
     public function testAdd()
     {
         $trackRequest = $this->getTrackRequest();
@@ -179,6 +185,7 @@ class TrackTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testClear()
     {
         $this->trackRepository
@@ -193,6 +200,7 @@ class TrackTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testClearWithFalse()
     {
         $this->trackRepository
@@ -208,6 +216,7 @@ class TrackTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testUnlock()
     {
         $this->trackRepository
@@ -224,6 +233,7 @@ class TrackTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testUnlockWithException()
     {
         $this->trackRepository
@@ -241,6 +251,7 @@ class TrackTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testBuildTrackRequest()
     {
         $this->request
@@ -262,6 +273,12 @@ class TrackTest extends UnitaryTestCase
         $this->trackRepository = $this->createMock(TrackRepository::class);
         $this->request = $this->createMock(RequestService::class);
 
-        $this->track = new Track($this->application, $this->trackRepository, $this->request);
+        $this->track = new Track(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->trackRepository,
+            $this->request
+        );
     }
 }

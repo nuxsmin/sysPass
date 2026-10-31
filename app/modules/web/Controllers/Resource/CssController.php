@@ -25,9 +25,11 @@
 namespace SP\Modules\Web\Controllers\Resource;
 
 use SP\Core\Bootstrap\Path;
-use SP\Domain\Http\Services\Request as HttpRequest;
-use SP\Infrastructure\File\FileHandler;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseStatus;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\File\Ports\FileHandlerInterface;
 
 /**
  * Class CssController
@@ -43,10 +45,8 @@ final class CssController extends ResourceBase
         'magnific-popup.min.css',
     ];
 
-    /**
-     * Return CSS resources
-     */
-    public function cssAction(): void
+    #[Action(ResponseType::CALLBACK)]
+    public function cssAction(): ActionResponse
     {
         $file = $this->request->analyzeString('f');
         $base = $this->request->analyzeString('b');
@@ -54,39 +54,47 @@ final class CssController extends ResourceBase
         if ($file && $base) {
             $files = $this->buildFiles(urldecode($base), explode(',', urldecode($file)), true);
 
-            $this->minify->builder()
-                         ->addFiles($files)
-                         ->getMinified();
-        } else {
-            $files = $this->buildFiles(
-                FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'vendor', 'css'),
-                self::CSS_MIN_FILES
+            return new ActionResponse(
+                ResponseStatus::OK,
+                function () use ($files) {
+                    $this->minify->builder()
+                                 ->addFiles($files)
+                                 ->getMinified();
+                }
             );
-
-            $this->minify->builder()
-                         ->addFiles($files, false)
-                ->addFile(
-                    new FileHandler(
-                        FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'css', 'fonts.min.css')
-                    ),
-                    false
-                )
-                         ->getMinified();
         }
+
+        $files = $this->buildFiles(
+            $this->fileSystem->buildPath($this->pathsContext[Path::PUBLIC], 'vendor', 'css'),
+            self::CSS_MIN_FILES
+        );
+
+        $fontFile = $this->fileHandlerFactory->create(
+            $this->fileSystem->buildPath($this->pathsContext[Path::PUBLIC], 'css', 'fonts.min.css')
+        );
+
+        return new ActionResponse(
+            ResponseStatus::OK,
+            function () use ($files, $fontFile) {
+                $this->minify->builder()
+                             ->addFiles($files, false)
+                             ->addFile($fontFile, false)
+                             ->getMinified();
+            }
+        );
     }
 
     /**
-     * @param string $base
-     * @param array $files
-     * @param bool $insecure
-     * @return FileHandler[]
+     * @return FileHandlerInterface[]
      */
     private function buildFiles(string $base, array $files, bool $insecure = false): array
     {
-        $base = $insecure ? HttpRequest::getSecureAppPath($base) : $base;
+        $base = $insecure ? $this->request->resolveSecureAppPath($base) : $base;
 
         return array_map(
-            fn(string $file) => new FileHandler(FileSystem::buildPath($base, $file)),
+            fn(string $file) => $this->fileHandlerFactory->create(
+                $this->fileSystem->buildPath($base, $file)
+            ),
             $files
         );
     }

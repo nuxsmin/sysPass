@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
@@ -34,8 +35,7 @@ use SP\Domain\Account\Services\AccountCache;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Account\Repositories\AccountToUserGroup;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -46,8 +46,8 @@ use SP\Tests\UnitaryTestCase;
 class AccountCacheTest extends UnitaryTestCase
 {
 
-    private AccountToUserRepository|MockObject $accountToUserRepository;
-    private AccountToUserGroup|MockObject      $accountToUserGroupRepository;
+    private AccountToUserRepository|MockObject      $accountToUserRepository;
+    private AccountToUserGroupRepository|MockObject $accountToUserGroupRepository;
     private AccountCache                       $accountCache;
 
     /**
@@ -55,6 +55,7 @@ class AccountCacheTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testGetCacheForAccount()
     {
         $accountId = self::$faker->randomNumber();
@@ -84,6 +85,7 @@ class AccountCacheTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testGetCacheForAccountWithCacheHit()
     {
         $accountId = self::$faker->randomNumber();
@@ -113,7 +115,9 @@ class AccountCacheTest extends UnitaryTestCase
         $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
 
         $this->accountCache = new AccountCache(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->accountToUserRepository,
             $this->accountToUserGroupRepository
         );

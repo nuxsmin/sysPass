@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Category\Adapters;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Category\Adapters\Category;
@@ -52,6 +53,7 @@ class CategoryTest extends UnitaryTestCase
     /**
      * @throws ActionNotFoundException
      */
+    #[Test]
     public function testAdapt(): void
     {
         $category = CategoryGenerator::factory()->buildCategory();
@@ -77,6 +79,7 @@ class CategoryTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testIncludeCustomFields(): void
     {
         $category = CategoryGenerator::factory()->buildCategory();

@@ -24,13 +24,14 @@
 
 namespace SP\Modules\Web\Controllers\Resource;
 
-use SP\Core\Application;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
+use SP\Domain\File\Ports\FileSystemService;
 use SP\Domain\Html\Ports\MinifyService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 /**
  * Class ResourceBase
@@ -43,12 +44,13 @@ abstract class ResourceBase extends SimpleControllerBase
      * @throws SPException
      */
     public function __construct(
-        Application                      $application,
         SimpleControllerHelper           $simpleControllerHelper,
         protected readonly MinifyService $minify,
-        protected readonly PathsContext  $pathsContext
+        protected readonly PathsContext  $pathsContext,
+        protected readonly FileHandlerFactoryInterface $fileHandlerFactory,
+        protected readonly FileSystemService $fileSystem
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
 
         $this->request->verifySignature($this->configData->getPasswordSalt());
     }

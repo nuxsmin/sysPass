@@ -29,8 +29,8 @@ namespace SP\Domain\Import\Services;
 use CallbackFilterIterator;
 use DOMElement;
 use DOMXPath;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
@@ -38,11 +38,10 @@ use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ItemsImportService;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SplObjectStorage;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class KeepassImport
@@ -215,11 +214,8 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
                     )
                 );
             } catch (SPException $e) {
-                processException($e);
-
                 $this->eventDispatcher->notify('exception', new Event($e));
             }
         }
     }
-
 }

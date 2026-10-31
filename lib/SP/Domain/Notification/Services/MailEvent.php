@@ -27,19 +27,22 @@ declare(strict_types=1);
 namespace SP\Domain\Notification\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Messages\MailMessage;
-use SP\Core\Messages\TextFormatter;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Attributes\EventReceiver as EventReceiverAttribute;
 use SP\Domain\Common\Services\EventReceiver as EventReceiverTrait;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
+use SP\Domain\Core\Messages\EventMessageFormatterInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Notification\Ports\MailService;
 
-use function SP\__;
-use function SP\processException;
+use function SP\__u;
 
 /**
  * Class MailEvent
@@ -67,11 +70,15 @@ final class MailEvent extends Service implements EventReceiver
     ];
 
     public function __construct(
-        Application                  $application,
-        private readonly MailService $mailService,
-        private readonly RequestService $request
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
+        private readonly MailService                   $mailService,
+        private readonly RequestService                $request,
+        private readonly EventMessageFormatterInterface $messageFormatter,
+        private readonly LoggerInterface               $logger = new NullLogger()
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->setupEvents($this->config->getConfigData()->getMailEvents() ?? []);
     }
@@ -113,16 +120,16 @@ final class MailEvent extends Service implements EventReceiver
                 if ($eventMessage->getDescriptionCounter() === 0
                     && $eventMessage->getDetailsCounter() === 0
                 ) {
-                    $mailMessage->addDescription(sprintf(__('Event: %s'), $eventType));
+                    $mailMessage->addDescription(sprintf(__u('Event: %s'), $eventType));
                 } else {
-                    $mailMessage->addDescription($eventMessage->composeText('<br>'));
+                    $mailMessage->addDescription($this->messageFormatter->composeText($eventMessage, '<br>'));
                 }
 
                 $mailMessage->addDescriptionLine();
 
                 $mailMessage->addDescription(
                     sprintf(
-                        __('Performed by: %s (%s)'),
+                        __u('Performed by: %s (%s)'),
                         $userData->name ?? 'sysPass',
                         $userData->login ?? 'APP'
                     )
@@ -130,16 +137,16 @@ final class MailEvent extends Service implements EventReceiver
 
                 $mailMessage->addDescription(
                     sprintf(
-                        __('IP Address: %s'),
+                        __u('IP Address: %s'),
                         $this->request->getClientAddress(true)
                     )
                 );
 
-                $subject = $eventMessage->getDescription(new TextFormatter(), true) ?: $eventType;
+                $subject = $this->messageFormatter->formatDescription($eventMessage, true) ?: $eventType;
 
                 $this->mailService->send($subject, $to, $mailMessage);
             } catch (Exception $e) {
-                processException($e);
+                $this->logger->error($e->getMessage());
             }
         }
     }

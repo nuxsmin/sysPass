@@ -34,6 +34,8 @@ use SP\Domain\Install\Adapters\InstallData;
  */
 interface InstallerService
 {
+    public const VERSION_TEXT = '4.0';
+
     /**
      * @throws InvalidArgumentException
      * @throws SPException

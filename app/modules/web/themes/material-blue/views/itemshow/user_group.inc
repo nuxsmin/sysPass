@@ -35,8 +35,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Models\UserToUserGroup;
-use SP\Mvc\View\Components\SelectItem;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\Components\SelectItem;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 use function SP\__;
 

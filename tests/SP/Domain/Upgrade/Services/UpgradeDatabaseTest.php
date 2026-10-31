@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Upgrade\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -50,6 +51,7 @@ class UpgradeDatabaseTest extends UnitaryTestCase
      * @throws Exception
      * @throws UpgradeException
      */
+    #[Test]
     public function testUpgrade()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
@@ -75,6 +77,7 @@ class UpgradeDatabaseTest extends UnitaryTestCase
      * @throws Exception
      * @throws UpgradeException
      */
+    #[Test]
     public function testUpgradeWithException()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
@@ -96,6 +99,7 @@ class UpgradeDatabaseTest extends UnitaryTestCase
      * @throws Exception
      * @throws UpgradeException
      */
+    #[Test]
     public function testUpgradeWithFileException()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
@@ -118,7 +122,12 @@ class UpgradeDatabaseTest extends UnitaryTestCase
 
         $this->database = $this->createMock(DatabaseInterface::class);
         $this->upgradeDatabase = new UpgradeDatabase(
-            $this->application, $this->database, $this->pathsContext[Path::SQL]
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->database,
+            $this->pathsContext[Path::SQL],
+            new \SP\Infrastructure\Database\DatabaseFileFactory()
         );
     }
 }

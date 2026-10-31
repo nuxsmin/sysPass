@@ -32,7 +32,7 @@ use SP\Domain\Common\Dtos\ItemDataTrait;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Domain\Html\Html;
+use SP\Domain\Common\Providers\Html;
 
 /**
  * Class AccountSearchItem

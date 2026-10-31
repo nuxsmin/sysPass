@@ -24,9 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\AccountManager;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountPresetService;
@@ -40,8 +39,8 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\AccountForm;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use SP\Util\Util;
 
 use function SP\__u;
@@ -62,15 +61,14 @@ final class SaveBulkEditController extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                            $application,
         WebControllerHelper                    $webControllerHelper,
         private readonly AccountService        $accountService,
         private readonly AccountHistoryService $accountHistoryService,
         AccountPresetService                   $accountPresetService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
-        $this->accountForm = new AccountForm($application, $this->request, $accountPresetService);
+        $this->accountForm = new AccountForm($this->config, $this->session, $this->request, $accountPresetService);
 
         $this->checkLoggedIn();
     }

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,49 +25,41 @@
 namespace SP\Modules\Web\Controllers\Track;
 
 use Exception;
-use JsonException;
-use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\UnauthorizedActionException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Security\UseCases\Dtos\UnlockTrackCommand;
+use SP\Domain\Security\UseCases\UnlockTrackUseCase;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class UnlockController
- *
- * @package SP\Modules\Web\Controllers
  */
 final class UnlockController extends TrackBase
 {
-    use JsonTrait;
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        private readonly UnlockTrackUseCase $unlockTrackUseCase
+    ) {
+        parent::__construct($webControllerHelper);
+    }
 
-    /**
-     * Unlocks a track
-     *
-     * @param  int  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function unlockAction(int $id): ?bool
+    #[Action(ResponseType::JSON)]
+    public function unlockAction(int $id): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::TRACK_UNLOCK)) {
-                throw new UnauthorizedActionException(SPException::ERROR);
-            }
-
-            $this->trackService->unlock($id);
-
-            $this->eventDispatcher->notify('unlock.track', new Event($this));
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Track unlocked'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::TRACK_UNLOCK)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        try {
+            $this->unlockTrackUseCase->execute(new UnlockTrackCommand($id));
+        } catch (Exception $e) {
+            return ActionResponse::error($e->getMessage());
+        }
+
+        return ActionResponse::ok(__u('Track unlocked'));
     }
 }

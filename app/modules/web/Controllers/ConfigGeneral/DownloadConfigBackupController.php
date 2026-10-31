@@ -26,22 +26,20 @@ namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
 use Klein\Response;
 use RuntimeException;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseStatus;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigBackupService;
-use SP\Domain\Config\Services\ConfigBackup;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__;
 use function SP\__u;
@@ -52,11 +50,10 @@ use function SP\__u;
 final class DownloadConfigBackupController extends SimpleControllerBase
 {
     public function __construct(
-        Application                            $application,
         SimpleControllerHelper                 $simpleControllerHelper,
         protected readonly ConfigBackupService $configBackupService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**
@@ -82,7 +79,7 @@ final class DownloadConfigBackupController extends SimpleControllerBase
             throw new RuntimeException('Not implemented');
         }
 
-        $data = ConfigBackup::configToJson($this->configBackupService->getBackup());
+        $data = $this->configBackupService->configToJson($this->configBackupService->getBackup());
 
         return new ActionResponse(
             ResponseStatus::OK,

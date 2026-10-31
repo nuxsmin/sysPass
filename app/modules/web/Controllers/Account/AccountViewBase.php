@@ -24,11 +24,10 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
-use SP\Core\UI\ThemeIcons;
+use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * A class for al viewable actions
@@ -38,12 +37,11 @@ abstract class AccountViewBase extends AccountControllerBase
     protected readonly ThemeIcons $icons;
 
     public function __construct(
-        Application                       $application,
         WebControllerHelper               $webControllerHelper,
         protected readonly AccountService $accountService,
         protected readonly AccountHelper  $accountHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->icons = $this->theme->getIcons();
     }

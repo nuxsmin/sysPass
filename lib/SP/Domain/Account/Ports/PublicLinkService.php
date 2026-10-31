@@ -37,8 +37,8 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class PublicLinkService
@@ -47,6 +47,8 @@ use SP\Infrastructure\Database\QueryResult;
  */
 interface PublicLinkService
 {
+    public function buildLinkUrl(string $baseUrl, string $hash): string;
+
     /**
      * @throws ConstraintException
      * @throws QueryException

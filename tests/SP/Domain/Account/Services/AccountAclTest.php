@@ -29,6 +29,7 @@ namespace SP\Tests\Domain\Account\Services;
 use DateTime;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Acl\Acl;
@@ -46,7 +47,7 @@ use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserToUserGroupService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -182,6 +183,7 @@ class AccountAclTest extends UnitaryTestCase
      * @throws QueryException
      */
     #[Group('acl:admin')]
+    #[Test]
     public function testGetAclForAdminApp(): void
     {
         $this->context
@@ -219,10 +221,12 @@ class AccountAclTest extends UnitaryTestCase
         AccountPermission $example
     ): void {
         $accountAcl = new AccountAcl(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->acl,
             $this->userToUserGroupService,
-            $this->pathsContext
+            $this->appPaths, $this->fileSystem
         );
 
         foreach (self::ACTIONS as $action) {
@@ -393,6 +397,7 @@ class AccountAclTest extends UnitaryTestCase
      * @throws ConstraintException
      */
     #[Group('acl:admin')]
+    #[Test]
     public function testGetAclForAdminAcc(): void
     {
         $this->context
@@ -433,6 +438,7 @@ class AccountAclTest extends UnitaryTestCase
      */
     #[Group('acl:admin')]
     #[DataProvider('accountPropertiesProvider')]
+    #[Test]
     public function testCheckViewPass(
         int $accountId,
         int $userId,
@@ -468,6 +474,7 @@ class AccountAclTest extends UnitaryTestCase
      */
     #[Group('acl:admin')]
     #[DataProvider('accountPropertiesProvider')]
+    #[Test]
     public function testCheckDelete(
         int $accountId,
         int $userId,
@@ -503,6 +510,7 @@ class AccountAclTest extends UnitaryTestCase
      */
     #[Group('acl:admin')]
     #[DataProvider('accountPropertiesProvider')]
+    #[Test]
     public function testEditPass(
         int $accountId,
         int $userId,
@@ -538,6 +546,7 @@ class AccountAclTest extends UnitaryTestCase
      */
     #[Group('acl:admin')]
     #[DataProvider('accountPropertiesProvider')]
+    #[Test]
     public function testEditAndRestore(
         int $accountId,
         int $userId,
@@ -574,6 +583,7 @@ class AccountAclTest extends UnitaryTestCase
      */
     #[Group('acl:admin')]
     #[DataProvider('accountPropertiesProvider')]
+    #[Test]
     public function testCheckPermission(
         int $accountId,
         int $userId,
@@ -609,6 +619,7 @@ class AccountAclTest extends UnitaryTestCase
      */
     #[Group('acl:admin')]
     #[DataProvider('accountPropertiesProvider')]
+    #[Test]
     public function testViewFiles(
         int $accountId,
         int $userId,
@@ -644,6 +655,7 @@ class AccountAclTest extends UnitaryTestCase
      */
     #[Group('acl:admin')]
     #[DataProvider('accountPropertiesProvider')]
+    #[Test]
     public function testCheckView(
         int $accountId,
         int $userId,
@@ -680,6 +692,7 @@ class AccountAclTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testCacheIsUsedWithHit(): void
     {
         $dto = new AccountAclDto(
@@ -707,10 +720,12 @@ class AccountAclTest extends UnitaryTestCase
         );
 
         $accountAclService = new AccountAcl(
-            $this->application,
-            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            new Acl($this->context, $this->eventDispatcherStub, $actions),
             $userToUserGroupService,
-            $this->pathsContext,
+            $this->appPaths, $this->fileSystem,
             $fileCache
         );
 
@@ -730,6 +745,7 @@ class AccountAclTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCacheIsUsedWithMiss(): void
     {
         $dto = new AccountAclDto(
@@ -747,10 +763,12 @@ class AccountAclTest extends UnitaryTestCase
         $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAcl(
-            $this->application,
-            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            new Acl($this->context, $this->eventDispatcherStub, $actions),
             $userToUserGroupService,
-            $this->pathsContext,
+            $this->appPaths, $this->fileSystem,
             $fileCache
         );
 
@@ -778,6 +796,7 @@ class AccountAclTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCacheLoadThrowsExceptionAndLogged(): void
     {
         $dto = new AccountAclDto(
@@ -795,10 +814,12 @@ class AccountAclTest extends UnitaryTestCase
         $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAcl(
-            $this->application,
-            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            new Acl($this->context, $this->eventDispatcherStub, $actions),
             $userToUserGroupService,
-            $this->pathsContext,
+            $this->appPaths, $this->fileSystem,
             $fileCache
         );
 
@@ -815,6 +836,7 @@ class AccountAclTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCacheSaveThrowsExceptionAndLogged(): void
     {
         $dto = new AccountAclDto(
@@ -832,10 +854,12 @@ class AccountAclTest extends UnitaryTestCase
         $actions = $this->createMock(ActionsInterface::class);
 
         $accountAclService = new AccountAcl(
-            $this->application,
-            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            new Acl($this->context, $this->eventDispatcherStub, $actions),
             $userToUserGroupService,
-            $this->pathsContext,
+            $this->appPaths, $this->fileSystem,
             $fileCache
         );
 
@@ -858,7 +882,7 @@ class AccountAclTest extends UnitaryTestCase
 
         $actions = $this->createMock(ActionsInterface::class);
 
-        $this->acl = new Acl($this->context, $this->application->getEventDispatcher(), $actions);
+        $this->acl = new Acl($this->context, $this->eventDispatcherStub, $actions);
         $this->userToUserGroupService = $this->createMock(UserToUserGroupService::class);
         $this->userToUserGroupService->method('getGroupsForUser')
                                      ->willReturnMap([

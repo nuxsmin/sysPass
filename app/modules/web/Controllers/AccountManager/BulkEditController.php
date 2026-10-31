@@ -24,8 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\AccountManager;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
@@ -41,9 +40,9 @@ use SP\Domain\Tag\Ports\TagService;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
-use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 
 use function SP\__;
 use function SP\__u;
@@ -62,7 +61,6 @@ final class BulkEditController extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                       $application,
         WebControllerHelper               $webControllerHelper,
         private readonly CategoryService  $categoryService,
         private readonly ClientService    $clientService,
@@ -70,7 +68,7 @@ final class BulkEditController extends ControllerBase
         private readonly UserService      $userService,
         private readonly UserGroupService $userGroupService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

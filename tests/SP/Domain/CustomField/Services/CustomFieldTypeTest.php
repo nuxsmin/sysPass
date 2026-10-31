@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\CustomField\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -33,7 +34,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldTypeRepository;
 use SP\Domain\CustomField\Ports\CustomFieldTypeService;
 use SP\Domain\CustomField\Services\CustomFieldType;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\CustomFieldTypeGenerator;
 use SP\Tests\UnitaryTestCase;
 use TypeError;
@@ -54,6 +55,7 @@ class CustomFieldTypeTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetAll()
     {
         $customFieldType = CustomFieldTypeGenerator::factory()->buildCustomFieldType();
@@ -73,6 +75,7 @@ class CustomFieldTypeTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetAllWithInvalidClass()
     {
         $this->customFieldTypeRepository
@@ -92,7 +95,9 @@ class CustomFieldTypeTest extends UnitaryTestCase
         $this->customFieldTypeRepository = $this->createMock(CustomFieldTypeRepository::class);
 
         $this->customFieldType = new CustomFieldType(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->customFieldTypeRepository
         );
     }

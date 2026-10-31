@@ -71,11 +71,12 @@ final class UserGroupForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->groupData = new UserGroup();
-        $this->groupData->setId($this->itemId);
-        $this->groupData->setName($this->request->analyzeString('name'));
-        $this->groupData->setDescription($this->request->analyzeString('description'));
-        $this->groupData->setUsers($this->request->analyzeArray('users', null, []));
+        $this->groupData = new UserGroup([
+            'id' => $this->itemId,
+            'name' => $this->request->analyzeString('name'),
+            'description' => $this->request->analyzeString('description'),
+            'users' => $this->request->analyzeArray('users', null, []),
+        ]);
     }
 
     /**

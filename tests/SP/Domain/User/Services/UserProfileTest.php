@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\User\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -34,9 +35,9 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserProfileRepository;
 use SP\Domain\User\Services\UserProfile;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\UserProfileDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -55,6 +56,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testGetById()
     {
         $userProfile = UserProfileDataGenerator::factory()->buildUserProfileData();
@@ -75,6 +77,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByIdWithNoItems()
     {
         $userProfile = UserProfileDataGenerator::factory()->buildUserProfileData();
@@ -96,6 +99,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $userProfile = UserProfileDataGenerator::factory()->buildUserProfileData();
@@ -109,6 +113,7 @@ class UserProfileTest extends UnitaryTestCase
         $this->assertEquals(100, $this->userProfile->create($userProfile));
     }
 
+    #[Test]
     public function testGetAll()
     {
         $userProfile = UserProfileDataGenerator::factory()->buildUserProfileData();
@@ -129,6 +134,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $userProfile = UserProfileDataGenerator::factory()->buildUserProfileData();
@@ -148,6 +154,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateWithException()
     {
         $userProfile = UserProfileDataGenerator::factory()->buildUserProfileData();
@@ -169,6 +176,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $this->userProfileRepository
@@ -185,6 +193,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithException()
     {
         $this->userProfileRepository
@@ -199,6 +208,7 @@ class UserProfileTest extends UnitaryTestCase
         $this->userProfile->deleteByIdBatch([100, 200, 300]);
     }
 
+    #[Test]
     public function testSearch()
     {
         $itemSearchData = new ItemSearchDto(
@@ -225,6 +235,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $this->userProfileRepository
@@ -241,6 +252,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithException()
     {
         $this->userProfileRepository
@@ -255,6 +267,7 @@ class UserProfileTest extends UnitaryTestCase
         $this->userProfile->delete(100);
     }
 
+    #[Test]
     public function testGetUsersForProfile()
     {
         $userProfile = UserProfileDataGenerator::factory()->buildUserProfileData();
@@ -276,6 +289,11 @@ class UserProfileTest extends UnitaryTestCase
 
         $this->userProfileRepository = $this->createMock(UserProfileRepository::class);
 
-        $this->userProfile = new UserProfile($this->application, $this->userProfileRepository);
+        $this->userProfile = new UserProfile(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->userProfileRepository
+        );
     }
 }

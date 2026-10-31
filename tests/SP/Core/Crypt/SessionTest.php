@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Core\Crypt;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Session;
@@ -50,6 +51,7 @@ class SessionTest extends UnitaryTestCase
      * @throws Exception
      * @throws CryptException
      */
+    #[Test]
     public function testGetSessionKey()
     {
         $sidStartTime = self::$faker->unixTime;
@@ -80,6 +82,7 @@ class SessionTest extends UnitaryTestCase
      * @throws Exception
      * @throws SPException
      */
+    #[Test]
     public function testReKey()
     {
         $sidStartTime = self::$faker->unixTime;
@@ -116,6 +119,7 @@ class SessionTest extends UnitaryTestCase
     /**
      * @throws CryptException
      */
+    #[Test]
     public function testSaveSessionKey()
     {
         $this->sessionContext

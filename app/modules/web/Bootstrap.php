@@ -34,7 +34,7 @@ use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -49,6 +49,7 @@ use SP\Util\Util;
 
 use function SP\logger;
 use function SP\processException;
+use function SP\__;
 
 /**
  * Class Bootstrap
@@ -75,6 +76,16 @@ final class Bootstrap extends BootstrapBase
     protected function configureRouter(): void
     {
         $this->router->respond(['GET', 'POST'], '@(?!/api\.php)', $this->manageWebRequest());
+    }
+
+    private static function getClassFor(string $module, string $controllerName, string $actionName): string
+    {
+        return sprintf(
+            'SP\Modules\%s\Controllers\%s\%sController',
+            ucfirst($module),
+            ucfirst($controllerName),
+            ucfirst($actionName)
+        );
     }
 
     private function manageWebRequest(): Closure
@@ -173,6 +184,30 @@ final class Bootstrap extends BootstrapBase
     }
 
     /**
+     * Translates the response subject at the web boundary.
+     */
+    private function translateResponse(ActionResponse $actionResponse): ActionResponse
+    {
+        $subject = $actionResponse->subject;
+
+        if (is_string($subject)) {
+            $subject = __($subject);
+        } elseif (is_array($subject)) {
+            $subject = array_map(
+                static fn($value) => is_string($value) ? __($value) : $value,
+                $subject
+            );
+        }
+
+        return new ActionResponse(
+            $actionResponse->status,
+            $subject,
+            $actionResponse->extra,
+            $actionResponse->itemId
+        );
+    }
+
+    /**
      * @param ReflectionMethod $method
      * @param ActionResponse $actionResponse
      * @param Response $response
@@ -194,10 +229,10 @@ final class Bootstrap extends BootstrapBase
         switch ($attribute->newInstance()->responseType) {
             case ResponseType::JSON:
                 $this->response->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_JSON->value);
-                $response->body(ActionResponse::toJson($actionResponse));
+                $response->body(ActionResponse::toJson($this->translateResponse($actionResponse)));
                 break;
             case ResponseType::PLAIN_TEXT:
-                $response->body(ActionResponse::toPlain($actionResponse));
+                $response->body(ActionResponse::toPlain($this->translateResponse($actionResponse)));
                 break;
             case ResponseType::CALLBACK:
                 if ($actionResponse->subject instanceof Closure) {

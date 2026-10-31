@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# php — pinned PHP entry point for the AI kit ($PHP_BIN in ../env.sh).
+#
+# Runs the repo's PHP inside the pinned Docker image (php-testing-composer),
+# never the host PHP. The repo is bind-mounted at the same absolute path so
+# arguments, composer autoload paths, and config files resolve unchanged.
+#
+# Usage:
+#   "$PHP_BIN" -v
+#   "$PHP_BIN" -l app/modules/api/Controllers/Controller.php
+#   "$PHP_BIN" vendor/bin/phpunit --filter SomeTest
+#   "$PHP_BIN" vendor/bin/phpstan analyse --level 6 lib
+#
+# Env:
+#   PHP_IMAGE       image to run (default php-testing-composer:latest)
+#   XDEBUG_MODE     passed through; default "off" for speed
+#
+# The image is built from .ai-cli/docker/Dockerfile.composer:
+#   make -C .ai-cli/docker build
+set -euo pipefail
+
+_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOCKER_BIN="${DOCKER_BIN:-$_SCRIPT_DIR/docker}"
+PHP_IMAGE="${PHP_IMAGE:-php-testing-composer:latest}"
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+
+if ! "$DOCKER_BIN" image inspect "$PHP_IMAGE" > /dev/null 2>&1; then
+  echo "ERROR: PHP image not found: $PHP_IMAGE" >&2
+  echo "Build it with: make -C \"$REPO_ROOT/.ai-cli/docker\" build" >&2
+  exit 1
+fi
+
+# HOME + XDG caches must be writable (image runs as an unprivileged user).
+exec "$DOCKER_BIN" run --rm \
+  --user "$(id -u):$(id -g)" \
+  -e HOME=/tmp \
+  -e XDEBUG_MODE="${XDEBUG_MODE:-off}" \
+  -v "$REPO_ROOT:$REPO_ROOT" \
+  -w "$REPO_ROOT" \
+  "$PHP_IMAGE" php "$@"

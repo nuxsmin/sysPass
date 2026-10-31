@@ -27,9 +27,8 @@ namespace SP\Modules\Cli\Commands;
 use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use SP\Core\Bootstrap\Path;
-use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Ports\AppPaths;
 use SP\Domain\Export\Ports\BackupFileService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -62,7 +61,7 @@ final class BackupCommand extends CommandBase
         private readonly BackupFileService $fileBackupService,
         LoggerInterface                    $logger,
         ConfigFileService                  $config,
-        private readonly PathsContext      $pathsContext
+        private readonly AppPaths          $appPaths
     ) {
         parent::__construct($logger, $config);
     }
@@ -76,7 +75,7 @@ final class BackupCommand extends CommandBase
                 null,
                 InputOption::VALUE_OPTIONAL,
                 __('Path where to store the backup files'),
-                $this->pathsContext[Path::BACKUP]
+                $this->appPaths->getBackupPath()
             );
     }
 
@@ -91,9 +90,19 @@ final class BackupCommand extends CommandBase
 
             $path = $this->getPath($input, $style);
 
+            if (!is_dir($path) && !@mkdir($path, 0750) && !is_dir($path)) {
+                throw new RuntimeException(
+                    sprintf(__('Unable to create the backups directory ("%s")'), $path)
+                );
+            }
+
+            if (!is_writable($path)) {
+                throw new RuntimeException(__u('Please, check the backup directory permissions'));
+            }
+
             $this->logger->info(sprintf(__u('Backup path set to: %s'), $path));
 
-            $this->fileBackupService->doBackup($path, $this->pathsContext[Path::APP]);
+            $this->fileBackupService->doBackup($path, $this->appPaths->getApplicationPath());
 
             $this->logger->info(__u('Application and database backup completed successfully'));
 
@@ -131,7 +140,7 @@ final class BackupCommand extends CommandBase
 
             return $style->ask(
                 __('Please enter the path where to store the backup files'),
-                $this->pathsContext[Path::BACKUP]
+                $this->appPaths->getBackupPath()
             );
         }
 

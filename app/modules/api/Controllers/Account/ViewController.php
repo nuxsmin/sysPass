@@ -24,15 +24,16 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-
-use Exception;
 use League\Fractal\Resource\Item;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Util\Util;
+use function SP\__u;
 
 /**
  * Class ViewController
@@ -42,51 +43,45 @@ final class ViewController extends AccountBase
     /**
      * viewAction
      */
-    public function viewAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function viewAction(): ActionResponse
     {
+        $this->setupApi(AclActionsInterface::ACCOUNT_VIEW);
 
-        try {
-            $this->setupApi(AclActionsInterface::ACCOUNT_VIEW);
+        $id = $this->apiService->getParamInt('id', true);
+        $customFields = Util::boolval($this->apiService->getParamString('customFields'));
 
-            $id = $this->apiService->getParamInt('id', true);
-            $customFields = Util::boolval($this->apiService->getParamString('customFields'));
-
-            if ($customFields) {
-                $this->apiService->requireMasterPass();
-            }
-
-            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
-
-            $this->accountService->incrementViewCounter($id);
-
-            $accountEnrichedDto = new AccountEnrichedDto($accountDetails);
-            $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
-            $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
-            $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
-
-            $this->eventDispatcher->notify(
-                'show.account',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Account displayed'))
-                        ->addDetail(__u('Name'), $accountDetails->getName())
-                        ->addDetail(__u('Client'), $accountDetails->getClientName())
-                        ->addDetail('ID', $id)
-                )
-            );
-
-            $out = $this->fractal->createData(new Item($accountEnrichedDto, $this->accountAdapter));
-
-            if ($customFields) {
-                $this->fractal->parseIncludes(['customFields']);
-            }
-
-            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), $id));
-        } catch (Exception $e) {
-            $this->returnResponseException($e);
-
-            processException($e);
+        if ($customFields) {
+            $this->apiService->requireMasterPass();
         }
+
+        $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
+
+        $this->accountService->incrementViewCounter($id);
+
+        $accountEnrichedDto = new AccountEnrichedDto($accountDetails);
+        $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
+        $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
+        $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
+
+        $this->eventDispatcher->notify(
+            'show.account',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Account displayed'))
+                    ->addDetail(__u('Name'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    ->addDetail('ID', $id)
+            )
+        );
+
+        $out = $this->fractal->createData(new Item($accountEnrichedDto, $this->accountAdapter));
+
+        if ($customFields) {
+            $this->fractal->parseIncludes(['customFields']);
+        }
+
+        return ActionResponse::ok('', $out->toArray(), $id);
     }
 }

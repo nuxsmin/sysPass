@@ -25,76 +25,33 @@
 namespace SP\Modules\Web\Controllers\Tag;
 
 
-use JsonException;
-use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Tag\Ports\TagService;
-use SP\Html\DataGrid\DataGridInterface;
-use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Grid\TagGrid;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Domain\Tag\UseCases\Dtos\SearchTagsCommand;
+use SP\Domain\Tag\UseCases\SearchTagsUseCase;
+use SP\Modules\Web\Presenters\Helpers\Grid\TagGrid;
+use SP\Modules\Web\Controllers\SearchGridControllerBase;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class SearchController
  */
-final class SearchController extends ControllerBase
+final class SearchController extends SearchGridControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
-
-    private TagService $tagService;
-    private TagGrid    $tagGrid;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
-        TagService  $tagService,
-        TagGrid     $tagGrid
+        private readonly SearchTagsUseCase $searchTagsUseCase,
+        private readonly TagGrid $tagGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->tagService = $tagService;
-        $this->tagGrid = $tagGrid;
     }
 
-    /**
-     * Search action
-     *
-     * @return bool
-     * @throws JsonException
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function searchAction(): bool
-    {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_SEARCH)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
-            );
-        }
-
-        $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
-        $this->view->assign('data', $this->getSearchGrid());
-
-        return $this->returnJsonResponseData(['html' => $this->render()]);
-    }
-
-    /**
-     * getSearchGrid
-     *
-     * @return DataGridInterface
-     * @throws ConstraintException
-     * @throws QueryException
-     */
     protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData(
@@ -102,9 +59,18 @@ final class SearchController extends ControllerBase
             $this->request
         );
 
+        $result = $this->searchTagsUseCase->execute(new SearchTagsCommand($itemSearchData));
+
         return $this->tagGrid->updatePager(
-            $this->tagGrid->getGrid($this->tagService->search($itemSearchData)),
+            $this->tagGrid->getGrid(
+                QueryResult::withTotalNumRows($result->tags, $result->total)
+            ),
             $itemSearchData
         );
+    }
+
+    protected function getAclAction(): int
+    {
+        return AclActionsInterface::TAG_SEARCH;
     }
 }

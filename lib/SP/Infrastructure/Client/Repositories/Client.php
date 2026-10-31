@@ -33,10 +33,10 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -121,13 +121,9 @@ final class Client extends BaseRepository implements ClientRepository
             ->newUpdate()
             ->table(ClientModel::TABLE)
             ->cols($client->toArray(null, ['id', 'hash']))
+            ->col('hash', $this->makeItemHash($client->getName()))
             ->where('id = :id')
-            ->bindValues(
-                [
-                    'id' => $client->getId(),
-                    'hash' => $this->makeItemHash($client->getName())
-                ]
-            );
+            ->bindValues(['id' => $client->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the client'));
 

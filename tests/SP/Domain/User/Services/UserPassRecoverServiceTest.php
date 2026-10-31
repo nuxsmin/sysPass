@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\User\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -35,7 +36,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Models\UserPassRecover as UserPassRecoverModel;
 use SP\Domain\User\Ports\UserPassRecoverRepository;
 use SP\Domain\User\Services\UserPassRecover;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -51,6 +52,7 @@ class UserPassRecoverServiceTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetUserIdForHash()
     {
         $this->userPassRecoverRepository
@@ -67,6 +69,7 @@ class UserPassRecoverServiceTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetUserIdForHashWithNoRows()
     {
         $this->userPassRecoverRepository
@@ -87,6 +90,7 @@ class UserPassRecoverServiceTest extends UnitaryTestCase
      * @throws QueryException
      * @throws EnvironmentIsBrokenException
      */
+    #[Test]
     public function testRequestForUserId()
     {
         $this->userPassRecoverRepository
@@ -111,6 +115,7 @@ class UserPassRecoverServiceTest extends UnitaryTestCase
      * @throws QueryException
      * @throws EnvironmentIsBrokenException
      */
+    #[Test]
     public function testRequestForUserIdWithMaxAttempts()
     {
         $this->userPassRecoverRepository
@@ -133,6 +138,7 @@ class UserPassRecoverServiceTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testToggleUsedByHash()
     {
         $this->userPassRecoverRepository
@@ -148,6 +154,7 @@ class UserPassRecoverServiceTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testToggleUsedByHashWithNoRows()
     {
         $this->userPassRecoverRepository
@@ -166,6 +173,7 @@ class UserPassRecoverServiceTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testAdd()
     {
         $this->userPassRecoverRepository
@@ -182,7 +190,12 @@ class UserPassRecoverServiceTest extends UnitaryTestCase
 
         $this->userPassRecoverRepository = $this->createMock(UserPassRecoverRepository::class);
 
-        $this->userPassRecover = new UserPassRecover($this->application, $this->userPassRecoverRepository);
+        $this->userPassRecover = new UserPassRecover(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->userPassRecoverRepository
+        );
     }
 
 

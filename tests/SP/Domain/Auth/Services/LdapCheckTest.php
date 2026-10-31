@@ -28,13 +28,14 @@ namespace SP\Tests\Domain\Auth\Services;
 
 use ArrayIterator;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
-use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
-use SP\Domain\Auth\Providers\Ldap\LdapResults;
-use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Auth\Exceptions\LdapException;
+use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Auth\Dtos\LdapResults;
+use SP\Domain\Auth\Enums\LdapTypeEnum;
 use SP\Domain\Auth\Services\LdapCheck;
 use SP\Tests\UnitaryTestCase;
 
@@ -52,6 +53,7 @@ class LdapCheckTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testGetObjectsByFilterWithParams()
     {
         $ldapData = $this->getLdapData();
@@ -104,6 +106,7 @@ class LdapCheckTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testGetObjectsByFilterWithConnectionException()
     {
         $this->ldapActionsService
@@ -124,6 +127,7 @@ class LdapCheckTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testGetObjectsByFilterWithObjectsException()
     {
         $this->ldapActionsService
@@ -140,6 +144,7 @@ class LdapCheckTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testGetObjectsWithParams()
     {
         $ldapParams = $this->getLdapParams();
@@ -177,6 +182,7 @@ class LdapCheckTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testGetObjectsWithNoParams()
     {
         $ldapDataUsers = $this->getLdapData();
@@ -219,6 +225,7 @@ class LdapCheckTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testGetObjectsWitConnectionException()
     {
         $this->ldapActionsService
@@ -239,6 +246,7 @@ class LdapCheckTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testGetObjectsWitObjectsException()
     {
         $this->ldapActionsService
@@ -262,7 +270,7 @@ class LdapCheckTest extends UnitaryTestCase
         $this->ldapCheck = new LdapCheck(
             $this->ldapConnection,
             $this->ldapActionsService,
-            $this->application->getEventDispatcher()
+            $this->eventDispatcherStub
         );
     }
 }

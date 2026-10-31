@@ -27,8 +27,8 @@ namespace SP\Tests;
 
 use Exception;
 use PDO;
-use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\Database\DatabaseException;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
+use SP\Domain\Core\Exceptions\DatabaseException;
 
 /**
  * Trait DatabaseUtil
@@ -55,14 +55,24 @@ class DatabaseUtil
         $query = 'GRANT ALL PRIVILEGES ON `%s`.* TO \'%s\'@\'%s\' IDENTIFIED BY \'%s\'';
 
         $conn = self::getConnection();
-        $conn->exec(sprintf($query, $database, $user, SELF_IP_ADDRESS, $pass));
+
+        $hosts = [SELF_IP_ADDRESS, $host];
 
         // Long hostname returned on CI/CD tests
         if (strlen(SELF_HOSTNAME) < 60) {
-            $conn->exec(sprintf($query, $database, $user, SELF_HOSTNAME, $pass));
+            $hosts[] = SELF_HOSTNAME;
         }
 
-        $conn->exec(sprintf($query, $database, $user, $host, $pass));
+        $statement = $conn->query('SELECT SUBSTRING_INDEX(USER(), \'@\', -1)');
+        $clientHost = $statement !== false ? $statement->fetchColumn() : false;
+
+        if (is_string($clientHost) && $clientHost !== '') {
+            $hosts[] = $clientHost;
+        }
+
+        foreach (array_unique($hosts) as $grantHost) {
+            $conn->exec(sprintf($query, $database, $user, $grantHost, $pass));
+        }
     }
 
     /**
@@ -71,10 +81,14 @@ class DatabaseUtil
      */
     public static function getConnection(): PDO
     {
-        $data = (new DatabaseConnectionData())
-            ->setDbHost(getenv('DB_SERVER'))
-            ->setDbUser(getenv('DB_USER'))
-            ->setDbPass(getenv('DB_PASS'));
+        $data = DatabaseConnectionData::build(
+            null,
+            getenv('DB_SERVER') ?: null,
+            getenv('DB_PORT') ? (int)getenv('DB_PORT') : null,
+            getenv('DB_NAME') ?: null,
+            getenv('DB_USER') ?: null,
+            getenv('DB_PASS') ?: null
+        );
 
         return getDbHandler($data)->getConnectionSimple();
     }

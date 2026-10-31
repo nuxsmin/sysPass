@@ -24,64 +24,40 @@
 
 namespace SP\Modules\Web\Controllers\Plugin;
 
-
 use Exception;
-use JsonException;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Plugin\Ports\PluginManagerService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Plugin\UseCases\Dtos\TogglePluginCommand;
+use SP\Domain\Plugin\UseCases\TogglePluginUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class EnableController
  */
 final class EnableController extends ControllerBase
 {
-    use JsonTrait;
-
-    private PluginManagerService $pluginService;
-
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
-        PluginManagerService $pluginService
+        private readonly TogglePluginUseCase $togglePluginUseCase
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->pluginService = $pluginService;
     }
 
-    /**
-     * enableAction
-     *
-     * @param  int  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function enableAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function enableAction(int $id): ActionResponse
     {
         try {
-            $this->pluginService->toggleEnabled($id, true);
-
-            $this->eventDispatcher->notify(
-                'edit.plugin.enable',
-                new Event($this, EventMessage::build()->addDescription(__u('Plugin enabled')))
-            );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Plugin enabled'));
+            $this->togglePluginUseCase->execute(new TogglePluginCommand($id, true));
         } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
+
+        return ActionResponse::ok(__u('Plugin enabled'));
     }
 }

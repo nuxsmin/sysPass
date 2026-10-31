@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,66 +25,57 @@
 namespace SP\Modules\Web\Controllers\User;
 
 
-use Exception;
-use JsonException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\Notification\Ports\MailService;
+use SP\Domain\User\Ports\UserPassRecoverService;
+use SP\Domain\User\UseCases\Dtos\UpdateUserPassCommand;
+use SP\Domain\User\UseCases\UpdateUserPassUseCase;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class SaveEditPassController
  */
 final class SaveEditPassController extends UserSaveBase
 {
-    use JsonTrait;
-
-    /**
-     * Saves edit action
-     *
-     * @param  int  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function saveEditPassAction(int $id): bool
-    {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT_PASS, $id)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $this->form->validateFor(AclActionsInterface::USER_EDIT_PASS, $id);
-
-            $itemData = $this->form->getItemData();
-
-            $this->userService->updatePass($id, $itemData->getPass());
-
-            $this->eventDispatcher->notify(
-                'edit.user.pass',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Password updated'))
-                        ->addDetail(__u('User'), $id)
-                )
-            );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Password updated'));
-        } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
-        }
+    public function __construct(
+        WebControllerHelper    $webControllerHelper,
+        private readonly UpdateUserPassUseCase $updateUserPassUseCase,
+        CustomFieldDataService $customFieldService,
+        MailService            $mailService,
+        UserPassRecoverService $userPassRecoverService
+    ) {
+        parent::__construct(
+            $webControllerHelper,
+            $customFieldService,
+            $mailService,
+            $userPassRecoverService
+        );
     }
 
+    #[Action(ResponseType::JSON)]
+    public function saveEditPassAction(int $id): ActionResponse
+    {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT_PASS, $id)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
+        try {
+            $this->form->validateFor(AclActionsInterface::USER_EDIT_PASS, $id);
+
+            $this->updateUserPassUseCase->execute(
+                new UpdateUserPassCommand($id, (string)$this->form->getItemData()->getPass())
+            );
+        } catch (SPException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
+        }
+
+        return ActionResponse::ok(__u('Password updated'));
+    }
 }

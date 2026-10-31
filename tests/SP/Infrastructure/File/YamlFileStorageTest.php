@@ -27,9 +27,10 @@ declare(strict_types=1);
 namespace SP\Tests\Infrastructure\File;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\YamlFileStorage;
 use SP\Tests\UnitaryTestCase;
 
@@ -50,6 +51,7 @@ class YamlFileStorageTest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testLoad()
     {
         $file = TMP_PATH . DIRECTORY_SEPARATOR . 'test.yaml';
@@ -70,6 +72,7 @@ class YamlFileStorageTest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testSave()
     {
         $this->fileHandler
@@ -83,6 +86,7 @@ class YamlFileStorageTest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testGetFileTime()
     {
         $time = self::$faker->unixTime();

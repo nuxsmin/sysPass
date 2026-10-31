@@ -28,8 +28,8 @@ namespace SP\Tests\Modules\Cli\Commands;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use SP\Domain\Config\Services\ConfigFile;
-use SP\Infrastructure\Database\DatabaseException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Exceptions\DatabaseException;
 use SP\Modules\Cli\Commands\InstallCommand;
 use SP\Tests\DatabaseUtil;
 use SP\Tests\Modules\Cli\CliTestCase;
@@ -38,6 +38,7 @@ use function SP\Tests\getResource;
 use function SP\Tests\recreateDir;
 use function SP\Tests\saveResource;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  *
@@ -93,6 +94,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testInstallationIsAborted(): void
     {
         $commandTester = $this->executeCommandTest(InstallCommand::class);
@@ -106,6 +108,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testNoDatabaseConnection(): void
     {
         $inputData = array_merge(
@@ -127,6 +130,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testEmptyAdminPassword(): void
     {
         $inputData = array_merge(
@@ -148,6 +152,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testEmptyMasterPassword(): void
     {
         $inputData = array_merge(
@@ -170,6 +175,7 @@ class InstallCommandTest extends CliTestCase
      * @throws NotFoundException
      * @throws DatabaseException
      */
+    #[Test]
     public function testInstallIsSuccessful(): void
     {
         $inputData = array_merge(
@@ -191,7 +197,7 @@ class InstallCommandTest extends CliTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
 
         // Cleanup database
         DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
@@ -203,6 +209,7 @@ class InstallCommandTest extends CliTestCase
      * @throws NotFoundException
      * @throws DatabaseException
      */
+    #[Test]
     public function testInstallAndLanguageIsSet(): void
     {
         $inputData = array_merge(
@@ -225,7 +232,7 @@ class InstallCommandTest extends CliTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
 
         $this->assertEquals($configData->getSiteLang(), $inputData['--language']);
 
@@ -239,6 +246,7 @@ class InstallCommandTest extends CliTestCase
      * @throws NotFoundException
      * @throws DatabaseException
      */
+    #[Test]
     public function testInstallAndHostingModeIsUsed(): void
     {
         $databaseUser = 'syspass';
@@ -263,28 +271,31 @@ class InstallCommandTest extends CliTestCase
             ]
         );
 
-        $commandTester = $this->executeCommandTest(
-            InstallCommand::class,
-            $inputData
-        );
+        try {
+            $commandTester = $this->executeCommandTest(
+                InstallCommand::class,
+                $inputData
+            );
 
-        // the output of the command in the console
-        $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('Installation finished', $output);
+            // the output of the command in the console
+            $output = $commandTester->getDisplay();
+            $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
+            $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
 
-        $this->assertEquals($configData->getDbUser(), $databaseUser);
-        $this->assertEquals($configData->getDbPass(), $databasePassword);
-
-        // Cleanup database
-        DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
+            $this->assertEquals($configData->getDbUser(), $databaseUser);
+            $this->assertEquals($configData->getDbPass(), $databasePassword);
+        } finally {
+            // Cleanup database
+            DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
+        }
     }
 
     /**
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testInstallFromEnvironmentVarIsAbort(): void
     {
         $this->setEnvironmentVariables();
@@ -336,6 +347,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testInstallFromEnvironmentVarIsAbortedWithForce(): void
     {
         putenv(sprintf('%s=true',
@@ -360,6 +372,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testInstallFromEnvironmentVarIsSuccessful(): void
     {
         putenv(sprintf('%s=true',
@@ -390,6 +403,8 @@ class InstallCommandTest extends CliTestCase
         $this->unsetEnvironmentVariables();
 
         parent::setUp();
+
+        self::buildContainer();
     }
 
     private function unsetEnvironmentVariables(): void

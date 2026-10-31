@@ -26,18 +26,9 @@ declare(strict_types=1);
 
 namespace SP\Domain\Common\Services;
 
-use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Application;
-use SP\Core\Context\ContextException;
-use SP\Core\Context\Session as SessionContext;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Domain\Core\Exceptions\CryptException;
-
-use function SP\__u;
-use function SP\logger;
 
 /**
  * Class Service
@@ -50,53 +41,13 @@ abstract class Service
     protected readonly Context $context;
     protected readonly EventDispatcherInterface $eventDispatcher;
 
-    public function __construct(Application $application)
-    {
-        $this->config = $application->getConfig();
-        $this->context = $application->getContext();
-        $this->eventDispatcher = $application->getEventDispatcher();
-    }
-
-    /**
-     * @throws ServiceException
-     * @throws CryptException
-     */
-    final protected function getMasterKeyFromContext(): string
-    {
-        try {
-            if (is_a($this->context, \SP\Domain\Core\Context\SessionContext::class)) {
-                $key = CryptSession::getSessionKey($this->context);
-            } else {
-                $key = $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY);
-            }
-
-            if (empty($key)) {
-                throw new ServiceException(__u('Error while retrieving master password from context'));
-            }
-
-            return $key;
-        } catch (CryptoException $e) {
-            logger($e->getMessage());
-
-            throw new ServiceException(__u('Error while retrieving master password from context'));
-        }
-    }
-
-    /**
-     * @throws ServiceException
-     */
-    final protected function setMasterKeyInContext(string $masterPass): void
-    {
-        try {
-            if ($this->context instanceof SessionContext) {
-                CryptSession::saveSessionKey($masterPass, $this->context);
-            } else {
-                $this->context->setTrasientKey('_masterpass', $masterPass);
-            }
-        } catch (ContextException|CryptException $e) {
-            logger($e->getMessage());
-
-            throw new ServiceException(__u('Error while setting master password in context'));
-        }
+    public function __construct(
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context
+    ) {
+        $this->config = $config;
+        $this->context = $context;
+        $this->eventDispatcher = $eventDispatcher;
     }
 }

@@ -24,59 +24,39 @@
 
 namespace SP\Modules\Web\Controllers\PublicLink;
 
-
-use SP\Core\Acl\Acl;
-use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapWeb;
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
-use SP\Domain\Account\Services\PublicLink;
+use SP\Domain\Account\UseCases\Dtos\GetPublicLinkCommand;
+use SP\Domain\Account\UseCases\GetPublicLinkUseCase;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
-use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 
 /**
  * Class PublicLinkViewBase
  */
 abstract class PublicLinkViewBase extends ControllerBase
 {
-    private PublicLinkService $publicLinkService;
-    private AccountService    $accountService;
-
     public function __construct(
-        Application       $application,
         WebControllerHelper $webControllerHelper,
-        PublicLinkService $publicLinkService,
-        AccountService    $accountService
+        private readonly GetPublicLinkUseCase $getPublicLinkUseCase,
+        private readonly AccountService $accountService,
+        private readonly PublicLinkService $publicLinkService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->publicLinkService = $publicLinkService;
-        $this->accountService = $accountService;
     }
 
-    /**
-     * Sets view data for displaying public link's data
-     *
-     * @param  int|null  $publicLinkId
-     *
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws NoSuchItemException
-     */
     protected function setViewData(?int $publicLinkId = null): void
     {
         $this->view->addTemplate('public_link', 'itemshow');
 
         $publicLink = $publicLinkId
-            ? $this->publicLinkService->getById($publicLinkId)
+            ? $this->getPublicLinkUseCase->execute(new GetPublicLinkCommand($publicLinkId))->publicLink
             : new PublicLinkList();
 
         $this->view->assign('publicLink', $publicLink);
@@ -87,12 +67,17 @@ abstract class PublicLinkViewBase extends ControllerBase
                 ->getItemsFromModelSelected([$publicLink->getItemId()])
         );
 
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE));
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapWeb::$WEBURI).BootstrapWeb::$SUBURI;
 
-            $this->view->assign('publicLinkURL', PublicLink::getLinkForHash($baseUrl, $publicLink->getHash()));
+            $this->view->assign(
+                'publicLinkURL',
+                $publicLink->getHash()
+                    ? $this->publicLinkService->buildLinkUrl($baseUrl, $publicLink->getHash())
+                    : null
+            );
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

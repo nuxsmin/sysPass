@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,31 +24,24 @@
 
 namespace SP\Modules\Web\Controllers\PublicLink;
 
-
-use SP\Core\Application;
-use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\PublicLinkForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class PublicLinkSaveBase
  */
 abstract class PublicLinkSaveBase extends ControllerBase
 {
-    protected PublicLinkService $publicLinkService;
-    protected PublicLinkForm    $form;
+    protected PublicLinkForm $form;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        PublicLinkService $publicLinkService
+        WebControllerHelper $webControllerHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->publicLinkService = $publicLinkService;
-        $this->form = new PublicLinkForm($application, $this->request);
+        $this->form = new PublicLinkForm($this->config, $this->session, $this->request);
     }
 }

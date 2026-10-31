@@ -15,6 +15,50 @@ Goal: `lib/` holds the core logic (Domain + Application + Infrastructure adapter
 - Re-run the metric commands in section 2 after each task.
 - Status legend: `[ ]` todo, `[~]` in progress, `[x]` done, `[-]` dropped (with reason).
 
+### 0.1 GitHub tracking
+
+Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [#1976](https://github.com/nuxsmin/sysPass/issues/1976), and the board is [Project #1](https://github.com/users/nuxsmin/projects/1). Each issue lists `Blocked by:` and `Blocks:` at the top of its body, and the full dependency order is in #1976. When an issue and this file disagree, the issue wins.
+
+| Task | Issue | State |
+|---|---|---|
+| P0-1 to P0-7 | #1957 to #1963 | done |
+| P1-1 | #1964 | done |
+| P1-5 | #2013 | done (`4495bdb0`) |
+| P1-2 | #1969 | done (`a2a557fa`) |
+| P1-3 | #1972 | done (`ed2649e2`) |
+| P1-4 | #1970 | done (`38101a7e`) |
+| P1-6 | #2012 | done |
+| P1-7 | #2014 | done |
+| P1-8 | #2051 | todo (last; after all callers are removed) |
+| P2-1 | #1971 | done (`333ae6c8`) |
+| P2-2 | #2023 | done (security review pending) |
+| P2-3 | #2029 | done |
+| P2-4 | #2024 | done (`d596e85a`) |
+| P3-1 | #1973 | done (`90efe568`) |
+| P3-2 | #2030 | done |
+| P3-3 | #2036 | done |
+| P4-1 | #2025 | done |
+| P4-2 | #1974 | done |
+| P4-3 | #2031 | todo |
+| P4-4 | #2015 | done |
+| P5-1 | #2026 | done |
+| P5-2 | #2032 | done |
+| P5-3 | #2037 | done |
+| P6-W1 | #1975 | done |
+| P6-W2 | #2042 | done |
+| P6-W3 | #2043 | done |
+| P6-W4 to P6-W7 | #2044 to #2048 | todo |
+| P7-1 to P7-4 | #2016, #2027, #2047, #2049 | P7-1, P7-2 done; rest todo |
+| P8-1, P8-2 | #2017, #2033 | todo |
+| P9-1 to P9-5 | #2038, #2050, #2034, #2052, #2053 | P9-1, P9-2 done; rest todo |
+| P10-1 to P10-5 | #2035, #2039, #2018, #2019, #2020 | all done |
+| P11-1 to P11-5 | #2021, #2028, #2040, #2041, #2022 | todo |
+| D1 | #1965 | decided: option (b) |
+| D2 | #1966 | decided: option (a) |
+| D3 | #2011 | decided: yes |
+| D8 | #1967 | decided: per-controller behind a response adapter |
+| D9 | #1968 | decided: explicit bindings per port |
+
 ---
 
 ## 1. Target architecture
@@ -29,7 +73,7 @@ Goal: `lib/` holds the core logic (Domain + Application + Infrastructure adapter
 | **Infrastructure** `SP\Infrastructure\` (`lib/SP/Infrastructure`) | Driven adapters: repositories, DB, filesystem, LDAP, SMTP, crypto impl. Implements Domain ports | Domain (ports, models, exceptions), vendor libs | Modules, Mvc, Html |
 | **Core** `SP\Core\` (`lib/SP/Core`) | Composition root and framework glue: bootstrap, DI definitions, `Application` (to be removed), session/context implementation | Domain, Infrastructure, vendor libs | Modules (except controller resolution by convention in bootstrap) |
 | **Modules** `SP\Modules\{Web,Api,Cli}\` (`app/modules`) | Driving adapters: HTTP/JSON/CLI request mapping, response mapping, view/theme rendering, presentation helpers | Domain (ports, models, DTOs, use cases, domain exceptions), Core bootstrap contracts | Infrastructure (except composition files), Domain concrete services (except exceptions/enums) |
-| **Mvc / Html** (currently in `lib/`) | Presentation: templates, DataGrid, icons, select items | Modules only (target) | Domain, Infrastructure |
+| **Mvc / Html** (`app/modules/web`) | Presentation: templates, DataGrid, icons, select items | Domain ports and module code | Domain concrete services, Infrastructure |
 
 ### 1.2 Hard rules (to be enforced by P0-3)
 
@@ -48,7 +92,7 @@ Run from the worktree root. Keep the numbers in the progress log.
 
 | ID | Metric | Command (abbreviated) | Baseline |
 |---|---|---|---|
-| M1 | Domain files importing any outer layer (Infrastructure, Core, Mvc, Html, Modules, Util) | `grep -rlE --include=*.php '^use SP\\(Infrastructure\|Core\|Mvc\|Html\|Modules\|Util)\\' lib/SP/Domain \| wc -l` | **186** |
+| M1 | Domain files importing any outer layer (Infrastructure, Core, Modules, Util) | `grep -rlE --include=*.php '^use SP\\(Infrastructure\|Core\|Modules\|Util)\\' lib/SP/Domain \| wc -l` | **186** |
 | M2 | Domain files importing Infrastructure | `grep -rlE '^use SP\\Infrastructure\\' lib/SP/Domain \| wc -l` | **131** |
 | M3 | Domain files importing `SP\Core` | `grep -rlE '^use SP\\Core\\' lib/SP/Domain \| wc -l` | **96** |
 | M4 | Domain files importing `SP\Core\Application` (service locator) | `grep -rlE '^use SP\\Core\\Application;' lib/SP/Domain \| wc -l` | **74** |
@@ -95,14 +139,22 @@ Each has a recommendation. Decide before the phase that depends on it.
 | ID | Question | Options | Recommendation | Needed before |
 |---|---|---|---|---|
 | D1 | Where do user-facing messages get translated? | (a) Domain keeps `__u()` as a marker and translation happens at the boundary. (b) Domain throws exceptions with stable error codes and message keys; modules translate. | (b) for new code; migrate contexts one at a time. Keep (a) as a stopgap if a context is too big. | P4-2 |
-| D2 | Where do use cases live? | (a) `SP\Domain\<Ctx>\UseCases`. (b) new top-level `lib/SP/Application/`. | (a). It avoids a third top-level namespace and a second move of the same classes. | P5-* |
-| D3 | Move Mvc and Html out of `lib/`? | Yes into `app/modules/web/` (namespace `SP\Modules\Web\View`, `...\Html`) | Yes | P4-1 |
+| D2 | Where do use cases live? | (a) `SP\Domain\<Ctx>\UseCases`. (b) new top-level `lib/SP/Application/`. | (a). It avoids a third top-level namespace and a second move of the same classes. **Decided: (a).** | P5-* |
+| D3 | Move Mvc and Html out of `lib/`? | Yes into `app/modules/web/` (namespace `SP\Modules\Web\Mvc`, `...\Html`) | Yes. **Decided: yes.** | P4-1 |
 | D4 | Run the `modules` suite and integration tests in CI by default? | Yes now / after P0-1 green / keep gated | After P0-1 and P0-2 succeed: make integration job default on | P0-2 |
 | D5 | How to enforce layer rules? | (a) deptrac (new dev dependency). (b) PHPUnit architecture test using `nikic/php-parser` (already in `require-dev`). | (b) first, with an allowlist that can only shrink (ratchet). Consider deptrac later. | P0-3 |
 | D6 | Pilot bounded context for the full pattern | `Tag` (5 core files, 9 controllers, 0 tests, 18 external references) or `ItemPreset` (10 domain files, 9 controllers) | `Tag` | P6-W1 |
 | D7 | Exception policy | Keep domain exceptions (`ServiceException`, `AuthException`, `ImportException`, `UpdatedMasterPassException`, `SPException` family) as the only Domain types modules may import. Move Infrastructure exceptions to Domain. | Adopt | P1-1 |
-| D8 | API migration style | Big bang vs per-controller with a response adapter | Per-controller, behind a thin JSON-RPC/REST response adapter in `app/modules/api` | P7-* |
-| D9 | DI wiring style | Keep wildcard conventions + container test, or explicit bindings per port | Explicit bindings for ports (generated list checked by P0-4) | P9-3 |
+| D8 | API migration style | Big bang vs per-controller with a response adapter | Per-controller, behind a thin JSON-RPC/REST response adapter in `app/modules/api`. **Decided: per-controller.** | P7-* |
+| D9 | DI wiring style | Keep wildcard conventions + container test, or explicit bindings per port | Explicit bindings for ports (generated list checked by P0-4). **Decided: explicit bindings.** | P9-3 |
+
+**Decision log**
+
+- **D1 (2026-10-27): option (b).** Domain exceptions carry a stable code and an untranslated message key; the interface layer translates. Migrate one bounded context at a time, starting with `Tag` (P4-2). Option (a) remains a stopgap for contexts that are too large.
+- **D2 (2026-10-27): option (a).** Use cases live in `SP\Domain\<Ctx>\UseCases`; their Commands and Results live in `SP\Domain\<Ctx>\UseCases\Dtos`. No third top-level namespace.
+- **D3 (2026-10-27): yes.** Presentation code moves out of `lib/`: `SP\Mvc` -> `SP\Modules\Web\Mvc`, `SP\Html` -> `SP\Modules\Web\Html`, and the theme icon service moves with it to `SP\Modules\Web\UI`. `Core/Definitions` remains the composition root and may reference module classes.
+- **D8 (2026-10-29): per-controller.** Migrate API controllers one resource at a time, behind a thin JSON-RPC/REST response adapter in `app/modules/api` (P7-2), instead of a big-bang rewrite. The adapter maps `ActionResponse` to both envelopes and replaces the direct `JsonRpcResponse` / `ApiResponse` calls.
+- **D9 (2026-10-29): explicit bindings.** Replace the wildcard `DomainDefinitions` port bindings with one explicit entry per port, verified by the container wiring test (P0-4). The generated list is a ratchet: new ports must resolve, and P9-3 removes the 9 stale wildcard bindings recorded in P0-4.
 
 ---
 
@@ -127,31 +179,31 @@ Phases are ordered so the guardrails come first, then inward dependency fixes, t
 
 ### Phase 1: Remove outer-layer types from the Domain (mechanical, no behaviour change)
 
-- [ ] **P1-1 Move Infrastructure exceptions to Domain (D7).** `NoSuchItemException`, `DuplicatedItemException` (`Infrastructure/Common/Repositories`), `FileException` (`Infrastructure/File`), `DatabaseException` (`Infrastructure/Database`). All extend `SP\Domain\Core\Exceptions\SPException` already. Move to `SP\Domain\Core\Exceptions\` (or `Domain\Common\Exceptions\`). Update ~150 imports across Domain, modules, and tests.
+- [x] **P1-1 Move Infrastructure exceptions to Domain (D7).** `NoSuchItemException`, `DuplicatedItemException` (`Infrastructure/Common/Repositories`), `FileException` (`Infrastructure/File`), `DatabaseException` (`Infrastructure/Database`). All extend `SP\Domain\Core\Exceptions\SPException` already. Move to `SP\Domain\Core\Exceptions\` (or `Domain\Common\Exceptions\`). Update ~150 imports across Domain, modules, and tests.
   - Acceptance: no `use SP\Infrastructure\...Exception` in `lib/SP/Domain` or `app/modules`. Full test run green.
   - Targets: M7 drops by 48 import lines (36 + 9 + 3). M1 drops for every Domain file whose only outer import is one of these exceptions.
-- [ ] **P1-2 Move `QueryResult` to Domain and remove its translation call.** Move `SP\Infrastructure\Database\QueryResult` to `SP\Domain\Database\Dtos\QueryResult` (depends only on `Domain\Common\Models\Model`). Replace `__u()` in its constructor with a domain exception message. Update the `Infrastructure\Database\QueryData` that builds it.
+- [x] **P1-2 Move `QueryResult` to Domain and remove its translation call.** Move `SP\Infrastructure\Database\QueryResult` to `SP\Domain\Database\Dtos\QueryResult` (depends only on `Domain\Common\Models\Model`). Replace `__u()` in its constructor with a domain exception message. Update the `Infrastructure\Database\QueryData` that builds it.
   - Acceptance: M6 drops to 0 (ports no longer import Infrastructure types). M14 drops for files that only import `QueryResult`.
-- [ ] **P1-3 Move `Hash` to the Domain crypto context.** `SP\Core\Crypt\Hash` (static `hashKey`, `checkHashKey`, `signMessage`, `checkMessage`) is used in 16 Domain files and only depends on `logger()`. Move it to `SP\Domain\Crypt\Services\Hash` (or behind a `HashService` port). Add characterization tests first if none exist. This is security code: output bytes must stay identical.
+- [x] **P1-3 Move `Hash` to the Domain crypto context.** `SP\Core\Crypt\Hash` (static `hashKey`, `checkHashKey`, `signMessage`, `checkMessage`) is used in 16 Domain files and only depends on `logger()`. Move it to `SP\Domain\Crypt\Services\Hash` (or behind a `HashService` port). Add characterization tests first if none exist. This is security code: output bytes must stay identical.
   - Acceptance: byte-for-byte identical hashes for fixed fixtures before and after; no `use SP\Core\Crypt\Hash` in Domain.
-- [ ] **P1-4 Move events and messages into the Domain.** Move `SP\Core\Events\Event` and `EventMessage` value objects to `SP\Domain\Core\Events\` and `SP\Domain\Core\Messages\`. Keep `EventDispatcher` implementation in Core. Replace `HtmlFormatter`/`TextFormatter` concrete references inside `EventMessage` with the existing `Domain\Core\Messages\FormatterInterface`, injected by Core.
+- [x] **P1-4 Move events and messages into the Domain.** Move `SP\Core\Events\Event` and `EventMessage` value objects to `SP\Domain\Core\Events\` and `SP\Domain\Core\Messages\`. Keep `EventDispatcher` implementation in Core. Replace `HtmlFormatter`/`TextFormatter` concrete references inside `EventMessage` with the existing `Domain\Core\Messages\FormatterInterface`, injected by Core.
   - Acceptance: no `use SP\Core\Events\...` in Domain or Infrastructure. This removes the Event/EventMessage imports (39 + 30 Domain files, 5 Infrastructure use lines) from M3.
-- [ ] **P1-5 Move `MailMessage` into Domain notification.** `SP\Core\Messages\MailMessage` → `SP\Domain\Notification\...`. Acceptance: no `SP\Core` in `Domain/Notification`.
-- [ ] **P1-6 Invert `HelpInterface` dependency.** Define a `SP\Domain\Api\Ports\HelpProvider` (or similar) in Domain. Implement it in `app/modules/api`. `Domain/Api/Services/Api.php` depends only on the port.
+- [x] **P1-5 Move `MailMessage` into Domain notification.** `SP\Core\Messages\MailMessage` → `SP\Domain\Notification\...`. Acceptance: no `SP\Core` in `Domain/Notification`.
+- [x] **P1-6 Invert `HelpInterface` dependency.** Define a `SP\Domain\Api\Ports\HelpProvider` (or similar) in Domain. Implement it in `app/modules/api`. `Domain/Api/Services/Api.php` depends only on the port.
   - Acceptance: M12 drops by 1 (`Domain/Api` no longer references `SP\Modules`).
-- [ ] **P1-7 Strip presentation from Domain adapters.** Move `ItemTrait` usages out of `Domain/Account/Adapters/Account`, `Domain/Category/Adapters/Category`, `Domain/Client/Adapters/Client`. Move `SelectItemAdapter` out of `Domain/Account/Adapters/Account`. Move `PasswordValidator` usage out of `Domain/Account/Services/AccountPreset` (into the calling controller, or into a Domain validator with a rule port). Replace `IconInterface` in `Domain/Core/UI/ThemeIconsInterface` with a domain icon-key type. Replace `SP\Util\Util` in `Domain/Import/Services/ImportStrategy` and `Domain/Http/Services/Request` with a domain helper.
+- [x] **P1-7 Strip presentation from Domain adapters.** Move `ItemTrait` usages out of `Domain/Account/Adapters/Account`, `Domain/Category/Adapters/Category`, `Domain/Client/Adapters/Client`. Move `SelectItemAdapter` out of `Domain/Account/Adapters/Account`. Move `PasswordValidator` usage out of `Domain/Account/Services/AccountPreset` (into the calling controller, or into a Domain validator with a rule port). Replace `IconInterface` in `Domain/Core/UI/ThemeIconsInterface` with a domain icon-key type. Replace `SP\Util\Util` in `Domain/Import/Services/ImportStrategy` and `Domain/Http/Services/Request` with a domain helper.
   - Acceptance: Domain has 0 imports of `SP\Mvc`, `SP\Html`, `SP\Util` and `SP\Modules` (currently 4 + 1 + 2 + 1 files), and M1 drops by the same amount, unless those files also import Core.
 - [ ] **P1-8 Relocate response formats out of the Domain.** `Domain/Http/Services/JsonResponse`, `Domain/Api/Services/JsonRpcResponse`, `Domain/Api/Dtos/ApiResponse`: move to `app/modules/{web,api}` as adapters, or delete once P6/P7 remove their callers. Track callers in section 9.
 
 ### Phase 2: Remove the service locator and session access from the Domain
 
-- [ ] **P2-1 Replace `Application` in `Domain\Common\Services\Service`.** Constructor takes explicit ports: `ConfigFileService`, `EventDispatcherInterface`, `Context`. Update the 60 subclasses (and 10 with another base). PHP-DI autowires by type, so DI definitions should not change. Verify with P0-4.
+- [x] **P2-1 Replace `Application` in `Domain\Common\Services\Service`.** Constructor takes explicit ports: `ConfigFileService`, `EventDispatcherInterface`, `Context`. Update the 60 subclasses (and 10 with another base). PHP-DI autowires by type, so DI definitions should not change. Verify with P0-4.
   - Acceptance: no `SP\Core\Application` import in `lib/SP/Domain` (M4 = 0).
-- [ ] **P2-2 Master-key handling behind a port.** `Service::getMasterKeyFromContext()` and `setMasterKeyInContext()` currently call `CryptSession` and check `SessionContext`. Introduce `SP\Domain\Crypt\Ports\MasterKeyStore` (get/set/clear). Implement it in Core (session) and Stateless (non-session context). Callers use the port.
+- [x] **P2-2 Master-key handling behind a port.** `Service::getMasterKeyFromContext()` and `setMasterKeyInContext()` currently call `CryptSession` and check `SessionContext`. Introduce `SP\Domain\Crypt\Ports\MasterKeyStore` (get/set/clear). Implement it in Core (session) and Stateless (non-session context). Callers use the port.
   - Acceptance: no `SP\Core\Crypt\Session` or `SP\Core\Context\Session` import in Domain. Auth and account encryption tests still pass.
-- [ ] **P2-3 Remove direct session superglobal use.** `$_SESSION` appears in 2 `lib/` files and `$_SERVER` in 1. Move into Core context implementation.
+- [x] **P2-3 Remove direct session superglobal use.** `$_SESSION` appears in 2 `lib/` files and `$_SERVER` in 1. Move into Core context implementation.
   - Acceptance: superglobal use only in `SP\Core\Context\*` and bootstrap files.
-- [ ] **P2-4 Logging port.** Replace `logger()` in 16 Domain files with an injected `Psr\Log\LoggerInterface` (or `SP\Domain\Core\Log\LoggerInterface`). Keep `logger()` in Core.
+- [x] **P2-4 Logging port.** Replace `logger()` in 16 Domain files with an injected `Psr\Log\LoggerInterface` (or `SP\Domain\Core\Log\LoggerInterface`). Keep `logger()` in Core.
   - Acceptance: Domain files do not use `function SP\logger`.
 
 ### Phase 3: Ports for everything the interface layer uses
@@ -160,34 +212,46 @@ Phases are ordered so the guardrails come first, then inward dependency fixes, t
   - Acceptance: M8 = number of `use` lines that reference a Domain Services class not in the exception allowlist = 0.
 - [ ] **P3-2 Move static domain helpers behind ports or value objects.** `ConfigBackup::configToJson()` (called from `DownloadConfigBackupController`), `ConfigUtil::mailAddressesAdapter()`, and similar statics called from controllers. Use a serializer/mapper service in Domain injected via port, or a value object constructor.
   - Acceptance: no static call on a Domain Services class from `app/modules` (except exception factories and enums).
-- [ ] **P3-3 Cross-context imports via ports.** Reduce concrete cross-context imports in `Import` (51), `Auth` (41), `Account` (33), `Install` (15), `Export` (14). Use the owning context's port, or a domain event if the coupling is a notification.
+- [x] **P3-3 Cross-context imports via ports.** Reduce concrete cross-context imports in `Import` (51), `Auth` (41), `Account` (33), `Install` (15), `Export` (14). Use the owning context's port, or a domain event if the coupling is a notification.
   - Acceptance: per-context count of cross-context concrete imports decreases; list in section 9.
 
 ### Phase 4: Presentation out of `lib/`
 
-- [ ] **P4-1 Move `lib/SP/Mvc` and `lib/SP/Html` into `app/modules/web`.** Namespace `SP\Modules\Web\Mvc\...` and `SP\Modules\Web\Html\...` (decision D3). Move `Core/UI/Theme*` icon usage too. Update `tests/` imports.
+- [x] **P4-1 Move `lib/SP/Mvc` and `lib/SP/Html` into `app/modules/web`.** Namespace `SP\Modules\Web\Mvc\...` and `SP\Modules\Web\Html\...` (decision D3). Move `Core/UI/Theme*` icon usage too. Update `tests/` imports.
   - Acceptance: `lib/SP/Mvc` and `lib/SP/Html` removed; M1 and M12 reduced; `lib/` has no `SP\Mvc`/`SP\Html` references (except as listed in section 1.2).
-- [ ] **P4-2 Translation policy (D1).** Per bounded context, replace `__u()` in Domain code with domain exceptions carrying a stable code and an untranslated message key. Translate in the module boundary (exception-to-response mapper in `app/modules/web` and `app/modules/api`). Do one context per task, starting with `Tag` (pilot, see P6-W1).
+- [x] **P4-2 Translation policy (D1).** Per bounded context, replace `__u()` in Domain code with domain exceptions carrying a stable code and an untranslated message key. Translate in the module boundary (exception-to-response mapper in `app/modules/web` and `app/modules/api`). Do one context per task, starting with `Tag` (pilot, see P6-W1).
   - Acceptance: M5 drops per context. A snapshot test of user-visible messages for each migrated context proves no text changed.
 - [ ] **P4-3 Remove `processException()` from the Domain (30 files).** Domain throws; the module boundary logs and maps. Same per-context approach as P4-2.
-- [ ] **P4-4 Remove `Core/Acl/Actions` and `Core/Crypt` file-system dependencies.** See finding 7. Move the file-based implementations into Infrastructure and keep Core as wiring.
+- [x] **P4-4 Remove `Core/Acl/Actions` and `Core/Crypt` file-system dependencies.** See finding 7. Move the file-based implementations into Infrastructure and keep Core as wiring.
 
 ### Phase 5: Application layer (use cases) — the slice template
 
 Applied per context in Phase 6 and Phase 7. The steps are in section 6.
 
-- [ ] **P5-1 Define the Command/Result DTO convention** under `SP\Domain\<Ctx>\UseCases\Dtos` (or existing `Dtos`). Document in ADR-003 (section 8).
-- [ ] **P5-2 Define the use case base contract.** Single public method (`execute(Command): Result`), no HTTP types, no session types, no translation calls. Throws domain exceptions only.
-- [ ] **P5-3 Event emission moves to use cases.** Audit/notification events currently emitted by controllers (226 `->notify()` calls) move into the use case, emitted via `EventDispatcherInterface`. Controllers no longer build `EventMessage`.
-  - Acceptance: M-events: `grep -rl "EventMessage::build" app/modules | wc -l` drops per migrated area.
+- [x] **P5-1 Define the Command/Result DTO convention** under `SP\Domain\<Ctx>\UseCases\Dtos` (D2; or existing `Dtos`). Document in ADR-003 (section 8).
+  - Location and naming: `<Action><Ctx>Command` and `<Action><Ctx>Result` in `SP\Domain\<Ctx>\UseCases\Dtos`. One Command per user intent; a Result even when it only echoes an id or the deleted ids.
+  - Shape: `final readonly class` with public promoted properties. No base `Dto`, no reflection hydration, no getters boilerplate.
+  - Contracts: Commands implement `SP\Domain\Common\Dtos\Command`; Results implement `SP\Domain\Common\Dtos\Result`.
+  - Boundary: Commands hold already parsed primitives, value objects or domain DTOs. No HTTP, session or presentation types; no translation; no logging. Validation and domain exceptions belong to the use case.
+  - Pilot inputs: `SP\Domain\Tag\UseCases\Dtos` has the Tag commands and results; `TagUseCaseDtosTest` guards the shape.
+- [x] **P5-2 Define the use case base contract.** Single public method (`execute(Command): Result`), no HTTP types, no session types, no translation calls. Throws domain exceptions only.
+- [x] **P5-3 Event emission moves to use cases.** Audit/notification events currently emitted by controllers (226 `->notify()` calls) move into the use case, emitted via `EventDispatcherInterface`. Controllers no longer build `EventMessage`.
+  - Port: use cases depend on `SP\Domain\Common\Ports\EventEmitter` (`emit(eventName, source, ?EventMessage)`). `SP\Core\Events\EventDispatcherEmitter` adapts it to `EventDispatcherInterface`; the port only publishes, so use cases cannot attach or detach receivers.
+  - Event name: keep the existing name exactly (`create.tag`, `delete.tag`, `request.account`, ...). Receivers and the mail event configuration match on it.
+  - Source: the use case instance, not the controller. Receivers only inspect the source to detect a `Throwable`.
+  - Message: descriptions and detail keys are untranslated keys. Receivers translate when composing the event log, mail or notification (D1 policy). Do not call `__()`/`__u()` in a use case.
+  - Message-less events: pass `null` to reproduce the legacy `new Event($this)` emission.
+  - Extras: keep the keys receivers read (`userId`, `userProfileId`, `userGroupId`, `notify`) on the `EventMessage`.
+  - Timing: emit only after the state change succeeded and before returning the Result.
+  - Migration: per area in P6/P7. The metric is `grep -rl "EventMessage::build" app/modules | wc -l`; the Tag pilot is the first area. `UseCaseEventEmissionTest` and `EventDispatcherEmitterTest` guard the convention.
 
 ### Phase 6: Web controller migration by vertical slice
 
-Each slice follows section 6. Waves are ordered by legacy count and risk. Current state: 27 untested areas, 83 legacy controllers.
+Each slice follows section 6. Waves are ordered by legacy count and risk. Current state: 26 untested areas, 77 legacy controllers (after the Tag pilot).
 
-- [ ] **P6-W1 Pilot: `Tag`** (7 legacy of 9). Also the pilot for D1 (P4-2) and the use-case pattern (P5-*). Coordinate with `Account` (18 external references to `Tag`).
-- [ ] **P6-W2 Small CRUD areas: `ItemPreset`** (7 of 9), **`CustomField`** (7 of 9), **`UserGroup`** (7 of 9), **`UserProfile`** (7 of 9).
-- [ ] **P6-W3 Remaining untested areas:** `Notification` (8 of 11), `PublicLink` (8 of 10), `Plugin` (6 of 8), `Track` (3 of 4), `Eventlog` (2 of 3), `Status` (2 of 3), `Items` (2 of 5), `UserPassReset` (2 of 5), `Resource` (0 of 3), `Error` (0 of 5).
+- [x] **P6-W1 Pilot: `Tag`** (7 legacy of 9). Also the pilot for D1 (P4-2) and the use-case pattern (P5-*). Done: six use cases, thin controllers and the first web IT suite for the area.
+- [x] **P6-W2 Small CRUD areas: `ItemPreset`** (7 of 9), **`CustomField`** (7 of 9), **`UserGroup`** (7 of 9), **`UserProfile`** (7 of 9). Done: 24 use cases, thin `ActionResponse` controllers, and unit tests with mocked ports.
+- [x] **P6-W3 Remaining untested areas:** `Notification` (8 of 11), `PublicLink` (8 of 10), `Plugin` (6 of 8), `Track` (3 of 4), `Eventlog` (2 of 3), `Status` (2 of 3), `Items` (2 of 5), `UserPassReset` (2 of 5), `Resource` (0 of 3), `Error` (0 of 5). Done: 25 use cases, thin `ActionResponse` controllers, and one integration test class per area.
 - [ ] **P6-W4 `User`** (9 of 11). Depends on P3-1 for `User` and `UserPassRecover`.
 - [ ] **P6-W5 Auth and bootstrap entry points: `Login`** (1 of 3), **`Install`** (1 of 2), **`Upgrade`** (1 of 2), **`Task`** (0 of 2), **`Index`**, **`SecurityManager`**, **`ItemManager`**, **`UserSettingsGeneral`**, **`UserSettingsManager`**, **`ConfigWiki`**, **`Traits`**. High risk. `Login` needs IT tests before migration, because `Domain/Auth/Services/LoginAuthHandler.php` mixes Core, Infrastructure, translation and logging calls (32 matches).
 - [ ] **P6-W6 Already-tested legacy leftovers.** Migrate the 1 remaining legacy controller in tested areas. Remove `JsonTrait` and `ConfigTrait` once unused.
@@ -196,7 +260,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 ### Phase 7: API module migration
 
 - [ ] **P7-1 Enable API tests.** Remove `Api` from the `<exclude>` in `tests/phpunit.xml` after P0-2 is green. Fix failing API tests first.
-- [ ] **P7-2 API response adapter.** One adapter in `app/modules/api` that maps `ActionResponse` to the JSON-RPC/REST envelope (replaces `JsonRpcResponse`, `ApiResponse::makeSuccess`, 29+20 call sites) (D8).
+- [x] **P7-2 API response adapter.** One adapter in `app/modules/api` that maps `ActionResponse` to the JSON-RPC/REST envelope (replaces `JsonRpcResponse`, `ApiResponse::makeSuccess`, 29+20 call sites) (D8).
 - [ ] **P7-3 Migrate API controllers per resource** (`Account`, `Category`, `Client`, `Tag`, `UserGroup`, `Config`), following section 6. Start with `Tag` to reuse the P6-W1 use cases.
   - Acceptance: M11 = 46/46 or the remaining files listed with reasons.
 - [ ] **P7-4 Delete `Domain/Api/Services/ApiRequest` and `JsonRpcResponse` and `Dtos/ApiResponse`** once unused (or move into `app/modules/api`).
@@ -209,19 +273,19 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 
 ### Phase 9: Core cleanup and composition root
 
-- [ ] **P9-1 Core ↔ Infrastructure cleanup.** Finish P4-4. Keep `Core/Definitions` as the only place that names Infrastructure classes (composition root). Acceptance: M13 = 2 (composition files only).
-- [ ] **P9-2 Remove `SP\Core\Application`** after all controllers and services stop injecting it (M4 = 0 and modules count = 0). Replace with a web-specific `WebControllerHelper`-style aggregate if needed.
+- [x] **P9-1 Core ↔ Infrastructure cleanup.** Finish P4-4. Keep `Core/Definitions` as the only place that names Infrastructure classes (composition root). Acceptance: M13 = 2 (composition files only). Enforced by the `core-infrastructure` architecture rule.
+- [x] **P9-2 Remove `SP\Core\Application`** after all controllers and services stop injecting it (M4 = 0 and modules count = 0). Replaced with the `ModuleDependencies` and `ApiControllerHelper` parameter objects plus the existing `WebControllerHelper`/`SimpleControllerHelper` web aggregates.
 - [ ] **P9-3 Explicit port bindings (D9).** Replace wildcard `DomainDefinitions` bindings with explicit entries, verified by P0-4.
 - [ ] **P9-4 Remove legacy response types.** `JsonMessage`, `returnJsonResponse`, `JsonTrait`, `Domain\Http\Services\JsonResponse` (once P6 and P7 are done).
 - [ ] **P9-5 Tighten the architecture test.** Empty the allowlist from P0-3 and turn the ratchet into a hard rule.
 
 ### Phase 10: Testing strategy
 
-- [ ] **P10-1 Unit tests for the core use memory fakes, not Infrastructure.** Build in-memory port fakes under `tests/SP/Stubs/` (there are a few already: `AccountRepositoryStub`, `UserGroupRepositoryStub`, `PublicLinkRepositoryStub`). Migrate the 55 Domain test files that import Infrastructure. Acceptance: M14 = 0.
-- [ ] **P10-2 Keep Infrastructure tests DB-backed.** The 34 repository tests (1:1 with repositories) stay as `integration` tests. Acceptance: they run in the CI integration job (P0-2).
+- [x] **P10-1 Unit tests for the core use memory fakes, not Infrastructure.** Build in-memory port fakes under `tests/SP/Stubs/` (there are a few already: `AccountRepositoryStub`, `UserGroupRepositoryStub`, `PublicLinkRepositoryStub`). Migrate the 55 Domain test files that import Infrastructure. Acceptance: M14 = 0.
+- [~] **P10-2 Keep Infrastructure tests DB-backed.** Repository queries with the highest risk run against the real test database (`#[Group('integration')]`, base `SP\Tests\DatabaseRepositoryTestCase`). Done: Tag; User (login lookup/update incl. SSO, usage, group emails, admin-hiding search); UserGroup usage; AccountHistory reads/search; AuthToken search; CustomFieldData/CustomFieldDefinition search; ItemPreset search; Track search; AccountFile reads/search; AccountToUser/AccountToUserGroup permissions; PublicLink listing. The 28 mocked repository tests stay `unitary`, since they only assert generated SQL. Acceptance: DB-backed tests run in the CI integration job (P0-2); the residual P0/P1 test backlog is follow-up work.
 - [ ] **P10-3 HTTP-level IT per migrated web area.** Follow the existing `IntegrationTestCase` + `BodyChecker` pattern. Each slice in P6 adds one IT class per controller action, written before the migration (characterisation tests).
-- [ ] **P10-4 Coverage gates per layer.** Record current coverage per layer in section 9. Set target coverage for `Domain\*\UseCases` and `Domain\*\Services` once the baseline is known (decision needed after P0-1).
-- [ ] **P10-5 Test naming and attribute standard.** One style for all tests: `#[Test]` attribute plus `#[Group]`. Migrate gradually, inside the slice that touches each file.
+- [x] **P10-4 Coverage gates per layer.** Record current coverage per layer in section 9. Set target coverage for `Domain\*\UseCases` and `Domain\*\Services` once the baseline is known (decision needed after P0-1).
+- [x] **P10-5 Test naming and attribute standard.** One style for all tests: `#[Test]` attribute plus `#[Group]`. The whole suite now adds `#[Test]` to every `test*` method; M16 stays 0.
 - [ ] **P10-6 Document the test pyramid** in ADR-004 (section 8).
 
 ### Phase 11: Documentation and decision records
@@ -289,6 +353,33 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-25 | P0-2 (in progress) | — | Web controller step added to the integration job. Job stays gated until its first green CI run (D4). Api/Cli stay excluded (see P7-1/P8-1). |
 | 2026-10-25 | P0-6 test hygiene | M16 = 0 | Added the 11 missing `#[Group]` attributes. |
 | 2026-10-25 | Review fixes (1–3) | `domain-presentation-calls` 103 → 126 | Added frozen per-rule allowlist maxima; included `__()` and per-file call counts; made M6 tolerate zero matches. |
+| 2026-10-26 | P2-1 ports in `Service` (verified: unitary, wiring, core, modules) | M4 74 → 0; M1 96 → 45; M3 88 → 32; allowlist domain-only 144 → 70, domain-application 74 → 0 | `Service` takes `ConfigFileService`, `EventDispatcherInterface`, `Context`; 73 Domain subclasses forward the ports (`ImportStrategy` and `XmlImportBase` edited by hand). Tests use `$this->config`, `$this->eventDispatcherStub`, `$this->context`. `php-testing-composer:2.6`: `--group unitary --testsuite core` 2000 tests, 0 failures; `--testsuite core` 2001 tests, 0 failures; `--testsuite modules` 96 tests, 0 failures, 0 errors, 1 skipped (197 assertions vs 199 in the P0-1 baseline, not investigated). The only error in the first two runs is `ImageTest::testConvertText` (`imagefttext()` missing; this image lacks GD FreeType; `Image.php` untouched). `LayerDependencyTest` 7/7 and `ContainerWiringTest` pass. Core and modules ran against the existing `syspass-test-db` (MariaDB 10.3) using a dedicated `syspass_p21` database. Clear `CACHE_PATH/container/` before running with DEBUG off, because compiled containers keep old constructor signatures. |
+| 2026-10-27 | P1-5 mail message into Domain (verified: unitary, core, modules, architecture, wiring) | M1 35 → 30; M3 19 → 14; allowlist domain-only 54 → 48 | `MailMessage` moved to `SP\Domain\Notification\Dtos`; `MessageBase` moved to `SP\Domain\Core\Messages` and no longer implements `MessageInterface`. Command-side formatting moved behind `MailMessageFormatterInterface` (Core implementation `MailMessageFormatter`), wired in `CoreDefinitions`. `EventMessageFormatterInterface` gained `formatDescription()` so `MailEvent` no longer imports `TextFormatter`. `Mail` now takes `MailMessageFormatterInterface`. `MailMessage` is a pure data DTO; `NotificationMessage` explicitly implements `MessageInterface`. PHPStan unchanged at 1143 errors. Suites: core unitary 2007 tests, core 2008 tests, modules 96 tests, all green (1 skipped, known warnings). |
+| 2026-10-27 | P1-6 invert `HelpInterface` (verified: architecture, API unit, modules) | M12 3 → 2; allowlist domain-only 48 → 47; M6 144 → 145 ports | Added `SP\Domain\Api\Ports\HelpProvider`; `HelpInterface` extends it, so the module help classes implement the Domain port. `Api` now validates against `HelpProvider` and has no `SP\Modules` import. PHPStan reports only the pre-existing errors in `Api.php`; API unit tests 50/50 and modules 96/96 green (1 skipped, known warnings). |
+| 2026-10-27 | P1-7 strip presentation from Domain adapters (verified: unitary, core, modules, architecture, wiring) | M1 33 → 24; allowlist domain-only 47 → 38; M6 stays 0/146 | `CustomFieldItems` in Domain replaces `ItemTrait` in the Account/Category/Client adapters and backs the Mvc trait. `Account` maps tags/users/groups to plain `{id,name}` arrays instead of `SelectItemAdapter`. `SP\Domain\Account\Ports\PasswordValidator` is the new port; the Mvc validator implements it and is bound in `CoreDefinitions`. `Domain\Core\UI\IconInterface` is the domain icon contract, extended by `SP\Html\Assets\IconInterface`; `ThemeIconsInterface` now uses `FileCacheService`. `Environment::getMaxUpload()`/`convertShortUnit()` and `Filter::getBool()` replace `SP\Util\Util` in Domain; `Util` delegates to them. Also documented the module-specific `HelpProvider` port in `ContainerWiringTest` (P1-6 regression). PHPStan: no new errors in changed files. Suites: core 2008 tests, modules 96 tests, architecture 7/7, wiring green (known warnings/deprecations). |
+| 2026-10-27 | P2-2 master key behind a port (verified: unitary, core, modules, architecture, wiring) | M1 24 → 23; M3 14 → 13; M5 73 files / 348 → 72 files / 345 sites; allowlist domain-only 38 → 35, presentation calls 126 → 125; M6 146 → 147 ports | Added `SP\Domain\Crypt\Ports\MasterKeyStore` with `get()`/`set()`/`clear()` and removed the Core session imports from `Domain\Common\Services\Service`. Core implementations: `SP\Core\Crypt\SessionMasterKeyStore` (encrypted session vault) and `SP\Core\Context\StatelessMasterKeyStore` (transient context key), selected by a factory in `CoreDefinitions` from the injected `Context`. The eight callers (`Api`, `AuthToken`, `TemporaryMasterPass`, `PublicLink`, `AccountCrypt`, `CustomFieldData`, `UserMasterPass`, `PluginData`) now take the port. Suites: core unitary 2007 tests, core 2008 tests, modules 96 tests, architecture 8/8, container wiring green (known warnings/deprecations). |
+| 2026-10-27 | P2-4 logging port (verified: core, modules, architecture, wiring) | presentation calls 125 → 124; allowlist domain-only stays 35; M1 23, M3 13, M6 147 ports | Added `SP\Domain\Core\Log\LoggerInterface` plus `NullLogger`, implemented in Core by `SP\Core\Log\FunctionLogger` (delegates to `logger()` and has no dependencies, avoiding the `ConfigFile`/PSR-logger cycle) and bound in `CoreDefinitions`. All 16 Domain files that called `SP\logger` now use the port; the two static helpers (`Address`, `Hash`) lost their incidental debug lines. PHPStan unchanged. Suites: core 2008 tests, modules 96 tests, architecture 7/7, container wiring green. |
+| 2026-10-27 | P2-3 remove direct superglobal use (verified: Domain Common, architecture) | metrics unchanged; M1 23, M3 13, M6 147 ports | `Http::checkHttps()` now reads the request URI through the existing `RequestService::getServer('REQUEST_URI')` port method instead of `$_SERVER`. The two remaining `$_SESSION` files are already in `SP\Core\Context`, so no superglobal access remains in `lib/` outside Core context or in `app/modules`. `HttpTest` now asserts the port call and that it is skipped when HTTPS is disabled or already in use. |
+| 2026-10-27 | P3-2 static domain helpers (verified: architecture, core unit, Api/AuthToken unit, PSR2) | metrics unchanged; M8 89 (exception imports only), module static calls on Domain service classes = 0 | `ConfigBackup::configToJson()` and `ConfigUtil` normalisers were already moved behind `ConfigBackupService` and `ConfigInput` in P3-1. This task removed the remaining public statics from the `AuthToken` service (`Api` and the service now call the model; `canUseSecureTokenAction()` is private) and extended the `modules-concrete-services` architecture rule to reject static calls on Domain `Services` classes from `app/modules`, resolving imports and aliases while still allowing exception factories. Added `LayerRulesTest` coverage for direct and aliased calls. |
+| 2026-10-27 | P4-4 remove Core file-system dependencies (verified: core unit, modules, architecture, wiring, PSR2) | M13 4 (+2 composition) → 0 (+2); M6 152 → 154 ports; other metrics unchanged | Added `SP\Domain\File\Ports\PhpFileLoaderInterface` (Infrastructure `PhpFileLoader` wraps `FileSystem::require`) and `SP\Domain\File\Ports\FileHandlerFactoryInterface` (Infrastructure `FileHandlerFactory`). `Theme` and `ThemeIcons` load theme data through the loader, `ThemeContext` joins paths locally, and `AppLock` creates its lock file through the factory so the handler is still constructed lazily. `CoreDefinitions` wires the two adapters. No `SP\Infrastructure\File` import remains in `lib/SP/Core` outside `Core/Definitions`. Added `PhpFileLoaderTest`. |
+| 2026-10-27 | P4-2 Tag translation policy (D1) (verified: Tag unit, core unit, architecture, PSR2) | M5 72 → 71 files / 345 → 341 call sites; `domain-presentation-calls` allowlist 124 → 123 | Decided D1 option (b). Added `SP\Domain\Tag\Exceptions\TagException` with stable codes `NOT_FOUND` (1001) and `DELETE_FAILED` (1002) and untranslated keys. `Tag` no longer calls `__u()`; `JsonMessage`/`ActionResponse`/`JsonRpcResponse` translate at the boundary. The API `TagControllerTest` message assertions plus the new stable-code assertions act as the user-visible snapshot. Core unit 2014 tests green (known warnings/deprecations); architecture 12/12. The API integration test still cannot run locally because of the known `vfs://` mysql fixture issue (P7-1). |
+| 2026-10-27 | P9-1 Core ↔ Infrastructure cleanup (verified: architecture 12/12) | M13 stays 0 (+2 composition); no other metric changes | P4-4 already removed the runtime references, so P9-1 adds the guard: a new `core-infrastructure` rule rejects `SP\Infrastructure\` imports from `lib/SP/Core` outside `Core/Definitions`. `LayerDependencyTest` freezes the rule at 0, and `LayerRulesTest` covers both the violating and the composition-root cases. |
+| 2026-10-27 | P3-3 cross-context imports via ports (verified: core unit 2052, modules 104, architecture 18, PHPStan 1013) | M17 45 → 11; Import 9 → 0, Auth 5 → 0, Account 4 → 2, Install 1 → 0, Export 3 → 0; M6 0/156 → 0/157 ports | Injected the existing `HashService` port into every cross-context user (Api, Auth, Export, Import, Http, Install, User) and moved `Html`/`Address` to `Common\Providers`. Extracted `XmlIntegrity` to Common, removing the Import ↔ Export concrete coupling and the stale `ImportException` from `XmlVerifyService`. Moved LDAP params/results/exception/type-enum into Auth `Dtos`/`Exceptions`/`Enums` and added `LdapServiceFactory`, so Import no longer builds `LdapBase`. Moved `UserMasterPassStatus` to User `Models`. Added M17 to the metrics script. |
+| 2026-10-27 | D2 + P5-1 use case DTO convention (verified: Tag DTO unit, architecture, PSR2) | M6 stays 0/154; other metrics unchanged | Decided D2 option (a): use cases live in `SP\Domain\<Ctx>\UseCases`, DTOs in `SP\Domain\<Ctx>\UseCases\Dtos`. Added the `Command` and `Result` marker contracts in `SP\Domain\Common\Dtos`, the Tag pilot commands and results (create, update, delete single/batch, get, search), and `TagUseCaseDtosTest`, which enforces final readonly classes with promoted public properties and the right contract. |
+
+| 2026-10-27 | P4-1 move Mvc and Html into the web module (D3) (verified: core unit, core, modules, architecture, wiring, PSR2, PHPStan) | M12 stays 2 (composition root + bootstrap); lib-modules allowlist 2 -> 1; M1 23, M6 0/154, M13 0 (+2 composition); PHPStan lib 1143 -> 1015 errors (files moved out of the analysed tree) | Moved `lib/SP/Mvc` (21 files) and `lib/SP/Html` (25 files) to `app/modules/web/Mvc` and `app/modules/web/Html` under `SP\Modules\Web\Mvc` and `SP\Modules\Web\Html`. Moved `ThemeIcons` to `SP\Modules\Web\UI` so Core has no presentation import. Updated all class and template references. `TemplateResolver` no longer uses `FileSystem`; `ControllerTrait` uses the `JsonResponseFactory` port; `CustomFieldItems` moved from Domain Services to Domain Providers so modules do not call a concrete Domain service. The `lib-modules` rule now allows `Core/Definitions` as the composition root and the ratchet dropped to 1 (`BootstrapBase`). |
+| 2026-10-27 | P5-2 use case base contract (verified: core, architecture, wiring, PSR2, PHPStan) | M6 0/154 -> 0/155 ports; other metrics unchanged | Added `SP\Domain\Common\Ports\UseCase` with one public method `execute(Command $command): Result` and the `TCommand`/`TResult` templates; no HTTP, session, translation or presentation concerns. `UseCaseContractTest` guards the single entry point and the Domain boundary, and runs a use case against the new `InMemoryTagRepository` fake. Documented the marker contract in `ContainerWiringTest`. |
+| 2026-10-27 | P5-3 event emission convention (verified: core unit, architecture, wiring, PSR2) | M6 0/155 -> 0/156 ports; no other metric changes | Added `SP\Domain\Common\Ports\EventEmitter` (publish-only) and the `SP\Core\Events\EventDispatcherEmitter` adapter, wired in `CoreDefinitions`. Recorded the convention in section 5: keep the existing event names, use the use case as the source, pass untranslated message keys, support message-less events, preserve receiver extras, and emit only after the state change. Added `InMemoryEventEmitter`, `UseCaseEventEmissionTest` and `EventDispatcherEmitterTest`. Per-area call-site migration starts with the Tag pilot (#1975); no `app/modules` call site changed here, so the `EventMessage::build` count is still 98 files. |
+| 2026-10-27 | P6-W1 Tag pilot (verified: core, modules, architecture, wiring, PSR2, PHPStan) | M9 75 -> 81/259; M10 84 -> 77; M15 27 -> 26/46; M6 stays 0/156; PHPStan lib 1015 -> 1013 errors | Added `CreateTagUseCase`, `UpdateTagUseCase`, `DeleteTagUseCase`, `DeleteTagsUseCase`, `GetTagUseCase` and `SearchTagsUseCase` (Command in, Result out, ports only) with the `create.tag`/`edit.tag`/`delete.tag`/`delete.tag.selection` events emitted through `EventEmitter` using untranslated keys. `TagException` gained the stable `NAME_REQUIRED` code. The seven Tag controllers now use `#[Action]` + `ActionResponse` and are thin; `JsonTrait`, `JsonMessage`, `TagSaveBase`, `TagForm` and the static `Acl::getActionRoute()` calls are gone from the area. Fixed the Tag repository update/delete queries (Aura SQL Query has no `limit()` on them) and the batch delete now removes the custom fields of the deleted ids. Added `TagTest` (8 HTTP IT cases) and `TagUseCasesTest` (13 unit cases with `InMemoryTagRepository` and `InMemoryEventEmitter`).
+
+
+| 2026-10-27 | P10-1 Domain tests use fakes, not Infrastructure (verified: five migrated tests, core unit 2052, modules 104, architecture 14, PSR2 no new errors) | M14 5 → 0; M1 23 → 21; M2 13 → 11; M17 stays 11; M6 0/157 → 0/158 ports | Added `DatabaseUtilInterface` and the `DatabaseTables` constant holder in `Domain\Database`, and moved `DatabaseConnectionData` to `Domain\Database\Dtos` with a primitive `build()` factory so Domain no longer imports the Install adapter. `BackupFile` and `MysqlSetup` now take the port; `CoreDefinitions` binds it. `XmlFile` reads through `FileHandlerInterface::readToString()` and parses with `loadXML()`, so the new `InMemoryFileHandler` stub can back the tests without a filesystem. `FileBackupServiceTest`, `XmlFileTest`, `AccountCacheTest`, `MySQLTest` and `InstallerTest` now import only Domain ports/DTOs/stubs. Pruned the architecture allowlist by three and lowered the `domain-only` ratchet from 35 to 32. |
+
+| 2026-10-27 | P6-W2 small CRUD areas (verified: core unit 2077, modules 104, architecture + wiring 15, PSR2, PHPStan) | M9 81 -> 105/259; M10 77 -> 49; M6 stays 0/158; PHPStan lib 1012 -> 1009 errors | Added 24 use cases (`Create`, `Update`, `Delete`, `DeleteBatch`, `Get`, `Search`) for `ItemPreset`, `CustomField`, `UserGroup` and `UserProfile`, with Command/Result DTOs and events emitted through `EventEmitter` using untranslated keys. Converted the 28 legacy controllers to `#[Action]` + `ActionResponse` and removed `JsonTrait`/`JsonMessage` from the four areas; the view bases read through the `Get` use cases. `UserGroup`/`UserProfile` delete use cases now remove the custom fields of the deleted ids (the old batch path passed `null`). Added four unit test classes (25 cases) with mocked service ports and `InMemoryEventEmitter`. |
+| 2026-10-27 | P6-W3 remaining untested areas (verified: core unit 2108, modules integration 152, architecture + wiring, PSR2, PHPStan) | M9 105 -> 151/259; M10 49 -> 16; M15 26 -> 16/46; M8 89; M6 0/158; PHPStan lib 1009 -> 1009 | Added 25 use cases with Command/Result DTOs and use-case events for `Eventlog` (clear/search), `Track` (clear/unlock/search), `Plugin` (toggle/reset/delete single and batch/search), `Notification` (create/update/delete single and batch/check/get/search), `PublicLink` (create/create from account/delete single and batch/refresh/get/search) and `UserPassReset` (request/reset). The eight areas' legacy controllers now return `#[Action]` + `ActionResponse`; `Status`, `Items`, `Resource` and `Error` were converted to `ActionResponse`/`CALLBACK` without new use cases. Added unit test classes for the new use cases (31 cases) and one integration test class per area (10 areas, 44 cases). Fixed latent breakage found by the new tests: static `Acl` calls in five grids, `getIsAdminApp()`/`getIsAdmin()` mismatches, the stale `NotificationForm` model construction, missing `Controller` class suffixes (`SaveCreateController`, `ViewController`, `CheckNoticesController`), missing `statusAction()`, `module.php` minify bindings (`autowire` -> `get`), missing `error/index` template/missing `pluginInfo` guards, and case-sensitive `userPassReset` view path. |
+| 2026-10-29 | P7-2 API response adapter (verified: API IT 119, web+API 274, core unit 2108 except one pre-existing architecture failure, adapter unit 5, PSR2, PHPStan no new adapter errors) | M11 stays 0/46 (per-resource controllers still use legacy action methods until P7-3); other metrics unchanged | Added `SP\Modules\Api\Adapters\ActionResponseAdapter` with JSON-RPC and REST formatting, wired through `ControllerBase` and `Bootstrap`. Migrated all 29 `ApiResponse::makeSuccess()` call sites to `ActionResponse::ok()`, preserved the legacy JSON-RPC result shape (`itemId`, `result`, `resultCode`, `resultMessage`, `count`), and added an optional `itemId` to `ActionResponse`. No `ApiResponse` or `JsonRpcResponseFormatter` reference remains in `app/modules/api`. The architecture run still reports the pre-existing `BackupFile => __u() x6` violation introduced by `a21b5d1e` (allowlist entry is x5). |
+| 2026-10-30 | P9-2 remove `SP\Core\Application` (verified: architecture + wiring 15/15, core unit 2103, module unit 19, Resource/Status controller IT 4, PHPStan level 0 no new arity errors) | M4 stays 0; module references to `SP\Core\Application` 174 files / 202 references -> 0; no metric regression (M1 21, M3 13, M6 0/152, M13 0) | Deleted `lib/SP/Core/Application.php`. Added two immutable parameter objects instead of forwarding the same three deps everywhere: `SP\Core\ModuleDependencies` (config, context, event dispatcher) for `ModuleBase`, `HttpModuleBase` and the web/API/CLI `Init`, and `SP\Modules\Api\Controllers\ApiControllerHelper` for `ApiControllerBase` and its 8 bases. Both are `final readonly`, expose only typed ports and hold no container. Web `ControllerBase`/`SimpleControllerBase` read the deps from `WebControllerHelper`/`SimpleControllerHelper` (the existing web aggregate; `SessionContext` is bound to the web `Context` instance). `FormBase` and `HelperBase` keep explicit `ConfigFileService` + `Context` (+ `EventDispatcherInterface` for helpers) because each class uses them directly. `UnitaryTestCase` no longer builds an `Application`; tests read `$this->config` / `$this->eventDispatcherStub`. Verified: 36/36 API controllers resolve from the container. Full module integration suite still blocked locally by missing `DB_*` environment variables. |
+| 2026-10-31 | P10-4 coverage gates per layer (verified: core unit 2098 tests / 28245 assertions with coverage, gate passes at the declared targets, gate fails when a threshold is raised) | Use cases 91.11% -> gate 90%; Domain services 96.39% -> gate 95%; Domain 89.37%, Core 62.35%, Infrastructure 92.42%, total 53.38% recorded in section 9 | Added `scripts/coverage-gate.php` (Clover parser and per-layer report/gate) and `tests/coverage-thresholds.php` (use case and domain service minimums). The CI unitary job runs `php scripts/coverage-gate.php --gate` after the core unit suite. Only `Domain\*\UseCases` and `Domain\*\Services` are gated, as agreed in the issue; the other layers are reported for visibility. |
 
 ### Baseline test results (P0-1)
 
@@ -304,22 +395,25 @@ Api and Cli remain excluded from `tests/phpunit.xml`. Baseline runs outside the 
 - Api: database fixtures fail because the `mysql` CLI cannot read `vfs://test/res/datasets/truncate.sql`. Fix before P7-1.
 - Cli: 3 errors, `Undefined constant "SP\Tests\APP_DEFINITIONS_FILE"`. Fix before P8-1.
 
-### Coverage per layer (P0-1)
+### Coverage per layer (P10-4)
 
-Unit suite (`XDEBUG_MODE=coverage`), statements only:
+Unit suite (`XDEBUG_MODE=coverage --group unitary --testsuite core`), statements only, refreshed after the P9 cleanup:
 
-| Layer | Lines | Covered | Percent |
-|---|---|---|---|
-| `lib/SP/Domain` | 6598 | 5880 | 89.12% |
-| `lib/SP/Core` | 1362 | 870 | 63.88% |
-| `lib/SP/Infrastructure` | 3518 | 3258 | 92.61% |
-| `lib/SP/Mvc` | 264 | 76 | 28.79% |
-| `lib/SP/Html` | 0 | 0 | 0.00% |
-| `lib/SP/Util` | 57 | 24 | 42.11% |
-| `app/modules/web` | 8357 | 0 | 0.00% |
-| **Total** | **20156** | **10108** | **50.15%** |
+| Layer | Statements | Covered | Percent | Minimum |
+|---|---|---|---|---|
+| `lib/SP/Domain/*/UseCases` | 731 | 666 | 91.11% | 90.00% |
+| `lib/SP/Domain/*/Services` | 4350 | 4193 | 96.39% | 95.00% |
+| `lib/SP/Domain` | 7561 | 6757 | 89.37% | - |
+| `lib/SP/Core` | 1320 | 823 | 62.35% | - |
+| `lib/SP/Infrastructure` | 3482 | 3218 | 92.42% | - |
+| `app/modules/web` | 7991 | 81 | 1.01% | - |
+| `app/modules/api` | 0 | 0 | 0.00% | - |
+| `app/modules/cli` | 0 | 0 | 0.00% | - |
+| **Total** | **20394** | **10886** | **53.38%** | - |
 
-The web modules suite covers `app/modules/web` at 47.80% (3992/8351) and 40.23% overall when run alone. Keep both reports until a merged coverage job exists.
+`scripts/coverage-gate.php` reads `tests/_output/coverage-clover.xml`, aggregates statements per layer and enforces the minimums declared in `tests/coverage-thresholds.php`. The thresholds ratchet the current baseline for use cases (91.11%) and domain services (96.39%) down to 90% and 95%, leaving headroom for refactors. Report only: `php scripts/coverage-gate.php`. Gate: `php scripts/coverage-gate.php --gate`. CI runs the gate in the unitary job after the core unit suite.
+
+The web modules suite covers `app/modules/web` separately (`~47.80%` in the P0-1 baseline); the unit suite intentionally reports it near zero and it is not gated.
 
 ### Baseline fixes and quarantines (P0-1)
 
@@ -340,4 +434,6 @@ M1 186, M2 131, M3 96, M4 74, M5 73 files / 348 call sites, M6 69/143, M7 74, M8
 
 PHPStan (`composer phpstan-app`) is not runnable on this branch: loading `lib/Base.php` fails with `Undefined constant "APP_PATH"` because `BaseFunctions.php` is required before `APP_PATH` is defined. PHPCS passes on the changed `lib/` file.
 
-Cross-context imports per context (P3-3): **pending**.
+Cross-context imports per context (P3-3): **11** — `Account=2 Category=2 Client=2 Html=4 Http=1`. The migration target contexts are clean: `Import=0 Auth=0 Install=0 Export=0`. The remaining entries are the shared `CustomField` transformer in the Account/Category/Client adapters and the Html minifier's `Http` helpers. M17 in `scripts/architecture-metrics.sh` computes this list (business contexts only; ports, DTOs, models, enums and exceptions are contracts, `Common`/`Core` are shared kernels).
+
+The pre-P3-3 baseline by the same definition was **45**: `Import=9 Auth=5 Html=4 Account=4 User=4 Export=3 Category=2 Http=2 Common=2 Client=2 Notification=1 ItemPreset=1 Api=1 Security=1 Install=1 Plugin=1`.

@@ -27,9 +27,10 @@ namespace SP\Tests\Core\Crypt;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Csrf;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Http\Method;
@@ -57,6 +58,7 @@ class CsrfTest extends UnitaryTestCase
         ];
     }
 
+    #[Test]
     public function testInitialize()
     {
         $this->sessionContext
@@ -109,6 +111,7 @@ class CsrfTest extends UnitaryTestCase
      * @return void
      */
     #[DataProvider('httpMethodDataProvider')]
+    #[Test]
     public function testCheckWithValidToken(Method $method, string $header)
     {
         $salt = self::$faker->sha1;
@@ -155,6 +158,7 @@ class CsrfTest extends UnitaryTestCase
      * @return void
      */
     #[DataProvider('httpMethodDataProvider')]
+    #[Test]
     public function testCheckWithInvalidToken(Method $method, string $header)
     {
         $this->requestInterface
@@ -195,6 +199,7 @@ class CsrfTest extends UnitaryTestCase
      * @return void
      */
     #[DataProvider('httpMethodDataProvider')]
+    #[Test]
     public function testCheckWithNoToken(Method $method, string $header)
     {
         $this->requestInterface
@@ -224,6 +229,7 @@ class CsrfTest extends UnitaryTestCase
     /**
      * @return void
      */
+    #[Test]
     public function testCheckWithNoLogin()
     {
         $this->requestInterface
@@ -248,6 +254,7 @@ class CsrfTest extends UnitaryTestCase
     /**
      * @return void
      */
+    #[Test]
     public function testCheckWithNoCsrf()
     {
         $this->requestInterface

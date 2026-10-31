@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Client;
 
-use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientService;
@@ -35,10 +34,10 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class ClientViewBase
@@ -52,12 +51,11 @@ abstract class ClientViewBase extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                             $application,
         WebControllerHelper                     $webControllerHelper,
         private readonly ClientService          $clientService,
         private readonly CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

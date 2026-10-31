@@ -45,15 +45,17 @@ abstract class ModuleBase implements ModuleInterface
     /**
      * Module constructor.
      *
-     * @param Application $application
+     * @param ModuleDependencies $dependencies
      * @param ProvidersHelper $providersHelper
      */
-    public function __construct(Application $application, private readonly ProvidersHelper $providersHelper)
-    {
-        $this->config = $application->getConfig();
+    public function __construct(
+        ModuleDependencies               $dependencies,
+        private readonly ProvidersHelper $providersHelper
+    ) {
+        $this->config = $dependencies->getConfig();
         $this->configData = $this->config->getConfigData();
-        $this->context = $application->getContext();
-        $this->eventDispatcher = $application->getEventDispatcher();
+        $this->context = $dependencies->getContext();
+        $this->eventDispatcher = $dependencies->getEventDispatcher();
     }
 
     /**

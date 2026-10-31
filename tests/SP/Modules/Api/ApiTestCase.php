@@ -32,24 +32,30 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use JsonException;
-use Klein\Klein;
 use Klein\Request;
 use Klein\Response;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
 use RuntimeException;
-use SP\Domain\Api\Services\ApiRequest;
-use SP\Domain\Auth\Models\AuthToken;
+use SP\Core\Definitions\CoreDefinitions;
+use SP\Core\Definitions\DomainDefinitions;
+use SP\Domain\Api\Ports\ApiRequestService;
+use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
+use SP\Domain\Auth\Services\AuthToken;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Bootstrap\BootstrapInterface;
+use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Database\Ports\DbStorageHandler;
-use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\Database\MysqlHandler;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\UserPreferences;
+use SP\Infrastructure\File\FileSystem;
+use SP\Modules\Api\Adapters\ApiRequestAdapter;
+use SP\Modules\Api\Bootstrap;
 use SP\Tests\DatabaseTrait;
 use stdClass;
 
@@ -62,7 +68,7 @@ define('APP_MODULE', 'api');
  */
 abstract class ApiTestCase extends TestCase
 {
-    private const AUTH_TOKEN_PASS = 123456;
+    private const AUTH_TOKEN_PASS = '123456';
 
     use DatabaseTrait;
 
@@ -79,11 +85,11 @@ abstract class ApiTestCase extends TestCase
         AclActionsInterface::CATEGORY_EDIT     => 'category/edit',
         AclActionsInterface::CATEGORY_DELETE   => 'category/delete',
         AclActionsInterface::CATEGORY_SEARCH   => 'category/search',
-        AclActionsInterface::CLIENT_VIEW => 'clientService/view',
-        AclActionsInterface::CLIENT_CREATE => 'clientService/create',
-        AclActionsInterface::CLIENT_EDIT => 'clientService/edit',
-        AclActionsInterface::CLIENT_DELETE => 'clientService/delete',
-        AclActionsInterface::CLIENT_SEARCH => 'clientService/search',
+        AclActionsInterface::CLIENT_VIEW => 'client/view',
+        AclActionsInterface::CLIENT_CREATE => 'client/create',
+        AclActionsInterface::CLIENT_EDIT => 'client/edit',
+        AclActionsInterface::CLIENT_DELETE => 'client/delete',
+        AclActionsInterface::CLIENT_SEARCH => 'client/search',
         AclActionsInterface::TAG_VIEW          => 'tag/view',
         AclActionsInterface::TAG_CREATE        => 'tag/create',
         AclActionsInterface::TAG_EDIT          => 'tag/edit',
@@ -98,6 +104,18 @@ abstract class ApiTestCase extends TestCase
         AclActionsInterface::CONFIG_EXPORT_RUN => 'config/export',
     ];
     protected static ?ConfigDataInterface $configData = null;
+    private static ?array $moduleDefinitions = null;
+
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        if (self::$moduleDefinitions === null) {
+            self::$moduleDefinitions = FileSystem::require(
+                FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'api', 'module.php')
+            );
+        }
+    }
 
     /**
      * @throws JsonException
@@ -107,7 +125,9 @@ abstract class ApiTestCase extends TestCase
         bool $exceptionOnError = true
     ): stdClass {
         if ($exceptionOnError && $response->status()->getCode() !== 200) {
-            throw new RuntimeException($response->status()->getMessage());
+            throw new RuntimeException(
+                sprintf('%s: %s', $response->status()->getMessage(), $response->body())
+            );
         }
 
         return json_decode(
@@ -135,84 +155,98 @@ abstract class ApiTestCase extends TestCase
     final protected function callApi(int $actionId, array $params): Response
     {
         $databaseConnectionData = DatabaseConnectionData::getFromEnvironment();
+        $requestFile = tempnam(TMP_PATH, 'api-request-');
 
-        $dic = (new ContainerBuilder())
-            ->addDefinitions(
-                APP_DEFINITIONS_FILE,
-                [
-                    ApiRequest::class          => function (ContainerInterface $c) use ($actionId, $params) {
-                        $token = self::createApiToken(
-                            $c->get(AuthToken::class),
-                            $actionId
-                        );
+        if ($requestFile === false) {
+            throw new RuntimeException('Unable to create the API request file');
+        }
 
-                        $data = [
-                            'jsonrpc' => '2.0',
-                            'method'  => self::METHOD_ACTION_MAP[$actionId],
-                            'params'  => array_merge(
-                                [
-                                    'authToken' => $token->getToken(),
-                                    'tokenPass' => self::AUTH_TOKEN_PASS,
-                                ],
-                                $params
-                            ),
-                            'id'      => 1,
-                        ];
+        try {
+            $dic = (new ContainerBuilder())
+                ->addDefinitions(array_merge(
+                    CoreDefinitions::getDefinitions(REAL_APP_ROOT, 'api'),
+                    DomainDefinitions::getDefinitions(),
+                    self::$moduleDefinitions,
+                    [
+                        DatabaseConnectionData::class => $databaseConnectionData,
+                        ConfigDataInterface::class => static function (ConfigFileService $config) use (
+                            $databaseConnectionData
+                        ) {
+                            $configData = $config->getConfigData()
+                                ->setDbHost($databaseConnectionData->getDbHost())
+                                ->setDbName($databaseConnectionData->getDbName())
+                                ->setDbUser($databaseConnectionData->getDbUser())
+                                ->setDbPass($databaseConnectionData->getDbPass())
+                                ->setInstalled(true);
 
-                        return new ApiRequest(json_encode($data, JSON_THROW_ON_ERROR));
-                    },
-                    DbStorageHandler::class => create(MysqlHandler::class)
-                        ->constructor($databaseConnectionData),
-                    ConfigDataInterface::class => static function (ConfigFileService $config) use (
-                        $databaseConnectionData
-                    ) {
-                        $configData = $config->getConfigData()
-                            ->setDbHost($databaseConnectionData->getDbHost())
-                            ->setDbName($databaseConnectionData->getDbName())
-                            ->setDbUser($databaseConnectionData->getDbUser())
-                            ->setDbPass($databaseConnectionData->getDbPass())
-                            ->setInstalled(true);
+                            // Update the in-memory config without touching the file
+                            $config->save($configData, false);
 
-                        // Update ConfigData instance
-                        $config->update($configData);
+                            return $configData;
+                        },
+                        ApiRequestService::class => static fn() => ApiRequestAdapter::buildFromRequest($requestFile),
+                        Request::class => new Request(
+                            [],
+                            [],
+                            [],
+                            [
+                                'HTTP_HOST'            => 'localhost:8080',
+                                'HTTP_ACCEPT'          => 'application/json, text/javascript, */*; q=0.01',
+                                'HTTP_USER_AGENT'      => 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0',
+                                'HTTP_ACCEPT_LANGUAGE' => 'en-US,en;q=0.5',
+                                'HTTP_ACCEPT_ENCODING' => 'gzip, deflate',
+                                'REQUEST_URI'          => '/api.php',
+                                'REQUEST_METHOD'       => 'POST',
+                                'HTTP_CONTENT_TYPE'    => 'application/json',
+                                'REMOTE_ADDR'          => '127.0.0.1',
+                            ],
+                            [],
+                            null
+                        ),
+                        Response::class => create(Response::class),
+                    ]
+                ))
+                ->build();
 
-                        return $configData;
-                    },
-                ]
-            )
-            ->build();
+            $context = $dic->get(Context::class);
+            $context->initialize();
+            $context->setUserData(
+                new UserDto(
+                    id: 1,
+                    login: 'admin',
+                    preferences: new UserPreferences(['lang' => 'en_US'])
+                )
+            );
+            $context->setTrasientKey('_masterpass', '12345678900');
 
-        $context = $dic->get(Context::class);
-        $context->initialize();
-        $context->setTrasientKey('_masterpass', '12345678900');
+            self::$configData = $dic->get(ConfigDataInterface::class);
 
-        self::$configData = $dic->get(ConfigDataInterface::class);
+            $token = self::createApiToken(
+                $dic->get(AuthToken::class),
+                $actionId
+            );
 
-        $request = new Request(
-            [],
-            [],
-            [],
-            [
-                'HTTP_HOST'            => 'localhost:8080',
-                'HTTP_ACCEPT'          => 'application/json, text/javascript, */*; q=0.01',
-                'HTTP_USER_AGENT'      => 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0',
-                'HTTP_ACCEPT_LANGUAGE' => 'en-US,en;q=0.5',
-                'HTTP_ACCEPT_ENCODING' => 'gzip, deflate',
-                'REQUEST_URI'          => '/api.php',
-                'REQUEST_METHOD'       => 'POST',
-                'HTTP_CONTENT_TYPE'    => 'application/json',
-            ],
-            [],
-            null
-        );
+            $data = [
+                'jsonrpc' => '2.0',
+                'method'  => self::METHOD_ACTION_MAP[$actionId],
+                'params'  => array_merge(
+                    [
+                        'authToken' => $token->getToken(),
+                        'tokenPass' => self::AUTH_TOKEN_PASS,
+                    ],
+                    $params
+                ),
+                'id'      => 1,
+            ];
 
-        $router = $dic->get(Klein::class);
-        $request = $dic->get(\SP\Domain\Http\Services\Request::class);
+            file_put_contents($requestFile, json_encode($data, JSON_THROW_ON_ERROR));
 
-        $bs = new BootstrapApi(self::$configData, $router, $request);
-        $router->dispatch($request, null, false);
+            Bootstrap::run($dic->get(BootstrapInterface::class), $dic->get(ModuleInterface::class));
 
-        return $router->response();
+            return $dic->get(Response::class);
+        } finally {
+            @unlink($requestFile);
+        }
     }
 
     /**
@@ -225,16 +259,25 @@ abstract class ApiTestCase extends TestCase
     private static function createApiToken(
         AuthToken $service,
         int       $actionId
-    ): AuthToken
+    ): AuthTokenModel
     {
-        $data = new AuthToken();
-        $data->setActionId($actionId);
-        $data->setCreatedBy(1);
-        $data->setHash(self::AUTH_TOKEN_PASS);
-        $data->setUserId(1);
+        $data = new AuthTokenModel(
+            [
+                'actionId'  => $actionId,
+                'createdBy' => 1,
+                'hash'      => self::AUTH_TOKEN_PASS,
+                'userId'    => 1,
+            ]
+        );
 
-        $service->create($data);
+        $tokens = $service->getAll();
 
-        return $data;
+        if ($tokens !== []) {
+            $service->deleteByIdBatch(array_map(static fn($token) => (int)$token->getId(), $tokens));
+        }
+
+        $id = $service->create($data);
+
+        return $service->getById($id);
     }
 }

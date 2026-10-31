@@ -28,13 +28,14 @@ namespace SP\Tests\Domain\Auth\Providers\Ldap;
 
 use Laminas\Ldap\Ldap;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Auth\Providers\Ldap\LdapConnection;
-use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
-use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Auth\Exceptions\LdapException;
+use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Auth\Enums\LdapTypeEnum;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Tests\UnitaryTestCase;
@@ -56,6 +57,7 @@ class LdapConnectionTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testCheckConnection(): void
     {
         $this->ldap
@@ -74,6 +76,7 @@ class LdapConnectionTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testCheckConnectionError(): void
     {
         $this->expectConnectError();
@@ -117,6 +120,7 @@ class LdapConnectionTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testConnect(): void
     {
         $this->ldap
@@ -130,6 +134,7 @@ class LdapConnectionTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testConnectError(): void
     {
         $this->expectConnectError();

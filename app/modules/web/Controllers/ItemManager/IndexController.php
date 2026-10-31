@@ -24,9 +24,10 @@
 
 namespace SP\Modules\Web\Controllers\ItemManager;
 
-use SP\Core\Acl\Acl;
-use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
@@ -39,19 +40,19 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Html\DataGrid\DataGridTab;
+use SP\Modules\Web\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers;
-use SP\Modules\Web\Controllers\Helpers\Grid\AccountGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\AccountHistoryGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\CategoryGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\ClientGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\CustomFieldGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\FileGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\ItemPresetGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\TagGrid;
-use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Presenters\Helpers;
+use SP\Modules\Web\Presenters\Helpers\Grid\AccountGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\AccountHistoryGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\CategoryGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\ClientGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\CustomFieldGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\FileGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\ItemPresetGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\TagGrid;
+use SP\Modules\Web\Presenters\Helpers\TabsGridHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class ItemManagerController
@@ -80,7 +81,6 @@ final class IndexController extends ControllerBase
     private ItemPresetGrid                 $itemPresetGrid;
 
     public function __construct(
-        Application                  $application,
         WebControllerHelper          $webControllerHelper,
         Helpers\TabsGridHelper       $tabsGridHelper,
         CategoryService              $categoryService,
@@ -118,7 +118,7 @@ final class IndexController extends ControllerBase
         $this->accountHistoryGrid = $accountHistoryGrid;
         $this->itemPresetGrid = $itemPresetGrid;
 
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }
@@ -127,9 +127,10 @@ final class IndexController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
-        $this->getGridTabs();
+        return ActionResponse::ok($this->getGridTabs());
     }
 
     /**
@@ -138,7 +139,7 @@ final class IndexController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    protected function getGridTabs(): void
+    protected function getGridTabs(): string
     {
         $this->itemSearchData = new ItemSearchDto(null, 0, $this->configData->getAccountCount());
 
@@ -181,11 +182,11 @@ final class IndexController extends ControllerBase
         );
 
         $this->tabsGridHelper->renderTabs(
-            Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE),
+            $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE),
             $this->request->analyzeInt('tabIndex', 0)
         );
 
-        $this->view();
+        return $this->render();
     }
 
     /**

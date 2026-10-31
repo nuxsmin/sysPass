@@ -24,21 +24,14 @@
 
 namespace SP\Modules\Api\Controllers;
 
-use Exception;
-use Klein\Klein;
 use League\Fractal\Manager;
-use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
-use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Api\Ports\ApiService;
-use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Services\JsonResponse;
 
 /**
  * Class ControllerBase
@@ -58,14 +51,12 @@ abstract class ControllerBase
     private bool                       $isAuthenticated = false;
 
     public function __construct(
-        Application                     $application,
-        protected readonly Klein        $router,
-        protected readonly ApiService   $apiService,
-        protected readonly AclInterface $acl
+        ApiControllerHelper           $controllerHelper,
+        protected readonly ApiService $apiService
     ) {
-        $this->context = $application->getContext();
-        $this->configData = $application->getConfig()->getConfigData();
-        $this->eventDispatcher = $application->getEventDispatcher();
+        $this->context = $controllerHelper->getContext();
+        $this->configData = $controllerHelper->getConfig()->getConfigData();
+        $this->eventDispatcher = $controllerHelper->getEventDispatcher();
 
         $this->fractal = new Manager();
         $this->controllerName = $this->getControllerName();
@@ -90,36 +81,8 @@ abstract class ControllerBase
         $this->isAuthenticated = true;
     }
 
-    /**
-     * Devuelve una respuesta en formato JSON con el estado y el mensaje.
-     *
-     * {"jsonrpc": "2.0", "result": 19, "id": 3}
-     */
-    final protected function returnResponse(ApiResponse $apiResponse): void
+    final public function isAuthenticated(): bool
     {
-        try {
-            if ($this->isAuthenticated === false) {
-                throw new SPException(__u('Unauthorized access'));
-            }
-
-            $this->sendJsonResponse(JsonRpcResponse::getResponse($apiResponse, $this->apiService->getRequestId()));
-        } catch (SPException $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
-    }
-
-    /**
-     * Returns a JSON response back to the browser
-     */
-    private function sendJsonResponse(string $response): void
-    {
-        JsonResponse::factory($this->router->response())->sendRaw($response);
-    }
-
-    final protected function returnResponseException(Exception $e): void
-    {
-        $this->sendJsonResponse(JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId()));
+        return $this->isAuthenticated;
     }
 }

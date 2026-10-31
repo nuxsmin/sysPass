@@ -23,7 +23,7 @@
  */
 
 /**
- * @var SP\Html\DataGrid\DataGridTab $data
+ * @var SP\Modules\Web\Html\DataGrid\DataGridTab $data
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
@@ -32,7 +32,7 @@
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 $data = $_getvar('data');
 ?>

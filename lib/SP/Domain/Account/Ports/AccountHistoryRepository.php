@@ -29,7 +29,7 @@ use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Dtos\ItemSearchDto;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class AccountHistoryRepository

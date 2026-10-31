@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,14 +25,15 @@
 namespace SP\Modules\Web\Controllers\Login;
 
 use SP\Core\Context\SessionLifecycleHandler;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Modules\Web\Controllers\ControllerBase;
 
 final class IndexController extends ControllerBase
 {
-    /**
-     * Index action
-     */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         SessionLifecycleHandler::clean();
 
@@ -42,6 +43,6 @@ final class IndexController extends ControllerBase
 
         $this->prepareSignedUriOnView();
 
-        $this->view();
+        return ActionResponse::ok($this->render());
     }
 }

@@ -32,6 +32,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class ConfigControllerTest
@@ -46,6 +47,7 @@ class ConfigControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testExportAction(): void
     {
         $api = $this->callApi(
@@ -68,6 +70,7 @@ class ConfigControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testExportActionCustomPath(): void
     {
         $api = $this->callApi(
@@ -92,6 +95,7 @@ class ConfigControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testExportActionInvalidPath(): void
     {
         $api = $this->callApi(
@@ -112,6 +116,7 @@ class ConfigControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testBackupAction(): void
     {
         $api = $this->callApi(
@@ -136,6 +141,7 @@ class ConfigControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testBackupActionInvalidPath(): void
     {
         $api = $this->callApi(
@@ -156,6 +162,7 @@ class ConfigControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testBackupActionCustomPath(): void
     {
         $api = $this->callApi(

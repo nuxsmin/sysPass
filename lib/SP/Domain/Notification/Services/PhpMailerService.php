@@ -29,13 +29,13 @@ namespace SP\Domain\Notification\Services;
 use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Notification\Dtos\MailParams;
 use SP\Domain\Notification\MailerException;
 use SP\Domain\Notification\Ports\MailerInterface;
 
 use function SP\__u;
-use function SP\logger;
-use function SP\processException;
 
 /**
  * A wrapper for PHPMailer
@@ -43,8 +43,11 @@ use function SP\processException;
 final readonly class PhpMailerService implements MailerInterface
 {
 
-    public function __construct(private PHPMailer $mailer, private bool $debug = false)
-    {
+    public function __construct(
+        private PHPMailer $mailer,
+        private bool $debug = false,
+        private LoggerInterface $logger = new NullLogger()
+    ) {
     }
 
     public function isHtml(): MailerInterface
@@ -126,17 +129,15 @@ final readonly class PhpMailerService implements MailerInterface
 
             if ($this->debug) {
                 $mailer->SMTPDebug = 2;
-                $mailer->Debugoutput = static fn($str, $level) => logger($str, strtoupper($level));
+                $mailer->Debugoutput = fn(string $str) => $this->logger->debug($str);
             }
 
             $mailer->setFrom($mailParams->getFrom(), $appName);
             $mailer->addReplyTo($mailParams->getFrom(), $appName);
             $mailer->WordWrap = 100;
 
-            return new self($mailer, $this->debug);
+            return new self($mailer, $this->debug, $this->logger);
         } catch (Exception $e) {
-            processException($e);
-
             throw MailerException::error(__u('Unable to initialize'), $e->getMessage(), $e->getCode(), $e);
         }
     }

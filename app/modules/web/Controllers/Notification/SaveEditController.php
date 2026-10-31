@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,56 +24,46 @@
 
 namespace SP\Modules\Web\Controllers\Notification;
 
-
 use Exception;
-use JsonException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Notification\UseCases\Dtos\UpdateNotificationCommand;
+use SP\Domain\Notification\UseCases\UpdateNotificationUseCase;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class SaveEditController
  */
 final class SaveEditController extends NotificationSaveBase
 {
-    use JsonTrait;
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        private readonly UpdateNotificationUseCase $updateNotificationUseCase
+    ) {
+        parent::__construct($webControllerHelper);
+    }
 
-    /**
-     * Saves edit action
-     *
-     * @param  int  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function saveEditAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function saveEditAction(int $id): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_EDIT)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
+        if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_EDIT)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
 
+        try {
             $this->form->validateFor(AclActionsInterface::NOTIFICATION_EDIT, $id);
 
-            $this->notificationService->update($this->form->getItemData());
-
-            $this->eventDispatcher->notify(
-                'edit.notification',
-                new Event($this, EventMessage::build()->addDescription(__u('Notification updated')))
+            $this->updateNotificationUseCase->execute(
+                new UpdateNotificationCommand($this->form->getItemData())
             );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Notification updated'));
         } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
+
+        return ActionResponse::ok(__u('Notification updated'));
     }
 }

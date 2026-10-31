@@ -51,10 +51,8 @@
         </testsuite>
         <testsuite name="modules">
             <directory suffix=".php">./SP/Modules/Web</directory>
-            <directory suffix=".php">./SP/Modules/Api</directory>
-            <directory suffix=".php">./SP/Modules/Cli</directory>
-            <exclude>./SP/Modules/Api</exclude>
-            <exclude>./SP/Modules/Cli</exclude>
+            <directory suffix="Test.php">./SP/Modules/Api</directory>
+            <directory suffix="Test.php">./SP/Modules/Cli</directory>
         </testsuite>
     </testsuites>
     <logging/>
@@ -64,8 +62,8 @@
             <directory suffix=".php">../app/modules/web</directory>
         </include>
         <exclude>
-            <directory suffix=".php">../lib/SP/Html/Assets</directory>
-            <directory suffix=".php">../lib/SP/Html/DataGrid</directory>
+            <directory suffix=".php">../app/modules/web/Html/Assets</directory>
+            <directory suffix=".php">../app/modules/web/Html/DataGrid</directory>
             <file>../lib/SP/Domain/Config/Adapters/ConfigData.php</file>
         </exclude>
     </source>

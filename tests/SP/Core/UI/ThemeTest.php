@@ -28,14 +28,16 @@ namespace SP\Tests\Core\UI;
 
 use Directory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Core\UI\Theme;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -50,8 +52,10 @@ class ThemeTest extends UnitaryTestCase
 
     private ThemeContextInterface|MockObject $themeContext;
     private ThemeIconsInterface|MockObject   $themeIcons;
+    private PhpFileLoaderInterface|MockObject $fileLoader;
     private Theme $theme;
 
+    #[Test]
     public function testGetIcons()
     {
         $expected = spl_object_id($this->themeIcons);
@@ -63,6 +67,7 @@ class ThemeTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetThemeNameUnathenticated()
     {
         $context = $this->createMock(SessionContext::class);
@@ -85,6 +90,7 @@ class ThemeTest extends UnitaryTestCase
      * @throws Exception
      * @throws SPException
      */
+    #[Test]
     public function testGetThemeNameAuthenticated()
     {
         $context = $this->createMock(SessionContext::class);
@@ -106,6 +112,7 @@ class ThemeTest extends UnitaryTestCase
         $this->assertEquals($userDto->preferences->getTheme(), $current);
     }
 
+    #[Test]
     public function testGetViewsPath()
     {
         $path = self::$faker->filePath();
@@ -117,6 +124,7 @@ class ThemeTest extends UnitaryTestCase
         $this->assertEquals($path, $this->theme->getViewsPath());
     }
 
+    #[Test]
     public function testGetInfo()
     {
         $this->themeContext
@@ -127,6 +135,7 @@ class ThemeTest extends UnitaryTestCase
         $this->assertEquals([], $this->theme->getInfo());
     }
 
+    #[Test]
     public function testGetUri()
     {
         $url = self::$faker->url();
@@ -141,6 +150,7 @@ class ThemeTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetAvailable()
     {
         $dir = $this->createMock(Directory::class);
@@ -161,6 +171,7 @@ class ThemeTest extends UnitaryTestCase
         $this->theme->getAvailable();
     }
 
+    #[Test]
     public function testGetPath()
     {
         $path = self::$faker->filePath();
@@ -182,7 +193,8 @@ class ThemeTest extends UnitaryTestCase
 
         $this->themeContext = $this->createMock(ThemeContextInterface::class);
         $this->themeIcons = $this->createMock(ThemeIconsInterface::class);
+        $this->fileLoader = $this->createMock(PhpFileLoaderInterface::class);
 
-        $this->theme = new Theme($this->themeContext, $this->themeIcons);
+        $this->theme = new Theme($this->themeContext, $this->themeIcons, $this->fileLoader);
     }
 }

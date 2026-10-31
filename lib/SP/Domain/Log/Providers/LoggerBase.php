@@ -28,16 +28,19 @@ namespace SP\Domain\Log\Providers;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use SP\Core\Application;
-use SP\Core\Events\Event;
 use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Http\Ports\RequestService;
 
-use function SP\__;
+use function SP\__u;
 use function SP\getLastCaller;
 
 /**
@@ -50,12 +53,15 @@ abstract class LoggerBase extends Provider implements EventReceiver
     protected readonly string $events;
 
     public function __construct(
-        Application                          $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         protected readonly LoggerInterface $logger,
         protected readonly LanguageInterface $language,
-        protected readonly RequestService  $request
+        protected readonly RequestService  $request,
+        private readonly EventMessageFormatterInterface $messageFormatter
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $configEvents = $this->config->getConfigData()->getLogEvents();
 
@@ -90,7 +96,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
             $this->logger->error(
                 $eventType,
                 $this->formatContext(
-                    __($source->getMessage()),
+                    __u($source->getMessage()),
                     $this->request->getClientAddress(true),
                     $userLogin
                 )
@@ -99,7 +105,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
             $this->logger->debug(
                 $eventType,
                 $this->formatContext(
-                    $eventMessage->composeText(' | '),
+                    $this->messageFormatter->composeText($eventMessage, ' | '),
                     $this->request->getClientAddress(true),
                     $userLogin
                 )

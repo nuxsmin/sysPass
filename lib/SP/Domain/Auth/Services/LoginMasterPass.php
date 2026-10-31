@@ -26,9 +26,11 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Services;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LoginMasterPassService;
 use SP\Domain\Common\Services\Service;
@@ -39,8 +41,8 @@ use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Ports\UserMasterPassService;
-use SP\Domain\User\Services\UserMasterPassStatus;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\User\Models\UserMasterPassStatus;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__u;
 
@@ -50,13 +52,15 @@ use function SP\__u;
 final class LoginMasterPass extends LoginBase implements LoginMasterPassService
 {
     public function __construct(
-        Application                                 $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         TrackService                                $trackService,
         RequestService $request,
         private readonly UserMasterPassService      $userMasterPassService,
         private readonly TemporaryMasterPassService $temporaryMasterPassService,
     ) {
-        parent::__construct($application, $trackService, $request);
+        parent::__construct($config, $eventDispatcher, $context, $trackService, $request);
     }
 
     /**

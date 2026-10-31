@@ -31,13 +31,16 @@ use DI\NotFoundException;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use SP\Core\Definitions\CoreDefinitions;
+use SP\Core\Definitions\DomainDefinitions;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Domain\Database\Ports\DbStorageHandler;
+use SP\Infrastructure\File\FileSystem;
 use Symfony\Component\Console\Tester\CommandTester;
 
+use function DI\factory;
 use function SP\Tests\getDbHandler;
-
-use const SP\Tests\APP_DEFINITIONS_FILE;
 
 define('APP_MODULE', 'cli');
 
@@ -47,6 +50,7 @@ define('APP_MODULE', 'cli');
 abstract class CliTestCase extends TestCase
 {
     protected static ContainerInterface $dic;
+    private static ?array $moduleDefinitions = null;
     /**
      * @var string[]
      */
@@ -61,11 +65,31 @@ abstract class CliTestCase extends TestCase
     {
         parent::setUpBeforeClass();
 
+        self::buildContainer();
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected static function buildContainer(): void
+    {
+        if (self::$moduleDefinitions === null) {
+            self::$moduleDefinitions = FileSystem::require(
+                FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'cli', 'module.php')
+            );
+        }
+
         $builder = new ContainerBuilder();
-        $builder->addDefinitions(
-            APP_DEFINITIONS_FILE,
-            MODULES_PATH.DIRECTORY_SEPARATOR.'cli'.DIRECTORY_SEPARATOR.'module.php'
-        );
+        $builder->addDefinitions(array_merge(
+            CoreDefinitions::getDefinitions(REAL_APP_ROOT, 'cli'),
+            DomainDefinitions::getDefinitions(),
+            self::$moduleDefinitions,
+            [
+                DatabaseConnectionData::class => factory(
+                    static fn() => DatabaseConnectionData::getFromEnvironment()
+                )
+            ]
+        ));
 
         self::$dic = $builder->build();
 

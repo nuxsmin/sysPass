@@ -24,78 +24,31 @@
 
 namespace SP\Modules\Web\Controllers\ItemPreset;
 
-
-use JsonException;
-use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Html\DataGrid\DataGridInterface;
-use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Grid\ItemPresetGrid;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Domain\ItemPreset\UseCases\Dtos\SearchItemPresetsCommand;
+use SP\Domain\ItemPreset\UseCases\SearchItemPresetsUseCase;
+use SP\Modules\Web\Controllers\SearchGridControllerBase;
+use SP\Modules\Web\Presenters\Helpers\Grid\ItemPresetGrid;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
 
 /**
  * Class SearchController
  */
-final class SearchController extends ControllerBase
+final class SearchController extends SearchGridControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
-
-    private ItemPresetService $itemPresetService;
-    private ItemPresetGrid    $itemPresetGrid;
 
     public function __construct(
-        Application       $application,
-        WebControllerHelper $webControllerHelper,
-        ItemPresetService $itemPresetService,
-        ItemPresetGrid    $itemPresetGrid
+        \SP\Modules\Web\Mvc\Controller\WebControllerHelper $webControllerHelper,
+        private readonly SearchItemPresetsUseCase $searchItemPresetsUseCase,
+        private readonly ItemPresetGrid $itemPresetGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->itemPresetService = $itemPresetService;
-        $this->itemPresetGrid = $itemPresetGrid;
     }
 
-
-    /**
-     * Search action
-     *
-     * @return bool
-     * @throws JsonException
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function searchAction(): bool
-    {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_SEARCH)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
-            );
-        }
-
-        $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
-        $this->view->assign('data', $this->getSearchGrid());
-
-        return $this->returnJsonResponseData(['html' => $this->render()]);
-    }
-
-    /**
-     * getSearchGrid
-     *
-     * @return DataGridInterface
-     * @throws ConstraintException
-     * @throws QueryException
-     */
     protected function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData(
@@ -103,9 +56,16 @@ final class SearchController extends ControllerBase
             $this->request
         );
 
+        $result = $this->searchItemPresetsUseCase->execute(new SearchItemPresetsCommand($itemSearchData));
+
         return $this->itemPresetGrid->updatePager(
-            $this->itemPresetGrid->getGrid($this->itemPresetService->search($itemSearchData)),
+            $this->itemPresetGrid->getGrid($result->result),
             $itemSearchData
         );
+    }
+
+    protected function getAclAction(): int
+    {
+        return AclActionsInterface::ITEMPRESET_SEARCH;
     }
 }

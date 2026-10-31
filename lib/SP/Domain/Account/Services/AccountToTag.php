@@ -25,12 +25,14 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Services;
 
-use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Account\Ports\AccountToTagService;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -42,10 +44,12 @@ final class AccountToTag extends Service implements AccountToTagService
 {
 
     public function __construct(
-        Application                             $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly AccountToTagRepository $accountToTagRepository
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

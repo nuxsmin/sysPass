@@ -36,7 +36,7 @@ use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Config\Models\Config;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\IntegrationTestCase;

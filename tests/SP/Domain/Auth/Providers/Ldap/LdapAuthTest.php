@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Auth\Providers\Ldap;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -33,9 +34,9 @@ use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapService;
-use SP\Domain\Auth\Providers\Ldap\AttributeCollection;
+use SP\Domain\Auth\Models\AttributeCollection;
 use SP\Domain\Auth\Providers\Ldap\LdapAuth;
-use SP\Domain\Auth\Providers\Ldap\LdapException;
+use SP\Domain\Auth\Exceptions\LdapException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -57,6 +58,7 @@ class LdapAuthTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testAuthenticate()
     {
         $userLoginData = new UserLoginDto();
@@ -139,6 +141,7 @@ class LdapAuthTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testAuthenticateWithExpireFail()
     {
         $userLoginData = new UserLoginDto();
@@ -187,6 +190,7 @@ class LdapAuthTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testAuthenticateWithGroupFail()
     {
         $userLoginData = new UserLoginDto();
@@ -235,6 +239,7 @@ class LdapAuthTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testAuthenticateFailConnect()
     {
         $userLoginData = new UserLoginDto();
@@ -268,6 +273,7 @@ class LdapAuthTest extends UnitaryTestCase
         self::assertEquals(1, $out->getStatusCode());
     }
 
+    #[Test]
     public function testIsAuthGrantedFalseWhenDatabaseEnabled()
     {
         $this->configData
@@ -278,6 +284,7 @@ class LdapAuthTest extends UnitaryTestCase
         self::assertFalse($this->ldapAuth->isAuthGranted());
     }
 
+    #[Test]
     public function testIsAuthGrantedTrueWhenDatabaseDisabled()
     {
         $this->configData

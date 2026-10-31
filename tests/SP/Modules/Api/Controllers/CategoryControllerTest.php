@@ -30,6 +30,7 @@ use DI\NotFoundException;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
@@ -52,6 +53,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateAction(): void
     {
         $response = $this->createCategory(self::PARAMS);
@@ -89,6 +91,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateActionDuplicated(): void
     {
         $response = $this->createCategory(['name' => 'web']);
@@ -102,6 +105,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateActionRequiredParameter(): void
     {
         $params = self::PARAMS;
@@ -121,6 +125,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewAction(): void
     {
         $response = $this->createCategory(self::PARAMS);
@@ -154,6 +159,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -172,6 +178,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditAction(): void
     {
         $response = $this->createCategory(self::PARAMS);
@@ -220,6 +227,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditActionDuplicated(): void
     {
         $response = $this->createCategory(self::PARAMS);
@@ -247,6 +255,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditActionRequiredParameters(): void
     {
         $response = $this->createCategory(self::PARAMS);
@@ -276,6 +285,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditActionNonExistant(): void
     {
         $params = [
@@ -301,6 +311,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      */
     #[DataProvider('searchProvider')]
+    #[Test]
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(
@@ -320,6 +331,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteAction(): void
     {
         $response = $this->createCategory();
@@ -344,6 +356,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -362,6 +375,7 @@ class CategoryControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteActionRequiredParameters(): void
     {
         $api = $this->callApi(

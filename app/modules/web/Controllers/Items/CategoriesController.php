@@ -24,45 +24,42 @@
 
 namespace SP\Modules\Web\Controllers\Items;
 
-use SP\Core\Application;
+use Klein\Response;
 use SP\Domain\Category\Ports\CategoryService;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Services\JsonResponse;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseStatus;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Http\Header;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
-use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 
 /**
  * Class CategoriesController
  */
 final class CategoriesController extends SimpleControllerBase
 {
-    private CategoryService $categoryService;
-
     public function __construct(
-        Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        CategoryService $categoryService
+        private readonly CategoryService $categoryService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
 
         $this->checks();
-
-        $this->categoryService = $categoryService;
     }
 
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     */
-    public function categoriesAction(): void
+    #[Action(ResponseType::CALLBACK)]
+    public function categoriesAction(): ActionResponse
     {
-        JsonResponse::factory($this->router->response())
-                    ->sendRaw(
-                        SelectItemAdapter::factory($this->categoryService->getAll())->getJsonItemsFromModel()
-                    );
+        $data = SelectItemAdapter::factory($this->categoryService->getAll())->getJsonItemsFromModel();
+
+        return new ActionResponse(
+            ResponseStatus::OK,
+            function (Response $response) use ($data) {
+                $response->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_JSON->value);
+                $response->body($data);
+            }
+        );
     }
 }

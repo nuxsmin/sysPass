@@ -85,21 +85,24 @@ final class UserForm extends FormBase implements FormInterface
     {
         $this->isLdap = $this->request->analyzeInt('isLdap', 0);
 
-        $this->userData = new User();
-        $this->userData->setId($this->itemId);
-        $this->userData->setName($this->request->analyzeString('name'));
-        $this->userData->setLogin($this->request->analyzeString('login'));
-        $this->userData->setSsoLogin($this->request->analyzeString('login_sso'));
-        $this->userData->setEmail($this->request->analyzeEmail('email'));
-        $this->userData->setNotes($this->request->analyzeUnsafeString('notes'));
-        $this->userData->setUserGroupId($this->request->analyzeInt('usergroup_id'));
-        $this->userData->setUserProfileId($this->request->analyzeInt('userprofile_id'));
-        $this->userData->setIsAdminApp($this->request->analyzeBool('adminapp_enabled', false));
-        $this->userData->setIsAdminAcc($this->request->analyzeBool('adminacc_enabled', false));
-        $this->userData->setIsDisabled($this->request->analyzeBool('disabled', false));
-        $this->userData->setIsChangePass($this->request->analyzeBool('changepass_enabled', false));
-        $this->userData->setPass($this->request->analyzeEncrypted('password'));
-        $this->userData->setIsLdap($this->isLdap);
+        $this->userData = new User(
+            [
+                'id' => $this->itemId,
+                'name' => $this->request->analyzeString('name'),
+                'login' => $this->request->analyzeString('login'),
+                'ssoLogin' => $this->request->analyzeString('login_sso'),
+                'email' => $this->request->analyzeEmail('email'),
+                'notes' => $this->request->analyzeUnsafeString('notes'),
+                'userGroupId' => $this->request->analyzeInt('usergroup_id'),
+                'userProfileId' => $this->request->analyzeInt('userprofile_id'),
+                'isAdminApp' => $this->request->analyzeBool('adminapp_enabled', false),
+                'isAdminAcc' => $this->request->analyzeBool('adminacc_enabled', false),
+                'isDisabled' => $this->request->analyzeBool('disabled', false),
+                'isChangePass' => $this->request->analyzeBool('changepass_enabled', false),
+                'pass' => $this->request->analyzeEncrypted('password'),
+                'isLdap' => (bool)$this->isLdap,
+            ]
+        );
     }
 
     /**

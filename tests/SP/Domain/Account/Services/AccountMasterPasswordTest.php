@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -57,6 +58,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateMasterPassword(): void
     {
         $request =
@@ -83,6 +85,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateMasterPasswordWithNoAccounts(): void
     {
         $request =
@@ -110,6 +113,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateMasterPasswordDoesNotThrowException(): void
     {
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
@@ -128,6 +132,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateMasterPasswordThrowException(): void
     {
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
@@ -146,6 +151,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateHistoryMasterPassword(): void
     {
         $request = new UpdateMasterPassRequest(
@@ -170,6 +176,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateHistoryMasterPasswordWithNoAccounts(): void
     {
         $request =
@@ -197,6 +204,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateHistoryMasterPasswordThrowException(): void
     {
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
@@ -214,6 +222,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateHistoryMasterPasswordDoesNotThrowException(): void
     {
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
@@ -240,7 +249,9 @@ class AccountMasterPasswordTest extends UnitaryTestCase
 
         $this->accountMasterPassword =
             new AccountMasterPassword(
-                $this->application,
+                $this->config,
+                $this->eventDispatcherStub,
+                $this->context,
                 $this->account,
                 $this->accountHistory,
                 $this->crypt,

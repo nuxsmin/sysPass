@@ -28,6 +28,7 @@ namespace SP\Tests\Infrastructure\CustomField\Repositories;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\CustomField\Models\CustomFieldType as CustomFieldTypeModel;
@@ -47,6 +48,7 @@ class CustomFieldTypeTest extends UnitaryTestCase
     private CustomFieldType              $customFieldType;
     private MockObject|DatabaseInterface $database;
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -76,7 +78,7 @@ class CustomFieldTypeTest extends UnitaryTestCase
         $this->customFieldType = new CustomFieldType(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

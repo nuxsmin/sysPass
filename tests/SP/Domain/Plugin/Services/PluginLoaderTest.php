@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Plugin\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -33,7 +34,7 @@ use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginLoader;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -47,6 +48,7 @@ class PluginLoaderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testLoadForWithEnabled()
     {
         $pluginManagerService = $this->createMock(PluginManagerService::class);
@@ -61,7 +63,12 @@ class PluginLoaderTest extends UnitaryTestCase
             ->with('test_plugin')
             ->willReturn($pluginModel);
 
-        $pluginLoader = new PluginLoader($this->application, $pluginManagerService);
+        $pluginLoader = new PluginLoader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
         $pluginLoader->loadFor($plugin);
     }
 
@@ -70,6 +77,7 @@ class PluginLoaderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testLoadForWithDisabled()
     {
         $pluginManagerService = $this->createMock(PluginManagerService::class);
@@ -84,7 +92,12 @@ class PluginLoaderTest extends UnitaryTestCase
             ->with('test_plugin')
             ->willReturn($pluginModel);
 
-        $pluginLoader = new PluginLoader($this->application, $pluginManagerService);
+        $pluginLoader = new PluginLoader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
         $pluginLoader->loadFor($plugin);
     }
 
@@ -93,6 +106,7 @@ class PluginLoaderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testLoadForWithException()
     {
         $pluginManagerService = $this->createMock(PluginManagerService::class);
@@ -104,7 +118,12 @@ class PluginLoaderTest extends UnitaryTestCase
             ->method('getByName')
             ->willThrowException(NoSuchItemException::error('test'));
 
-        $pluginLoader = new PluginLoader($this->application, $pluginManagerService);
+        $pluginLoader = new PluginLoader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
         $pluginLoader->loadFor($plugin);
     }
 }

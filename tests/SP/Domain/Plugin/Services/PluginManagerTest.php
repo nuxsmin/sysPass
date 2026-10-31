@@ -26,9 +26,10 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Plugin\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -37,8 +38,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Domain\Plugin\Ports\PluginRepository;
 use SP\Domain\Plugin\Services\PluginManager;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\PluginGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -59,6 +60,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByName()
     {
         $plugin = PluginGenerator::factory()->buildPlugin();
@@ -83,6 +85,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByNameWithNotFound()
     {
         $queryResult = new QueryResult([]);
@@ -104,6 +107,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testToggleAvailable()
     {
         $this->pluginRepository
@@ -120,6 +124,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testToggleAvailableWithNotFound()
     {
         $this->pluginRepository
@@ -139,6 +144,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $this->pluginRepository
@@ -155,6 +161,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithNotFound()
     {
         $this->pluginRepository
@@ -169,6 +176,7 @@ class PluginManagerTest extends UnitaryTestCase
         $this->pluginManager->delete(100);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $plugin = PluginGenerator::factory()->buildPlugin();
@@ -189,6 +197,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testToggleAvailableByName()
     {
         $this->pluginRepository
@@ -205,6 +214,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testToggleAvailableByNameWithNotFound()
     {
         $this->pluginRepository
@@ -222,6 +232,7 @@ class PluginManagerTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetByIdBatch()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -246,6 +257,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testToggleEnabledByName()
     {
         $this->pluginRepository
@@ -262,6 +274,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testToggleEnabledByNameWithNotFound()
     {
         $this->pluginRepository
@@ -282,6 +295,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetEnabled()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -305,6 +319,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testToggleEnabled()
     {
         $this->pluginRepository
@@ -321,6 +336,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testToggleEnabledWithNotFound()
     {
         $this->pluginRepository
@@ -341,6 +357,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $this->pluginRepository
@@ -357,6 +374,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testDeleteByIdBatchWithException()
     {
         $this->pluginRepository
@@ -372,6 +390,7 @@ class PluginManagerTest extends UnitaryTestCase
     }
 
 
+    #[Test]
     public function testSearch()
     {
         $itemSearchData = new ItemSearchDto();
@@ -393,6 +412,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $plugin = PluginGenerator::factory()->buildPlugin();
@@ -412,6 +432,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $plugin = PluginGenerator::factory()->buildPlugin();
@@ -431,6 +452,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws Exception
      */
+    #[Test]
     public function testGetById()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -461,6 +483,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testResetById()
     {
         $this->pluginRepository
@@ -477,6 +500,7 @@ class PluginManagerTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testResetByIdWithNotFound()
     {
         $this->pluginRepository
@@ -499,7 +523,9 @@ class PluginManagerTest extends UnitaryTestCase
         $this->pluginRepository = $this->createMock(PluginRepository::class);
 
         $this->pluginManager = new PluginManager(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->pluginRepository
         );
     }

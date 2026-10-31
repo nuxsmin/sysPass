@@ -25,66 +25,64 @@
 namespace SP\Modules\Web\Controllers\Tag;
 
 
-use Exception;
-use JsonException;
-use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Tag\UseCases\DeleteTagUseCase;
+use SP\Domain\Tag\UseCases\DeleteTagsUseCase;
+use SP\Domain\Tag\UseCases\Dtos\DeleteTagCommand;
+use SP\Domain\Tag\UseCases\Dtos\DeleteTagsCommand;
+use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class DeleteController
  */
-final class DeleteController extends TagSaveBase
+final class DeleteController extends ControllerBase
 {
-    use ItemTrait;
-    use JsonTrait;
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        private readonly DeleteTagUseCase $deleteTagUseCase,
+        private readonly DeleteTagsUseCase $deleteTagsUseCase
+    ) {
+        parent::__construct($webControllerHelper);
+
+        $this->checkLoggedIn();
+    }
 
     /**
      * Delete action
      *
      * @param  int|null  $id
-     *
-     * @return bool
-     * @throws JsonException
      */
-    public function deleteAction(?int $id = null): bool
+    #[Action(ResponseType::JSON)]
+    public function deleteAction(?int $id = null): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_DELETE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            if ($id === null) {
-                $this->tagService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
-
-                $this->deleteCustomFieldsForItem(AclActionsInterface::TAG, $id, $this->customFieldService);
-
-                $this->eventDispatcher->notify('delete.tag.selection', new Event($this));
-
-                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Tags deleted'));
-            }
-
-            $this->tagService->delete($id);
-
-            $this->deleteCustomFieldsForItem(AclActionsInterface::TAG, $id, $this->customFieldService);
-
-            $this->eventDispatcher->notify('delete.tag', new Event($this));
-
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_SUCCESS,
-                __u('Tag removed')
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_DELETE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        try {
+            if ($id === null) {
+                $ids = array_map(
+                    'intval',
+                    $this->request->analyzeArray('items') ?? []
+                );
+
+                $this->deleteTagsUseCase->execute(new DeleteTagsCommand($ids));
+
+                return ActionResponse::ok(__u('Tags deleted'));
+            }
+
+            $this->deleteTagUseCase->execute(new DeleteTagCommand($id));
+        } catch (SPException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
+        }
+
+        return ActionResponse::ok(__u('Tag removed'));
     }
 }

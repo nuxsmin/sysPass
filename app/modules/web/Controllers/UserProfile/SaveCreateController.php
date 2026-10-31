@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,66 +24,56 @@
 
 namespace SP\Modules\Web\Controllers\UserProfile;
 
-
-use Exception;
-use JsonException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Domain\User\UseCases\CreateUserProfileUseCase;
+use SP\Domain\User\UseCases\Dtos\CreateUserProfileCommand;
+
+use function SP\__u;
 
 /**
  * Class SaveCreateController
  */
 final class SaveCreateController extends UserProfileSaveBase
 {
-    use ItemTrait;
-    use JsonTrait;
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        private readonly CreateUserProfileUseCase $createUserProfileUseCase,
+        CustomFieldDataService $customFieldService
+    ) {
+        parent::__construct($webControllerHelper, $customFieldService);
+    }
 
-    /**
-     * @return bool
-     * @throws JsonException
-     */
-    public function saveCreateAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveCreateAction(): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::PROFILE_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
+        if (!$this->acl->checkUserAccess(AclActionsInterface::PROFILE_CREATE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
 
+        try {
             $this->form->validateFor(AclActionsInterface::PROFILE_CREATE);
 
-            $profileData = $this->form->getItemData();
-
-            $id = $this->userProfileService->create($profileData);
-
-            $this->eventDispatcher->notify(
-                'create.userProfile',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Profile added'))
-                        ->addDetail(__u('Name'), $profileData->getName())
-                )
+            $result = $this->createUserProfileUseCase->execute(
+                new CreateUserProfileCommand($this->form->getItemData())
             );
 
-            $this->addCustomFieldsForItem(AclActionsInterface::PROFILE, $id, $this->request, $this->customFieldService);
+            $this->addCustomFieldsForItem(
+                AclActionsInterface::PROFILE,
+                $result->id,
+                $this->request,
+                $this->customFieldService
+            );
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Profile added'));
-        } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        } catch (SPException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
         }
+
+        return ActionResponse::ok(__u('Profile added'));
     }
 }

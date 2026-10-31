@@ -28,9 +28,7 @@ namespace SP\Domain\Auth\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use SP\Core\Application;
-use SP\Core\Crypt\Hash;
-use SP\Core\Crypt\Vault;
+use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenRepository;
 use SP\Domain\Auth\Ports\AuthTokenService;
@@ -38,17 +36,22 @@ use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -59,12 +62,6 @@ use function SP\__u;
  */
 final class AuthToken extends Service implements AuthTokenService
 {
-    private const SECURED_ACTIONS = [
-        AclActionsInterface::ACCOUNT_VIEW_PASS,
-        AclActionsInterface::ACCOUNT_EDIT_PASS,
-        AclActionsInterface::ACCOUNT_CREATE,
-    ];
-
     private const CAN_USE_SECURE_TOKEN_ACTIONS = [
         AclActionsInterface::ACCOUNT_VIEW,
         AclActionsInterface::CATEGORY_VIEW,
@@ -72,16 +69,19 @@ final class AuthToken extends Service implements AuthTokenService
     ];
 
     /**
-     * @param Application $application
      * @param AuthTokenRepository<AuthToken> $authTokenRepository
      * @param CryptInterface $crypt
      */
     public function __construct(
-        Application                          $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly AuthTokenRepository $authTokenRepository,
-        private readonly CryptInterface      $crypt
+        private readonly CryptInterface      $crypt,
+        private readonly MasterKeyStore      $masterKeyStore,
+        private readonly HashService         $hashService
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -152,12 +152,12 @@ final class AuthToken extends Service implements AuthTokenService
      */
     private function injectSecureData(AuthTokenModel $authToken, string $token): AuthTokenModel
     {
-        if (self::isSecuredAction($authToken->getActionId())
-            || self::canUseSecureTokenAction($authToken->getActionId())
+        if (AuthTokenModel::isSecuredAction($authToken->getActionId())
+            || $this->canUseSecureTokenAction($authToken->getActionId())
         ) {
             $properties = [
                 'vault' => $this->getSecureData($token, $authToken->getHash())->getSerialized(),
-                'hash' => Hash::hashKey($authToken->getHash())
+                'hash' => $this->hashService->hashKey($authToken->getHash())
             ];
         } else {
             $properties = [
@@ -171,12 +171,7 @@ final class AuthToken extends Service implements AuthTokenService
         return $authToken->mutate($properties);
     }
 
-    public static function isSecuredAction(int $action): bool
-    {
-        return in_array($action, self::SECURED_ACTIONS, true);
-    }
-
-    public static function canUseSecureTokenAction(int $action): bool
+    private function canUseSecureTokenAction(int $action): bool
     {
         return in_array($action, self::CAN_USE_SECURE_TOKEN_ACTIONS, true);
     }
@@ -191,8 +186,8 @@ final class AuthToken extends Service implements AuthTokenService
     {
         return Vault::factory($this->crypt)
                     ->saveData(
-                        $this->getMasterKeyFromContext(),
-                        $key . $token
+                        $this->masterKeyStore->get(),
+                        sha1($key . $token)
                     );
     }
 
@@ -239,7 +234,7 @@ final class AuthToken extends Service implements AuthTokenService
                 $this->authTokenRepository->refreshVaultByUserId(
                     $authToken->getUserId(),
                     $vault,
-                    Hash::hashKey($authToken->getHash())
+                    $this->hashService->hashKey($authToken->getHash())
                 );
 
                 $secureData = $this->injectSecureData($authToken, $token);

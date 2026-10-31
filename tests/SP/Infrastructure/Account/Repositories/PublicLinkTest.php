@@ -27,6 +27,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
@@ -37,9 +38,9 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Account\Repositories\PublicLink;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -57,6 +58,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testDelete(): void
     {
         $callback = new Callback(
@@ -74,6 +76,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLink->delete(100);
     }
 
+    #[Test]
     public function testSearch(): void
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -100,6 +103,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLink->search($item);
     }
 
+    #[Test]
     public function testGetHashForItem(): void
     {
         $itemId = self::$faker->randomNumber();
@@ -120,6 +124,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLink->getHashForItem($itemId);
     }
 
+    #[Test]
     public function testGetById(): void
     {
         $id = self::$faker->randomNumber();
@@ -144,6 +149,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testAddLinkView(): void
     {
         $publicLinkData = $this->buildPublicLinkData();
@@ -194,6 +200,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate(): void
     {
         $publicLinkData = $this->buildPublicLinkData();
@@ -236,6 +243,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreateWithDuplicate(): void
     {
         $publicLinkData = $this->buildPublicLinkData();
@@ -260,6 +268,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLink->create($publicLinkData);
     }
 
+    #[Test]
     public function testGetAll(): void
     {
         $callback = new Callback(
@@ -283,6 +292,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testRefresh(): void
     {
         $publicLinkData = $this->buildPublicLinkData();
@@ -313,6 +323,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testDeleteByIdBatch(): void
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -341,6 +352,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database->expects(self::never())
@@ -349,6 +361,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->assertEquals(0, $this->publicLink->deleteByIdBatch([]));
     }
 
+    #[Test]
     public function testGetByHash(): void
     {
         $hash = self::$faker->sha1;
@@ -373,6 +386,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate(): void
     {
         $publicLinkData = $this->buildPublicLinkData();
@@ -403,6 +417,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLink->update($publicLinkData);
     }
 
+    #[Test]
     public function testSearchWithoutString(): void
     {
         $callback = new Callback(
@@ -434,7 +449,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLink = new PublicLink(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

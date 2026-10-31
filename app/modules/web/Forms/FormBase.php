@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
@@ -44,18 +43,20 @@ abstract class FormBase
     /**
      * FormBase constructor.
      *
-     * @param Application $application
+     * @param ConfigFileService $config
+     * @param Context $context
      * @param RequestService $request
      * @param int|null $itemId
      */
     public function __construct(
-        Application                       $application,
+        ConfigFileService                 $config,
+        Context                           $context,
         protected readonly RequestService $request,
         protected ?int                    $itemId = null
     ) {
-        $this->config = $application->getConfig();
+        $this->config = $config;
         $this->configData = $this->config->getConfigData();
-        $this->context = $application->getContext();
+        $this->context = $context;
     }
 
     /**

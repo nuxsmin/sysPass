@@ -25,8 +25,10 @@ declare(strict_types=1);
 
 namespace SP\Domain\User\Services;
 
-use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
@@ -40,10 +42,12 @@ final class UserToUserGroup extends Service implements UserToUserGroupService
 {
 
     public function __construct(
-        Application                                $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly UserToUserGroupRepository $userToUserGroupRepository
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

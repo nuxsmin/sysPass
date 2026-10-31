@@ -25,20 +25,25 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Api\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
+use SP\Core\Context\StatelessMasterKeyStore;
 use Exception;
 use Faker\Factory;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
-use SP\Core\Context\ContextException;
-use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Vault;
+use SP\Domain\Core\Context\ContextException;
+use SP\Domain\Core\Crypt\Crypt;
+use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Services\Api;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Auth\Ports\AuthTokenService;
+use SP\Domain\Common\Adapters\LegacyClassMap;
+use SP\Domain\Common\Adapters\SerializedPayloadRewriter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Context\Context;
@@ -50,7 +55,7 @@ use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserProfileDataGenerator;
@@ -161,6 +166,7 @@ class ApiTest extends UnitaryTestCase
      * @param bool $present
      */
     #[DataProvider('getParamDataProvider')]
+    #[Test]
     public function testGetParam(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParam'], ...func_get_args());
@@ -198,6 +204,7 @@ class ApiTest extends UnitaryTestCase
      * @throws InvalidClassException
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
+    #[Test]
     public function testGetParamWithHelp()
     {
         $apiRequest = $this->createMock(ApiRequestService::class);
@@ -205,12 +212,16 @@ class ApiTest extends UnitaryTestCase
         $apiRequest->method('getMethod')->willReturn('account/view');
 
         $apiService = new Api(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->trackService,
             $apiRequest,
             $this->authTokenService,
             $this->userService,
-            $this->userProfileService
+            $this->userProfileService,
+            new StatelessMasterKeyStore($this->context),
+            new HashServiceAdapter()
         );
 
         $apiService->setHelpClass(AccountHelp::class);
@@ -225,6 +236,7 @@ class ApiTest extends UnitaryTestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testSetHelpClass()
     {
         $this->apiService->setHelpClass(AccountHelp::class);
@@ -238,6 +250,7 @@ class ApiTest extends UnitaryTestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testSetHelpClassError()
     {
         $this->expectException(InvalidClassException::class);
@@ -247,6 +260,7 @@ class ApiTest extends UnitaryTestCase
     }
 
     #[DataProvider('getParamIntDataProvider')]
+    #[Test]
     public function testGetParamInt(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParamInt'], ...func_get_args());
@@ -257,6 +271,7 @@ class ApiTest extends UnitaryTestCase
      * @throws SPException
      * @throws JsonException
      */
+    #[Test]
     public function testSetup()
     {
         $actionId = self::$faker->randomNumber(5);
@@ -312,12 +327,16 @@ class ApiTest extends UnitaryTestCase
         $this->apiRequest->method('getMethod')->willReturn(self::$faker->colorName);
 
         $this->apiService = new Api(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->trackService,
             $this->apiRequest,
             $this->authTokenService,
             $this->userService,
-            $this->userProfileService
+            $this->userProfileService,
+            new StatelessMasterKeyStore($this->context),
+            new HashServiceAdapter()
         );
     }
 
@@ -325,6 +344,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testSetupAttemptsExceeded()
     {
         $actionId = self::$faker->randomNumber();
@@ -345,6 +365,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testSetupTrackingError()
     {
         $actionId = self::$faker->randomNumber();
@@ -369,6 +390,7 @@ class ApiTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testSetupInvalidToken()
     {
         $actionId = self::$faker->randomNumber();
@@ -395,6 +417,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testSetupAccessDenied()
     {
         $actionId = self::$faker->randomNumber();
@@ -431,6 +454,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testSetupWithMasterPass()
     {
         $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
@@ -484,6 +508,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws JsonException
      */
+    #[Test]
     public function testSetupWithMasterPassWrongTokenPass()
     {
         $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
@@ -533,23 +558,27 @@ class ApiTest extends UnitaryTestCase
     }
 
     #[DataProvider('getParamStringDataProvider')]
+    #[Test]
     public function testGetParamString(mixed $value, mixed $expected, bool $required, bool $present): void
     {
         $this->checkParam([$this->apiService, 'getParamString'], ...func_get_args());
     }
 
     #[DataProvider('getParamArrayDataProvider')]
+    #[Test]
     public function testGetParamArray(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParamArray'], ...func_get_args());
     }
 
     #[DataProvider('getParamRawDataProvider')]
+    #[Test]
     public function testGetParamRaw(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParamRaw'], ...func_get_args());
     }
 
+    #[Test]
     public function testGetRequestId()
     {
         $this->assertEquals($this->apiRequest->getId(), $this->apiService->getRequestId());
@@ -561,6 +590,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testRequireMasterPass()
     {
         $actionId = self::$faker->randomNumber(4);
@@ -606,11 +636,153 @@ class ApiTest extends UnitaryTestCase
         $this->assertEquals($masterPass, $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY));
     }
 
+    #[Test]
+    public function testRequireMasterPassWithLegacyVault(): void
+    {
+        $authToken = self::$faker->password;
+        $masterPass = self::$faker->password;
+
+        $vault = Vault::factory(new Crypt())->saveData($masterPass, sha1($authToken . $authToken));
+
+        $legacyVault = SerializedPayloadRewriter::rewrite(
+            serialize($vault),
+            array_flip(LegacyClassMap::MAP)
+        );
+
+        $authTokenData = $this->prepareSecuredActionWithVault($authToken, $legacyVault);
+
+        $this->apiService->setup(AclActionsInterface::ACCOUNT_VIEW_PASS);
+
+        $this->assertSame($legacyVault, $authTokenData->getVault());
+        $this->assertSame($masterPass, $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY));
+    }
+
+    /**
+     * @throws ContextException
+     * @throws CryptException
+     * @throws ServiceException
+     * @throws SPException
+     */
+    #[Test]
+    public function testRequireMasterPassWithUnreadableVault(): void
+    {
+        $vault = serialize(new stdClass());
+        $authTokenData = $this->prepareSecuredActionWithVault(self::$faker->password, $vault, 2);
+
+        try {
+            $this->apiService->setup(AclActionsInterface::ACCOUNT_VIEW_PASS);
+            self::fail('Expected ServiceException');
+        } catch (ServiceException $e) {
+            $this->assertSame('Internal error', $e->getMessage());
+        }
+
+        $this->assertSame($vault, $authTokenData->getVault());
+    }
+
+    /**
+     * @throws ContextException
+     * @throws CryptException
+     * @throws ServiceException
+     * @throws SPException
+     */
+    #[Test]
+    public function testRequireMasterPassWithMalformedVault(): void
+    {
+        $vault = 'not-a-serialized-payload';
+        $authTokenData = $this->prepareSecuredActionWithVault(self::$faker->password, $vault, 2);
+
+        try {
+            $this->apiService->setup(AclActionsInterface::ACCOUNT_VIEW_PASS);
+            self::fail('Expected ServiceException');
+        } catch (ServiceException $e) {
+            $this->assertSame('Internal error', $e->getMessage());
+        }
+
+        $this->assertSame($vault, $authTokenData->getVault());
+    }
+
+    /**
+     * @throws ContextException
+     * @throws CryptException
+     * @throws ServiceException
+     * @throws SPException
+     */
+    #[Test]
+    public function testRequireMasterPassWithMissingVault(): void
+    {
+        $authTokenData = $this->prepareSecuredActionWithVault(self::$faker->password, null, 2);
+
+        try {
+            $this->apiService->setup(AclActionsInterface::ACCOUNT_VIEW_PASS);
+            self::fail('Expected ServiceException');
+        } catch (ServiceException $e) {
+            $this->assertSame('Internal error', $e->getMessage());
+        }
+
+        $this->assertNull($authTokenData->getVault());
+    }
+
+    private function prepareSecuredActionWithVault(
+        string $authToken,
+        ?string $vault,
+        int $getCalls = 3
+    ): AuthToken {
+        $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
+
+        $this->trackService
+            ->expects(self::once())
+            ->method('checkTracking')
+            ->with($this->trackRequest)
+            ->willReturn(false);
+
+        $this->apiRequest->expects(self::exactly($getCalls))
+                         ->method('get')
+                         ->willReturn($authToken);
+
+        $authTokenData = new AuthToken(
+            [
+                'actionId' => $actionId,
+                'userId' => self::$faker->randomNumber(),
+                'hash' => password_hash($authToken, PASSWORD_BCRYPT),
+                'vault' => $vault
+            ]
+        );
+
+        $this->authTokenService
+            ->expects(self::once())
+            ->method('getTokenByToken')
+            ->with($actionId, $authToken)
+            ->willReturn($authTokenData);
+
+        $userData = UserDataGenerator::factory()->buildUserData()->mutate(['isDisabled' => false]);
+
+        $this->userService
+            ->expects(self::once())
+            ->method('getById')
+            ->with($authTokenData->getUserId())
+            ->willReturn($userData);
+
+        $this->userProfileService
+            ->expects(self::once())
+            ->method('getById')
+            ->with($userData->getUserProfileId())
+            ->willReturn(UserProfileDataGenerator::factory()->buildUserProfileData());
+
+        $this->apiRequest->expects(self::once())->method('exists')->with('tokenPass')->willReturn(true);
+
+        $this->authTokenService->expects(self::never())->method('update');
+        $this->authTokenService->expects(self::never())->method('updateRaw');
+        $this->authTokenService->expects(self::never())->method('refreshAndUpdate');
+
+        return $authTokenData;
+    }
+
     /**
      * @throws ContextException
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testRequireMasterPassNotInitialized()
     {
         $this->expectException(ServiceException::class);
@@ -624,6 +796,7 @@ class ApiTest extends UnitaryTestCase
      * @throws CryptException
      * @throws SPException
      */
+    #[Test]
     public function testGetMasterPass()
     {
         $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;

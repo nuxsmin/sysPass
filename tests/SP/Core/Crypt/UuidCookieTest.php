@@ -28,9 +28,10 @@ namespace SP\Tests\Core\Crypt;
 use Klein\DataCollection\DataCollection;
 use Klein\Request;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Core\Crypt\UuidCookie;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Http\Ports\RequestService;
@@ -51,6 +52,7 @@ class UuidCookieTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testLoad()
     {
         $key = self::$faker->sha1;
@@ -81,6 +83,7 @@ class UuidCookieTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testLoadWithNoData()
     {
         $key = self::$faker->sha1;
@@ -109,6 +112,7 @@ class UuidCookieTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testLoadWithInvalidData()
     {
         $key = self::$faker->sha1;
@@ -138,6 +142,7 @@ class UuidCookieTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testLoadWithInvalidSignature()
     {
         $key = self::$faker->sha1;
@@ -164,6 +169,7 @@ class UuidCookieTest extends UnitaryTestCase
         self::assertFalse($cookie->load($key));
     }
 
+    #[Test]
     public function testCreate()
     {
         $uuidCookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
@@ -174,6 +180,7 @@ class UuidCookieTest extends UnitaryTestCase
         self::assertNotEmpty($cookie);
     }
 
+    #[Test]
     public function testSign()
     {
         $key = self::$faker->sha1;

@@ -27,22 +27,23 @@ declare(strict_types=1);
 namespace SP\Domain\Import\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Ports\ItemsImportService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
-use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class CsvImport
@@ -52,12 +53,15 @@ final class CsvImport extends ImportBase implements ItemsImportService
     private const NUM_FIELDS = 7;
 
     public function __construct(
-        Application                           $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         ImportHelperInterface $importHelper,
         CryptInterface                        $crypt,
+        HashService                           $hashService,
         private readonly FileHandlerInterface $fileHandler
     ) {
-        parent::__construct($application, $importHelper, $crypt);
+        parent::__construct($config, $eventDispatcher, $context, $importHelper, $crypt, $hashService);
     }
 
     /**
@@ -75,7 +79,7 @@ final class CsvImport extends ImportBase implements ItemsImportService
             new Event(
                 $this,
                 EventMessage::build()
-                            ->addDescription(sprintf(__('Detected format: %s'), 'CSV'))
+                            ->addDescription(sprintf(__u('Detected format: %s'), 'CSV'))
             )
         );
 
@@ -98,8 +102,8 @@ final class CsvImport extends ImportBase implements ItemsImportService
 
             if ($numfields !== self::NUM_FIELDS) {
                 throw ImportException::error(
-                    sprintf(__('Wrong number of fields (%d)'), $numfields),
-                    sprintf(__('Please, check the CSV file format in line %s'), $line)
+                    sprintf(__u('Wrong number of fields (%d)'), $numfields),
+                    sprintf(__u('Please, check the CSV file format in line %s'), $line)
                 );
             }
 
@@ -143,8 +147,6 @@ final class CsvImport extends ImportBase implements ItemsImportService
                     )
                 );
             } catch (Exception $e) {
-                processException($e);
-
                 $this->eventDispatcher->notify(
                     'exception',
                     new Event(
@@ -158,7 +160,7 @@ final class CsvImport extends ImportBase implements ItemsImportService
         }
 
         if ($line === 0) {
-            throw ImportException::warning(__('No lines read from the file'));
+            throw ImportException::warning(__u('No lines read from the file'));
         }
     }
 }

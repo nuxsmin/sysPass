@@ -25,16 +25,14 @@
 namespace SP\Modules\Web\Controllers\AuthToken;
 
 
-use SP\Core\Application;
 use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\AuthTokenForm;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * A base class for all "save" actions
@@ -42,7 +40,6 @@ use SP\Mvc\Controller\WebControllerHelper;
 abstract class AuthTokenSaveBase extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     protected readonly AuthTokenForm $form;
 
@@ -51,15 +48,14 @@ abstract class AuthTokenSaveBase extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                               $application,
         WebControllerHelper                       $webControllerHelper,
         protected readonly AuthTokenService       $authTokenService,
         protected readonly CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->form = new AuthTokenForm($application, $this->request);
+        $this->form = new AuthTokenForm($this->config, $this->session, $this->request);
     }
 }

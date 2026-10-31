@@ -24,9 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -34,8 +33,8 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
 
@@ -47,12 +46,11 @@ final class SaveDeleteController extends AccountControllerBase
     use ItemTrait;
 
     public function __construct(
-        Application                             $application,
         WebControllerHelper                     $webControllerHelper,
         private readonly AccountService         $accountService,
         private readonly CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
     }
 
     /**

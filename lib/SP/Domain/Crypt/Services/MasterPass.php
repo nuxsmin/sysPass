@@ -27,21 +27,23 @@ declare(strict_types=1);
 namespace SP\Domain\Crypt\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Account\Ports\AccountMasterPasswordService;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\CustomField\Ports\CustomFieldCryptService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-
-use function SP\processException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 /**
  * Class MasterPass
@@ -52,13 +54,16 @@ final class MasterPass extends Service implements MasterPassService
     public const PARAM_MASTER_PASS_HASH = 'masterPwd';
 
     public function __construct(
-        Application                                   $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly ConfigService                $configService,
         private readonly AccountMasterPasswordService $accountMasterPasswordService,
         private readonly CustomFieldCryptService      $customFieldCryptService,
-        private readonly Repository                   $repository
+        private readonly Repository                   $repository,
+        private readonly LoggerInterface              $logger = new NullLogger()
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -69,7 +74,7 @@ final class MasterPass extends Service implements MasterPassService
         try {
             return $userMPassTime >= (int)$this->configService->getByParam(self::PARAM_MASTER_PASS_TIME, '0');
         } catch (ServiceException|NoSuchItemException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         return true;
@@ -86,7 +91,7 @@ final class MasterPass extends Service implements MasterPassService
                 $this->configService->getByParam(self::PARAM_MASTER_PASS_HASH)
             );
         } catch (ServiceException|NoSuchItemException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         return false;

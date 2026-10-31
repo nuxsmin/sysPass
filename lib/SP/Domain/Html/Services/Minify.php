@@ -30,7 +30,7 @@ use Klein\Response;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Html\Ports\MinifyService;
 use SP\Domain\Http\Header;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SplObjectStorage;
 
 /**

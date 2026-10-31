@@ -26,13 +26,15 @@ declare(strict_types=1);
 namespace SP\Core\Messages;
 
 use SP\Domain\Core\Messages\FormatterInterface;
+use SP\Domain\Core\Messages\MessageBase;
+use SP\Domain\Core\Messages\MessageInterface;
 
 /**
  * Class NoticeMessage
  *
  * @package SP\Core\Messages
  */
-final class NotificationMessage extends MessageBase
+final class NotificationMessage extends MessageBase implements MessageInterface
 {
     /**
      * Componer un mensaje en formato HTML
@@ -63,8 +65,7 @@ final class NotificationMessage extends MessageBase
     public function getDescription(
         FormatterInterface $formatter,
         bool               $translate
-    ): string
-    {
+    ): string {
         return $formatter->formatDescription($this->description, $translate);
     }
 

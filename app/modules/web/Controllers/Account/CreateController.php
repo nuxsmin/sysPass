@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Services\UpdatedMasterPassException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__;
 

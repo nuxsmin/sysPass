@@ -31,7 +31,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class Config
@@ -56,7 +56,6 @@ final class Config extends BaseRepository implements ConfigRepository
             ->table(self::TABLE)
             ->cols($config->toArray(['value']))
             ->where('parameter = :parameter')
-            ->limit(1)
             ->bindValues(
                 [
                     'value' => $config->getValue(),

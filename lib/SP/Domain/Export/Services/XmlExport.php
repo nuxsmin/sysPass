@@ -31,14 +31,17 @@ use DOMElement;
 use DOMException;
 use DOMNode;
 use Exception;
-use SP\Core\Application;
-use SP\Core\Crypt\Hash;
 use SP\Domain\Common\Providers\Version;
+use SP\Domain\Common\Providers\XmlIntegrity;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
@@ -49,8 +52,7 @@ use SP\Domain\Export\Ports\XmlClientExportService;
 use SP\Domain\Export\Ports\XmlExportService;
 use SP\Domain\Export\Ports\XmlTagExportService;
 use SP\Domain\File\Ports\DirectoryHandlerService;
-use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__u;
 
@@ -59,8 +61,6 @@ use function SP\__u;
  */
 final class XmlExport extends Service implements XmlExportService
 {
-    use XmlTrait;
-
     private ConfigDataInterface $configData;
     private DOMDocument $document;
 
@@ -68,15 +68,18 @@ final class XmlExport extends Service implements XmlExportService
      * @throws ServiceException
      */
     public function __construct(
-        Application                                 $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly PhpExtensionCheckerService $extensionChecker,
         private readonly XmlClientExportService     $xmlClientExportService,
         private readonly XmlAccountExportService    $xmlAccountExportService,
         private readonly XmlCategoryExportService   $xmlCategoryExportService,
         private readonly XmlTagExportService        $xmlTagExportService,
-        private readonly CryptInterface             $crypt
+        private readonly CryptInterface             $crypt,
+        private readonly HashService                $hashService
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->configData = $this->config->getConfigData();
 
@@ -125,7 +128,7 @@ final class XmlExport extends Service implements XmlExportService
 
     private static function deleteExportFiles(string $path): void
     {
-        $path = FileSystem::buildPath($path, AppInfoInterface::APP_NAME);
+        $path = implode(DIRECTORY_SEPARATOR, [$path, AppInfoInterface::APP_NAME]);
 
         array_map(
             static fn($file) => @unlink($file),
@@ -251,7 +254,7 @@ final class XmlExport extends Service implements XmlExportService
 
         if ($encryptedNode->length === 0) {
             $node = $this->document->createElement('Encrypted');
-            $node->setAttribute('hash', Hash::hashKey($password));
+            $node->setAttribute('hash', $this->hashService->hashKey($password));
 
             return $node;
         }
@@ -265,11 +268,11 @@ final class XmlExport extends Service implements XmlExportService
     private function appendHash(?string $password = null): void
     {
         try {
-            $hash = self::generateHashFromNodes($this->document);
+            $hash = XmlIntegrity::generateHash($this->document);
             $key = $password ?: sha1($this->configData->getPasswordSalt());
 
             $hashNode = $this->document->createElement('Hash', $hash);
-            $hashNode->setAttribute('sign', Hash::signMessage($hash, $key));
+            $hashNode->setAttribute('sign', $this->hashService->signMessage($hash, $key));
 
             $this->document
                 ->documentElement

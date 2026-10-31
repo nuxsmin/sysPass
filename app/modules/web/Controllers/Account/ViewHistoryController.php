@@ -24,8 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Dtos\AccountHistoryViewDto;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Common\Attributes\Action;
@@ -39,9 +38,9 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Services\UpdatedMasterPassException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Modules\Web\Controllers\Helpers\Account\AccountHistoryHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountHistoryHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 use function SP\__;
 
@@ -52,13 +51,11 @@ final class ViewHistoryController extends AccountControllerBase
 {
 
     public function __construct(
-        Application                            $application,
         WebControllerHelper                    $webControllerHelper,
         private readonly AccountHistoryService $accountHistoryService,
         private readonly AccountHistoryHelper  $accountHistoryHelper
     ) {
         parent::__construct(
-            $application,
             $webControllerHelper
         );
     }

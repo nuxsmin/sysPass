@@ -26,9 +26,11 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Account\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Account\Services\AccountCrypt;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
@@ -47,6 +49,7 @@ class AccountCryptTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetPasswordEncrypted(): void
     {
         $pass = self::$faker->password;
@@ -73,6 +76,7 @@ class AccountCryptTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws ContextException
      */
+    #[Test]
     public function testGetPasswordEncryptedThrowsExceptionWithNoMasterPassword(): void
     {
         $this->context->setTrasientKey('_masterpass', '');
@@ -92,6 +96,7 @@ class AccountCryptTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetPasswordEncryptedThrowsExceptionWithEmptyMasterPassword(): void
     {
         $this->crypt->expects(self::never())
@@ -109,6 +114,7 @@ class AccountCryptTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetPasswordEncryptedThrowsExceptionWithLongPass(): void
     {
         $this->crypt->expects(self::once())
@@ -128,6 +134,7 @@ class AccountCryptTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetPasswordEncryptedThrowsExceptionWithLongKey(): void
     {
         $this->crypt->expects(self::once())
@@ -150,6 +157,6 @@ class AccountCryptTest extends UnitaryTestCase
 
         $this->crypt = $this->createMock(CryptInterface::class);
 
-        $this->accountCrypt = new AccountCrypt($this->application, $this->crypt);
+        $this->accountCrypt = new AccountCrypt($this->config, $this->eventDispatcherStub, $this->context, $this->crypt, new StatelessMasterKeyStore($this->context));
     }
 }

@@ -28,10 +28,11 @@ namespace SP\Tests\Domain\Auth\Services;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Auth\Dtos\LoginResponseDto;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LoginAuthHandlerService;
@@ -159,6 +160,7 @@ class LoginTest extends UnitaryTestCase
      */
     #[DataProvider('authResultProviderAuthoritative')]
     #[DataProvider('authResultProviderNonAuthoritative')]
+    #[Test]
     public function testHandleAuthResponseWithTrue(
         AuthResult   $authResult,
         AuthDataBase $authDataBase,
@@ -177,6 +179,7 @@ class LoginTest extends UnitaryTestCase
      */
     #[DataProvider('authResultProviderAuthoritative')]
     #[DataProvider('authResultProviderNonAuthoritative')]
+    #[Test]
     public function testHandleAuthResponseWithFalse(
         AuthResult   $authResult,
         AuthDataBase $authDataBase,
@@ -197,6 +200,7 @@ class LoginTest extends UnitaryTestCase
      * @throws SPException
      */
     #[DataProvider('fromDataProvider')]
+    #[Test]
     public function testDoLogin(?string $from, string $redirect)
     {
         $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
@@ -293,6 +297,7 @@ class LoginTest extends UnitaryTestCase
      * @throws AuthException
      */
     #[DataProvider('loginInputProvider')]
+    #[Test]
     public function testDoLoginWithEmptyUserOrPass(string $user, string $pass)
     {
         $this->request
@@ -317,6 +322,7 @@ class LoginTest extends UnitaryTestCase
         $this->login->doLogin();
     }
 
+    #[Test]
     public function testDoLoginWithNullUserData()
     {
         $this->request
@@ -362,6 +368,7 @@ class LoginTest extends UnitaryTestCase
      * @throws SPException
      */
     #[DataProvider('loginStatusDataProvider')]
+    #[Test]
     public function testDoLoginWithCheckUserFail(LoginStatus $loginStatus)
     {
         $userDataDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
@@ -412,6 +419,7 @@ class LoginTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testDoLoginWithServiceException()
     {
         $this->request
@@ -445,6 +453,7 @@ class LoginTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testDoLoginWithException()
     {
         $this->request
@@ -520,7 +529,9 @@ class LoginTest extends UnitaryTestCase
         $this->loginAuthHandlerService = $this->createMock(LoginAuthHandlerService::class);
 
         $this->login = new Login(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->trackService,
             $this->request,
             $this->authProviderService,

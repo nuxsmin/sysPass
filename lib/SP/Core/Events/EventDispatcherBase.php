@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Core\Events;
 
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
 use SplObjectStorage;

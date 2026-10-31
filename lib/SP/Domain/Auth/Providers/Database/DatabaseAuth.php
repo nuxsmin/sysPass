@@ -27,13 +27,13 @@ declare(strict_types=1);
 namespace SP\Domain\Auth\Providers\Database;
 
 use Exception;
-use SP\Core\Crypt\Hash;
 use SP\Domain\Auth\Dtos\UserLoginDto;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Ports\UserPassService;
 use SP\Domain\User\Ports\UserService;
-
-use function SP\processException;
 
 /**
  * Class DatabaseAuth
@@ -42,7 +42,9 @@ final readonly class DatabaseAuth implements DatabaseAuthService
 {
     public function __construct(
         private UserService     $userService,
-        private UserPassService $userPassService
+        private UserPassService $userPassService,
+        private HashService     $hashService,
+        private LoggerInterface $logger = new NullLogger()
     ) {
     }
 
@@ -74,11 +76,11 @@ final readonly class DatabaseAuth implements DatabaseAuthService
                 return $userDto;
             }
 
-            if (Hash::checkHashKey($userLoginDto->getLoginPass(), $userDto->pass)) {
+            if ($this->hashService->checkHashKey($userLoginDto->getLoginPass(), $userDto->pass)) {
                 return $userDto;
             }
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         return false;
@@ -94,7 +96,7 @@ final readonly class DatabaseAuth implements DatabaseAuthService
                     $userDto->pass,
                     crypt($userLoginDto->getLoginPass(), $userDto->hashSalt)
                 )
-                || Hash::checkHashKey($userLoginDto->getLoginPass(), $userDto->pass));
+                || $this->hashService->checkHashKey($userLoginDto->getLoginPass(), $userDto->pass));
     }
 
     /**

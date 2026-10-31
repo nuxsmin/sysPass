@@ -30,6 +30,7 @@ use Error;
 use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use SP\Tests\Stubs\ModelStub;
@@ -49,6 +50,7 @@ class ModelTest extends TestCase
         self::$faker = Factory::create();
     }
 
+    #[Test]
     public function testInstance()
     {
         $data = [
@@ -68,6 +70,7 @@ class ModelTest extends TestCase
 
     #[TestWith(['id', 100])]
     #[TestWith(['test_a', 'a_text'])]
+    #[Test]
     public function testModifyClassProperties(string $property, mixed $value)
     {
         $data = [
@@ -82,6 +85,7 @@ class ModelTest extends TestCase
         $model->{$property} = $value;
     }
 
+    #[Test]
     public function testModifyInternalProperties()
     {
         $data = [
@@ -95,36 +99,43 @@ class ModelTest extends TestCase
         $model['test'] = 'a_text';
     }
 
+    #[Test]
     public function testGetColsWithPreffix()
     {
         self::markTestIncomplete();
     }
 
+    #[Test]
     public function testGetCols()
     {
         self::markTestIncomplete();
     }
 
+    #[Test]
     public function testToJson()
     {
         self::markTestIncomplete();
     }
 
+    #[Test]
     public function testBuildFromSimpleModel()
     {
         self::markTestIncomplete();
     }
 
+    #[Test]
     public function testToArray()
     {
         self::markTestIncomplete();
     }
 
+    #[Test]
     public function testMutate()
     {
         self::markTestIncomplete();
     }
 
+    #[Test]
     public function testJsonSerialize()
     {
         self::markTestIncomplete();

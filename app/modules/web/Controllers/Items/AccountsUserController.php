@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,15 +24,15 @@
 
 namespace SP\Modules\Web\Controllers\Items;
 
-use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Http\Services\JsonResponse;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 use stdClass;
 
 /**
@@ -40,30 +40,24 @@ use stdClass;
  */
 final class AccountsUserController extends SimpleControllerBase
 {
-    private AccountService $accountService;
-
     public function __construct(
-        Application $application,
         SimpleControllerHelper $simpleControllerHelper,
-        AccountService $accountService
+        private readonly AccountService $accountService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
 
         $this->checks();
-
-        $this->accountService = $accountService;
     }
 
     /**
      * Devolver las cuentas visibles por el usuario
      *
-     * @param  int|null  $accountId
-     *
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
-    public function accountsUserAction(?int $accountId = null): void
+    #[Action(ResponseType::JSON)]
+    public function accountsUserAction(?int $accountId = null): ActionResponse
     {
         $outItems = [];
 
@@ -75,10 +69,6 @@ final class AccountsUserController extends SimpleControllerBase
             $outItems[] = $obj;
         }
 
-        $jsonResponse = new JsonMessage();
-        $jsonResponse->setStatus(0);
-        $jsonResponse->setData($outItems);
-
-        JsonResponse::factory($this->router->response())->send($jsonResponse);
+        return ActionResponse::ok('', $outItems);
     }
 }

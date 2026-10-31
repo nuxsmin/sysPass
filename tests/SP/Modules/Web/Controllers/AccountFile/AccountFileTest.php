@@ -33,7 +33,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\File;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\FileDataGenerator;
 use SP\Tests\IntegrationTestCase;
@@ -275,10 +275,15 @@ class AccountFileTest extends IntegrationTestCase
      */
     private function outputCheckerView(string $output): void
     {
-        $crawler = new Crawler($output);
+        $decoded = json_decode($output, true);
+        $html = is_array($decoded) && isset($decoded['data']['html'])
+            ? $decoded['data']['html']
+            : $output;
+
+        $crawler = new Crawler($html);
         $filter = $crawler->filterXPath('//img|//div[@class="title"]')->count();
 
-        self::assertEquals(2, $filter);
+        self::assertEquals(2, $filter, $output);
     }
 
     /**

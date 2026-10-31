@@ -26,14 +26,14 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Account\Repositories;
 
 use SP\Domain\Account\Ports\AccountToUserRepository;
-use SP\Domain\Common\Models\Item;
+use SP\Domain\Account\Models\AccountItem;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\Query;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -84,6 +84,10 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
      */
     public function addByType(int $accountId, array $items, bool $isEdit = false): void
     {
+        if (count($items) === 0) {
+            return;
+        }
+
         $values = array_map(static function ($item) use ($accountId, $isEdit) {
             return [$accountId, (int)$item, (int)$isEdit];
         }, $items);
@@ -95,8 +99,11 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
               VALUES ' . $parameters . '
               ON DUPLICATE KEY UPDATE isEdit = ?';
 
+        $bindValues = array_merge(...$values);
+        $bindValues[] = (int)$isEdit;
+
         $queryData = QueryData::build(
-            Query::buildForMySQL($query, array_merge_recursive($values))
+            Query::buildForMySQL($query, array_combine(range(1, count($bindValues)), $bindValues))
         )->setOnErrorMessage(__u('Error while updating the account users'));
 
         $this->db->runQuery($queryData);
@@ -146,11 +153,11 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
                        'AccountToUser.isEdit',
                    ])
             ->from('AccountToUser')
-            ->join('INNER', 'User', 'User.id == AccountToUser.userId')
+            ->join('INNER', 'User', 'User.id = AccountToUser.userId')
             ->where('AccountToUser.accountId = :accountId')
             ->bindValues(['accountId' => $id])
             ->orderBy(['User.name ASC']);
 
-        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountItem::class));
     }
 }

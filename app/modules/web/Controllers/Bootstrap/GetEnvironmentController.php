@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Bootstrap;
 
 use Exception;
-use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Crypt\CryptPKI;
@@ -36,12 +35,12 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Import\Services\ImportStrategy;
+use SP\Domain\Import\Ports\ImportStrategyService;
 use SP\Domain\Plugin\Ports\PluginManagerService;
-use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\File\Ports\FileSystemService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\logger;
 use function SP\processException;
@@ -52,14 +51,14 @@ use function SP\processException;
 final class GetEnvironmentController extends SimpleControllerBase
 {
     public function __construct(
-        Application                           $application,
         SimpleControllerHelper                $simpleControllerHelper,
         private readonly CryptPKIHandler      $cryptPKI,
         private readonly BrowserAuthService   $browser,
         private readonly PluginManagerService $pluginManagerService,
-        private readonly PathsContext         $pathsContext
+        private readonly PathsContext         $pathsContext,
+        private readonly FileSystemService    $fileSystem
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**
@@ -90,7 +89,7 @@ final class GetEnvironmentController extends SimpleControllerBase
             'authbasic_autologin' => $this->getAuthBasicAutologinEnabled(),
             'pki_key' => $this->getPublicKey(),
             'pki_max_size' => CryptPKI::getMaxDataSize(),
-            'import_allowed_mime' => ImportStrategy::ALLOWED_MIME,
+            'import_allowed_mime' => ImportStrategyService::ALLOWED_MIME,
             'files_allowed_mime' => $this->configData->getFilesAllowedMime(),
             'session_timeout' => $this->configData->getSessionTimeout(),
             'csrf' => $this->getCSRF(),
@@ -106,7 +105,9 @@ final class GetEnvironmentController extends SimpleControllerBase
      */
     private function getJsLang(): array
     {
-        return FileSystem::require(FileSystem::buildPath($this->pathsContext[Path::RESOURCES], 'strings.js.inc'));
+        return $this->fileSystem->requireFile(
+            $this->fileSystem->buildPath($this->pathsContext[Path::RESOURCES], 'strings.js.inc')
+        );
     }
 
     /**

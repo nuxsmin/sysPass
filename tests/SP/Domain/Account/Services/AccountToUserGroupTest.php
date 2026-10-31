@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Domain\Account\Services\AccountToUserGroup;
@@ -33,7 +34,7 @@ use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -52,6 +53,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testGetUserGroupsByAccountId()
     {
         $accountId = self::$faker->randomNumber();
@@ -87,6 +89,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testGetUserGroupsByAccountIdWithNoUserGroups()
     {
         $accountId = self::$faker->randomNumber();
@@ -111,6 +114,11 @@ class AccountToUserGroupTest extends UnitaryTestCase
         $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
 
         $this->accountToUserGroup =
-            new AccountToUserGroup($this->application, $this->accountToUserGroupRepository);
+            new AccountToUserGroup(
+                $this->config,
+                $this->eventDispatcherStub,
+                $this->context,
+                $this->accountToUserGroupRepository
+            );
     }
 }

@@ -27,10 +27,12 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Notification\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Core\Messages\EventMessageFormatter;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Notification\Models\Notification;
 use SP\Domain\Notification\Ports\NotificationService;
 use SP\Domain\Notification\Services\NotificationEvent;
@@ -46,6 +48,7 @@ class NotificationEventTest extends UnitaryTestCase
     private MockObject|NotificationService $notificationService;
     private NotificationEvent              $notificationEvent;
 
+    #[Test]
     public function testUpdateWithRequestAccount()
     {
         $eventMessage = EventMessage::build()
@@ -77,6 +80,7 @@ class NotificationEventTest extends UnitaryTestCase
         $this->notificationEvent->update('request.account', $event);
     }
 
+    #[Test]
     public function testUpdateWithRequestAccountAndNoUserId()
     {
         $eventMessage = EventMessage::build()
@@ -92,6 +96,7 @@ class NotificationEventTest extends UnitaryTestCase
         $this->notificationEvent->update('request.account', $event);
     }
 
+    #[Test]
     public function testUpdateWithRequestAccountAndException()
     {
         $eventMessage = EventMessage::build()
@@ -111,6 +116,7 @@ class NotificationEventTest extends UnitaryTestCase
         $this->notificationEvent->update('request.account', $event);
     }
 
+    #[Test]
     public function testUpdateWithShowLink()
     {
         $eventMessage = EventMessage::build()
@@ -136,6 +142,7 @@ class NotificationEventTest extends UnitaryTestCase
         $this->notificationEvent->update('show.account.link', $event);
     }
 
+    #[Test]
     public function testUpdateWithShowLinkAndException()
     {
         $eventMessage = EventMessage::build()
@@ -154,6 +161,7 @@ class NotificationEventTest extends UnitaryTestCase
         $this->notificationEvent->update('show.account.link', $event);
     }
 
+    #[Test]
     public function testUpdateWithShowLinkAndNoNotify()
     {
         $eventMessage = EventMessage::build()
@@ -170,6 +178,7 @@ class NotificationEventTest extends UnitaryTestCase
         $this->notificationEvent->update('show.account.link', $event);
     }
 
+    #[Test]
     public function testUpdateWithShowLinkAndFalseNoNotify()
     {
         $eventMessage = EventMessage::build()
@@ -187,6 +196,7 @@ class NotificationEventTest extends UnitaryTestCase
         $this->notificationEvent->update('show.account.link', $event);
     }
 
+    #[Test]
     public function testUpdateWithShowLinkAndNoUserId()
     {
         $eventMessage = EventMessage::build()
@@ -203,6 +213,7 @@ class NotificationEventTest extends UnitaryTestCase
         $this->notificationEvent->update('show.account.link', $event);
     }
 
+    #[Test]
     public function testGetEvents()
     {
         $expected = 'request\.account|show\.account\.link';
@@ -215,6 +226,13 @@ class NotificationEventTest extends UnitaryTestCase
         parent::setUp();
 
         $this->notificationService = $this->createMock(NotificationService::class);
-        $this->notificationEvent = new NotificationEvent($this->application, $this->notificationService);
+        $this->notificationEvent = new NotificationEvent(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->notificationService,
+            new EventMessageFormatter(),
+            new \SP\Core\Translation\GettextTranslation()
+        );
     }
 }

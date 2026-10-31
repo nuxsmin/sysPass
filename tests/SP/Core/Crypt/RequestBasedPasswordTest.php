@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Core\Crypt;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\Crypt\RequestBasedPassword;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -42,6 +43,7 @@ class RequestBasedPasswordTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testBuild()
     {
         $request = $this->createMock(RequestService::class);

@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Core\Crypt;
 
 use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Http\Ports\RequestService;
 
 use function SP\logger;

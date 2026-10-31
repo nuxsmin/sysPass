@@ -30,7 +30,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 /**
  * Class TemporaryMasterPassService
@@ -39,6 +39,11 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
  */
 interface TemporaryMasterPassService
 {
+    public const MAX_ATTEMPTS = 50;
+    public const PARAM_TIME     = 'tempmaster_passtime';
+    public const PARAM_MAX_TIME = 'tempmaster_maxtime';
+    public const PARAM_ATTEMPTS = 'tempmaster_attempts';
+
     /**
      * Crea una clave temporal para encriptar la clave maestra y guardarla.
      *

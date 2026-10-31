@@ -27,37 +27,38 @@ declare(strict_types=1);
 namespace SP\Domain\Api\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Context\ContextException;
-use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Hash;
-use SP\Core\Crypt\Vault;
+use SP\Domain\Core\Context\ContextException;
+use SP\Domain\Core\Crypt\Vault;
+use SP\Domain\Api\Enums\JsonRpcErrorCode;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Ports\ApiService;
+use SP\Domain\Api\Ports\HelpProvider;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenService;
-use SP\Domain\Auth\Services\AuthToken;
+use SP\Domain\Common\Adapters\SerializedPayloadReader;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Crypt\VaultInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Modules\Api\Controllers\Help\HelpInterface;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 
 use function SP\__u;
-use function SP\logger;
-use function SP\processException;
 
 /**
  * Class Api
@@ -73,14 +74,19 @@ final class Api extends Service implements ApiService
      * @throws InvalidArgumentException
      */
     public function __construct(
-        Application                        $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly TrackService      $trackService,
         private readonly ApiRequestService $apiRequest,
         private readonly AuthTokenService  $authTokenService,
         private readonly UserService       $userService,
-        private readonly UserProfileService $userProfileService
+        private readonly UserProfileService $userProfileService,
+        private readonly MasterKeyStore    $masterKeyStore,
+        private readonly HashService       $hashService,
+        private readonly LoggerInterface   $logger = new NullLogger()
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->trackRequest = $trackService->buildTrackRequest(__CLASS__);
     }
@@ -103,7 +109,7 @@ final class Api extends Service implements ApiService
                 __u('Attempts exceeded'),
                 SPException::ERROR,
                 null,
-                JsonRpcResponse::INTERNAL_ERROR
+                JsonRpcErrorCode::INTERNAL_ERROR
             );
         }
 
@@ -111,14 +117,14 @@ final class Api extends Service implements ApiService
             $this->authToken = $this->authTokenService
                 ->getTokenByToken($actionId, $this->getParam('authToken'));
         } catch (NoSuchItemException $e) {
-            logger($e->getMessage(), 'ERROR');
+            $this->logger->error($e->getMessage());
 
             // For security reasons there won't be any hint about a not found token...
             throw new ServiceException(
                 __u('Internal error'),
                 SPException::ERROR,
                 null,
-                JsonRpcResponse::INTERNAL_ERROR
+                JsonRpcErrorCode::INTERNAL_ERROR
             );
         }
 
@@ -128,7 +134,7 @@ final class Api extends Service implements ApiService
 
         $this->setupUser();
 
-        if (AuthToken::isSecuredAction($actionId)) {
+        if (AuthTokenModel::isSecuredAction($actionId)) {
             $this->requireMasterPass();
         }
 
@@ -145,13 +151,11 @@ final class Api extends Service implements ApiService
         try {
             $this->trackService->add($this->trackRequest);
         } catch (Exception $e) {
-            processException($e);
-
             throw new ServiceException(
                 __u('Internal error'),
                 SPException::ERROR,
                 null,
-                JsonRpcResponse::INTERNAL_ERROR
+                JsonRpcErrorCode::INTERNAL_ERROR
             );
         }
     }
@@ -172,8 +176,14 @@ final class Api extends Service implements ApiService
             throw new ServiceException(
                 __u('Wrong parameters'),
                 SPException::ERROR,
-                join(PHP_EOL, $this->getHelp($this->apiRequest->getMethod())),
-                JsonRpcResponse::INVALID_PARAMS
+                implode(
+                    PHP_EOL,
+                    array_map(
+                        static fn($help) => is_array($help) ? json_encode($help) : $help,
+                        $this->getHelp($this->apiRequest->getMethod())
+                    )
+                ),
+                JsonRpcErrorCode::INVALID_PARAMS
             );
         }
 
@@ -207,7 +217,7 @@ final class Api extends Service implements ApiService
             __u('Unauthorized access'),
             SPException::ERROR,
             null,
-            JsonRpcResponse::INTERNAL_ERROR
+            JsonRpcErrorCode::INTERNAL_ERROR
         );
     }
 
@@ -250,10 +260,21 @@ final class Api extends Service implements ApiService
         try {
             $tokenPass = $this->getParam('tokenPass', true);
 
-            Hash::checkHashKey($tokenPass, $this->authToken->getHash()) || $this->accessDenied();
+            $this->hashService->checkHashKey($tokenPass, $this->authToken->getHash()) || $this->accessDenied();
 
-            /** @var VaultInterface $vault */
-            $vault = unserialize($this->authToken->getVault(), ['allowed_classes' => [Vault::class, Crypt::class]]);
+            $payload = $this->authToken->getVault();
+
+            if ($payload === null || $payload === '') {
+                throw new ServiceException(
+                    __u('Internal error'),
+                    SPException::ERROR,
+                    __u('Invalid data'),
+                    JsonRpcErrorCode::INTERNAL_ERROR
+                );
+            }
+
+            /** @var Vault $vault */
+            $vault = SerializedPayloadReader::read($payload, Vault::class);
 
             $key = sha1($tokenPass . $this->getParam('authToken'));
 
@@ -265,14 +286,14 @@ final class Api extends Service implements ApiService
                 __u('Internal error'),
                 SPException::ERROR,
                 __u('Invalid data'),
-                JsonRpcResponse::INTERNAL_ERROR
+                JsonRpcErrorCode::INTERNAL_ERROR
             );
-        } catch (CryptException $e) {
+        } catch (CryptException|InvalidClassException $e) {
             throw new ServiceException(
                 __u('Internal error'),
                 SPException::ERROR,
                 $e->getMessage(),
-                JsonRpcResponse::INTERNAL_ERROR
+                JsonRpcErrorCode::INTERNAL_ERROR
             );
         }
     }
@@ -287,7 +308,7 @@ final class Api extends Service implements ApiService
                 __u('API not initialized'),
                 SPException::ERROR,
                 __u('Please run setup method before'),
-                JsonRpcResponse::INTERNAL_ERROR
+                JsonRpcErrorCode::INTERNAL_ERROR
             );
         }
     }
@@ -357,7 +378,7 @@ final class Api extends Service implements ApiService
     {
         $this->requireInitialized();
 
-        return $this->getMasterKeyFromContext();
+        return $this->masterKeyStore->get();
     }
 
     public function getRequestId(): int
@@ -370,7 +391,7 @@ final class Api extends Service implements ApiService
      */
     public function setHelpClass(string $helpClass): void
     {
-        if (class_exists($helpClass) && is_subclass_of($helpClass, HelpInterface::class)) {
+        if (class_exists($helpClass) && is_subclass_of($helpClass, HelpProvider::class)) {
             $this->helpClass = $helpClass;
 
             return;

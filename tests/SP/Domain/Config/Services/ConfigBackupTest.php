@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Config\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
@@ -35,8 +36,8 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Config\Services\ConfigBackup;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -50,6 +51,7 @@ class ConfigBackupTest extends UnitaryTestCase
     private ConfigService|MockObject $configService;
     private ConfigBackup $configBackup;
 
+    #[Test]
     public function testBackup()
     {
         $this->configService
@@ -66,6 +68,7 @@ class ConfigBackupTest extends UnitaryTestCase
         $this->configBackup->backup($this->config->getConfigData());
     }
 
+    #[Test]
     public function testBackupError()
     {
         $this->configService
@@ -83,6 +86,7 @@ class ConfigBackupTest extends UnitaryTestCase
      * @throws FileException
      * @throws SPException
      */
+    #[Test]
     public function testRestore()
     {
         $configData = new ConfigData();
@@ -116,6 +120,7 @@ class ConfigBackupTest extends UnitaryTestCase
      * @throws FileException
      * @throws SPException
      */
+    #[Test]
     public function testRestoreWithNullData()
     {
         $configFile = $this->createMock(ConfigFileService::class);
@@ -143,6 +148,7 @@ class ConfigBackupTest extends UnitaryTestCase
      * @throws SPException
      * @throws ServiceException
      */
+    #[Test]
     public function testRestoreWithMissingParam()
     {
         $configFile = $this->createMock(ConfigFileService::class);
@@ -166,14 +172,16 @@ class ConfigBackupTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testConfigToJson()
     {
-        $this->assertNotEmpty(ConfigBackup::configToJson(serialize($this->config->getConfigData())));
+        $this->assertNotEmpty($this->configBackup->configToJson(serialize($this->config->getConfigData())));
     }
 
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetBackup()
     {
         $configData = new ConfigData();
@@ -190,6 +198,7 @@ class ConfigBackupTest extends UnitaryTestCase
         $this->assertEquals($configData, $out);
     }
 
+    #[Test]
     public function testGetBackupWithNullData()
     {
         $this->configService->expects(self::once())
@@ -203,6 +212,7 @@ class ConfigBackupTest extends UnitaryTestCase
         $this->configBackup->getBackup();
     }
 
+    #[Test]
     public function testGetBackupWithMissingParam()
     {
         $this->configService->expects(self::once())

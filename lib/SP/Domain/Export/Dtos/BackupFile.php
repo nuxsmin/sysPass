@@ -28,7 +28,6 @@ namespace SP\Domain\Export\Dtos;
 
 use SP\Domain\Common\Dtos\Dto;
 use SP\Domain\Core\AppInfoInterface;
-use SP\Infrastructure\File\FileSystem;
 
 /**
  * Class BackupFile
@@ -47,11 +46,16 @@ final class BackupFile extends Dto
     {
         return sprintf(
             '%s_%s-%s.%s',
-            FileSystem::buildPath($this->path, AppInfoInterface::APP_NAME),
+            implode(DIRECTORY_SEPARATOR, [$this->path, AppInfoInterface::APP_NAME]),
             $this->backupType->name,
             $this->hash,
             $this->extension
         );
+    }
+
+    public function getHash(): string
+    {
+        return $this->hash;
     }
 
     public function withPath(string $path): BackupFile

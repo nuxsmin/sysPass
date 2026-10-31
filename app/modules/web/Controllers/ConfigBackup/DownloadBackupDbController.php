@@ -25,12 +25,11 @@
 namespace SP\Modules\Web\Controllers\ConfigBackup;
 
 use Klein\Response;
-use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\Session;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseStatus;
@@ -40,10 +39,10 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Dtos\BackupFile;
 use SP\Domain\Export\Dtos\BackupType;
-use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandler;
+use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__;
 use function SP\__u;
@@ -56,11 +55,11 @@ use function SP\__u;
 final class DownloadBackupDbController extends SimpleControllerBase
 {
     public function __construct(
-        Application                   $application,
         SimpleControllerHelper        $simpleControllerHelper,
-        private readonly PathsContext $pathsContext
+        private readonly PathsContext $pathsContext,
+        private readonly FileHandlerFactoryInterface $fileHandlerFactory
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**
@@ -83,7 +82,7 @@ final class DownloadBackupDbController extends SimpleControllerBase
             'gz'
         );
 
-        $file = new FileHandler((string)$filePath);
+        $file = $this->fileHandlerFactory->create((string)$filePath);
 
         $this->eventDispatcher->notify(
             'download.backupDbFile',

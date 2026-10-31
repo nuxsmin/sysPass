@@ -30,14 +30,15 @@ use ArrayIterator;
 use EmptyIterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
-use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
-use SP\Domain\Auth\Providers\Ldap\LdapResults;
+use SP\Domain\Auth\Exceptions\LdapException;
+use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Auth\Dtos\LdapResults;
 use SP\Domain\Auth\Providers\Ldap\LdapStd;
-use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
+use SP\Domain\Auth\Enums\LdapTypeEnum;
 use SP\Domain\Auth\Providers\Ldap\LdapUtil;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -69,6 +70,7 @@ class LdapStdTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testConnect()
     {
         $user = self::$faker->userName;
@@ -82,6 +84,7 @@ class LdapStdTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testConnectWithNull()
     {
         $this->ldapConnection->expects(self::once())->method('connect')->with($this->ldapParams, null, null);
@@ -93,6 +96,7 @@ class LdapStdTest extends UnitaryTestCase
      * @throws LdapException
      */
     #[DataProvider('groupDataProvider')]
+    #[Test]
     public function testIsUserInGroup(string $group)
     {
         $this->ldapParams->setGroup($group);
@@ -116,6 +120,7 @@ class LdapStdTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testIsUserInGroupWithSearchGroupDn()
     {
         $this->ldapParams->setGroup('TestGroup');
@@ -144,6 +149,7 @@ class LdapStdTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testIsUserInGroupWithCheckFilter()
     {
         $this->ldapParams->setGroup('TestGroup');
@@ -178,6 +184,7 @@ class LdapStdTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testIsUserInGroupWithCheckFilterAndZeroResults()
     {
         $this->ldapParams->setGroup('TestGroup');
@@ -212,6 +219,7 @@ class LdapStdTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetGroupMembershipIndirectFilter()
     {
         $groupDn = 'cn=TestGroup,dc=groups,dc=syspass,dc=org';
@@ -236,6 +244,7 @@ class LdapStdTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetGroupMembershipIndirectFilterWithEmptyGroup()
     {
         $this->ldapActions->expects(self::never())
@@ -250,6 +259,7 @@ class LdapStdTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetGroupMembershipIndirectFilterWithAttributes()
     {
         $groupDn = 'cn=TestGroup,dc=groups,dc=syspass,dc=org';
@@ -272,6 +282,7 @@ class LdapStdTest extends UnitaryTestCase
         self::assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetUserDnFilter()
     {
         $user = self::$faker->userName;
@@ -287,6 +298,7 @@ class LdapStdTest extends UnitaryTestCase
         self::assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetUserDnFilterWithAttributes()
     {
         $this->ldapParams->setFilterUserAttributes(['memberOf']);
@@ -303,6 +315,7 @@ class LdapStdTest extends UnitaryTestCase
         self::assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetGroupObjectFilter()
     {
         $out = $this->ldap->getGroupObjectFilter();
@@ -311,6 +324,7 @@ class LdapStdTest extends UnitaryTestCase
         self::assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetGroupObjectFilterWithFilter()
     {
         $this->ldapParams->setFilterGroupObject('test');
@@ -320,11 +334,13 @@ class LdapStdTest extends UnitaryTestCase
         self::assertEquals('test', $out);
     }
 
+    #[Test]
     public function testGetServer()
     {
         self::assertEquals($this->ldapParams->getServer(), $this->ldap->getServer());
     }
 
+    #[Test]
     public function testGetGroupMembershipDirectFilter()
     {
         $this->ldapParams->setGroup('TestGroup');
@@ -342,6 +358,7 @@ class LdapStdTest extends UnitaryTestCase
         self::assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetGroupMembershipDirectFilterWithUser()
     {
         $user = 'TestUser';
@@ -360,6 +377,7 @@ class LdapStdTest extends UnitaryTestCase
         self::assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetGroupMembershipDirectFilterWithoutGroup()
     {
         $user = 'TestUser';

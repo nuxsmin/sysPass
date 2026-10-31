@@ -26,6 +26,8 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Database;
 
 use Exception;
+use SP\Domain\Database\Dtos\DatabaseTables;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 
 use function SP\processException;
@@ -33,40 +35,12 @@ use function SP\processException;
 /**
  * Class DBUtil con utilidades de la BD
  */
-class DatabaseUtil
+class DatabaseUtil implements DatabaseUtilInterface
 {
     /**
-     * @var array Tablas de la BBDD
+     * @var list<string> Tablas de la BBDD
      */
-    public const TABLES = [
-        'Client',
-        'Category',
-        'Tag',
-        'UserGroup',
-        'UserProfile',
-        'User',
-        'Account',
-        'AccountToFavorite',
-        'AccountFile',
-        'AccountToUserGroup',
-        'AccountHistory',
-        'AccountToTag',
-        'AccountToUser',
-        'AuthToken',
-        'Config',
-        'CustomFieldType',
-        'CustomFieldDefinition',
-        'CustomFieldData',
-        'EventLog',
-        'PublicLink',
-        'UserPassRecover',
-        'UserToUserGroup',
-        'Plugin',
-        'Track',
-        'Notification',
-        'account_data_v',
-        'account_search_v',
-    ];
+    public const TABLES = DatabaseTables::TABLES;
 
     /**
      * DatabaseUtil constructor.

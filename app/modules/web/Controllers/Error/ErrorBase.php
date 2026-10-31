@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,10 +24,11 @@
 
 namespace SP\Modules\Web\Controllers\Error;
 
-
 use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Presenters\Helpers\LayoutHelper;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
+
+use function SP\processException;
 
 /**
  * Class ErrorBase
@@ -35,33 +36,22 @@ use SP\Mvc\View\TemplateInterface;
 abstract class ErrorBase
 {
     protected TemplateInterface $view;
-    protected LayoutHelper      $layoutHelper;
+    protected LayoutHelper $layoutHelper;
 
-    /**
-     * ErrorController constructor.
-     *
-     * @param TemplateInterface $template
-     * @param LayoutHelper $layoutHelper
-     */
     public function __construct(TemplateInterface $template, LayoutHelper $layoutHelper)
     {
         $this->view = $template;
         $this->layoutHelper = $layoutHelper;
     }
 
-    /**
-     * Mostrar los datos de la plantilla
-     */
-    final protected function view(): void
+    final protected function render(): string
     {
         try {
-            echo $this->view->render();
+            return $this->view->render();
         } catch (FileNotFoundException $e) {
             processException($e);
 
-            echo __($e->getMessage());
+            return $e->getMessage();
         }
-
-        die();
     }
 }

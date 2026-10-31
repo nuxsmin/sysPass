@@ -27,9 +27,13 @@ declare(strict_types=1);
 namespace SP\Domain\Security\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -40,13 +44,10 @@ use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Models\Track as TrackModel;
 use SP\Domain\Security\Ports\TrackRepository;
 use SP\Domain\Security\Ports\TrackService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 
-use function SP\__;
 use function SP\__u;
-use function SP\logger;
-use function SP\processException;
 
 /**
  * Class Track
@@ -58,11 +59,14 @@ final class Track extends Service implements TrackService
     private const TIME_SLEEP                 = 0.25;
 
     public function __construct(
-        Application                      $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly TrackRepository $trackRepository,
-        private readonly RequestService  $request
+        private readonly RequestService  $request,
+        private readonly LoggerInterface $logger = new NullLogger()
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
 
@@ -118,7 +122,7 @@ final class Track extends Service implements TrackService
                         EventMessage::build()
                             ->addDescription(
                                 sprintf(
-                                    __('Attempts exceeded (%d/%d)'),
+                                    __u('Attempts exceeded (%d/%d)'),
                                     $attempts,
                                     self::TIME_TRACKING_MAX_ATTEMPTS
                                 )
@@ -127,15 +131,13 @@ final class Track extends Service implements TrackService
                     )
                 );
 
-                logger('Tracking delay: ' . $delaySeconds . 's');
+                $this->logger->debug('Tracking delay: ' . $delaySeconds . 's');
 
                 sleep($delaySeconds);
 
                 return true;
             }
         } catch (Exception $e) {
-            processException($e);
-
             throw $e;
         }
 

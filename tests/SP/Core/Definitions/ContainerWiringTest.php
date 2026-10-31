@@ -9,11 +9,16 @@ use PHPUnit\Framework\Attributes\Test;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
+use SP\Domain\Upgrade\Ports\UpgradeService;
+use SP\Domain\Upgrade\Services\Upgrade;
+use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Tests\IntegrationTestCase;
 use Throwable;
 
 /**
- * Verifies that every Domain port has a working container binding.
+ * Verifies that every Domain port has a working explicit container binding.
  *
  * Ports that cannot be resolved yet are listed explicitly with the reason.
  * The list is a ratchet: adding a port without a binding fails the test, and
@@ -31,14 +36,11 @@ final class ContainerWiringTest extends IntegrationTestCase
      */
     private const EXPECTED_UNRESOLVED = [
         // Module-specific adapters need request/base-url data or a module binding.
-        'SP\Domain\Account\Ports\AccountAdapter' => 'module-specific baseUrl',
         'SP\Domain\Api\Ports\ApiRequestService' => 'API module binding',
         'SP\Domain\Api\Ports\ApiService' => 'API module binding',
-        'SP\Domain\Category\Ports\CategoryAdapter' => 'module-specific baseUrl',
-        'SP\Domain\Client\Ports\ClientAdapter' => 'module-specific baseUrl',
+        'SP\Domain\Api\Ports\HelpProvider' => 'module-specific help implementations',
         'SP\Domain\CustomField\Ports\CustomFieldAdapter' => 'module-specific baseUrl',
         'SP\Domain\Html\Ports\MinifyService' => 'web module binding (MinifyJs/MinifyCss)',
-        'SP\Domain\Http\Ports\JsonResponseService' => 'web/API response adapter',
         'SP\Domain\Plugin\Ports\Plugin' => 'plugin runtime',
         'SP\Domain\Plugin\Ports\PluginDataStorage' => 'plugin runtime',
         'SP\Domain\Plugin\Ports\PluginOperationInterface' => 'plugin runtime',
@@ -55,7 +57,6 @@ final class ContainerWiringTest extends IntegrationTestCase
         'SP\Domain\File\Ports\ArchiveHandlerInterface' => 'runtime path',
         'SP\Domain\File\Ports\DirectoryHandlerService' => 'runtime path',
         'SP\Domain\File\Ports\FileHandlerInterface' => 'runtime path',
-        'SP\Domain\Install\Ports\InstallerService' => 'request-dependent',
         'SP\Domain\Notification\Ports\MailerInterface' => 'request/config-dependent',
         'SP\Domain\Storage\Ports\XmlFileStorageService' => 'runtime path',
         'SP\Domain\Storage\Ports\YamlFileStorageService' => 'runtime path',
@@ -63,24 +64,14 @@ final class ContainerWiringTest extends IntegrationTestCase
         // Marker, value object or multi-implementation ports, not single services.
         'SP\Domain\Account\Ports\AccountSearchConstants' => 'constants interface',
         'SP\Domain\Common\Ports\Dto' => 'value object interface',
+        'SP\Domain\Common\Ports\UseCase' => 'use case marker interface',
         'SP\Domain\Database\Ports\QueryDataInterface' => 'value object interface',
         'SP\Domain\Export\Ports\XmlExportEntityService' => 'abstract/multiple implementations',
         'SP\Domain\Import\Ports\ItemsImportService' => 'multiple implementations',
         'SP\Domain\ItemPreset\Ports\ItemPresetInterface' => 'value object interface',
         'SP\Domain\ItemPreset\Ports\PresetInterface' => 'marker interface',
-        'SP\Domain\Log\Ports\FileHandlerProvider' => 'marker interface',
         'SP\Domain\Log\Ports\ProviderInterface' => 'marker interface',
-
-        // Broken wildcard bindings: the target class does not exist (P9-3).
-        'SP\Domain\Auth\Ports\UpgradeAuthTokenService' => 'stale binding',
-        'SP\Domain\CustomField\Ports\UpgradeCustomFieldDataService' => 'stale binding',
-        'SP\Domain\CustomField\Ports\UpgradeCustomFieldDefinitionService' => 'stale binding',
-        'SP\Domain\Export\Ports\BackupFileHelperService' => 'stale binding',
-        'SP\Domain\Import\Ports\XmlImportService' => 'stale binding',
-        'SP\Domain\Plugin\Ports\UpgradePluginService' => 'stale binding',
-        'SP\Domain\Upgrade\Ports\UpgradeConfigService' => 'stale binding',
-        'SP\Domain\Upgrade\Ports\UpgradeHandlerService' => 'stale binding',
-        'SP\Domain\Upgrade\Ports\UpgradeService' => 'unresolved concrete service',
+        'SP\Domain\Upgrade\Ports\UpgradeHandlerService' => 'multiple implementations',
     ];
 
     #[Test]
@@ -127,6 +118,29 @@ final class ContainerWiringTest extends IntegrationTestCase
                 $this->formatErrors($unexpectedErrors)
             )
         );
+    }
+
+    #[Test]
+    public function upgradeServiceRegistersAndSelectsDatabaseHandler(): void
+    {
+        $handler = $this->createMock(UpgradeHandlerService::class);
+        $handler->expects(self::once())
+                ->method('apply')
+                ->with('400.0', self::isInstanceOf(ConfigDataInterface::class))
+                ->willReturn(true);
+
+        $configData = $this->createStub(ConfigDataInterface::class);
+
+        $container = $this->buildContainer(
+            self::buildRequest('get', 'index.php'),
+            [UpgradeDatabase::class => $handler]
+        );
+
+        $upgradeService = $container->get(UpgradeService::class);
+
+        self::assertInstanceOf(Upgrade::class, $upgradeService);
+
+        $upgradeService->upgrade('400.0', $configData);
     }
 
     /**

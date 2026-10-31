@@ -26,10 +26,13 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\User\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
+use SP\Core\Context\StatelessMasterKeyStore;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
@@ -39,7 +42,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Domain\User\Services\UserMasterPass;
-use SP\Domain\User\Services\UserMasterPassStatus;
+use SP\Domain\User\Models\UserMasterPassStatus;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -59,6 +62,7 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoad()
     {
         $user = UserDataGenerator::factory()
@@ -96,6 +100,7 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadWithUserPass()
     {
         $user = UserDataGenerator::factory()
@@ -132,6 +137,7 @@ class UserMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testLoadWithNotSet()
     {
         $userDto = new UserDto();
@@ -154,6 +160,7 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadWithNotSetAndEmptyPass()
     {
         $userDto = UserDto::fromArray(['use' => self::$faker->userName]);
@@ -176,6 +183,7 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadWithNotSetAndEmptyUser()
     {
         $userDto = UserDto::fromArray(['pass' => self::$faker->password]);
@@ -198,6 +206,7 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadWithNotSetAndNullHash()
     {
         $user = UserDataGenerator::factory()
@@ -225,6 +234,7 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadWithChanged()
     {
         $user = UserDataGenerator::factory()
@@ -253,6 +263,7 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadWithCheckOld()
     {
         $user = UserDataGenerator::factory()
@@ -281,6 +292,7 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadWithCryptException()
     {
         $user = UserDataGenerator::factory()
@@ -310,6 +322,7 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadWithInvalid()
     {
         $user = UserDataGenerator::factory()
@@ -344,6 +357,7 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadWithException()
     {
         $user = UserDataGenerator::factory()
@@ -375,6 +389,7 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testUpdateFromOldPass()
     {
         $user = UserDataGenerator::factory()
@@ -433,6 +448,7 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testUpdateFromOldPassWithInvalid()
     {
         $user = UserDataGenerator::factory()
@@ -478,6 +494,7 @@ class UserMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateOnLogin()
     {
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
@@ -520,6 +537,7 @@ class UserMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateOnLoginWithSaveHash()
     {
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
@@ -572,6 +590,7 @@ class UserMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateOnLoginWithException()
     {
         $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
@@ -622,6 +641,7 @@ class UserMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCreate()
     {
         $key = 'a_password' .
@@ -651,6 +671,7 @@ class UserMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCreateWithLongKey()
     {
         $key = 'a_password' .
@@ -678,6 +699,7 @@ class UserMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCreateWithLongMasterPass()
     {
         $key = 'a_password' .
@@ -706,6 +728,7 @@ class UserMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCreateWithException()
     {
         $key = 'a_password' .
@@ -739,10 +762,14 @@ class UserMasterPassTest extends UnitaryTestCase
         $this->crypt = $this->createMock(CryptInterface::class);
 
         $this->userMasterPass = new UserMasterPass(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->userRepository,
             $this->configService,
-            $this->crypt
+            $this->crypt,
+            new StatelessMasterKeyStore($this->context),
+            new HashServiceAdapter()
         );
     }
 }

@@ -26,22 +26,24 @@ declare(strict_types=1);
 namespace SP\Domain\Notification\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Core\Messages\MailMessage;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Domain\Html\Html;
+use SP\Domain\Common\Providers\Html;
 use SP\Domain\Notification\Dtos\MailParams;
 use SP\Domain\Notification\Ports\MailerInterface;
+use SP\Domain\Notification\Ports\MailMessageFormatterInterface;
 use SP\Domain\Notification\Ports\MailService;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class Mail
@@ -49,11 +51,14 @@ use function SP\processException;
 final class Mail extends Service implements MailService
 {
     public function __construct(
-        Application                          $application,
-        private readonly MailerInterface     $mailer,
-        private readonly UriContextInterface $uriContext
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
+        private readonly MailerInterface               $mailer,
+        private readonly UriContextInterface           $uriContext,
+        private readonly MailMessageFormatterInterface $mailMessageFormatter
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     public static function getParamsFromConfig(ConfigDataInterface $configData): MailParams
@@ -89,11 +94,9 @@ final class Mail extends Service implements MailService
                 ->isHTML()
                 ->addAddress($to)
                 ->subject($this->getSubjectForAction($mailMessage->getTitle()))
-                ->body($mailMessage->composeHtml())
+                ->body($this->mailMessageFormatter->composeHtml($mailMessage))
                 ->send();
         } catch (Exception $e) {
-            processException($e);
-
             $this->eventDispatcher->notify('exception', new Event($e));
 
             throw ServiceException::error(__u('Error while sending the email'), $e->getMessage(), $e->getCode(), $e);
@@ -130,10 +133,12 @@ final class Mail extends Service implements MailService
             $this->mailer->addAddress($addr);
         }
 
+        $mailMessage->setFooter($this->getEmailFooter());
+
         $this->mailer
             ->isHTML()
             ->subject($this->getSubjectForAction($subject))
-            ->body($mailMessage->setFooter($this->getEmailFooter())->composeHtml());
+            ->body($this->mailMessageFormatter->composeHtml($mailMessage));
 
         $this->sendMail();
     }
@@ -175,8 +180,6 @@ final class Mail extends Service implements MailService
                 )
             );
         } catch (Exception $e) {
-            processException($e);
-
             $this->eventDispatcher->notify('exception', new Event($e));
 
             throw ServiceException::error(__u('Error while sending the email'));

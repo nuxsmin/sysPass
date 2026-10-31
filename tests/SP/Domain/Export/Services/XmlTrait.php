@@ -42,7 +42,7 @@ trait XmlTrait
         foreach ($names as $key => $nodeName) {
             $this->assertEquals($nodeName, $nodeList->item($key)->nodeName);
 
-            if (is_callable($values[$key])) {
+            if ($values[$key] instanceof \Closure) {
                 $values[$key]($nodeList->item($key)->nodeValue);
             } else {
                 $this->assertEquals($values[$key], $nodeList->item($key)->nodeValue);

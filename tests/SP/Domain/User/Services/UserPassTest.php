@@ -25,15 +25,17 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\User\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Domain\User\Services\UserPass;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**+
@@ -49,6 +51,7 @@ class UserPassTest extends UnitaryTestCase
      * @throws QueryException
      * @throws NoSuchItemException
      */
+    #[Test]
     public function testMigrateUserPassById()
     {
         $userRepository = $this->createMock(UserRepository::class);
@@ -65,7 +68,7 @@ class UserPassTest extends UnitaryTestCase
                        )
                        ->willReturn(1);
 
-        $usePass = new UserPass($this->application, $userRepository);
+        $usePass = new UserPass($this->config, $this->eventDispatcherStub, $this->context, $userRepository, new HashServiceAdapter());
         $usePass->migrateUserPassById(100, 'a_password');
     }
 
@@ -75,6 +78,7 @@ class UserPassTest extends UnitaryTestCase
      * @throws QueryException
      * @throws NoSuchItemException
      */
+    #[Test]
     public function testMigrateUserPassByIdWithException()
     {
         $userRepository = $this->createMock(UserRepository::class);
@@ -82,7 +86,7 @@ class UserPassTest extends UnitaryTestCase
                        ->method('updatePassById')
                        ->willReturn(0);
 
-        $usePass = new UserPass($this->application, $userRepository);
+        $usePass = new UserPass($this->config, $this->eventDispatcherStub, $this->context, $userRepository, new HashServiceAdapter());
 
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('User does not exist');

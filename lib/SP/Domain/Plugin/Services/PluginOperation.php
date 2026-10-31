@@ -33,7 +33,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
 use SP\Domain\Plugin\Ports\PluginDataService;
 use SP\Domain\Plugin\Ports\PluginOperationInterface;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 /**
  * Class PluginOperation

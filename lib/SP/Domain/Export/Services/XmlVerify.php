@@ -29,13 +29,16 @@ namespace SP\Domain\Export\Services;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
-use SP\Core\Application;
-use SP\Core\Crypt\Hash;
 use SP\Domain\Common\Providers\Version;
+use SP\Domain\Common\Providers\XmlIntegrity;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Export\Ports\XmlVerifyService;
 
 use function SP\__u;
@@ -47,18 +50,19 @@ use function SP\__u;
  */
 final class XmlVerify extends Service implements XmlVerifyService
 {
-    use XmlTrait;
-
     private const NODES           = ['Category', 'Client', 'Tag', 'Account'];
     private const XML_MIN_VERSION = [2, 1, 0, 0];
     private readonly DOMDocument $document;
 
     public function __construct(
-        Application                     $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly CryptInterface $crypt,
+        private readonly HashService $hashService,
         private readonly string $schema
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->document = new DOMDocument('1.0', 'UTF-8');
     }
@@ -82,7 +86,7 @@ final class XmlVerify extends Service implements XmlVerifyService
 
         $key = $password ?: sha1($self->config->getConfigData()->getPasswordSalt());
 
-        if (!self::checkXmlHash($self->document, $key)) {
+        if (!XmlIntegrity::checkHash($self->document, $key, $self->hashService)) {
             throw ServiceException::error(__u('Error while checking integrity hash'));
         }
 
@@ -140,22 +144,6 @@ final class XmlVerify extends Service implements XmlVerifyService
     }
 
     /**
-     * Obtener la versión del XML
-     */
-    public static function checkXmlHash(DOMDocument $document, string $key): bool
-    {
-        $xpath = new DOMXPath($document);
-        $hash = $xpath->query('/Root/Meta/Hash')->item(0)?->nodeValue;
-        $sign = $xpath->query('/Root/Meta/Hash/@sign')->item(0)?->nodeValue;
-
-        if (!empty($hash) && !empty($sign)) {
-            return Hash::checkMessage($hash, $key, $sign);
-        }
-
-        return $hash !== null && $hash === self::generateHashFromNodes($document);
-    }
-
-    /**
      * @throws ServiceException
      */
     private function checkPassword(string $password): void
@@ -167,7 +155,7 @@ final class XmlVerify extends Service implements XmlVerifyService
             ?->getNamedItem('hash')
             ->nodeValue;
 
-        if (empty($hash) || !Hash::checkHashKey($password, $hash)) {
+        if (empty($hash) || !$this->hashService->checkHashKey($password, $hash)) {
             throw ServiceException::error(__u('Wrong encryption password'));
         }
     }

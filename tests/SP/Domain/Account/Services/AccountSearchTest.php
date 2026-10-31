@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Builder\InvocationStubber;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -39,7 +40,7 @@ use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Domain\Account\Services\Builders\AccountSearchTokenizerDataTrait;
 use SP\Tests\UnitaryTestCase;
 
@@ -59,6 +60,7 @@ class AccountSearchTest extends UnitaryTestCase
      * @param string $search
      */
     #[DataProvider('searchUsingStringDataProvider')]
+    #[Test]
     public function testGetByFilter(string $search)
     {
         $accountSearchFilter = AccountSearchFilterDto::build($search);
@@ -80,6 +82,7 @@ class AccountSearchTest extends UnitaryTestCase
      * @param array $expected
      */
     #[DataProvider('searchByItemDataProvider')]
+    #[Test]
     public function testGetByFilterUsingItems(string $search, array $expected)
     {
         $accountSearchFilter = AccountSearchFilterDto::build($search);
@@ -145,6 +148,7 @@ class AccountSearchTest extends UnitaryTestCase
      * @param array $expected
      */
     #[DataProvider('searchByItemDataProvider')]
+    #[Test]
     public function testGetByFilterUsingItemsDoesNotThrowException(string $search, array $expected)
     {
         $accountSearchFilter = AccountSearchFilterDto::build($search);
@@ -167,6 +171,7 @@ class AccountSearchTest extends UnitaryTestCase
      * @param array $expected
      */
     #[DataProvider('searchByConditionDataProvider')]
+    #[Test]
     public function testGetByFilterUsingConditions(string $search, array $expected)
     {
         $accountSearchFilter = AccountSearchFilterDto::build($search);
@@ -236,7 +241,9 @@ class AccountSearchTest extends UnitaryTestCase
         $this->accountSearchRepository = $this->createMock(AccountSearchRepository::class);
 
         $this->accountSearch = new AccountSearch(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $userService,
             $userGroupService,
             $this->accountSearchRepository

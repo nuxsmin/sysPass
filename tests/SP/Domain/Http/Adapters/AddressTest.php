@@ -29,8 +29,9 @@ namespace SP\Tests\Domain\Http\Adapters;
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
-use SP\Domain\Http\Adapters\Address;
+use SP\Domain\Common\Providers\Address;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -117,6 +118,7 @@ class AddressTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      */
     #[DataProvider('binaryCheckProvider')]
+    #[Test]
     public function testToBinary(string $address)
     {
         $binary = Address::toBinary($address);
@@ -128,6 +130,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testToBinaryInvalidIpv4()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -138,6 +141,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testToBinaryInvalidIpv6()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -148,6 +152,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testFromBinaryWithIpv4()
     {
         $address = self::$faker->ipv4;
@@ -160,6 +165,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testFromBinaryWithIpv6()
     {
         $address = self::$faker->ipv6;
@@ -172,6 +178,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testFromBinaryWithInvalidAddress()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -189,6 +196,7 @@ class AddressTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      */
     #[DataProvider('checkAddressProvider')]
+    #[Test]
     public function testCheck(string $address, string $inAddress, string $inMask, bool $expected)
     {
         $this->assertEquals($expected, Address::check($address, $inAddress, $inMask));
@@ -203,6 +211,7 @@ class AddressTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      */
     #[DataProvider('checkAddressCidrProvider')]
+    #[Test]
     public function testCheckWithCidr(string $address, string $inAddress, int $inMask, bool $expected)
     {
         $this->assertEquals(
@@ -218,6 +227,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testCheckWithInvalidAddress()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -229,6 +239,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testParseWithFullMask()
     {
         $address = '192.168.0.1/255.255.255.0';
@@ -244,6 +255,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testParseWithoutMask()
     {
         $address = '192.168.0.2';
@@ -266,6 +278,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testParseWithCIDR()
     {
         $address = '192.168.0.1/24';
@@ -281,6 +294,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testParseInvalidIp()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -292,6 +306,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testParseInvalidMask()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -303,6 +318,7 @@ class AddressTest extends UnitaryTestCase
     /**
      * @throws InvalidArgumentException
      */
+    #[Test]
     public function testParseInvalidCidr()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -316,6 +332,7 @@ class AddressTest extends UnitaryTestCase
      * @param $mask
      */
     #[DataProvider('checkCidrProvider')]
+    #[Test]
     public function testCidrToDec($cidr, $mask)
     {
         $this->assertEquals($mask, Address::cidrToDec($cidr));

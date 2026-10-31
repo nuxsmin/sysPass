@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Common\Providers;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
 use SP\Domain\Common\Providers\Password;
@@ -38,6 +39,7 @@ use SP\Domain\Common\Providers\Password;
 class PasswordTest extends TestCase
 {
 
+    #[Test]
     public function testCheckStrength()
     {
         $passwordLower = str_split('artpwerlm');
@@ -61,6 +63,7 @@ class PasswordTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testRandomPassword()
     {
         $lengths = [16, 32, 64];
@@ -79,6 +82,7 @@ class PasswordTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testRandomPasswordNoFlags()
     {
         $pass = Password::randomPassword(16, 0);
@@ -93,6 +97,7 @@ class PasswordTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testRandomPasswordSpecial()
     {
         $flags = \SP\Domain\Common\Providers\Password::FLAG_PASSWORD_SPECIAL |
@@ -109,6 +114,7 @@ class PasswordTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testRandomPasswordNumbers()
     {
         $flags = Password::FLAG_PASSWORD_NUMBER | Password::FLAG_PASSWORD_STRENGTH;
@@ -125,6 +131,7 @@ class PasswordTest extends TestCase
     /**
      * @throws RandomException
      */
+    #[Test]
     public function testRandomPasswordAll()
     {
         $flags = \SP\Domain\Common\Providers\Password::FLAG_PASSWORD_NUMBER | Password::FLAG_PASSWORD_SPECIAL |
@@ -141,6 +148,7 @@ class PasswordTest extends TestCase
     /**
      * @throws EnvironmentIsBrokenException
      */
+    #[Test]
     public function testGenerateRandomBytes()
     {
         $bytesHex = Password::generateRandomBytes(16);
