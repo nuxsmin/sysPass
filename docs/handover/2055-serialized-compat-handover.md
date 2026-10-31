@@ -1,7 +1,7 @@
 # Handover: Serialized payload compatibility (#2055)
 
 Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
-Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`. T7 is committed in `6859ee7f`. T8 is committed in `a3f744ba` (tests) and `a97826f9` (handover). T9 is committed in `de5c7908` (2026-10-31). T10, T11, and T12 are implemented in the working tree (2026-10-31) and remediated after review (2026-10-31); none of the remediation is committed.
+Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`. T7 is committed in `6859ee7f`. T8 is committed in `a3f744ba` (tests) and `a97826f9` (handover). T9 is committed in `de5c7908` (2026-10-31). T10 is committed in `28921e30` (restore) and `7622d5f2` (snapshot decode remediation). T11 is committed in `28921e30` and `7622d5f2`. T12 is committed in `7622d5f2` (fixtures regenerated). All tasks are committed; no code changes remain in the working tree.
 
 ## Goal
 
@@ -229,7 +229,8 @@ Previous follow-up verification (findByType fix):
 **T10 Config backup restore.** `lib/SP/Domain/Config/Services/ConfigBackup.php:90`: use the T3 reader for `ConfigData`. Do not rewrite stored backups.
 - Acceptance: a legacy backup restores; an unreadable backup reports failure and modifies nothing.
 
-Status: implemented (2026-10-31), reviewed and remediated (2026-10-31, working tree). Files:
+Status: implemented and committed in `28921e30` (2026-10-31), then reviewed and remediated in
+`7622d5f2` (2026-10-31). Files:
 - `lib/SP/Domain/Config/Legacy/LegacyConfigData.php`
 - `lib/SP/Domain/Config/Legacy/LegacyConfigDataMapper.php`
 - `lib/SP/Domain/Config/Services/ConfigBackup.php`
@@ -286,7 +287,8 @@ Verification:
 
 Do not add a serialize-call-site allowlist. The repo removed its allowlist and ratchet in `6a6cd3dc`.
 
-Status: implemented (2026-10-31, working tree). File:
+Status: implemented and committed in `28921e30`, with the snapshot assertions added in `7622d5f2`
+(2026-10-31). File:
 `tests/SP/Architecture/SerializedPayloadCompatibilityTest.php`. The test asserts that every registry class
 resolves, every legacy map key no longer resolves, every registry class appears among the map's current names
 (or is produced by a legacy snapshot mapper), and every map target resolves. It also asserts that
@@ -307,7 +309,7 @@ Verification: 5/5 OK (39 assertions).
 - T9: idempotent second run; unreadable rows untouched and failing the upgrade; re-run after fix succeeds.
 - T11: architecture guardrail.
 
-Status: covered (2026-10-31, working tree; fixtures regenerated 2026-10-31).
+Status: covered and committed in `7622d5f2` (2026-10-31; fixtures regenerated).
 Provenance:
 - The pre-move tree `6a6cd3dc^` and tag `3.2.11` were exported with `git archive` into `/tmp/kilo`
   (not `git worktree`, which mutates `.git`).
@@ -341,6 +343,20 @@ snapshot is exercised through that fixture in `LegacyConfigDataMapperTest` plus 
   - take a database backup before upgrading;
   - clear the compiled container cache (`cache/container/<normalized-version>`) when deploying if the normalized version string is unchanged, because the durable handler binding is part of the compiled container;
   - rollback to a pre-4.0 version requires restoring that backup, because rewritten rows are not readable by older versions.
+
+Status: verified (2026-10-31).
+- Full suite: stops at the integration fixture loader after 1769/2649 tests with MySQL `ERROR 2005`
+  (`mysql -h  -u  ... Unknown server host '-u'`), the same environmental failure recorded for T9/T10.
+- Unitary core suite with coverage: 2215 tests, 28908 assertions, OK (20 warnings, 15 deprecations,
+  7 incomplete). The 2 errors and 1 failure recorded in earlier T4-T9 runs no longer reproduce.
+- Coverage gate (`scripts/coverage-gate.php --gate`): `Domain\*\UseCases` 91.11% (minimum 90%),
+  `Domain\*\Services` 96.46% (minimum 95%): passed.
+- Architecture/adapters/config/upgrade group (`tests/SP/Architecture`, `tests/SP/Domain/Common/Adapters`,
+  `tests/SP/Domain/Config`, `tests/SP/Domain/Upgrade`, `tests/SP/Infrastructure/Upgrade`): 162/162 OK
+  (746 assertions, 2 pre-existing deprecations).
+- PHPStan level 6 on the changed lib files: no errors. A full `lib` run still reports 1040 pre-existing
+  baseline findings unrelated to #2055; the branch adds none in the changed files.
+- No production code changes remain uncommitted.
 
 ## Dependency order
 
