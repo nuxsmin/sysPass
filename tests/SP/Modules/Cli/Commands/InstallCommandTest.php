@@ -400,6 +400,14 @@ class InstallCommandTest extends CliTestCase
 
     protected function setUp(): void
     {
+        saveResource('config', 'config.xml', self::$currentConfig);
+
+        $configCacheFile = CACHE_PATH . DIRECTORY_SEPARATOR . 'config.cache';
+
+        if (is_file($configCacheFile)) {
+            unlink($configCacheFile);
+        }
+
         $this->unsetEnvironmentVariables();
 
         parent::setUp();

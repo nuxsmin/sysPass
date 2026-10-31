@@ -61,7 +61,7 @@ use stdClass;
 
 use function DI\create;
 
-define('APP_MODULE', 'api');
+defined('APP_MODULE') || define('APP_MODULE', 'api');
 
 /**
  * Class WebTestCase

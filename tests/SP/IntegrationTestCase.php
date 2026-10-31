@@ -63,6 +63,7 @@ use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Dtos\UserDto;
@@ -182,7 +183,7 @@ abstract class IntegrationTestCase extends TestCase
         $configFileService = $this->createStub(ConfigFileService::class);
         $configFileService->method('getConfigData')->willReturn($configData);
 
-        $databaseUtil = self::createStub(\SP\Infrastructure\Database\DatabaseUtil::class);
+        $databaseUtil = self::createStub(DatabaseUtilInterface::class);
         $databaseUtil->method('checkDatabaseConnection')->willReturn(true);
         $databaseUtil->method('checkDatabaseTables')->willReturn(true);
 
@@ -213,7 +214,7 @@ abstract class IntegrationTestCase extends TestCase
             LdapConnectionHandler::class => self::createStub(LdapConnectionHandler::class),
             'backup.dbArchiveHandler' => self::createStub(ArchiveHandler::class),
             'backup.appArchiveHandler' => self::createStub(ArchiveHandler::class),
-            \SP\Infrastructure\Database\DatabaseUtil::class => $databaseUtil,
+            DatabaseUtilInterface::class => $databaseUtil,
             Context::class => $this->getContext(),
             MailService::class => self::createStub(MailService::class),
             DbStorageHandler::class => self::createStub(DbStorageHandler::class),

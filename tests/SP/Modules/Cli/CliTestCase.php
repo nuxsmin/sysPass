@@ -42,7 +42,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 use function DI\factory;
 use function SP\Tests\getDbHandler;
 
-define('APP_MODULE', 'cli');
+defined('APP_MODULE') || define('APP_MODULE', 'cli');
 
 /**
  * Class CliTestCase
