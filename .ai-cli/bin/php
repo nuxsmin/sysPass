@@ -31,11 +31,22 @@ if ! "$DOCKER_BIN" image inspect "$PHP_IMAGE" > /dev/null 2>&1; then
   exit 1
 fi
 
+EXTRA_ARGS=()
+if [ -n "${PHP_DOCKER_NETWORK:-}" ]; then
+  EXTRA_ARGS+=(--network "$PHP_DOCKER_NETWORK")
+fi
+for _var in DB_SERVER DB_PORT DB_NAME DB_USER DB_PASS DB_SOCKET; do
+  if [ -n "${!_var:-}" ]; then
+    EXTRA_ARGS+=(-e "$_var")
+  fi
+done
+
 # HOME + XDG caches must be writable (image runs as an unprivileged user).
 exec "$DOCKER_BIN" run --rm \
   --user "$(id -u):$(id -g)" \
   -e HOME=/tmp \
   -e XDEBUG_MODE="${XDEBUG_MODE:-off}" \
+  ${EXTRA_ARGS[@]+"${EXTRA_ARGS[@]}"} \
   -v "$REPO_ROOT:$REPO_ROOT" \
   -w "$REPO_ROOT" \
   "$PHP_IMAGE" php "$@"
