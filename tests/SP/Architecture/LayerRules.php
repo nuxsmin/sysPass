@@ -116,7 +116,9 @@ final class LayerRules
                 $presentationCalls = [];
 
                 foreach ($calls as $call) {
-                    foreach (['__u', '__', 'processException'] as $function) {
+                    // __u() is the gettext extraction marker: it returns the untranslated
+                    // key and performs no translation, so it is not a presentation call.
+                    foreach (['__', 'processException'] as $function) {
                         if (self::isCall($call, $function)) {
                             $presentationCalls[$function] = ($presentationCalls[$function] ?? 0) + 1;
                             break;
@@ -340,7 +342,11 @@ final class LayerRules
         }
 
         if ($layer === 'module') {
-            if (str_starts_with($import, 'SP\\Infrastructure\\')) {
+            // Module bootstrap files are composition roots: they wire the module's
+            // adapters and ports and are allowed to reference infrastructure.
+            if (!str_ends_with($relativePath, '/module.php')
+                && str_starts_with($import, 'SP\\Infrastructure\\')
+            ) {
                 $violations[self::MODULES_INFRASTRUCTURE][] = sprintf('%s => %s', $relativePath, $import);
             }
 

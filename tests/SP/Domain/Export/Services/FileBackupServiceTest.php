@@ -32,7 +32,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Bootstrap\Path;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Dtos\DatabaseTables;
@@ -205,7 +205,8 @@ class FileBackupServiceTest extends UnitaryTestCase
             $this->dbFileHandler,
             $this->dbArchiveHandler,
             $this->appArchiveHandler,
-            $this->backupFiles
+            $this->backupFiles,
+            new \SP\Infrastructure\Database\QueryFactoryAdapter()
         );
     }
 }

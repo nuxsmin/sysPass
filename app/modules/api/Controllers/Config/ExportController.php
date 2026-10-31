@@ -35,7 +35,7 @@ use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Export\Ports\XmlExportService;
-use SP\Infrastructure\File\DirectoryHandler;
+use SP\Domain\File\Ports\DirectoryHandlerFactoryInterface;
 use SP\Modules\Api\Controllers\ApiControllerHelper;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\ConfigHelp;
@@ -56,7 +56,8 @@ final class ExportController extends ControllerBase
         ApiControllerHelper               $controllerHelper,
         ApiService                        $apiService,
         private readonly XmlExportService $xmlExportService,
-        private readonly PathsContext     $pathsContext
+        private readonly PathsContext $pathsContext,
+        private readonly DirectoryHandlerFactoryInterface $directoryHandlerFactory
     ) {
         parent::__construct($controllerHelper, $apiService);
 
@@ -81,7 +82,7 @@ final class ExportController extends ControllerBase
             )
         );
 
-        $file = $this->xmlExportService->export(new DirectoryHandler($path), $password);
+        $file = $this->xmlExportService->export($this->directoryHandlerFactory->create($path), $password);
 
         $this->eventDispatcher->notify(
             'run.export.end',

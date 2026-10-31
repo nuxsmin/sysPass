@@ -30,7 +30,7 @@ use SP\Domain\Core\Exceptions\FileException;
 
 use RuntimeException;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Util\Util;
+use SP\Domain\Common\Providers\Environment;
 use SplFileObject;
 use ValueError;
 
@@ -183,7 +183,11 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      */
     public function readChunked(callable $chunker = null, ?float $rate = null): void
     {
-        $maxRate = Util::getMaxDownloadChunk() / self::CHUNK_FACTOR;
+        $memoryLimit = ini_get('memory_limit');
+        $maxRate = ($memoryLimit < 0
+                     ? 1024
+                     : (int)(Environment::convertShortUnit((string)$memoryLimit) / self::CHUNK_FACTOR))
+                   / self::CHUNK_FACTOR;
 
         if ($rate === null || $rate > $maxRate) {
             $rate = (float)$maxRate;

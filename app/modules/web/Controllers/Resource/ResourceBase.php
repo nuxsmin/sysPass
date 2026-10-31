@@ -27,6 +27,8 @@ namespace SP\Modules\Web\Controllers\Resource;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
+use SP\Domain\File\Ports\FileSystemService;
 use SP\Domain\Html\Ports\MinifyService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
@@ -44,7 +46,9 @@ abstract class ResourceBase extends SimpleControllerBase
     public function __construct(
         SimpleControllerHelper           $simpleControllerHelper,
         protected readonly MinifyService $minify,
-        protected readonly PathsContext  $pathsContext
+        protected readonly PathsContext  $pathsContext,
+        protected readonly FileHandlerFactoryInterface $fileHandlerFactory,
+        protected readonly FileSystemService $fileSystem
     ) {
         parent::__construct($simpleControllerHelper);
 

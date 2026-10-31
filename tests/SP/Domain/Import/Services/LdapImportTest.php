@@ -40,6 +40,7 @@ use SP\Domain\Auth\Dtos\LdapResults;
 use SP\Domain\Auth\Enums\LdapTypeEnum;
 use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Services\LdapImport;
+use SP\Core\Translation\GettextTranslation;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
@@ -513,7 +514,8 @@ class LdapImportTest extends UnitaryTestCase
                 $this->eventDispatcherStub,
                 $this->createMock(LdapConnectionHandler::class),
                 $this->ldapActionsService
-            )
+            ),
+            new GettextTranslation()
         );
     }
 }

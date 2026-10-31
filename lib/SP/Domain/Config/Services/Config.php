@@ -40,7 +40,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 
-use function SP\__;
+use function SP\__u;
 
 /**
  * Class Config
@@ -83,7 +83,7 @@ final class Config extends Service implements ConfigService
 
         if ($result->getNumRows() === 0 && $default === null) {
             throw new NoSuchItemException(
-                sprintf(__('Parameter not found (%s)'), $param)
+                sprintf(__u('Parameter not found (%s)'), $param)
             );
         }
 

@@ -45,7 +45,6 @@ use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Domain\Tag\Models\Tag;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -234,7 +233,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 'exception',
                 new Event(
                     $e,
-                    EventMessage::build()->addDescription(__('Unable to import categories'))
+                    EventMessage::build()->addDescription(__u('Unable to import categories'))
                 )
             );
 
@@ -278,7 +277,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 'exception',
                 new Event(
                     $e,
-                    EventMessage::build()->addDescription(__('Unable to import clients'))
+                    EventMessage::build()->addDescription(__u('Unable to import clients'))
                 )
             );
 
@@ -322,7 +321,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 'exception',
                 new Event(
                     $e,
-                    EventMessage::build()->addDescription(__('Unable to import tags'))
+                    EventMessage::build()->addDescription(__u('Unable to import tags'))
                 )
             );
 
@@ -378,7 +377,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                     'exception',
                     new Event(
                         $e,
-                        EventMessage::build()->addDescription(__('Unable to import account'))
+                        EventMessage::build()->addDescription(__u('Unable to import account'))
                     )
                 );
 

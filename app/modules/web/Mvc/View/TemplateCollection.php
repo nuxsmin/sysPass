@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Modules\Web\Mvc\View;
 
-use SP\Core\DataCollection;
+use SP\Domain\Common\Models\DataCollection;
 
 /**
  * Class TemplateCollection

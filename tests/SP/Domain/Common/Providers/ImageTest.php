@@ -101,7 +101,8 @@ class ImageTest extends TestCase
         $this->imageUtil = new Image(
             $phpExtensionCheckerService,
             '/usr/share/fonts/freefont/FreeSans.otf',
-            $this->pathsContext[Path::TMP]
+            $this->pathsContext[Path::TMP],
+            new \SP\Infrastructure\File\FileHandlerFactory()
         );
     }
 }

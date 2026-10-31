@@ -24,10 +24,10 @@ declare(strict_types=1);
  */
 
 namespace SP\Domain\Auth\Providers\Ldap;
+
 use SP\Domain\Auth\Exceptions\LdapException;
 
 use SP\Domain\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LdapAuthService;
@@ -50,7 +50,7 @@ final readonly class LdapAuth implements LdapAuthService
      * LdapBase constructor.
      *
      * @param LdapService $ldap
-     * @param EventDispatcher $eventDispatcher
+     * @param EventDispatcherInterface $eventDispatcher
      * @param ConfigDataInterface $configData
      */
     public function __construct(

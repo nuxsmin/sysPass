@@ -29,7 +29,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Core\Messages\MailMessageFormatter;
 use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Services\ServiceException;

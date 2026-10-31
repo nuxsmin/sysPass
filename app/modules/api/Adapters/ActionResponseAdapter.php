@@ -110,7 +110,7 @@ final class ActionResponseAdapter
             'result' => $result,
             'resultCode' => $actionResponse->status === ResponseStatus::OK ? 0 : 1,
             'resultMessage' => is_string($actionResponse->subject) && $actionResponse->subject !== ''
-                ? $actionResponse->subject
+                ? __($actionResponse->subject)
                 : null,
             'count' => is_array($result) ? count($result) : null,
         ];

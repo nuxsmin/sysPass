@@ -224,7 +224,7 @@ class AccountAclTest extends UnitaryTestCase
             $this->context,
             $this->acl,
             $this->userToUserGroupService,
-            $this->pathsContext
+            $this->appPaths, $this->fileSystem
         );
 
         foreach (self::ACTIONS as $action) {
@@ -714,7 +714,7 @@ class AccountAclTest extends UnitaryTestCase
             $this->context,
             new Acl($this->context, $this->eventDispatcherStub, $actions),
             $userToUserGroupService,
-            $this->pathsContext,
+            $this->appPaths, $this->fileSystem,
             $fileCache
         );
 
@@ -756,7 +756,7 @@ class AccountAclTest extends UnitaryTestCase
             $this->context,
             new Acl($this->context, $this->eventDispatcherStub, $actions),
             $userToUserGroupService,
-            $this->pathsContext,
+            $this->appPaths, $this->fileSystem,
             $fileCache
         );
 
@@ -806,7 +806,7 @@ class AccountAclTest extends UnitaryTestCase
             $this->context,
             new Acl($this->context, $this->eventDispatcherStub, $actions),
             $userToUserGroupService,
-            $this->pathsContext,
+            $this->appPaths, $this->fileSystem,
             $fileCache
         );
 
@@ -845,7 +845,7 @@ class AccountAclTest extends UnitaryTestCase
             $this->context,
             new Acl($this->context, $this->eventDispatcherStub, $actions),
             $userToUserGroupService,
-            $this->pathsContext,
+            $this->appPaths, $this->fileSystem,
             $fileCache
         );
 

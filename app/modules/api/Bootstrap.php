@@ -75,6 +75,16 @@ final class Bootstrap extends BootstrapBase
         $this->router->respond('POST', '@/api\.php', $this->manageApiRequest());
     }
 
+    private static function getClassFor(string $module, string $controllerName, string $actionName): string
+    {
+        return sprintf(
+            'SP\Modules\%s\Controllers\%s\%sController',
+            ucfirst($module),
+            ucfirst($controllerName),
+            ucfirst($actionName)
+        );
+    }
+
     private function manageApiRequest(): Closure
     {
         return function (Request $request, Response $response) {

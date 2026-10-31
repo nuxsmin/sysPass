@@ -46,7 +46,8 @@ use SP\Core\Bootstrap\RouteContext;
 use SP\Core\Bootstrap\UriContext;
 use SP\Core\Context\Stateless;
 use SP\Core\Context\StatelessMasterKeyStore;
-use SP\Core\Crypt\Crypt;
+use SP\Core\Translation\GettextTranslation;
+use SP\Domain\Core\Crypt\Crypt;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\RequestBasedPassword;
@@ -86,6 +87,7 @@ use SP\Domain\Auth\Providers\Ldap\LdapConnection;
 use SP\Domain\Auth\Providers\Ldap\LdapFactory;
 use SP\Domain\Auth\Dtos\LdapParams;
 use SP\Domain\Common\Ports\EventEmitter;
+use SP\Domain\Common\Ports\TranslationService;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -118,6 +120,8 @@ use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Crypt\Services\SecureSession;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
+use SP\Domain\Database\Ports\DatabaseFileFactoryInterface;
+use SP\Domain\Database\Ports\QueryFactoryInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
@@ -146,19 +150,29 @@ use SP\Domain\Notification\Services\MailEvent;
 use SP\Domain\Notification\Services\NotificationEvent;
 use SP\Domain\Notification\Services\PhpMailerService;
 use SP\Domain\File\Ports\FileHandlerFactoryInterface;
+use SP\Domain\File\Ports\ArchiveHandlerFactoryInterface;
+use SP\Domain\File\Ports\DirectoryHandlerFactoryInterface;
+use SP\Domain\File\Ports\FileSystemService;
 use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\FileCacheFactoryInterface;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Infrastructure\Database\Database;
+use SP\Infrastructure\Database\DatabaseFileFactory;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\Database\MysqlHandler;
+use SP\Infrastructure\Database\QueryFactoryAdapter;
 use SP\Infrastructure\File\ArchiveHandler;
+use SP\Infrastructure\File\ArchiveHandlerFactory;
+use SP\Infrastructure\File\DirectoryHandlerFactory;
 use SP\Infrastructure\File\FileCache;
+use SP\Infrastructure\File\FileCacheFactory;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileHandlerFactory;
 use SP\Infrastructure\File\FileSystem;
+use SP\Infrastructure\File\FileSystemAdapter;
 use SP\Infrastructure\File\PhpFileLoader;
 use SP\Infrastructure\File\XmlFileStorage;
 use SP\Infrastructure\File\YamlFileStorage;
@@ -207,6 +221,7 @@ final class CoreDefinitions
             }),
             EventDispatcherInterface::class => create(EventDispatcher::class),
             EventEmitter::class => autowire(EventDispatcherEmitter::class),
+            TranslationService::class => autowire(GettextTranslation::class),
             EventMessageFormatterInterface::class => create(EventMessageFormatter::class),
             MailMessageFormatterInterface::class => create(MailMessageFormatter::class),
             ConfigFileService::class => create(ConfigFile::class)
@@ -253,6 +268,8 @@ final class CoreDefinitions
                     create(FileHandler::class)
                         ->constructor(factory(static fn(PathsContext $pathsContext) => $pathsContext[Path::SQL_FILE]))
                 ),
+            DatabaseFileFactoryInterface::class => autowire(DatabaseFileFactory::class),
+            QueryFactoryInterface::class => autowire(QueryFactoryAdapter::class),
             DbStorageHandler::class => autowire(MysqlHandler::class),
             DatabaseSetupService::class => autowire(MysqlSetup::class),
             ActionsInterface::class =>
@@ -482,6 +499,10 @@ final class CoreDefinitions
                     factory(static fn(PathsContext $p) => FileSystem::buildPath($p[Path::CONFIG], '.lock'))
                 ),
             FileHandlerFactoryInterface::class => create(FileHandlerFactory::class),
+            FileSystemService::class => autowire(FileSystemAdapter::class),
+            DirectoryHandlerFactoryInterface::class => autowire(DirectoryHandlerFactory::class),
+            ArchiveHandlerFactoryInterface::class => autowire(ArchiveHandlerFactory::class),
+            FileCacheFactoryInterface::class => autowire(FileCacheFactory::class),
             PhpFileLoaderInterface::class => create(PhpFileLoader::class)
         ];
     }

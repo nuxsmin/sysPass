@@ -50,7 +50,6 @@ use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -237,15 +236,15 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
     private function getMessageForEmail(string $key): MailMessage
     {
         $mailMessage = new MailMessage();
-        $mailMessage->setTitle(sprintf(__('%s Master Password'), AppInfoInterface::APP_NAME));
+        $mailMessage->setTitle(sprintf(__u('%s Master Password'), AppInfoInterface::APP_NAME));
         $mailMessage->addDescription(
-            __(
+            __u(
                 'A new sysPass master password has been generated, so next time you log into the application it will be requested.'
             )
         );
-        $mailMessage->addDescription(sprintf(__('The new Master Password is: %s'), $key));
-        $mailMessage->addDescription(sprintf(__('This password will be valid until: %s'), date('r', $this->maxTime)));
-        $mailMessage->addDescription(__('Please, don\'t forget to log in as soon as possible to save the changes.'));
+        $mailMessage->addDescription(sprintf(__u('The new Master Password is: %s'), $key));
+        $mailMessage->addDescription(sprintf(__u('This password will be valid until: %s'), date('r', $this->maxTime)));
+        $mailMessage->addDescription(__u('Please, don\'t forget to log in as soon as possible to save the changes.'));
 
         return $mailMessage;
     }

@@ -32,4 +32,6 @@ interface AppPaths
     public function getApplicationPath(): string;
 
     public function getBackupPath(): string;
+
+    public function getCachePath(): string;
 }

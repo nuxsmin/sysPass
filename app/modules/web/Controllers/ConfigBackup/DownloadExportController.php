@@ -40,7 +40,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
 use SP\Domain\Export\Dtos\BackupType;
-use SP\Infrastructure\File\FileHandler;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
@@ -53,7 +53,8 @@ final class DownloadExportController extends SimpleControllerBase
 {
     public function __construct(
         SimpleControllerHelper        $simpleControllerHelper,
-        private readonly PathsContext $pathsContext
+        private readonly PathsContext $pathsContext,
+        private readonly FileHandlerFactoryInterface $fileHandlerFactory
     ) {
         parent::__construct($simpleControllerHelper);
     }
@@ -70,7 +71,7 @@ final class DownloadExportController extends SimpleControllerBase
             'gz'
         );
 
-        $file = new FileHandler($filePath);
+        $file = $this->fileHandlerFactory->create($filePath);
 
         $this->eventDispatcher->notify(
             'download.exportFile',

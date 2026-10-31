@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,16 +24,26 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Context;
-
-use SP\Domain\Core\Exceptions\SPException;
+namespace SP\Domain\File\Ports;
 
 /**
- * Class ContextException
- *
- * @package SP\Core\Context
+ * Filesystem helpers used by the domain and interface layers.
  */
-final class ContextException extends SPException
+interface FileSystemService
 {
+    public function buildPath(string ...$parts): string;
 
+    public function isImage(string $fileType): bool;
+
+    /**
+     * @throws \SP\Domain\Core\Exceptions\FileNotFoundException
+     */
+    public function removeDirectory(string $dir): bool;
+
+    /**
+     * @throws \SP\Domain\Core\Exceptions\FileException
+     */
+    public function requireFile(string $file, ?string $class = null): mixed;
+
+    public function deleteByPattern(string $path, string ...$patterns): void;
 }

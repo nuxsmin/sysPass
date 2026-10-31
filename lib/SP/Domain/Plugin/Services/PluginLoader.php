@@ -38,7 +38,7 @@ use SP\Domain\Plugin\Ports\PluginLoaderService;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 
-use function SP\__;
+use function SP\__u;
 
 /**
  * Class PluginLoader
@@ -69,7 +69,7 @@ final class PluginLoader extends Service implements PluginLoaderService
                 new Event(
                     $e,
                     EventMessage::build()
-                                ->addDetail(__('Plugin not registered'), $plugin->getName())
+                                ->addDetail(__u('Plugin not registered'), $plugin->getName())
                 )
             );
 
@@ -84,7 +84,7 @@ final class PluginLoader extends Service implements PluginLoaderService
                 new Event(
                     $this,
                     EventMessage::build()
-                                ->addDetail(__('Plugin loaded'), $plugin->getName())
+                                ->addDetail(__u('Plugin loaded'), $plugin->getName())
                 )
             );
         } else {
@@ -93,7 +93,7 @@ final class PluginLoader extends Service implements PluginLoaderService
                 new Event(
                     $this,
                     EventMessage::build()
-                                ->addDetail(__('Plugin not loaded (disabled)'), $plugin->getName())
+                                ->addDetail(__u('Plugin not loaded (disabled)'), $plugin->getName())
                 )
             );
         }

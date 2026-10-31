@@ -42,7 +42,7 @@ use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Notification\Ports\MailService;
 
-use function SP\__;
+use function SP\__u;
 
 /**
  * Class MailEvent
@@ -120,7 +120,7 @@ final class MailEvent extends Service implements EventReceiver
                 if ($eventMessage->getDescriptionCounter() === 0
                     && $eventMessage->getDetailsCounter() === 0
                 ) {
-                    $mailMessage->addDescription(sprintf(__('Event: %s'), $eventType));
+                    $mailMessage->addDescription(sprintf(__u('Event: %s'), $eventType));
                 } else {
                     $mailMessage->addDescription($this->messageFormatter->composeText($eventMessage, '<br>'));
                 }
@@ -129,7 +129,7 @@ final class MailEvent extends Service implements EventReceiver
 
                 $mailMessage->addDescription(
                     sprintf(
-                        __('Performed by: %s (%s)'),
+                        __u('Performed by: %s (%s)'),
                         $userData->name ?? 'sysPass',
                         $userData->login ?? 'APP'
                     )
@@ -137,7 +137,7 @@ final class MailEvent extends Service implements EventReceiver
 
                 $mailMessage->addDescription(
                     sprintf(
-                        __('IP Address: %s'),
+                        __u('IP Address: %s'),
                         $this->request->getClientAddress(true)
                     )
                 );

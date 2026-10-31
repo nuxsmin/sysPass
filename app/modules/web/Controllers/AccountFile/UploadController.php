@@ -36,8 +36,8 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\File\Ports\FileHandlerInterface;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\File\FileHandler;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
@@ -58,7 +58,8 @@ final class UploadController extends ControllerBase
     public function __construct(
         WebControllerHelper                 $webControllerHelper,
         private readonly AccountFileService $accountFileService,
-        private readonly AccountService     $accountService
+        private readonly AccountService     $accountService,
+        private readonly FileHandlerFactoryInterface $fileHandlerFactory
     ) {
         parent::__construct($webControllerHelper);
 
@@ -104,7 +105,7 @@ final class UploadController extends ControllerBase
                 );
             }
 
-            $fileHandler = new FileHandler($file['tmp_name']);
+            $fileHandler = $this->fileHandlerFactory->create($file['tmp_name']);
 
             $fileData = [
                 'accountId' => $accountId,

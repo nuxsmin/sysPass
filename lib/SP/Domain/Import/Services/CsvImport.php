@@ -43,7 +43,6 @@ use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Domain\Core\Exceptions\FileException;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -80,7 +79,7 @@ final class CsvImport extends ImportBase implements ItemsImportService
             new Event(
                 $this,
                 EventMessage::build()
-                            ->addDescription(sprintf(__('Detected format: %s'), 'CSV'))
+                            ->addDescription(sprintf(__u('Detected format: %s'), 'CSV'))
             )
         );
 
@@ -103,8 +102,8 @@ final class CsvImport extends ImportBase implements ItemsImportService
 
             if ($numfields !== self::NUM_FIELDS) {
                 throw ImportException::error(
-                    sprintf(__('Wrong number of fields (%d)'), $numfields),
-                    sprintf(__('Please, check the CSV file format in line %s'), $line)
+                    sprintf(__u('Wrong number of fields (%d)'), $numfields),
+                    sprintf(__u('Please, check the CSV file format in line %s'), $line)
                 );
             }
 
@@ -161,7 +160,7 @@ final class CsvImport extends ImportBase implements ItemsImportService
         }
 
         if ($line === 0) {
-            throw ImportException::warning(__('No lines read from the file'));
+            throw ImportException::warning(__u('No lines read from the file'));
         }
     }
 }

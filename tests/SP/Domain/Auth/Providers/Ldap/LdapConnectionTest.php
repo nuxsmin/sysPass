@@ -30,7 +30,7 @@ use Laminas\Ldap\Ldap;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Auth\Providers\Ldap\LdapConnection;
 use SP\Domain\Auth\Exceptions\LdapException;
 use SP\Domain\Auth\Dtos\LdapParams;

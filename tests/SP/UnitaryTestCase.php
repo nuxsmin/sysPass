@@ -54,10 +54,13 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Bootstrap\PathsContext;
-use SP\Core\Context\ContextException;
+use SP\Core\Bootstrap\AppPathsAdapter;
+use SP\Domain\Core\Context\ContextException;
 use SP\Core\Context\Stateless;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Ports\AppPaths;
+use SP\Domain\File\Ports\FileSystemService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Dtos\UserDto;
@@ -78,6 +81,8 @@ abstract class UnitaryTestCase extends TestCase
     protected readonly Context                      $context;
     protected readonly EventDispatcherInterface     $eventDispatcherStub;
     protected readonly PathsContext $pathsContext;
+    protected readonly AppPaths $appPaths;
+    protected readonly FileSystemService $fileSystem;
 
     public static function setUpBeforeClass(): void
     {
@@ -120,6 +125,8 @@ abstract class UnitaryTestCase extends TestCase
         $this->eventDispatcherStub = $this->createStub(EventDispatcherInterface::class);
 
         $this->getPathsContext();
+        $this->appPaths = new AppPathsAdapter($this->pathsContext);
+        $this->fileSystem = new \SP\Infrastructure\File\FileSystemAdapter();
     }
 
     /**

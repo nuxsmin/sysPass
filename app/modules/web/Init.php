@@ -27,7 +27,7 @@ namespace SP\Modules\Web;
 use Exception;
 use Klein\Klein;
 use SP\Core\Context\ContextBase;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Core\Context\Session;
 use SP\Core\Context\SessionLifecycleHandler;
 use SP\Core\Crypt\Session as CryptSession;
@@ -56,7 +56,7 @@ use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Modules\Web\Controllers\Bootstrap\GetEnvironmentController;
 use SP\Modules\Web\Controllers\Error\DatabaseConnectionController;
 use SP\Modules\Web\Controllers\Error\DatabaseErrorController;
@@ -138,7 +138,7 @@ final class Init extends HttpModuleBase
         private readonly CsrfHandler         $csrf,
         private readonly LanguageInterface   $language,
         private readonly ItemPresetService   $itemPresetService,
-        private readonly DatabaseUtil        $databaseUtil,
+        private readonly DatabaseUtilInterface $databaseUtil,
         private readonly UserProfileService  $userProfileService,
         private readonly UriContextInterface $uriContext,
     ) {

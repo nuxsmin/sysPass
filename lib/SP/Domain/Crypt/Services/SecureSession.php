@@ -28,7 +28,7 @@ namespace SP\Domain\Crypt\Services;
 
 use Defuse\Crypto\Key;
 use Exception;
-use SP\Core\Crypt\Vault;
+use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -42,7 +42,6 @@ use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\File\FileSystem;
 
 /**
  * Class SecureSession
@@ -76,7 +75,7 @@ final class SecureSession extends Service implements SecureSessionService
             throw new ServiceException('Unable to get UUID for filename');
         }
 
-        return FileSystem::buildPath($cachePath, 'secure_session', $uuid);
+        return implode(DIRECTORY_SEPARATOR, [$cachePath, 'secure_session', $uuid]);
     }
 
     /**

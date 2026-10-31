@@ -41,7 +41,6 @@ use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Providers\Uri;
 use SP\Domain\Install\Ports\InstallerService;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
-use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
 use SP\Plugin\PluginManager;
 
@@ -174,7 +173,7 @@ final class LayoutHelper extends HelperBase
             $jsUriTheme = new Uri($baseUrl);
             $jsUriTheme->addParams(
                 [
-                    'b' => FileSystem::buildPath($this->theme->getPath(), 'js'),
+                    'b' => implode(DIRECTORY_SEPARATOR, [$this->theme->getPath(), 'js']),
                     'f' => implode(',', $themeInfo['js'])
                 ]
             );
@@ -210,7 +209,7 @@ final class LayoutHelper extends HelperBase
             $cssUriTheme = new Uri($baseUrl);
             $cssUriTheme->addParams(
                 [
-                    'b' => FileSystem::buildPath($this->theme->getPath(), 'css'),
+                    'b' => implode(DIRECTORY_SEPARATOR, [$this->theme->getPath(), 'css']),
                     'f' => implode(',', $themeInfo['css'])
                 ]
             );

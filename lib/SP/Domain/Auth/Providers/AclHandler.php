@@ -27,8 +27,8 @@ declare(strict_types=1);
 namespace SP\Domain\Auth\Providers;
 
 use Exception;
-use SP\Core\Bootstrap\Path;
-use SP\Core\Bootstrap\PathsContext;
+use SP\Domain\Core\Ports\AppPaths;
+use SP\Domain\File\Ports\FileSystemService;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
@@ -42,7 +42,6 @@ use SP\Domain\Core\Log\LoggerInterface;
 use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Infrastructure\File\FileSystem;
 
 use function SP\__u;
 
@@ -69,7 +68,8 @@ final class AclHandler extends Provider implements EventReceiver
         Context $context,
         private readonly UserProfileService $userProfileService,
         private readonly UserGroupService $userGroupService,
-        private readonly PathsContext     $pathsContext,
+        private readonly AppPaths         $appPaths,
+        private readonly FileSystemService $fileSystem,
         private readonly LoggerInterface $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
@@ -149,9 +149,9 @@ final class AclHandler extends Provider implements EventReceiver
         $this->logger->debug(sprintf('Clearing ACL for user ID: %d', $userId));
 
         try {
-            $path = FileSystem::buildPath($this->pathsContext[Path::CACHE], 'accountAcl', (string)$userId);
+            $path = $this->fileSystem->buildPath($this->appPaths->getCachePath(), 'accountAcl', (string)$userId);
 
-            if (FileSystem::rmdirRecursive($path) === false) {
+            if ($this->fileSystem->removeDirectory($path) === false) {
                 $this->logger->debug(sprintf('Unable to delete %s directory', $path));
 
                 return false;

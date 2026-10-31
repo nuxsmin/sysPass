@@ -258,7 +258,8 @@ class AccountFileTest extends UnitaryTestCase
                 $this->eventDispatcherStub,
                 $this->context,
                 $this->accountFileRepository,
-                $this->imageUtil
+                $this->imageUtil,
+                $this->fileSystem
             );
     }
 }

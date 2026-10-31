@@ -231,7 +231,8 @@ class AclHandlerTest extends UnitaryTestCase
             $this->context,
             $this->userProfileService,
             $this->userGroupService,
-            $this->pathsContext
+            $this->appPaths,
+            $this->fileSystem
         );
     }
 

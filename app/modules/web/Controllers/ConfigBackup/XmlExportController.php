@@ -40,8 +40,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Ports\XmlExportService;
 use SP\Domain\Export\Ports\XmlVerifyService;
 use SP\Domain\Import\Services\ImportException;
-use SP\Infrastructure\File\ArchiveHandler;
-use SP\Infrastructure\File\DirectoryHandler;
+use SP\Domain\File\Ports\ArchiveHandlerFactoryInterface;
+use SP\Domain\File\Ports\DirectoryHandlerFactoryInterface;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
@@ -62,7 +62,9 @@ final class XmlExportController extends SimpleControllerBase
         SimpleControllerHelper            $simpleControllerHelper,
         private readonly XmlExportService $xmlExportService,
         private readonly XmlVerifyService $xmlVerifyService,
-        private readonly PathsContext     $pathsContext
+        private readonly PathsContext     $pathsContext,
+        private readonly DirectoryHandlerFactoryInterface $directoryHandlerFactory,
+        private readonly ArchiveHandlerFactoryInterface $archiveHandlerFactory
     ) {
         parent::__construct($simpleControllerHelper);
 
@@ -94,7 +96,7 @@ final class XmlExportController extends SimpleControllerBase
         Session::close();
 
         $file = $this->xmlExportService->export(
-            new DirectoryHandler($this->pathsContext[Path::BACKUP]),
+            $this->directoryHandlerFactory->create($this->pathsContext[Path::BACKUP]),
             $exportPassword
         );
 
@@ -122,7 +124,7 @@ final class XmlExportController extends SimpleControllerBase
         );
 
         // Create the XML archive after verifying the export integrity
-        $archive = new ArchiveHandler($file, $this->extensionChecker);
+        $archive = $this->archiveHandlerFactory->create($file);
         $archive->compressFile($file);
 
         return ActionResponse::ok(__u('Export process finished'));

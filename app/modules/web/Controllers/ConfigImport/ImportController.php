@@ -36,7 +36,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportService;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\File\FileHandler;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
@@ -50,7 +51,8 @@ final class ImportController extends SimpleControllerBase
 
     public function __construct(
         SimpleControllerHelper         $simpleControllerHelper,
-        private readonly ImportService $importService
+        private readonly ImportService $importService,
+        private readonly FileHandlerFactoryInterface $fileHandlerFactory
     ) {
         parent::__construct($simpleControllerHelper);
     }
@@ -108,10 +110,10 @@ final class ImportController extends SimpleControllerBase
     }
 
     /**
-     * @return FileHandler
+     * @return FileHandlerInterface
      * @throws FileException
      */
-    private function getFileFromRequest(): FileHandler
+    private function getFileFromRequest(): FileHandlerInterface
     {
         $file = $this->request->getFile('inFile');
 
@@ -122,7 +124,7 @@ final class ImportController extends SimpleControllerBase
             );
         }
 
-        return new FileHandler($file['tmp_name']);
+        return $this->fileHandlerFactory->create($file['tmp_name']);
     }
 
     /**

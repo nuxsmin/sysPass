@@ -30,7 +30,7 @@ use Directory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Core\UI\Theme;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\SPException;

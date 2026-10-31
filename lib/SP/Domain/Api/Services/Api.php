@@ -27,9 +27,9 @@ declare(strict_types=1);
 namespace SP\Domain\Api\Services;
 
 use Exception;
-use SP\Core\Context\ContextException;
-use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Vault;
+use SP\Domain\Core\Context\ContextException;
+use SP\Domain\Core\Crypt\Crypt;
+use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Api\Enums\JsonRpcErrorCode;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Ports\ApiService;

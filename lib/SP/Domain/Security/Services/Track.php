@@ -47,7 +47,6 @@ use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Database\Dtos\QueryResult;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -123,7 +122,7 @@ final class Track extends Service implements TrackService
                         EventMessage::build()
                             ->addDescription(
                                 sprintf(
-                                    __('Attempts exceeded (%d/%d)'),
+                                    __u('Attempts exceeded (%d/%d)'),
                                     $attempts,
                                     self::TIME_TRACKING_MAX_ATTEMPTS
                                 )

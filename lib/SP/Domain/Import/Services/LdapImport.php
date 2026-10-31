@@ -37,6 +37,7 @@ use SP\Domain\Auth\Ports\LdapServiceFactory;
 use SP\Domain\Auth\Exceptions\LdapException;
 use SP\Domain\Auth\Dtos\LdapParams;
 use SP\Domain\Auth\Dtos\LdapResults;
+use SP\Domain\Common\Ports\TranslationService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Dtos\LdapImportResultsDto;
@@ -46,7 +47,6 @@ use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -60,7 +60,8 @@ final class LdapImport extends Service implements LdapImportService
         Context $context,
         private readonly UserService        $userService,
         private readonly UserGroupService   $userGroupService,
-        private readonly LdapServiceFactory $ldapServiceFactory
+        private readonly LdapServiceFactory $ldapServiceFactory,
+        private readonly TranslationService $translationService
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -87,7 +88,7 @@ final class LdapImport extends Service implements LdapImportService
             $entry = $iterator->current();
             $userGroup = [
                 'name' => $this->flattenEntry($entry[$ldapImportParams->getUserGroupNameAttribute()]) ?? null,
-                'description' => __('Imported from LDAP')
+                'description' => $this->translationService->translate(__u('Imported from LDAP'))
             ];
 
             if (!empty($userGroup['name'])) {
@@ -178,7 +179,7 @@ final class LdapImport extends Service implements LdapImportService
                 'name' => $this->flattenEntry($entry[$ldapImportParams->getUserNameAttribute()]) ?? null,
                 'login' => $this->flattenEntry($entry[$ldapImportParams->getLoginAttribute()]) ?? null,
                 'email' => $this->flattenEntry($entry['mail']) ?? null,
-                'notes' => __('Imported from LDAP'),
+                'notes' => $this->translationService->translate(__u('Imported from LDAP')),
                 'userGroupId' => $ldapImportParams->getDefaultUserGroup(),
                 'userProfileId' => $ldapImportParams->getDefaultUserProfile(),
                 'isLdap' => true

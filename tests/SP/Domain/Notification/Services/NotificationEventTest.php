@@ -221,7 +221,8 @@ class NotificationEventTest extends UnitaryTestCase
             $this->eventDispatcherStub,
             $this->context,
             $this->notificationService,
-            new EventMessageFormatter()
+            new EventMessageFormatter(),
+            new \SP\Core\Translation\GettextTranslation()
         );
     }
 }

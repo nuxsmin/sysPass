@@ -33,7 +33,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use RuntimeException;
-use SP\Core\Crypt\Crypt;
+use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;

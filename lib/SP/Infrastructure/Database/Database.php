@@ -56,7 +56,6 @@ use Exception;
 use PDO;
 use PDOStatement;
 use SP\Domain\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -82,7 +81,7 @@ final class Database implements DatabaseInterface
      * DB constructor.
      *
      * @param DbStorageHandler $dbStorageHandler
-     * @param EventDispatcher $eventDispatcher
+     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
         private readonly DbStorageHandler         $dbStorageHandler,

@@ -39,7 +39,6 @@ use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Ports\PluginUpgraderInterface;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -72,7 +71,7 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
                 new Event(
                     $e,
                     EventMessage::build()
-                                ->addDetail(__('Plugin not registered'), $plugin->getName())
+                                ->addDetail(__u('Plugin not registered'), $plugin->getName())
                 )
             );
 

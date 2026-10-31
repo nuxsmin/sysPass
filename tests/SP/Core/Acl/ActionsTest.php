@@ -31,7 +31,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Acl\Actions;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Models\Action;

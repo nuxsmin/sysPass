@@ -38,7 +38,6 @@ use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Http\Header;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Infrastructure\File\FileSystem;
 
 /**
  * Class Request
@@ -108,7 +107,7 @@ class Request implements RequestService
             return '';
         }
 
-        $realPath = realpath(FileSystem::buildPath($base, $path));
+        $realPath = realpath(implode(DIRECTORY_SEPARATOR, [$base, $path]));
 
         if ($realPath === false || !str_starts_with($realPath, $base)) {
             return '';

@@ -42,7 +42,6 @@ use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Domain\Import\Ports\XmlFileService;
 use SP\Domain\Core\Exceptions\FileException;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -117,7 +116,7 @@ final class ImportStrategy extends Service implements ImportStrategyService
 
             if (!in_array($fileType, self::ALLOWED_MIME)) {
                 throw ImportException::error(
-                    sprintf(__('Mime type not supported ("%s")'), $fileType),
+                    sprintf(__u('Mime type not supported ("%s")'), $fileType),
                     __u('Please, check the file format')
                 );
             }

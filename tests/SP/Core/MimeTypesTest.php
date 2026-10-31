@@ -29,7 +29,7 @@ namespace SP\Tests\Core;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Core\MimeTypes;
 use SP\Domain\Core\File\MimeType;
 use SP\Domain\Storage\Ports\FileCacheService;

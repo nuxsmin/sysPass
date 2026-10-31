@@ -38,7 +38,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\File\FileHandler;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
@@ -52,7 +52,8 @@ final class DownloadLogController extends SimpleControllerBase
 {
     public function __construct(
         SimpleControllerHelper        $simpleControllerHelper,
-        private readonly PathsContext $pathsContext
+        private readonly PathsContext $pathsContext,
+        private readonly FileHandlerFactoryInterface $fileHandlerFactory
     ) {
         parent::__construct($simpleControllerHelper);
     }
@@ -66,7 +67,7 @@ final class DownloadLogController extends SimpleControllerBase
 
         Session::close();
 
-        $file = new FileHandler($this->pathsContext[Path::LOG_FILE]);
+        $file = $this->fileHandlerFactory->create($this->pathsContext[Path::LOG_FILE]);
 
         $this->eventDispatcher->notify(
             'download.logFile',

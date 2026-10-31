@@ -54,8 +54,8 @@ use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\File\FileHandler;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
 use SP\Modules\Web\Mvc\View\Components\DataTab;
 use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
@@ -78,11 +78,12 @@ final readonly class ConfigManagerPresenter
         private UserGroupService         $userGroupService,
         private UserProfileService       $userProfileService,
         private MimeTypesService         $mimeTypes,
-        private DatabaseUtil             $databaseUtil,
+        private DatabaseUtilInterface    $databaseUtil,
         private ConfigService            $configService,
         private AccountService           $accountService,
         private BackupFiles              $backupFiles,
-        private PathsContext             $pathsContext
+        private PathsContext             $pathsContext,
+        private FileHandlerFactoryInterface $fileHandlerFactory
     ) {
     }
 
@@ -327,7 +328,7 @@ final readonly class ConfigManagerPresenter
         $backupFiles = $this->backupFiles->withHash($this->configData->getBackupHash() ?? '');
 
         try {
-            $backupAppFile = new FileHandler((string)$backupFiles->getAppBackupFile());
+            $backupAppFile = $this->fileHandlerFactory->create((string)$backupFiles->getAppBackupFile());
 
             $template->assign('hasBackup', true);
             $template->assign(
@@ -343,7 +344,7 @@ final readonly class ConfigManagerPresenter
         }
 
         try {
-            $exportFile = new FileHandler(
+            $exportFile = $this->fileHandlerFactory->create(
                 (string)new BackupFileDto(
                     BackupType::export,
                     $this->configData->getExportHash() ?: '',

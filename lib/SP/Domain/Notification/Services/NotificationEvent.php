@@ -28,6 +28,7 @@ namespace SP\Domain\Notification\Services;
 
 use Exception;
 use SP\Domain\Common\Attributes\EventReceiver as EventReceiverAttribute;
+use SP\Domain\Common\Ports\TranslationService;
 use SP\Domain\Common\Services\EventReceiver as EventReceiverTrait;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -41,7 +42,7 @@ use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Notification\Models\Notification;
 use SP\Domain\Notification\Ports\NotificationService;
 
-use function SP\__;
+use function SP\__u;
 
 /**
  * Class NotificationEvent
@@ -58,6 +59,7 @@ final class NotificationEvent extends Service implements EventReceiver
         Context $context,
         private readonly NotificationService           $notificationService,
         private readonly EventMessageFormatterInterface $messageFormatter,
+        private readonly TranslationService             $translationService,
         private readonly LoggerInterface               $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
@@ -99,8 +101,8 @@ final class NotificationEvent extends Service implements EventReceiver
         foreach ($userIds as $userId) {
             $notification = new Notification(
                 [
-                    'type' => __('Request'),
-                    'component' => __('Accounts'),
+                    'type' => $this->translationService->translate(__u('Request')),
+                    'component' => $this->translationService->translate(__u('Accounts')),
                     'userId' => $userId,
                     'description' => $this->messageFormatter->composeHtml($eventMessage)
                 ]
@@ -139,8 +141,8 @@ final class NotificationEvent extends Service implements EventReceiver
         if ($notify === true && $userId) {
             $notification = new Notification(
                 [
-                    'type' => __('Notification'),
-                    'component' => __('Accounts'),
+                    'type' => $this->translationService->translate(__u('Notification')),
+                    'component' => $this->translationService->translate(__u('Accounts')),
                     'userId' => $userId,
                     'description' => $this->messageFormatter->composeHtml($eventMessage)
                 ]

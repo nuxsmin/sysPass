@@ -33,8 +33,6 @@ use SP\Domain\Common\Enums\ResponseStatus;
 use SP\Domain\Core\Exceptions\SPException;
 use stdClass;
 
-use function SP\__;
-
 /**
  * Class ActionResponse
  */
@@ -108,9 +106,6 @@ final readonly class ActionResponse implements JsonSerializable
 
     private function adaptSubject(): string|array
     {
-        return match (gettype($this->subject)) {
-            'string' => __($this->subject),
-            'array' => array_map('SP\__', $this->subject)
-        };
+        return $this->subject;
     }
 }

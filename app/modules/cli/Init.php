@@ -25,7 +25,7 @@
 namespace SP\Modules\Cli;
 
 use Exception;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\ModuleDependencies;

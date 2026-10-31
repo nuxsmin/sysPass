@@ -46,7 +46,6 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -154,7 +153,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
 
                 $this->logger->debug(
                     sprintf(
-                        __('Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
+                        __u('Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
                         $counter,
                         $numAccounts,
                         round(($counter * 100) / $numAccounts, 2),

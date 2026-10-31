@@ -43,14 +43,12 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Dtos\DatabaseTables;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DatabaseUtilInterface;
+use SP\Domain\Database\Ports\QueryFactoryInterface;
 use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Ports\BackupFileService;
 use SP\Domain\File\Ports\ArchiveHandlerInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Infrastructure\Common\Repositories\Query;
-use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\File\FileSystem;
 
 use function SP\__u;
 
@@ -72,6 +70,7 @@ final class BackupFile extends Service implements BackupFileService
         private readonly ArchiveHandlerInterface $dbArchiveHandler,
         private readonly ArchiveHandlerInterface $appArchiveHandler,
         private readonly BackupFiles             $backupFiles,
+        private readonly QueryFactoryInterface   $queryFactory
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -132,7 +131,7 @@ final class BackupFile extends Service implements BackupFileService
         ];
 
         foreach ($patterns as $pattern) {
-            foreach (glob(FileSystem::buildPath($backupPath, $pattern)) ?: [] as $file) {
+            foreach (glob(implode(DIRECTORY_SEPARATOR, [$backupPath, $pattern])) ?: [] as $file) {
                 if (!in_array(basename($file), $currentFiles, true)) {
                     @unlink($file);
                 }
@@ -177,9 +176,9 @@ final class BackupFile extends Service implements BackupFileService
         $views = $this->getViews();
 
         foreach ($tables as $table) {
-            $query = Query::buildForMySQL(sprintf('SHOW CREATE TABLE %s', $table), []);
+            $query = $this->queryFactory->buildQuery(sprintf('SHOW CREATE TABLE %s', $table), []);
 
-            $data = $this->database->runQuery(QueryData::build($query))->getData();
+            $data = $this->database->runQuery($this->queryFactory->buildQueryData($query))->getData();
 
             $sqlOut = [
                 '-- ',
@@ -194,9 +193,9 @@ final class BackupFile extends Service implements BackupFileService
         }
 
         foreach ($views as $view) {
-            $query = Query::buildForMySQL(sprintf('SHOW CREATE TABLE %s', $view), []);
+            $query = $this->queryFactory->buildQuery(sprintf('SHOW CREATE TABLE %s', $view), []);
 
-            $data = $this->database->runQuery(QueryData::build($query))->getData();
+            $data = $this->database->runQuery($this->queryFactory->buildQueryData($query))->getData();
 
             $sqlOut = [
                 '-- ',
@@ -212,11 +211,11 @@ final class BackupFile extends Service implements BackupFileService
 
         // Save tables' values
         foreach ($tables as $table) {
-            $query = Query::buildForMySQL(sprintf('SELECT * FROM `%s`', $table), []);
+            $query = $this->queryFactory->buildQuery(sprintf('SELECT * FROM `%s`', $table), []);
 
             // Get table records
             $rows = $this->database->doFetchWithOptions(
-                QueryData::build($query),
+                $this->queryFactory->buildQueryData($query),
                 [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL],
                 PDO::FETCH_NUM,
                 false

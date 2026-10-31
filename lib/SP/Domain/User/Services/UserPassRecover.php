@@ -41,7 +41,6 @@ use SP\Domain\User\Models\UserPassRecover as UserPassRecoverModel;
 use SP\Domain\User\Ports\UserPassRecoverRepository;
 use SP\Domain\User\Ports\UserPassRecoverService;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -70,16 +69,16 @@ final class UserPassRecover extends Service implements UserPassRecoverService
     public function getMailMessage(string $hash, string $baseUri): MailMessage
     {
         $mailMessage = new MailMessage();
-        $mailMessage->setTitle(__('Password Change'));
-        $mailMessage->addDescription(__('A request for changing your user password has been done.'));
+        $mailMessage->setTitle(__u('Password Change'));
+        $mailMessage->addDescription(__u('A request for changing your user password has been done.'));
         $mailMessage->addDescriptionLine();
-        $mailMessage->addDescription(__('In order to complete the process, please go to this URL:'));
+        $mailMessage->addDescription(__u('In order to complete the process, please go to this URL:'));
         $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(
             Html::anchorText(sprintf('%s/index.php?r=userPassReset/reset/%s', $baseUri, $hash))
         );
         $mailMessage->addDescriptionLine();
-        $mailMessage->addDescription(__('If you have not requested this action, please dismiss this message.'));
+        $mailMessage->addDescription(__u('If you have not requested this action, please dismiss this message.'));
 
         return $mailMessage;
     }

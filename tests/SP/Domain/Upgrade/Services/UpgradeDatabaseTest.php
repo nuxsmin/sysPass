@@ -118,7 +118,12 @@ class UpgradeDatabaseTest extends UnitaryTestCase
 
         $this->database = $this->createMock(DatabaseInterface::class);
         $this->upgradeDatabase = new UpgradeDatabase(
-            $this->config, $this->eventDispatcherStub, $this->context, $this->database, $this->pathsContext[Path::SQL]
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->database,
+            $this->pathsContext[Path::SQL],
+            new \SP\Infrastructure\Database\DatabaseFileFactory()
         );
     }
 }

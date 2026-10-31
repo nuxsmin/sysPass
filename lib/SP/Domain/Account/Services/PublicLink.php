@@ -28,7 +28,7 @@ namespace SP\Domain\Account\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Core\Crypt\Vault;
+use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Account\Dtos\PublicLinkKey;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Models\PublicLinkList;

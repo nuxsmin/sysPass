@@ -25,7 +25,7 @@
 namespace SP\Modules\Api;
 
 use Klein\Klein;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Core\HttpModuleBase;
 use SP\Core\ModuleDependencies;
 use SP\Core\Language;
@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 
 use function SP\logger;
 
@@ -46,7 +46,7 @@ use function SP\logger;
 final class Init extends HttpModuleBase
 {
     private Language     $language;
-    private DatabaseUtil $databaseUtil;
+    private DatabaseUtilInterface $databaseUtil;
 
     public function __construct(
         ModuleDependencies $dependencies,
@@ -54,7 +54,7 @@ final class Init extends HttpModuleBase
         RequestService     $request,
         Klein              $router,
         LanguageInterface  $language,
-        DatabaseUtil       $databaseUtil,
+        DatabaseUtilInterface $databaseUtil,
         AppLockHandler     $appLock
     ) {
         parent::__construct(

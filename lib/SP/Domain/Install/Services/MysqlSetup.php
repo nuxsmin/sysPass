@@ -40,7 +40,6 @@ use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Core\Exceptions\DatabaseException;
 use SP\Domain\Core\Exceptions\FileException;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -108,7 +107,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
             }
         } catch (PDOException $e) {
             throw new SPException(
-                sprintf(__('Unable to check the sysPass user (%s)'), $user),
+                sprintf(__u('Unable to check the sysPass user (%s)'), $user),
                 SPException::CRITICAL,
                 __u('Please, check the DB connection user rights'),
                 $e->getCode(),
@@ -199,7 +198,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                 );
             } catch (PDOException $e) {
                 throw new SPException(
-                    sprintf(__('Error while creating the DB (\'%s\')'), $e->getMessage()),
+                    sprintf(__u('Error while creating the DB (\'%s\')'), $e->getMessage()),
                     SPException::CRITICAL,
                     __u('Please check the database user permissions'),
                     $e->getCode(),
@@ -237,7 +236,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                 $this->rollback($dbUser);
 
                 throw new SPException(
-                    sprintf(__('Error while setting the database permissions (\'%s\')'), $e->getMessage()),
+                    sprintf(__u('Error while setting the database permissions (\'%s\')'), $e->getMessage()),
                     SPException::CRITICAL,
                     __u('Please check the database user permissions'),
                     $e->getCode(),
@@ -327,7 +326,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
         } catch (PDOException $e) {
             throw new SPException(
                 sprintf(
-                    __('Error while selecting \'%s\' database (%s)'),
+                    __u('Error while selecting \'%s\' database (%s)'),
                     $this->installData->getDbName(),
                     $e->getMessage()
                 ),
@@ -360,7 +359,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
             $this->rollback();
 
             throw new SPException(
-                sprintf(__('Error while creating the DB (\'%s\')'), $e->getMessage()),
+                sprintf(__u('Error while creating the DB (\'%s\')'), $e->getMessage()),
                 SPException::CRITICAL,
                 __u('Error while creating database structure.'),
                 $e->getCode(),
@@ -370,7 +369,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
             $this->rollback();
 
             throw new SPException(
-                sprintf(__('Error while creating the DB (\'%s\')'), $e->getMessage()),
+                sprintf(__u('Error while creating the DB (\'%s\')'), $e->getMessage()),
                 SPException::ERROR,
                 $e->getMessage(),
                 $e->getCode(),

@@ -44,4 +44,9 @@ final readonly class AppPathsAdapter implements AppPaths
     {
         return $this->pathsContext[Path::BACKUP];
     }
+
+    public function getCachePath(): string
+    {
+        return $this->pathsContext[Path::CACHE];
+    }
 }

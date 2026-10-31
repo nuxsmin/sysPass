@@ -19,6 +19,7 @@ final class LayerRulesTest extends TestCase
         $this->root = sys_get_temp_dir() . '/syspass-layer-rules-' . uniqid('', true);
         mkdir($this->root . '/app/modules/web', 0777, true);
         mkdir($this->root . '/lib', 0777, true);
+        mkdir($this->root . '/lib/SP/Domain', 0777, true);
         mkdir($this->root . '/lib/SP/Core/Definitions', 0777, true);
     }
 
@@ -183,5 +184,55 @@ PHP
             'app/modules/web/Foo.php => SP\Domain\Tag\Services\Tag::build()',
             $violations
         );
+    }
+
+    public function testTranslationMarkerInDomainIsAllowed(): void
+    {
+        file_put_contents(
+            $this->root . '/lib/SP/Domain/Foo.php',
+            <<<'PHP'
+<?php
+namespace SP\Domain;
+
+use function SP\__u;
+
+final class Foo
+{
+    public function run(): string
+    {
+        return __u('Untranslated key');
+    }
+}
+PHP
+        );
+
+        $violations = LayerRules::collect($this->root)[LayerRules::DOMAIN_PRESENTATION_CALLS];
+
+        self::assertSame([], $violations);
+    }
+
+    public function testTranslationCallInDomainIsAViolation(): void
+    {
+        file_put_contents(
+            $this->root . '/lib/SP/Domain/Foo.php',
+            <<<'PHP'
+<?php
+namespace SP\Domain;
+
+use function SP\__;
+
+final class Foo
+{
+    public function run(): string
+    {
+        return __('Translated text');
+    }
+}
+PHP
+        );
+
+        $violations = LayerRules::collect($this->root)[LayerRules::DOMAIN_PRESENTATION_CALLS];
+
+        self::assertContains('lib/SP/Domain/Foo.php => __() x1', $violations);
     }
 }

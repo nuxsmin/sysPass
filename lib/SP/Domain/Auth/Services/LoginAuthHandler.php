@@ -49,7 +49,6 @@ use SP\Domain\User\Dtos\UserLoginRequest;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -110,7 +109,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
      */
     public function authBrowser(BrowserAuthData $authData, UserLoginDto $userLoginDto): void
     {
-        $authType = $this->request->getServer('AUTH_TYPE') ?: __('N/A');
+        $authType = $this->request->getServer('AUTH_TYPE') ?: __u('N/A');
 
         $eventMessage = EventMessage::build()
                                     ->addDetail(__u('Type'), AuthType::Browser->value)

@@ -29,6 +29,8 @@ namespace SP\Core\Messages;
 use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Notification\Ports\MailMessageFormatterInterface;
 
+use function SP\__;
+
 /**
  * Composes mail messages using the application formatters.
  */
@@ -38,7 +40,7 @@ final class MailMessageFormatter implements MailMessageFormatterInterface
     {
         $formatter = new TextFormatter($delimiter);
 
-        return $message->getTitle()
+        return __($message->getTitle())
                . $delimiter
                . $message->getDescription($formatter, true)
                . $delimiter
@@ -50,7 +52,7 @@ final class MailMessageFormatter implements MailMessageFormatterInterface
         $formatter = new HtmlFormatter();
 
         $output = '<div class="mail-message" style="font-family: Helvetica, Arial, sans-serif">';
-        $output .= '<h3>' . $message->getTitle() . '</h3>';
+        $output .= '<h3>' . __($message->getTitle()) . '</h3>';
         $output .= '<div class="mail-description">' . $message->getDescription($formatter, true) . '</div>';
         $output .= '<footer>' . implode('<br>', $message->getFooter()) . '</footer>';
         $output .= '</div>';

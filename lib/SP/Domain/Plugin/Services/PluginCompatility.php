@@ -39,7 +39,7 @@ use SP\Domain\Plugin\Ports\PluginCompatilityService;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 
-use function SP\__;
+use function SP\__u;
 
 /**
  * Class PluginCompatility
@@ -76,7 +76,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
                     EventMessage::build()
                                 ->addDescription(
                                     sprintf(
-                                        __('Plugin version not compatible (%s)'),
+                                        __u('Plugin version not compatible (%s)'),
                                         implode('.', $plugin->getVersion())
                                     )
                                 )
@@ -90,7 +90,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
                 new Event(
                     $this,
                     EventMessage::build()
-                                ->addDetail(__('Plugin disabled'), $plugin->getName())
+                                ->addDetail(__u('Plugin disabled'), $plugin->getName())
                 )
             );
 
@@ -104,7 +104,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
                 EventMessage::build()
                             ->addDescription(
                                 sprintf(
-                                    __('Plugin version compatible (%s)'),
+                                    __u('Plugin version compatible (%s)'),
                                     implode('.', $plugin->getVersion())
                                 )
                             )

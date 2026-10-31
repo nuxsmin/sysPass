@@ -29,9 +29,7 @@ namespace SP\Domain\Config\Services;
 use SP\Domain\Common\Providers\Environment;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\File\FileSystem;
 
-use function SP\__;
 use function SP\__u;
 use function SP\getFromEnv;
 
@@ -48,7 +46,7 @@ final class ConfigUtil
      */
     public static function checkConfigDir(): void
     {
-        $configPath = getFromEnv('CONFIG_PATH', FileSystem::buildPath(APP_PATH, 'config'));
+        $configPath = getFromEnv('CONFIG_PATH', implode(DIRECTORY_SEPARATOR, [APP_PATH, 'config']));
 
         if (!is_dir($configPath)) {
             clearstatcache();
@@ -70,7 +68,7 @@ final class ConfigUtil
             throw new ConfigException(
                 __u('\'/app/config\' directory permissions are wrong'),
                 SPException::ERROR,
-                sprintf(__('Current: %s - Needed: 750'), $configPerms)
+                sprintf(__u('Current: %s - Needed: 750'), $configPerms)
             );
         }
     }

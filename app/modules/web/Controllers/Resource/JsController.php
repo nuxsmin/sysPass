@@ -29,8 +29,7 @@ use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseStatus;
 use SP\Domain\Common\Enums\ResponseType;
-use SP\Infrastructure\File\FileHandler;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\Ports\FileHandlerInterface;
 
 /**
  * Class JsController
@@ -84,12 +83,12 @@ final class JsController extends ResourceBase
 
         if ($group === 0) {
             $files = $this->buildFiles(
-                FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'vendor', 'js'),
+                $this->fileSystem->buildPath($this->pathsContext[Path::PUBLIC], 'vendor', 'js'),
                 self::JS_MIN_FILES
             );
         } elseif ($group === 1) {
             $files = $this->buildFiles(
-                FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'js'),
+                $this->fileSystem->buildPath($this->pathsContext[Path::PUBLIC], 'js'),
                 self::JS_APP_MIN_FILES
             );
         } else {
@@ -107,14 +106,16 @@ final class JsController extends ResourceBase
     }
 
     /**
-     * @return FileHandler[]
+     * @return FileHandlerInterface[]
      */
     private function buildFiles(string $base, array $files, bool $insecure = false): array
     {
         $base = $insecure ? $this->request->resolveSecureAppPath($base) : $base;
 
         return array_map(
-            static fn(string $file) => new FileHandler(FileSystem::buildPath($base, $file)),
+            fn(string $file) => $this->fileHandlerFactory->create(
+                $this->fileSystem->buildPath($base, $file)
+            ),
             $files
         );
     }

@@ -39,11 +39,8 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
-use SP\Infrastructure\Database\MysqlFileParser;
-use SP\Infrastructure\File\FileHandler;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\Database\Ports\DatabaseFileFactoryInterface;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -58,6 +55,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
         Context $context,
         private readonly DatabaseInterface $database,
         private readonly string $sqlPath,
+        private readonly DatabaseFileFactoryInterface $databaseFileFactory,
         private readonly LoggerInterface $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
@@ -98,7 +96,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
         }
 
         if ($count === 0) {
-            $this->logger->error(__('Update file does not contain data'));
+            $this->logger->error(__u('Update file does not contain data'));
 
             throw UpgradeException::error(__u('Update file does not contain data'), $version);
         }
@@ -121,10 +119,10 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
      */
     private function getQueriesFromFile(string $version): iterable
     {
-        $filename = FileSystem::buildPath($this->sqlPath, str_replace('.', '', $version) . '.sql');
+        $filename = implode(DIRECTORY_SEPARATOR, [$this->sqlPath, str_replace('.', '', $version) . '.sql']);
 
         try {
-            return (new MysqlFileParser(new FileHandler($filename)))->parse('$$');
+            return $this->databaseFileFactory->create($filename)->parse('$$');
         } catch (Exception $e) {
             throw UpgradeException::error($e->getMessage());
         }

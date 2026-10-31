@@ -25,8 +25,8 @@ declare(strict_types=1);
 
 namespace SP\Tests\Generators;
 
-use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Vault;
+use SP\Domain\Core\Crypt\Crypt;
+use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\CryptException;

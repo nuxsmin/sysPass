@@ -40,7 +40,7 @@ use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Http\Ports\RequestService;
 
-use function SP\__;
+use function SP\__u;
 use function SP\getLastCaller;
 
 /**
@@ -96,7 +96,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
             $this->logger->error(
                 $eventType,
                 $this->formatContext(
-                    __($source->getMessage()),
+                    __u($source->getMessage()),
                     $this->request->getClientAddress(true),
                     $userLogin
                 )

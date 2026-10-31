@@ -43,7 +43,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Database\Dtos\QueryResult;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\Ports\FileSystemService;
 
 use function SP\__u;
 
@@ -58,7 +58,8 @@ final class AccountFile extends Service implements AccountFileService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly AccountFileRepository $accountFileRepository,
-        private readonly ImageService $imageUtil
+        private readonly ImageService $imageUtil,
+        private readonly FileSystemService $fileSystem
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -75,7 +76,7 @@ final class AccountFile extends Service implements AccountFileService
      */
     public function create(FileModel $file): int
     {
-        if (FileSystem::isImage($file->getType())) {
+        if ($this->fileSystem->isImage($file->getType())) {
             $file->setThumb($this->imageUtil->createThumbnail($file->getContent()));
         } else {
             $file->setThumb('no_thumb');

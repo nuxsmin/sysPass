@@ -23,7 +23,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Crypt;
+namespace SP\Domain\Core\Crypt;
 
 use RuntimeException;
 use SP\Domain\Common\Adapters\Serde;
