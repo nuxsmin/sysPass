@@ -34,6 +34,7 @@ use DOMDocument;
 use DOMElement;
 use DOMException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -83,6 +84,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws DOMException
      * @throws SPException
      */
+    #[Test]
     public function testExport()
     {
         $this->context->setUserData(
@@ -230,6 +232,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testExportWithCheckDirectoryException()
     {
         $this->context->setUserData(
@@ -263,6 +266,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testExportWithExportCategoryException()
     {
         $this->context->setUserData(
@@ -306,6 +310,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws EnvironmentIsBrokenException
      * @throws SPException
      */
+    #[Test]
     public function testExportWithExportClientException()
     {
         $this->context->setUserData(
@@ -356,6 +361,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws EnvironmentIsBrokenException
      * @throws SPException
      */
+    #[Test]
     public function testExportWithExportTagException()
     {
         $this->context->setUserData(
@@ -411,6 +417,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws EnvironmentIsBrokenException
      * @throws SPException
      */
+    #[Test]
     public function testExportWithExportAccountException()
     {
         $this->context->setUserData(
@@ -470,6 +477,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws DOMException
      * @throws SPException
      */
+    #[Test]
     public function testExportWithCryptException()
     {
         $this->context->setUserData(

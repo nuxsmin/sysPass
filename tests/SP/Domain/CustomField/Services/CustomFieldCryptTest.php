@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\CustomField\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -55,6 +56,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateMasterPassword()
     {
         $hash = self::$faker->sha1;
@@ -90,6 +92,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateMasterPasswordWithNoData()
     {
         $hash = self::$faker->sha1;
@@ -115,6 +118,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateMasterPasswordWithTask()
     {
         $hash = self::$faker->sha1;
@@ -150,6 +154,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateMasterPasswordWithCryptError()
     {
         $hash = self::$faker->sha1;
@@ -173,6 +178,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
         $this->customFieldCrypt->updateMasterPassword($request);
     }
 
+    #[Test]
     public function testUpdateMasterPasswordWithError()
     {
         $hash = self::$faker->sha1;

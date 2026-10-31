@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Notification\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
@@ -54,6 +55,7 @@ class NotificationTest extends UnitaryTestCase
     private NotificationRepository|MockObject $notificationRepository;
     private Notification                      $notification;
 
+    #[Test]
     public function testSearchForUserId()
     {
         $itemSearchData = new ItemSearchDto();
@@ -69,6 +71,7 @@ class NotificationTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetAll()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -90,6 +93,7 @@ class NotificationTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testSearchWithAdmin()
     {
         $userDto = UserDto::fromModel(
@@ -114,6 +118,7 @@ class NotificationTest extends UnitaryTestCase
         $this->notification->search($itemSearchData);
     }
 
+    #[Test]
     public function testSearchWithNoAdmin()
     {
         $userDto = $this->context->getUserData();
@@ -133,6 +138,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testSetCheckedById()
     {
         $this->notificationRepository
@@ -149,6 +155,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testSetCheckedByIdWithException()
     {
         $this->notificationRepository
@@ -167,6 +174,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws Exception
      * @throws SPException
      */
+    #[Test]
     public function testGetAllActiveForCurrentUserWithAdmin()
     {
         $userDto = UserDto::fromModel(
@@ -200,6 +208,7 @@ class NotificationTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetAllActiveForCurrentUserWithNoAdmin()
     {
         $userDto = $this->context->getUserData();
@@ -225,6 +234,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $notification = NotificationDataGenerator::factory()->buildNotification();
@@ -243,6 +253,7 @@ class NotificationTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetAllForUserId()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -265,6 +276,7 @@ class NotificationTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetByIdBatch()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -289,6 +301,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $this->notificationRepository
@@ -305,6 +318,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithException()
     {
         $this->notificationRepository
@@ -323,6 +337,7 @@ class NotificationTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetForUserIdByDate()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -346,6 +361,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $notification = NotificationDataGenerator::factory()->buildNotification();
@@ -365,6 +381,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws Exception
      */
+    #[Test]
     public function testGetById()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -394,6 +411,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws Exception
      */
+    #[Test]
     public function testGetByIdWithException()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -421,6 +439,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteAdmin()
     {
         $this->notificationRepository
@@ -437,6 +456,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteAdminWithException()
     {
         $this->notificationRepository
@@ -456,6 +476,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $this->notificationRepository
@@ -472,6 +493,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithException()
     {
         $this->notificationRepository
@@ -491,6 +513,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteAdminBatch()
     {
         $this->notificationRepository
@@ -507,6 +530,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteAdminBatchWithException()
     {
         $this->notificationRepository

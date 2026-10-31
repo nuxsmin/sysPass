@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Tag\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -54,6 +55,7 @@ class TagTest extends UnitaryTestCase
      * @throws TagException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -71,6 +73,7 @@ class TagTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithNotFound()
     {
         $id = self::$faker->randomNumber();
@@ -91,6 +94,7 @@ class TagTest extends UnitaryTestCase
     /**
      * @throws TagException
      */
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -111,6 +115,7 @@ class TagTest extends UnitaryTestCase
     /**
      * @throws TagException
      */
+    #[Test]
     public function testGetByIdWithUnknownId()
     {
         $id = self::$faker->randomNumber();
@@ -131,6 +136,7 @@ class TagTest extends UnitaryTestCase
     /**
      * @throws TagException
      */
+    #[Test]
     public function testGetByName()
     {
         $name = self::$faker->colorName();
@@ -151,6 +157,7 @@ class TagTest extends UnitaryTestCase
     /**
      * @throws TagException
      */
+    #[Test]
     public function testGetByNameWithUnknownName()
     {
         $name = self::$faker->colorName();
@@ -168,6 +175,7 @@ class TagTest extends UnitaryTestCase
         $this->tag->getByName($name);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $tag = TagGenerator::factory()->buildTag();
@@ -187,6 +195,7 @@ class TagTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $tag = TagGenerator::factory()->buildTag();
@@ -207,6 +216,7 @@ class TagTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -223,6 +233,7 @@ class TagTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testDeleteByIdBatchError()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -245,6 +256,7 @@ class TagTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $tag = TagGenerator::factory()->buildTag();
@@ -258,6 +270,7 @@ class TagTest extends UnitaryTestCase
         $this->tag->update($tag);
     }
 
+    #[Test]
     public function testSearch()
     {
         $itemSearch = ItemSearchDataGenerator::factory()->buildItemSearchData();

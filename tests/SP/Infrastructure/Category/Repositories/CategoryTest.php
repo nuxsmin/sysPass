@@ -32,6 +32,7 @@ use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Category\Models\Category as CategoryModel;
@@ -63,6 +64,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $category = CategoryGenerator::factory()->buildCategory();
@@ -108,6 +110,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testCreateWithDuplicate()
     {
         $category = CategoryGenerator::factory()->buildCategory();
@@ -141,6 +144,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -164,6 +168,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -195,6 +200,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database
@@ -204,6 +210,7 @@ class CategoryTest extends UnitaryTestCase
         $this->category->deleteByIdBatch([]);
     }
 
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -232,6 +239,7 @@ class CategoryTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -262,6 +270,7 @@ class CategoryTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testSearchWithoutString(): void
     {
         $callback = new Callback(
@@ -282,6 +291,7 @@ class CategoryTest extends UnitaryTestCase
         $this->category->search(new ItemSearchDto());
     }
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -306,6 +316,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $category = CategoryGenerator::factory()->buildCategory();
@@ -352,6 +363,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCheckDuplicatedOnUpdate()
     {
         $category = CategoryGenerator::factory()->buildCategory();
@@ -382,6 +394,7 @@ class CategoryTest extends UnitaryTestCase
         $this->category->update($category);
     }
 
+    #[Test]
     public function testGetByName()
     {
         $name = self::$faker->colorName();

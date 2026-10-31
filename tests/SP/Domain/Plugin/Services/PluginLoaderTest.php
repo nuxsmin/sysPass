@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Plugin\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -47,6 +48,7 @@ class PluginLoaderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testLoadForWithEnabled()
     {
         $pluginManagerService = $this->createMock(PluginManagerService::class);
@@ -75,6 +77,7 @@ class PluginLoaderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testLoadForWithDisabled()
     {
         $pluginManagerService = $this->createMock(PluginManagerService::class);
@@ -103,6 +106,7 @@ class PluginLoaderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testLoadForWithException()
     {
         $pluginManagerService = $this->createMock(PluginManagerService::class);

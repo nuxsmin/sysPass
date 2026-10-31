@@ -27,6 +27,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -50,6 +51,7 @@ class AccountToTagTest extends UnitaryTestCase
     private MockObject|DatabaseInterface $database;
     private AccountToTag $accountToTag;
 
+    #[Test]
     public function testGetTagsByAccountId(): void
     {
         $id = self::$faker->randomNumber();
@@ -77,6 +79,7 @@ class AccountToTagTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testDeleteByAccountId(): void
     {
         $accountId = self::$faker->randomNumber();
@@ -104,6 +107,7 @@ class AccountToTagTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testAdd(): void
     {
         $id = self::$faker->randomNumber();

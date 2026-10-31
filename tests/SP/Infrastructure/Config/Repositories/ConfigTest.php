@@ -30,6 +30,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Config\Models\Config as ConfigModel;
@@ -51,6 +52,7 @@ class ConfigTest extends UnitaryTestCase
 {
     private Config $configRepository;
 
+    #[Test]
     public function testGetByParam()
     {
         $param = self::$faker->colorName();
@@ -80,6 +82,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $config = ConfigGenerator::factory()->buildConfig();
@@ -110,6 +113,7 @@ class ConfigTest extends UnitaryTestCase
         $this->assertEquals($queryResult, $out);
     }
 
+    #[Test]
     public function testHas()
     {
         $param = self::$faker->colorName();
@@ -140,6 +144,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $config = ConfigGenerator::factory()->buildConfig();

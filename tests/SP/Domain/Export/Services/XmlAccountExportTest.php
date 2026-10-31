@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Export\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -54,6 +55,7 @@ class XmlAccountExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testExport()
     {
         $account = AccountDataGenerator::factory()->buildAccount();
@@ -104,6 +106,7 @@ class XmlAccountExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testExportWithoutAccounts()
     {
         $this->accountService
@@ -125,6 +128,7 @@ class XmlAccountExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testExportWithException()
     {
         $this->accountService

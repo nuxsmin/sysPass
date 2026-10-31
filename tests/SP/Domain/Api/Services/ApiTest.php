@@ -32,6 +32,7 @@ use Faker\Factory;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use SP\Domain\Core\Context\ContextException;
@@ -163,6 +164,7 @@ class ApiTest extends UnitaryTestCase
      * @param bool $present
      */
     #[DataProvider('getParamDataProvider')]
+    #[Test]
     public function testGetParam(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParam'], ...func_get_args());
@@ -200,6 +202,7 @@ class ApiTest extends UnitaryTestCase
      * @throws InvalidClassException
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
+    #[Test]
     public function testGetParamWithHelp()
     {
         $apiRequest = $this->createMock(ApiRequestService::class);
@@ -231,6 +234,7 @@ class ApiTest extends UnitaryTestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testSetHelpClass()
     {
         $this->apiService->setHelpClass(AccountHelp::class);
@@ -244,6 +248,7 @@ class ApiTest extends UnitaryTestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testSetHelpClassError()
     {
         $this->expectException(InvalidClassException::class);
@@ -253,6 +258,7 @@ class ApiTest extends UnitaryTestCase
     }
 
     #[DataProvider('getParamIntDataProvider')]
+    #[Test]
     public function testGetParamInt(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParamInt'], ...func_get_args());
@@ -263,6 +269,7 @@ class ApiTest extends UnitaryTestCase
      * @throws SPException
      * @throws JsonException
      */
+    #[Test]
     public function testSetup()
     {
         $actionId = self::$faker->randomNumber(5);
@@ -335,6 +342,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testSetupAttemptsExceeded()
     {
         $actionId = self::$faker->randomNumber();
@@ -355,6 +363,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testSetupTrackingError()
     {
         $actionId = self::$faker->randomNumber();
@@ -379,6 +388,7 @@ class ApiTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testSetupInvalidToken()
     {
         $actionId = self::$faker->randomNumber();
@@ -405,6 +415,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testSetupAccessDenied()
     {
         $actionId = self::$faker->randomNumber();
@@ -441,6 +452,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testSetupWithMasterPass()
     {
         $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
@@ -494,6 +506,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws JsonException
      */
+    #[Test]
     public function testSetupWithMasterPassWrongTokenPass()
     {
         $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
@@ -543,23 +556,27 @@ class ApiTest extends UnitaryTestCase
     }
 
     #[DataProvider('getParamStringDataProvider')]
+    #[Test]
     public function testGetParamString(mixed $value, mixed $expected, bool $required, bool $present): void
     {
         $this->checkParam([$this->apiService, 'getParamString'], ...func_get_args());
     }
 
     #[DataProvider('getParamArrayDataProvider')]
+    #[Test]
     public function testGetParamArray(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParamArray'], ...func_get_args());
     }
 
     #[DataProvider('getParamRawDataProvider')]
+    #[Test]
     public function testGetParamRaw(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParamRaw'], ...func_get_args());
     }
 
+    #[Test]
     public function testGetRequestId()
     {
         $this->assertEquals($this->apiRequest->getId(), $this->apiService->getRequestId());
@@ -571,6 +588,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testRequireMasterPass()
     {
         $actionId = self::$faker->randomNumber(4);
@@ -621,6 +639,7 @@ class ApiTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testRequireMasterPassNotInitialized()
     {
         $this->expectException(ServiceException::class);
@@ -634,6 +653,7 @@ class ApiTest extends UnitaryTestCase
      * @throws CryptException
      * @throws SPException
      */
+    #[Test]
     public function testGetMasterPass()
     {
         $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;

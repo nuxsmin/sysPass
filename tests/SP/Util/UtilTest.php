@@ -28,6 +28,7 @@ namespace SP\Tests\Util;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Tests\UnitaryTestCase;
 use SP\Util\Util;
 
@@ -76,11 +77,13 @@ class UtilTest extends UnitaryTestCase
     }
 
     #[DataProvider('unitsProvider')]
+    #[Test]
     public function testConvertShortUnit(string $unit, int $expected)
     {
         $this->assertEquals($expected, Util::convertShortUnit($unit));
     }
 
+    #[Test]
     public function testGetMaxUpload()
     {
         $upload = ini_get('upload_max_filesize',);
@@ -95,6 +98,7 @@ class UtilTest extends UnitaryTestCase
      * @param $expected
      */
     #[DataProvider('boolProvider')]
+    #[Test]
     public function testBoolval($value, $expected)
     {
         $this->assertEquals($expected, Util::boolval($value));

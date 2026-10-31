@@ -29,6 +29,7 @@ namespace SP\Tests\Domain\Auth\Providers\Ldap;
 use ArrayIterator;
 use Laminas\Ldap\Ldap;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Events\Event;
@@ -58,6 +59,7 @@ class LdapActionsTest extends UnitaryTestCase
      * @throws LdapException
      * @throws Exception
      */
+    #[Test]
     public function testGetObjects(): void
     {
         $filter = 'test';
@@ -84,6 +86,7 @@ class LdapActionsTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testGetObjectsError(): void
     {
         $this->expectGetResultsError();
@@ -117,6 +120,7 @@ class LdapActionsTest extends UnitaryTestCase
      * @throws LdapException
      * @throws Exception
      */
+    #[Test]
     public function testGetAttributes(): void
     {
         $attributes = $this->buildAttributes();
@@ -175,6 +179,7 @@ class LdapActionsTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testGetAttributesError(): void
     {
         $this->expectGetResultsError();
@@ -186,6 +191,7 @@ class LdapActionsTest extends UnitaryTestCase
      * @throws LdapException
      * @throws Exception
      */
+    #[Test]
     public function testSearchGroupsDn(): void
     {
         $expected = [
@@ -216,6 +222,7 @@ class LdapActionsTest extends UnitaryTestCase
      * @throws LdapException
      * @throws Exception
      */
+    #[Test]
     public function testSearchGroupsDnNoGroups(): void
     {
         $filter = 'test';
@@ -245,6 +252,7 @@ class LdapActionsTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testSearchGroupsDnError(): void
     {
         $this->expectGetResultsError();

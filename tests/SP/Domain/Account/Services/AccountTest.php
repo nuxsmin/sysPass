@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
@@ -89,6 +90,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testUpdate()
     {
         $id = self::$faker->randomNumber();
@@ -123,6 +125,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testUpdateUserCannotChangePermissionsWithoutPermission()
     {
         $id = self::$faker->randomNumber();
@@ -161,6 +164,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testUpdateUserCanChangePermissionsWithAdminAcc()
     {
         $id = self::$faker->randomNumber();
@@ -199,6 +203,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testUpdateUserCanChangePermissionsWithProfilePermission()
     {
         $id = self::$faker->randomNumber();
@@ -237,6 +242,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testUpdateWithPresetPrivateForUser()
     {
         $id = self::$faker->randomNumber();
@@ -315,6 +321,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testUpdateWithPresetPrivateForGroup()
     {
         $id = self::$faker->randomNumber();
@@ -394,6 +401,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testGetLinked()
     {
         $id = self::$faker->randomNumber();
@@ -408,6 +416,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testGetForUser()
     {
         $id = self::$faker->randomNumber();
@@ -423,6 +432,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testGetPasswordForId()
     {
         $account = AccountPassItemWithIdAndName::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccount());
@@ -441,6 +451,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testGetPasswordForIdNotFound()
     {
         $account = AccountDataGenerator::factory()->buildAccount();
@@ -459,6 +470,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdatePasswordMasterPass()
     {
         $id = self::$faker->randomNumber();
@@ -479,6 +491,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdatePasswordMasterPassError()
     {
         $id = self::$faker->randomNumber();
@@ -499,6 +512,7 @@ class AccountTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws SPException
      */
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -515,6 +529,7 @@ class AccountTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws SPException
      */
+    #[Test]
     public function testGetByIdNotFound()
     {
         $id = self::$faker->randomNumber();
@@ -533,6 +548,7 @@ class AccountTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws SPException
      */
+    #[Test]
     public function testGetByIdEnriched()
     {
         $id = self::$faker->randomNumber();
@@ -549,6 +565,7 @@ class AccountTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws SPException
      */
+    #[Test]
     public function testGetByIdEnrichedError()
     {
         $id = self::$faker->randomNumber();
@@ -567,6 +584,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testUpdateBulk()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -612,6 +630,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testUpdateBulkCannotChangePermissionsWithoutAdminApp()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -653,6 +672,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testUpdateBulkCanChangePermissionsWithAdminAcc()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -699,6 +719,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testUpdateBulkCanChangePermissionsWithProfilePermission()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -744,6 +765,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testWithUsersById()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -762,6 +784,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -792,6 +815,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testDeleteNotFound()
     {
         $id = self::$faker->randomNumber();
@@ -822,6 +846,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testIncrementViewCounter()
     {
         $id = self::$faker->randomNumber();
@@ -836,6 +861,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testIncrementViewCounterNoRows()
     {
         $id = self::$faker->randomNumber();
@@ -847,6 +873,7 @@ class AccountTest extends UnitaryTestCase
         $this->assertFalse($this->account->incrementViewCounter($id));
     }
 
+    #[Test]
     public function testGetAllBasic()
     {
         $this->accountRepository->expects(self::once())->method('getAll');
@@ -860,6 +887,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetDataForLink()
     {
         $id = self::$faker->randomNumber();
@@ -878,6 +906,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetDataForLinkNotFound()
     {
         $id = self::$faker->randomNumber();
@@ -898,6 +927,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ServiceException
      */
+    #[Test]
     public function testRestoreRemoved()
     {
         $accountHistoryDto = AccountDataGenerator::factory()->buildAccountHistoryDto();
@@ -919,6 +949,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ServiceException
      */
+    #[Test]
     public function testRestoreRemovedError()
     {
         $accountHistoryDto = AccountDataGenerator::factory()->buildAccountHistoryDto();
@@ -944,6 +975,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testEditPassword()
     {
         $id = self::$faker->randomNumber();
@@ -978,6 +1010,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testRestoreModified()
     {
         $password = self::$faker->password;
@@ -1015,6 +1048,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testRestoreModifiedError()
     {
         $password = self::$faker->password;
@@ -1052,6 +1086,7 @@ class AccountTest extends UnitaryTestCase
         $this->account->restoreModified($accountHistoryDto);
     }
 
+    #[Test]
     public function testSearch()
     {
         $itemSearch = ItemSearchDataGenerator::factory()->buildItemSearchData();
@@ -1066,6 +1101,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testWithTagsById()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -1085,6 +1121,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testCreate()
     {
         $id = self::$faker->randomNumber();
@@ -1130,6 +1167,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testCreateCannotChangePermissions()
     {
         $id = self::$faker->randomNumber();
@@ -1180,6 +1218,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testCreateWithPrivateForUser()
     {
         $id = self::$faker->randomNumber();
@@ -1248,6 +1287,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testCreateWithPrivateForGroup()
     {
         $id = self::$faker->randomNumber();
@@ -1315,6 +1355,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetTotalNumAccounts()
     {
         $num = self::$faker->randomNumber();
@@ -1331,6 +1372,7 @@ class AccountTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws SPException
      */
+    #[Test]
     public function testGetPasswordHistoryForId()
     {
         $account = AccountPassItemWithIdAndName::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccount());
@@ -1349,6 +1391,7 @@ class AccountTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws SPException
      */
+    #[Test]
     public function testGetPasswordHistoryForIdNotFound()
     {
         $id = self::$faker->randomNumber();
@@ -1367,6 +1410,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetAccountsPassData()
     {
         $this->accountRepository->expects(self::once())->method('getAccountsPassData')
@@ -1379,6 +1423,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -1393,6 +1438,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testDeleteByIdBatchError()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -1411,6 +1457,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testWithUserGroupsById()
     {
         $accountDataGenerator = AccountDataGenerator::factory();
@@ -1430,6 +1477,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testIncrementDecryptCounter()
     {
         $id = self::$faker->randomNumber();
@@ -1445,6 +1493,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testIncrementDecryptCounterNoRows()
     {
         $id = self::$faker->randomNumber();

@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Common\Providers;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Common\Providers\Http;
@@ -42,6 +43,7 @@ class HttpTest extends TestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testCheckHttps()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
@@ -74,6 +76,7 @@ class HttpTest extends TestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testCheckHttpsWithNoHttpsEnabled()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
@@ -101,6 +104,7 @@ class HttpTest extends TestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testCheckHttpsWithHttpsEnabledAndHttpsRequest()
     {
         $configData = $this->createMock(ConfigDataInterface::class);

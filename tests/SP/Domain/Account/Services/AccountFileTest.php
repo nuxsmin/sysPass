@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Dtos\FileDto;
 use SP\Domain\Account\Models\File;
@@ -61,6 +62,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testCreate(): void
     {
         $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())
@@ -83,6 +85,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testCreateWithThumbnail(): void
     {
         $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
@@ -107,6 +110,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetById(): void
     {
         $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileExtData());
@@ -129,6 +133,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ServiceException
      */
+    #[Test]
     public function testDeleteByIdBatch(): void
     {
         $ids = array_map(static fn() => self::$faker->randomNumber(), range(0, 9));
@@ -149,6 +154,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ServiceException
      */
+    #[Test]
     public function testDeleteByIdBatchWithMissingUpdates(): void
     {
         $ids = array_map(static fn() => self::$faker->randomNumber(), range(0, 9));
@@ -170,6 +176,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete(): void
     {
         $id = self::$faker->randomNumber();
@@ -188,6 +195,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithMissingFile(): void
     {
         $id = self::$faker->randomNumber();
@@ -204,6 +212,7 @@ class AccountFileTest extends UnitaryTestCase
         $this->accountFile->delete($id);
     }
 
+    #[Test]
     public function testSearch(): void
     {
         $files = array_map(
@@ -228,6 +237,7 @@ class AccountFileTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetByAccountId(): void
     {
         $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());

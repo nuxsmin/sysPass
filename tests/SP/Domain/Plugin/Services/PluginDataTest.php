@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Plugin\Services;
 
 use SP\Core\Context\StatelessMasterKeyStore;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Common\Services\ServiceException;
@@ -60,6 +61,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $this->pluginDataRepository
@@ -76,6 +78,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithException()
     {
         $this->pluginDataRepository
@@ -95,6 +98,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByItemId()
     {
         $this->pluginDataRepository
@@ -111,6 +115,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByItemIdWithException()
     {
         $this->pluginDataRepository
@@ -132,6 +137,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ContextException
      */
+    #[Test]
     public function testUpdate()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
@@ -167,6 +173,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws CryptException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
@@ -203,6 +210,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws CryptException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByItemId()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
@@ -235,6 +243,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ServiceException
      */
+    #[Test]
     public function testGetByItemIdWithNoRows()
     {
         $this->pluginDataRepository
@@ -259,6 +268,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws CryptException
      */
+    #[Test]
     public function testGetByName()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
@@ -291,6 +301,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws ServiceException
      */
+    #[Test]
     public function testGetByNameWithNoRows()
     {
         $queryResult = new QueryResult([]);
@@ -319,6 +330,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetAll()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');

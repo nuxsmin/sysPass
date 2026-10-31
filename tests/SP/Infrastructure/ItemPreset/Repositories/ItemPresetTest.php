@@ -32,6 +32,7 @@ use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -56,6 +57,7 @@ class ItemPresetTest extends UnitaryTestCase
 
     private ItemPreset $itemPreset;
 
+    #[Test]
     public function testGetByFilter()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -89,6 +91,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -108,6 +111,7 @@ class ItemPresetTest extends UnitaryTestCase
         $this->itemPreset->delete($id);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -131,6 +135,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $itemPreset = ItemPresetDataGenerator::factory()->buildItemPresetData(new stdClass());
@@ -166,6 +171,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $itemPreset = ItemPresetDataGenerator::factory()->buildItemPresetData(new stdClass());
@@ -204,6 +210,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -236,6 +243,7 @@ class ItemPresetTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testSearchWithoutString(): void
     {
         $callback = new Callback(
@@ -260,6 +268,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -291,6 +300,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database
@@ -300,6 +310,7 @@ class ItemPresetTest extends UnitaryTestCase
         $this->itemPreset->deleteByIdBatch([]);
     }
 
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();

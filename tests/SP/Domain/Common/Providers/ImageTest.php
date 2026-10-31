@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Common\Providers;
 
 use GdImage;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Bootstrap\Path;
@@ -53,6 +54,7 @@ class ImageTest extends TestCase
      * @throws InvalidImageException
      * @throws SPException
      */
+    #[Test]
     public function testCreateThumbnail()
     {
         $image = 'iVBORw0KGgoAAAANSUhEUgAAABwAAAASCAMAAAB/2U7WAAAABl'
@@ -69,6 +71,7 @@ class ImageTest extends TestCase
      * @throws InvalidImageException
      * @throws SPException
      */
+    #[Test]
     public function testCreateThumbnailWithException()
     {
         $this->expectException(InvalidImageException::class);
@@ -77,6 +80,7 @@ class ImageTest extends TestCase
         $this->imageUtil->createThumbnail('');
     }
 
+    #[Test]
     public function testConvertText()
     {
         $out = $this->imageUtil->convertText('test');

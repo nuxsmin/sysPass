@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Infrastructure\Database;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\Database\MysqlFileParser;
@@ -43,6 +44,7 @@ class MysqlFileParserTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      */
+    #[Test]
     public function testParse()
     {
         $lines = static function () {

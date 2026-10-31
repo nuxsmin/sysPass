@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
@@ -54,6 +55,7 @@ class AccountCacheTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testGetCacheForAccount()
     {
         $accountId = self::$faker->randomNumber();
@@ -83,6 +85,7 @@ class AccountCacheTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testGetCacheForAccountWithCacheHit()
     {
         $accountId = self::$faker->randomNumber();

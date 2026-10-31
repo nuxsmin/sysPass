@@ -32,6 +32,7 @@ use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Simple;
@@ -58,6 +59,7 @@ class TagTest extends UnitaryTestCase
     private Tag                          $tag;
     private DatabaseInterface|MockObject $database;
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -77,6 +79,7 @@ class TagTest extends UnitaryTestCase
         $this->tag->getAll();
     }
 
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -106,6 +109,7 @@ class TagTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testSearchWithoutString(): void
     {
         $callback = new Callback(
@@ -126,6 +130,7 @@ class TagTest extends UnitaryTestCase
         $this->tag->search(new ItemSearchDto());
     }
 
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -155,6 +160,7 @@ class TagTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -186,6 +192,7 @@ class TagTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database
@@ -195,6 +202,7 @@ class TagTest extends UnitaryTestCase
         $this->tag->deleteByIdBatch([]);
     }
 
+    #[Test]
     public function testGetByName()
     {
         $name = self::$faker->colorName();
@@ -225,6 +233,7 @@ class TagTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -249,6 +258,7 @@ class TagTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $tag = TagGenerator::factory()->buildTag();
@@ -292,6 +302,7 @@ class TagTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws SPException
      */
+    #[Test]
     public function testCreateWithDuplicate()
     {
         $tag = TagGenerator::factory()->buildTag();
@@ -326,6 +337,7 @@ class TagTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $tag = TagGenerator::factory()->buildTag();
@@ -372,6 +384,7 @@ class TagTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateWithDuplicate()
     {
         $tag = TagGenerator::factory()->buildTag();

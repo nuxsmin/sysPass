@@ -29,6 +29,7 @@ use Aura\SqlQuery\Common\DeleteInterface;
 use Aura\SqlQuery\Common\InsertInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
@@ -51,6 +52,7 @@ class UserToUserGroupTest extends UnitaryTestCase
     private UserToUserGroup              $userToUserGroup;
     private MockObject|DatabaseInterface $database;
 
+    #[Test]
     public function testGetById()
     {
         $this->database
@@ -69,6 +71,7 @@ class UserToUserGroupTest extends UnitaryTestCase
         $this->userToUserGroup->getById(100);
     }
 
+    #[Test]
     public function testGetGroupsForUser()
     {
         $this->database
@@ -91,6 +94,7 @@ class UserToUserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testAdd()
     {
         $callbackCreate = new Callback(
@@ -123,6 +127,7 @@ class UserToUserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testAddWithNoUsers()
     {
         $this->database
@@ -136,6 +141,7 @@ class UserToUserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -157,6 +163,7 @@ class UserToUserGroupTest extends UnitaryTestCase
         $this->userToUserGroup->delete($id);
     }
 
+    #[Test]
     public function testCheckUserInGroup()
     {
         $this->database
@@ -176,6 +183,7 @@ class UserToUserGroupTest extends UnitaryTestCase
         $this->assertTrue($this->userToUserGroup->checkUserInGroup(100, 200));
     }
 
+    #[Test]
     public function testCheckUserInGroupWithNoResults()
     {
         $this->database
@@ -198,6 +206,7 @@ class UserToUserGroupTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdate()
     {
         $this->database
@@ -255,6 +264,7 @@ class UserToUserGroupTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateWithNoUsers()
     {
         $this->database

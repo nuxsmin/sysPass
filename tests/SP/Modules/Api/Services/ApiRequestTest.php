@@ -28,6 +28,7 @@ namespace SP\Tests\Modules\Api\Services;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Api\Exceptions\ApiRequestException;
 use SP\Modules\Api\Adapters\ApiRequestAdapter;
 use SP\Tests\UnitaryTestCase;
@@ -43,6 +44,7 @@ class ApiRequestTest extends UnitaryTestCase
      * @throws ApiRequestException
      * @throws JsonException
      */
+    #[Test]
     public function testBuildFromRequest()
     {
         $stream = $this->getTempnam();
@@ -71,6 +73,7 @@ class ApiRequestTest extends UnitaryTestCase
      * @throws ApiRequestException
      * @throws JsonException
      */
+    #[Test]
     public function testBuildFromRequestNoContent()
     {
         $stream = $this->getTempnam();
@@ -87,6 +90,7 @@ class ApiRequestTest extends UnitaryTestCase
      * @throws ApiRequestException
      * @throws JsonException
      */
+    #[Test]
     public function testBuildFromRequestInvalidJson()
     {
         $stream = $this->getTempnam();
@@ -104,6 +108,7 @@ class ApiRequestTest extends UnitaryTestCase
      * @throws JsonException
      */
     #[DataProvider('getJsonRpcProperty')]
+    #[Test]
     public function testBuildFromRequestWithoutProperty(string $property)
     {
         $stream = $this->getTempnam();
@@ -123,6 +128,7 @@ class ApiRequestTest extends UnitaryTestCase
      * @throws ApiRequestException
      * @throws JsonException
      */
+    #[Test]
     public function testExists()
     {
         $stream = $this->getTempnam();
@@ -139,6 +145,7 @@ class ApiRequestTest extends UnitaryTestCase
      * @throws ApiRequestException
      * @throws JsonException
      */
+    #[Test]
     public function testGetId()
     {
         $stream = $this->getTempnam();
@@ -155,6 +162,7 @@ class ApiRequestTest extends UnitaryTestCase
      * @throws ApiRequestException
      * @throws JsonException
      */
+    #[Test]
     public function testGet()
     {
         $stream = $this->getTempnam();
@@ -171,6 +179,7 @@ class ApiRequestTest extends UnitaryTestCase
      * @throws ApiRequestException
      * @throws JsonException
      */
+    #[Test]
     public function testGetMethod()
     {
         $stream = $this->getTempnam();

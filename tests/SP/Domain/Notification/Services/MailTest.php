@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Notification\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -54,6 +55,7 @@ class MailTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testSend()
     {
         $message = new MailMessage();
@@ -93,6 +95,7 @@ class MailTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testSendWithAddresses()
     {
         $message = new MailMessage();
@@ -132,6 +135,7 @@ class MailTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheck()
     {
         $configData = $this->config->getConfigData();
@@ -185,6 +189,7 @@ class MailTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckWithException()
     {
         $configData = $this->config->getConfigData();
@@ -242,6 +247,7 @@ class MailTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testSendWithException()
     {
         $message = new MailMessage();
@@ -282,6 +288,7 @@ class MailTest extends UnitaryTestCase
         $this->mail->send('test', $to, $message);
     }
 
+    #[Test]
     public function testGetParamsFromConfig()
     {
         $configData = $this->config->getConfigData();

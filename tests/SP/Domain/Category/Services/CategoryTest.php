@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Category\Services;
 
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Category\Ports\CategoryRepository;
 use SP\Domain\Category\Services\Category;
@@ -58,6 +59,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -81,6 +83,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByIdWithUnknownId()
     {
         $id = self::$faker->randomNumber();
@@ -102,6 +105,7 @@ class CategoryTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testSearch()
     {
         $itemSearch = ItemSearchDataGenerator::factory()->buildItemSearchData();
@@ -119,6 +123,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -136,6 +141,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithNotFound()
     {
         $id = self::$faker->randomNumber();
@@ -156,6 +162,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws SPException
      */
+    #[Test]
     public function testCreate()
     {
         $category = CategoryGenerator::factory()->buildCategory();
@@ -178,6 +185,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $category = CategoryGenerator::factory()->buildCategory();
@@ -197,6 +205,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByName()
     {
         $name = self::$faker->colorName();
@@ -220,6 +229,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByNameWithUnknownName()
     {
         $name = self::$faker->colorName();
@@ -241,6 +251,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -258,6 +269,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testDeleteByIdBatchError()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -279,6 +291,7 @@ class CategoryTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetAll()
     {
         $category = CategoryGenerator::factory()->buildCategory();

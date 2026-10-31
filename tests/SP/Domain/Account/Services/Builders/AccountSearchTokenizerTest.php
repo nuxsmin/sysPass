@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Account\Services\Builders;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Account\Services\Builders\AccountSearchTokenizer;
 use SP\Tests\UnitaryTestCase;
 
@@ -46,6 +47,7 @@ class AccountSearchTokenizerTest extends UnitaryTestCase
      * @return void
      */
     #[DataProvider('searchByItemDataProvider')]
+    #[Test]
     public function testTokenizeFromFilterByItems(string $search, array $expectedConditions): void
     {
         $tokenizer = new AccountSearchTokenizer();
@@ -62,6 +64,7 @@ class AccountSearchTokenizerTest extends UnitaryTestCase
      * @return void
      */
     #[DataProvider('searchByConditionDataProvider')]
+    #[Test]
     public function testTokenizeFromFilterByCondition(string $search, array $expectedConditions): void
     {
         $tokenizer = new AccountSearchTokenizer();
@@ -78,6 +81,7 @@ class AccountSearchTokenizerTest extends UnitaryTestCase
      * @return void
      */
     #[DataProvider('searchUsingOperatorDataProvider')]
+    #[Test]
     public function testTokenizeFromFilterUsingOperator(string $search, ?string $expectedCondition): void
     {
         $tokenizer = new AccountSearchTokenizer();
@@ -94,6 +98,7 @@ class AccountSearchTokenizerTest extends UnitaryTestCase
      * @return void
      */
     #[DataProvider('searchUsingStringDataProvider')]
+    #[Test]
     public function testTokenizeFromFilterUsingSearchString(string $search, string $expectedString): void
     {
         $tokenizer = new AccountSearchTokenizer();
@@ -106,6 +111,7 @@ class AccountSearchTokenizerTest extends UnitaryTestCase
     /**
      * @return void
      */
+    #[Test]
     public function testTokenizeFromFilterUsingSearchStringWithIsNull(): void
     {
         $tokenizer = new AccountSearchTokenizer();

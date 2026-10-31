@@ -30,6 +30,7 @@ use ArrayIterator;
 use EmptyIterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
@@ -69,6 +70,7 @@ class LdapMsAdsTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testConnect()
     {
         $user = self::$faker->userName;
@@ -82,6 +84,7 @@ class LdapMsAdsTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testConnectWithNull()
     {
         $this->ldapConnection->expects(self::once())->method('connect')->with($this->ldapParams, null, null);
@@ -93,6 +96,7 @@ class LdapMsAdsTest extends UnitaryTestCase
      * @throws LdapException
      */
     #[DataProvider('groupDataProvider')]
+    #[Test]
     public function testIsUserInGroup(string $group)
     {
         $this->ldapParams->setGroup($group);
@@ -116,6 +120,7 @@ class LdapMsAdsTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testIsUserInGroupWithSearchGroupDn()
     {
         $this->ldapParams->setGroup('TestGroup');
@@ -144,6 +149,7 @@ class LdapMsAdsTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testIsUserInGroupWithCheckFilter()
     {
         $this->ldapParams->setGroup('TestGroup');
@@ -178,6 +184,7 @@ class LdapMsAdsTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testIsUserInGroupWithCheckFilterAndZeroResults()
     {
         $this->ldapParams->setGroup('TestGroup');
@@ -212,6 +219,7 @@ class LdapMsAdsTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetGroupMembershipIndirectFilter()
     {
         $groupDn = 'cn=TestGroup,dc=groups,dc=syspass,dc=org';
@@ -236,6 +244,7 @@ class LdapMsAdsTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetGroupMembershipIndirectFilterWithEmptyGroup()
     {
         $this->ldapActions->expects(self::never())
@@ -249,6 +258,7 @@ class LdapMsAdsTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetGroupMembershipIndirectFilterWithAttributes()
     {
         $groupDn = 'cn=TestGroup,dc=groups,dc=syspass,dc=org';
@@ -271,6 +281,7 @@ class LdapMsAdsTest extends UnitaryTestCase
         self::assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetUserDnFilter()
     {
         $user = self::$faker->userName;
@@ -286,6 +297,7 @@ class LdapMsAdsTest extends UnitaryTestCase
         self::assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetUserDnFilterWithAttributes()
     {
         $this->ldapParams->setFilterUserAttributes(['memberOf']);
@@ -302,6 +314,7 @@ class LdapMsAdsTest extends UnitaryTestCase
         self::assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetGroupObjectFilter()
     {
         $out = $this->ldap->getGroupObjectFilter();
@@ -309,6 +322,7 @@ class LdapMsAdsTest extends UnitaryTestCase
         self::assertEquals(LdapMsAds::DEFAULT_FILTER_GROUP_OBJECT, $out);
     }
 
+    #[Test]
     public function testGetGroupObjectFilterWithFilter()
     {
         $this->ldapParams->setFilterGroupObject('test');
@@ -318,6 +332,7 @@ class LdapMsAdsTest extends UnitaryTestCase
         self::assertEquals('test', $out);
     }
 
+    #[Test]
     public function testGetServer()
     {
         self::assertEquals($this->ldapParams->getServer(), $this->ldap->getServer());
@@ -326,6 +341,7 @@ class LdapMsAdsTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testGetGroupMembershipDirectFilter()
     {
         $groupDn = 'cn=TestGroup,dc=groups,dc=syspass,dc=org';
@@ -348,6 +364,7 @@ class LdapMsAdsTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testGetGroupMembershipDirectFilterWithAttributes()
     {
         $groupDn = 'cn=TestGroup,dc=groups,dc=syspass,dc=org';

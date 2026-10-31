@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Export\Services;
 
 use PDO;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -68,6 +69,7 @@ class FileBackupServiceTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws Exception
      */
+    #[Test]
     public function testDoBackup(): void
     {
         $this->config->getConfigData()->setDbName('a_db');
@@ -156,6 +158,7 @@ class FileBackupServiceTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws Exception
      */
+    #[Test]
     public function testDoBackupWithException(): void
     {
         $this->config->getConfigData()->setDbName('a_db');

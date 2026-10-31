@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Modules\Web\Presenters\Helpers\Account;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
@@ -72,6 +73,7 @@ class AccountSearchDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testBuildFrom(): void
     {
         $accountSearchView =
@@ -121,6 +123,7 @@ class AccountSearchDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
     public function testBuildFromWithColorCacheException(): void
     {
         $accountSearchVData =
@@ -159,6 +162,7 @@ class AccountSearchDataTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testInitializeWithException(): void
     {
         $fileCache = $this->createMock(FileCacheService::class);

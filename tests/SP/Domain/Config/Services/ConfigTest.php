@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Config\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Common\Services\ServiceException;
@@ -55,6 +56,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $config = ConfigGenerator::factory()->buildConfig();
@@ -76,6 +78,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSaveWithNoExistingParameter()
     {
         $config = ConfigGenerator::factory()->buildConfig();
@@ -101,6 +104,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSaveWithExistingParameter()
     {
         $config = ConfigGenerator::factory()->buildConfig();
@@ -125,6 +129,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testGetByParam()
     {
         $parameter = self::$faker->colorName();
@@ -147,6 +152,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testGetByParamWithDefaultValue()
     {
         $parameter = self::$faker->colorName();
@@ -169,6 +175,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testGetByParamWithNoFound()
     {
         $parameter = self::$faker->colorName();
@@ -190,6 +197,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testGetByParamWithException()
     {
         $parameter = self::$faker->colorName();
@@ -209,6 +217,7 @@ class ConfigTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testSaveBatch()
     {
         $this->configRepository
@@ -239,6 +248,7 @@ class ConfigTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testSaveBatchWithException()
     {
         $this->configRepository

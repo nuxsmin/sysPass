@@ -30,6 +30,7 @@ use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use Klein\DataCollection\DataCollection;
 use Klein\DataCollection\HeaderDataCollection;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -61,6 +62,7 @@ class RequestTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testIsJson()
     {
         $this->headers->expects(self::once())
@@ -86,6 +88,7 @@ class RequestTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testIsJsonFalse()
     {
         $this->headers->expects(self::once())
@@ -100,6 +103,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertFalse($request->isJson());
     }
 
+    #[Test]
     public function testAnalyzeString()
     {
         $this->ensureGet();
@@ -112,6 +116,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('a_value', $out);
     }
 
+    #[Test]
     public function testAnalyzeStringWithDefault()
     {
         $this->ensureGet();
@@ -122,6 +127,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('a_default_value', $out);
     }
 
+    #[Test]
     public function testGetServerPort()
     {
         $this->ensureGet();
@@ -133,6 +139,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals(1080, $request->getServerPort());
     }
 
+    #[Test]
     public function testGetServerPortWithDefault()
     {
         $this->ensureGet();
@@ -142,6 +149,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals(80, $request->getServerPort());
     }
 
+    #[Test]
     public function testAnalyzeBool()
     {
         $this->ensureGet();
@@ -154,6 +162,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertTrue($out);
     }
 
+    #[Test]
     public function testAnalyzeBoolWithDefault()
     {
         $this->ensureGet();
@@ -164,6 +173,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertFalse($out);
     }
 
+    #[Test]
     public function testGetXForwardedData()
     {
         $host = self::$faker->domainName;
@@ -192,6 +202,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals($expected, $request->getXForwardedData());
     }
 
+    #[Test]
     public function testGetXForwardedDataWithEmpty()
     {
         $this->ensureGet();
@@ -210,6 +221,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertNull($request->getXForwardedData());
     }
 
+    #[Test]
     public function testGetFile()
     {
         $this->ensureGet();
@@ -224,6 +236,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetFileWithNoEntry()
     {
         $this->ensureGet();
@@ -235,6 +248,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertNull($out);
     }
 
+    #[Test]
     public function testGetMethodWithGet()
     {
         $this->ensureGet();
@@ -243,6 +257,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals(Method::GET, $request->getMethod());
     }
 
+    #[Test]
     public function testGetMethodWithPost()
     {
         $this->ensurePost();
@@ -259,6 +274,7 @@ class RequestTest extends UnitaryTestCase
             ->willReturn('POST');
     }
 
+    #[Test]
     public function testGetClientAddressFromServer()
     {
         $address = self::$faker->ipv4;
@@ -279,6 +295,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals($address, $request->getClientAddress());
     }
 
+    #[Test]
     public function testGetClientAddressWithForwarded()
     {
         $address = self::$faker->ipv4;
@@ -298,6 +315,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals($address, $request->getClientAddress());
     }
 
+    #[Test]
     public function testGetClientAddressWithForwardedFor()
     {
         $address = self::$faker->ipv4;
@@ -319,6 +337,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals($address, $request->getClientAddress());
     }
 
+    #[Test]
     public function testGetClientAddressWithForwardedForFull()
     {
         $addresses = sprintf('%s,%s', self::$faker->ipv4, self::$faker->ipv6);
@@ -338,6 +357,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals($addresses, $request->getClientAddress(true));
     }
 
+    #[Test]
     public function testGetServer()
     {
         $this->ensureGet();
@@ -350,6 +370,7 @@ class RequestTest extends UnitaryTestCase
         self::assertEquals('123', $out);
     }
 
+    #[Test]
     public function testGetServerWithoutEntry()
     {
         $this->ensureGet();
@@ -360,6 +381,7 @@ class RequestTest extends UnitaryTestCase
         self::assertEmpty($out);
     }
 
+    #[Test]
     public function testAnalyzeArray()
     {
         $this->ensureGet();
@@ -372,6 +394,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals(['a' => 'test', 'b' => 1], $out);
     }
 
+    #[Test]
     public function testAnalyzeArrayWithDefault()
     {
         $this->ensureGet();
@@ -382,6 +405,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals(['c' => 'test', 'd' => 1], $out);
     }
 
+    #[Test]
     public function testAnalyzeArrayWithMapper()
     {
         $mapper = static fn(array $items) => array_map('strtoupper', $items);
@@ -396,6 +420,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals(['a' => 'A_TEST', 'b' => 1], $out);
     }
 
+    #[Test]
     public function testGetForwardedData()
     {
         $address = self::$faker->ipv4;
@@ -421,6 +446,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals($expected, $request->getForwardedData());
     }
 
+    #[Test]
     public function testGetForwardedDataWhitEmptyHost()
     {
         $this->server->set('REMOTE_ADDR', 'test');
@@ -437,6 +463,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertNull($request->getForwardedData());
     }
 
+    #[Test]
     public function testGetForwardedDataWhitEmptyProto()
     {
         $this->server->set('REMOTE_ADDR', 'test');
@@ -453,6 +480,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertNull($request->getForwardedData());
     }
 
+    #[Test]
     public function testCheckReload()
     {
         $this->ensureGet();
@@ -467,6 +495,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertTrue($request->checkReload());
     }
 
+    #[Test]
     public function testCheckReloadFalse()
     {
         $this->ensureGet();
@@ -481,6 +510,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertFalse($request->checkReload());
     }
 
+    #[Test]
     public function testAnalyzeEmail()
     {
         $this->ensureGet();
@@ -493,6 +523,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('me@email.com', $out);
     }
 
+    #[Test]
     public function testAnalyzeEmailWithDefault()
     {
         $this->ensureGet();
@@ -503,6 +534,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('another@email.com', $out);
     }
 
+    #[Test]
     public function testAnalyzeInt()
     {
         $this->ensureGet();
@@ -515,6 +547,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals(123, $out);
     }
 
+    #[Test]
     public function testAnalyzeIntWithDefault()
     {
         $this->ensureGet();
@@ -525,6 +558,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals(456, $out);
     }
 
+    #[Test]
     public function testIsHttps()
     {
         $this->ensureGet();
@@ -534,6 +568,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertFalse($request->isHttps());
     }
 
+    #[Test]
     public function testGetRequest()
     {
         $this->ensureGet();
@@ -543,6 +578,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals($this->kleinRequest, $request->getRequest());
     }
 
+    #[Test]
     public function testIsAjaxWithHeader()
     {
         $this->ensureGet();
@@ -558,6 +594,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertTrue($request->isAjax());
     }
 
+    #[Test]
     public function testIsAjaxWithQueryParameter()
     {
         $this->ensureGet();
@@ -575,6 +612,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertTrue($request->isAjax());
     }
 
+    #[Test]
     public function testIsAjaxFalse()
     {
         $this->ensureGet();
@@ -592,6 +630,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertFalse($request->isAjax());
     }
 
+    #[Test]
     public function testAnalyzeEncrypted()
     {
         $this->ensureGet();
@@ -611,6 +650,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('value', $out);
     }
 
+    #[Test]
     public function testAnalyzeEncryptedWithDecryptToNull()
     {
         $this->ensureGet();
@@ -630,6 +670,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('value_encrypted', $out);
     }
 
+    #[Test]
     public function testAnalyzeEncryptedWithWrongParam()
     {
         $this->ensureGet();
@@ -643,6 +684,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEmpty($out);
     }
 
+    #[Test]
     public function testAnalyzeEncryptedWithException()
     {
         $this->ensureGet();
@@ -664,6 +706,7 @@ class RequestTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testVerifySignature()
     {
         $params = [
@@ -691,6 +734,7 @@ class RequestTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testVerifySignatureWithParam()
     {
         $signature = Hash::signMessage('a_value', 'a_key');
@@ -708,6 +752,7 @@ class RequestTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testVerifySignatureWithoutHash()
     {
         $this->ensureGet();
@@ -722,6 +767,7 @@ class RequestTest extends UnitaryTestCase
         $request->verifySignature('a_key');
     }
 
+    #[Test]
     public function testGetForwardedFor()
     {
         $addresses = [
@@ -741,6 +787,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals($addresses, $request->getForwardedFor());
     }
 
+    #[Test]
     public function testGetForwardedForWithXForwarded()
     {
         $addresses = [
@@ -763,6 +810,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals($addresses, $request->getForwardedFor());
     }
 
+    #[Test]
     public function testGetForwardedForFail()
     {
         $this->ensureGet();
@@ -780,6 +828,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertNull($request->getForwardedFor());
     }
 
+    #[Test]
     public function testAnalyzeUnsafeString()
     {
         $this->ensureGet();
@@ -792,6 +841,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('me@email.com', $out);
     }
 
+    #[Test]
     public function testAnalyzeUnsafeStringWithDefault()
     {
         $this->ensureGet();
@@ -802,6 +852,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('another@email.com', $out);
     }
 
+    #[Test]
     public function testGetSecureAppPath()
     {
         $appRoot = preg_replace('#\w+://#', '', REAL_APP_ROOT) . '/public/js';
@@ -813,6 +864,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals($appRoot . '/app.js', $out);
     }
 
+    #[Test]
     public function testGetSecureAppPathWithUnknownFile()
     {
         $path = '../../opt/project/index.test';
@@ -822,6 +874,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEmpty($out);
     }
 
+    #[Test]
     public function testGetSecureAppPathWhithWrongBase()
     {
         $path = '../../opt/project/index.test';
@@ -831,6 +884,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEmpty($out);
     }
 
+    #[Test]
     public function testGetHttpHost()
     {
         $address = self::$faker->ipv4;
@@ -848,6 +902,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals(sprintf('https://%s', $domain), $request->getHttpHost());
     }
 
+    #[Test]
     public function testGetHttpHostWithXForwarded()
     {
         $domain = self::$faker->domainName;
@@ -872,6 +927,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals(sprintf('https://%s', $domain), $request->getHttpHost());
     }
 
+    #[Test]
     public function testGetHttpHostWithXForwardedWithServer()
     {
         $domain = self::$faker->domainName;
@@ -898,6 +954,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals(sprintf('http://%s', $domain), $request->getHttpHost());
     }
 
+    #[Test]
     public function testGetHeader()
     {
         $this->ensureGet();
@@ -914,6 +971,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('a_value', $out);
     }
 
+    #[Test]
     public function testGetSecureAppFile()
     {
         $appRoot = preg_replace('#\w+://#', '', REAL_APP_ROOT) . '/public/js';
@@ -925,6 +983,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('app.js', $out);
     }
 
+    #[Test]
     public function testGetSecureAppFileWithUnknownFile()
     {
         $path = '../../opt/project/index.test';
@@ -934,6 +993,7 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('', $out);
     }
 
+    #[Test]
     public function testGetSecureAppFileWithWrongBase()
     {
         $path = '../../opt/project/index.php';

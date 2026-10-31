@@ -30,6 +30,7 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Bootstrap\Path;
 use SP\Domain\Core\Context\ContextException;
@@ -62,6 +63,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
      * @throws EnvironmentIsBrokenException
      * @throws CryptException
      */
+    #[Test]
     public function testGetKey()
     {
         $securedKey = Key::createNewRandomKey();
@@ -78,6 +80,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
+    #[Test]
     public function testGetKeyCacheExpired()
     {
         $this->fileCache->expects(self::once())->method('isExpired')->willReturn(true);
@@ -90,6 +93,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
+    #[Test]
     public function testGetKeyFileErrorCheckingExpire()
     {
         $this->fileCache->expects(self::once())->method('isExpired')->willThrowException(new FileException('test'));
@@ -102,6 +106,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
+    #[Test]
     public function testGetKeyFileErrorLoading()
     {
         $this->fileCache->expects(self::once())->method('isExpired')->willReturn(false);
@@ -115,6 +120,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
+    #[Test]
     public function testGetKeyFileErrorSaving()
     {
         $this->fileCache->expects(self::once())->method('isExpired')->willReturn(true);
@@ -128,6 +134,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
      * @throws EnvironmentIsBrokenException
      * @throws CryptException
      */
+    #[Test]
     public function testGetKeyBuildPasswordException()
     {
         $securedKey = Key::createNewRandomKey();
@@ -145,6 +152,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
      * @throws \PHPUnit\Framework\MockObject\Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testGetFileNameFrom()
     {
         $uuidCookie = $this->createMock(UuidCookie::class);
@@ -163,6 +171,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
      * @throws \PHPUnit\Framework\MockObject\Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testGetFileNameFromErrorLoadingCookie()
     {
         $uuidCookie = $this->createMock(UuidCookie::class);
@@ -179,6 +188,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
      * @throws \PHPUnit\Framework\MockObject\Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testGetFileNameFromErrorCreatingCookie()
     {
         $uuidCookie = $this->createMock(UuidCookie::class);

@@ -28,6 +28,7 @@ namespace SP\Tests\Mvc\View;
 
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -47,6 +48,7 @@ class TemplateResolverTest extends TestCase
     /**
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testGetTemplateFor()
     {
         $vfsStreamDirectory = vfsStream::setup(
@@ -79,6 +81,7 @@ class TemplateResolverTest extends TestCase
     /**
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testGetTemplateForWithNoPermissions()
     {
         $vfsStreamDirectory = vfsStream::setup(

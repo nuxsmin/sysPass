@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Plugin\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Services\ServiceException;
@@ -51,16 +52,19 @@ class PluginBaseTest extends UnitaryTestCase
     private PluginCompatilityService|MockObject $pluginCompatilityService;
     private PluginLoaderService|MockObject      $pluginLoaderService;
 
+    #[Test]
     public function testGetThemeDir()
     {
         $this->assertNull($this->pluginBase->getThemeDir());
     }
 
+    #[Test]
     public function testGetBase()
     {
         $this->assertNull($this->pluginBase->getBase());
     }
 
+    #[Test]
     public function testGetData()
     {
         $this->assertNull($this->pluginBase->getData());
@@ -73,6 +77,7 @@ class PluginBaseTest extends UnitaryTestCase
      * @throws CryptoException
      * @throws QueryException
      */
+    #[Test]
     public function testSaveData()
     {
         $data = (object)['a' => 'test', 'b' => ['test']];
@@ -94,6 +99,7 @@ class PluginBaseTest extends UnitaryTestCase
      * @throws CryptoException
      * @throws QueryException
      */
+    #[Test]
     public function testSaveDataWithUpdate()
     {
         $dataCreate = (object)['a' => 'test', 'b' => ['test']];

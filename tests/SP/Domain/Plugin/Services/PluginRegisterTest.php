@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Plugin\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -48,6 +49,7 @@ class PluginRegisterTest extends UnitaryTestCase
      * @throws Exception
      * @throws QueryException
      */
+    #[Test]
     public function testRegisterForWithUnregisteredPlugin()
     {
         $plugin = $this->createStub(Plugin::class);
@@ -78,6 +80,7 @@ class PluginRegisterTest extends UnitaryTestCase
      * @throws Exception
      * @throws QueryException
      */
+    #[Test]
     public function testRegisterForWithRegisteredPlugin()
     {
         $plugin = $this->createStub(Plugin::class);

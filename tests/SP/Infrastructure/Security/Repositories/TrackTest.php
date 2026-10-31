@@ -31,6 +31,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -58,6 +59,7 @@ class TrackTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testClear()
     {
         $callback = new Callback(
@@ -79,6 +81,7 @@ class TrackTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUnlock()
     {
         $callbackCreate = new Callback(
@@ -104,6 +107,7 @@ class TrackTest extends UnitaryTestCase
         $this->assertEquals(1, $out);
     }
 
+    #[Test]
     public function testGetTracksForClientFromTime()
     {
         $track = TrackGenerator::factory()->buildTrack();
@@ -132,6 +136,7 @@ class TrackTest extends UnitaryTestCase
         $this->track->getTracksForClientFromTime($track);
     }
 
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -158,6 +163,7 @@ class TrackTest extends UnitaryTestCase
         $this->track->search($item, 1000);
     }
 
+    #[Test]
     public function testSearchWithEmptyString()
     {
         $item = new ItemSearchDto();
@@ -186,6 +192,7 @@ class TrackTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testAdd()
     {
         $track = TrackGenerator::factory()->buildTrack();

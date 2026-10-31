@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Mvc\Controller\Validators;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Models\Password;
@@ -47,6 +48,7 @@ class PasswordValidatorTest extends TestCase
     /**
      * @throws ValidationException
      */
+    #[Test]
     public function testValidate()
     {
         $validator = new PasswordValidator($this->password);
@@ -58,6 +60,7 @@ class PasswordValidatorTest extends TestCase
     /**
      * @throws ValidationException
      */
+    #[Test]
     public function testValidateNoLength()
     {
         $this->expectException(ValidationException::class);
@@ -70,6 +73,7 @@ class PasswordValidatorTest extends TestCase
     /**
      * @throws ValidationException
      */
+    #[Test]
     public function testValidateNoLetters()
     {
         $this->expectException(ValidationException::class);
@@ -82,6 +86,7 @@ class PasswordValidatorTest extends TestCase
     /**
      * @throws ValidationException
      */
+    #[Test]
     public function testValidateNoUpper()
     {
         $this->expectException(ValidationException::class);
@@ -94,6 +99,7 @@ class PasswordValidatorTest extends TestCase
     /**
      * @throws ValidationException
      */
+    #[Test]
     public function testValidateNoLower()
     {
         $this->expectException(ValidationException::class);
@@ -106,6 +112,7 @@ class PasswordValidatorTest extends TestCase
     /**
      * @throws ValidationException
      */
+    #[Test]
     public function testValidateNoNumbers()
     {
         $this->expectException(ValidationException::class);
@@ -118,6 +125,7 @@ class PasswordValidatorTest extends TestCase
     /**
      * @throws ValidationException
      */
+    #[Test]
     public function testValidateNoSymbols()
     {
         $this->expectException(ValidationException::class);
@@ -130,6 +138,7 @@ class PasswordValidatorTest extends TestCase
     /**
      * @throws ValidationException
      */
+    #[Test]
     public function testValidateNoRegex()
     {
         $this->expectException(ValidationException::class);

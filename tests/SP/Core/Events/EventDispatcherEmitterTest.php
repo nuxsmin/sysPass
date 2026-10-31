@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Core\Events;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Events\EventDispatcherEmitter;
 use SP\Domain\Core\Events\Event;
@@ -51,6 +52,7 @@ final class EventDispatcherEmitterTest extends UnitaryTestCase
         $this->emitter = new EventDispatcherEmitter($this->eventDispatcher);
     }
 
+    #[Test]
     public function testEmitNotifiesWithTheEventSourceAndMessage(): void
     {
         $source = new \stdClass();
@@ -71,6 +73,7 @@ final class EventDispatcherEmitterTest extends UnitaryTestCase
         $this->emitter->emit('create.tag', $source, $message);
     }
 
+    #[Test]
     public function testEmitSupportsEventsWithoutAMessage(): void
     {
         $source = new \stdClass();

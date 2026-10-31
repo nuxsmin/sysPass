@@ -28,6 +28,7 @@ namespace SP\Tests\Core\UI;
 
 use Directory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Context\ContextException;
@@ -54,6 +55,7 @@ class ThemeTest extends UnitaryTestCase
     private PhpFileLoaderInterface|MockObject $fileLoader;
     private Theme $theme;
 
+    #[Test]
     public function testGetIcons()
     {
         $expected = spl_object_id($this->themeIcons);
@@ -65,6 +67,7 @@ class ThemeTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetThemeNameUnathenticated()
     {
         $context = $this->createMock(SessionContext::class);
@@ -87,6 +90,7 @@ class ThemeTest extends UnitaryTestCase
      * @throws Exception
      * @throws SPException
      */
+    #[Test]
     public function testGetThemeNameAuthenticated()
     {
         $context = $this->createMock(SessionContext::class);
@@ -108,6 +112,7 @@ class ThemeTest extends UnitaryTestCase
         $this->assertEquals($userDto->preferences->getTheme(), $current);
     }
 
+    #[Test]
     public function testGetViewsPath()
     {
         $path = self::$faker->filePath();
@@ -119,6 +124,7 @@ class ThemeTest extends UnitaryTestCase
         $this->assertEquals($path, $this->theme->getViewsPath());
     }
 
+    #[Test]
     public function testGetInfo()
     {
         $this->themeContext
@@ -129,6 +135,7 @@ class ThemeTest extends UnitaryTestCase
         $this->assertEquals([], $this->theme->getInfo());
     }
 
+    #[Test]
     public function testGetUri()
     {
         $url = self::$faker->url();
@@ -143,6 +150,7 @@ class ThemeTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetAvailable()
     {
         $dir = $this->createMock(Directory::class);
@@ -163,6 +171,7 @@ class ThemeTest extends UnitaryTestCase
         $this->theme->getAvailable();
     }
 
+    #[Test]
     public function testGetPath()
     {
         $path = self::$faker->filePath();

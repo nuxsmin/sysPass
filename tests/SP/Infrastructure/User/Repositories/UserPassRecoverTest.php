@@ -29,6 +29,7 @@ use Aura\SqlQuery\Common\InsertInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Simple;
@@ -52,6 +53,7 @@ class UserPassRecoverTest extends UnitaryTestCase
     private UserPassRecover              $userPassRecover;
     private MockObject|DatabaseInterface $database;
 
+    #[Test]
     public function testGetAttemptsByUserId()
     {
         $time = self::$faker->unixTime();
@@ -73,6 +75,7 @@ class UserPassRecoverTest extends UnitaryTestCase
         $this->userPassRecover->getAttemptsByUserId(100, $time);
     }
 
+    #[Test]
     public function testGetUserIdForHash()
     {
         $time = self::$faker->unixTime();
@@ -99,6 +102,7 @@ class UserPassRecoverTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testAdd()
     {
         $hash = self::$faker->sha1();
@@ -128,6 +132,7 @@ class UserPassRecoverTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testToggleUsedByHash()
     {
         $time = self::$faker->unixTime();

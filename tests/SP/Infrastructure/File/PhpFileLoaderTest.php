@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Infrastructure\File;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\PhpFileLoader;
 use SP\Tests\UnitaryTestCase;
@@ -39,6 +40,7 @@ class PhpFileLoaderTest extends UnitaryTestCase
 {
     private PhpFileLoader $fileLoader;
 
+    #[Test]
     public function testLoad()
     {
         $file = TMP_PATH . DIRECTORY_SEPARATOR . 'php_file_loader_test.php';
@@ -50,6 +52,7 @@ class PhpFileLoaderTest extends UnitaryTestCase
         unlink($file);
     }
 
+    #[Test]
     public function testLoadMissingFile()
     {
         $this->expectException(FileException::class);

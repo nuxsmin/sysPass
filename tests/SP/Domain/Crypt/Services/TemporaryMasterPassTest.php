@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Crypt\Services;
 use SP\Core\Context\StatelessMasterKeyStore;
 use PHPMailer\PHPMailer\Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -66,6 +67,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSendByEmailForAllUsers()
     {
         $key = self::$faker->sha1();
@@ -89,6 +91,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws ServiceException
      */
+    #[Test]
     public function testGetUsingKey()
     {
         $masterPass = self::$faker->password();
@@ -116,6 +119,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSendByEmailForGroup()
     {
         $groupId = self::$faker->randomNumber();
@@ -139,6 +143,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckTempMasterPass()
     {
         $now = time();
@@ -174,6 +179,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckTempMasterPassWithZeroMaxTime()
     {
         $pass = self::$faker->password();
@@ -194,6 +200,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckTempMasterPassWithWrongKey()
     {
         $now = time();
@@ -231,6 +238,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckTempMasterPassWithMaxAttempts()
     {
         $now = time();
@@ -274,6 +282,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckTempMasterPassWithNoConfigItem()
     {
         $pass = self::$faker->password();
@@ -293,6 +302,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCheckTempMasterPassWithError()
     {
         $pass = self::$faker->password();
@@ -316,6 +326,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws ContextException
      */
+    #[Test]
     public function testCreate()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'test_master_pass');
@@ -353,6 +364,7 @@ class TemporaryMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws ContextException
      */
+    #[Test]
     public function testCreateWithError()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'test_master_pass');

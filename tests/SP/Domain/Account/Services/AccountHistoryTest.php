@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
@@ -53,6 +54,7 @@ class AccountHistoryTest extends UnitaryTestCase
     private AccountHistory                      $accountHistory;
     private MockObject|AccountHistoryRepository $accountHistoryRepository;
 
+    #[Test]
     public function testCreate()
     {
         $accountData = AccountDataGenerator::factory()->buildAccount();
@@ -68,6 +70,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->accountHistory->create($dto);
     }
 
+    #[Test]
     public function testDeleteByAccountIdBatch()
     {
         $ids = [1, 2, 3];
@@ -80,6 +83,7 @@ class AccountHistoryTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetHistoryForAccount()
     {
         $id = self::$faker->randomNumber();
@@ -92,6 +96,7 @@ class AccountHistoryTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetAccountsPassData()
     {
         $this->accountHistoryRepository->expects(self::once())->method('getAccountsPassData');
@@ -102,6 +107,7 @@ class AccountHistoryTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -114,6 +120,7 @@ class AccountHistoryTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testDeleteError()
     {
         $id = self::$faker->randomNumber();
@@ -130,6 +137,7 @@ class AccountHistoryTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws SPException
      */
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -173,6 +181,7 @@ class AccountHistoryTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws SPException
      */
+    #[Test]
     public function testGetByIdError()
     {
         $id = self::$faker->randomNumber();
@@ -189,6 +198,7 @@ class AccountHistoryTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = [1, 2, 3];
@@ -208,6 +218,7 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->accountHistory->deleteByIdBatch($ids);
     }
 
+    #[Test]
     public function testSearch()
     {
         $itemSearchData =
@@ -221,6 +232,7 @@ class AccountHistoryTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdatePasswordMasterPass()
     {
         $id = self::$faker->randomNumber();
@@ -237,6 +249,7 @@ class AccountHistoryTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdatePasswordMasterPassError()
     {
         $id = self::$faker->randomNumber();

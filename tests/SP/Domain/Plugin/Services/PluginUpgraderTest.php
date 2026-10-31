@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Plugin\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -48,6 +49,7 @@ class PluginUpgraderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpgradeForWithCompatibleVersion()
     {
         $pluginModel = PluginGenerator::factory()->buildPlugin()->mutate(['versionLevel' => '1000.1']);
@@ -86,6 +88,7 @@ class PluginUpgraderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpgradeForWithNoCompatibleVersion()
     {
         $pluginModel = PluginGenerator::factory()->buildPlugin()->mutate(['versionLevel' => '1000.1']);
@@ -122,6 +125,7 @@ class PluginUpgraderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpgradeForWithNullVersion()
     {
         $pluginModel = PluginGenerator::factory()->buildPlugin()->mutate(['versionLevel' => null]);
@@ -158,6 +162,7 @@ class PluginUpgraderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpgradeForWithException()
     {
         $pluginManagerService = $this->createMock(PluginManagerService::class);

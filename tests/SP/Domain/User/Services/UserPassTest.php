@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\User\Services;
 
 use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -50,6 +51,7 @@ class UserPassTest extends UnitaryTestCase
      * @throws QueryException
      * @throws NoSuchItemException
      */
+    #[Test]
     public function testMigrateUserPassById()
     {
         $userRepository = $this->createMock(UserRepository::class);
@@ -76,6 +78,7 @@ class UserPassTest extends UnitaryTestCase
      * @throws QueryException
      * @throws NoSuchItemException
      */
+    #[Test]
     public function testMigrateUserPassByIdWithException()
     {
         $userRepository = $this->createMock(UserRepository::class);

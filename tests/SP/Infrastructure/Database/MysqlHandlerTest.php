@@ -28,6 +28,7 @@ namespace SP\Tests\Infrastructure\Database;
 use PDO;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Domain\Core\Exceptions\DatabaseException;
@@ -67,6 +68,7 @@ class MysqlHandlerTest extends UnitaryTestCase
      * @throws DatabaseException
      */
     #[DataProvider('getConnectionDataProvider')]
+    #[Test]
     public function testGetConnectionWithException(
         ?string $socket,
         ?string $host,
@@ -107,6 +109,7 @@ class MysqlHandlerTest extends UnitaryTestCase
      * @throws Exception
      * @throws DatabaseException
      */
+    #[Test]
     public function testGetConnection()
     {
         $pdoOptions = [
@@ -162,6 +165,7 @@ class MysqlHandlerTest extends UnitaryTestCase
      * @throws DatabaseException
      * @throws Exception
      */
+    #[Test]
     public function testGetConnectionSimple()
     {
         $pdoOptions = [
@@ -204,6 +208,7 @@ class MysqlHandlerTest extends UnitaryTestCase
      * @throws Exception
      */
     #[DataProvider('getConnectionSimpleDataProvider')]
+    #[Test]
     public function testGetConnectionSimpleWithException(
         ?string $socket,
         ?string $host,
@@ -239,6 +244,7 @@ class MysqlHandlerTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetDriver()
     {
         $connectionData = $this->createStub(DatabaseConnectionData::class);

@@ -35,6 +35,7 @@ use SP\Domain\Tag\Ports\TagService;
 use SP\Tests\Generators\TagGenerator;
 use SP\Tests\UnitaryTestCase;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class XmlTagExportTest
@@ -52,6 +53,7 @@ class XmlTagExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testExport()
     {
         $tag = TagGenerator::factory()->buildTag();
@@ -79,6 +81,7 @@ class XmlTagExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testExportWithoutCategories()
     {
         $document = new DOMDocument();
@@ -98,6 +101,7 @@ class XmlTagExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testExportWithException()
     {
         $document = new DOMDocument();

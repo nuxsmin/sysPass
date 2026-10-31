@@ -27,6 +27,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
@@ -50,6 +51,7 @@ class AccountSearchTest extends UnitaryTestCase
     private AccountFilterBuilder|MockObject $accountFilterUser;
     private AccountSearch                   $accountSearch;
 
+    #[Test]
     public function testWithFilterForOwner()
     {
         $out = $this->accountSearch->withFilterForOwner('test_owner');
@@ -74,6 +76,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->assertMatchesRegularExpression($expected, $output);
     }
 
+    #[Test]
     public function testWithFilterForAccountNameRegex()
     {
         $out = $this->accountSearch->withFilterForAccountNameRegex('test_account');
@@ -85,6 +88,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->checkQueryRegex($out->getStatement(), $query);
     }
 
+    #[Test]
     public function testWithFilterForIsPrivate()
     {
         $out = $this->accountSearch->withFilterForIsPrivate(123, 456);
@@ -96,6 +100,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->checkQueryRegex($out->getStatement(), $query);
     }
 
+    #[Test]
     public function testWithFilterForIsNotExpired()
     {
         $out = $this->accountSearch->withFilterForIsNotExpired();
@@ -105,6 +110,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->checkQueryRegex($out->getStatement(), $query);
     }
 
+    #[Test]
     public function testWithFilterForGroup()
     {
         $out = $this->accountSearch->withFilterForGroup(123);
@@ -116,6 +122,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->checkQueryRegex($out->getStatement(), $query);
     }
 
+    #[Test]
     public function testWithFilterForFile()
     {
         $out = $this->accountSearch->withFilterForFile('test_file');
@@ -127,6 +134,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->checkQueryRegex($out->getStatement(), $query);
     }
 
+    #[Test]
     public function testWithFilterForMainGroup()
     {
         $out = $this->accountSearch->withFilterForMainGroup('test_group');
@@ -138,6 +146,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->checkQueryRegex($out->getStatement(), $query);
     }
 
+    #[Test]
     public function testWithFilterForCategory()
     {
         $out = $this->accountSearch->withFilterForCategory('test_category');
@@ -149,6 +158,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->checkQueryRegex($out->getStatement(), $query);
     }
 
+    #[Test]
     public function testWithFilterForUser()
     {
         $out = $this->accountSearch->withFilterForUser(123, 456);
@@ -160,6 +170,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->checkQueryRegex($out->getStatement(), $query);
     }
 
+    #[Test]
     public function testWithFilterForClient()
     {
         $out = $this->accountSearch->withFilterForClient('test_client');
@@ -171,6 +182,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->checkQueryRegex($out->getStatement(), $query);
     }
 
+    #[Test]
     public function testGetByFilter()
     {
         $accountSearchFilter = AccountSearchFilterDto::build('test');
@@ -202,6 +214,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->accountSearch->getByFilter($accountSearchFilter);
     }
 
+    #[Test]
     public function testGetByFilterWithSortViews()
     {
         $accountSearchFilter = AccountSearchFilterDto::build('test');
@@ -223,6 +236,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->accountSearch->getByFilter($accountSearchFilter);
     }
 
+    #[Test]
     public function testWithFilterForAccountId()
     {
         $out = $this->accountSearch->withFilterForAccountId(123);
@@ -234,6 +248,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->checkQueryRegex($out->getStatement(), $query);
     }
 
+    #[Test]
     public function testWithFilterForIsNotPrivate()
     {
         $out = $this->accountSearch->withFilterForIsNotPrivate();
@@ -243,6 +258,7 @@ class AccountSearchTest extends UnitaryTestCase
         $this->checkQueryRegex($out->getStatement(), $query);
     }
 
+    #[Test]
     public function testWithFilterForIsExpired()
     {
         $out = $this->accountSearch->withFilterForIsExpired();

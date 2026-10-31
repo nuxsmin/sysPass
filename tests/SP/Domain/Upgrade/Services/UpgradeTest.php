@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Upgrade\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Container\ContainerInterface;
@@ -58,6 +59,7 @@ class UpgradeTest extends UnitaryTestCase
      * @throws InvalidClassException
      * @throws Exception
      */
+    #[Test]
     public function testRegisterUpgradeHandler()
     {
         $handler = $this->createMock(UpgradeHandlerService::class);
@@ -71,6 +73,7 @@ class UpgradeTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws InvalidClassException
      */
+    #[Test]
     public function testRegisterUpgradeHandlerWithClassException()
     {
         $this->expectException(InvalidClassException::class);
@@ -84,6 +87,7 @@ class UpgradeTest extends UnitaryTestCase
      * @throws InvalidClassException
      * @throws Exception
      */
+    #[Test]
     public function testRegisterUpgradeHandlerWithDuplicate()
     {
         $handler = $this->createMock(UpgradeHandlerService::class);
@@ -102,6 +106,7 @@ class UpgradeTest extends UnitaryTestCase
      * @throws FileException
      * @throws UpgradeException
      */
+    #[Test]
     public function testUpgrade()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
@@ -118,6 +123,7 @@ class UpgradeTest extends UnitaryTestCase
      * @throws UpgradeException
      * @throws InvalidClassException
      */
+    #[Test]
     public function testUpgradeWithHandler()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
@@ -148,6 +154,7 @@ class UpgradeTest extends UnitaryTestCase
      * @throws UpgradeException
      * @throws InvalidClassException
      */
+    #[Test]
     public function testUpgradeWithHandlerWithFailedApply()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
@@ -181,6 +188,7 @@ class UpgradeTest extends UnitaryTestCase
      * @throws UpgradeException
      * @throws InvalidClassException
      */
+    #[Test]
     public function testUpgradeWithException()
     {
         $configData = $this->createMock(ConfigDataInterface::class);

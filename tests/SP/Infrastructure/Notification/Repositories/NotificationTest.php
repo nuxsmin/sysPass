@@ -31,6 +31,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -54,6 +55,7 @@ class NotificationTest extends UnitaryTestCase
 
     private Notification $notification;
 
+    #[Test]
     public function testGetByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -81,6 +83,7 @@ class NotificationTest extends UnitaryTestCase
         $this->notification->getByIdBatch($ids);
     }
 
+    #[Test]
     public function testGetAllActiveForAdmin()
     {
         $callback = new Callback(
@@ -104,6 +107,7 @@ class NotificationTest extends UnitaryTestCase
         $this->notification->getAllActiveForAdmin(100);
     }
 
+    #[Test]
     public function testGetAllForUserId()
     {
         $callback = new Callback(
@@ -131,6 +135,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -154,6 +159,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $notification = NotificationDataGenerator::factory()->buildNotification();
@@ -193,6 +199,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSetCheckedById()
     {
         $callbackCreate = new Callback(
@@ -219,6 +226,7 @@ class NotificationTest extends UnitaryTestCase
         $this->assertEquals(1, $out);
     }
 
+    #[Test]
     public function testGetAllActiveForUserId()
     {
         $callback = new Callback(
@@ -246,6 +254,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteAdminBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -277,6 +286,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $notification = NotificationDataGenerator::factory()->buildNotification();
@@ -312,6 +322,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteAdmin()
     {
         $id = self::$faker->randomNumber();
@@ -331,6 +342,7 @@ class NotificationTest extends UnitaryTestCase
         $this->notification->deleteAdmin($id);
     }
 
+    #[Test]
     public function testGetById()
     {
         $callback = new Callback(
@@ -358,6 +370,7 @@ class NotificationTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -385,6 +398,7 @@ class NotificationTest extends UnitaryTestCase
         $this->notification->deleteByIdBatch($ids);
     }
 
+    #[Test]
     public function testSearchForUserId()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -413,6 +427,7 @@ class NotificationTest extends UnitaryTestCase
         $this->notification->searchForUserId($item, 100);
     }
 
+    #[Test]
     public function testSearchForAdmin()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -441,6 +456,7 @@ class NotificationTest extends UnitaryTestCase
         $this->notification->searchForAdmin($item, 100);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -461,6 +477,7 @@ class NotificationTest extends UnitaryTestCase
         $this->notification->getAll();
     }
 
+    #[Test]
     public function testGetForUserIdByDate()
     {
         $callback = new Callback(

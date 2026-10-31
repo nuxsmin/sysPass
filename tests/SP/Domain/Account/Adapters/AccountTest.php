@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Account\Adapters;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Account\Adapters\Account;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -50,6 +51,7 @@ class AccountTest extends UnitaryTestCase
      * @throws Exception
      * @throws ActionNotFoundException
      */
+    #[Test]
     public function testAdapt(): void
     {
         $dataGenerator = AccountDataGenerator::factory();
@@ -138,6 +140,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testIncludeCustomFields(): void
     {
         $customFieldData = CustomFieldGenerator::factory()->buildSimpleModel();

@@ -28,6 +28,7 @@ namespace SP\Tests\Core\Acl;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Acl\Actions;
@@ -68,6 +69,7 @@ class ActionsTest extends UnitaryTestCase
      * @throws ActionNotFoundException
      */
     #[DataProvider('expirationDataProvider')]
+    #[Test]
     public function testResetAndExpired(bool $expiredCache, bool $expiredDate)
     {
         $fileTime = self::$faker->randomNumber();
@@ -152,6 +154,7 @@ class ActionsTest extends UnitaryTestCase
      * @throws Exception
      * @throws ActionNotFoundException
      */
+    #[Test]
     public function testResetAndNotExpired()
     {
         $this->fileCache
@@ -185,6 +188,7 @@ class ActionsTest extends UnitaryTestCase
      * @throws ActionNotFoundException
      * @throws FileException
      */
+    #[Test]
     public function testResetWithCacheFileException()
     {
         $this->fileCache
@@ -209,6 +213,7 @@ class ActionsTest extends UnitaryTestCase
      * @throws FileException
      * @throws Exception
      */
+    #[Test]
     public function testResetWithFileException()
     {
         $this->fileCache
@@ -236,6 +241,7 @@ class ActionsTest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testResetWithSaveException()
     {
         $this->fileCache
@@ -269,6 +275,7 @@ class ActionsTest extends UnitaryTestCase
      * @throws ActionNotFoundException
      * @throws FileException
      */
+    #[Test]
     public function testGetActionById()
     {
         $actionsMapped = array_map(
@@ -291,6 +298,7 @@ class ActionsTest extends UnitaryTestCase
     /**
      * @throws ActionNotFoundException
      */
+    #[Test]
     public function testGetActionByIdWithNotFound()
     {
         $this->expectException(ActionNotFoundException::class);

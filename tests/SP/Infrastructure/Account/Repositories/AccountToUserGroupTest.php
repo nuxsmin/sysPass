@@ -27,6 +27,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Models\AccountItem;
@@ -52,6 +53,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testDeleteTypeByAccountId(): void
     {
         $accountId = self::$faker->randomNumber();
@@ -75,6 +77,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
         $this->assertTrue($this->accountToUserGroup->deleteByAccountId($accountId));
     }
 
+    #[Test]
     public function testGetUserGroupsByAccountId(): void
     {
         $id = self::$faker->randomNumber();
@@ -102,6 +105,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testDeleteByUserGroupId(): void
     {
         $userGroupId = self::$faker->randomNumber();
@@ -129,6 +133,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testAddByType(): void
     {
         $userGroups = self::getRandomNumbers(10);
@@ -153,6 +158,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testDeleteByAccountId(): void
     {
         $accountId = self::$faker->randomNumber();
@@ -176,6 +182,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
         $this->assertTrue($this->accountToUserGroup->deleteByAccountId($accountId));
     }
 
+    #[Test]
     public function testGetUserGroupsByUserGroupId(): void
     {
         $id = self::$faker->randomNumber();

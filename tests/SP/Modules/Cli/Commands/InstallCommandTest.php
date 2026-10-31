@@ -38,6 +38,7 @@ use function SP\Tests\getResource;
 use function SP\Tests\recreateDir;
 use function SP\Tests\saveResource;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  *
@@ -93,6 +94,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testInstallationIsAborted(): void
     {
         $commandTester = $this->executeCommandTest(InstallCommand::class);
@@ -106,6 +108,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testNoDatabaseConnection(): void
     {
         $inputData = array_merge(
@@ -127,6 +130,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testEmptyAdminPassword(): void
     {
         $inputData = array_merge(
@@ -148,6 +152,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testEmptyMasterPassword(): void
     {
         $inputData = array_merge(
@@ -170,6 +175,7 @@ class InstallCommandTest extends CliTestCase
      * @throws NotFoundException
      * @throws DatabaseException
      */
+    #[Test]
     public function testInstallIsSuccessful(): void
     {
         $inputData = array_merge(
@@ -203,6 +209,7 @@ class InstallCommandTest extends CliTestCase
      * @throws NotFoundException
      * @throws DatabaseException
      */
+    #[Test]
     public function testInstallAndLanguageIsSet(): void
     {
         $inputData = array_merge(
@@ -239,6 +246,7 @@ class InstallCommandTest extends CliTestCase
      * @throws NotFoundException
      * @throws DatabaseException
      */
+    #[Test]
     public function testInstallAndHostingModeIsUsed(): void
     {
         $databaseUser = 'syspass';
@@ -287,6 +295,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testInstallFromEnvironmentVarIsAbort(): void
     {
         $this->setEnvironmentVariables();
@@ -338,6 +347,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testInstallFromEnvironmentVarIsAbortedWithForce(): void
     {
         putenv(sprintf('%s=true',
@@ -362,6 +372,7 @@ class InstallCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testInstallFromEnvironmentVarIsSuccessful(): void
     {
         putenv(sprintf('%s=true',

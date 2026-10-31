@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Core\UI;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Core\Context\Context;
@@ -45,6 +46,7 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class ThemeIconsTest extends UnitaryTestCase
 {
+    #[Test]
     public function testGetIconByNameWithUnknownIcon()
     {
         $themeIcons = new ThemeIcons();
@@ -55,6 +57,7 @@ class ThemeIconsTest extends UnitaryTestCase
         $this->assertEquals('mdl-color-text--indigo-A200', $out->getClass());
     }
 
+    #[Test]
     public function testGetIconByName()
     {
         $themeIcons = new ThemeIcons();
@@ -68,6 +71,7 @@ class ThemeIconsTest extends UnitaryTestCase
         $this->assertEquals('testTitle', $out->getTitle());
     }
 
+    #[Test]
     public function testAddIcon()
     {
         $themeIcons = new ThemeIcons();
@@ -86,6 +90,7 @@ class ThemeIconsTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      */
+    #[Test]
     public function testLoadIconsWithCache()
     {
         $context = $this->createMock(Context::class);

@@ -30,6 +30,7 @@ use DI\NotFoundException;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
@@ -53,6 +54,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateAction(): void
     {
         $response = $this->createUserGroup(self::PARAMS);
@@ -92,6 +94,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateActionInvalidUser(): void
     {
         $params = self::PARAMS;
@@ -108,6 +111,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateActionRequiredParameters(): void
     {
         $params = self::PARAMS;
@@ -126,6 +130,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateActionDuplicatedName(): void
     {
         $params = self::PARAMS;
@@ -142,6 +147,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewAction(): void
     {
         $response = $this->createUserGroup(self::PARAMS);
@@ -172,6 +178,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -191,6 +198,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws JsonException
      */
     #[DataProvider('getGroupUsers')]
+    #[Test]
     public function testEditAction(array $users, int $usersCount): void
     {
         $response = $this->createUserGroup(self::PARAMS);
@@ -239,6 +247,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditActionInvalidUser(): void
     {
         $response = $this->createUserGroup(self::PARAMS);
@@ -268,6 +277,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditActionRequiredParameters(): void
     {
         $response = $this->createUserGroup(self::PARAMS);
@@ -297,6 +307,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditActionNonExistant(): void
     {
         $params = [
@@ -321,6 +332,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      */
     #[DataProvider('searchProvider')]
+    #[Test]
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(
@@ -340,6 +352,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteAction(): void
     {
         $response = $this->createUserGroup();
@@ -364,6 +377,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -382,6 +396,7 @@ class UserGroupControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteActionRequiredParameters(): void
     {
         $api = $this->callApi(

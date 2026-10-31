@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Common\Adapters;
 use __PHP_Incomplete_Class;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Core\Exceptions\SPException;
@@ -55,6 +56,7 @@ class SerdeTest extends UnitaryTestCase
     }
 
     #[DataProvider('serializeDataProvider')]
+    #[Test]
     public function testSerialize(mixed $data, string $expected)
     {
         $out = \SP\Domain\Common\Adapters\Serde::serialize($data);
@@ -65,6 +67,7 @@ class SerdeTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testDeserialize()
     {
         $data = 'O:20:"SP\Config\ConfigData":1:{s:13:"'
@@ -87,6 +90,7 @@ class SerdeTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testDeserializeWithClass()
     {
         $data = 'O:20:"SP\Config\ConfigData":1:{s:13:"'
@@ -109,6 +113,7 @@ class SerdeTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testDeserializeWithClassException()
     {
         $data = 'O:20:"SP\Config\ConfigData":1:{s:13:"'
@@ -124,6 +129,7 @@ class SerdeTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testSerializeJson()
     {
         $data = ['a' => 'testA', 'b' => 1, 'c' => true, 'd' => new stdClass()];
@@ -138,6 +144,7 @@ class SerdeTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testSerializeJsonWithException()
     {
         $data = [
@@ -155,6 +162,7 @@ class SerdeTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testDeserializeJson()
     {
         $data = '{"a":"testA","b":1,"c":true,"d":{}}';
@@ -169,6 +177,7 @@ class SerdeTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testDeserializeJsonWithException()
     {
         $data = '{"a":"testA","b":1,"c":true,"d":}';

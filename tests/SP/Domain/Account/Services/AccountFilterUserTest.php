@@ -29,6 +29,7 @@ namespace SP\Tests\Domain\Account\Services;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -62,6 +63,7 @@ class AccountFilterUserTest extends UnitaryTestCase
     private AccountFilter $accountFilter;
     private QueryFactory|MockObject $queryFactory;
 
+    #[Test]
     public function testBuildFilter()
     {
         $this->setExpectationWithoutGlobalSearch('Account');
@@ -141,6 +143,7 @@ class AccountFilterUserTest extends UnitaryTestCase
         ];
     }
 
+    #[Test]
     public function testBuildFilterWithFullGroupAccess()
     {
         $this->config->getConfigData()->setAccountFullGroupAccess(true);
@@ -164,6 +167,7 @@ class AccountFilterUserTest extends UnitaryTestCase
         $this->accountFilter->buildFilter();
     }
 
+    #[Test]
     public function testBuildFilterWithQueryProvided()
     {
         $this->queryFactory->expects(self::never())->method('newSelect');
@@ -181,6 +185,7 @@ class AccountFilterUserTest extends UnitaryTestCase
      * @throws Exception
      * @throws SPException
      */
+    #[Test]
     public function testBuildFilterWithGlobalSearchForAdminAcc()
     {
         $this->context->setUserData(
@@ -218,6 +223,7 @@ class AccountFilterUserTest extends UnitaryTestCase
      * @throws Exception
      * @throws SPException
      */
+    #[Test]
     public function testBuildFilterWithGlobalSearchForAdminApp()
     {
         $this->context->setUserData(
@@ -229,6 +235,7 @@ class AccountFilterUserTest extends UnitaryTestCase
         $this->accountFilter->buildFilter();
     }
 
+    #[Test]
     public function testBuildFilterWithGlobalSearchForGlobalSearch()
     {
         $this->config->getConfigData()->setGlobalSearch(true);
@@ -239,6 +246,7 @@ class AccountFilterUserTest extends UnitaryTestCase
         $this->accountFilter->buildFilter(true);
     }
 
+    #[Test]
     public function testBuildFilterHistory()
     {
         $this->setExpectationWithoutGlobalSearch('AccountHistory');
@@ -250,6 +258,7 @@ class AccountFilterUserTest extends UnitaryTestCase
      * @throws Exception
      * @throws SPException
      */
+    #[Test]
     public function testBuildFilterHistoryWithGlobalSearchForAdminAcc()
     {
         $this->context->setUserData(
@@ -265,6 +274,7 @@ class AccountFilterUserTest extends UnitaryTestCase
      * @throws Exception
      * @throws SPException
      */
+    #[Test]
     public function testBuildFilterHistoryWithGlobalSearchForAdminApp()
     {
         $this->context->setUserData(
@@ -276,6 +286,7 @@ class AccountFilterUserTest extends UnitaryTestCase
         $this->accountFilter->buildFilterHistory();
     }
 
+    #[Test]
     public function testBuildFilterHistoryWithGlobalSearchForGlobalSearch()
     {
         $this->config->getConfigData()->setGlobalSearch(true);
@@ -289,6 +300,7 @@ class AccountFilterUserTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testBuildFilterHistoryWithQueryProvided()
     {
         $this->queryFactory->expects(self::never())->method('newSelect');
@@ -302,6 +314,7 @@ class AccountFilterUserTest extends UnitaryTestCase
         $this->accountFilter->buildFilterHistory(false, $select);
     }
 
+    #[Test]
     public function testBuildFilterHistoryWithFullGroupAccess()
     {
         $this->config->getConfigData()->setAccountFullGroupAccess(true);

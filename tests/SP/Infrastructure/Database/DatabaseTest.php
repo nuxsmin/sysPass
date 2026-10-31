@@ -31,6 +31,7 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
@@ -65,6 +66,7 @@ class DatabaseTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testBeginTransaction()
     {
         $pdo = $this->createMock(PDO::class);
@@ -88,6 +90,7 @@ class DatabaseTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testBeginTransactionWithExistingTransaction()
     {
         $pdo = $this->createMock(PDO::class);
@@ -112,6 +115,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testRunQueryWithMappedClass()
     {
         list($pdoStatement, $query) = $this->checkPrepare();
@@ -220,6 +224,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testRunQueryWithNoMappedClass()
     {
         list($pdoStatement, $query) = $this->checkPrepare();
@@ -245,6 +250,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testRunQueryWithMappedClassAndFullCount()
     {
         /** @var QueryInterface|MockObject $query */
@@ -281,6 +287,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testRunQueryWithNoSelect()
     {
         list($pdoStatement, $query) = $this->checkPrepare(QueryInterface::class);
@@ -312,6 +319,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testRunQueryWithNoValues()
     {
         list($pdoStatement, $query) = $this->checkPrepare(QueryInterface::class, false);
@@ -341,6 +349,7 @@ class DatabaseTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testEndTransaction()
     {
         $pdo = $this->createMock(PDO::class);
@@ -364,6 +373,7 @@ class DatabaseTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testEndTransactionWithNoExistingTransaction()
     {
         $pdo = $this->createMock(PDO::class);
@@ -389,6 +399,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws QueryException
      */
     #[DataProvider('bufferedDataProvider')]
+    #[Test]
     public function testDoFetchWithOptions(bool $buffered)
     {
         $this->dbStorageHandler
@@ -426,6 +437,7 @@ class DatabaseTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testRollbackTransaction()
     {
         $pdo = $this->createMock(PDO::class);
@@ -449,6 +461,7 @@ class DatabaseTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testRollbackTransactionWithNoTransaction()
     {
         $pdo = $this->createMock(PDO::class);
@@ -471,6 +484,7 @@ class DatabaseTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testRollbackTransactionWithNoRollback()
     {
         $pdo = $this->createMock(PDO::class);
@@ -495,6 +509,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws Exception
      * @throws QueryException
      */
+    #[Test]
     public function testRunQueryRaw()
     {
         $pdo = $this->createMock(PDO::class);
@@ -516,6 +531,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws Exception
      * @throws QueryException
      */
+    #[Test]
     public function testRunQueryRawWithException()
     {
         $pdo = $this->createMock(PDO::class);
@@ -541,6 +557,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws Exception
      * @throws QueryException
      */
+    #[Test]
     public function testRunQueryWithEmptyQueryException()
     {
         $query = $this->createStub(QueryInterface::class);
@@ -565,6 +582,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws Exception
      * @throws QueryException
      */
+    #[Test]
     public function testRunQueryWithConnectionException()
     {
         $query = $this->createStub(QueryInterface::class);
@@ -593,6 +611,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws Exception
      * @throws QueryException
      */
+    #[Test]
     public function testRunQueryWithPrepareException()
     {
         $pdo = $this->createStub(PDO::class);
@@ -626,6 +645,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws Exception
      * @throws QueryException
      */
+    #[Test]
     public function testRunQueryWithExecuteException()
     {
         $pdo = $this->createStub(PDO::class);
@@ -663,6 +683,7 @@ class DatabaseTest extends UnitaryTestCase
      * @throws Exception
      * @throws QueryException
      */
+    #[Test]
     public function testRunQueryWithConstraintException()
     {
         $pdo = $this->createStub(PDO::class);

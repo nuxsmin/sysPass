@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Core\Bootstrap;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Core\Bootstrap\UriContext;
 use SP\Domain\Http\Ports\RequestService;
@@ -40,6 +41,7 @@ class UriContextTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testConstruct()
     {
         $request = $this->createMock(RequestService::class);
@@ -64,6 +66,7 @@ class UriContextTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testConstructWithoutWebRoot()
     {
         $request = $this->createMock(RequestService::class);

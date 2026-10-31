@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Notification\Services;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Notification\Dtos\MailParams;
@@ -45,6 +46,7 @@ class PhpMailerServiceTest extends UnitaryTestCase
     private PhpMailerService     $phpMailerService;
     private PHPMailer|MockObject $phpMailer;
 
+    #[Test]
     public function testBody()
     {
         $this->phpMailer
@@ -55,6 +57,7 @@ class PhpMailerServiceTest extends UnitaryTestCase
         $this->phpMailerService->body('a_body');
     }
 
+    #[Test]
     public function testGetToAddresses()
     {
         $this->phpMailer
@@ -67,6 +70,7 @@ class PhpMailerServiceTest extends UnitaryTestCase
         $this->assertEquals(['mail_a', 'email_b'], $out);
     }
 
+    #[Test]
     public function testIsHtml()
     {
         $this->phpMailer
@@ -79,6 +83,7 @@ class PhpMailerServiceTest extends UnitaryTestCase
     /**
      * @throws MailerException
      */
+    #[Test]
     public function testAddAddress()
     {
         $this->phpMailer
@@ -92,6 +97,7 @@ class PhpMailerServiceTest extends UnitaryTestCase
     /**
      * @throws MailerException
      */
+    #[Test]
     public function testAddAddressWithException()
     {
         $this->phpMailer
@@ -108,6 +114,7 @@ class PhpMailerServiceTest extends UnitaryTestCase
     /**
      * @throws MailerException
      */
+    #[Test]
     public function testConfigure()
     {
         $mailParams = new MailParams(
@@ -142,6 +149,7 @@ class PhpMailerServiceTest extends UnitaryTestCase
     /**
      * @throws MailerException
      */
+    #[Test]
     public function testConfigureWithException()
     {
         $mailParams = new MailParams(
@@ -169,6 +177,7 @@ class PhpMailerServiceTest extends UnitaryTestCase
         $this->phpMailerService->configure($mailParams);
     }
 
+    #[Test]
     public function testSubject()
     {
         $this->phpMailer
@@ -182,6 +191,7 @@ class PhpMailerServiceTest extends UnitaryTestCase
     /**
      * @throws MailerException
      */
+    #[Test]
     public function testSend()
     {
         $this->phpMailer
@@ -195,6 +205,7 @@ class PhpMailerServiceTest extends UnitaryTestCase
     /**
      * @throws MailerException
      */
+    #[Test]
     public function testSendWithException()
     {
         $this->phpMailer

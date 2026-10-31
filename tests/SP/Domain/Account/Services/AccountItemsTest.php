@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
@@ -56,6 +57,7 @@ class AccountItemsTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateItems()
     {
         $accountUpdateDto = AccountDataGenerator::factory()->buildAccountUpdateDto();
@@ -122,6 +124,7 @@ class AccountItemsTest extends UnitaryTestCase
      * @throws SPException
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateItemsWithNoItems()
     {
         $accountUpdateDto = AccountDataGenerator::factory()
@@ -183,6 +186,7 @@ class AccountItemsTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateItemsWithNoPermission()
     {
         $accountUpdateDto = AccountDataGenerator::factory()->buildAccountUpdateDto();
@@ -229,6 +233,7 @@ class AccountItemsTest extends UnitaryTestCase
         $this->accountItems->updateItems(false, 100, $accountUpdateDto);
     }
 
+    #[Test]
     public function testAddItems()
     {
         $accountCreateDto = AccountDataGenerator::factory()->buildAccountCreateDto();
@@ -261,6 +266,7 @@ class AccountItemsTest extends UnitaryTestCase
         $this->accountItems->addItems(true, 100, $accountCreateDto);
     }
 
+    #[Test]
     public function testAddItemsWithNoPermission()
     {
         $accountCreateDto = AccountDataGenerator::factory()->buildAccountCreateDto();
@@ -281,6 +287,7 @@ class AccountItemsTest extends UnitaryTestCase
         $this->accountItems->addItems(false, 100, $accountCreateDto);
     }
 
+    #[Test]
     public function testAddItemsWithException()
     {
         $accountCreateDto = AccountDataGenerator::factory()->buildAccountCreateDto();

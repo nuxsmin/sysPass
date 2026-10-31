@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\User\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -49,6 +50,7 @@ class UserToUserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $this->userToUserGroupRepository
@@ -64,6 +66,7 @@ class UserToUserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateWithNoUsers()
     {
         $this->userToUserGroupRepository
@@ -75,6 +78,7 @@ class UserToUserGroupTest extends UnitaryTestCase
         $this->assertEquals(10, $this->userToUserGroup->update(100, []));
     }
 
+    #[Test]
     public function testGetUsersByGroupId()
     {
         $userToUserGroup = new UserToUserGroupModel(
@@ -94,6 +98,7 @@ class UserToUserGroupTest extends UnitaryTestCase
         $this->assertEquals([$userToUserGroup->getUserId()], $out);
     }
 
+    #[Test]
     public function testGetGroupsForUser()
     {
         $userToUserGroup = new UserToUserGroupModel(
@@ -117,6 +122,7 @@ class UserToUserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testAdd()
     {
         $this->userToUserGroupRepository

@@ -30,6 +30,7 @@ use DI\NotFoundException;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Api\Controllers\Account\AccountController;
 use SP\Tests\Modules\Api\ApiTestCase;
@@ -67,6 +68,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateAction(): void
     {
         $params = self::PARAMS;
@@ -126,6 +128,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateActionNoUserData(): void
     {
         $params = self::PARAMS;
@@ -162,6 +165,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws JsonException
      */
     #[DataProvider('getUnsetParams')]
+    #[Test]
     public function testCreateActionRequiredParameters(string $unsetParam): void
     {
         $params = self::PARAMS;
@@ -182,6 +186,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewPassAction(): void
     {
         $response = $this->createAccount();
@@ -210,6 +215,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewPassActionRequiredParamater(): void
     {
         $api = $this->callApi(
@@ -230,6 +236,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditPassAction(): void
     {
         $response = $this->createAccount();
@@ -274,6 +281,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditPassActionRequiredParameters(): void
     {
         $response = $this->createAccount();
@@ -300,6 +308,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewPassActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -318,6 +327,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewAction(): void
     {
         $response = $this->createAccount();
@@ -379,6 +389,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -397,6 +408,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewActionRequiredParameter(): void
     {
         $api = $this->callApi(
@@ -418,6 +430,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      */
     #[DataProvider('searchProvider')]
+    #[Test]
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(
@@ -437,6 +450,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws JsonException
      * @throws NotFoundException
      */
+    #[Test]
     public function testEditAction(): void
     {
         $response = $this->createAccount();
@@ -529,6 +543,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      */
     #[DataProvider('getUnsetParams')]
+    #[Test]
     public function testEditActionRequiredParameter(string $unsetParam): void
     {
         $response = $this->createAccount();
@@ -572,6 +587,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws JsonException
      * @throws NotFoundException
      */
+    #[Test]
     public function testEditActionNonExistant(): void
     {
         $params = [
@@ -607,6 +623,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteAction(): void
     {
         $response = $this->createAccount();
@@ -631,6 +648,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -649,6 +667,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteActionRequiredParameters(): void
     {
         $api = $this->callApi(

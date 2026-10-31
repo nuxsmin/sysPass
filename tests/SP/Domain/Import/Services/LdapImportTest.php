@@ -30,6 +30,7 @@ use SP\Domain\Auth\Providers\Ldap\LdapFactory;
 use ArrayIterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Auth\Ports\LdapActionsService;
@@ -117,6 +118,7 @@ class LdapImportTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testImportUsers()
     {
         $ldapParams = new LdapParams(
@@ -174,6 +176,7 @@ class LdapImportTest extends UnitaryTestCase
      * @throws LdapException
      */
     #[DataProvider('userFilterByTypeProvider')]
+    #[Test]
     public function testImportUsersWithFilterByType(LdapTypeEnum $ldapTypeEnum, string $filter)
     {
         $ldapParams = new LdapParams(
@@ -234,6 +237,7 @@ class LdapImportTest extends UnitaryTestCase
      * @throws LdapException
      */
     #[DataProvider('emptyNameOrLoginProvider')]
+    #[Test]
     public function testImportUsersWithEmptyNameOrLogin(array $entry)
     {
         $ldapParams = new LdapParams(
@@ -260,6 +264,7 @@ class LdapImportTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testImportUsersWithException()
     {
         $ldapParams = new LdapParams(
@@ -320,6 +325,7 @@ class LdapImportTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testImportGroups()
     {
         $ldapParams = new LdapParams(
@@ -368,6 +374,7 @@ class LdapImportTest extends UnitaryTestCase
      * @throws LdapException
      */
     #[DataProvider('groupFilterByTypeProvider')]
+    #[Test]
     public function testImportGroupsWithFilterByType(LdapTypeEnum $ldapTypeEnum, string $filter)
     {
         $ldapParams = new LdapParams(
@@ -415,6 +422,7 @@ class LdapImportTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testImportGroupsWithEmptyName()
     {
         $ldapParams = new LdapParams(
@@ -450,6 +458,7 @@ class LdapImportTest extends UnitaryTestCase
     /**
      * @throws LdapException
      */
+    #[Test]
     public function testImportGroupsWithException()
     {
         $ldapParams = new LdapParams(

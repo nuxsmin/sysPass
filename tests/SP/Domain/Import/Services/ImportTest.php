@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Import\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -52,6 +53,7 @@ class ImportTest extends UnitaryTestCase
      * @throws Exception
      * @throws \Exception
      */
+    #[Test]
     public function testDoImport()
     {
         $this->repository->expects(self::once())
@@ -91,6 +93,7 @@ class ImportTest extends UnitaryTestCase
      * @throws Exception
      * @throws \Exception
      */
+    #[Test]
     public function testDoImportWithException()
     {
         $this->repository->expects(self::once())

@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Account\Services\AccountToUser;
@@ -52,6 +53,7 @@ class AccountToUserTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetUsersByAccountId()
     {
         $accountId = self::$faker->randomNumber();
@@ -88,6 +90,7 @@ class AccountToUserTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetUsersByAccountIdWithNoUsers()
     {
         $accountId = self::$faker->randomNumber();

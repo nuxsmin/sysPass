@@ -51,7 +51,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P7-1 to P7-4 | #2016, #2027, #2047, #2049 | P7-1, P7-2 done; rest todo |
 | P8-1, P8-2 | #2017, #2033 | todo |
 | P9-1 to P9-5 | #2038, #2050, #2034, #2052, #2053 | P9-1, P9-2 done; rest todo |
-| P10-1 to P10-5 | #2035, #2039, #2018, #2019, #2020 | P10-1 done; rest todo |
+| P10-1 to P10-5 | #2035, #2039, #2018, #2019, #2020 | all done |
 | P11-1 to P11-5 | #2021, #2028, #2040, #2041, #2022 | todo |
 | D1 | #1965 | decided: option (b) |
 | D2 | #1966 | decided: option (a) |
@@ -285,7 +285,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 - [~] **P10-2 Keep Infrastructure tests DB-backed.** Repository queries with the highest risk run against the real test database (`#[Group('integration')]`, base `SP\Tests\DatabaseRepositoryTestCase`). Done: Tag; User (login lookup/update incl. SSO, usage, group emails, admin-hiding search); UserGroup usage; AccountHistory reads/search; AuthToken search; CustomFieldData/CustomFieldDefinition search; ItemPreset search; Track search; AccountFile reads/search; AccountToUser/AccountToUserGroup permissions; PublicLink listing. The 28 mocked repository tests stay `unitary`, since they only assert generated SQL. Acceptance: DB-backed tests run in the CI integration job (P0-2); the residual P0/P1 test backlog is follow-up work.
 - [ ] **P10-3 HTTP-level IT per migrated web area.** Follow the existing `IntegrationTestCase` + `BodyChecker` pattern. Each slice in P6 adds one IT class per controller action, written before the migration (characterisation tests).
 - [x] **P10-4 Coverage gates per layer.** Record current coverage per layer in section 9. Set target coverage for `Domain\*\UseCases` and `Domain\*\Services` once the baseline is known (decision needed after P0-1).
-- [ ] **P10-5 Test naming and attribute standard.** One style for all tests: `#[Test]` attribute plus `#[Group]`. Migrate gradually, inside the slice that touches each file.
+- [x] **P10-5 Test naming and attribute standard.** One style for all tests: `#[Test]` attribute plus `#[Group]`. The whole suite now adds `#[Test]` to every `test*` method; M16 stays 0.
 - [ ] **P10-6 Document the test pyramid** in ADR-004 (section 8).
 
 ### Phase 11: Documentation and decision records

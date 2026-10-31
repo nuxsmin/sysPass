@@ -30,6 +30,7 @@ use Aura\SqlQuery\Common\InsertInterface;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -57,6 +58,7 @@ class EventlogTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testClear()
     {
         $callback = new Callback(
@@ -78,6 +80,7 @@ class EventlogTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $eventlog = EventlogGenerator::factory()->buildEventlog();
@@ -108,6 +111,7 @@ class EventlogTest extends UnitaryTestCase
         $this->eventlog->create($eventlog);
     }
 
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -136,6 +140,7 @@ class EventlogTest extends UnitaryTestCase
         $this->eventlog->search($item);
     }
 
+    #[Test]
     public function testSearchWithEmptyString()
     {
         $item = new ItemSearchDto();

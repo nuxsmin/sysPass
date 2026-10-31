@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Log\Providers;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -54,6 +55,7 @@ class LogHandlerTest extends UnitaryTestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testUpdate()
     {
         $this->language
@@ -94,6 +96,7 @@ class LogHandlerTest extends UnitaryTestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testUpdateWithNoMessage()
     {
         $this->language
@@ -133,6 +136,7 @@ class LogHandlerTest extends UnitaryTestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testUpdateWithExceptionSource()
     {
         $this->language
@@ -170,6 +174,7 @@ class LogHandlerTest extends UnitaryTestCase
     }
 
 
+    #[Test]
     public function testGetEvents()
     {
         $out = $this->logHandler->getEvents();
@@ -179,6 +184,7 @@ class LogHandlerTest extends UnitaryTestCase
         $this->assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetEventsWithConfigEvents()
     {
         $this->config->getConfigData()->setLogEvents(['test.event_a', 'test.event_b']);

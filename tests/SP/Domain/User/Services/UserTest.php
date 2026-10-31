@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\User\Services;
 use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use JsonException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Services\ServiceException;
@@ -64,6 +65,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearch()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -88,6 +90,7 @@ class UserTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetById()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -106,6 +109,7 @@ class UserTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetByIdWithNoItems()
     {
         $this->userRepository
@@ -126,6 +130,7 @@ class UserTest extends UnitaryTestCase
      * @throws JsonException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdatePreferencesById()
     {
         $userPreferences = UserDataGenerator::factory()->buildUserPreferencesData();
@@ -141,6 +146,7 @@ class UserTest extends UnitaryTestCase
         $this->assertEquals(10, $out);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -160,6 +166,7 @@ class UserTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $this->userRepository
@@ -176,6 +183,7 @@ class UserTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithException()
     {
         $this->userRepository
@@ -194,6 +202,7 @@ class UserTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testCreateWithMasterPass()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -230,6 +239,7 @@ class UserTest extends UnitaryTestCase
         $this->user->createWithMasterPass($user, 'a_password', 'a_master_pass');
     }
 
+    #[Test]
     public function testGetUserEmailForAll()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -247,6 +257,7 @@ class UserTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdatePass()
     {
         $this->userRepository
@@ -270,6 +281,7 @@ class UserTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdatePassWithException()
     {
         $this->userRepository
@@ -287,6 +299,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testGetUserEmailForGroup()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -304,6 +317,7 @@ class UserTest extends UnitaryTestCase
      * @throws FileException
      * @throws SPException
      */
+    #[Test]
     public function testCreateOnLoginWithLdap()
     {
         $userLoginRequest = new UserLoginRequest(
@@ -342,6 +356,7 @@ class UserTest extends UnitaryTestCase
      * @throws FileException
      * @throws SPException
      */
+    #[Test]
     public function testCreateOnLoginWithNoLdap()
     {
         $userLoginRequest = new UserLoginRequest(
@@ -381,6 +396,7 @@ class UserTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByLogin()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -399,6 +415,7 @@ class UserTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByLoginWithException()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -420,6 +437,7 @@ class UserTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateLastLoginById()
     {
         $this->userRepository
@@ -436,6 +454,7 @@ class UserTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateLastLoginByIdWithException()
     {
         $this->userRepository
@@ -454,6 +473,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCheckExistsByLogin()
     {
         $this->userRepository
@@ -469,6 +489,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCheckExistsByLoginWithFalse()
     {
         $this->userRepository
@@ -485,6 +506,7 @@ class UserTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $this->userRepository
@@ -501,6 +523,7 @@ class UserTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithNoResult()
     {
         $this->userRepository
@@ -518,6 +541,7 @@ class UserTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreate()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -540,6 +564,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateOnLoginWithLdap()
     {
         $userLoginRequest = new UserLoginRequest(
@@ -570,6 +595,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateOnLoginWithNoLdap()
     {
         $userLoginRequest = new UserLoginRequest(
@@ -596,6 +622,7 @@ class UserTest extends UnitaryTestCase
         $this->user->updateOnLogin($userLoginRequest);
     }
 
+    #[Test]
     public function testGetUserEmailById()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -617,6 +644,7 @@ class UserTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -636,6 +664,7 @@ class UserTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateWithException()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -656,6 +685,7 @@ class UserTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testGetUsageForUser()
     {
         $this->userRepository

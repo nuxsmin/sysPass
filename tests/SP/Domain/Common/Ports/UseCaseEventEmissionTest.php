@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Common\Ports;
 
 use LogicException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionNamedType;
@@ -52,6 +53,7 @@ use SP\Tests\Stubs\InMemoryTagRepository;
 #[Group('unitary')]
 final class UseCaseEventEmissionTest extends TestCase
 {
+    #[Test]
     public function testUseCaseEmitsAnUntranslatedAuditEvent(): void
     {
         $repository = new InMemoryTagRepository();
@@ -83,6 +85,7 @@ final class UseCaseEventEmissionTest extends TestCase
         );
     }
 
+    #[Test]
     public function testUseCaseKeepsReceiverExtras(): void
     {
         $emitter = new InMemoryEventEmitter();
@@ -96,6 +99,7 @@ final class UseCaseEventEmissionTest extends TestCase
         self::assertSame([7], $message->getExtra('userId'));
     }
 
+    #[Test]
     public function testUseCaseCanEmitAMessageLessEvent(): void
     {
         $repository = new InMemoryTagRepository();
@@ -116,6 +120,7 @@ final class UseCaseEventEmissionTest extends TestCase
         self::assertNull($event['message']);
     }
 
+    #[Test]
     public function testUseCaseOnlyDependsOnPorts(): void
     {
         $constructor = (new ReflectionClass(CreateTagWithEventUseCase::class))->getConstructor();
@@ -133,6 +138,7 @@ final class UseCaseEventEmissionTest extends TestCase
         }
     }
 
+    #[Test]
     public function testEventEmitterPortKeepsTheDomainBoundary(): void
     {
         $contents = file_get_contents(REAL_APP_ROOT . '/lib/SP/Domain/Common/Ports/EventEmitter.php');

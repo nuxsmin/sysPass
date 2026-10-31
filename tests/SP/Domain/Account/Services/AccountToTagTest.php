@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Account\Services\AccountToTag;
@@ -53,6 +54,7 @@ class AccountToTagTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetTagsByAccountId()
     {
         $accountId = self::$faker->randomNumber();
@@ -78,6 +80,7 @@ class AccountToTagTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetTagsByAccountIdWithNotags()
     {
         $accountId = self::$faker->randomNumber();

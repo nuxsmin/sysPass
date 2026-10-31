@@ -31,6 +31,7 @@ use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Tests\UnitaryTestCase;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class VaultTest
@@ -42,6 +43,7 @@ class VaultTest extends UnitaryTestCase
     /**
      * @throws CryptException
      */
+    #[Test]
     public function testGetData()
     {
         $data = self::$faker->text;
@@ -54,6 +56,7 @@ class VaultTest extends UnitaryTestCase
     /**
      * @throws CryptException
      */
+    #[Test]
     public function testGetDataWithNoData()
     {
         $key = self::$faker->password;
@@ -69,6 +72,7 @@ class VaultTest extends UnitaryTestCase
     /**
      * @throws CryptException
      */
+    #[Test]
     public function testGetTimeSet()
     {
         $vault = Vault::factory(new Crypt())->saveData(self::$faker->text, self::$faker->password);
@@ -78,6 +82,7 @@ class VaultTest extends UnitaryTestCase
     /**
      * @throws CryptException
      */
+    #[Test]
     public function testReKey()
     {
         $data = self::$faker->text;

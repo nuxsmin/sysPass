@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Core\UI;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Core\UI\ThemeContext;
 use SP\Tests\UnitaryTestCase;
 
@@ -37,6 +38,7 @@ use SP\Tests\UnitaryTestCase;
 class ThemeContextTest extends UnitaryTestCase
 {
 
+    #[Test]
     public function testThemeContext()
     {
         $basePath = '/tmp';

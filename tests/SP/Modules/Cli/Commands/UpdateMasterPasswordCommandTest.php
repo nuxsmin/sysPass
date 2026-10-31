@@ -34,6 +34,7 @@ use SP\Tests\Modules\Cli\CliTestCase;
 
 use function SP\Tests\recreateDir;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  *
@@ -63,6 +64,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testUpdateAborted(): void
     {
         $commandTester = $this->executeCommandTest(
@@ -79,6 +81,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws FileNotFoundException
      * @throws NotFoundException
      */
+    #[Test]
     public function testUpdateIsSuccessful(): void
     {
         $inputData = array_merge(
@@ -105,6 +108,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testUpdateFromEnvironmentVarIsAbort(): void
     {
         $this->setEnvironmentVariables();
@@ -136,6 +140,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testUpdateFromEnvironmentVarBlankCurrentMasterPassword(): void
     {
         putenv(sprintf('%s=',
@@ -157,6 +162,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testUpdateFromEnvironmentVarBlankMasterPassword(): void
     {
         putenv(sprintf('%s=',
@@ -178,6 +184,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testUpdateFromEnvironmentVarIsSuccessful(): void
     {
         putenv(sprintf('%s=true',
@@ -201,6 +208,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testSameMasterPassword(): void
     {
         $inputData = [
@@ -223,6 +231,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testWrongMasterPassword(): void
     {
         $inputData = [

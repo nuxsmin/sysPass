@@ -29,6 +29,7 @@ namespace SP\Tests\Domain\Crypt\Services;
 use Dotenv\Repository\RepositoryInterface;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountMasterPasswordService;
 use SP\Domain\Common\Ports\Repository;
@@ -56,6 +57,7 @@ class MasterPassTest extends UnitaryTestCase
     private MockObject|RepositoryInterface          $repository;
     private MasterPass                              $masterPass;
 
+    #[Test]
     public function testCheckUserUpdateMPassWithFutureTime()
     {
         $now = time();
@@ -69,6 +71,7 @@ class MasterPassTest extends UnitaryTestCase
         $this->assertTrue($this->masterPass->checkUserUpdateMPass($now + 3600));
     }
 
+    #[Test]
     public function testCheckUserUpdateMPassWithPastTime()
     {
         $now = time();
@@ -82,6 +85,7 @@ class MasterPassTest extends UnitaryTestCase
         $this->assertFalse($this->masterPass->checkUserUpdateMPass($now - 3600));
     }
 
+    #[Test]
     public function testCheckUserUpdateMPassWithEqualTime()
     {
         $now = time();
@@ -95,6 +99,7 @@ class MasterPassTest extends UnitaryTestCase
         $this->assertTrue($this->masterPass->checkUserUpdateMPass($now));
     }
 
+    #[Test]
     public function testCheckUserUpdateMPassWithServiceError()
     {
         $this->configService
@@ -106,6 +111,7 @@ class MasterPassTest extends UnitaryTestCase
         $this->assertTrue($this->masterPass->checkUserUpdateMPass(time()));
     }
 
+    #[Test]
     public function testCheckUserUpdateMPassWithNoSuchItemError()
     {
         $this->configService
@@ -117,6 +123,7 @@ class MasterPassTest extends UnitaryTestCase
         $this->assertTrue($this->masterPass->checkUserUpdateMPass(time()));
     }
 
+    #[Test]
     public function testCheckMasterPassword()
     {
         $password = self::$faker->sha1();
@@ -131,6 +138,7 @@ class MasterPassTest extends UnitaryTestCase
         self::assertTrue($this->masterPass->checkMasterPassword($password));
     }
 
+    #[Test]
     public function testCheckMasterPasswordWithServiceError()
     {
         $password = self::$faker->sha1();
@@ -144,6 +152,7 @@ class MasterPassTest extends UnitaryTestCase
         self::assertFalse($this->masterPass->checkMasterPassword($password));
     }
 
+    #[Test]
     public function testCheckMasterPasswordWithNoSuchItemError()
     {
         $password = self::$faker->sha1();
@@ -160,6 +169,7 @@ class MasterPassTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testChangeMasterPassword()
     {
         $hash = self::$faker->sha1();
@@ -199,6 +209,7 @@ class MasterPassTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateConfig()
     {
         $hash = self::$faker->sha1();

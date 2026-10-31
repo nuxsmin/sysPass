@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Security\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -54,6 +55,7 @@ class EventlogTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearch()
     {
         $itemSearchData = new ItemSearchDto('test');
@@ -71,6 +73,7 @@ class EventlogTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $eventlog = new EventlogModel(
@@ -112,6 +115,7 @@ class EventlogTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testClear()
     {
         $this->eventlogRepository

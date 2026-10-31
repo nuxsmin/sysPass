@@ -36,6 +36,7 @@ use SP\Tests\Modules\Cli\CliTestCase;
 
 use function SP\Tests\recreateDir;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  *
@@ -56,6 +57,7 @@ class BackupCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testBackupFails(): void
     {
         $inputData = ['--path' => '/non/existant/path'];
@@ -75,6 +77,7 @@ class BackupCommandTest extends CliTestCase
      * @throws FileNotFoundException
      * @throws NotFoundException
      */
+    #[Test]
     public function testBackupIsSuccessful(): void
     {
         $this->setupDatabase();
@@ -110,6 +113,7 @@ class BackupCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testBackupFromEnvironmentVarIsAbort(): void
     {
         putenv(sprintf('%s=%s',
@@ -133,6 +137,7 @@ class BackupCommandTest extends CliTestCase
      * @throws NotFoundException
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testBackupFromEnvironmentVarIsSuccessful(): void
     {
         $this->setEnvironmentVariables();

@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Crypt\Services;
 
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Crypt\Services\Hash;
 use SP\Tests\UnitaryTestCase;
 
@@ -57,6 +58,7 @@ class HashTest extends UnitaryTestCase
     private const MULTIBYTE_KEY = 'ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé';
     private const MULTIBYTE_KEY_HASH = '$2y$10$TIkE.MKq8IefJdNIZV/hPuj6jwCPpuXw/R7V.8OjI551pwUjydmzK';
 
+    #[Test]
     public function testSignMessageMatchesFixedHmacVectors()
     {
         $this->assertSame(
@@ -69,6 +71,7 @@ class HashTest extends UnitaryTestCase
         );
     }
 
+    #[Test]
     public function testCheckMessageWithFixedHmacVectors()
     {
         $this->assertTrue(
@@ -89,12 +92,14 @@ class HashTest extends UnitaryTestCase
         );
     }
 
+    #[Test]
     public function testCheckHashKeyVerifiesLegacyBcryptHash()
     {
         $this->assertTrue(Hash::checkHashKey(self::PASSWORD, self::PASSWORD_HASH));
         $this->assertFalse(Hash::checkHashKey('Wrong-Password-123!', self::PASSWORD_HASH));
     }
 
+    #[Test]
     public function testCheckHashKeyVerifiesLegacyShortenedBcryptHash()
     {
         $this->assertSame(Hash::MAX_KEY_LENGTH + 1, strlen(self::KEY_73));
@@ -102,6 +107,7 @@ class HashTest extends UnitaryTestCase
         $this->assertFalse(Hash::checkHashKey(self::KEY_72, self::KEY_73_HASH));
     }
 
+    #[Test]
     public function testCheckHashKeyVerifiesLegacyMultibyteShortenedBcryptHash()
     {
         $this->assertSame(Hash::MAX_KEY_LENGTH + 1, mb_strlen(self::MULTIBYTE_KEY));
@@ -110,6 +116,7 @@ class HashTest extends UnitaryTestCase
         $this->assertTrue(Hash::checkHashKey(self::MULTIBYTE_KEY, self::MULTIBYTE_KEY_HASH));
     }
 
+    #[Test]
     public function testHashKeyAtBoundaryLengths()
     {
         $this->assertSame(Hash::MAX_KEY_LENGTH, strlen(self::KEY_72));
@@ -119,6 +126,7 @@ class HashTest extends UnitaryTestCase
         $this->assertTrue(Hash::checkHashKey(self::KEY_73, self::KEY_73_HASH));
     }
 
+    #[Test]
     public function testHashKeyProducesBcryptHashThatVerifies()
     {
         foreach ([self::PASSWORD, self::KEY_72, self::KEY_73, self::MULTIBYTE_KEY] as $key) {
@@ -130,6 +138,7 @@ class HashTest extends UnitaryTestCase
         }
     }
 
+    #[Test]
     public function testHashKey()
     {
         for ($i = 2; $i <= 128; $i *= 2) {
@@ -141,6 +150,7 @@ class HashTest extends UnitaryTestCase
         }
     }
 
+    #[Test]
     public function testSignMessage()
     {
         $faker = Factory::create();

@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Import\Services;
 use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountService;
@@ -64,6 +65,7 @@ class KeepassImportTest extends UnitaryTestCase
      * @throws Exception
      * @throws SPException
      */
+    #[Test]
     public function testDoImport()
     {
         $importParamsDto = $this->createStub(ImportParamsDto::class);
@@ -107,6 +109,7 @@ class KeepassImportTest extends UnitaryTestCase
      * @throws Exception
      * @throws SPException
      */
+    #[Test]
     public function testDoImportWithAccountException()
     {
         $importParamsDto = $this->createStub(ImportParamsDto::class);

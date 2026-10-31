@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Tag\UseCases\Dtos;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionParameter;
@@ -80,6 +81,7 @@ final class TagUseCaseDtosTest extends TestCase
      * @param class-string<Command|Result> $contract
      */
     #[DataProvider('dtoProvider')]
+    #[Test]
     public function testDtoFollowsTheConvention(string $dto, string $contract): void
     {
         $reflection = new ReflectionClass($dto);
@@ -97,6 +99,7 @@ final class TagUseCaseDtosTest extends TestCase
         }
     }
 
+    #[Test]
     public function testTagCommandsCarryTheInput(): void
     {
         $command = new CreateTagCommand('example');
@@ -115,6 +118,7 @@ final class TagUseCaseDtosTest extends TestCase
         self::assertSame('term', $search->search->getSeachString());
     }
 
+    #[Test]
     public function testTagResultsCarryTheOutput(): void
     {
         $tag = new Tag();

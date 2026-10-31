@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Account\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
@@ -66,6 +67,7 @@ class AccountPresetTest extends UnitaryTestCase
      * @throws NoSuchPropertyException
      * @throws SPException
      */
+    #[Test]
     public function testCheckPasswordPreset(): void
     {
         $this->config->getConfigData()->setAccountExpireEnabled(true);
@@ -92,6 +94,7 @@ class AccountPresetTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testCheckPasswordPresetThrowsValidatorException(): void
     {
         $this->config->getConfigData()->setAccountExpireEnabled(true);
@@ -121,6 +124,7 @@ class AccountPresetTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testCheckPasswordPresetWithoutFixed(): void
     {
         $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
@@ -144,6 +148,7 @@ class AccountPresetTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testCheckPasswordPresetWithPassDateChangeModified(): void
     {
         $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
@@ -175,6 +180,7 @@ class AccountPresetTest extends UnitaryTestCase
      */
     #[TestWith([0])]
     #[TestWith([1])]
+    #[Test]
     public function testAddPresetPermissions(int $fixed)
     {
         $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
@@ -227,6 +233,7 @@ class AccountPresetTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testAddPresetPermissionsWithNull()
     {
         $this->itemPresetService->expects($this->once())

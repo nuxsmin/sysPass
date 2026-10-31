@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Install\Services;
 use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use SP\Domain\Common\Providers\Version;
@@ -82,6 +83,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      */
+    #[Test]
     public function testRunIsSuccessful(): void
     {
         $expectedDbSetup = [self::$faker->userName, self::$faker->password];
@@ -157,6 +159,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      */
+    #[Test]
     public function testSocketIsUsedForDBConnection(): void
     {
         $expectedDbSetup = [self::$faker->userName, self::$faker->password];
@@ -183,6 +186,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      */
+    #[Test]
     public function testLocalhostIsUsedForDBConnection(): void
     {
         $expectedDbSetup = [self::$faker->userName, self::$faker->password];
@@ -204,6 +208,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      */
+    #[Test]
     public function testHostAndPortAreUsedForDBConnection(): void
     {
         $expectedDbSetup = [self::$faker->userName, self::$faker->password];
@@ -227,6 +232,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      */
+    #[Test]
     public function testHostingModeIsUsed(): void
     {
         $this->databaseSetup->expects($this->never())->method('setupDbUser');
@@ -249,6 +255,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      */
+    #[Test]
     public function testAdminUserIsNotCreated(): void
     {
         $this->databaseSetup->expects($this->once())->method('rollback');
@@ -269,6 +276,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      */
+    #[Test]
     public function testConfigIsNotSaved(): void
     {
         $this->configService->method('create')->willThrowException(new Exception('Create exception'));
@@ -290,6 +298,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      **/
+    #[Test]
     public function testAdminLoginIsNotBlank(): void
     {
         $params = $this->getInstallData();
@@ -307,6 +316,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      **/
+    #[Test]
     public function testAdminPassIsNotBlank(): void
     {
         $params = $this->getInstallData();
@@ -324,6 +334,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      **/
+    #[Test]
     public function testMasterPasswordIsNotBlank(): void
     {
         $params = $this->getInstallData();
@@ -341,6 +352,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      **/
+    #[Test]
     public function testMasterPasswordLengthIsWrong(): void
     {
         $params = $this->getInstallData();
@@ -358,6 +370,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      **/
+    #[Test]
     public function testDbAdminUserIsWrong(): void
     {
         $params = $this->getInstallData();
@@ -375,6 +388,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      **/
+    #[Test]
     public function testDbAdminPassIsWrong(): void
     {
         $params = $this->getInstallData();
@@ -392,6 +406,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      **/
+    #[Test]
     public function testDbNameIsBlank(): void
     {
         $params = $this->getInstallData();
@@ -409,6 +424,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      **/
+    #[Test]
     public function testDbNameIsWrong(): void
     {
         $params = $this->getInstallData();
@@ -426,6 +442,7 @@ class InstallerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws SPException
      **/
+    #[Test]
     public function testDbHostIsBlank(): void
     {
         $params = $this->getInstallData();

@@ -6,6 +6,7 @@ namespace SP\Tests\Architecture;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -17,6 +18,7 @@ use PHPUnit\Framework\TestCase;
 final class LayerDependencyTest extends TestCase
 {
     #[DataProvider('rules')]
+    #[Test]
     public function testNoLayerViolations(string $rule): void
     {
         $violations = LayerRules::collect(dirname(__DIR__, 3))[$rule] ?? [];

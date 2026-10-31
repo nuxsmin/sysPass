@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\CustomField\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -54,6 +55,7 @@ class CustomFieldTypeTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetAll()
     {
         $customFieldType = CustomFieldTypeGenerator::factory()->buildCustomFieldType();
@@ -73,6 +75,7 @@ class CustomFieldTypeTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testGetAllWithInvalidClass()
     {
         $this->customFieldTypeRepository

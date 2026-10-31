@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Auth\Services;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Context\ContextException;
@@ -76,6 +77,7 @@ class LoginMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadMasterPass()
     {
         $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
@@ -104,6 +106,7 @@ class LoginMasterPassTest extends UnitaryTestCase
      * @throws SPException
      */
     #[DataProvider('wrongStatusDataProvider')]
+    #[Test]
     public function testLoadMasterPassWithWrongPassword(UserMasterPassStatus $userMasterPassStatus)
     {
         $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
@@ -138,6 +141,7 @@ class LoginMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadMasterPassWithPreviousNeeded()
     {
         $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
@@ -168,6 +172,7 @@ class LoginMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadMasterPassWithTemporary()
     {
         $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
@@ -211,6 +216,7 @@ class LoginMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadMasterPassWithTemporaryAndWrongKey()
     {
         $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
@@ -244,6 +250,7 @@ class LoginMasterPassTest extends UnitaryTestCase
      * @throws SPException
      */
     #[DataProvider('wrongStatusDataProvider')]
+    #[Test]
     public function testLoadMasterPassWithTemporaryAndInvalidStatus(UserMasterPassStatus $userMasterPassStatus)
     {
         $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
@@ -290,6 +297,7 @@ class LoginMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadMasterPassWithTemporaryAndException()
     {
         $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
@@ -332,6 +340,7 @@ class LoginMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testLoadMasterPassWithOld()
     {
         $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
@@ -364,6 +373,7 @@ class LoginMasterPassTest extends UnitaryTestCase
      * @throws SPException
      */
     #[DataProvider('wrongStatusDataProvider')]
+    #[Test]
     public function testLoadMasterPassWithOldAndWrongStatus(UserMasterPassStatus $userMasterPassStatus)
     {
         $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());

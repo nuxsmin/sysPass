@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Util;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SP\Util\Chainable;
 
@@ -36,6 +37,7 @@ use SP\Util\Chainable;
 #[Group('unitary')]
 class ChainableTest extends TestCase
 {
+    #[Test]
     public function testNext()
     {
         $chain = (new Chainable(fn($n) => $this->increment($n, 1), $this, 1))

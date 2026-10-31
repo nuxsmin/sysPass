@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Mvc\View;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
@@ -47,6 +48,7 @@ class TemplateTest extends UnitaryTestCase
     private MockObject|OutputHandlerInterface    $outputHandler;
     private MockObject|TemplateResolverInterface $templateResolver;
 
+    #[Test]
     public function testUpgrade()
     {
         $this->template->upgrade();
@@ -57,6 +59,7 @@ class TemplateTest extends UnitaryTestCase
     /**
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testAddPartial()
     {
         $this->templateResolver
@@ -70,6 +73,7 @@ class TemplateTest extends UnitaryTestCase
     /**
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testIncludePartial()
     {
         $this->templateResolver
@@ -83,11 +87,13 @@ class TemplateTest extends UnitaryTestCase
         $this->assertEquals('partial_template_path', $out);
     }
 
+    #[Test]
     public function testGetBase()
     {
         $this->assertEquals('test', $this->template->getBase());
     }
 
+    #[Test]
     public function testRemove()
     {
         $this->template->remove('test');
@@ -95,6 +101,7 @@ class TemplateTest extends UnitaryTestCase
         $this->expectNotToPerformAssertions();
     }
 
+    #[Test]
     public function testAppend()
     {
         $this->template->append('a_variable', 'a_value');
@@ -105,6 +112,7 @@ class TemplateTest extends UnitaryTestCase
     /**
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testAddTemplate()
     {
         $this->templateResolver
@@ -118,6 +126,7 @@ class TemplateTest extends UnitaryTestCase
     /**
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testSetLayout()
     {
         $this->templateResolver
@@ -131,6 +140,7 @@ class TemplateTest extends UnitaryTestCase
     /**
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testRender()
     {
         $this->outputHandler
@@ -149,6 +159,7 @@ class TemplateTest extends UnitaryTestCase
         $this->assertEquals('a_content', $out);
     }
 
+    #[Test]
     public function testRenderWithNoTemplates()
     {
         $this->outputHandler
@@ -160,6 +171,7 @@ class TemplateTest extends UnitaryTestCase
         $this->assertEquals('', $out);
     }
 
+    #[Test]
     public function testReset()
     {
         $this->template->reset();
@@ -170,6 +182,7 @@ class TemplateTest extends UnitaryTestCase
     /**
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testAddContentTemplate()
     {
         $this->templateResolver
@@ -183,6 +196,7 @@ class TemplateTest extends UnitaryTestCase
     /**
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testAddContentTemplateWithBase()
     {
         $this->templateResolver
@@ -193,6 +207,7 @@ class TemplateTest extends UnitaryTestCase
         $this->template->addContentTemplate('a_template', 'a_base');
     }
 
+    #[Test]
     public function testAssign()
     {
         $this->template->assign('key', 'value');
@@ -203,6 +218,7 @@ class TemplateTest extends UnitaryTestCase
     /**
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testIncludeTemplate()
     {
         $this->templateResolver
@@ -219,6 +235,7 @@ class TemplateTest extends UnitaryTestCase
     /**
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testGetContentTemplates()
     {
         $this->templateResolver
@@ -234,6 +251,7 @@ class TemplateTest extends UnitaryTestCase
         $this->assertEquals(['a_template' => 'template_path'], $out);
     }
 
+    #[Test]
     public function testAssignWithScope()
     {
         $this->template->assignWithScope('key', 'value', 'test');

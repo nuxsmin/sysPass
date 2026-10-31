@@ -31,6 +31,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -58,6 +59,7 @@ class PluginTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testToggleAvailableByName()
     {
         $callbackCreate = new Callback(
@@ -89,6 +91,7 @@ class PluginTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testToggleEnabledByName()
     {
         $callbackCreate = new Callback(
@@ -119,6 +122,7 @@ class PluginTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $plugin = PluginGenerator::factory()->buildPlugin();
@@ -154,6 +158,7 @@ class PluginTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testToggleEnabled()
     {
         $callbackCreate = new Callback(
@@ -180,6 +185,7 @@ class PluginTest extends UnitaryTestCase
         $this->assertEquals(1, $out);
     }
 
+    #[Test]
     public function testGetEnabled()
     {
         $callback = new Callback(
@@ -207,6 +213,7 @@ class PluginTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -238,6 +245,7 @@ class PluginTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testToggleAvailable()
     {
         $callbackCreate = new Callback(
@@ -265,6 +273,7 @@ class PluginTest extends UnitaryTestCase
         $this->assertEquals(1, $out);
     }
 
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -291,6 +300,7 @@ class PluginTest extends UnitaryTestCase
         $this->plugin->search($item);
     }
 
+    #[Test]
     public function testSearchWithEmptyString()
     {
         $item = new ItemSearchDto();
@@ -316,6 +326,7 @@ class PluginTest extends UnitaryTestCase
         $this->plugin->search($item);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -340,6 +351,7 @@ class PluginTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testResetById()
     {
         $callbackCreate = new Callback(
@@ -370,6 +382,7 @@ class PluginTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $plugin = PluginGenerator::factory()->buildPlugin();
@@ -398,6 +411,7 @@ class PluginTest extends UnitaryTestCase
         $this->plugin->create($plugin);
     }
 
+    #[Test]
     public function testGetByName()
     {
         $callback = new Callback(
@@ -421,6 +435,7 @@ class PluginTest extends UnitaryTestCase
         $this->plugin->getByName('test_name');
     }
 
+    #[Test]
     public function testGetByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -448,6 +463,7 @@ class PluginTest extends UnitaryTestCase
         $this->plugin->getByIdBatch($ids);
     }
 
+    #[Test]
     public function testGetById()
     {
         $callback = new Callback(
@@ -475,6 +491,7 @@ class PluginTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();

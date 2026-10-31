@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Account\Services;
 
 use SP\Core\Context\StatelessMasterKeyStore;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Account\Services\AccountCrypt;
@@ -48,6 +49,7 @@ class AccountCryptTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetPasswordEncrypted(): void
     {
         $pass = self::$faker->password;
@@ -74,6 +76,7 @@ class AccountCryptTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws ContextException
      */
+    #[Test]
     public function testGetPasswordEncryptedThrowsExceptionWithNoMasterPassword(): void
     {
         $this->context->setTrasientKey('_masterpass', '');
@@ -93,6 +96,7 @@ class AccountCryptTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetPasswordEncryptedThrowsExceptionWithEmptyMasterPassword(): void
     {
         $this->crypt->expects(self::never())
@@ -110,6 +114,7 @@ class AccountCryptTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetPasswordEncryptedThrowsExceptionWithLongPass(): void
     {
         $this->crypt->expects(self::once())
@@ -129,6 +134,7 @@ class AccountCryptTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testGetPasswordEncryptedThrowsExceptionWithLongKey(): void
     {
         $this->crypt->expects(self::once())

@@ -31,6 +31,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Simple as SimpleModel;
@@ -61,6 +62,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $userGroup = UserGroupGenerator::factory()->buildUserGroupData();
@@ -104,6 +106,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testCreateWithDuplicate()
     {
         $userGroup = UserGroupGenerator::factory()->buildUserGroupData();
@@ -137,6 +140,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $userGroup = UserGroupGenerator::factory()->buildUserGroupData();
@@ -182,6 +186,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateWithDuplicate()
     {
         $userGroup = UserGroupGenerator::factory()->buildUserGroupData();
@@ -215,6 +220,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testGetUsageByUsers()
     {
         $this->database
@@ -237,6 +243,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -256,6 +263,7 @@ class UserGroupTest extends UnitaryTestCase
         $this->userGroup->delete($id);
     }
 
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -283,6 +291,7 @@ class UserGroupTest extends UnitaryTestCase
         $this->userGroup->search($item);
     }
 
+    #[Test]
     public function testSearchWithNoString()
     {
         $item = new ItemSearchDto();
@@ -307,6 +316,7 @@ class UserGroupTest extends UnitaryTestCase
         $this->userGroup->search($item);
     }
 
+    #[Test]
     public function testGetById()
     {
         $this->database
@@ -325,6 +335,7 @@ class UserGroupTest extends UnitaryTestCase
         $this->userGroup->getById(100);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -344,6 +355,7 @@ class UserGroupTest extends UnitaryTestCase
         $this->userGroup->getAll();
     }
 
+    #[Test]
     public function testGetUsage()
     {
         $this->database
@@ -364,6 +376,7 @@ class UserGroupTest extends UnitaryTestCase
         $this->userGroup->getUsage(100);
     }
 
+    #[Test]
     public function testGetByName()
     {
         $this->database
@@ -386,6 +399,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -417,6 +431,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database

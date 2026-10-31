@@ -31,6 +31,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -52,6 +53,7 @@ class PluginDataTest extends UnitaryTestCase
 
     private PluginData $pluginData;
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -76,6 +78,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByItemId()
     {
         $callback = new Callback(
@@ -100,6 +103,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $callback = new Callback(
@@ -123,6 +127,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $pluginData = PluginDataGenerator::factory()->buildPluginData();
@@ -155,6 +160,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $pluginData = PluginDataGenerator::factory()->buildPluginData();
@@ -185,6 +191,7 @@ class PluginDataTest extends UnitaryTestCase
         $this->assertEquals(1, $out);
     }
 
+    #[Test]
     public function testGetByNameBatch()
     {
         $names = [self::$faker->colorName(), self::$faker->colorName(), self::$faker->colorName()];
@@ -212,6 +219,7 @@ class PluginDataTest extends UnitaryTestCase
         $this->pluginData->getByNameBatch($names);
     }
 
+    #[Test]
     public function testGetByNameBatchWithNoNames()
     {
         $this->database
@@ -225,6 +233,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByNameBatch()
     {
         $names = [self::$faker->colorName(), self::$faker->colorName(), self::$faker->colorName()];
@@ -256,6 +265,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByNameBatchWithNoNames()
     {
         $this->database
@@ -265,6 +275,7 @@ class PluginDataTest extends UnitaryTestCase
         $this->pluginData->deleteByNameBatch([]);
     }
 
+    #[Test]
     public function testGetByItemId()
     {
         $callback = new Callback(
@@ -289,6 +300,7 @@ class PluginDataTest extends UnitaryTestCase
         $this->pluginData->getByItemId('test_name', 100);
     }
 
+    #[Test]
     public function testGetByName()
     {
         $callback = new Callback(

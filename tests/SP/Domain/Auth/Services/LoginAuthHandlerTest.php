@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Auth\Services;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Dtos\UserLoginDto;
@@ -72,6 +73,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthDatabase()
     {
         $authData = new DatabaseAuthData(true);
@@ -88,6 +90,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthDatabaseWithFailAndNoAuthoritative()
     {
         $authData = new DatabaseAuthData(false);
@@ -104,6 +107,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthDatabaseWithException()
     {
         $authData = new DatabaseAuthData(true);
@@ -123,6 +127,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthDatabaseWithNoAuthoritative()
     {
         $authData = new DatabaseAuthData(false);
@@ -139,6 +144,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthBrowserWithAuthBasic()
     {
         $authData = new BrowserAuthData(true);
@@ -177,6 +183,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthBrowserWithAuthBasicAndDatabaseException()
     {
         $authData = new BrowserAuthData(true);
@@ -215,6 +222,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
      * @throws InvalidArgumentException
      * @throws Exception
      */
+    #[Test]
     public function testAuthBrowserWithNoAuthBasic()
     {
         $authData = new BrowserAuthData(true);
@@ -260,6 +268,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthBrowserWithFailAndNoAuthoritative()
     {
         $authData = new BrowserAuthData(false);
@@ -290,6 +299,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthBrowserWithFailAndAuthoritative()
     {
         $authData = new BrowserAuthData(true);
@@ -324,6 +334,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
      * @throws AuthException
      */
     #[DataProvider('authLdapDataProvider')]
+    #[Test]
     public function testAuthLdap(bool $userExists, string $userMethod)
     {
         $authData = new LdapAuthData(true);
@@ -361,6 +372,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthLdapWithFailAndNoAuthoritative()
     {
         $authData = new LdapAuthData(false);
@@ -383,6 +395,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthLdapWithFailAndAuthoritative()
     {
         $authData = new LdapAuthData(true);
@@ -406,6 +419,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthLdapWithFailAndInvalidCredentials()
     {
         $authData = new LdapAuthData(true);
@@ -430,6 +444,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthLdapWithFailAndExpired()
     {
         $authData = new LdapAuthData(true);
@@ -454,6 +469,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     /**
      * @throws AuthException
      */
+    #[Test]
     public function testAuthLdapWithFailAndNoGroups()
     {
         $authData = new LdapAuthData(true);
@@ -479,6 +495,7 @@ class LoginAuthHandlerTest extends UnitaryTestCase
      * @throws AuthException
      */
     #[DataProvider('authLdapDataProvider')]
+    #[Test]
     public function testAuthLdapWithDatabaseException(bool $userExists, string $userMethod)
     {
         $authData = new LdapAuthData(true);

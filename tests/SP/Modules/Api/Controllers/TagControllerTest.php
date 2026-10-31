@@ -30,6 +30,7 @@ use DI\NotFoundException;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Tag\Exceptions\TagException;
 use SP\Tests\Modules\Api\ApiTestCase;
@@ -52,6 +53,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateAction(): void
     {
         $response = $this->createTag(self::PARAMS);
@@ -88,6 +90,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateActionDuplicated(): void
     {
         $response = $this->createTag(['name' => 'linux']);
@@ -101,6 +104,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateActionRequiredParameters(): void
     {
         $response = $this->createTag([]);
@@ -117,6 +121,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewAction(): void
     {
         $response = $this->createTag(self::PARAMS);
@@ -144,6 +149,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -163,6 +169,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditAction(): void
     {
         $response = $this->createTag(self::PARAMS);
@@ -207,6 +214,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditActionDuplicated(): void
     {
         $response = $this->createTag(self::PARAMS);
@@ -234,6 +242,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditActionWrongParameters(): void
     {
         $response = $this->createTag(self::PARAMS);
@@ -263,6 +272,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditActionNonExistant(): void
     {
         $params = [
@@ -287,6 +297,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      */
     #[DataProvider('searchProvider')]
+    #[Test]
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(
@@ -306,6 +317,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteAction(): void
     {
         $response = $this->createTag();
@@ -330,6 +342,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -349,6 +362,7 @@ class TagControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteActionRequiredParameters(): void
     {
         $api = $this->callApi(

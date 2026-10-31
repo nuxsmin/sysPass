@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Client\Services;
 use Aura\SqlQuery\QueryFactory;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
@@ -62,6 +63,7 @@ class ClientTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -85,6 +87,7 @@ class ClientTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByIdWithUnknownId()
     {
         $id = self::$faker->randomNumber();
@@ -104,6 +107,7 @@ class ClientTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testSearch()
     {
         $itemSearch = ItemSearchDataGenerator::factory()->buildItemSearchData();
@@ -121,6 +125,7 @@ class ClientTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -138,6 +143,7 @@ class ClientTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithNotFound()
     {
         $id = self::$faker->randomNumber();
@@ -158,6 +164,7 @@ class ClientTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws SPException
      */
+    #[Test]
     public function testCreate()
     {
         $client = ClientGenerator::factory()->buildClient();
@@ -180,6 +187,7 @@ class ClientTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $client = ClientGenerator::factory()->buildClient();
@@ -199,6 +207,7 @@ class ClientTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByName()
     {
         $name = self::$faker->colorName();
@@ -222,6 +231,7 @@ class ClientTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByNameWithUnknownName()
     {
         $name = self::$faker->colorName();
@@ -243,6 +253,7 @@ class ClientTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -260,6 +271,7 @@ class ClientTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testDeleteByIdBatchError()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -276,6 +288,7 @@ class ClientTest extends UnitaryTestCase
         $this->client->deleteByIdBatch($ids);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $client = ClientGenerator::factory()->buildClient();
@@ -295,6 +308,7 @@ class ClientTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetAllForUser()
     {
         $client = ClientGenerator::factory()->buildClient();

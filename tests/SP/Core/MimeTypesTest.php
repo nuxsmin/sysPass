@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Core;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Context\ContextException;
@@ -51,6 +52,7 @@ class MimeTypesTest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testGetMimeTypes()
     {
         $this->fileCache
@@ -71,6 +73,7 @@ class MimeTypesTest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testResetWithCacheExpiredTime()
     {
         $this->fileCache
@@ -119,6 +122,7 @@ class MimeTypesTest extends UnitaryTestCase
      * @throws FileException
      * @throws Exception
      */
+    #[Test]
     public function testResetWithCacheExpiredFileDate()
     {
         $this->fileCache
@@ -156,6 +160,7 @@ class MimeTypesTest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testResetWithReadXmlException()
     {
         $this->fileCache
@@ -187,6 +192,7 @@ class MimeTypesTest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testResetWithSaveCacheException()
     {
         $this->fileCache
@@ -217,6 +223,7 @@ class MimeTypesTest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testReset()
     {
         $this->fileCache

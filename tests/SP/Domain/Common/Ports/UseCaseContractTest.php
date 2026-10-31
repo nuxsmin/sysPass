@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Common\Ports;
 
 use LogicException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionMethod;
@@ -47,6 +48,7 @@ use SP\Tests\Stubs\InMemoryTagRepository;
 #[Group('unitary')]
 final class UseCaseContractTest extends TestCase
 {
+    #[Test]
     public function testContractHasASingleEntryPoint(): void
     {
         $reflection = new ReflectionClass(UseCase::class);
@@ -75,6 +77,7 @@ final class UseCaseContractTest extends TestCase
         self::assertSame(Result::class, $resultType->getName());
     }
 
+    #[Test]
     public function testContractKeepsTheDomainBoundary(): void
     {
         $contents = file_get_contents(REAL_APP_ROOT . '/lib/SP/Domain/Common/Ports/UseCase.php');
@@ -90,6 +93,7 @@ final class UseCaseContractTest extends TestCase
         }
     }
 
+    #[Test]
     public function testUseCaseRunsWithInMemoryFakes(): void
     {
         $repository = new InMemoryTagRepository();

@@ -32,6 +32,7 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Context\ContextException;
@@ -82,6 +83,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ServiceException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -99,6 +101,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testDeleteByIdBatchError()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -119,6 +122,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearch()
     {
         $itemSearch = ItemSearchDataGenerator::factory()->buildItemSearchData();
@@ -138,6 +142,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testCreateWithExistingToken()
     {
         $authToken = AuthTokenGenerator::factory()
@@ -179,6 +184,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testCreateWithNoExistingToken()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
@@ -221,6 +227,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ContextException
      */
     #[DataProvider('secureActionDataProvider')]
+    #[Test]
     public function testCreateWithSecureAction(int $action)
     {
         $this->context->setTrasientKey('_masterpass', 'test_pass');
@@ -274,6 +281,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateRaw()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
@@ -289,6 +297,7 @@ class AuthTokenTest extends UnitaryTestCase
     /**
      * @throws NoSuchItemException
      */
+    #[Test]
     public function testGetTokenByToken()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
@@ -307,6 +316,7 @@ class AuthTokenTest extends UnitaryTestCase
     /**
      * @throws NoSuchItemException
      */
+    #[Test]
     public function testGetTokenByTokenWithNoFound()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
@@ -332,6 +342,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws ConstraintException
      */
+    #[Test]
     public function testUpdate()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
@@ -369,6 +380,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateWithNoExistingToken()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
@@ -409,6 +421,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ContextException
      */
     #[DataProvider('secureActionDataProvider')]
+    #[Test]
     public function testUpdateWithSecureAction(int $action)
     {
         $this->context->setTrasientKey('_masterpass', 'test_pass');
@@ -455,6 +468,7 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authToken->update($authToken);
     }
 
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -472,6 +486,7 @@ class AuthTokenTest extends UnitaryTestCase
         $this->assertEquals($authToken, $out);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
@@ -491,6 +506,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -508,6 +524,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithNotFound()
     {
         $id = self::$faker->randomNumber();
@@ -528,6 +545,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ContextException
      * @throws Exception
      */
+    #[Test]
     public function testRefreshAndUpdate()
     {
         $this->context->setTrasientKey('_masterpass', 'test_pass');

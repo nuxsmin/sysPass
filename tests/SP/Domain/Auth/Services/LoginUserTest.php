@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Auth\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Context\ContextException;
@@ -62,6 +63,7 @@ class LoginUserTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testCheckUser()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -77,6 +79,7 @@ class LoginUserTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testCheckUserWithDisabled()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -93,6 +96,7 @@ class LoginUserTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testCheckUserWithChangePass()
     {
         $user = UserDataGenerator::factory()->buildUserData();
@@ -114,6 +118,7 @@ class LoginUserTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testCheckUserWithChangePassWithException()
     {
         $user = UserDataGenerator::factory()->buildUserData();

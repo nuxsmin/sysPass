@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Auth\Providers\Database;
 
 use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Auth\Dtos\UserLoginDto;
@@ -49,6 +50,7 @@ class DatabaseAuthTest extends UnitaryTestCase
     private MockObject|UserPassService $userPassService;
     private DatabaseAuth                    $databaseAuth;
 
+    #[Test]
     public function testAuthenticate()
     {
         $user = self::$faker->userName;
@@ -70,6 +72,7 @@ class DatabaseAuthTest extends UnitaryTestCase
         self::assertTrue($this->databaseAuth->authenticate($userLoginData)->isOk());
     }
 
+    #[Test]
     public function testAuthenticateWithWrongLogin()
     {
         $user = self::$faker->userName;
@@ -88,6 +91,7 @@ class DatabaseAuthTest extends UnitaryTestCase
         self::assertFalse($this->databaseAuth->authenticate($userLoginData)->isOk());
     }
 
+    #[Test]
     public function testAuthenticateWithWrongPass()
     {
         $user = self::$faker->userName;
@@ -108,6 +112,7 @@ class DatabaseAuthTest extends UnitaryTestCase
         self::assertFalse($this->databaseAuth->authenticate($userLoginData)->isOk());
     }
 
+    #[Test]
     public function testAuthenticateWithMigrationBySHA1()
     {
         $user = self::$faker->userName;
@@ -141,6 +146,7 @@ class DatabaseAuthTest extends UnitaryTestCase
         self::assertTrue($this->databaseAuth->authenticate($userLoginData)->isOk());
     }
 
+    #[Test]
     public function testAuthenticateWithMigrationByMD5()
     {
         $user = self::$faker->userName;
@@ -176,6 +182,7 @@ class DatabaseAuthTest extends UnitaryTestCase
         self::assertTrue($this->databaseAuth->authenticate($userLoginData)->isOk());
     }
 
+    #[Test]
     public function testAuthenticateWithMigrationByCrypt()
     {
         $user = self::$faker->userName;
@@ -211,6 +218,7 @@ class DatabaseAuthTest extends UnitaryTestCase
         self::assertTrue($this->databaseAuth->authenticate($userLoginData)->isOk());
     }
 
+    #[Test]
     public function testAuthenticateWithMigrationByHash()
     {
         $user = self::$faker->userName;
@@ -245,6 +253,7 @@ class DatabaseAuthTest extends UnitaryTestCase
         self::assertTrue($this->databaseAuth->authenticate($userLoginData)->isOk());
     }
 
+    #[Test]
     public function testIsAuthGranted()
     {
         self::assertTrue($this->databaseAuth->isAuthGranted());

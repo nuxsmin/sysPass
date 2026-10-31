@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Export\Services;
 
 use DOMDocument;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Bootstrap\Path;
 use SP\Domain\Common\Providers\XmlIntegrity;
@@ -64,6 +65,7 @@ class XmlVerifyTest extends UnitaryTestCase
     private HashService               $hashService;
     private XmlVerify                 $xmlVerify;
 
+    #[Test]
     public function testCheckXmlHashWithNoHash()
     {
         $xml = '<Root><Meta><Hash></Hash></Meta></Root>';
@@ -76,6 +78,7 @@ class XmlVerifyTest extends UnitaryTestCase
         $this->assertFalse($out);
     }
 
+    #[Test]
     public function testCheckXmlHashWithNoSign()
     {
         $xml = '<Root><Meta><Hash sign="">a_hash</Hash></Meta></Root>';
@@ -88,6 +91,7 @@ class XmlVerifyTest extends UnitaryTestCase
         $this->assertFalse($out);
     }
 
+    #[Test]
     public function testCheckXmlHashWithWrongHash()
     {
         $xml = '<Root><Meta><Hash sign="a_sign">a_hash</Hash></Meta></Root>';
@@ -100,6 +104,7 @@ class XmlVerifyTest extends UnitaryTestCase
         $this->assertFalse($out);
     }
 
+    #[Test]
     public function testCheckXmlHash()
     {
         $sign = Hash::signMessage('test_data', 'test_key');
@@ -113,6 +118,7 @@ class XmlVerifyTest extends UnitaryTestCase
         $this->assertTrue($out);
     }
 
+    #[Test]
     public function testCheckXmlHashWithNodesHash()
     {
         $xml = sprintf(
@@ -130,6 +136,7 @@ class XmlVerifyTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testVerify()
     {
         $out = $this->xmlVerify->verify(self::VALID_FILE);
@@ -147,6 +154,7 @@ class XmlVerifyTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testVerifyWithInvalidFile()
     {
         $this->expectException(ServiceException::class);
@@ -158,6 +166,7 @@ class XmlVerifyTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testVerifyWithInvalidFileSchema()
     {
         $this->expectException(ServiceException::class);
@@ -169,6 +178,7 @@ class XmlVerifyTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testVerifyWithInvalidVersion()
     {
         $this->expectException(ServiceException::class);
@@ -180,6 +190,7 @@ class XmlVerifyTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testVerifyWithInvalidHash()
     {
         $this->expectException(ServiceException::class);
@@ -191,6 +202,7 @@ class XmlVerifyTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testVerifyEncrypted()
     {
         $categories = '<Categories><Category id="4"><name>CSV Category 1</name><description/></Category></Categories>';
@@ -223,6 +235,7 @@ class XmlVerifyTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testVerifyEncryptedWithCryptException()
     {
         $this->crypt

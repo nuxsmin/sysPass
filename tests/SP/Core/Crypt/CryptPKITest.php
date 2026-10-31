@@ -28,6 +28,7 @@ namespace SP\Tests\Core\Crypt;
 
 use phpseclib\Crypt\RSA;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\CryptPKI;
@@ -52,6 +53,7 @@ class CryptPKITest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testDecryptRSA()
     {
         $data = self::$faker->sha1;
@@ -71,6 +73,7 @@ class CryptPKITest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testGetPublicKey()
     {
         $this->publicKey->expects(once())->method('checkFileExists')->willReturnSelf();
@@ -84,6 +87,7 @@ class CryptPKITest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateKeys()
     {
         $this->publicKey->expects(once())
@@ -115,6 +119,7 @@ class CryptPKITest extends UnitaryTestCase
         new CryptPKI($this->rsa, $this->publicKey, $this->privateKey);
     }
 
+    #[Test]
     public function testGetMaxDataSize()
     {
         $this->assertEquals(117, CryptPKI::getMaxDataSize());

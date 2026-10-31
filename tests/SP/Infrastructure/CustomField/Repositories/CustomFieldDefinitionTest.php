@@ -31,6 +31,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -55,6 +56,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
     private CustomFieldDefinition        $customFieldDefinition;
     private DatabaseInterface|MockObject $database;
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -78,6 +80,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $customFieldDefinition = CustomFieldDefinitionGenerator::factory()->buildCustomFieldDefinition();
@@ -113,6 +116,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $customFieldDefinition = CustomFieldDefinitionGenerator::factory()->buildCustomFieldDefinition();
@@ -144,6 +148,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
         $this->customFieldDefinition->update($customFieldDefinition);
     }
 
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -174,6 +179,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -202,6 +208,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteBatchWithNoItems()
     {
         $this->database
@@ -217,6 +224,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -248,6 +256,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearchWithNoText()
     {
         $callback = new Callback(
@@ -274,6 +283,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();

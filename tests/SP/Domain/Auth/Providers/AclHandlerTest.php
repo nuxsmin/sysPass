@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Auth\Providers;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Events\Event;
@@ -61,6 +62,7 @@ class AclHandlerTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testUpdateWithUserProfileEvent()
     {
         $eventMessage = $this->createMock(EventMessage::class);
@@ -75,6 +77,7 @@ class AclHandlerTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testUpdateWithUserProfileEventWithExtra()
     {
         $eventMessage = $this->createMock(EventMessage::class);
@@ -95,6 +98,7 @@ class AclHandlerTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testUpdateWithUserProfileEventWithoutExtra()
     {
         $eventMessage = $this->createMock(EventMessage::class);
@@ -114,6 +118,7 @@ class AclHandlerTest extends UnitaryTestCase
      * @throws Exception
      */
     #[DataProvider('userEventProvider')]
+    #[Test]
     public function testUpdateWithUserEvent(string $userEvent)
     {
         $eventMessage = $this->createMock(EventMessage::class);
@@ -129,6 +134,7 @@ class AclHandlerTest extends UnitaryTestCase
      * @throws Exception
      */
     #[DataProvider('userEventProvider')]
+    #[Test]
     public function testUpdateWithUserEventWithExtra(string $userEvent)
     {
         $eventMessage = $this->createMock(EventMessage::class);
@@ -148,6 +154,7 @@ class AclHandlerTest extends UnitaryTestCase
      * @throws SPException
      */
     #[DataProvider('userEventProvider')]
+    #[Test]
     public function testUpdateWithUserEventWithoutExtra(string $userEvent)
     {
         $eventMessage = $this->createMock(EventMessage::class);
@@ -165,6 +172,7 @@ class AclHandlerTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testUpdateWithUserGroupEvent()
     {
         $eventMessage = $this->createMock(EventMessage::class);
@@ -179,6 +187,7 @@ class AclHandlerTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testUpdateWithUserGroupEventWithExtra()
     {
         $eventMessage = $this->createMock(EventMessage::class);
@@ -201,6 +210,7 @@ class AclHandlerTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testUpdateWithUserGroupEventWithoutExtra()
     {
         $eventMessage = $this->createMock(EventMessage::class);

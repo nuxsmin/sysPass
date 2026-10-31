@@ -33,6 +33,7 @@ use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Stubs\InMemoryFileHandler;
 use SP\Tests\UnitaryTestCase;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class XmlFileTest
@@ -59,6 +60,7 @@ class XmlFileTest extends UnitaryTestCase
      * @throws FileException
      */
     #[DataProvider('fileFormatProvider')]
+    #[Test]
     public function testDetectFormat(string $file, XmlFormat $format)
     {
         $fileHandler = new InMemoryFileHandler($file, (string)file_get_contents($file));
@@ -73,6 +75,7 @@ class XmlFileTest extends UnitaryTestCase
      * @throws ImportException
      * @throws FileException
      */
+    #[Test]
     public function testDetectFormatWithException()
     {
         $fileHandler = new InMemoryFileHandler(
@@ -92,6 +95,7 @@ class XmlFileTest extends UnitaryTestCase
      * @throws ImportException
      * @throws FileException
      */
+    #[Test]
     public function testBuilder()
     {
         $fileHandler = new InMemoryFileHandler(
@@ -109,6 +113,7 @@ class XmlFileTest extends UnitaryTestCase
      * @throws ImportException
      * @throws FileException
      */
+    #[Test]
     public function testBuilderWithException()
     {
         $fileHandler = new InMemoryFileHandler(
@@ -124,6 +129,7 @@ class XmlFileTest extends UnitaryTestCase
         $xmlFile->builder($fileHandler);
     }
 
+    #[Test]
     public function testGetDocument()
     {
         $xmlFile = new XmlFile();

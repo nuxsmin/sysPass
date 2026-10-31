@@ -31,6 +31,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Simple as SimpleModel;
@@ -56,6 +57,7 @@ class UserProfileTest extends UnitaryTestCase
     private UserProfile                  $userProfile;
     private MockObject|DatabaseInterface $database;
 
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -82,6 +84,7 @@ class UserProfileTest extends UnitaryTestCase
         $this->userProfile->search($item);
     }
 
+    #[Test]
     public function testSearchWithNoString()
     {
         $item = new ItemSearchDto();
@@ -110,6 +113,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -141,6 +145,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database
@@ -150,6 +155,7 @@ class UserProfileTest extends UnitaryTestCase
         $this->userProfile->deleteByIdBatch([]);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -173,6 +179,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -197,6 +204,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $userProfileData = UserProfileDataGenerator::factory()->buildUserProfileData();
@@ -240,6 +248,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testCreateWithDuplicate()
     {
         $userProfileData = UserProfileDataGenerator::factory()->buildUserProfileData();
@@ -273,6 +282,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $profileData = UserProfileDataGenerator::factory()->buildUserProfileData();
@@ -318,6 +328,7 @@ class UserProfileTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateWithDuplicate()
     {
         $profileData = UserProfileDataGenerator::factory()->buildUserProfileData();
@@ -347,6 +358,7 @@ class UserProfileTest extends UnitaryTestCase
         $this->userProfile->update($profileData);
     }
 
+    #[Test]
     public function testGetById()
     {
         $this->database

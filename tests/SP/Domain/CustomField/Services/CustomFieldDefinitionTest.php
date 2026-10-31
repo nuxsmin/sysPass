@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\CustomField\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
@@ -55,6 +56,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
     /**
      * @throws NoSuchItemException
      */
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -75,6 +77,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
     /**
      * @throws NoSuchItemException
      */
+    #[Test]
     public function testGetByIdWithUnknownId()
     {
         $id = self::$faker->randomNumber();
@@ -94,6 +97,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -116,6 +120,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testDeleteByIdBatchError()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -150,6 +155,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $customFieldDefinition = CustomFieldDefinitionGenerator::factory()->buildCustomFieldDefinition();
@@ -168,6 +174,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -187,6 +194,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithNotFound()
     {
         $id = self::$faker->randomNumber();
@@ -207,6 +215,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearch()
     {
         $itemSearch = ItemSearchDataGenerator::factory()->buildItemSearchData();
@@ -223,6 +232,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $customFieldDefinition = CustomFieldDefinitionGenerator::factory()->buildCustomFieldDefinition();
@@ -239,6 +249,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testChangeModule()
     {
         $customFieldDefinition = CustomFieldDefinitionGenerator::factory()->buildCustomFieldDefinition();
@@ -269,6 +280,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
         self::assertEquals(100, $out);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $customFieldDefinition = CustomFieldDefinitionGenerator::factory()->buildCustomFieldDefinition();
@@ -283,6 +295,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
         $this->assertEquals([$customFieldDefinition], $out);
     }
 
+    #[Test]
     public function testGetAllWithInvalidClass()
     {
         $this->customFieldDefinitionRepository

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SP\Tests\Architecture;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -37,6 +38,7 @@ final class LayerRulesTest extends TestCase
         rmdir($this->root);
     }
 
+    #[Test]
     public function testStaticCallOnDomainServiceIsAViolation(): void
     {
         file_put_contents(
@@ -71,6 +73,7 @@ PHP
         );
     }
 
+    #[Test]
     public function testInfrastructureImportOutsideTheCompositionRootIsAViolation(): void
     {
         file_put_contents(
@@ -95,6 +98,7 @@ PHP
         );
     }
 
+    #[Test]
     public function testInfrastructureImportInTheCompositionRootIsAllowed(): void
     {
         file_put_contents(
@@ -116,6 +120,7 @@ PHP
         self::assertSame([], $violations);
     }
 
+    #[Test]
     public function testModuleImportOutsideTheCompositionRootIsAViolation(): void
     {
         file_put_contents(
@@ -137,6 +142,7 @@ PHP
         self::assertContains('lib/SP/Core/Foo.php => SP\Modules', $violations);
     }
 
+    #[Test]
     public function testModuleImportInTheCompositionRootIsAllowed(): void
     {
         file_put_contents(
@@ -158,6 +164,7 @@ PHP
         self::assertSame([], $violations);
     }
 
+    #[Test]
     public function testStaticCallThroughImportAliasIsAViolation(): void
     {
         file_put_contents(
@@ -186,6 +193,7 @@ PHP
         );
     }
 
+    #[Test]
     public function testTranslationMarkerInDomainIsAllowed(): void
     {
         file_put_contents(
@@ -211,6 +219,7 @@ PHP
         self::assertSame([], $violations);
     }
 
+    #[Test]
     public function testTranslationCallInDomainIsAViolation(): void
     {
         file_put_contents(

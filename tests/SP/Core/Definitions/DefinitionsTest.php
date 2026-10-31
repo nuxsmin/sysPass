@@ -30,6 +30,7 @@ use DI\ContainerBuilder;
 use Exception;
 use Klein\Request;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
@@ -49,6 +50,7 @@ class DefinitionsTest extends TestCase
      * @throws Exception
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
+    #[Test]
     public function testGetDefinitions()
     {
         define('APP_MODULE', 'test');
@@ -96,6 +98,7 @@ class DefinitionsTest extends TestCase
         }
     }
 
+    #[Test]
     public function testNoWildcardPortBindings(): void
     {
         $wildcards = array_filter(

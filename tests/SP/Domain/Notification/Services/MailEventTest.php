@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Notification\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Core\Messages\EventMessageFormatter;
@@ -54,6 +55,7 @@ class MailEventTest extends UnitaryTestCase
     private MailEvent $mailEvent;
     private ConfigData                $configData;
 
+    #[Test]
     public function testUpdate()
     {
         $eventMessage = EventMessage::build()
@@ -90,6 +92,7 @@ class MailEventTest extends UnitaryTestCase
         $this->mailEvent->update('test_a.update', $event);
     }
 
+    #[Test]
     public function testUpdateWithConfiguredEmail()
     {
         $this->configData->setMailRecipients(['an_email']);
@@ -127,6 +130,7 @@ class MailEventTest extends UnitaryTestCase
         $this->mailEvent->update('test_a.update', $event);
     }
 
+    #[Test]
     public function testUpdateWithNoEmail()
     {
         $eventMessage = EventMessage::build()
@@ -142,6 +146,7 @@ class MailEventTest extends UnitaryTestCase
         $this->mailEvent->update('test_a.update', $event);
     }
 
+    #[Test]
     public function testUpdateWithNoDescriptionAndDetails()
     {
         $eventMessage = EventMessage::build()->setExtra('email', ['an_email']);
@@ -175,6 +180,7 @@ class MailEventTest extends UnitaryTestCase
         $this->mailEvent->update('test_a.update', $event);
     }
 
+    #[Test]
     public function testUpdateWithEmptyRecipients()
     {
         $eventMessage = EventMessage::build()
@@ -211,6 +217,7 @@ class MailEventTest extends UnitaryTestCase
         $this->mailEvent->update('test_a.update', $event);
     }
 
+    #[Test]
     public function testUpdateWithException()
     {
         $eventMessage = EventMessage::build()
@@ -228,6 +235,7 @@ class MailEventTest extends UnitaryTestCase
         $this->mailEvent->update('test_a.update', $event);
     }
 
+    #[Test]
     public function testGetEventsString()
     {
         $expected = 'test_a\.|test_b\.|clear\.eventlog|refresh\.masterPassword|update\.masterPassword\.start|update\.masterPassword\.end|request\.account|edit\.user\.password|save\.config\.|create\.tempMasterPassword';
@@ -236,6 +244,7 @@ class MailEventTest extends UnitaryTestCase
         $this->assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetEventsStringWithNoConfiguredEvents()
     {
         $expected = 'clear\.eventlog|refresh\.masterPassword|update\.masterPassword\.start|update\.masterPassword\.end|request\.account|edit\.user\.password|save\.config\.|create\.tempMasterPassword';
