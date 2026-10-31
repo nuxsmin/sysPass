@@ -188,6 +188,10 @@ final class SerializedPayloadRewriter
      */
     private function propertyKey(): string
     {
+        if ($this->peek() === 'i') {
+            return $this->scalar('i:', '/^[+-]?\d+$/');
+        }
+
         $this->expect('s:');
         $length = $this->unsigned(':');
         $this->expect('"');

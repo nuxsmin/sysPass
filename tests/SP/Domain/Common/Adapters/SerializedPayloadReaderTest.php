@@ -28,8 +28,11 @@ namespace SP\Tests\Domain\Common\Adapters;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Common\Adapters\LegacyClassMap;
+use SP\Domain\Common\Adapters\PersistedClassRegistry;
 use SP\Domain\Common\Adapters\SerializedPayloadReader;
 use SP\Domain\Common\Adapters\SerializedPayloadRewriter;
+use SP\Domain\Config\Adapters\ConfigData;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Core\Exceptions\InvalidClassException;
@@ -75,6 +78,26 @@ class SerializedPayloadReaderTest extends UnitaryTestCase
 
         $this->assertInstanceOf(Vault::class, $read);
         $this->assertSame($data, $read->getData($key));
+    }
+
+    #[Test]
+    public function configDataPayloadIsReadable(): void
+    {
+        $configData = new ConfigData([
+            ConfigDataInterface::DB_HOST => 'db',
+            ConfigDataInterface::DB_PORT => 3306
+        ]);
+
+        $read = SerializedPayloadReader::read(
+            serialize($configData),
+            ConfigData::class,
+            PersistedClassRegistry::CLASSES,
+            []
+        );
+
+        $this->assertInstanceOf(ConfigData::class, $read);
+        $this->assertSame('db', $read->getDbHost());
+        $this->assertSame(3306, $read->getDbPort());
     }
 
     #[Test]

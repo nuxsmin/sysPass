@@ -30,6 +30,8 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Common\Adapters\LegacyClassMap;
 use SP\Domain\Common\Adapters\SerializedPayloadRewriter;
+use SP\Domain\Config\Adapters\ConfigData;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Core\Exceptions\InvalidClassException;
@@ -76,6 +78,33 @@ class FileCacheTest extends UnitaryTestCase
         $this->expectException(InvalidClassException::class);
 
         (new FileCache($this->file))->loadWith(Vault::class);
+    }
+
+    #[Test]
+    public function loadWithReadsConfigDataPayload(): void
+    {
+        $configData = new ConfigData([
+            ConfigDataInterface::DB_HOST => 'db',
+            ConfigDataInterface::DB_PORT => 3306
+        ]);
+
+        (new FileCache($this->file))->save($configData);
+
+        $loaded = (new FileCache($this->file))->loadWith(ConfigData::class);
+
+        $this->assertInstanceOf(ConfigData::class, $loaded);
+        $this->assertSame('db', $loaded->getDbHost());
+        $this->assertSame(3306, $loaded->getDbPort());
+    }
+
+    #[Test]
+    public function loadWithUnmappedConfigDataPayloadThrows(): void
+    {
+        file_put_contents($this->file, 'O:20:"SP\Config\ConfigData":0:{}');
+
+        $this->expectException(InvalidClassException::class);
+
+        (new FileCache($this->file))->loadWith(ConfigData::class);
     }
 
     #[Test]

@@ -25,10 +25,14 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Common\Adapters;
 
+use ArrayObject;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use SP\Domain\Common\Adapters\LegacyClassMap;
 use SP\Domain\Common\Adapters\SerializedPayloadRewriter;
+use SP\Domain\Core\Crypt\Crypt;
+use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Tests\Stubs\SerializedPayloadFixture;
 use SP\Tests\UnitaryTestCase;
@@ -124,6 +128,30 @@ class SerializedPayloadRewriterTest extends UnitaryTestCase
         $rewritten = SerializedPayloadRewriter::rewrite(self::legacyFixture($value), self::fixtureMap());
 
         $this->assertSame(serialize(new SerializedPayloadFixture($value)), $rewritten);
+    }
+
+    #[Test]
+    public function integerPropertyKeysArePreserved(): void
+    {
+        $payload = serialize(new ArrayObject(['dbHost' => 'db']));
+
+        $this->assertSame($payload, SerializedPayloadRewriter::rewrite($payload, []));
+    }
+
+    #[Test]
+    public function legacyClassesInsideIntegerKeyedObjectsAreRewritten(): void
+    {
+        $vault = Vault::factory(new Crypt())->saveData('secret', 'key');
+
+        $legacy = SerializedPayloadRewriter::rewrite(
+            serialize(new ArrayObject(['vault' => $vault])),
+            array_flip(LegacyClassMap::MAP)
+        );
+
+        $this->assertSame(
+            serialize(new ArrayObject(['vault' => $vault])),
+            SerializedPayloadRewriter::rewrite($legacy, LegacyClassMap::MAP)
+        );
     }
 
     #[Test]
