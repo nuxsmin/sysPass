@@ -1,7 +1,7 @@
 # Handover: Serialized payload compatibility (#2055)
 
 Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
-Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), and T1 (`6131893c`) are committed. T2 is implemented and uncommitted.
+Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), and T2 (`75269d7b`) are committed. T3 is implemented and uncommitted.
 
 ## Goal
 
@@ -70,7 +70,7 @@ Status: implemented and committed in `6131893c`. Files: `lib/SP/Domain/Common/Ad
 - Unknown class names are left untouched so `allowed_classes` rejects them.
 - Acceptance: strings containing a legacy class name are unchanged; nested objects are rewritten; references are preserved; malformed input throws; output unserialises to the expected object.
 
-Status: implemented, uncommitted. Files: `lib/SP/Domain/Common/Adapters/SerializedPayloadRewriter.php`, `tests/SP/Domain/Common/Adapters/SerializedPayloadRewriterTest.php`, `tests/SP/Stubs/SerializedPayloadFixture.php` (fixture lives in `Stubs` because PHPUnit collects every `.php` under `tests/SP/Domain`). Decisions taken at approval:
+Status: implemented and committed in `75269d7b`. Files: `lib/SP/Domain/Common/Adapters/SerializedPayloadRewriter.php`, `tests/SP/Domain/Common/Adapters/SerializedPayloadRewriterTest.php`, `tests/SP/Stubs/SerializedPayloadFixture.php` (fixture lives in `Stubs` because PHPUnit collects every `.php` under `tests/SP/Domain`). Decisions taken at approval:
 - API: `SerializedPayloadRewriter::rewrite(string $payload, array $classMap = LegacyClassMap::MAP): string`. Pure string transform; never calls `unserialize()`.
 - Cursor-based walker, not regex. `s:` values are read by declared length, so binary values and text containing legacy names are copied verbatim.
 - Rewritten: `O:` class names, `E:` enum class names, and mangled `\0Class\0prop` prefixes in `O:` property lists only. String keys inside `a:` arrays are never rewritten.
@@ -83,6 +83,15 @@ Status: implemented, uncommitted. Files: `lib/SP/Domain/Common/Adapters/Serializ
 - Rewrites with T2, unserialises with `allowed_classes` set to the current target classes only, verifies `instanceof` against the expected type, and throws a domain exception on any mismatch. Never returns `__PHP_Incomplete_Class` or `stdClass`.
 - Leave `Serde::deserialize()` behaviour unchanged for existing callers.
 - Acceptance: legacy Vault payload returns a usable Vault; corrupt or unmapped payloads throw; no partial objects.
+
+Status: implemented, uncommitted. Files: `lib/SP/Domain/Common/Adapters/SerializedPayloadReader.php`, `tests/SP/Domain/Common/Adapters/SerializedPayloadReaderTest.php`, `tests/SP/Stubs/SerializedPayloadGraphFixture.php`. Decisions taken at approval:
+- API: `SerializedPayloadReader::read(string $payload, string $expectedClass, array $allowedClasses = PersistedClassRegistry::CLASSES, array $classMap = LegacyClassMap::MAP): object`. Static adapter, like `Serde` and the rewriter; no container wiring.
+- The expected class is always added to the allow-list. The default allow-list is the current persisted-class registry, so a `Vault` payload can instantiate its nested `Crypt`; T9 can pass plugin classes explicitly.
+- All failures throw `InvalidClassException` (a domain `SPException`), including rewriter failures, so T4 and T5 catch one type. A rewriter failure keeps its `SPException` as the previous exception.
+- Decoded graphs are scanned recursively for `__PHP_Incomplete_Class`, so an unmapped nested class cannot produce a partial object under an otherwise valid target. Objects are tracked with `SplObjectStorage`, and traversal is depth-bounded at 512.
+- Top-level `stdClass`, scalars, arrays, and incomplete objects are rejected by the `instanceof` check.
+- `Serde::deserialize()` is unchanged; no production caller uses the reader yet.
+- Verification: `tests/SP/Domain/Common/Adapters` 60/60 OK (12 new); `tests/SP/Architecture` 16/16 OK; PHPStan level 6 on the new reader: no errors.
 
 ## Phase 2: Read-path hardening
 
