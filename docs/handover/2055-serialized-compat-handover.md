@@ -1,7 +1,7 @@
 # Handover: Serialized payload compatibility (#2055)
 
 Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
-Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`.
+Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`. T7 is committed in `6859ee7f`.
 
 ## Goal
 
@@ -134,6 +134,15 @@ Status: implemented and committed in `e6bdff3a`. Files: `lib/SP/Domain/Api/Servi
 
 **T7 Public link view.** `app/modules/web/Controllers/Account/ViewLinkController.php:99-108`: replace `Serde::deserialize($publicLink->getData(), VaultInterface::class)` with the T3 reader. Keep the existing error view.
 - Acceptance: a legacy link renders, or shows the existing error view. The stored row is not modified by the read.
+
+Status: implemented and committed in `6859ee7f` (2026-10-31). Files: `app/modules/web/Controllers/Account/ViewLinkController.php`, `tests/SP/Modules/Web/Controllers/Account/AccountTest.php`. Decisions taken at approval:
+- `Serde::deserialize($publicLink->getData(), VaultInterface::class)` is replaced by `SerializedPayloadReader::read($payload, Vault::class)` with the default legacy map. `Vault::class` is the expected class because T3 validates with `class_exists()` and `instanceof`.
+- **Read before mutation.** The payload is decoded before `addLinkView()` and the view/decrypt counters, so an unreadable link does not consume a view or modify counters. This is a deliberate ordering change; the reader itself never writes.
+- `PublicLink::getData()` is `?string`; `null`/empty payloads are guarded because passing `null` to the T3 `string` parameter raises `TypeError` even without `strict_types` (verified).
+- `InvalidClassException` is caught, logged with `processException`, and rendered through the existing error partial (`ERR_EXCEPTION`, replacing the `account-link` template). The expired/over-limit branch keeps `ERR_PAGE_NO_PERMISSION`.
+- The inner `Serde::deserialize(..., Simple::class)` is unchanged: it decodes decrypted account data, not a stored serialized row, and `Simple` was not moved by `6a6cd3dc`.
+- Tests follow the `AccountTest` conventions: `viewLinkLegacyPayload` (legacy `SP\Core\Crypt\*` payload renders; model `data` unchanged), `viewLinkUnreadablePayload` and `viewLinkEmptyPayload` (error view; `addLinkView` and both counters never called; `data` unchanged). The new tests bind `DatabaseUtilInterface` to a stub so they do not depend on the shared harness's DB binding for `Init`.
+- Verification: new tests 3/3 OK (13 assertions); `tests/SP/Domain/Common/Adapters` and `tests/SP/Architecture` 79/79 OK. PHPStan level 6 on the controller reports only the 4 pre-existing errors (`$icons` property type, `ThemeIcons::view()`, and two `EventMessage::addExtra()` types). The existing `viewLink` test still fails locally because `DatabaseUtil::checkDatabaseTables()` reaches a real connection; the same failure reproduces at `6a6cd3dc` and is environmental.
 
 **T8 Auth token read path.** Locate all reads of `AuthToken::getVault()` (`lib/SP/Domain/Auth/Models/AuthToken.php:66`) and route them through T3. `AuthToken.php:228` writes the new format and needs no change.
 - Acceptance: an unreadable token fails authentication closed. The row is not modified.
