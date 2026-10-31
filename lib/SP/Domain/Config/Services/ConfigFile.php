@@ -39,6 +39,7 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConfigException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Log\LoggerInterface;
 use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Storage\Ports\FileCacheService;
@@ -88,7 +89,19 @@ class ConfigFile implements ConfigFileService
             return null;
         }
 
-        $configData = $this->fileCache->loadWith(ConfigData::class);
+        try {
+            $configData = $this->fileCache->loadWith(ConfigData::class);
+        } catch (InvalidClassException $e) {
+            $this->logger->warning(sprintf('Config cache is not readable, regenerating: %s', $e->getMessage()));
+
+            try {
+                $this->fileCache->delete();
+            } catch (FileException $deleteException) {
+                $this->logger->warning(sprintf('Unable to delete the config cache: %s', $deleteException->getMessage()));
+            }
+
+            return null;
+        }
 
         if ($configData->countAttributes() === 0) {
             $this->fileCache->delete();
@@ -126,6 +139,7 @@ class ConfigFile implements ConfigFileService
 
     /**
      * Map the config array keys with ConfigData class setters
+     * @param array<string, mixed> $items
      * @throws ReflectionException
      */
     private function configMapper(array $items): ConfigDataInterface

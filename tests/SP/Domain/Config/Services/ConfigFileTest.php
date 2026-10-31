@@ -36,6 +36,7 @@ use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Exceptions\ConfigException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Domain\Core\Exceptions\FileException;
@@ -187,6 +188,50 @@ class ConfigFileTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('save')
             ->with($configData);
+    }
+
+    /**
+     * @throws ConfigException
+     * @throws Exception
+     */
+    #[Test]
+    public function testInitializeWithUnreadableCacheFallsBackToFile()
+    {
+        $this->fileCacheService
+            ->expects(self::once())
+            ->method('exists')
+            ->willReturn(true);
+
+        $time = time();
+
+        $this->fileStorageService
+            ->expects(self::once())
+            ->method('getFileTime')
+            ->willReturn($time);
+
+        $this->fileCacheService
+            ->expects(self::once())
+            ->method('isExpiredDate')
+            ->with($time)
+            ->willReturn(false);
+
+        $this->fileCacheService
+            ->expects(self::once())
+            ->method('loadWith')
+            ->with(ConfigData::class)
+            ->willThrowException(InvalidClassException::error('test'));
+
+        $this->fileCacheService
+            ->expects(self::once())
+            ->method('delete');
+
+        $this->ensureConfigFileIsUsed();
+
+        new ConfigFile(
+            $this->fileStorageService,
+            $this->fileCacheService,
+            $this->context
+        );
     }
 
     /**

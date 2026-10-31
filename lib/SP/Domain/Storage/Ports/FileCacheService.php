@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Storage\Ports;
 
 use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 
 /**
  * Interface FileCacheService
@@ -44,6 +45,7 @@ interface FileCacheService
      * @param class-string<T> $class
      * @return T&object
      * @throws FileException
+     * @throws InvalidClassException
      */
     public function loadWith(string $class): object;
 
