@@ -147,6 +147,13 @@ Status: implemented and committed in `6859ee7f` (2026-10-31). Files: `app/module
 **T8 Auth token read path.** Locate all reads of `AuthToken::getVault()` (`lib/SP/Domain/Auth/Models/AuthToken.php:66`) and route them through T3. `AuthToken.php:228` writes the new format and needs no change.
 - Acceptance: an unreadable token fails authentication closed. The row is not modified.
 
+Status: verified and closed as test-only (2026-10-31). No production change was required.
+- **T6 already routed the only production read.** `grep` over `lib/` and `app/` (excluding tests and `vendor/`) finds exactly one caller of `AuthTokenModel::getVault()`: `lib/SP/Domain/Api/Services/Api.php:265`. It decodes through `SerializedPayloadReader::read($payload, Vault::class)` at `Api.php:277` with the default legacy map. The auth-token web controllers, forms, grids, and repository never read `vault`; `lib/SP/Domain/Auth/Services/AuthToken.php:159` and `:228` only write it.
+- **Fail-closed path.** `Api::getMasterPassFromVault()` catches `CryptException|InvalidClassException` at `Api.php:291` and throws `ServiceException` before `setup()` marks the API initialized. No write occurs in that path.
+- **Regression coverage.** `tests/SP/Domain/Api/Services/ApiTest.php`: the secured-action helper now returns the `AuthToken` model and asserts `update()`, `updateRaw()`, and `refreshAndUpdate()` are never called. The unreadable, malformed, and missing-vault tests assert the original model vault value is unchanged after the failure, in addition to failing with `Internal error`. The existing legacy-vault test also asserts the legacy payload is unchanged while the remapped vault is read.
+- **Not changed.** The raw `AuthToken::getVault()` accessor stays. Moving decoding into the model or adding a typed accessor to `AuthTokenService` would widen a port without changing behaviour.
+- Verification: `ApiTest` 47/47 OK (141 assertions); `tests/SP/Domain/Api`, `tests/SP/Domain/Common/Adapters`, `tests/SP/Architecture`: 126/126 OK. PHPStan level 6 on `ApiTest.php` reports only the 26 pre-existing errors on untouched methods and data providers.
+
 ## Phase 3: Durable migration
 
 Depends on T3 and P0.1.
