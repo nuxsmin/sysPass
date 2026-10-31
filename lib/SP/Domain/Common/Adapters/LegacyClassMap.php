@@ -38,6 +38,7 @@ final class LegacyClassMap
     public const MAP = [
         'SP\Core\Crypt\Vault' => 'SP\Domain\Core\Crypt\Vault',
         'SP\Core\Crypt\Crypt' => 'SP\Domain\Core\Crypt\Crypt',
+        'SP\Config\ConfigData' => 'SP\Domain\Config\Adapters\ConfigData',
         'SP\DataModel\ProfileData' => 'SP\Domain\User\Models\ProfileData',
         'SP\DataModel\UserPreferencesData' => 'SP\Domain\User\Models\UserPreferences',
         'SP\DataModel\ItemPreset\Password' => 'SP\Domain\ItemPreset\Models\Password',

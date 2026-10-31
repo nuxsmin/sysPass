@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Config\Services;
 
 use Exception;
+use SP\Domain\Common\Adapters\SerializedPayloadReader;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Adapters\ConfigData;
@@ -59,7 +60,10 @@ readonly class ConfigBackup implements ConfigBackupService
      */
     public function configToJson(string $configData): string
     {
-        return Serde::serializeJson(Serde::deserialize($configData), JSON_PRETTY_PRINT);
+        return Serde::serializeJson(
+            SerializedPayloadReader::read($configData, ConfigData::class),
+            JSON_PRETTY_PRINT
+        );
     }
 
     /**
@@ -87,7 +91,9 @@ readonly class ConfigBackup implements ConfigBackupService
      */
     public function restore(ConfigFileService $configFile): ConfigDataInterface
     {
-        return $configFile->save(Serde::deserialize($this->getBackup(), ConfigData::class))->getConfigData();
+        return $configFile->save(
+            SerializedPayloadReader::read($this->getBackup(), ConfigData::class)
+        )->getConfigData();
     }
 
     /**

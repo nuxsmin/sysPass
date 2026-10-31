@@ -35,6 +35,7 @@ use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Config\Services\ConfigBackup;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\FileException;
@@ -223,6 +224,87 @@ class ConfigBackupTest extends UnitaryTestCase
         $this->expectExceptionMessage('Unable to retrieve the configuration');
 
         $this->configBackup->getBackup();
+    }
+
+    /**
+     * @throws Exception
+     * @throws ServiceException
+     * @throws FileException
+     * @throws SPException
+     */
+    #[Test]
+    public function testRestoreLegacyConfigData()
+    {
+        $configFile = $this->createMock(ConfigFileService::class);
+
+        $configFile->expects(self::once())
+                   ->method('save')
+                   ->with(self::callback(static function (ConfigData $configData): bool {
+                       return $configData->getDbHost() === 'localhost'
+                              && $configData->getDbPort() === 3307
+                              && $configData->isDokuwikiEnabled();
+                   }))
+                   ->willReturn($configFile);
+
+        $this->configService->expects(self::once())
+                            ->method('getByParam')
+                            ->with('config_backup')
+                            ->willReturn(bin2hex(gzcompress(self::legacyConfigData())));
+
+        $configFile->expects(self::once())
+                   ->method('getConfigData')
+                   ->willReturnCallback(static fn() => new ConfigData());
+
+        $this->configBackup->restore($configFile);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Test]
+    public function testRestoreWithUnreadableBackupDoesNotModifyTheConfig()
+    {
+        $configFile = $this->createMock(ConfigFileService::class);
+
+        $configFile->expects(self::never())
+                   ->method('save');
+
+        $configFile->expects(self::never())
+                   ->method('getConfigData');
+
+        $this->configService->expects(self::once())
+                            ->method('getByParam')
+                            ->with('config_backup')
+                            ->willReturn(bin2hex(gzcompress('not-a-serialized-payload')));
+
+        $this->expectException(InvalidClassException::class);
+
+        $this->configBackup->restore($configFile);
+    }
+
+    /**
+     * @throws SPException
+     */
+    #[Test]
+    public function testConfigToJsonWithLegacyConfigData()
+    {
+        $json = $this->configBackup->configToJson(self::legacyConfigData());
+
+        $decoded = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertSame('localhost', $decoded['dbHost']);
+        self::assertSame(3307, $decoded['dbPort']);
+        self::assertTrue($decoded['dokuwikiEnabled']);
+    }
+
+    private static function legacyConfigData(): string
+    {
+        return 'O:20:"SP\Config\ConfigData":4:{'
+               . 's:28:"' . "\0" . 'SP\Config\ConfigData' . "\0" . 'dbHost";s:9:"localhost";'
+               . 's:28:"' . "\0" . 'SP\Config\ConfigData' . "\0" . 'dbPort";i:3307;'
+               . 's:37:"' . "\0" . 'SP\Config\ConfigData' . "\0" . 'dokuwikiEnabled";b:1;'
+               . 's:38:"' . "\0" . 'SP\Config\ConfigData' . "\0" . 'filesAllowedExts";'
+               . 'a:2:{i:0;s:3:"PDF";i:1;s:3:"TXT";}}';
     }
 
     protected function setUp(): void

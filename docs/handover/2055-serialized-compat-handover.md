@@ -1,7 +1,7 @@
 # Handover: Serialized payload compatibility (#2055)
 
 Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
-Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`. T7 is committed in `6859ee7f`. T8 is committed in `a3f744ba` (tests) and `a97826f9` (handover). T9 is committed in `de5c7908` (2026-10-31).
+Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`. T7 is committed in `6859ee7f`. T8 is committed in `a3f744ba` (tests) and `a97826f9` (handover). T9 is committed in `de5c7908` (2026-10-31). T10, T11, and T12 are implemented in the working tree (2026-10-31).
 
 ## Goal
 
@@ -229,6 +229,14 @@ Previous follow-up verification (findByType fix):
 **T10 Config backup restore.** `lib/SP/Domain/Config/Services/ConfigBackup.php:90`: use the T3 reader for `ConfigData`. Do not rewrite stored backups.
 - Acceptance: a legacy backup restores; an unreadable backup reports failure and modifies nothing.
 
+Status: implemented (2026-10-31, working tree). Files: `lib/SP/Domain/Common/Adapters/LegacyClassMap.php`, `lib/SP/Domain/Config/Adapters/ConfigData.php`, `lib/SP/Domain/Config/Services/ConfigBackup.php`, `tests/SP/Domain/Config/Services/ConfigBackupTest.php`. Decisions and findings:
+- **T9 follow-up correction.** The pre-hexagonal backup class is `SP\Config\ConfigData`, not `SP\DataModel\ConfigData`. `SP\DataModel\ConfigData` is a database row model (`parameter`, `value`) and is not serialized into `config_backup`; it is deliberately not mapped. The map now contains `SP\Config\ConfigData => SP\Domain\Config\Adapters\ConfigData`.
+- **A class-only remap cannot restore a legacy backup.** `SP\Config\ConfigData` stored private properties (`dbHost`, `dbPort`, ...), while the current `ConfigData` extends `ArrayObject` and stores configuration in its internal array. Rewriting the class name alone makes `ArrayObject::__unserialize()` reject the payload (`Incomplete or ill-typed serialization data`).
+- **`ConfigData::__unserialize()` now accepts both layouts.** The current serialized layout is a list (`i:0` storage, `i:1` flags, ...) and is delegated to `ArrayObject`. The legacy layout is an associative list of mangled private-property keys; each property is mapped to its current setter, with `backup_hash`, `export_hash`, and `checknotices` aliased. `configHash` is skipped because the current setter has no argument and `ConfigFile::save()` recomputes it. Obsolete fields without a setter (`filesAllowedExts`, `ldapAds`, `ldapProxyUser`) are ignored. No stored backup is rewritten.
+- **Both restore and export use T3.** `restore()` and `configToJson()` call `SerializedPayloadReader::read(..., ConfigData::class)` with the default legacy map. A malformed or unmapped backup throws `InvalidClassException` before `ConfigFileService::save()` is called, so no config file, cache, or database row is modified.
+- **Real fixture verified.** The checked-in database fixture (`tests/res/datasets/syspass.xml`, `config_backup`) decodes to 84 current attributes through the reader (for example `dbHost=syspass-db-dev`, `dbPort=3306`).
+- Verification: `ConfigBackupTest` 12/12 OK (35 assertions, including legacy restore, legacy JSON export, and unreadable backup); Config/adapters/upgrade/architecture group 154/154 OK (428 assertions, 2 pre-existing deprecations). PHPStan level 6 on the changed files reports only the existing `ConfigData` level-6 findings; the new method adds none.
+
 ## Phase 4: Guardrail
 
 **T11 Architecture test.** Add a test in `tests/SP/Architecture/` (alongside `LayerRulesTest.php`) that:
@@ -237,6 +245,8 @@ Previous follow-up verification (findByType fix):
 - fails when a registered class is missing from the map's current-name set.
 
 Do not add a serialize-call-site allowlist. The repo removed its allowlist and ratchet in `6a6cd3dc`.
+
+Status: implemented (2026-10-31, working tree). File: `tests/SP/Architecture/SerializedPayloadCompatibilityTest.php`. The test asserts that every registry class resolves, every legacy map key no longer resolves, every registry class appears among the map's current names (matching T10's `SP\Config\ConfigData` entry), and every map target resolves. Verification: 4/4 OK (36 assertions).
 
 ## Phase 5: Fixtures and tests
 
@@ -251,6 +261,8 @@ Do not add a serialize-call-site allowlist. The repo removed its allowlist and r
 - T4 to T8: legacy inputs produce the behaviour in each task's acceptance criteria.
 - T9: idempotent second run; unreadable rows untouched and failing the upgrade; re-run after fix succeeds.
 - T11: architecture guardrail.
+
+Status: covered (2026-10-31, working tree). Static pre-move payloads live in `tests/SP/Stubs/DurablePayloadFixtures.php` (legacy Vault with and without `Crypt`, current Vault, ProfileData, UserPreferences, ItemPresets, malformed) and `tests/SP/Domain/Config/Services/ConfigBackupTest.php` (legacy `SP\Config\ConfigData`). The real `config_backup` row from `tests/res/datasets/syspass.xml` was decoded during T10 verification. Plugin data remains excluded per the T9 decision; it needs a separate authenticated migration decision.
 
 ## Phase 6: Verification and release
 
