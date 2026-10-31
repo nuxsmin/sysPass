@@ -1,7 +1,7 @@
 # Handover: Serialized payload compatibility (#2055)
 
 Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
-Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`. T7 is committed in `6859ee7f`. T8 is committed in `a3f744ba` (tests) and `a97826f9` (handover). T9 is implemented in the working tree (2026-10-31) and is not committed.
+Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`. T7 is committed in `6859ee7f`. T8 is committed in `a3f744ba` (tests) and `a97826f9` (handover). T9 is committed in `de5c7908` (2026-10-31).
 
 ## Goal
 
@@ -172,7 +172,7 @@ Depends on T3 and P0.1.
   - an unreadable row is byte-identical before and after, is reported by type and ID, and fails the upgrade;
   - re-running after the unreadable row is fixed completes successfully.
 
-Status: implemented in the working tree (2026-10-31); not committed.
+Status: committed in `de5c7908` (2026-10-31).
 
 Files:
 - `lib/SP/Domain/Upgrade/Services/UpgradeDurablePayloads.php`
@@ -203,7 +203,7 @@ Decisions and findings:
 
 Review follow-up (2026-10-31):
 - **`DurablePayload::findByType()` did not fetch rows.** It called `DatabaseInterface::runQuery()` with a `Query` object that implements only `QueryInterface`, not `SelectInterface`. `Database::runQuery()` fetches only for `SelectInterface` and otherwise returns `QueryResult(null, ...)`, so production returned an empty result and `UpgradeDurablePayloads` reported success without migrating anything. The mocked `runQuery()` in the repository test masked it.
-- Fixed in `lib/SP/Infrastructure/Upgrade/Repositories/DurablePayload.php`: `findByType()` now reads through `doFetchWithOptions($queryData, [], PDO::FETCH_ASSOC)` and materializes the mapped rows before returning, preserving the previous read-before-write behaviour. The per-type SELECT list and ID/subtype mapping are unchanged.
+- Fixed in `lib/SP/Infrastructure/Upgrade/Repositories/DurablePayload.php` (commit `de5c7908`): `findByType()` now reads through `doFetchWithOptions($queryData, [], PDO::FETCH_ASSOC)` and materializes the mapped rows before returning, preserving the previous read-before-write behaviour. The per-type SELECT list and ID/subtype mapping are unchanged.
 - Regression coverage in `tests/SP/Infrastructure/Upgrade/Repositories/DurablePayloadTest.php`: `fetchesAndMapsRowsThroughTheRealDatabasePath` builds the real `Database` with the real `QueryFactoryAdapter` over an in-memory PDO connection, inserts two `AuthToken` rows, and asserts both rows are fetched and mapped. It failed with 0 rows before the fix. The existing mapping tests now stub `doFetchWithOptions()` instead of `runQuery()`; the update and transaction tests are unchanged.
 
 Verification:
