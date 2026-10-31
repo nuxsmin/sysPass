@@ -43,6 +43,8 @@ use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
 
+use function SP\__;
+
 /**
  * Class ItemPresetHelper
  *
@@ -124,7 +126,7 @@ final class ItemPresetHelper extends HelperBase
     public function makeSessionTimeoutView(ItemPreset $itemPresetData): void
     {
         $sessionTimeout = $itemPresetData->hydrate(SessionTimeout::class)
-                          ?? new SessionTimeout($this->request->getClientAddress(), 3600);
+                          ?? new SessionTimeout($this->request->getClientAddress() ?: '127.0.0.1', 3600);
 
         $this->view->assign('typeTemplate', 'item_preset-session_timeout');
         $this->view->assign('presetName', __('Session Timeout Preset'));

@@ -248,9 +248,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
             ->method('transactionAware')
             ->with(
                 new Callback(static function (callable $callable) {
-                    $result = $callable();
-
-                    return is_a($result, QueryResult::class) && $result->getLastId() === 100;
+                    return $callable() === 100;
                 })
             )
             ->willReturn(100);

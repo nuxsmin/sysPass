@@ -58,8 +58,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
         $query = $this->queryFactory
             ->newDelete()
             ->from(UserProfileModel::TABLE)
-            ->where('id = :id', ['id' => $id])
-            ->limit(1);
+            ->where('id = :id', ['id' => $id]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the profile'));
 
@@ -224,8 +223,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
             ->newUpdate()
             ->table(UserProfileModel::TABLE)
             ->cols($userProfile->toArray(null, ['id']))
-            ->where('id = :id', ['id' => $userProfile->getId()])
-            ->limit(1);
+            ->where('id = :id', ['id' => $userProfile->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the profile'));
 

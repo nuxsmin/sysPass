@@ -28,6 +28,7 @@ namespace SP\Modules\Web\Controllers\UserProfile;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserProfileForm;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
@@ -35,6 +36,8 @@ use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
  */
 abstract class UserProfileSaveBase extends ControllerBase
 {
+    use ItemTrait;
+
     protected CustomFieldDataService $customFieldService;
     protected UserProfileForm $form;
 

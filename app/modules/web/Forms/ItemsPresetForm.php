@@ -35,6 +35,8 @@ use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Modules\Web\Mvc\Controller\Validators\Validator;
 
+use function SP\__u;
+
 /**
  * Class ItemsPresetForm
  *
@@ -78,27 +80,15 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $itemPresetData = new ItemPreset();
-
-        if ($this->itemId > 0) {
-            $itemPresetData->setId($this->itemId);
-        }
-
-        if ($userId = $this->request->analyzeInt('user_id')) {
-            $itemPresetData->setUserId($userId);
-        }
-
-        if ($userGroupId = $this->request->analyzeInt('user_group_id')) {
-            $itemPresetData->setUserGroupId($userGroupId);
-        }
-
-        if ($userProfileId = $this->request->analyzeInt('user_profile_id')) {
-            $itemPresetData->setUserProfileId($userProfileId);
-        }
-
-        $itemPresetData->setFixed((int)$this->request->analyzeBool('fixed_enabled', false));
-        $itemPresetData->setPriority($this->request->analyzeInt('priority', 0));
-        $itemPresetData->setType($this->request->analyzeString('type'));
+        $itemPresetData = new ItemPreset([
+            'id' => $this->itemId > 0 ? $this->itemId : null,
+            'userId' => $this->request->analyzeInt('user_id') ?: null,
+            'userGroupId' => $this->request->analyzeInt('user_group_id') ?: null,
+            'userProfileId' => $this->request->analyzeInt('user_profile_id') ?: null,
+            'fixed' => (int)$this->request->analyzeBool('fixed_enabled', false),
+            'priority' => $this->request->analyzeInt('priority', 0),
+            'type' => $this->request->analyzeString('type'),
+        ]);
 
         switch ($itemPresetData->getType()) {
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION:

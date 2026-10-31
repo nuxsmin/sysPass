@@ -346,7 +346,7 @@ final class Init extends HttpModuleBase
             processException($e);
         }
 
-        return $timeout;
+        return $timeout ?? $this->configData->getSessionTimeout();
     }
 
     /**

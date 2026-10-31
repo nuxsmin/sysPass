@@ -123,7 +123,7 @@ final class CustomFieldDefinition extends Service implements CustomFieldDefiniti
             function () use ($customFieldDefinition) {
                 $this->customFieldDefinitionRepository->delete($customFieldDefinition->getId());
 
-                return $this->customFieldDefinitionRepository->create($customFieldDefinition);
+                return $this->customFieldDefinitionRepository->create($customFieldDefinition)->getLastId();
             },
             $this
         );

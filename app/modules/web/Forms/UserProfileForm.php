@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Forms;
 
+use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
@@ -74,10 +75,11 @@ final class UserProfileForm extends FormBase implements FormInterface
     {
         $profileData = $this->getProfileDataFromRequest();
 
-        $this->userProfileData = new UserProfile();
-        $this->userProfileData->setName($this->request->analyzeString('profile_name'));
-        $this->userProfileData->setId($this->itemId);
-        $this->userProfileData->setProfile($profileData);
+        $this->userProfileData = new UserProfile([
+            'id' => $this->itemId,
+            'name' => $this->request->analyzeString('profile_name'),
+            'profile' => Serde::serialize($profileData),
+        ]);
     }
 
     /**

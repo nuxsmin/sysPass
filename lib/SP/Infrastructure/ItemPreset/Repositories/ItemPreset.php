@@ -80,7 +80,6 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
             ->table(ItemPresetModel::TABLE)
             ->cols($itemPreset->toArray(null, array_merge(['id'], self::READ_ONLY_FIELDS)))
             ->where('id = :id')
-            ->limit(1)
             ->bindValues(
                 [
                     'id' => $itemPreset->getId()

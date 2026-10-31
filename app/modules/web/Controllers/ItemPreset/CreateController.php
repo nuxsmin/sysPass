@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers\ItemPreset;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
-use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Events\Event;
 
@@ -40,16 +39,10 @@ use function SP\__u;
 final class CreateController extends ItemPresetViewBase
 {
     #[Action(ResponseType::JSON)]
-    public function createAction(...$args): ActionResponse
+    public function createAction(?string $type = null): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_CREATE)) {
             return ActionResponse::error(__u('You don\'t have permission to do this operation'));
-        }
-
-        $type = null;
-
-        if (count($args) > 0) {
-            $type = Filter::getString($args[0]);
         }
 
         $this->view->assign('header', __('New Value'));

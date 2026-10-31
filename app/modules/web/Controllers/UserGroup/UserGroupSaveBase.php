@@ -28,6 +28,7 @@ namespace SP\Modules\Web\Controllers\UserGroup;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserGroupForm;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
@@ -35,6 +36,8 @@ use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
  */
 abstract class UserGroupSaveBase extends ControllerBase
 {
+    use ItemTrait;
+
     protected CustomFieldDataService $customFieldService;
     protected UserGroupForm $form;
 

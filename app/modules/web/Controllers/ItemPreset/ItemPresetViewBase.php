@@ -83,7 +83,7 @@ abstract class ItemPresetViewBase extends ControllerBase
         $this->itemPresetHelper->setCommon($itemPresetData);
 
         if ($itemPresetData->getType() === null) {
-            $itemPresetData->setType($type);
+            $itemPresetData = $itemPresetData->mutate(['type' => $type]);
         }
 
         switch ($itemPresetData->getType()) {

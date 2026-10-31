@@ -87,7 +87,7 @@ abstract class UserProfileViewBase extends ControllerBase
             : new UserProfile();
 
         $this->view->assign('profile', $profile);
-        $this->view->assign('profileData', $profile->getProfile() ?: new ProfileData());
+        $this->view->assign('profileData', $profile->hydrate(ProfileData::class) ?? new ProfileData());
 
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 

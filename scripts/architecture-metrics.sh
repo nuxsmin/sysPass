@@ -35,6 +35,10 @@ controller_areas() {
     for directory in app/modules/web/Controllers/*/; do
         area="$(basename "$directory")"
 
+        if [ -z "$(find "$directory" -maxdepth 1 -name '*Controller.php' -print -quit)" ]; then
+            continue
+        fi
+
         if [ -d "tests/SP/Modules/Web/Controllers/${area}" ]; then
             tested=$((tested + 1))
         else
