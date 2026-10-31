@@ -649,8 +649,11 @@ class ApiTest extends UnitaryTestCase
             array_flip(LegacyClassMap::MAP)
         );
 
-        $this->setupSecuredActionWithVault($authToken, $legacyVault);
+        $authTokenData = $this->prepareSecuredActionWithVault($authToken, $legacyVault);
 
+        $this->apiService->setup(AclActionsInterface::ACCOUNT_VIEW_PASS);
+
+        $this->assertSame($legacyVault, $authTokenData->getVault());
         $this->assertSame($masterPass, $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY));
     }
 
@@ -663,10 +666,17 @@ class ApiTest extends UnitaryTestCase
     #[Test]
     public function testRequireMasterPassWithUnreadableVault(): void
     {
-        $this->expectException(ServiceException::class);
-        $this->expectExceptionMessage('Internal error');
+        $vault = serialize(new stdClass());
+        $authTokenData = $this->prepareSecuredActionWithVault(self::$faker->password, $vault, 2);
 
-        $this->setupSecuredActionWithVault(self::$faker->password, serialize(new stdClass()), 2);
+        try {
+            $this->apiService->setup(AclActionsInterface::ACCOUNT_VIEW_PASS);
+            self::fail('Expected ServiceException');
+        } catch (ServiceException $e) {
+            $this->assertSame('Internal error', $e->getMessage());
+        }
+
+        $this->assertSame($vault, $authTokenData->getVault());
     }
 
     /**
@@ -678,10 +688,17 @@ class ApiTest extends UnitaryTestCase
     #[Test]
     public function testRequireMasterPassWithMalformedVault(): void
     {
-        $this->expectException(ServiceException::class);
-        $this->expectExceptionMessage('Internal error');
+        $vault = 'not-a-serialized-payload';
+        $authTokenData = $this->prepareSecuredActionWithVault(self::$faker->password, $vault, 2);
 
-        $this->setupSecuredActionWithVault(self::$faker->password, 'not-a-serialized-payload', 2);
+        try {
+            $this->apiService->setup(AclActionsInterface::ACCOUNT_VIEW_PASS);
+            self::fail('Expected ServiceException');
+        } catch (ServiceException $e) {
+            $this->assertSame('Internal error', $e->getMessage());
+        }
+
+        $this->assertSame($vault, $authTokenData->getVault());
     }
 
     /**
@@ -693,14 +710,23 @@ class ApiTest extends UnitaryTestCase
     #[Test]
     public function testRequireMasterPassWithMissingVault(): void
     {
-        $this->expectException(ServiceException::class);
-        $this->expectExceptionMessage('Internal error');
+        $authTokenData = $this->prepareSecuredActionWithVault(self::$faker->password, null, 2);
 
-        $this->setupSecuredActionWithVault(self::$faker->password, null, 2);
+        try {
+            $this->apiService->setup(AclActionsInterface::ACCOUNT_VIEW_PASS);
+            self::fail('Expected ServiceException');
+        } catch (ServiceException $e) {
+            $this->assertSame('Internal error', $e->getMessage());
+        }
+
+        $this->assertNull($authTokenData->getVault());
     }
 
-    private function setupSecuredActionWithVault(string $authToken, ?string $vault, int $getCalls = 3): void
-    {
+    private function prepareSecuredActionWithVault(
+        string $authToken,
+        ?string $vault,
+        int $getCalls = 3
+    ): AuthToken {
         $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
 
         $this->trackService
@@ -744,7 +770,11 @@ class ApiTest extends UnitaryTestCase
 
         $this->apiRequest->expects(self::once())->method('exists')->with('tokenPass')->willReturn(true);
 
-        $this->apiService->setup($actionId);
+        $this->authTokenService->expects(self::never())->method('update');
+        $this->authTokenService->expects(self::never())->method('updateRaw');
+        $this->authTokenService->expects(self::never())->method('refreshAndUpdate');
+
+        return $authTokenData;
     }
 
     /**
