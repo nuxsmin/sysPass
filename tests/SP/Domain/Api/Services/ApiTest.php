@@ -42,6 +42,8 @@ use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Services\Api;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Auth\Ports\AuthTokenService;
+use SP\Domain\Common\Adapters\LegacyClassMap;
+use SP\Domain\Common\Adapters\SerializedPayloadRewriter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Context\Context;
@@ -632,6 +634,117 @@ class ApiTest extends UnitaryTestCase
         $this->apiService->requireMasterPass();
 
         $this->assertEquals($masterPass, $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY));
+    }
+
+    #[Test]
+    public function testRequireMasterPassWithLegacyVault(): void
+    {
+        $authToken = self::$faker->password;
+        $masterPass = self::$faker->password;
+
+        $vault = Vault::factory(new Crypt())->saveData($masterPass, sha1($authToken . $authToken));
+
+        $legacyVault = SerializedPayloadRewriter::rewrite(
+            serialize($vault),
+            array_flip(LegacyClassMap::MAP)
+        );
+
+        $this->setupSecuredActionWithVault($authToken, $legacyVault);
+
+        $this->assertSame($masterPass, $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY));
+    }
+
+    /**
+     * @throws ContextException
+     * @throws CryptException
+     * @throws ServiceException
+     * @throws SPException
+     */
+    #[Test]
+    public function testRequireMasterPassWithUnreadableVault(): void
+    {
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Internal error');
+
+        $this->setupSecuredActionWithVault(self::$faker->password, serialize(new stdClass()), 2);
+    }
+
+    /**
+     * @throws ContextException
+     * @throws CryptException
+     * @throws ServiceException
+     * @throws SPException
+     */
+    #[Test]
+    public function testRequireMasterPassWithMalformedVault(): void
+    {
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Internal error');
+
+        $this->setupSecuredActionWithVault(self::$faker->password, 'not-a-serialized-payload', 2);
+    }
+
+    /**
+     * @throws ContextException
+     * @throws CryptException
+     * @throws ServiceException
+     * @throws SPException
+     */
+    #[Test]
+    public function testRequireMasterPassWithMissingVault(): void
+    {
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Internal error');
+
+        $this->setupSecuredActionWithVault(self::$faker->password, null, 2);
+    }
+
+    private function setupSecuredActionWithVault(string $authToken, ?string $vault, int $getCalls = 3): void
+    {
+        $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
+
+        $this->trackService
+            ->expects(self::once())
+            ->method('checkTracking')
+            ->with($this->trackRequest)
+            ->willReturn(false);
+
+        $this->apiRequest->expects(self::exactly($getCalls))
+                         ->method('get')
+                         ->willReturn($authToken);
+
+        $authTokenData = new AuthToken(
+            [
+                'actionId' => $actionId,
+                'userId' => self::$faker->randomNumber(),
+                'hash' => password_hash($authToken, PASSWORD_BCRYPT),
+                'vault' => $vault
+            ]
+        );
+
+        $this->authTokenService
+            ->expects(self::once())
+            ->method('getTokenByToken')
+            ->with($actionId, $authToken)
+            ->willReturn($authTokenData);
+
+        $userData = UserDataGenerator::factory()->buildUserData()->mutate(['isDisabled' => false]);
+
+        $this->userService
+            ->expects(self::once())
+            ->method('getById')
+            ->with($authTokenData->getUserId())
+            ->willReturn($userData);
+
+        $this->userProfileService
+            ->expects(self::once())
+            ->method('getById')
+            ->with($userData->getUserProfileId())
+            ->willReturn(UserProfileDataGenerator::factory()->buildUserProfileData());
+
+        $this->apiRequest->expects(self::once())->method('exists')->with('tokenPass')->willReturn(true);
+
+        $this->apiService->setup($actionId);
     }
 
     /**

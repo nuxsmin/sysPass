@@ -28,7 +28,6 @@ namespace SP\Domain\Api\Services;
 
 use Exception;
 use SP\Domain\Core\Context\ContextException;
-use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Api\Enums\JsonRpcErrorCode;
 use SP\Domain\Api\Ports\ApiRequestService;
@@ -36,12 +35,12 @@ use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Api\Ports\HelpProvider;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenService;
+use SP\Domain\Common\Adapters\SerializedPayloadReader;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
@@ -263,8 +262,19 @@ final class Api extends Service implements ApiService
 
             $this->hashService->checkHashKey($tokenPass, $this->authToken->getHash()) || $this->accessDenied();
 
-            /** @var VaultInterface $vault */
-            $vault = unserialize($this->authToken->getVault(), ['allowed_classes' => [Vault::class, Crypt::class]]);
+            $payload = $this->authToken->getVault();
+
+            if ($payload === null || $payload === '') {
+                throw new ServiceException(
+                    __u('Internal error'),
+                    SPException::ERROR,
+                    __u('Invalid data'),
+                    JsonRpcErrorCode::INTERNAL_ERROR
+                );
+            }
+
+            /** @var Vault $vault */
+            $vault = SerializedPayloadReader::read($payload, Vault::class);
 
             $key = sha1($tokenPass . $this->getParam('authToken'));
 
@@ -278,7 +288,7 @@ final class Api extends Service implements ApiService
                 __u('Invalid data'),
                 JsonRpcErrorCode::INTERNAL_ERROR
             );
-        } catch (CryptException $e) {
+        } catch (CryptException|InvalidClassException $e) {
             throw new ServiceException(
                 __u('Internal error'),
                 SPException::ERROR,
