@@ -52,7 +52,7 @@ Live status is tracked in GitHub issues on `nuxsmin/sysPass`. The map issue is [
 | P8-1, P8-2 | #2017, #2033 | todo |
 | P9-1 to P9-5 | #2038, #2050, #2034, #2052, #2053 | P9-1, P9-2 done; rest todo |
 | P10-1 to P10-5 | #2035, #2039, #2018, #2019, #2020 | all done |
-| P11-1 to P11-5 | #2021, #2028, #2040, #2041, #2022 | P11-1 done; rest todo |
+| P11-1 to P11-5 | #2021, #2028, #2040, #2041, #2022 | P11-1, P11-2 done; rest todo |
 | D1 | #1965 | decided: option (b) |
 | D2 | #1966 | decided: option (a) |
 | D3 | #2011 | decided: yes |
@@ -291,7 +291,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 ### Phase 11: Documentation and decision records
 
 - [x] **P11-1 ADR-001** target architecture and dependency rules (section 1).
-- [ ] **P11-2 ADR-002** translation and error policy (D1).
+- [x] **P11-2 ADR-002** translation and error policy (D1).
 - [ ] **P11-3 ADR-003** use case and Command/Result convention (P5-*).
 - [ ] **P11-4 ADR-004** test strategy (unit, DB-backed, HTTP IT) and CI gating (D4).
 - [ ] **P11-5 Glossary** of bounded contexts and domain terms (for example "use case", "port", "item", "master key").
@@ -381,6 +381,7 @@ Each slice follows section 6. Waves are ordered by legacy count and risk. Curren
 | 2026-10-30 | P9-2 remove `SP\Core\Application` (verified: architecture + wiring 15/15, core unit 2103, module unit 19, Resource/Status controller IT 4, PHPStan level 0 no new arity errors) | M4 stays 0; module references to `SP\Core\Application` 174 files / 202 references -> 0; no metric regression (M1 21, M3 13, M6 0/152, M13 0) | Deleted `lib/SP/Core/Application.php`. Added two immutable parameter objects instead of forwarding the same three deps everywhere: `SP\Core\ModuleDependencies` (config, context, event dispatcher) for `ModuleBase`, `HttpModuleBase` and the web/API/CLI `Init`, and `SP\Modules\Api\Controllers\ApiControllerHelper` for `ApiControllerBase` and its 8 bases. Both are `final readonly`, expose only typed ports and hold no container. Web `ControllerBase`/`SimpleControllerBase` read the deps from `WebControllerHelper`/`SimpleControllerHelper` (the existing web aggregate; `SessionContext` is bound to the web `Context` instance). `FormBase` and `HelperBase` keep explicit `ConfigFileService` + `Context` (+ `EventDispatcherInterface` for helpers) because each class uses them directly. `UnitaryTestCase` no longer builds an `Application`; tests read `$this->config` / `$this->eventDispatcherStub`. Verified: 36/36 API controllers resolve from the container. Full module integration suite still blocked locally by missing `DB_*` environment variables. |
 | 2026-10-31 | P10-4 coverage gates per layer (verified: core unit 2098 tests / 28245 assertions with coverage, gate passes at the declared targets, gate fails when a threshold is raised) | Use cases 91.11% -> gate 90%; Domain services 96.39% -> gate 95%; Domain 89.37%, Core 62.35%, Infrastructure 92.42%, total 53.38% recorded in section 9 | Added `scripts/coverage-gate.php` (Clover parser and per-layer report/gate) and `tests/coverage-thresholds.php` (use case and domain service minimums). The CI unitary job runs `php scripts/coverage-gate.php --gate` after the core unit suite. Only `Domain\*\UseCases` and `Domain\*\Services` are gated, as agreed in the issue; the other layers are reported for visibility. |
 | 2026-10-31 | P11-1 ADR-001 target architecture (verified: architecture suite, PSR2) | Metrics unchanged; no runtime code changed | Added `docs/adr/0001-target-architecture-and-dependency-rules.md` with the post-migration layer table, eight hard rules mapped to `LayerRules::RULES` plus the container wiring invariant, and the rationale for rejecting an allowlist. Referenced the ADR from `LayerDependencyTest` and `LayerRules`. |
+| 2026-10-31 | P11-2 ADR-002 translation and error policy (verified: code references, PSR2 not applicable to Markdown) | Metrics unchanged; no runtime code changed | Added `docs/adr/0002-translation-and-error-policy.md` recording option (b) from D1: context exceptions with stable codes, untranslated message keys, severity and optional hints, created through named constructors; translation happens once at the web, API or CLI boundary. Documented the per-context migration recipe, the `__u()` stopgap and its M5 tracking, and the rejected alternatives. Linked the ADR from #1965. |
 
 ### Baseline test results (P0-1)
 
