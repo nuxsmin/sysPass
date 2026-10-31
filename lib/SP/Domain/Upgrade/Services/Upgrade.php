@@ -42,6 +42,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
 use SP\Domain\Upgrade\Ports\UpgradeService;
@@ -66,6 +67,7 @@ final class Upgrade extends Service implements UpgradeService
         Context $context,
         FileHandlerProvider                 $fileHandlerProvider,
         private readonly ContainerInterface $container,
+        private readonly AppLockHandler     $appLock,
         private readonly LoggerInterface    $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
@@ -81,36 +83,52 @@ final class Upgrade extends Service implements UpgradeService
      */
     public function upgrade(string $version, ConfigDataInterface $configData): void
     {
-        $class = get_class();
+        if (!$this->appLock->tryLock(0, 'upgrade')) {
+            $this->eventDispatcher->notify(
+                'upgrade.process',
+                new Event(
+                    $this,
+                    EventMessage::build()->addDescription(__u('Another operation is in progress'))
+                )
+            );
 
-        $this->eventDispatcher->notify(
-            sprintf('upgrade.%s.start', $class),
-            new Event(
-                $this,
-                EventMessage::build()->addDescription(__u('Update'))->addDetail('type', $class)
-            )
-        );
-
-        foreach ($this->getTargetUpgradeHandlers($version) as $upgradeHandler) {
-            if (!$upgradeHandler->apply($version, $configData)) {
-                throw UpgradeException::critical(
-                    __u('Error while applying the update'),
-                    __u('Please, check the event log for more details')
-                );
-            }
-
-            $this->logger->debug('Upgrade: ' . $upgradeHandler::class);
-
-            $this->config->save($configData);
+            throw UpgradeException::error(__u('Another operation is in progress'));
         }
 
-        $this->eventDispatcher->notify(
-            sprintf('upgrade.%s.end', $class),
-            new Event(
-                $this,
-                EventMessage::build()->addDescription(__u('Update'))->addDetail('type', $class)
-            )
-        );
+        try {
+            $class = get_class();
+
+            $this->eventDispatcher->notify(
+                sprintf('upgrade.%s.start', $class),
+                new Event(
+                    $this,
+                    EventMessage::build()->addDescription(__u('Update'))->addDetail('type', $class)
+                )
+            );
+
+            foreach ($this->getTargetUpgradeHandlers($version) as $upgradeHandler) {
+                if (!$upgradeHandler->apply($version, $configData)) {
+                    throw UpgradeException::critical(
+                        __u('Error while applying the update'),
+                        __u('Please, check the event log for more details')
+                    );
+                }
+
+                $this->logger->debug('Upgrade: ' . $upgradeHandler::class);
+
+                $this->config->save($configData);
+            }
+
+            $this->eventDispatcher->notify(
+                sprintf('upgrade.%s.end', $class),
+                new Event(
+                    $this,
+                    EventMessage::build()->addDescription(__u('Update'))->addDetail('type', $class)
+                )
+            );
+        } finally {
+            $this->appLock->unlock();
+        }
     }
 
     /**

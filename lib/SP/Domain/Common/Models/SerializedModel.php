@@ -50,6 +50,10 @@ trait SerializedModel
                 $property = $this->{$hydratable->getSourceProperty()};
 
                 if (count($valid) > 0 && $property !== null) {
+                    if (Serde::isJson($property)) {
+                        return Serde::deserializeJsonTo($property, $class);
+                    }
+
                     return Serde::deserialize($property, $class) ?: null;
                 }
 

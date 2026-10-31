@@ -26,11 +26,11 @@ declare(strict_types=1);
 
 namespace SP\Domain\Upgrade\Services;
 
-use JsonException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use ReflectionProperty;
 use SP\Domain\Common\Attributes\UpgradeVersion;
+use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Adapters\SerializedPayloadReader;
 use SP\Domain\Common\Adapters\SerializedPayloadRewriter;
 use SP\Domain\Common\Services\Service;
@@ -43,7 +43,6 @@ use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\ItemPreset\Models\AccountPermission;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Models\Password;
@@ -70,7 +69,6 @@ final class UpgradeDurablePayloads extends Service implements UpgradeHandlerServ
         EventDispatcherInterface $eventDispatcher,
         Context                  $context,
         private readonly DurablePayloadRepository $payloadRepository,
-        private readonly AppLockHandler           $appLock,
         private readonly CryptInterface           $crypt,
         private readonly LoggerInterface          $logger = new NullLogger()
     ) {
@@ -79,48 +77,13 @@ final class UpgradeDurablePayloads extends Service implements UpgradeHandlerServ
 
     public function apply(string $version, ConfigDataInterface $configData): bool
     {
-        try {
-            if ($this->appLock->getLock() !== false) {
-                $this->eventDispatcher->notify(
-                    'upgrade.payloads.process',
-                    new Event(
-                        $this,
-                        EventMessage::build()
-                                    ->addDescription(__u('Another operation is in progress'))
-                    )
-                );
+        $failed = false;
 
-                return false;
-            }
-
-            $this->appLock->lock(0, 'upgrade-durable-payloads');
-        } catch (Throwable $e) {
-            $this->logger->error(sprintf('Cannot lock the application for the payload upgrade: %s', $e->getMessage()));
-
-            $this->eventDispatcher->notify(
-                'upgrade.payloads.process',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                                ->addDescription(__u('Cannot lock the application for the payload upgrade'))
-                                ->addDetail(__u('Reason'), $e->getMessage())
-                )
-            );
-
-            return false;
+        foreach (DurablePayloadType::cases() as $type) {
+            $failed = $this->processType($type) || $failed;
         }
 
-        try {
-            $failed = false;
-
-            foreach (DurablePayloadType::cases() as $type) {
-                $failed = $this->processType($type) || $failed;
-            }
-
-            return !$failed;
-        } finally {
-            $this->appLock->unlock();
-        }
+        return !$failed;
     }
 
     private function processType(DurablePayloadType $type): bool
@@ -150,7 +113,8 @@ final class UpgradeDurablePayloads extends Service implements UpgradeHandlerServ
                     continue;
                 }
 
-                if ($type === DurablePayloadType::UserPreferences && $this->isJsonPayload($row->payload)) {
+                if (($type === DurablePayloadType::UserProfile || $type === DurablePayloadType::UserPreferences)
+                    && Serde::isJson($row->payload)) {
                     $current++;
                     continue;
                 }
@@ -233,21 +197,6 @@ final class UpgradeDurablePayloads extends Service implements UpgradeHandlerServ
             },
             DurablePayloadType::PluginData => null
         };
-    }
-
-    private function isJsonPayload(string $payload): bool
-    {
-        if (!str_starts_with(ltrim($payload), '{')) {
-            return false;
-        }
-
-        try {
-            json_decode($payload, true, 512, JSON_THROW_ON_ERROR);
-
-            return true;
-        } catch (JsonException) {
-            return false;
-        }
     }
 
     private function reportRowFailure(DurablePayloadType $type, DurablePayloadRow $row, Throwable $e): void

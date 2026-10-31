@@ -35,6 +35,7 @@ use RuntimeException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
 use SP\Domain\Upgrade\Services\Upgrade;
@@ -53,6 +54,7 @@ class UpgradeTest extends UnitaryTestCase
 
     private MockObject|ContainerInterface $container;
     private Upgrade                       $upgrade;
+    private AppLockHandler                $appLock;
 
     /**
      * @throws ServiceException
@@ -147,12 +149,43 @@ class UpgradeTest extends UnitaryTestCase
         $this->upgrade->upgrade('400.00000000', $configData);
     }
 
+    #[Test]
+    public function testUpgradeLocksAndUnlocksAroundHandlers(): void
+    {
+        $appLock = $this->createMock(AppLockHandler::class);
+        $appLock->expects($this->once())->method('tryLock')->with(0, 'upgrade')->willReturn(true);
+        $appLock->expects($this->once())->method('unlock');
+
+        $this->upgrade = $this->buildUpgrade($appLock);
+
+        $configData = $this->createMock(ConfigDataInterface::class);
+        $handler = $this->createMock(UpgradeHandlerService::class);
+        $handler->expects($this->exactly(2))->method('apply')->with('400.00000000', $configData)->willReturn(true);
+
+        $this->container->expects($this->exactly(2))->method('get')->with(UpgradeHandlerStub::class)->willReturn($handler);
+        $this->config->expects($this->exactly(2))->method('save')->with($configData, true);
+
+        $this->upgrade->registerUpgradeHandler(UpgradeHandlerStub::class);
+        $this->upgrade->upgrade('400.00000000', $configData);
+    }
+
+    #[Test]
+    public function testUpgradeFailsWhenLockCannotBeAcquired(): void
+    {
+        $appLock = $this->createMock(AppLockHandler::class);
+        $appLock->expects($this->once())->method('tryLock')->with(0, 'upgrade')->willReturn(false);
+        $appLock->expects($this->never())->method('unlock');
+
+        $this->upgrade = $this->buildUpgrade($appLock);
+
+        $this->expectException(UpgradeException::class);
+        $this->expectExceptionMessage('Another operation is in progress');
+
+        $this->upgrade->upgrade('400.00000000', $this->createMock(ConfigDataInterface::class));
+    }
+
     /**
      * @throws Exception
-     * @throws ServiceException
-     * @throws FileException
-     * @throws UpgradeException
-     * @throws InvalidClassException
      */
     #[Test]
     public function testUpgradeWithHandlerWithFailedApply()
@@ -217,15 +250,22 @@ class UpgradeTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $fileHandlerProvider = $this->createMock(FileHandlerProvider::class);
         $this->container = $this->createMock(ContainerInterface::class);
+        $this->appLock = $this->createStub(AppLockHandler::class);
+        $this->appLock->method('tryLock')->willReturn(true);
 
-        $this->upgrade = new Upgrade(
+        $this->upgrade = $this->buildUpgrade($this->appLock);
+    }
+
+    private function buildUpgrade(AppLockHandler $appLock): Upgrade
+    {
+        return new Upgrade(
             $this->config,
             $this->eventDispatcherStub,
             $this->context,
-            $fileHandlerProvider,
-            $this->container
+            $this->createStub(FileHandlerProvider::class),
+            $this->container,
+            $appLock
         );
     }
 }

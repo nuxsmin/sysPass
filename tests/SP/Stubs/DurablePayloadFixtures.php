@@ -73,6 +73,11 @@ final class DurablePayloadFixtures
         return '{"lang":"en_US","theme":"material-blue","resultsPerPage":12}';
     }
 
+    public static function jsonProfile(): string
+    {
+        return '{"accView":true,"accViewPass":true,"accEdit":true}';
+    }
+
     public static function password(): string
     {
         return 'O:32:"SP\DataModel\ItemPreset\Password":10:{s:40:"' . "\0" . 'SP\DataModel\ItemPreset\Password'

@@ -29,6 +29,7 @@ namespace SP\Domain\Common\Adapters;
 use __PHP_Incomplete_Class;
 use JsonException;
 use SP\Domain\Core\Exceptions\SPException;
+use Throwable;
 
 use function SP\__u;
 
@@ -37,12 +38,17 @@ use function SP\__u;
  */
 final class Serde
 {
+    /**
+     * @param array<mixed>|object|string|int $data
+     */
     public static function serialize(array|object|string|int $data): string
     {
         return serialize($data);
     }
 
     /**
+     * @param array<mixed>|object|string|int $data
+     *
      * @throws SPException
      */
     public static function serializeJson(array|object|string|int $data, int $flags = 0): string
@@ -54,12 +60,27 @@ final class Serde
         }
     }
 
+    public static function isJson(string $data): bool
+    {
+        if (!str_starts_with(ltrim($data), '{')) {
+            return false;
+        }
+
+        try {
+            json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+
+            return true;
+        } catch (JsonException) {
+            return false;
+        }
+    }
+
     /**
      * @template T of object
      *
      * @param string $data
      * @param class-string<T>|null $class
-     * @return T&object|array
+     * @return ($class is null ? (array<mixed>|object) : T)
      *
      * @throws SPException
      */
@@ -105,6 +126,33 @@ final class Serde
         try {
             return json_decode($data, flags: JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
+            throw SPException::from($e);
+        }
+    }
+
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $class
+     * @return T
+     *
+     * @throws SPException
+     */
+    public static function deserializeJsonTo(string $data, string $class): object
+    {
+        try {
+            $properties = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw SPException::from($e);
+        }
+
+        if (!is_array($properties)) {
+            throw SPException::error(__u('Invalid JSON payload'));
+        }
+
+        try {
+            return new $class($properties);
+        } catch (Throwable $e) {
             throw SPException::from($e);
         }
     }

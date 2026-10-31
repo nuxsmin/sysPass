@@ -45,5 +45,11 @@ interface AppLockHandler
      */
     public function lock(int $userId, string $subject): void;
 
+    /**
+     * @throws FileException
+     * @throws SPException
+     */
+    public function tryLock(int $userId, string $subject): bool;
+
     public function unlock(): void;
 }

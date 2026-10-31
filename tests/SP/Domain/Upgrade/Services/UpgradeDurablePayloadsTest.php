@@ -39,7 +39,6 @@ use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\Upgrade\Dtos\DurablePayloadRow;
 use SP\Domain\Upgrade\Enums\DurablePayloadType;
@@ -99,6 +98,7 @@ final class UpgradeDurablePayloadsTest extends UnitaryTestCase
         $current = [
             [DurablePayloadType::AuthTokenVault, '9', DurablePayloadFixtures::currentVault(), null],
             [DurablePayloadType::UserPreferences, '10', DurablePayloadFixtures::jsonPreferences(), null],
+            [DurablePayloadType::UserProfile, '12', DurablePayloadFixtures::jsonProfile(), null],
             [
                 DurablePayloadType::ItemPreset,
                 '11',
@@ -311,50 +311,31 @@ final class UpgradeDurablePayloadsTest extends UnitaryTestCase
     }
 
     #[Test]
-    public function locksAndUnlocksOnSuccess(): void    {
-        $appLock = $this->createMock(AppLockHandler::class);
-        $appLock->method('getLock')->willReturn(false);
-        $appLock->expects(self::once())->method('lock')->with(0, 'upgrade-durable-payloads');
-        $appLock->expects(self::once())->method('unlock');
-
-        $handler = $this->buildHandler(new InMemoryDurablePayloadRepository(), null, $appLock);
-
-        self::assertTrue($handler->apply('400.0', $this->createStub(ConfigDataInterface::class)));
-    }
-
-    #[Test]
-    public function unlocksOnFailure(): void
+    public function keepsJsonProfileAndPreferencesAsCurrent(): void
     {
-        $appLock = $this->createMock(AppLockHandler::class);
-        $appLock->method('getLock')->willReturn(false);
-        $appLock->expects(self::once())->method('lock');
-        $appLock->expects(self::once())->method('unlock');
-
         $repository = new InMemoryDurablePayloadRepository();
-        $repository->add(DurablePayloadType::AuthTokenVault, new DurablePayloadRow('1', DurablePayloadFixtures::malformed()));
+        $handler = $this->buildHandler($repository);
 
-        $handler = $this->buildHandler($repository, null, $appLock);
-
-        self::assertFalse($handler->apply('400.0', $this->createStub(ConfigDataInterface::class)));
-    }
-
-    #[Test]
-    public function doesNotOverwriteExistingLock(): void
-    {
-        $appLock = $this->createMock(AppLockHandler::class);
-        $appLock->method('getLock')->willReturn(7);
-        $appLock->expects(self::never())->method('lock');
-        $appLock->expects(self::never())->method('unlock');
-
-        $messages = [];
-        $handler = $this->buildHandler(
-            new InMemoryDurablePayloadRepository(),
-            $this->buildEventDispatcher($messages),
-            $appLock
+        $repository->add(
+            DurablePayloadType::UserProfile,
+            new DurablePayloadRow('1', DurablePayloadFixtures::jsonProfile())
+        );
+        $repository->add(
+            DurablePayloadType::UserPreferences,
+            new DurablePayloadRow('2', DurablePayloadFixtures::jsonPreferences())
         );
 
-        self::assertFalse($handler->apply('400.0', $this->createStub(ConfigDataInterface::class)));
-        self::assertStringContainsString('Another operation is in progress', implode("\n", $messages));
+        self::assertTrue($handler->apply('400.0', $this->createStub(ConfigDataInterface::class)));
+        self::assertSame(
+            DurablePayloadFixtures::jsonProfile(),
+            $repository->payload(DurablePayloadType::UserProfile, '1')
+        );
+        self::assertSame(
+            DurablePayloadFixtures::jsonPreferences(),
+            $repository->payload(DurablePayloadType::UserPreferences, '2')
+        );
+        self::assertCount(0, $repository->updates);
+        self::assertSame(0, $repository->transactionCount);
     }
 
     #[Test]
@@ -371,20 +352,13 @@ final class UpgradeDurablePayloadsTest extends UnitaryTestCase
 
     private function buildHandler(
         InMemoryDurablePayloadRepository $repository,
-        ?EventDispatcherInterface         $eventDispatcher = null,
-        ?AppLockHandler                   $appLock = null
+        ?EventDispatcherInterface         $eventDispatcher = null
     ): UpgradeDurablePayloads {
-        if ($appLock === null) {
-            $appLock = $this->createStub(AppLockHandler::class);
-            $appLock->method('getLock')->willReturn(false);
-        }
-
         return new UpgradeDurablePayloads(
             $this->config,
             $eventDispatcher ?? $this->eventDispatcherStub,
             $this->context,
             $repository,
-            $appLock,
             new Crypt(),
             new NullLogger()
         );

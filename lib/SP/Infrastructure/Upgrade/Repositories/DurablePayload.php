@@ -26,9 +26,11 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Upgrade\Repositories;
 
+use Aura\SqlQuery\QueryInterface;
 use Closure;
 use LogicException;
 use PDO;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\QueryFactoryInterface;
 use SP\Domain\Upgrade\Dtos\DurablePayloadRow;
@@ -36,11 +38,15 @@ use SP\Domain\Upgrade\Enums\DurablePayloadType;
 use SP\Domain\Upgrade\Ports\DurablePayloadRepository;
 use Throwable;
 
+use function SP\__u;
+
 /**
  * Class DurablePayload
  */
 final class DurablePayload implements DurablePayloadRepository
 {
+    private const BATCH_SIZE = 500;
+
     public function __construct(
         private readonly DatabaseInterface     $database,
         private readonly QueryFactoryInterface $queryFactory
@@ -49,30 +55,93 @@ final class DurablePayload implements DurablePayloadRepository
 
     public function findByType(DurablePayloadType $type): iterable
     {
-        $query = $this->queryFactory->buildQuery($this->selectQuery($type));
+        return $type === DurablePayloadType::PluginData
+            ? $this->findPluginData()
+            : $this->findById($type);
+    }
+
+    /**
+     * @return iterable<DurablePayloadRow>
+     */
+    private function findById(DurablePayloadType $type): iterable
+    {
+        $lastId = 0;
+
+        do {
+            $query = $this->queryFactory->buildQuery(
+                $this->selectQuery($type) . ' WHERE id > :lastId ORDER BY id LIMIT :batchSize',
+                ['lastId' => $lastId, 'batchSize' => self::BATCH_SIZE]
+            );
+
+            $count = 0;
+
+            foreach ($this->fetch($query) as $data) {
+                $count++;
+                $lastId = (int)$data['id'];
+
+                yield new DurablePayloadRow(
+                    (string)$data['id'],
+                    isset($data['payload']) ? (string)$data['payload'] : null,
+                    isset($data['subtype']) ? (string)$data['subtype'] : null
+                );
+            }
+        } while ($count === self::BATCH_SIZE);
+    }
+
+    /**
+     * @return iterable<DurablePayloadRow>
+     */
+    private function findPluginData(): iterable
+    {
+        $lastName = null;
+        $lastItemId = 0;
+
+        do {
+            $bindValues = ['batchSize' => self::BATCH_SIZE];
+            $statement = 'SELECT name, itemId, CASE WHEN data IS NULL OR data = \'\' THEN NULL ELSE \'1\' END AS payload FROM PluginData';
+
+            if ($lastName !== null) {
+                $statement .= ' WHERE name > :lastName OR (name = :lastName AND itemId > :lastItemId)';
+                $bindValues['lastName'] = $lastName;
+                $bindValues['lastItemId'] = $lastItemId;
+            }
+
+            $query = $this->queryFactory->buildQuery(
+                $statement . ' ORDER BY name, itemId LIMIT :batchSize',
+                $bindValues
+            );
+
+            $count = 0;
+
+            foreach ($this->fetch($query) as $data) {
+                $count++;
+                $lastName = (string)$data['name'];
+                $lastItemId = (int)$data['itemId'];
+
+                yield new DurablePayloadRow(
+                    sprintf('%s:%s', $data['name'], $data['itemId']),
+                    isset($data['payload']) ? (string)$data['payload'] : null
+                );
+            }
+        } while ($count === self::BATCH_SIZE);
+    }
+
+    /**
+     * @return iterable<array<string, mixed>>
+     */
+    private function fetch(QueryInterface $query): iterable
+    {
         $result = $this->database->doFetchWithOptions(
             $this->queryFactory->buildQueryData($query),
             [],
             PDO::FETCH_ASSOC
         );
 
-        $rows = [];
-
         foreach ($result as $data) {
-            if (!is_array($data)) {
-                continue;
+            if (is_array($data)) {
+                yield $data;
             }
-
-            $rows[] = new DurablePayloadRow(
-                $type === DurablePayloadType::PluginData
-                    ? sprintf('%s:%s', $data['name'], $data['itemId'])
-                    : (string)$data['id'],
-                isset($data['payload']) ? (string)$data['payload'] : null,
-                isset($data['subtype']) ? (string)$data['subtype'] : null
-            );
         }
-
-        return $rows;
     }
 
     public function update(DurablePayloadType $type, string $id, string $payload): int
@@ -87,11 +156,16 @@ final class DurablePayload implements DurablePayloadRepository
 
     public function transactional(Closure $callback): mixed
     {
-        $this->database->beginTransaction();
+        if (!$this->database->beginTransaction()) {
+            throw ServiceException::error(__u('Unable to start a transaction'));
+        }
 
         try {
             $result = $callback();
-            $this->database->endTransaction();
+
+            if (!$this->database->endTransaction()) {
+                throw ServiceException::error(__u('Unable to commit a transaction'));
+            }
 
             return $result;
         } catch (Throwable $e) {
@@ -109,7 +183,7 @@ final class DurablePayload implements DurablePayloadRepository
             DurablePayloadType::UserProfile => 'SELECT id, profile AS payload FROM UserProfile',
             DurablePayloadType::UserPreferences => 'SELECT id, preferences AS payload FROM User',
             DurablePayloadType::ItemPreset => 'SELECT id, data AS payload, type AS subtype FROM ItemPreset',
-            DurablePayloadType::PluginData => 'SELECT name, itemId, data AS payload FROM PluginData'
+            DurablePayloadType::PluginData => throw new LogicException('Plugin data payloads are read with a composite key')
         };
     }
 
