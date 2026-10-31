@@ -10,8 +10,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Enforces the layer dependency rules as a hard rule.
+ * Enforces the layer dependency rules as a hard rule (ADR-001).
  *
+ * @see docs/adr/0001-target-architecture-and-dependency-rules.md
  * @see .kilo/plans/hexagonal-migration.md section 1.2
  */
 #[Group('unitary')]

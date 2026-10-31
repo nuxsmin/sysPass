@@ -18,6 +18,8 @@ use SplFileInfo;
 
 /**
  * Collects layer dependency violations for the architecture test.
+ *
+ * @see docs/adr/0001-target-architecture-and-dependency-rules.md
  */
 final class LayerRules
 {
