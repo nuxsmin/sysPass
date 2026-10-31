@@ -128,8 +128,6 @@ use SP\Domain\Export\Ports\BackupFileService;
 use SP\Domain\Export\Services\BackupFile;
 use SP\Domain\Http\Client;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\Http\Ports\JsonResponseFactory;
-use SP\Domain\Http\Ports\JsonResponseService;
 use SP\Domain\Http\Services\Request;
 use SP\Domain\Html\Ports\CssMinifyService;
 use SP\Domain\Html\Ports\JsMinifyService;
@@ -164,8 +162,6 @@ use SP\Infrastructure\File\FileSystem;
 use SP\Infrastructure\File\PhpFileLoader;
 use SP\Infrastructure\File\XmlFileStorage;
 use SP\Infrastructure\File\YamlFileStorage;
-use SP\Modules\Web\Adapters\JsonResponse;
-use SP\Modules\Web\Adapters\JsonResponseFactoryAdapter;
 use SP\Modules\Web\Mvc\View\OutputHandler;
 use SP\Modules\Web\Mvc\View\OutputHandlerInterface;
 use SP\Modules\Web\Mvc\View\Template;
@@ -198,8 +194,6 @@ final class CoreDefinitions
             AppPaths::class => autowire(AppPathsAdapter::class),
             KleinRequest::class => factory([KleinRequest::class, 'createFromGlobals']),
             RequestService::class => autowire(Request::class),
-            JsonResponseFactory::class => autowire(JsonResponseFactoryAdapter::class),
-            JsonResponseService::class => autowire(JsonResponse::class),
             CssMinifyService::class => autowire(MinifyCss::class),
             JsMinifyService::class => autowire(MinifyJs::class),
             HashService::class => autowire(HashServiceAdapter::class),

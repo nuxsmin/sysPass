@@ -36,7 +36,6 @@ use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\HashService;
-use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Http\Ports\RequestService;
 
 /**
@@ -56,8 +55,7 @@ final readonly class SimpleControllerHelper
         private PhpExtensionChecker      $extensionChecker,
         private UriContextInterface      $uriContext,
         private RouteContextData         $routeContextData,
-        private HashService              $hashService,
-        private JsonResponseFactory      $jsonResponseFactory
+        private HashService              $hashService
     ) {
     }
 
@@ -114,10 +112,5 @@ final readonly class SimpleControllerHelper
     public function getHashService(): HashService
     {
         return $this->hashService;
-    }
-
-    public function getJsonResponseFactory(): JsonResponseFactory
-    {
-        return $this->jsonResponseFactory;
     }
 }

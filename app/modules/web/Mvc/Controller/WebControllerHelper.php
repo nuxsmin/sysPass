@@ -37,9 +37,7 @@ use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\HashService;
-use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Modules\Web\Presenters\Helpers\JsonResponseHandler;
 use SP\Modules\Web\Presenters\Helpers\LayoutHelper;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
 
@@ -52,8 +50,7 @@ final readonly class WebControllerHelper
         private SimpleControllerHelper $simpleControllerHelper,
         private TemplateInterface      $template,
         private BrowserAuthService     $browser,
-        private LayoutHelper        $layoutHelper,
-        private JsonResponseHandler $jsonResponseHandler
+        private LayoutHelper           $layoutHelper
     ) {
     }
 
@@ -122,18 +119,8 @@ final readonly class WebControllerHelper
         return $this->simpleControllerHelper->getRouteContextData();
     }
 
-    public function getJsonResponseHandler(): JsonResponseHandler
-    {
-        return $this->jsonResponseHandler;
-    }
-
     public function getHashService(): HashService
     {
         return $this->simpleControllerHelper->getHashService();
-    }
-
-    public function getJsonResponseFactory(): JsonResponseFactory
-    {
-        return $this->simpleControllerHelper->getJsonResponseFactory();
     }
 }

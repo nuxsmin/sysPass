@@ -30,7 +30,7 @@ use Closure;
 use Klein\Klein;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
+use SP\Domain\Http\Header;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Providers\Uri;
 
@@ -59,10 +59,15 @@ trait ControllerTrait
         Closure        $onRedirect
     ): void {
         if ($request->isJson()) {
-            $jsonResponse = new JsonMessage(__u('Session not started or timed out'));
-            $jsonResponse->setStatus(10);
-
-            $this->jsonResponseFactory->create($this->router->response())->send($jsonResponse);
+            $this->router->response()
+                ->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_JSON->value)
+                ->body(json_encode([
+                    'status' => 10,
+                    'description' => __u('Session not started or timed out'),
+                    'data' => [],
+                    'messages' => [],
+                ], JSON_THROW_ON_ERROR))
+                ->send(true);
         } elseif ($request->isAjax()) {
             self::logout();
         } else {
@@ -98,16 +103,6 @@ trait ControllerTrait
     private static function logout(): never
     {
         exit('<script>sysPassApp.actions.main.logout();</script>');
-    }
-
-    /**
-     * Acción no disponible
-     *
-     * @throws SPException
-     */
-    protected function invalidAction(): void
-    {
-        $this->jsonResponseFactory->create($this->router->response())->send(new JsonMessage(__u('Invalid Action')));
     }
 
     /**

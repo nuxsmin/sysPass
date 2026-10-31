@@ -40,7 +40,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\HashService;
-use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
@@ -72,12 +71,10 @@ abstract class ControllerBase
     protected readonly \SP\Modules\Web\Presenters\Helpers\LayoutHelper        $layoutHelper;
     protected readonly UriContextInterface         $uriContext;
     protected readonly HashService                 $hashService;
-    protected readonly JsonResponseFactory         $jsonResponseFactory;
     protected ?UserDto                             $userDto         = null;
     protected ?ProfileData                         $userProfileData = null;
     protected readonly bool                        $isAjax;
     protected readonly RouteContextData            $routeContextData;
-    protected readonly \SP\Modules\Web\Presenters\Helpers\JsonResponseHandler $jsonResponse;
     private readonly BrowserAuthService            $browser;
 
     public function __construct(WebControllerHelper $webControllerHelper)
@@ -97,8 +94,6 @@ abstract class ControllerBase
         $this->view = $webControllerHelper->getTemplate();
         $this->uriContext = $webControllerHelper->getUriContext();
         $this->hashService = $webControllerHelper->getHashService();
-        $this->jsonResponseFactory = $webControllerHelper->getJsonResponseFactory();
-        $this->jsonResponse = $webControllerHelper->getJsonResponseHandler();
 
         $this->isAjax = $this->request->isAjax();
 

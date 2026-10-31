@@ -36,7 +36,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\HashService;
-use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
@@ -58,7 +57,6 @@ abstract class SimpleControllerBase
     protected readonly ConfigDataInterface        $configData;
     protected readonly UriContextInterface        $uriContext;
     protected readonly HashService                $hashService;
-    protected readonly JsonResponseFactory        $jsonResponseFactory;
 
     /**
      * @throws SessionTimeout
@@ -72,7 +70,6 @@ abstract class SimpleControllerBase
         $this->extensionChecker = $simpleControllerHelper->getExtensionChecker();
         $this->uriContext = $simpleControllerHelper->getUriContext();
         $this->hashService = $simpleControllerHelper->getHashService();
-        $this->jsonResponseFactory = $simpleControllerHelper->getJsonResponseFactory();
         $this->config = $simpleControllerHelper->getConfig();
         $this->configData = $this->config->getConfigData();
         $this->eventDispatcher = $simpleControllerHelper->getEventDispatcher();
