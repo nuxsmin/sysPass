@@ -24,12 +24,11 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Http\Adapters;
+namespace SP\Modules\Web\Adapters;
 
 use Klein\Response;
 use SP\Domain\Http\Ports\JsonResponseFactory;
 use SP\Domain\Http\Ports\JsonResponseService;
-use SP\Domain\Http\Services\JsonResponse;
 
 /**
  * Adapter for the JSON response implementation.

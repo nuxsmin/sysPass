@@ -24,7 +24,7 @@
 
 declare(strict_types=1);
 
-namespace SP\Tests\Domain\Http\Services;
+namespace SP\Tests\Modules\Web\Adapters;
 
 use Klein\Response;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
@@ -37,7 +37,7 @@ use PHPUnit\Framework\MockObject\Stub\ReturnSelf;
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Http\Services\JsonResponse;
+use SP\Modules\Web\Adapters\JsonResponse;
 use SP\Tests\PHPUnitHelper;
 
 /**
