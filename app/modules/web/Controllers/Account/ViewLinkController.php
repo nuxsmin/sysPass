@@ -32,14 +32,16 @@ use SP\Domain\Account\Dtos\AccountViewDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Common\Adapters\SerializedPayloadReader;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Crypt\VaultInterface;
+use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Providers\Uri;
@@ -50,6 +52,8 @@ use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 use function SP\__;
 use function SP\__u;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class ViewLinkController
@@ -91,12 +95,40 @@ final class ViewLinkController extends AccountControllerBase
         if (time() < $publicLink->getDateExpire()
             && $publicLink->getCountViews() < $publicLink->getMaxCountViews()
         ) {
+            $payload = $publicLink->getData();
+
+            if ($payload === null || $payload === '') {
+                logger('Public link data is empty', 'ERROR');
+
+                ErrorUtil::showErrorInView(
+                    $this->view,
+                    ErrorUtil::ERR_EXCEPTION,
+                    true,
+                    'account-link'
+                );
+
+                return ActionResponse::ok($this->render());
+            }
+
+            try {
+                $vault = SerializedPayloadReader::read($payload, Vault::class);
+            } catch (InvalidClassException $e) {
+                processException($e);
+
+                ErrorUtil::showErrorInView(
+                    $this->view,
+                    ErrorUtil::ERR_EXCEPTION,
+                    true,
+                    'account-link'
+                );
+
+                return ActionResponse::ok($this->render());
+            }
+
             $this->publicLinkService->addLinkView($publicLink);
 
             $this->accountService->incrementViewCounter($publicLink->getItemId());
             $this->accountService->incrementDecryptCounter($publicLink->getItemId());
-
-            $vault = Serde::deserialize($publicLink->getData(), VaultInterface::class);
 
             $accountViewDto = AccountViewDto::fromModel(
                 Serde::deserialize(
