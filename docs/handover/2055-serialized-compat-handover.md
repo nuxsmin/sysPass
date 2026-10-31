@@ -1,6 +1,6 @@
 # Handover: Serialized payload compatibility (#2055)
 
-Decision record: `docs/adr/0001-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
+Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
 Branch: `refactor-syspass-to-hexagonal-architecture`. Nothing is committed yet.
 
 ## Goal

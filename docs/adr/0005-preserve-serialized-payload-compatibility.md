@@ -1,4 +1,4 @@
-# 0001 - Preserve serialized PHP payload compatibility across domain namespace moves
+# 0005 - Preserve serialized PHP payload compatibility across domain namespace moves
 
 Status: Accepted (2026-10-31); gates resolved 2026-10-31 (see Resolved decisions)
 Issue: #2055 (tracking #1976, triggered by #2053)
