@@ -9,6 +9,11 @@ use PHPUnit\Framework\Attributes\Test;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
+use SP\Domain\Upgrade\Ports\UpgradeService;
+use SP\Domain\Upgrade\Services\Upgrade;
+use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Tests\IntegrationTestCase;
 use Throwable;
 
@@ -55,7 +60,6 @@ final class ContainerWiringTest extends IntegrationTestCase
         'SP\Domain\Notification\Ports\MailerInterface' => 'request/config-dependent',
         'SP\Domain\Storage\Ports\XmlFileStorageService' => 'runtime path',
         'SP\Domain\Storage\Ports\YamlFileStorageService' => 'runtime path',
-        'SP\Domain\Upgrade\Ports\UpgradeService' => 'needs a runtime handler registry',
 
         // Marker, value object or multi-implementation ports, not single services.
         'SP\Domain\Account\Ports\AccountSearchConstants' => 'constants interface',
@@ -66,7 +70,6 @@ final class ContainerWiringTest extends IntegrationTestCase
         'SP\Domain\Import\Ports\ItemsImportService' => 'multiple implementations',
         'SP\Domain\ItemPreset\Ports\ItemPresetInterface' => 'value object interface',
         'SP\Domain\ItemPreset\Ports\PresetInterface' => 'marker interface',
-        'SP\Domain\Log\Ports\FileHandlerProvider' => 'marker interface',
         'SP\Domain\Log\Ports\ProviderInterface' => 'marker interface',
         'SP\Domain\Upgrade\Ports\UpgradeHandlerService' => 'multiple implementations',
     ];
@@ -115,6 +118,29 @@ final class ContainerWiringTest extends IntegrationTestCase
                 $this->formatErrors($unexpectedErrors)
             )
         );
+    }
+
+    #[Test]
+    public function upgradeServiceRegistersAndSelectsDatabaseHandler(): void
+    {
+        $handler = $this->createMock(UpgradeHandlerService::class);
+        $handler->expects(self::once())
+                ->method('apply')
+                ->with('400.0', self::isInstanceOf(ConfigDataInterface::class))
+                ->willReturn(true);
+
+        $configData = $this->createStub(ConfigDataInterface::class);
+
+        $container = $this->buildContainer(
+            self::buildRequest('get', 'index.php'),
+            [UpgradeDatabase::class => $handler]
+        );
+
+        $upgradeService = $container->get(UpgradeService::class);
+
+        self::assertInstanceOf(Upgrade::class, $upgradeService);
+
+        $upgradeService->upgrade('400.0', $configData);
     }
 
     /**

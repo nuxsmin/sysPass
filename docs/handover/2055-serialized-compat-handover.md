@@ -1,7 +1,7 @@
 # Handover: Serialized payload compatibility (#2055)
 
 Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
-Branch: `refactor-syspass-to-hexagonal-architecture`. Nothing is committed yet.
+Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR and this handover are committed; implementation changes are uncommitted.
 
 ## Goal
 
@@ -40,9 +40,12 @@ Do not add code comments unless asked. Do not commit unless asked.
 - `UpgradeController` (`app/modules/web/Controllers/Upgrade/UpgradeController.php:49`) depends on `UpgradeService`.
 
 Fix:
-1. Add a web-module factory binding for `UpgradeService` that builds `Upgrade` from the container and registers every handler class with `#[UpgradeVersion]`. Use an explicit list of handler classes (`UpgradeDatabase::class` plus the new migration handler), not classpath scanning.
-2. Update the documented exclusion in `ContainerWiringTest.php:58` so the test asserts the new binding resolves.
-3. Acceptance: a wiring test resolves `UpgradeService` and shows that `UpgradeDatabase` is applied for a stored version below 4000 (`configVersion` / `appVersion`). Run the existing `UpgradeTest` and `UpgradeDatabaseTest` unchanged.
+1. Add a composition-root factory binding for `UpgradeService` in `lib/SP/Core/Definitions/CoreDefinitions.php` that builds `Upgrade` from the container and registers every handler class with `#[UpgradeVersion]`. Use an explicit list of handler classes (`UpgradeDatabase::class` plus the new migration handler), not classpath scanning. The binding lives in the composition root because `app/modules` must not import concrete Domain services (`modules-concrete-services` architecture rule).
+2. Bind the orphaned `FileHandlerProvider` port to `LogHandler` so `Upgrade` can be autowired. The port lost its implementation when `FileHandler` was removed in `9fe1ad9a`.
+3. Update the documented exclusion in `ContainerWiringTest.php:58` so the test asserts the new binding resolves.
+4. Acceptance: a wiring test resolves `UpgradeService` and shows that `UpgradeDatabase` is applied for a stored version below 4000 (`configVersion` / `appVersion`). Run the existing `UpgradeTest` and `UpgradeDatabaseTest` unchanged.
+
+Status: implemented. `UpgradeService` resolves, `UpgradeDatabase` is registered, and the wiring test selects it for version `400.0`. No commit has been made yet.
 
 This is a separate defect from #2055. Consider a separate issue, but it blocks T9.
 

@@ -141,6 +141,7 @@ use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Services\DatabaseSetupService;
 use SP\Domain\Install\Services\MysqlSetup;
+use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Log\Providers\DatabaseHandler;
 use SP\Domain\Log\Providers\LogHandler;
 use SP\Domain\Notification\Ports\MailerInterface;
@@ -156,6 +157,8 @@ use SP\Domain\File\Ports\FileSystemService;
 use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\FileCacheFactoryInterface;
+use SP\Domain\Upgrade\Ports\UpgradeService;
+use SP\Domain\Upgrade\Services\Upgrade;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Infrastructure\Database\Database;
@@ -493,6 +496,13 @@ final class CoreDefinitions
                     'sqlPath',
                     factory(static fn(PathsContext $p) => $p[Path::SQL])
                 ),
+            UpgradeService::class => factory(static function (ContainerInterface $c): UpgradeService {
+                $upgrade = $c->get(Upgrade::class);
+                $upgrade->registerUpgradeHandler(UpgradeDatabase::class);
+
+                return $upgrade;
+            }),
+            FileHandlerProvider::class => get(LogHandler::class),
             AppLockHandler::class => autowire(AppLock::class)
                 ->constructorParameter(
                     'lockFile',
