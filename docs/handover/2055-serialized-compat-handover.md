@@ -1,7 +1,7 @@
 # Handover: Serialized payload compatibility (#2055)
 
 Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
-Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR and this handover are committed; implementation changes are uncommitted.
+Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), and T1 (`6131893c`) are committed. T2 is implemented and uncommitted.
 
 ## Goal
 
@@ -57,7 +57,7 @@ This is a separate defect from #2055. Consider a separate issue, but it blocks T
 - Location: `lib/SP/Domain/Common/Adapters/` (Domain layer, no Infrastructure imports).
 - Acceptance: every map value resolves via `class_exists`; no map key resolves via `class_exists`.
 
-Status: implemented, uncommitted. Files: `lib/SP/Domain/Common/Adapters/PersistedClassRegistry.php`, `lib/SP/Domain/Common/Adapters/LegacyClassMap.php`, `tests/SP/Domain/Common/Adapters/PersistedClassRegistryTest.php`. Decisions taken at approval:
+Status: implemented and committed in `6131893c`. Files: `lib/SP/Domain/Common/Adapters/PersistedClassRegistry.php`, `lib/SP/Domain/Common/Adapters/LegacyClassMap.php`, `tests/SP/Domain/Common/Adapters/PersistedClassRegistryTest.php`. Decisions taken at approval:
 - Registry holds the `#[Hydratable]` targets actually embedded in payloads (Vault, Crypt, ConfigData, ProfileData, UserPreferences, ItemPreset's Password, AccountPrivate, AccountPermission, SessionTimeout). Owner models (ItemPreset, User, UserProfile, PluginData, AuthToken) are not embedded.
 - `PluginDataStorage` is excluded: an interface with no implementation in core. Plugin-provided classes cannot be enumerated. T9 plugin-data scope needs a separate decision.
 - `DataCollection` and `ContextException` are excluded from the map: `DataCollection` declares no private state and `ArrayObject` serializes only the concrete class; `ContextException` is not serialized. The legacy name for `ContextException` is `SP\Core\Context\ContextException`, not `SP\Core\Exceptions\ContextException`.
@@ -69,6 +69,15 @@ Status: implemented, uncommitted. Files: `lib/SP/Domain/Common/Adapters/Persiste
 - Do not use regex over the whole payload. `Serde::fixSerialized()` (`lib/SP/Domain/Common/Adapters/Serde.php:87-98`) is regex-based and must not be reused.
 - Unknown class names are left untouched so `allowed_classes` rejects them.
 - Acceptance: strings containing a legacy class name are unchanged; nested objects are rewritten; references are preserved; malformed input throws; output unserialises to the expected object.
+
+Status: implemented, uncommitted. Files: `lib/SP/Domain/Common/Adapters/SerializedPayloadRewriter.php`, `tests/SP/Domain/Common/Adapters/SerializedPayloadRewriterTest.php`, `tests/SP/Stubs/SerializedPayloadFixture.php` (fixture lives in `Stubs` because PHPUnit collects every `.php` under `tests/SP/Domain`). Decisions taken at approval:
+- API: `SerializedPayloadRewriter::rewrite(string $payload, array $classMap = LegacyClassMap::MAP): string`. Pure string transform; never calls `unserialize()`.
+- Cursor-based walker, not regex. `s:` values are read by declared length, so binary values and text containing legacy names are copied verbatim.
+- Rewritten: `O:` class names, `E:` enum class names, and mangled `\0Class\0prop` prefixes in `O:` property lists only. String keys inside `a:` arrays are never rewritten.
+- Class-name lookup is case-insensitive. Unmapped names pass through unchanged.
+- Accepted tokens: `N`, `b`, `i`, `d` (including `INF`, `NAN`, `-0`, exponent form), `s`, `a`, `O`, `E`, `r`, `R`. `C:` and anything else throw.
+- Failures throw `SPException::error` with the byte offset. Counts and lengths must be canonical unsigned integers, and trailing bytes throw.
+- Verification: `tests/SP/Domain/Common/Adapters` 48/48 OK (30 new); `tests/SP/Architecture` 16/16 OK; PHPStan level 6 on the three new files: no errors.
 
 **T3 Typed legacy-aware reader.**
 - Rewrites with T2, unserialises with `allowed_classes` set to the current target classes only, verifies `instanceof` against the expected type, and throws a domain exception on any mismatch. Never returns `__PHP_Incomplete_Class` or `stdClass`.
