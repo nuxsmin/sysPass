@@ -1,7 +1,7 @@
 # Handover: Serialized payload compatibility (#2055)
 
 Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
-Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), and T2 (`75269d7b`) are committed. T3 is implemented and uncommitted.
+Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed.
 
 ## Goal
 
@@ -84,7 +84,7 @@ Status: implemented and committed in `75269d7b`. Files: `lib/SP/Domain/Common/Ad
 - Leave `Serde::deserialize()` behaviour unchanged for existing callers.
 - Acceptance: legacy Vault payload returns a usable Vault; corrupt or unmapped payloads throw; no partial objects.
 
-Status: implemented, uncommitted. Files: `lib/SP/Domain/Common/Adapters/SerializedPayloadReader.php`, `tests/SP/Domain/Common/Adapters/SerializedPayloadReaderTest.php`, `tests/SP/Stubs/SerializedPayloadGraphFixture.php`. Decisions taken at approval:
+Status: implemented and committed in `1d19d25f`. Files: `lib/SP/Domain/Common/Adapters/SerializedPayloadReader.php`, `tests/SP/Domain/Common/Adapters/SerializedPayloadReaderTest.php`, `tests/SP/Stubs/SerializedPayloadGraphFixture.php`. Decisions taken at approval:
 - API: `SerializedPayloadReader::read(string $payload, string $expectedClass, array $allowedClasses = PersistedClassRegistry::CLASSES, array $classMap = LegacyClassMap::MAP): object`. Static adapter, like `Serde` and the rewriter; no container wiring.
 - The expected class is always added to the allow-list. The default allow-list is the current persisted-class registry, so a `Vault` payload can instantiate its nested `Crypt`; T9 can pass plugin classes explicitly.
 - All failures throw `InvalidClassException` (a domain `SPException`), including rewriter failures, so T4 and T5 catch one type. A rewriter failure keeps its `SPException` as the previous exception.
