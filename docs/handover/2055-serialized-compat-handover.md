@@ -45,7 +45,7 @@ Fix:
 3. Update the documented exclusion in `ContainerWiringTest.php:58` so the test asserts the new binding resolves.
 4. Acceptance: a wiring test resolves `UpgradeService` and shows that `UpgradeDatabase` is applied for a stored version below 4000 (`configVersion` / `appVersion`). Run the existing `UpgradeTest` and `UpgradeDatabaseTest` unchanged.
 
-Status: implemented. `UpgradeService` resolves, `UpgradeDatabase` is registered, and the wiring test selects it for version `400.0`. No commit has been made yet.
+Status: implemented and committed in `60fc7056`. `UpgradeService` resolves, `UpgradeDatabase` is registered, and the wiring test selects it for version `400.0`.
 
 This is a separate defect from #2055. Consider a separate issue, but it blocks T9.
 
@@ -56,6 +56,13 @@ This is a separate defect from #2055. Consider a separate issue, but it blocks T
 - Legacy map: `legacy FQCN => current FQCN`, including per-class private property names. Seed with `SP\Core\Crypt\Vault`, `SP\Core\Crypt\Crypt`, `SP\Core\DataCollection`, `SP\Core\Exceptions\ContextException`, and any other class moved by #2053. Confirm the exact list from `git show --stat 6a6cd3dc`.
 - Location: `lib/SP/Domain/Common/Adapters/` (Domain layer, no Infrastructure imports).
 - Acceptance: every map value resolves via `class_exists`; no map key resolves via `class_exists`.
+
+Status: implemented, uncommitted. Files: `lib/SP/Domain/Common/Adapters/PersistedClassRegistry.php`, `lib/SP/Domain/Common/Adapters/LegacyClassMap.php`, `tests/SP/Domain/Common/Adapters/PersistedClassRegistryTest.php`. Decisions taken at approval:
+- Registry holds the `#[Hydratable]` targets actually embedded in payloads (Vault, Crypt, ConfigData, ProfileData, UserPreferences, ItemPreset's Password, AccountPrivate, AccountPermission, SessionTimeout). Owner models (ItemPreset, User, UserProfile, PluginData, AuthToken) are not embedded.
+- `PluginDataStorage` is excluded: an interface with no implementation in core. Plugin-provided classes cannot be enumerated. T9 plugin-data scope needs a separate decision.
+- `DataCollection` and `ContextException` are excluded from the map: `DataCollection` declares no private state and `ArrayObject` serializes only the concrete class; `ContextException` is not serialized. The legacy name for `ContextException` is `SP\Core\Context\ContextException`, not `SP\Core\Exceptions\ContextException`.
+- The map is class-level. No per-property entries, because no persisted property was renamed by #2053.
+- Verification: new test 5/5 OK; `tests/SP/Architecture` 16/16 OK; `tests/SP/Domain/Common/Adapters` 18/18 OK; PHPStan level 6 on the two new files: no errors.
 
 **T2 Token-level payload rewriter.**
 - Walk the serialize grammar (`N;`, `b:`, `i:`, `d:`, `s:N:"..."`, `a:N:{}`, `O:N:"name":N:{}`, `r:`, `R:`) and rewrite only class-name tokens and mangled property keys (`\0Class\0prop`, `\0*\0prop`). Recompute the length prefix of every changed token.
