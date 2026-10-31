@@ -28,12 +28,14 @@ namespace SP\Infrastructure\File;
 
 use SP\Domain\Core\Exceptions\FileException;
 
+use SP\Domain\Common\Adapters\PersistedClassRegistry;
 use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Common\Adapters\SerializedPayloadReader;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Storage\Ports\FileCacheService;
 
-use function SP\__u;
+use function SP\__;
 
 /**
  * Class FileCache
@@ -59,6 +61,12 @@ class FileCache extends FileCacheBase
         $this->checkOrInitializePath($path);
         $this->createPath();
 
+        $this->path->rewind();
+
+        if ($this->path->ftruncate(0) === false) {
+            throw FileException::error(sprintf(__('Unable to read/write the file (%s)'), $this->path->getFile()));
+        }
+
         $this->path->write(Serde::serialize($data));
 
         return $this;
@@ -70,14 +78,11 @@ class FileCache extends FileCacheBase
      */
     public function loadWith(string $class): object
     {
-        $data = unserialize($this->path->checkIsReadable()->readToString(), ['allowed_classes' => [$class]]);
-
-        if (!class_exists($class) || !($data instanceof $class)) {
-            throw InvalidClassException::error(
-                sprintf(__u('Either class does not exist or file data cannot unserialized into: %s'), $class)
-            );
-        }
-
-        return $data;
+        return SerializedPayloadReader::read(
+            $this->path->checkIsReadable()->readToString(),
+            $class,
+            PersistedClassRegistry::CLASSES,
+            []
+        );
     }
 }

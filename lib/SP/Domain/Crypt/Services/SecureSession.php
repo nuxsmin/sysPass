@@ -42,6 +42,7 @@ use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 
 /**
  * Class SecureSession
@@ -97,6 +98,10 @@ final class SecureSession extends Service implements SecureSessionService
 
             return Key::loadFromAsciiSafeString($vault->getData($this->requestBasedPassword->build()));
         } catch (FileException) {
+            return $this->saveKey();
+        } catch (InvalidClassException $e) {
+            $this->logger->warning(sprintf('Session key cache is not readable, regenerating: %s', $e->getMessage()));
+
             return $this->saveKey();
         } catch (Exception $e) {
             $this->logger->error($e->getMessage());
