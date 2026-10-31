@@ -1,7 +1,7 @@
 # Handover: Serialized payload compatibility (#2055)
 
 Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
-Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed.
+Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`.
 
 ## Goal
 
@@ -99,6 +99,15 @@ Each depends on T3. Independent of each other.
 
 **T4 Secure session regeneration.** `lib/SP/Domain/Crypt/Services/SecureSession.php:87-106`: on `InvalidClassException` from `loadWith()`, log and regenerate via `saveKey()`. Leave the expiry branch unchanged. Test in `tests/SP/Domain/Crypt/Services/SecureSessionServiceTest.php`.
 - Acceptance: a legacy session cache produces a new key and rewrites the cache file.
+
+Status: implemented and committed in `441e88aa`. Files: `lib/SP/Domain/Crypt/Services/SecureSession.php`, `lib/SP/Infrastructure/File/FileCache.php`, `tests/SP/Domain/Crypt/Services/SecureSessionServiceTest.php`, `tests/SP/Infrastructure/File/FileCacheTest.php` (new). Decisions taken at approval:
+- **Read path routed through T3.** `FileCache::loadWith()` now calls `SerializedPayloadReader::read($raw, $class, PersistedClassRegistry::CLASSES, [])`. The raw `unserialize(..., ['allowed_classes' => [$class]])` made every current-format Vault fail: its nested `Crypt` becomes `__PHP_Incomplete_Class`, which cannot be assigned to the typed `CryptInterface $crypt` property (`TypeError`, not caught by `getKey()`). Verified in the PHP 8.3 runtime. The bug predates #2053 (same `allowed_classes` shape at `6a6cd3dc^`). It affects only installs with `encryptSession` enabled.
+- **No remap for caches.** The empty class map means a legacy session throws `InvalidClassException` and regenerates (ADR decision 2), rather than being remapped.
+- **Shared method.** `ConfigFile` (T5) also calls `loadWith()`. Current `ConfigData` reads unchanged; a legacy `config.cache` still throws `InvalidClassException`, which is T5's input. T5 remains unimplemented.
+- **`FileCache::save()` truncates and rewinds.** `readToString()` leaves the handle at EOF, and `FileHandler::write()` neither truncates nor rewinds. Without the fix, a regeneration on the same handle appended to the legacy bytes, and a shorter payload over a longer file left trailing bytes that the rewriter rejects. Both regressions are covered by `FileCacheTest` and fail when the fix is removed.
+- `SecureSession::getKey()` catches `InvalidClassException` next to `FileException`, logs a warning, and returns `saveKey()`. The expiry branch is unchanged.
+- Verification: `SecureSessionServiceTest`, `FileCacheTest`, `ConfigFileTest`, `tests/SP/Domain/Common/Adapters`, and `tests/SP/Architecture`: 106/106 OK. The unitary group has 2 errors and 1 failure (`SessionTest::testReKey`, `DefinitionsTest::testGetDefinitions`, `UuidCookieTest::testCreate`). The same failures occur on HEAD sources, so they are pre-existing and environmental (UUID cookie creation in the shared run); each passes in isolation. PHPStan level 6 on the changed lib files: no errors.
+- Pre-existing deprecation: `FileHandler::autoDetectEOL()` calls `ini_set('auto_detect_line_endings')`, which PHP 8.3 deprecates. Triggered by `readToString()`. Out of T4 scope.
 
 **T5 Config cache fallback.** `lib/SP/Domain/Config/Services/ConfigFile.php:85-102`: catch `InvalidClassException` in `loadFromCache()`, delete the cache, return `null` so `loadFromFile()` runs. Test in `tests/SP/Domain/Config/Services/ConfigFileTest.php`.
 - Acceptance: a mismatched `config.cache` no longer aborts initialisation.
