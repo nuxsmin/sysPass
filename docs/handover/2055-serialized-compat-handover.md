@@ -1,7 +1,7 @@
 # Handover: Serialized payload compatibility (#2055)
 
 Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
-Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`. T7 is committed in `6859ee7f`.
+Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`. T7 is committed in `6859ee7f`. T8 is committed in `a3f744ba` (tests) and `a97826f9` (handover). T9 is implemented in the working tree (2026-10-31) and is not committed.
 
 ## Goal
 
@@ -172,6 +172,47 @@ Depends on T3 and P0.1.
   - an unreadable row is byte-identical before and after, is reported by type and ID, and fails the upgrade;
   - re-running after the unreadable row is fixed completes successfully.
 
+Status: implemented in the working tree (2026-10-31); not committed.
+
+Files:
+- `lib/SP/Domain/Upgrade/Services/UpgradeDurablePayloads.php`
+- `lib/SP/Domain/Upgrade/Enums/DurablePayloadType.php`
+- `lib/SP/Domain/Upgrade/Dtos/DurablePayloadRow.php`
+- `lib/SP/Domain/Upgrade/Ports/DurablePayloadRepository.php`
+- `lib/SP/Infrastructure/Upgrade/Repositories/DurablePayload.php`
+- `lib/SP/Domain/Common/Adapters/LegacyClassMap.php`
+- `lib/SP/Core/Definitions/CoreDefinitions.php`
+- `lib/SP/Core/Definitions/DomainDefinitions.php`
+- `tests/SP/Domain/Upgrade/Services/UpgradeDurablePayloadsTest.php`
+- `tests/SP/Infrastructure/Upgrade/Repositories/DurablePayloadTest.php`
+- `tests/SP/Stubs/DurablePayloadFixtures.php`
+- `tests/SP/Stubs/InMemoryDurablePayloadRepository.php`
+- `tests/SP/Core/Definitions/ContainerWiringTest.php`
+
+Decisions and findings:
+- **Handler version.** The handler carries `#[UpgradeVersion('4.0.0')]` as decided. `Version::normalizeVersionForCompare('4.0.0')` yields `4000.0`, so it applies to pre-4.0 stored versions and is not selected for a stored `400.0` (equal to 4.0.0). The wiring test uses `320.0` and asserts that the durable handler runs before `UpgradeDatabase`.
+- **Handler order.** `UpgradeDurablePayloads` is registered before `UpgradeDatabase`. `Upgrade` re-runs every handler selected by the stored app version and does not track per-handler completion; `UpgradeDatabase`'s SQL is not idempotent. Running the durable handler first means a durable failure leaves the schema untouched and a retry is safe.
+- **Direct table reads.** `DurablePayload` queries `AuthToken.vault`, `PublicLink.data`, `UserProfile.profile`, `User.preferences`, `ItemPreset.data`/`type`, and `PluginData.data` directly. Repository enumeration was not used because `PublicLinkRepository::getAll()` joins `User`/`Account` and omits orphaned links.
+- **Plugin data is skipped, not rewritten.** `PluginDataService` encrypts `data` with the master key on write (`PluginData.php:79,96`) and decrypts on read (`:122,143,161`). The upgrade endpoint is in `PARTIAL_INIT` and unauthenticated (`app/modules/web/Init.php:91-100`), so no master key is available; plugin classes are external and cannot be enumerated for T3. T9 counts non-empty plugin rows as `skipped`, leaves the ciphertext byte-identical, and does not fail on them. This is a deliberate exception to the T9 scope. A future authenticated phase can migrate plugin data if needed.
+- **Legacy map was incomplete.** T1 mapped only the #2053 names. Tag `3.2.11` and `tests/res/datasets/syspass.xml` contain `SP\DataModel\ProfileData`, `SP\DataModel\UserPreferencesData`, and `SP\DataModel\ItemPreset\{Password,AccountPrivate,AccountPermission,SessionTimeout}`. T9 adds those six class-level entries; class-only remaps were verified against the current classes. `SP\DataModel\ConfigData` is left for T10.
+- **Preferences are mixed-format.** Current writes are JSON (`lib/SP/Infrastructure/User/Repositories/User.php:483`), while the only reader is PHP `unserialize` (`lib/SP/Domain/Common/Models/SerializedModel.php:53` via `UserDto.php:77`). T9 treats valid JSON as already current and skips it; legacy serialized rows are class-rewritten to serialized `SP\Domain\User\Models\UserPreferences`, which the existing reader can decode. Converting legacy rows to JSON was rejected because it would make them unreadable until the pre-existing JSON read defect is fixed. That defect is separate from T9.
+- **Legacy vaults missing the `crypt` dependency are repaired.** Pre-hexagonal `Vault` payloads do not always serialize the `crypt` dependency; the current `Vault` has a readonly `crypt` property and `getData()` fails if it is uninitialized. For `AuthToken.vault` and `PublicLink.data`, T9 checks `ReflectionProperty::isInitialized()` and, when missing, injects the container's stateless `CryptInterface` and re-serializes the object. A class-only rewrite would leave a payload that reads as an object but fails on use. Payloads that already contain `crypt` use the normal byte-level rewrite.
+- **Per-row transactions and no deletes.** Every rewrite runs through `DurablePayloadRepository::transactional()`, which wraps `beginTransaction()`/`endTransaction()`/`rollbackTransaction()`. The port has no delete method; T9 issues only `SELECT` and single-row `UPDATE`. Unreadable rows are never updated, all applicable types are scanned, and `apply()` returns `false` if any row is unreadable or any write fails.
+- **Locking.** The handler refuses to run when `AppLockHandler::getLock()` is not `false`, locks with user ID `0`, and always unlocks in `finally`. A crash can still leave the existing `config/.lock` file, which requires the same manual removal as other lock users.
+- **Event log.** Per-row failures include type and ID (never payload contents). Per-type summaries include rewritten, current, empty, unreadable, failed, and skipped counts.
+
+Review follow-up (2026-10-31):
+- **`DurablePayload::findByType()` did not fetch rows.** It called `DatabaseInterface::runQuery()` with a `Query` object that implements only `QueryInterface`, not `SelectInterface`. `Database::runQuery()` fetches only for `SelectInterface` and otherwise returns `QueryResult(null, ...)`, so production returned an empty result and `UpgradeDurablePayloads` reported success without migrating anything. The mocked `runQuery()` in the repository test masked it.
+- Fixed in `lib/SP/Infrastructure/Upgrade/Repositories/DurablePayload.php`: `findByType()` now reads through `doFetchWithOptions($queryData, [], PDO::FETCH_ASSOC)` and materializes the mapped rows before returning, preserving the previous read-before-write behaviour. The per-type SELECT list and ID/subtype mapping are unchanged.
+- Regression coverage in `tests/SP/Infrastructure/Upgrade/Repositories/DurablePayloadTest.php`: `fetchesAndMapsRowsThroughTheRealDatabasePath` builds the real `Database` with the real `QueryFactoryAdapter` over an in-memory PDO connection, inserts two `AuthToken` rows, and asserts both rows are fetched and mapped. It failed with 0 rows before the fix. The existing mapping tests now stub `doFetchWithOptions()` instead of `runQuery()`; the update and transaction tests are unchanged.
+
+Verification:
+- New T9 tests: 20/20 OK (99 assertions).
+- `tests/SP/Domain/Upgrade`, `tests/SP/Infrastructure/Upgrade`, and `tests/SP/Domain/Common/Adapters`: 93/93 OK (246 assertions, 2 pre-existing deprecations).
+- `ContainerWiringTest`: 3/3 OK (8 assertions, 8 pre-existing deprecations).
+- PHPStan level 6 on `DurablePayload.php` and `DurablePayloadTest.php`: no errors.
+- Not rerun in this follow-up: the full unitary group and `--testsuite core`. The latter still stops in the integration fixture loader because MySQL is unavailable (`ERROR 2005`); that is environmental. The broader `CoreDefinitions`, `DomainDefinitions`, and existing upgrade files still report pre-existing level-6 errors (`CoreDefinitions.php:202,523`, `DomainDefinitions.php:196`, `UpgradeService.php:39`, `UpgradeDatabase.php:120`); T9 adds none.
+
 **T10 Config backup restore.** `lib/SP/Domain/Config/Services/ConfigBackup.php:90`: use the T3 reader for `ConfigData`. Do not rewrite stored backups.
 - Acceptance: a legacy backup restores; an unreadable backup reports failure and modifies nothing.
 
@@ -208,6 +249,7 @@ Do not add a serialize-call-site allowlist. The repo removed its allowlist and r
   - the upgrade rewrites durable rows;
   - an unreadable row fails the upgrade and is listed in the event log, and nothing is deleted;
   - take a database backup before upgrading;
+  - clear the compiled container cache (`cache/container/<normalized-version>`) when deploying if the normalized version string is unchanged, because the durable handler binding is part of the compiled container;
   - rollback to a pre-4.0 version requires restoring that backup, because rewritten rows are not readable by older versions.
 
 ## Dependency order

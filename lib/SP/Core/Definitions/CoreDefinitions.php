@@ -160,6 +160,7 @@ use SP\Domain\Storage\Ports\FileCacheFactoryInterface;
 use SP\Domain\Upgrade\Ports\UpgradeService;
 use SP\Domain\Upgrade\Services\Upgrade;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
+use SP\Domain\Upgrade\Services\UpgradeDurablePayloads;
 use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\DatabaseFileFactory;
@@ -496,8 +497,10 @@ final class CoreDefinitions
                     'sqlPath',
                     factory(static fn(PathsContext $p) => $p[Path::SQL])
                 ),
+            UpgradeDurablePayloads::class => autowire(UpgradeDurablePayloads::class),
             UpgradeService::class => factory(static function (ContainerInterface $c): UpgradeService {
                 $upgrade = $c->get(Upgrade::class);
+                $upgrade->registerUpgradeHandler(UpgradeDurablePayloads::class);
                 $upgrade->registerUpgradeHandler(UpgradeDatabase::class);
 
                 return $upgrade;

@@ -14,6 +14,7 @@ use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
 use SP\Domain\Upgrade\Ports\UpgradeService;
 use SP\Domain\Upgrade\Services\Upgrade;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
+use SP\Domain\Upgrade\Services\UpgradeDurablePayloads;
 use SP\Tests\IntegrationTestCase;
 use Throwable;
 
@@ -121,26 +122,58 @@ final class ContainerWiringTest extends IntegrationTestCase
     }
 
     #[Test]
-    public function upgradeServiceRegistersAndSelectsDatabaseHandler(): void
+    public function durablePayloadHandlerResolves(): void
     {
-        $handler = $this->createMock(UpgradeHandlerService::class);
-        $handler->expects(self::once())
+        $container = $this->buildContainer(self::buildRequest('get', 'index.php'));
+
+        self::assertInstanceOf(
+            UpgradeDurablePayloads::class,
+            $container->get(UpgradeDurablePayloads::class)
+        );
+    }
+
+    #[Test]
+    public function upgradeServiceRegistersAndSelectsDurableAndDatabaseHandlers(): void
+    {
+        $order = [];
+
+        $durable = $this->createMock(UpgradeHandlerService::class);
+        $durable->expects(self::once())
                 ->method('apply')
-                ->with('400.0', self::isInstanceOf(ConfigDataInterface::class))
-                ->willReturn(true);
+                ->with('320.0', self::isInstanceOf(ConfigDataInterface::class))
+                ->willReturnCallback(static function () use (&$order): bool {
+                    $order[] = 'durable';
+
+                    return true;
+                });
+
+        $database = $this->createMock(UpgradeHandlerService::class);
+        $database->expects(self::once())
+                 ->method('apply')
+                 ->with('320.0', self::isInstanceOf(ConfigDataInterface::class))
+                 ->willReturnCallback(static function () use (&$order): bool {
+                     $order[] = 'database';
+
+                     return true;
+                 });
 
         $configData = $this->createStub(ConfigDataInterface::class);
 
         $container = $this->buildContainer(
             self::buildRequest('get', 'index.php'),
-            [UpgradeDatabase::class => $handler]
+            [
+                UpgradeDurablePayloads::class => $durable,
+                UpgradeDatabase::class => $database,
+            ]
         );
 
         $upgradeService = $container->get(UpgradeService::class);
 
         self::assertInstanceOf(Upgrade::class, $upgradeService);
 
-        $upgradeService->upgrade('400.0', $configData);
+        $upgradeService->upgrade('320.0', $configData);
+
+        self::assertSame(['durable', 'database'], $order);
     }
 
     /**

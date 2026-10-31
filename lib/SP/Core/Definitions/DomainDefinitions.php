@@ -175,6 +175,9 @@ final class DomainDefinitions
         'SP\Domain\Tag\Ports\TagRepository' => 'SP\Infrastructure\Tag\Repositories\Tag',
         'SP\Domain\Tag\Ports\TagService' => 'SP\Domain\Tag\Services\Tag',
 
+        // Upgrade
+        'SP\Domain\Upgrade\Ports\DurablePayloadRepository' => 'SP\Infrastructure\Upgrade\Repositories\DurablePayload',
+
         // User
         'SP\Domain\User\Ports\UserGroupRepository' => 'SP\Infrastructure\User\Repositories\UserGroup',
         'SP\Domain\User\Ports\UserGroupService' => 'SP\Domain\User\Services\UserGroup',
