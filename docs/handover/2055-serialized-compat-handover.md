@@ -1,7 +1,7 @@
 # Handover: Serialized payload compatibility (#2055)
 
 Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
-Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback).
+Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`.
 
 ## Goal
 
@@ -122,6 +122,15 @@ Status: implemented and committed in `670e58e1` (rewriter grammar) and `2c7db922
 
 **T6 API master password.** `lib/SP/Domain/Api/Services/Api.php:257-289`: replace the raw `unserialize()` at `:267` with the T3 reader. Keep the `ServiceException` mapping and handle the domain exception so it is never an uncaught `Error`. Test in `tests/SP/Domain/Api/Services/ApiTest.php`.
 - Acceptance: a legacy vault yields a controlled `ServiceException` or succeeds after remap.
+
+Status: implemented and committed in `e6bdff3a`. Files: `lib/SP/Domain/Api/Services/Api.php`, `tests/SP/Domain/Api/Services/ApiTest.php`. Decisions taken at approval:
+- `getMasterPassFromVault()` now reads `AuthToken::getVault()` into a local, rejects `null`/empty with the existing `Invalid data` `ServiceException`, and decodes through `SerializedPayloadReader::read($payload, Vault::class)`.
+- The default class map is used, so the durable auth-token vault is remapped from the legacy `SP\Core\Crypt\*` FQCNs instead of failing closed. An empty map is correct only for the transient session/config caches (T4/T5).
+- `Vault::class` is the expected class, not `VaultInterface::class`, because T3 uses `class_exists()` and validates with `instanceof`.
+- `InvalidClassException` is caught alongside `CryptException` and mapped to the same `ServiceException`, so the T3 domain failure can no longer surface as a bare `Error` from `getData()` on `__PHP_Incomplete_Class`.
+- The `null`/empty guard is required because `Api.php` declares `strict_types=1`; passing `null` to T3's `string` parameter would raise `TypeError`.
+- The now-unused `Crypt` and `VaultInterface` imports were removed.
+- Verification: `ApiTest` 47/47 OK (4 new: legacy vault succeeds after remap; unmapped, malformed, and missing vaults raise `ServiceException`). `tests/SP/Domain/Api`, `tests/SP/Domain/Common/Adapters`, and `tests/SP/Architecture`: 126/126 OK. Unitary group: 2182 tests, the same 2 errors and 1 failure as T4/T5 (`SessionTest::testReKey`, `DefinitionsTest::testGetDefinitions`, `UuidCookieTest::testCreate`), all pre-existing and environmental. PHPStan level 6 on `Api.php`: the same 7 pre-existing errors on untouched code (constructor generic port, `getHelp()` array value type, untyped `$default` parameters). The test file reports only pre-existing style errors; the new methods add none.
 
 **T7 Public link view.** `app/modules/web/Controllers/Account/ViewLinkController.php:99-108`: replace `Serde::deserialize($publicLink->getData(), VaultInterface::class)` with the T3 reader. Keep the existing error view.
 - Acceptance: a legacy link renders, or shows the existing error view. The stored row is not modified by the read.
