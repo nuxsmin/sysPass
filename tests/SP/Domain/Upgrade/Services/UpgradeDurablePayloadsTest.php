@@ -62,7 +62,7 @@ final class UpgradeDurablePayloadsTest extends UnitaryTestCase
 
         $legacy = [
             [DurablePayloadType::AuthTokenVault, '1', DurablePayloadFixtures::vaultWithCrypt(), null],
-            [DurablePayloadType::PublicLinkData, '2', DurablePayloadFixtures::vaultWithCrypt(), null],
+            [DurablePayloadType::PublicLinkData, '2', DurablePayloadFixtures::publicLinkVault(), null],
             [DurablePayloadType::UserProfile, '3', DurablePayloadFixtures::profile(), null],
             [DurablePayloadType::UserPreferences, '4', DurablePayloadFixtures::preferences(), null],
             [

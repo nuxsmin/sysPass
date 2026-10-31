@@ -1,7 +1,7 @@
 # Handover: Serialized payload compatibility (#2055)
 
 Decision record: `docs/adr/0005-preserve-serialized-payload-compatibility.md` (Accepted; resolved decisions recorded there).
-Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`. T7 is committed in `6859ee7f`. T8 is committed in `a3f744ba` (tests) and `a97826f9` (handover). T9 is committed in `de5c7908` (2026-10-31). T10, T11, and T12 are implemented in the working tree (2026-10-31).
+Branch: `refactor-syspass-to-hexagonal-architecture`. The ADR, this handover, P0.1 (`60fc7056`), T1 (`6131893c`), T2 (`75269d7b`), and T3 (`1d19d25f`) are committed. T4 is committed in `441e88aa`. T5 is committed in `670e58e1` (rewriter grammar) and `2c7db922` (config fallback). T6 is committed in `e6bdff3a`. T7 is committed in `6859ee7f`. T8 is committed in `a3f744ba` (tests) and `a97826f9` (handover). T9 is committed in `de5c7908` (2026-10-31). T10, T11, and T12 are implemented in the working tree (2026-10-31) and remediated after review (2026-10-31); none of the remediation is committed.
 
 ## Goal
 
@@ -229,13 +229,53 @@ Previous follow-up verification (findByType fix):
 **T10 Config backup restore.** `lib/SP/Domain/Config/Services/ConfigBackup.php:90`: use the T3 reader for `ConfigData`. Do not rewrite stored backups.
 - Acceptance: a legacy backup restores; an unreadable backup reports failure and modifies nothing.
 
-Status: implemented (2026-10-31, working tree). Files: `lib/SP/Domain/Common/Adapters/LegacyClassMap.php`, `lib/SP/Domain/Config/Adapters/ConfigData.php`, `lib/SP/Domain/Config/Services/ConfigBackup.php`, `tests/SP/Domain/Config/Services/ConfigBackupTest.php`. Decisions and findings:
-- **T9 follow-up correction.** The pre-hexagonal backup class is `SP\Config\ConfigData`, not `SP\DataModel\ConfigData`. `SP\DataModel\ConfigData` is a database row model (`parameter`, `value`) and is not serialized into `config_backup`; it is deliberately not mapped. The map now contains `SP\Config\ConfigData => SP\Domain\Config\Adapters\ConfigData`.
-- **A class-only remap cannot restore a legacy backup.** `SP\Config\ConfigData` stored private properties (`dbHost`, `dbPort`, ...), while the current `ConfigData` extends `ArrayObject` and stores configuration in its internal array. Rewriting the class name alone makes `ArrayObject::__unserialize()` reject the payload (`Incomplete or ill-typed serialization data`).
-- **`ConfigData::__unserialize()` now accepts both layouts.** The current serialized layout is a list (`i:0` storage, `i:1` flags, ...) and is delegated to `ArrayObject`. The legacy layout is an associative list of mangled private-property keys; each property is mapped to its current setter, with `backup_hash`, `export_hash`, and `checknotices` aliased. `configHash` is skipped because the current setter has no argument and `ConfigFile::save()` recomputes it. Obsolete fields without a setter (`filesAllowedExts`, `ldapAds`, `ldapProxyUser`) are ignored. No stored backup is rewritten.
-- **Both restore and export use T3.** `restore()` and `configToJson()` call `SerializedPayloadReader::read(..., ConfigData::class)` with the default legacy map. A malformed or unmapped backup throws `InvalidClassException` before `ConfigFileService::save()` is called, so no config file, cache, or database row is modified.
-- **Real fixture verified.** The checked-in database fixture (`tests/res/datasets/syspass.xml`, `config_backup`) decodes to 84 current attributes through the reader (for example `dbHost=syspass-db-dev`, `dbPort=3306`).
-- Verification: `ConfigBackupTest` 12/12 OK (35 assertions, including legacy restore, legacy JSON export, and unreadable backup); Config/adapters/upgrade/architecture group 154/154 OK (428 assertions, 2 pre-existing deprecations). PHPStan level 6 on the changed files reports only the existing `ConfigData` level-6 findings; the new method adds none.
+Status: implemented (2026-10-31), reviewed and remediated (2026-10-31, working tree). Files:
+- `lib/SP/Domain/Config/Legacy/LegacyConfigData.php`
+- `lib/SP/Domain/Config/Legacy/LegacyConfigDataMapper.php`
+- `lib/SP/Domain/Config/Services/ConfigBackup.php`
+- `lib/SP/Domain/Common/Adapters/LegacyClassMap.php`
+- `lib/SP/Domain/Config/Adapters/ConfigData.php` (reverted to `28921e30^`; no legacy hook)
+
+Decisions and findings:
+- **Legacy snapshot DTO.** `LegacyConfigData` faithfully declares the 93 private properties of the 3.2.11
+  `SP\Config\ConfigData` class with their 3.2.11 defaults. Its only behaviour is `toArray()`. It is never
+  persisted, is not in `PersistedClassRegistry`, and the architecture test asserts that.
+- **Map target.** `LegacyClassMap::MAP` now maps `SP\Config\ConfigData` to `LegacyConfigData`, not directly
+  to the current `ConfigData`. The map docblock explains the snapshot mapping.
+- **Explicit mapper.** `LegacyConfigDataMapper` replaces the reflection-based generic engine with an explicit
+  property -> `ConfigDataInterface` constant + setter + cast table. Aliases are `backup_hash`, `export_hash`,
+  and `checknotices`. `filesAllowedExts` is preserved through
+  `set(ConfigDataInterface::FILES_ALLOWED_EXTS, ...)`. Only `ldapAds` and `ldapProxyUser` are dropped, and
+  their names are returned for logging. Unknown/undeclared properties are returned separately and never
+  silently ignored. Missing declared properties use the 3.2.11 defaults.
+- **Correction to the earlier T10 note.** `filesAllowedExts` is not obsolete: the current `ConfigData` has a
+  getter and the collection accepts the key, so the mapper carries it through. Only `ldapAds` and
+  `ldapProxyUser` have no current target.
+- **Two-step decode.** `ConfigBackup::decode()` first reads the payload as the current `ConfigData`. On
+  `InvalidClassException` it reads it as `LegacyConfigData` and maps it. If both reads fail, one
+  `InvalidClassException` is thrown. No `stdClass` or partial object is returned. Both `restore()` and
+  `configToJson()` use this path.
+- **Export remains required.** `configToJson()` uses the same decode because the ADR forbids returning a
+  `stdClass` or partial object from a typed read.
+- **No production restore caller.** `ConfigBackupService::restore()` has no caller in `lib/` or `app/`. The
+  only production use is `DownloadConfigBackupController::index()` through `getBackup()` and
+  `configToJson()`.
+- **Real fixture asserted.** `ConfigBackupTest` restores the `config_backup` row from
+  `tests/res/datasets/syspass.xml`: `dbHost=syspass-db-dev`, `dbPort=3306`, all 18
+  `filesAllowedExts`, and `backup_hash=c9142988b9d91a375ca83387f0593c7a12eaf5a2`. That row also contains
+  the undeclared `ldapUserattr` property, which is reported as unknown.
+
+Verification:
+- `ConfigBackupTest`, `LegacyConfigDataMapperTest`, and `SerializedPayloadCompatibilityTest`: 24/24 OK
+  (389 assertions).
+- `tests/SP/Domain/Common/Adapters`, `tests/SP/Domain/Config`, `tests/SP/Domain/Upgrade`,
+  `tests/SP/Infrastructure/Upgrade`, and `tests/SP/Architecture`: 162/162 OK (746 assertions, 2 pre-existing
+  deprecations).
+- PHPStan level 6 on all changed lib files: 19 findings, all pre-existing in the reverted `ConfigData.php`;
+  no findings in `LegacyConfigData`, `LegacyConfigDataMapper`, `ConfigBackup`, or `LegacyClassMap`.
+- Full core suite stops at the integration fixture loader after 1769/2279 tests with MySQL `ERROR 2005`
+  (`mysql -h  -u  ... Unknown server host '-u'`). Modules suite stops at the same loader after 189/370 tests;
+  its earlier failures are also database-dependent. Both are environmental and unrelated to this change.
 
 ## Phase 4: Guardrail
 
@@ -246,7 +286,12 @@ Status: implemented (2026-10-31, working tree). Files: `lib/SP/Domain/Common/Ada
 
 Do not add a serialize-call-site allowlist. The repo removed its allowlist and ratchet in `6a6cd3dc`.
 
-Status: implemented (2026-10-31, working tree). File: `tests/SP/Architecture/SerializedPayloadCompatibilityTest.php`. The test asserts that every registry class resolves, every legacy map key no longer resolves, every registry class appears among the map's current names (matching T10's `SP\Config\ConfigData` entry), and every map target resolves. Verification: 4/4 OK (36 assertions).
+Status: implemented (2026-10-31, working tree). File:
+`tests/SP/Architecture/SerializedPayloadCompatibilityTest.php`. The test asserts that every registry class
+resolves, every legacy map key no longer resolves, every registry class appears among the map's current names
+(or is produced by a legacy snapshot mapper), and every map target resolves. It also asserts that
+`LegacyConfigData` is not in `PersistedClassRegistry` and that `SP\Config\ConfigData` maps to the snapshot.
+Verification: 5/5 OK (39 assertions).
 
 ## Phase 5: Fixtures and tests
 
@@ -262,7 +307,27 @@ Status: implemented (2026-10-31, working tree). File: `tests/SP/Architecture/Ser
 - T9: idempotent second run; unreadable rows untouched and failing the upgrade; re-run after fix succeeds.
 - T11: architecture guardrail.
 
-Status: covered (2026-10-31, working tree). Static pre-move payloads live in `tests/SP/Stubs/DurablePayloadFixtures.php` (legacy Vault with and without `Crypt`, current Vault, ProfileData, UserPreferences, ItemPresets, malformed) and `tests/SP/Domain/Config/Services/ConfigBackupTest.php` (legacy `SP\Config\ConfigData`). The real `config_backup` row from `tests/res/datasets/syspass.xml` was decoded during T10 verification. Plugin data remains excluded per the T9 decision; it needs a separate authenticated migration decision.
+Status: covered (2026-10-31, working tree; fixtures regenerated 2026-10-31).
+Provenance:
+- The pre-move tree `6a6cd3dc^` and tag `3.2.11` were exported with `git archive` into `/tmp/kilo`
+  (not `git worktree`, which mutates `.git`).
+- A PHP generator run through `$PHP_BIN` produced the static strings. The Docker runtime mounts only the
+  repository, so the generator and selected legacy sources were staged in a temporary directory inside the
+  worktree, then deleted together with `/tmp/kilo`.
+- Vault-with-Crypt and the public-link vault come from `6a6cd3dc^` `lib/SP/Core/Crypt/{Vault,Crypt}.php`.
+  The public-link fixture is now used for `PublicLinkData` in `UpgradeDurablePayloadsTest`.
+- ProfileData, UserPreferencesData, and ItemPreset models come from tag `3.2.11` `lib/SP/DataModel`; the
+  `SP\DataModel\*` names no longer exist at `6a6cd3dc^`.
+- `LegacyConfigData` comes from `3.2.11` `lib/SP/Config/ConfigData.php` with all 93 properties populated.
+  It was cross-checked against the `config_backup` row in `tests/res/datasets/syspass.xml`: the row has 89
+  properties, the extra `ldapUserattr` (reported as unknown), and lacks the newer `applicationUrl`,
+  `appVersion`, `filesAllowedMime`, `ldapTlsEnabled`, and `ldapType` properties.
+- `PluginDataStorage` remains excluded: it is an interface with no core implementation, as recorded in the
+  T1/T9 decisions. No fixture was invented.
+
+Static payloads live in `tests/SP/Stubs/DurablePayloadFixtures.php`, and the legacy `SP\Config\ConfigData`
+snapshot is exercised through that fixture in `LegacyConfigDataMapperTest` plus the real database row in
+`ConfigBackupTest`.
 
 ## Phase 6: Verification and release
 

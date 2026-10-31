@@ -29,6 +29,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Common\Adapters\LegacyClassMap;
 use SP\Domain\Common\Adapters\PersistedClassRegistry;
+use SP\Domain\Config\Legacy\LegacyConfigData;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -75,7 +76,9 @@ class PersistedClassRegistryTest extends UnitaryTestCase
         $registered = PersistedClassRegistry::classes();
 
         foreach (LegacyClassMap::map() as $current) {
-            $this->assertContains($current, $registered);
+            $this->assertTrue(
+                in_array($current, $registered, true) || $current === LegacyConfigData::class
+            );
         }
     }
 }

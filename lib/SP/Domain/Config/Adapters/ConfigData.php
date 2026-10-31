@@ -25,8 +25,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Config\Adapters;
 
-use ReflectionMethod;
-use ReflectionNamedType;
 use SP\Domain\Common\Models\DataCollection;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Providers\Version;
@@ -37,12 +35,6 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
  */
 final class ConfigData extends DataCollection implements ConfigDataInterface
 {
-    private const LEGACY_SETTERS = [
-        'backup_hash' => 'setBackupHash',
-        'export_hash' => 'setExportHash',
-        'checknotices' => 'setCheckNotices',
-    ];
-
     private const DEFAULT_PUBLIC_LINK_MAX_VIEWS = 3;
     private const DEFAULT_PUBLIC_LINK_MAX_TIME  = 600;
     private const DEFAULT_ACCOUNT_COUNT         = 12;
@@ -54,68 +46,6 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
     private const DEFAULT_SYSLOG_PORT           = 514;
     private const DEFAULT_ACCOUNT_EXPIRE_TIME   = 10368000;
     private const DEFAULT_PROXY_PORT            = 8080;
-
-    /**
-     * Hydrates both the current ArrayObject layout and the pre-hexagonal layout, where the
-     * configuration was stored as private properties of SP\Config\ConfigData.
-     *
-     * @param array<mixed> $data
-     */
-    public function __unserialize(array $data): void
-    {
-        if (array_is_list($data) && ($data[0] ?? null) === 0) {
-            parent::__unserialize($data);
-
-            return;
-        }
-
-        foreach ($data as $key => $value) {
-            $property = preg_replace('/^\x00[^\x00]*\x00/', '', (string)$key);
-
-            if ($property === null || $property === '') {
-                continue;
-            }
-
-            $setter = self::LEGACY_SETTERS[$property] ?? 'set' . ucfirst($property);
-
-            if (!method_exists($this, $setter)) {
-                continue;
-            }
-
-            $this->invokeLegacySetter($setter, $value);
-        }
-    }
-
-    private function invokeLegacySetter(string $setter, mixed $value): void
-    {
-        $method = new ReflectionMethod($this, $setter);
-        $parameters = $method->getParameters();
-
-        if ($parameters === []) {
-            return;
-        }
-
-        $type = $parameters[0]->getType() ?? null;
-
-        if ($type instanceof ReflectionNamedType) {
-            if ($value === null && !$type->allowsNull()) {
-                return;
-            }
-
-            if ($type->isBuiltin()) {
-                $value = match ($type->getName()) {
-                    'int' => (int)$value,
-                    'bool' => (bool)$value,
-                    'array' => (array)$value,
-                    'float' => (float)$value,
-                    'string' => (string)$value,
-                    default => $value
-                };
-            }
-        }
-
-        $method->invoke($this, $value);
-    }
 
     public function getAttributes(): array
     {

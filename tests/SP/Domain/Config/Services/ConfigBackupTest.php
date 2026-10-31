@@ -35,10 +35,11 @@ use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Config\Services\ConfigBackup;
-use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Log\LoggerInterface;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -105,6 +106,9 @@ class ConfigBackupTest extends UnitaryTestCase
                             ->method('getByParam')
                             ->with('config_backup')
                             ->willReturn($hexConfigData);
+
+        $this->configService->expects(self::never())
+                            ->method('save');
 
         $configFile->expects(self::once())
                    ->method('getConfigData')
@@ -176,6 +180,9 @@ class ConfigBackupTest extends UnitaryTestCase
     #[Test]
     public function testConfigToJson()
     {
+        $this->configService->expects(self::never())
+                            ->method('save');
+
         $this->assertNotEmpty($this->configBackup->configToJson(serialize($this->config->getConfigData())));
     }
 
@@ -218,6 +225,7 @@ class ConfigBackupTest extends UnitaryTestCase
     {
         $this->configService->expects(self::once())
                             ->method('getByParam')
+                            ->with('config_backup')
                             ->willThrowException(new NoSuchItemException('test'));
 
         $this->expectException(ServiceException::class);
@@ -240,16 +248,39 @@ class ConfigBackupTest extends UnitaryTestCase
         $configFile->expects(self::once())
                    ->method('save')
                    ->with(self::callback(static function (ConfigData $configData): bool {
-                       return $configData->getDbHost() === 'localhost'
-                              && $configData->getDbPort() === 3307
-                              && $configData->isDokuwikiEnabled();
+                       return $configData->getDbHost() === 'syspass-db-dev'
+                              && $configData->getDbPort() === 3306
+                              && $configData->getFilesAllowedExts() === [
+                                  'PDF',
+                                  'JPG',
+                                  'GIF',
+                                  'PNG',
+                                  'ODT',
+                                  'ODS',
+                                  'DOC',
+                                  'DOCX',
+                                  'XLS',
+                                  'XSL',
+                                  'VSD',
+                                  'TXT',
+                                  'CSV',
+                                  'BAK',
+                                  'RDP',
+                                  'KEY',
+                                  'CRT',
+                                  'XML',
+                              ]
+                              && $configData->getBackupHash() === 'c9142988b9d91a375ca83387f0593c7a12eaf5a2';
                    }))
                    ->willReturn($configFile);
 
         $this->configService->expects(self::once())
                             ->method('getByParam')
                             ->with('config_backup')
-                            ->willReturn(bin2hex(gzcompress(self::legacyConfigData())));
+                            ->willReturn(self::legacyBackupRow());
+
+        $this->configService->expects(self::never())
+                            ->method('save');
 
         $configFile->expects(self::once())
                    ->method('getConfigData')
@@ -277,6 +308,9 @@ class ConfigBackupTest extends UnitaryTestCase
                             ->with('config_backup')
                             ->willReturn(bin2hex(gzcompress('not-a-serialized-payload')));
 
+        $this->configService->expects(self::never())
+                            ->method('save');
+
         $this->expectException(InvalidClassException::class);
 
         $this->configBackup->restore($configFile);
@@ -288,23 +322,63 @@ class ConfigBackupTest extends UnitaryTestCase
     #[Test]
     public function testConfigToJsonWithLegacyConfigData()
     {
-        $json = $this->configBackup->configToJson(self::legacyConfigData());
+        $this->configService->expects(self::never())
+                            ->method('save');
+
+        $json = $this->configBackup->configToJson(self::legacyConfigPayload());
 
         $decoded = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
 
-        self::assertSame('localhost', $decoded['dbHost']);
-        self::assertSame(3307, $decoded['dbPort']);
-        self::assertTrue($decoded['dokuwikiEnabled']);
+        self::assertSame('syspass-db-dev', $decoded['dbHost']);
+        self::assertSame(3306, $decoded['dbPort']);
+        self::assertSame('c9142988b9d91a375ca83387f0593c7a12eaf5a2', $decoded['backup_hash']);
     }
 
-    private static function legacyConfigData(): string
+    /**
+     * @throws Exception
+     */
+    #[Test]
+    public function testLegacyFieldsAreLoggedWithoutPayloadValues()
     {
-        return 'O:20:"SP\Config\ConfigData":4:{'
-               . 's:28:"' . "\0" . 'SP\Config\ConfigData' . "\0" . 'dbHost";s:9:"localhost";'
-               . 's:28:"' . "\0" . 'SP\Config\ConfigData' . "\0" . 'dbPort";i:3307;'
-               . 's:37:"' . "\0" . 'SP\Config\ConfigData' . "\0" . 'dokuwikiEnabled";b:1;'
-               . 's:38:"' . "\0" . 'SP\Config\ConfigData' . "\0" . 'filesAllowedExts";'
-               . 'a:2:{i:0;s:3:"PDF";i:1;s:3:"TXT";}}';
+        $logger = $this->createMock(LoggerInterface::class);
+        $messages = [];
+
+        $logger->expects(self::exactly(2))
+               ->method('warning')
+               ->willReturnCallback(static function (string $message) use (&$messages): void {
+                   $messages[] = $message;
+               });
+
+        $configBackup = new ConfigBackup($this->configService, $logger);
+
+        $configBackup->configToJson(self::legacyConfigPayload());
+
+        $logged = implode("\n", $messages);
+
+        self::assertStringContainsString('ldapAds', $logged);
+        self::assertStringContainsString('ldapProxyUser', $logged);
+        self::assertStringContainsString('ldapUserattr', $logged);
+        self::assertStringNotContainsString('syspass-db-dev', $logged);
+    }
+
+    private static function legacyBackupRow(): string
+    {
+        $xml = simplexml_load_file(dirname(__DIR__, 4) . '/res/datasets/syspass.xml');
+
+        self::assertNotFalse($xml);
+
+        foreach ($xml->xpath('//table_data[@name="Config"]/row') as $row) {
+            if ((string)$row->field[0] === 'config_backup') {
+                return (string)$row->field[1];
+            }
+        }
+
+        self::fail('config_backup row not found');
+    }
+
+    private static function legacyConfigPayload(): string
+    {
+        return (string)gzuncompress((string)hex2bin(self::legacyBackupRow()));
     }
 
     protected function setUp(): void

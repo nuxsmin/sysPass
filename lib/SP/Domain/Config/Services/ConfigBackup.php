@@ -27,17 +27,20 @@ declare(strict_types=1);
 namespace SP\Domain\Config\Services;
 
 use Exception;
-use SP\Domain\Common\Adapters\SerializedPayloadReader;
 use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Common\Adapters\SerializedPayloadReader;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Adapters\ConfigData;
+use SP\Domain\Config\Legacy\LegacyConfigData;
+use SP\Domain\Config\Legacy\LegacyConfigDataMapper;
 use SP\Domain\Config\Ports\ConfigBackupService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Log\LoggerInterface;
 use SP\Domain\Core\Log\NullLogger;
 
@@ -56,12 +59,13 @@ readonly class ConfigBackup implements ConfigBackupService
     }
 
     /**
+     * @throws InvalidClassException
      * @throws SPException
      */
     public function configToJson(string $configData): string
     {
         return Serde::serializeJson(
-            SerializedPayloadReader::read($configData, ConfigData::class),
+            $this->decode($configData),
             JSON_PRETTY_PRINT
         );
     }
@@ -86,14 +90,51 @@ readonly class ConfigBackup implements ConfigBackupService
 
     /**
      * @throws FileException
+     * @throws InvalidClassException
      * @throws ServiceException
      * @throws SPException
      */
     public function restore(ConfigFileService $configFile): ConfigDataInterface
     {
-        return $configFile->save(
-            SerializedPayloadReader::read($this->getBackup(), ConfigData::class)
-        )->getConfigData();
+        return $configFile->save($this->decode($this->getBackup()))->getConfigData();
+    }
+
+    /**
+     * @throws InvalidClassException
+     */
+    private function decode(string $payload): ConfigData
+    {
+        try {
+            return SerializedPayloadReader::read($payload, ConfigData::class);
+        } catch (InvalidClassException) {
+            try {
+                $legacy = SerializedPayloadReader::read($payload, LegacyConfigData::class);
+            } catch (InvalidClassException $exception) {
+                throw InvalidClassException::error(
+                    __u('Couldn\'t read the configuration backup'),
+                    null,
+                    $exception->getCode(),
+                    $exception
+                );
+            }
+        }
+
+        $config = new ConfigData();
+        $result = LegacyConfigDataMapper::map($legacy, $config);
+
+        if ($result['dropped'] !== []) {
+            $this->logger->warning(
+                sprintf(__u('Dropped legacy configuration fields: %s'), implode(', ', $result['dropped']))
+            );
+        }
+
+        if ($result['unknown'] !== []) {
+            $this->logger->warning(
+                sprintf(__u('Unknown legacy configuration fields: %s'), implode(', ', $result['unknown']))
+            );
+        }
+
+        return $config;
     }
 
     /**

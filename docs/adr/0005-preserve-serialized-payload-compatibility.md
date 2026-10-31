@@ -58,6 +58,23 @@ Resolved decisions (2026-10-31):
 - **Preferences keep the serialized format.** Legacy serialized preferences are class-rewritten to `SP\Domain\User\Models\UserPreferences`; valid JSON rows are skipped as current. Current writes are JSON while the only reader is PHP `unserialize`; that pre-existing mismatch is tracked separately and is not changed by T9.
 - **Vault dependency repair.** Older `Vault` payloads may not include the `crypt` dependency that the current class stores. The durable handler injects the stateless `CryptInterface` into the uninitialized readonly property and re-serializes the object; a class-only rewrite would produce a vault that reads as an object but fails on `getData()`.
 
+Addendum (2026-10-31): legacy `ConfigData` snapshot.
+- `SP\Config\ConfigData` is mapped to a new Domain-layer snapshot DTO,
+  `SP\Domain\Config\Legacy\LegacyConfigData`, instead of directly to the current `ConfigData`. The DTO
+  declares the 3.2.11 private properties and defaults and only exposes them as an array. It is never
+  persisted and is deliberately absent from `PersistedClassRegistry`.
+- `SP\Domain\Config\Legacy\LegacyConfigDataMapper` maps the snapshot onto the current collection through an
+  explicit property-to-constant/setter table. `backup_hash`, `export_hash`, and `checknotices` are aliased;
+  `filesAllowedExts` is carried through `ConfigDataInterface::FILES_ALLOWED_EXTS`; only `ldapAds` and
+  `ldapProxyUser` are dropped. Dropped and unknown property names are reported. Missing declared properties
+  use the 3.2.11 defaults.
+- `ConfigBackup` tries the current `ConfigData` first and then the snapshot; if both fail it throws one
+  `InvalidClassException`. The export path (`configToJson()`) uses the same decode because this ADR forbids
+  returning `stdClass` or a partial object. `restore()` has no production caller; export is the production
+  path.
+- Rationale: the current `ConfigData` stays free of legacy unserialization behaviour, while the typed reader
+  still guarantees a complete, fail-closed decode.
+
 Option C (versioned envelope/DTO) is deferred. It is the right long-term format, but it changes what new writes look like and makes rollback harder. It can be revisited for new payload types.
 
 ## Considered options

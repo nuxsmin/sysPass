@@ -30,15 +30,16 @@ namespace SP\Domain\Common\Adapters;
  * Class LegacyClassMap
  *
  * Maps legacy FQCNs of persisted classes to their current FQCNs. Append-only: entries are kept
- * for as long as legacy backups may be restored. Private property names are not mapped because
- * no persisted property has been renamed; mangled keys are rewritten using the class entry.
+ * for as long as legacy backups may be restored. Mangled property keys are rewritten using the
+ * class entry. SP\Config\ConfigData maps to a legacy snapshot DTO that is decoded and mapped onto
+ * the current ConfigData collection; it is never persisted.
  */
 final class LegacyClassMap
 {
     public const MAP = [
         'SP\Core\Crypt\Vault' => 'SP\Domain\Core\Crypt\Vault',
         'SP\Core\Crypt\Crypt' => 'SP\Domain\Core\Crypt\Crypt',
-        'SP\Config\ConfigData' => 'SP\Domain\Config\Adapters\ConfigData',
+        'SP\Config\ConfigData' => 'SP\Domain\Config\Legacy\LegacyConfigData',
         'SP\DataModel\ProfileData' => 'SP\Domain\User\Models\ProfileData',
         'SP\DataModel\UserPreferencesData' => 'SP\Domain\User\Models\UserPreferences',
         'SP\DataModel\ItemPreset\Password' => 'SP\Domain\ItemPreset\Models\Password',
