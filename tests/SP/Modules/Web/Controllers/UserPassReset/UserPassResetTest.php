@@ -32,6 +32,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Notification\Ports\MailService;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Models\User;
@@ -47,6 +48,8 @@ use SP\Tests\IntegrationTestCase;
 #[Group('integration')]
 final class UserPassResetTest extends IntegrationTestCase
 {
+    private bool $applicationUrlConfigured = true;
+
     #[Test]
     #[BodyChecker('checkIndex')]
     public function index(): void
@@ -71,6 +74,66 @@ final class UserPassResetTest extends IntegrationTestCase
             'post',
             'userPassReset/saveRequest',
             $this->definitions($user),
+            [],
+            ['login' => $user->getLogin(), 'email' => $user->getEmail()]
+        );
+    }
+
+    #[Test]
+    #[BodyChecker('checkRequested')]
+    public function saveRequestIgnoresSpoofedHostHeaders(): void
+    {
+        $user = $this->buildUser();
+
+        $recover = $this->createMock(UserPassRecoverService::class);
+        $recover->method('requestForUserId')->willReturn('hash');
+        $recover->expects($this->once())
+                ->method('getMailMessage')
+                ->with('hash', 'https://syspass.example.com')
+                ->willReturn(new MailMessage());
+
+        $definitions = $this->definitions($user, $recover);
+
+        $uriContext = $this->createStub(UriContextInterface::class);
+        $uriContext->method('getWebUri')->willReturn('https://evil.example');
+        $definitions[UriContextInterface::class] = $uriContext;
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'userPassReset/saveRequest'],
+                ['login' => $user->getLogin(), 'email' => $user->getEmail()],
+                [],
+                [
+                    'HTTP_FORWARDED' => 'proto=https;host=evil.example',
+                    'HTTP_X_FORWARDED_HOST' => 'evil.example',
+                    'HTTP_X_FORWARDED_PROTO' => 'https',
+                ]
+            ),
+            $definitions
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    #[Test]
+    #[BodyChecker('checkConfigurationError')]
+    public function saveRequestRefusesWhenApplicationUrlIsMissing(): void
+    {
+        $this->applicationUrlConfigured = false;
+        $user = $this->buildUser();
+
+        $mailService = $this->createMock(MailService::class);
+        $mailService->expects($this->never())->method('send');
+
+        $definitions = $this->definitions($user);
+        $definitions[MailService::class] = $mailService;
+
+        $this->runRoute(
+            'post',
+            'userPassReset/saveRequest',
+            $definitions,
             [],
             ['login' => $user->getLogin(), 'email' => $user->getEmail()]
         );
@@ -127,6 +190,18 @@ final class UserPassResetTest extends IntegrationTestCase
         self::assertSame('Request sent', $this->decode($output)['description']);
     }
 
+    public function checkConfigurationError(string $output): void
+    {
+        $decoded = $this->decode($output);
+
+        self::assertSame('ERROR', $decoded['status']);
+        self::assertSame('Password reset is not available', $decoded['description']);
+        self::assertSame(
+            'The application URL is not configured. Please contact the administrator.',
+            $decoded['data']
+        );
+    }
+
     public function checkPasswordUpdated(string $output): void
     {
         self::assertSame('Password updated', $this->decode($output)['description']);
@@ -150,7 +225,18 @@ final class UserPassResetTest extends IntegrationTestCase
                                 );
     }
 
-    private function definitions(User $user): array
+    protected function getConfigData(): array
+    {
+        $configData = parent::getConfigData();
+
+        if ($this->applicationUrlConfigured) {
+            $configData['getApplicationUrl'] = 'https://syspass.example.com';
+        }
+
+        return $configData;
+    }
+
+    private function definitions(User $user, ?UserPassRecoverService $recover = null): array
     {
         $track = $this->createStub(TrackService::class);
         $track->method('buildTrackRequest')->willReturn(new TrackRequest(time(), 'test', '127.0.0.1'));
@@ -160,10 +246,12 @@ final class UserPassResetTest extends IntegrationTestCase
         $userService->method('getByLogin')->willReturn($user);
         $userService->method('getById')->willReturn($user);
 
-        $recover = $this->createStub(UserPassRecoverService::class);
-        $recover->method('requestForUserId')->willReturn('hash');
-        $recover->method('getUserIdForHash')->willReturn($user->getId());
-        $recover->method('getMailMessage')->willReturn(new MailMessage());
+        if ($recover === null) {
+            $recover = $this->createStub(UserPassRecoverService::class);
+            $recover->method('requestForUserId')->willReturn('hash');
+            $recover->method('getUserIdForHash')->willReturn($user->getId());
+            $recover->method('getMailMessage')->willReturn(new MailMessage());
+        }
 
         return [
             TrackService::class => $track,

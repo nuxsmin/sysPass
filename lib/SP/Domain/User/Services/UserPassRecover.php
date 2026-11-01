@@ -68,19 +68,48 @@ final class UserPassRecover extends Service implements UserPassRecoverService
 
     public function getMailMessage(string $hash, string $baseUri): MailMessage
     {
+        $url = $this->buildResetUrl($baseUri, $hash);
+
         $mailMessage = new MailMessage();
         $mailMessage->setTitle(__u('Password Change'));
         $mailMessage->addDescription(__u('A request for changing your user password has been done.'));
         $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(__u('In order to complete the process, please go to this URL:'));
         $mailMessage->addDescriptionLine();
-        $mailMessage->addDescription(
-            Html::anchorText(sprintf('%s/index.php?r=userPassReset/reset/%s', $baseUri, $hash))
-        );
+        $mailMessage->addDescription(Html::anchorText($url));
         $mailMessage->addDescriptionLine();
         $mailMessage->addDescription(__u('If you have not requested this action, please dismiss this message.'));
 
         return $mailMessage;
+    }
+
+    /**
+     * @throws SPException
+     */
+    private function buildResetUrl(string $baseUri, string $hash): string
+    {
+        $baseUri = rtrim(trim($baseUri), '/');
+        $parts = parse_url($baseUri);
+
+        if ($parts === false
+            || !isset($parts['scheme'], $parts['host'])
+            || $parts['host'] === ''
+            || !in_array(strtolower($parts['scheme']), ['http', 'https'], true)
+            || isset($parts['user'])
+            || isset($parts['pass'])
+            || isset($parts['query'])
+            || isset($parts['fragment'])
+        ) {
+            throw new SPException(
+                __u('Password reset is not available'),
+                SPException::ERROR,
+                __u('The application URL is not valid. Please contact the administrator.')
+            );
+        }
+
+        return Html::getSafeUrl(
+            sprintf('%s/index.php?r=userPassReset/reset/%s', $baseUri, rawurlencode($hash))
+        );
     }
 
     /**

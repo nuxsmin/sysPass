@@ -112,7 +112,8 @@ abstract class IntegrationTestCase extends TestCase
         string $uri,
         array  $paramsGet = [],
         array  $paramsPost = [],
-        array  $files = []
+        array  $files = [],
+        array  $server = []
     ): Request {
         $server = array_merge(
             $_SERVER,
@@ -122,7 +123,8 @@ abstract class IntegrationTestCase extends TestCase
                 'HTTP_USER_AGENT' => self::$faker->userAgent(),
                 'HTTP_HOST' => 'localhost'
                 //'QUERY_STRING' => $query
-            ]
+            ],
+            $server
         );
 
         return new Request(

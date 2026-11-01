@@ -30,6 +30,7 @@ use LogicException;
 use SP\Domain\Common\Dtos\Command;
 use SP\Domain\Common\Ports\EventEmitter;
 use SP\Domain\Common\Ports\UseCase;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Notification\Ports\MailService;
@@ -37,6 +38,8 @@ use SP\Domain\User\Ports\UserPassRecoverService;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\User\UseCases\Dtos\RequestPasswordResetCommand;
 use SP\Domain\User\UseCases\Dtos\RequestPasswordResetResult;
+
+use function SP\__u;
 
 /**
  * Request a password reset use case.
@@ -49,7 +52,8 @@ final readonly class RequestPasswordResetUseCase implements UseCase
         private UserService $userService,
         private UserPassRecoverService $userPassRecoverService,
         private MailService $mailService,
-        private EventEmitter $eventEmitter
+        private EventEmitter $eventEmitter,
+        private ConfigDataInterface $configData
     ) {
     }
 
@@ -58,6 +62,8 @@ final readonly class RequestPasswordResetUseCase implements UseCase
         if (!$command instanceof RequestPasswordResetCommand) {
             throw new LogicException(sprintf('Expected command %s', RequestPasswordResetCommand::class));
         }
+
+        $baseUri = $this->getApplicationUrl();
 
         $userData = $this->userService->getByLogin($command->login);
 
@@ -86,9 +92,29 @@ final readonly class RequestPasswordResetUseCase implements UseCase
         $this->mailService->send(
             'Password Change',
             $command->email,
-            $this->userPassRecoverService->getMailMessage($hash, $command->webUri)
+            $this->userPassRecoverService->getMailMessage($hash, $baseUri)
         );
 
         return new RequestPasswordResetResult($hash);
+    }
+
+    /**
+     * Returns the configured application URL, refusing to build an attacker-influenced reset link.
+     *
+     * @throws SPException
+     */
+    private function getApplicationUrl(): string
+    {
+        $applicationUrl = $this->configData->getApplicationUrl();
+
+        if ($applicationUrl === null || trim($applicationUrl) === '') {
+            throw new SPException(
+                __u('Password reset is not available'),
+                SPException::ERROR,
+                __u('The application URL is not configured. Please contact the administrator.')
+            );
+        }
+
+        return rtrim(trim($applicationUrl), '/');
     }
 }

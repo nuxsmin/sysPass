@@ -29,6 +29,7 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Core\Messages\TextFormatter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -198,5 +199,33 @@ class UserPassRecoverServiceTest extends UnitaryTestCase
         );
     }
 
+    /**
+     * @throws SPException
+     */
+    #[Test]
+    public function testGetMailMessageEscapesTheResetUrl(): void
+    {
+        $message = $this->userPassRecover->getMailMessage(
+            'a_hash',
+            'https://example.com/"><script>alert(1)</script>'
+        );
 
+        $description = $message->getDescription(new TextFormatter(), false);
+
+        $this->assertStringContainsString('https://example.com/', $description);
+        $this->assertStringNotContainsString('<script', $description);
+        $this->assertStringNotContainsString('">', $description);
+    }
+
+    /**
+     * @throws SPException
+     */
+    #[Test]
+    public function testGetMailMessageRejectsNonHttpBaseUri(): void
+    {
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('Password reset is not available');
+
+        $this->userPassRecover->getMailMessage('a_hash', 'javascript://example.com');
+    }
 }

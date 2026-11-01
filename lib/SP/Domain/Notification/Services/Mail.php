@@ -108,11 +108,13 @@ final class Mail extends Service implements MailService
      */
     private function getEmailFooter(): array
     {
+        $baseUrl = $this->config->getConfigData()->getApplicationUrl() ?: $this->uriContext->getWebUri();
+
         return [
             '',
             '--',
             sprintf('%s - %s', AppInfoInterface::APP_NAME, AppInfoInterface::APP_DESC),
-            Html::anchorText($this->uriContext->getWebUri()),
+            Html::anchorText(Html::getSafeUrl($baseUrl)),
         ];
     }
 

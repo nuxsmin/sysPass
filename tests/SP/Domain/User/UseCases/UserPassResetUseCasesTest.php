@@ -31,6 +31,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Messages\EventMessageFormatter;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Notification\Dtos\MailMessage;
@@ -81,12 +82,15 @@ final class UserPassResetUseCasesTest extends TestCase
     {
         $this->userService->method('getByLogin')->willReturn($this->user);
         $this->recoverService->method('requestForUserId')->willReturn('hash');
-        $this->recoverService->method('getMailMessage')->willReturn(new MailMessage());
+        $this->recoverService->expects($this->once())
+                             ->method('getMailMessage')
+                             ->with('hash', 'https://syspass.example.com')
+                             ->willReturn(new MailMessage());
 
         $this->mailService->expects($this->once())->method('send');
 
         $result = $this->useCase()->execute(
-            new RequestPasswordResetCommand($this->user->getLogin(), 'user@example.com', 'https://localhost')
+            new RequestPasswordResetCommand($this->user->getLogin(), 'user@example.com')
         );
 
         self::assertSame('hash', $result->hash);
@@ -102,6 +106,23 @@ final class UserPassResetUseCasesTest extends TestCase
     }
 
     #[Test]
+    public function requestRefusesWhenApplicationUrlIsNotConfigured(): void
+    {
+        $this->userService->method('getByLogin')->willReturn($this->user);
+
+        $this->recoverService->expects($this->never())->method('requestForUserId');
+        $this->recoverService->expects($this->never())->method('getMailMessage');
+        $this->mailService->expects($this->never())->method('send');
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('Password reset is not available');
+
+        $this->useCase(null)->execute(
+            new RequestPasswordResetCommand($this->user->getLogin(), 'user@example.com')
+        );
+    }
+
+    #[Test]
     public function requestRejectsAWrongEmail(): void
     {
         $this->userService->method('getByLogin')->willReturn($this->user);
@@ -109,7 +130,7 @@ final class UserPassResetUseCasesTest extends TestCase
         $this->expectException(SPException::class);
 
         $this->useCase()->execute(
-            new RequestPasswordResetCommand($this->user->getLogin(), 'other@example.com', 'https://localhost')
+            new RequestPasswordResetCommand($this->user->getLogin(), 'other@example.com')
         );
     }
 
@@ -123,7 +144,7 @@ final class UserPassResetUseCasesTest extends TestCase
         $this->expectException(SPException::class);
 
         $this->useCase()->execute(
-            new RequestPasswordResetCommand($this->user->getLogin(), 'user@example.com', 'https://localhost')
+            new RequestPasswordResetCommand($this->user->getLogin(), 'user@example.com')
         );
     }
 
@@ -172,13 +193,17 @@ final class UserPassResetUseCasesTest extends TestCase
             ->execute(new ResetPasswordCommand('hash', 'one', 'two'));
     }
 
-    private function useCase(): RequestPasswordResetUseCase
+    private function useCase(?string $applicationUrl = 'https://syspass.example.com'): RequestPasswordResetUseCase
     {
+        $configData = $this->createStub(ConfigDataInterface::class);
+        $configData->method('getApplicationUrl')->willReturn($applicationUrl);
+
         return new RequestPasswordResetUseCase(
             $this->userService,
             $this->recoverService,
             $this->mailService,
-            $this->eventEmitter
+            $this->eventEmitter,
+            $configData
         );
     }
 }

@@ -35,8 +35,7 @@ final readonly class RequestPasswordResetCommand implements Command
 {
     public function __construct(
         public string $login,
-        public string $email,
-        public string $webUri
+        public string $email
     ) {
     }
 }

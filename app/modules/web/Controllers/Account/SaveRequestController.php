@@ -33,6 +33,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Common\Providers\Html;
 use SP\Domain\Http\Providers\Uri;
 use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
@@ -80,6 +81,8 @@ final class SaveRequestController extends AccountControllerBase
         $deepLink = new Uri($baseUrl);
         $deepLink->addParam('r', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW) . '/' . $id);
 
+        $deepLinkUrl = Html::getSafeUrl($deepLink->getUriSigned($this->configData->getPasswordSalt()));
+
         $usersId = [$accountView->getUserId(), $accountView->getUserEditId()];
 
         $this->eventDispatcher->notify(
@@ -96,7 +99,7 @@ final class SaveRequestController extends AccountControllerBase
                             ->addDetail(__u('Description'), $description)
                             ->addDetail(
                                 __u('Link'),
-                                $deepLink->getUriSigned($this->configData->getPasswordSalt())
+                                $deepLinkUrl
                             )
                             ->addExtra('accountId', $id)
                             ->addExtra('whoId', $this->userDto->id)

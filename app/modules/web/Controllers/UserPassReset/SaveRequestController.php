@@ -64,7 +64,7 @@ final class SaveRequestController extends UserPassResetSaveBase
             $email = $this->request->analyzeEmail('email');
 
             $this->requestPasswordResetUseCase->execute(
-                new RequestPasswordResetCommand($login, $email, $this->uriContext->getWebUri())
+                new RequestPasswordResetCommand($login, $email)
             );
 
             return ActionResponse::ok(
