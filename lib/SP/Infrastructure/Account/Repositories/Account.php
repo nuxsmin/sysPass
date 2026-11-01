@@ -461,6 +461,27 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
+     * Checks whether the account is visible to the current user
+     *
+     * @param int $accountId
+     *
+     * @return bool
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function isVisible(int $accountId): bool
+    {
+        $query = $this->accountFilterUser
+            ->buildFilter()
+            ->cols(['Account.id'])
+            ->where('Account.id = :id')
+            ->bindValues(['id' => $accountId])
+            ->limit(1);
+
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
+    }
+
+    /**
      * Returns all the items
      *
      * @return QueryResult

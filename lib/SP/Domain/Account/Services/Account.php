@@ -175,6 +175,15 @@ final class Account extends Service implements AccountService
     }
 
     /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function isVisible(int $id): bool
+    {
+        return $this->accountReader->isVisible($id);
+    }
+
+    /**
      * @throws QueryException
      * @throws SPException
      * @throws ConstraintException

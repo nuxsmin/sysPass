@@ -37,6 +37,7 @@ use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
 use SP\Domain\Account\Dtos\PublicLinkKey;
+use SP\Domain\Account\Ports\AccountRepository;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\Models\Account;
@@ -50,10 +51,14 @@ use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Acl\AccountPermissionException;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\Database\Ports\DatabaseUtilInterface;
+use SP\Infrastructure\Database\QueryData;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\PublicLinkDataGenerator;
@@ -71,6 +76,21 @@ use Symfony\Component\DomCrawler\Crawler;
 #[InjectVault]
 class AccountTest extends IntegrationTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_contains($statement, "SELECT\n    `Account`.`id`\nFROM\n    `Account`")) {
+                return new QueryResult([new Simple(['id' => 1])]);
+            }
+
+            return $this->resolveDatabaseQuery($queryData);
+        };
+    }
+
     protected function getUserDataDto(): UserDto
     {
         $userPreferences = UserDataGenerator::factory()->buildUserPreferencesData()->mutate(['topNavbar' => true]);
@@ -209,6 +229,36 @@ class AccountTest extends IntegrationTestCase
     }
 
     /**
+     * @return array<string, array{string, string, int}>
+     */
+    public static function accountMutationActionsProvider(): array
+    {
+        return [
+            'saveDelete' => ['account/saveDelete/100', 'delete', AclActionsInterface::ACCOUNT_DELETE],
+            'saveEdit' => ['account/saveEdit/100', 'update', AclActionsInterface::ACCOUNT_EDIT],
+            'saveEditPass' => ['account/saveEditPass/100', 'editPassword', AclActionsInterface::ACCOUNT_EDIT_PASS],
+            'saveEditRestore' => [
+                'account/saveEditRestore/1/100',
+                'restoreModified',
+                AclActionsInterface::ACCOUNT_HISTORY_VIEW,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function accountMutationRepositoryMethodsProvider(): array
+    {
+        return [
+            'saveDelete' => ['account/saveDelete/100', 'delete'],
+            'saveEdit' => ['account/saveEdit/100', 'update'],
+            'saveEditPass' => ['account/saveEditPass/100', 'editPassword'],
+            'saveEditRestore' => ['account/saveEditRestore/1/100', 'restoreModified'],
+        ];
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -231,6 +281,88 @@ class AccountTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('');
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[DataProvider('accountMutationActionsProvider')]
+    public function accountMutationWithoutActionIsRejected(
+        string $route,
+        string $serviceMethod,
+        int    $action
+    ): void {
+        $acl = $this->createMock(AclInterface::class);
+        $acl->method('checkUserAccess')
+            ->willReturnCallback(static fn(int $actionId) => $actionId !== $action);
+
+        $accountService = $this->createMock(AccountService::class);
+        $accountService->expects(self::never())->method($serviceMethod);
+        $accountService->expects(self::never())->method('isVisible');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => $route]),
+            [
+                AclInterface::class => $acl,
+                AccountService::class => $accountService,
+            ]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
+        );
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[DataProvider('accountMutationRepositoryMethodsProvider')]
+    public function accountMutationWithoutVisibilityIsRejected(string $route, string $repositoryMethod): void
+    {
+        $accountRepository = $this->createMock(AccountRepository::class);
+        $accountRepository->method('isVisible')->willReturn(false);
+        $accountRepository->expects(self::never())->method($repositoryMethod);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => $route]),
+            [AccountRepository::class => $accountRepository]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to access this account","data":null}'
+        );
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function serviceRejectsInvisibleAccountMutations(): void
+    {
+        $accountRepository = $this->createMock(AccountRepository::class);
+        $accountRepository->method('isVisible')->willReturn(false);
+        $accountRepository->expects(self::never())->method('delete');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php'),
+            [AccountRepository::class => $accountRepository]
+        );
+
+        $this->expectException(AccountPermissionException::class);
+
+        $container->get(AccountService::class)->delete(100);
     }
 
     /**

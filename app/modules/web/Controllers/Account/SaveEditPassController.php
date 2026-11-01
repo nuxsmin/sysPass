@@ -66,6 +66,14 @@ final class SaveEditPassController extends AccountControllerBase
     #[Action(ResponseType::JSON)]
     public function saveEditPassAction(int $id): ActionResponse
     {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT_PASS)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
+        if (!$this->accountService->isVisible($id)) {
+            return ActionResponse::error(__u('You don\'t have permission to access this account'));
+        }
+
         $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_EDIT_PASS, $id);
 
         $this->accountService->editPassword($id, $this->accountForm->getItemData());

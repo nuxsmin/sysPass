@@ -80,6 +80,17 @@ final readonly class AccountReader
     }
 
     /**
+     * Checks whether the account is visible to the current user
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function isVisible(int $id): bool
+    {
+        return $this->accountRepository->isVisible($id);
+    }
+
+    /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException

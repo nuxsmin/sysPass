@@ -249,14 +249,24 @@ abstract class IntegrationTestCase extends TestCase
                 return $this->databaseQueryResolver->call($this, $queryData);
             }
 
-            $mapClassName = $queryData->getMapClassName();
-
-            if (isset($this->databaseMapperResolvers[$mapClassName])) {
-                return $this->databaseMapperResolvers[$mapClassName];
-            }
-
-            return new QueryResult([], 1, 100);
+            return $this->resolveDatabaseQuery($queryData);
         };
+    }
+
+    /**
+     * Resolves a query result from the registered database mapper resolvers
+     *
+     * @return QueryResult<\SP\Domain\Common\Models\Model>
+     */
+    protected function resolveDatabaseQuery(QueryData $queryData): QueryResult
+    {
+        $mapClassName = $queryData->getMapClassName();
+
+        if (isset($this->databaseMapperResolvers[$mapClassName])) {
+            return $this->databaseMapperResolvers[$mapClassName];
+        }
+
+        return new QueryResult([], 1, 100);
     }
 
     /**

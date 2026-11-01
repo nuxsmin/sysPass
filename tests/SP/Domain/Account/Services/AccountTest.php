@@ -1515,6 +1515,7 @@ class AccountTest extends UnitaryTestCase
         );
 
         $this->accountRepository = $this->createPartialMock(AccountRepositoryStub::class, $accountRepositoryMethods);
+        $this->accountRepository->method('isVisible')->willReturn(true);
         $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
         $this->accountToUserRepository = $this->createMock(AccountToUserRepository::class);
         $this->accountToTagRepository = $this->createMock(AccountToTagRepository::class);

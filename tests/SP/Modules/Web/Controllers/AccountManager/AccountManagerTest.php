@@ -42,6 +42,7 @@ use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Database\Dtos\QueryResult;
+use SP\Domain\Common\Models\Simple;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\CategoryGenerator;
@@ -59,6 +60,21 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class AccountManagerTest extends IntegrationTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_contains($statement, "SELECT\n    `Account`.`id`\nFROM\n    `Account`")) {
+                return new QueryResult([new Simple(['id' => 1])]);
+            }
+
+            return $this->resolveDatabaseQuery($queryData);
+        };
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception

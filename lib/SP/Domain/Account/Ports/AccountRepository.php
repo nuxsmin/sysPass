@@ -231,6 +231,17 @@ interface AccountRepository extends Repository
     public function getById(int $accountId): QueryResult;
 
     /**
+     * Checks whether the account is visible to the current user
+     *
+     * @param int $accountId
+     *
+     * @return bool
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function isVisible(int $accountId): bool;
+
+    /**
      * Returns all the items
      *
      * @return QueryResult

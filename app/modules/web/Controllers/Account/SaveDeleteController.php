@@ -64,6 +64,14 @@ final class SaveDeleteController extends AccountControllerBase
     #[Action(ResponseType::JSON)]
     public function saveDeleteAction(int $id): ActionResponse
     {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_DELETE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
+        if (!$this->accountService->isVisible($id)) {
+            return ActionResponse::error(__u('You don\'t have permission to access this account'));
+        }
+
         $accountDetails = $this->accountService->getByIdEnriched($id);
 
         $this->accountService->delete($id);

@@ -42,6 +42,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -153,6 +154,18 @@ final class AccountWriter extends Service
     }
 
     /**
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws AccountPermissionException
+     */
+    private function checkAccountAccess(int $accountId): void
+    {
+        if (!$this->accountReader->isVisible($accountId)) {
+            throw new AccountPermissionException(SPException::INFO);
+        }
+    }
+
+    /**
      * @throws ServiceException
      */
     public function create(AccountCreateDto $accountCreateDto): int
@@ -237,6 +250,8 @@ final class AccountWriter extends Service
      */
     public function update(int $id, AccountUpdateDto $accountUpdateDto): void
     {
+        $this->checkAccountAccess($id);
+
         $this->accountRepository->transactionAware(
             function () use ($id, $accountUpdateDto) {
                 $userData = $this->context->getUserData();
@@ -278,6 +293,8 @@ final class AccountWriter extends Service
      */
     public function editPassword(int $id, AccountUpdateDto $accountUpdateDto): void
     {
+        $this->checkAccountAccess($id);
+
         $this->accountRepository->transactionAware(
             function () use ($id, $accountUpdateDto) {
                 $this->addHistory($id);
@@ -314,6 +331,12 @@ final class AccountWriter extends Service
      */
     public function restoreModified(AccountHistoryDto $dto): void
     {
+        if ($dto->accountId === null) {
+            throw new AccountPermissionException(SPException::INFO);
+        }
+
+        $this->checkAccountAccess($dto->accountId);
+
         $this->accountRepository->transactionAware(
             function () use ($dto) {
                 $this->addHistory($dto->accountId);
@@ -352,6 +375,8 @@ final class AccountWriter extends Service
      */
     public function delete(int $id): void
     {
+        $this->checkAccountAccess($id);
+
         $this->accountRepository->transactionAware(
             function () use ($id) {
                 $this->addHistory($id, true);

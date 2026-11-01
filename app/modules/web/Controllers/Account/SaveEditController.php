@@ -50,6 +50,14 @@ final class SaveEditController extends AccountSaveBase
     #[Action(ResponseType::JSON)]
     public function saveEditAction(int $id): ActionResponse
     {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
+        if (!$this->accountService->isVisible($id)) {
+            return ActionResponse::error(__u('You don\'t have permission to access this account'));
+        }
+
         $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_EDIT, $id);
 
         $this->accountService->update($id, $this->accountForm->getItemData());

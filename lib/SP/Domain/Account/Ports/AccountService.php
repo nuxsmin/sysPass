@@ -146,6 +146,17 @@ interface AccountService
     public function getById(int $id): Account;
 
     /**
+     * Checks whether the account is visible to the current user
+     *
+     * @param int $id The account ID
+     *
+     * @return bool
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function isVisible(int $id): bool;
+
+    /**
      * Updates external items for the account
      *
      * @param int $id The account ID

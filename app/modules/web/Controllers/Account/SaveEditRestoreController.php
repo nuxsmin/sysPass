@@ -64,6 +64,14 @@ final class SaveEditRestoreController extends AccountControllerBase
     #[Action(ResponseType::JSON)]
     public function saveEditRestoreAction(int $historyId, int $id): ActionResponse
     {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_HISTORY_VIEW)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
+        if (!$this->accountService->isVisible($id)) {
+            return ActionResponse::error(__u('You don\'t have permission to access this account'));
+        }
+
         $this->accountService->restoreModified($this->accountHistoryService->getById($historyId));
 
         $this->eventDispatcher->notify(
