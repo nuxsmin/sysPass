@@ -218,6 +218,30 @@ _Avoid_: repository test (mocked SQL tests are not DB-backed)
 An Integration Test that dispatches an in-process request through the Web bootstrap and asserts the rendered response, covering routing, controller, use case and view.
 _Avoid_: browser test, Selenium test
 
+**UI Smoke Test**:
+An automated browser test that loads a page and fails on broken Page-load Actions, JavaScript errors, error markup or a stuck loading overlay. It asserts the Render Contract only, never layout, and exercises no workflow.
+_Avoid_: end-to-end test, E2E test, browser test
+
+**Page-load Action**:
+A Web action that the browser requests as part of loading a page, returning rendered HTML or a JSON action response. It is not the JSON-RPC API at `api.php`, which the browser never calls.
+_Avoid_: API request, API call
+
+**Render Contract**:
+The DOM roots and non-empty text a page must show for its load to count as successful. It covers presence, not position or styling.
+_Avoid_: snapshot, visual check, layout assertion
+
+**Page Readiness**:
+The state in which a Render Contract may be asserted: the page's ready selector is present, the loading overlay is hidden, and no Page-load Action has been in flight for the quiet window.
+_Avoid_: network idle, load event
+
+**Test Tier**:
+The gating classification of a UI Smoke Test: tier A gates CI, tier B reports until it has a stable history.
+_Avoid_: priority, level
+
+**Known Failure**:
+An allowlisted UI Smoke Test failure, keyed by spec, route and failure kind, with a reason and an issue link. An entry that stops failing is itself a failure, so the list can only shrink.
+_Avoid_: baseline, whitelist, ignore list
+
 **Adapter Integration Test**:
 An Integration Test of the API or CLI module that asserts the JSON-RPC envelope or the console output of a use case.
 _Avoid_: API test, command test
@@ -231,7 +255,7 @@ An Integration Test written against existing behaviour before a migration, so it
 _Avoid_: regression test, snapshot test
 
 **Test Pyramid**:
-The deliberate split into many Unit Tests, fewer DB-backed and HTTP Integration Tests, and no browser end-to-end suite.
+The deliberate split into many Unit Tests, fewer DB-backed and HTTP Integration Tests, a small UI Smoke Test for page loading, and no browser suite for workflows or layout.
 _Avoid_: test suite, test plan
 
 **Fake**:
@@ -247,7 +271,7 @@ A test double that records calls and asserts how it was used. It is not a substi
 _Avoid_: fake, stub
 
 **Fixture**:
-Shared test data loaded before a DB-backed Test so each test starts from a known database state.
+Shared test data loaded before a DB-backed Test or UI Smoke Test so each test starts from a known database state.
 _Avoid_: seed data, sample data
 
 **Test Group**:
