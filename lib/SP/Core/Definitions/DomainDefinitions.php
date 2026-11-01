@@ -88,6 +88,7 @@ final class DomainDefinitions
         'SP\Domain\Account\Ports\AccountToUserGroupService' => 'SP\Domain\Account\Services\AccountToUserGroup',
         'SP\Domain\Account\Ports\AccountToUserRepository' => 'SP\Infrastructure\Account\Repositories\AccountToUser',
         'SP\Domain\Account\Ports\AccountToUserService' => 'SP\Domain\Account\Services\AccountToUser',
+        'SP\Domain\Account\Ports\PublicLinkAuthorizationService' => 'SP\Domain\Account\Services\PublicLinkAuthorization',
         'SP\Domain\Account\Ports\PublicLinkRepository' => 'SP\Infrastructure\Account\Repositories\PublicLink',
         'SP\Domain\Account\Ports\PublicLinkService' => 'SP\Domain\Account\Services\PublicLink',
 

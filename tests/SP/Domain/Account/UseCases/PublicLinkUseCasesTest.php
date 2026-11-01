@@ -31,6 +31,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Messages\EventMessageFormatter;
+use SP\Domain\Account\Ports\PublicLinkAuthorizationService;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\UseCases\CreateAccountPublicLinkUseCase;
 use SP\Domain\Account\UseCases\CreatePublicLinkUseCase;
@@ -46,7 +47,9 @@ use SP\Domain\Account\UseCases\Dtos\SearchPublicLinksCommand;
 use SP\Domain\Account\UseCases\GetPublicLinkUseCase;
 use SP\Domain\Account\UseCases\RefreshPublicLinkUseCase;
 use SP\Domain\Account\UseCases\SearchPublicLinksUseCase;
+use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\PublicLinkDataGenerator;
 use SP\Tests\Stubs\InMemoryEventEmitter;
@@ -58,6 +61,7 @@ use SP\Tests\Stubs\InMemoryEventEmitter;
 final class PublicLinkUseCasesTest extends TestCase
 {
     private PublicLinkService&MockObject $service;
+    private PublicLinkAuthorizationService&MockObject $authorization;
     private InMemoryEventEmitter $eventEmitter;
 
     protected function setUp(): void
@@ -65,31 +69,74 @@ final class PublicLinkUseCasesTest extends TestCase
         parent::setUp();
 
         $this->service = $this->createMock(PublicLinkService::class);
+        $this->authorization = $this->createMock(PublicLinkAuthorizationService::class);
         $this->eventEmitter = new InMemoryEventEmitter();
     }
 
     #[Test]
     public function createStoresTheLink(): void
     {
+        $publicLink = PublicLinkDataGenerator::factory()->buildPublicLink();
+
+        $this->authorization
+            ->expects(self::once())
+            ->method('check')
+            ->with($publicLink->getItemId());
+
         $this->service->method('create')->willReturn(4);
 
-        $result = (new CreatePublicLinkUseCase($this->service, $this->eventEmitter))
-            ->execute(new CreatePublicLinkCommand(PublicLinkDataGenerator::factory()->buildPublicLink()));
+        $result = (new CreatePublicLinkUseCase($this->service, $this->eventEmitter, $this->authorization))
+            ->execute(new CreatePublicLinkCommand($publicLink));
 
         self::assertSame(4, $result->id);
         self::assertSame('create.publicLink', $this->eventEmitter->getLastEvent()['name']);
     }
 
     #[Test]
+    public function createRejectsAnUnauthorizedAccount(): void
+    {
+        $this->authorization
+            ->method('check')
+            ->willThrowException(new AccountPermissionException(SPException::INFO));
+
+        $this->service->expects(self::never())->method('create');
+
+        $this->expectException(AccountPermissionException::class);
+
+        (new CreatePublicLinkUseCase($this->service, $this->eventEmitter, $this->authorization))
+            ->execute(new CreatePublicLinkCommand(PublicLinkDataGenerator::factory()->buildPublicLink()));
+    }
+
+    #[Test]
     public function createFromAccountStoresTheLink(): void
     {
+        $this->authorization
+            ->expects(self::once())
+            ->method('check')
+            ->with(10);
+
         $this->service->method('create')->willReturn(4);
 
-        $result = (new CreateAccountPublicLinkUseCase($this->service, $this->eventEmitter))
+        $result = (new CreateAccountPublicLinkUseCase($this->service, $this->eventEmitter, $this->authorization))
             ->execute(new CreateAccountPublicLinkCommand(10, true));
 
         self::assertSame(4, $result->id);
         self::assertSame('create.publicLink.account', $this->eventEmitter->getLastEvent()['name']);
+    }
+
+    #[Test]
+    public function createFromAccountRejectsAnUnauthorizedAccount(): void
+    {
+        $this->authorization
+            ->method('check')
+            ->willThrowException(new AccountPermissionException(SPException::INFO));
+
+        $this->service->expects(self::never())->method('create');
+
+        $this->expectException(AccountPermissionException::class);
+
+        (new CreateAccountPublicLinkUseCase($this->service, $this->eventEmitter, $this->authorization))
+            ->execute(new CreateAccountPublicLinkCommand(10, true));
     }
 
     #[Test]

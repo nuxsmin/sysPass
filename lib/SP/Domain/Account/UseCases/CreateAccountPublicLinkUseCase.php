@@ -28,6 +28,7 @@ namespace SP\Domain\Account\UseCases;
 
 use LogicException;
 use SP\Domain\Account\Models\PublicLink;
+use SP\Domain\Account\Ports\PublicLinkAuthorizationService;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\PublickLinkType;
 use SP\Domain\Account\UseCases\Dtos\CreateAccountPublicLinkCommand;
@@ -46,7 +47,8 @@ final readonly class CreateAccountPublicLinkUseCase implements UseCase
 {
     public function __construct(
         private PublicLinkService $publicLinkService,
-        private EventEmitter $eventEmitter
+        private EventEmitter $eventEmitter,
+        private PublicLinkAuthorizationService $publicLinkAuthorization
     ) {
     }
 
@@ -55,6 +57,8 @@ final readonly class CreateAccountPublicLinkUseCase implements UseCase
         if (!$command instanceof CreateAccountPublicLinkCommand) {
             throw new LogicException(sprintf('Expected command %s', CreateAccountPublicLinkCommand::class));
         }
+
+        $this->publicLinkAuthorization->check($command->accountId);
 
         $publicLink = new PublicLink(
             [

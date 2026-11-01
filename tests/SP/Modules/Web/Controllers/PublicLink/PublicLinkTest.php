@@ -30,6 +30,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\Account\Ports\PublicLinkAuthorizationService;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\PublicLinkDataGenerator;
@@ -178,7 +179,10 @@ final class PublicLinkTest extends IntegrationTestCase
 
     private function noopService(): array
     {
-        return [PublicLinkService::class => $this->createStub(PublicLinkService::class)];
+        return [
+            PublicLinkService::class => $this->createStub(PublicLinkService::class),
+            PublicLinkAuthorizationService::class => $this->createStub(PublicLinkAuthorizationService::class),
+        ];
     }
 
     private function serviceStub(): array

@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Account\UseCases;
 
 use LogicException;
+use SP\Domain\Account\Ports\PublicLinkAuthorizationService;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\UseCases\Dtos\CreatePublicLinkCommand;
 use SP\Domain\Account\UseCases\Dtos\CreatePublicLinkResult;
@@ -43,7 +44,8 @@ final readonly class CreatePublicLinkUseCase implements UseCase
 {
     public function __construct(
         private PublicLinkService $publicLinkService,
-        private EventEmitter $eventEmitter
+        private EventEmitter $eventEmitter,
+        private PublicLinkAuthorizationService $publicLinkAuthorization
     ) {
     }
 
@@ -52,6 +54,8 @@ final readonly class CreatePublicLinkUseCase implements UseCase
         if (!$command instanceof CreatePublicLinkCommand) {
             throw new LogicException(sprintf('Expected command %s', CreatePublicLinkCommand::class));
         }
+
+        $this->publicLinkAuthorization->check($command->publicLink->getItemId());
 
         $id = $this->publicLinkService->create($command->publicLink);
 

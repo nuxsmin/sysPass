@@ -35,10 +35,12 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Account\Ports\PublicLinkAuthorizationService;
 use SP\Domain\Account\Ports\PublicLinkRepository;
 use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -63,6 +65,7 @@ class PublicLinkTest extends UnitaryTestCase
     private PublicLink                      $publicLink;
     private CryptInterface|MockObject       $crypt;
     private MockObject|AccountService       $accountService;
+    private PublicLinkAuthorizationService|MockObject $authorization;
 
     /**
      * @throws QueryException
@@ -359,6 +362,11 @@ class PublicLinkTest extends UnitaryTestCase
             )
             ->willReturn(true);
 
+        $this->authorization
+            ->expects(self::once())
+            ->method('check')
+            ->with($publicLinkData->getItemId());
+
         $passData = ['pass' => self::$faker->password, 'key' => self::$faker->sha1];
 
         $this->accountService
@@ -557,6 +565,11 @@ class PublicLinkTest extends UnitaryTestCase
             )
             ->willReturn($result);
 
+        $this->authorization
+            ->expects(self::once())
+            ->method('check')
+            ->with($publicLinkData->getItemId());
+
         $passData = ['pass' => self::$faker->password, 'key' => self::$faker->sha1];
 
         $this->accountService
@@ -578,6 +591,24 @@ class PublicLinkTest extends UnitaryTestCase
         $actual = $this->publicLink->create($publicLinkData);
 
         $this->assertEquals($result->getLastId(), $actual);
+    }
+
+    #[Test]
+    public function testCreateRejectsAnUnauthorizedAccount(): void
+    {
+        $publicLinkData = PublicLinkDataGenerator::factory()->buildPublicLink();
+
+        $this->authorization
+            ->expects(self::once())
+            ->method('check')
+            ->with($publicLinkData->getItemId())
+            ->willThrowException(new AccountPermissionException(SPException::INFO));
+
+        $this->publicLinkRepository->expects(self::never())->method('create');
+
+        $this->expectException(AccountPermissionException::class);
+
+        $this->publicLink->create($publicLinkData);
     }
 
     #[Test]
@@ -603,6 +634,7 @@ class PublicLinkTest extends UnitaryTestCase
 
         $this->accountService = $this->createMock(AccountService::class);
         $this->crypt = $this->createMock(CryptInterface::class);
+        $this->authorization = $this->createMock(PublicLinkAuthorizationService::class);
 
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, self::$faker->password);
 
@@ -614,6 +646,7 @@ class PublicLinkTest extends UnitaryTestCase
                 $this->publicLinkRepository,
                 $request,
                 $this->accountService,
+                $this->authorization,
                 $this->crypt,
                 new StatelessMasterKeyStore($this->context)
             );

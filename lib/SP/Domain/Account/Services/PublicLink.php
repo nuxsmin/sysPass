@@ -33,6 +33,7 @@ use SP\Domain\Account\Dtos\PublicLinkKey;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Account\Ports\PublicLinkAuthorizationService;
 use SP\Domain\Account\Ports\PublicLinkRepository;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Common\Adapters\Serde;
@@ -72,6 +73,7 @@ final class PublicLink extends Service implements PublicLinkService
         private readonly PublicLinkRepository $publicLinkRepository,
         private readonly RequestService $request,
         private readonly AccountService       $accountService,
+        private readonly PublicLinkAuthorizationService $publicLinkAuthorization,
         private readonly CryptInterface       $crypt,
         private readonly MasterKeyStore       $masterKeyStore
     ) {
@@ -161,6 +163,8 @@ final class PublicLink extends Service implements PublicLinkService
      */
     private function buildPublicLink(PublicLinkModel $publicLink): PublicLinkModel
     {
+        $this->publicLinkAuthorization->check($publicLink->getItemId());
+
         $key = $this->getPublicLinkKey();
 
         return $publicLink->mutate(
