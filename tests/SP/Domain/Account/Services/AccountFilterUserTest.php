@@ -338,6 +338,24 @@ class AccountFilterUserTest extends UnitaryTestCase
         $this->accountFilter->buildFilterHistory();
     }
 
+    /**
+     * Documents that app admins do not bypass the private-account predicate.
+     *
+     * @throws Exception
+     * @throws SPException
+     */
+    #[Test]
+    public function testPrivatePredicateStillAppliesToAdminApp(): void
+    {
+        $this->context->setUserData(
+            UserDto::fromModel(UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true]))
+        );
+
+        $this->setExpectationForGlobalSearch('Account');
+
+        $this->accountFilter->buildFilter();
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

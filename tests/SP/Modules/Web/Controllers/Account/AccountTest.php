@@ -229,18 +229,23 @@ class AccountTest extends IntegrationTestCase
     }
 
     /**
-     * @return array<string, array{string, string, int}>
+     * @return array<string, array{string, string, int[]}>
      */
     public static function accountMutationActionsProvider(): array
     {
         return [
-            'saveDelete' => ['account/saveDelete/100', 'delete', AclActionsInterface::ACCOUNT_DELETE],
-            'saveEdit' => ['account/saveEdit/100', 'update', AclActionsInterface::ACCOUNT_EDIT],
-            'saveEditPass' => ['account/saveEditPass/100', 'editPassword', AclActionsInterface::ACCOUNT_EDIT_PASS],
-            'saveEditRestore' => [
+            'saveDelete' => ['account/saveDelete/100', 'delete', [AclActionsInterface::ACCOUNT_DELETE]],
+            'saveEdit' => ['account/saveEdit/100', 'update', [AclActionsInterface::ACCOUNT_EDIT]],
+            'saveEditPass' => ['account/saveEditPass/100', 'editPassword', [AclActionsInterface::ACCOUNT_EDIT_PASS]],
+            'saveEditRestoreWithoutEdit' => [
                 'account/saveEditRestore/1/100',
                 'restoreModified',
-                AclActionsInterface::ACCOUNT_HISTORY_VIEW,
+                [AclActionsInterface::ACCOUNT_EDIT],
+            ],
+            'saveEditRestoreWithoutEditPass' => [
+                'account/saveEditRestore/1/100',
+                'restoreModified',
+                [AclActionsInterface::ACCOUNT_EDIT_PASS],
             ],
         ];
     }
@@ -293,11 +298,11 @@ class AccountTest extends IntegrationTestCase
     public function accountMutationWithoutActionIsRejected(
         string $route,
         string $serviceMethod,
-        int    $action
+        array  $actions
     ): void {
         $acl = $this->createMock(AclInterface::class);
         $acl->method('checkUserAccess')
-            ->willReturnCallback(static fn(int $actionId) => $actionId !== $action);
+            ->willReturnCallback(static fn(int $actionId) => !in_array($actionId, $actions, true));
 
         $accountService = $this->createMock(AccountService::class);
         $accountService->expects(self::never())->method($serviceMethod);

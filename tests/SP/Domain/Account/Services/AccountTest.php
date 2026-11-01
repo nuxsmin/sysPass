@@ -53,6 +53,7 @@ use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
@@ -85,6 +86,11 @@ class AccountTest extends UnitaryTestCase
     private AccountPresetService|MockObject $accountPresetService;
     private AccountItemsService|MockObject $accountItemsService;
     private Account $account;
+
+    /**
+     * @var int[]
+     */
+    private array $invisibleAccountIds = [];
 
     /**
      * @throws ServiceException
@@ -622,6 +628,29 @@ class AccountTest extends UnitaryTestCase
                                           array_map(fn($v) => [true, $v, $accounts[$v]], $accountsId)
                                       )
                                   );
+
+        $this->account->updateBulk($accountUpdateBulkDto);
+    }
+
+    /**
+     * @throws ServiceException
+     * @throws SPException
+     */
+    #[Test]
+    public function testUpdateBulkRejectsInvisibleAccountAtomically()
+    {
+        $accountDataGenerator = AccountDataGenerator::factory();
+        $accounts = array_map(fn() => $accountDataGenerator->buildAccountUpdateDto(), range(0, 4));
+        $accountsId = range(0, 4);
+        $accountUpdateBulkDto = new AccountUpdateBulkDto($accountsId, $accounts);
+
+        $invisibleId = $accountsId[2];
+        $this->invisibleAccountIds = [$invisibleId];
+
+        $this->accountRepository->expects(self::never())->method('updateBulk');
+        $this->accountItemsService->expects(self::never())->method('updateItems');
+
+        $this->expectException(AccountPermissionException::class);
 
         $this->account->updateBulk($accountUpdateBulkDto);
     }
@@ -1453,6 +1482,24 @@ class AccountTest extends UnitaryTestCase
     }
 
     /**
+     * @throws ServiceException
+     * @throws SPException
+     */
+    #[Test]
+    public function testDeleteByIdBatchRejectsInvisibleAccountAtomically()
+    {
+        $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
+        $invisibleId = $ids[2];
+        $this->invisibleAccountIds = [$invisibleId];
+
+        $this->accountRepository->expects(self::never())->method('deleteByIdBatch');
+
+        $this->expectException(AccountPermissionException::class);
+
+        $this->account->deleteByIdBatch($ids);
+    }
+
+    /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
@@ -1515,7 +1562,9 @@ class AccountTest extends UnitaryTestCase
         );
 
         $this->accountRepository = $this->createPartialMock(AccountRepositoryStub::class, $accountRepositoryMethods);
-        $this->accountRepository->method('isVisible')->willReturn(true);
+        $this->accountRepository->method('isVisible')->willReturnCallback(
+            fn(int $id) => !in_array($id, $this->invisibleAccountIds, true)
+        );
         $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
         $this->accountToUserRepository = $this->createMock(AccountToUserRepository::class);
         $this->accountToTagRepository = $this->createMock(AccountToTagRepository::class);

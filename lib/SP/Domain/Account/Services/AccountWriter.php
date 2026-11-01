@@ -82,6 +82,10 @@ final class AccountWriter extends Service
      */
     public function updateBulk(AccountUpdateBulkDto $accountUpdateBulkDto): void
     {
+        foreach (array_keys($accountUpdateBulkDto->getAccountUpdateDto()) as $accountId) {
+            $this->checkAccountAccess($accountId);
+        }
+
         $this->accountRepository->transactionAware(
             function () use ($accountUpdateBulkDto) {
                 $userData = $this->context->getUserData();
@@ -397,6 +401,10 @@ final class AccountWriter extends Service
      */
     public function deleteByIdBatch(array $ids): void
     {
+        foreach ($ids as $id) {
+            $this->checkAccountAccess($id);
+        }
+
         $this->accountRepository->transactionAware(function () use ($ids) {
             $affectedNumRows = $this->accountRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 

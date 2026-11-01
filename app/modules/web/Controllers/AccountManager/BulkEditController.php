@@ -82,7 +82,7 @@ final class BulkEditController extends ControllerBase
     #[Action(ResponseType::JSON)]
     public function bulkEditAction(): ActionResponse
     {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR)) {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR_BULK_EDIT)) {
             return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 

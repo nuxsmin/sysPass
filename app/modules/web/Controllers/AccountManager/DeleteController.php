@@ -75,6 +75,10 @@ final class DeleteController extends ControllerBase
     #[Action(ResponseType::JSON)]
     public function deleteAction(?int $id = null): ActionResponse
     {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR_DELETE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
         if ($id === null) {
             $ids = $this->getItemsIdFromRequest($this->request);
             $this->accountService->deleteByIdBatch($ids);
