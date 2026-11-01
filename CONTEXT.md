@@ -304,6 +304,10 @@ _Avoid_: team, role
 The permission profile assigned to a user, which determines what the user may do across the application.
 _Avoid_: role, permission set
 
+**API Token**:
+A per-user credential that authorizes one Action over the API. A user who is not an application administrator may only create or edit a token for their own user and only for an Action they are themselves allowed to perform; an application administrator may manage tokens for any user.
+_Avoid_: auth token, authorization (an API Token authenticates a user; authorization is the permission decision), API key
+
 **Access Control List (ACL)**:
 The rules that determine which users and groups may view, edit or delete an account.
 _Avoid_: permissions (an ACL is the evaluated rule set), rights
