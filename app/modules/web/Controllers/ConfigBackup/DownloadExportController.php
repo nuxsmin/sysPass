@@ -68,7 +68,7 @@ final class DownloadExportController extends SimpleControllerBase
             BackupType::export,
             $this->configData->getExportHash() ?: '',
             $this->pathsContext[Path::BACKUP],
-            'gz'
+            'tar.gz'
         );
 
         $file = $this->fileHandlerFactory->create($filePath);

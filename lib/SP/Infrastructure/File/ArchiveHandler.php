@@ -49,7 +49,9 @@ class ArchiveHandler implements ArchiveHandlerInterface
 
     private static function makeArchiveName(string $archive): string
     {
-        return str_ends_with($archive, '.tar') ? $archive : sprintf('%s.tar', $archive);
+        $archive = preg_replace('/\.[^.\/]+$/', '', $archive) ?? $archive;
+
+        return sprintf('%s.tar', $archive);
     }
 
     /**
@@ -60,8 +62,11 @@ class ArchiveHandler implements ArchiveHandlerInterface
     public function compressDirectory(string $directory, ?string $regex = null): string
     {
         $this->archive->buildFromDirectory($directory, $regex);
+        $packed = $this->archive->compress(Phar::GZ);
 
-        return $this->archive->getPath();
+        (new FileHandler($this->archive->getPath()))->delete();
+
+        return $packed->getPath();
     }
 
     /**
@@ -72,7 +77,11 @@ class ArchiveHandler implements ArchiveHandlerInterface
     public function compressFile(string $file): string
     {
         $this->archive->addFile($file, basename($file));
+        $packed = $this->archive->compress(Phar::GZ);
 
-        return $this->archive->getPath();
+        (new FileHandler($file))->delete();
+        (new FileHandler($this->archive->getPath()))->delete();
+
+        return $packed->getPath();
     }
 }

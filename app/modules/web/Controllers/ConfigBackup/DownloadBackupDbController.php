@@ -79,7 +79,7 @@ final class DownloadBackupDbController extends SimpleControllerBase
             BackupType::db,
             $this->configData->getBackupHash(),
             $this->pathsContext[Path::BACKUP],
-            'gz'
+            'tar.gz'
         );
 
         $file = $this->fileHandlerFactory->create((string)$filePath);

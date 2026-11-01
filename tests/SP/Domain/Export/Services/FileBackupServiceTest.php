@@ -115,7 +115,7 @@ class FileBackupServiceTest extends UnitaryTestCase
             ->method('write');
 
         $this->dbFileHandler
-            ->expects($this->never())
+            ->expects($this->once())
             ->method('delete');
 
         $file = self::$faker->colorName();

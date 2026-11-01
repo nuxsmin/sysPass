@@ -256,6 +256,7 @@ final class BackupFile extends Service implements BackupFileService
         $this->dbBackupFile->write(implode(PHP_EOL, $sqlOut));
 
         $this->dbArchiveHandler->compressFile($this->dbBackupFile->getFile());
+        $this->dbBackupFile->delete();
     }
 
     /**
