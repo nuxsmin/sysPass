@@ -40,6 +40,7 @@ use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CryptException;
@@ -84,6 +85,7 @@ final class Api extends Service implements ApiService
         private readonly UserProfileService $userProfileService,
         private readonly MasterKeyStore    $masterKeyStore,
         private readonly HashService       $hashService,
+        private readonly AclInterface      $acl,
         private readonly LoggerInterface   $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
@@ -133,6 +135,10 @@ final class Api extends Service implements ApiService
         }
 
         $this->setupUser();
+
+        if (!$this->acl->checkUserAccess($actionId)) {
+            $this->accessDenied();
+        }
 
         if (AuthTokenModel::isSecuredAction($actionId)) {
             $this->requireMasterPass();

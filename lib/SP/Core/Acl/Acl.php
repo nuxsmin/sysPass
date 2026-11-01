@@ -107,6 +107,7 @@ final readonly class Acl implements AclActionsInterface, AclInterface
 
         switch ($actionId) {
             case self::ACCOUNT_VIEW:
+            case self::ACCOUNT_SEARCH:
                 return $userDto->isAdminAcc || $userProfile->isAccView() || $userProfile->isAccEdit();
             case self::ACCOUNT_VIEW_PASS:
                 return $userDto->isAdminAcc || $userProfile->isAccViewPass();
@@ -203,6 +204,8 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             case self::CONFIG_CRYPT:
                 return $userProfile->isConfigEncryption();
             case self::CONFIG_BACKUP:
+            case self::CONFIG_BACKUP_RUN:
+            case self::CONFIG_EXPORT_RUN:
                 return $userProfile->isConfigBackup();
             case self::ACCESS_MANAGE:
                 return $userProfile->isMgmUsers()

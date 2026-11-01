@@ -56,6 +56,6 @@ abstract class AuthTokenSaveBase extends ControllerBase
 
         $this->checkLoggedIn();
 
-        $this->form = new AuthTokenForm($this->config, $this->session, $this->request);
+        $this->form = new AuthTokenForm($this->config, $this->session, $this->request, $this->acl);
     }
 }

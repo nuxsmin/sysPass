@@ -46,6 +46,7 @@ use SP\Domain\Common\Adapters\LegacyClassMap;
 use SP\Domain\Common\Adapters\SerializedPayloadRewriter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
@@ -77,7 +78,11 @@ class ApiTest extends UnitaryTestCase
     private AuthTokenService|MockObject $authTokenService;
     private UserService|MockObject      $userService;
     private MockObject|UserProfileService $userProfileService;
+    private AclInterface|MockObject         $acl;
     private Api                             $apiService;
+    private bool                            $aclAllowsAction = true;
+    private ?int                            $aclCheckedAction = null;
+    private ?int                            $aclCheckedUserId = null;
     private TrackRequest                           $trackRequest;
 
     public static function getParamIntDataProvider(): array
@@ -221,7 +226,8 @@ class ApiTest extends UnitaryTestCase
             $this->userService,
             $this->userProfileService,
             new StatelessMasterKeyStore($this->context),
-            new HashServiceAdapter()
+            new HashServiceAdapter(),
+            $this->acl
         );
 
         $apiService->setHelpClass(AccountHelp::class);
@@ -308,6 +314,60 @@ class ApiTest extends UnitaryTestCase
     }
 
     /**
+     * @throws ServiceException
+     * @throws SPException
+     */
+    #[Test]
+    public function testSetupDeniedWhenTokenUserLacksAction(): void
+    {
+        $actionId = AclActionsInterface::ACCOUNT_VIEW;
+
+        $this->trackService
+            ->expects(self::once())
+            ->method('checkTracking')
+            ->with($this->trackRequest)
+            ->willReturn(false);
+
+        $authToken = self::$faker->password;
+
+        $this->apiRequest->expects(self::once())->method('get')->with('authToken')->willReturn($authToken);
+
+        $userId = self::$faker->randomNumber();
+
+        $authTokenData = new AuthToken(['actionId' => $actionId, 'userId' => $userId]);
+
+        $this->authTokenService
+            ->expects(self::once())
+            ->method('getTokenByToken')
+            ->with($actionId, $authToken)
+            ->willReturn($authTokenData);
+
+        $userData = UserDataGenerator::factory()->buildUserData()->mutate(
+            ['id' => $userId, 'isDisabled' => false]
+        );
+
+        $this->userService->expects(self::once())->method('getById')->with($userId)->willReturn($userData);
+        $this->userProfileService->expects(self::once())
+                                 ->method('getById')
+                                 ->with($userData->getUserProfileId())
+                                 ->willReturn(UserProfileDataGenerator::factory()->buildUserProfileData());
+
+        $this->aclAllowsAction = false;
+
+        $this->trackService->expects(self::once())->method('add')->with($this->trackRequest);
+
+        try {
+            $this->apiService->setup($actionId);
+            self::fail('Expected ServiceException');
+        } catch (ServiceException $e) {
+            $this->assertSame('Unauthorized access', $e->getMessage());
+        }
+
+        $this->assertSame($actionId, $this->aclCheckedAction);
+        $this->assertSame($userId, $this->aclCheckedUserId);
+    }
+
+    /**
      * @throws InvalidArgumentException
      * @throws ContextException
      * @throws \PHPUnit\Framework\MockObject\Exception
@@ -321,6 +381,15 @@ class ApiTest extends UnitaryTestCase
         $this->authTokenService = $this->createMock(AuthTokenService::class);
         $this->userService = $this->createMock(UserService::class);
         $this->userProfileService = $this->createMock(UserProfileService::class);
+        $this->acl = $this->createMock(AclInterface::class);
+        $this->acl->method('checkUserAccess')->willReturnCallback(
+            function (int $actionId): bool {
+                $this->aclCheckedAction = $actionId;
+                $this->aclCheckedUserId = $this->context->getUserData()->id;
+
+                return $this->aclAllowsAction;
+            }
+        );
 
         $this->trackRequest = new TrackRequest(time(), __CLASS__, self::$faker->ipv4());
         $this->trackService->method('buildTrackRequest')->willReturn($this->trackRequest);
@@ -336,7 +405,8 @@ class ApiTest extends UnitaryTestCase
             $this->userService,
             $this->userProfileService,
             new StatelessMasterKeyStore($this->context),
-            new HashServiceAdapter()
+            new HashServiceAdapter(),
+            $this->acl
         );
     }
 
