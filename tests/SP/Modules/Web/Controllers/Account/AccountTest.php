@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Modules\Web\Controllers\Account;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
@@ -47,6 +48,8 @@ use SP\Domain\Common\Adapters\SerializedPayloadRewriter;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\Database\Dtos\QueryResult;
@@ -187,6 +190,81 @@ class AccountTest extends IntegrationTestCase
 
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()])
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function unauthenticatedAccountMutationRoutesProvider(): array
+    {
+        return [
+            'saveDelete' => ['account/saveDelete/100', 'delete'],
+            'saveEdit' => ['account/saveEdit/100', 'update'],
+            'saveEditPass' => ['account/saveEditPass/100', 'editPassword'],
+            'saveEditRestore' => ['account/saveEditRestore/1/100', 'restoreModified'],
+        ];
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[DataProvider('unauthenticatedAccountMutationRoutesProvider')]
+    public function unauthenticatedAccountMutationsAreRejected(string $route, string $serviceMethod): void
+    {
+        $accountService = $this->createMock(AccountService::class);
+        $accountService->expects(self::never())->method($serviceMethod);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => $route]),
+            [
+                Context::class => $this->getUnauthenticatedContext(),
+                AccountService::class => $accountService,
+            ]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('');
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws CryptException
+     * @throws EnvironmentIsBrokenException
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerViewLink')]
+    public function viewLinkWithoutLogin(): void
+    {
+        $account = serialize(Simple::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccount()));
+        $publicLinkKey = new PublicLinkKey($this->passwordSalt);
+
+        $vault = Vault::factory(new Crypt())->saveData($account, $publicLinkKey->getKey());
+
+        $publicLink = PublicLinkDataGenerator::factory()
+                                             ->buildPublicLink()
+                                             ->mutate(
+                                                 [
+                                                     'dateExpire' => time() + 100,
+                                                     'maxCountViews' => 3,
+                                                     'countViews' => 0,
+                                                     'hash' => $publicLinkKey->getHash(),
+                                                     'data' => $vault->getSerialized()
+                                                 ]
+                                             );
+        $this->addDatabaseMapperResolver(PublicLink::class, new QueryResult([$publicLink]));
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()]),
+            [Context::class => $this->getUnauthenticatedContext()]
         );
 
         IntegrationTestCase::runApp($container);
@@ -1033,6 +1111,22 @@ class AccountTest extends IntegrationTestCase
         $filter = $crawler->filterXPath('//ul[contains(@class,"errors")]/li[contains(@class,"msg-warning")]');
 
         self::assertCount(1, $filter);
+    }
+
+    /**
+     * @return SessionContext
+     * @throws Exception
+     * @throws \SP\Domain\Core\Exceptions\SPException
+     */
+    private function getUnauthenticatedContext(): SessionContext
+    {
+        $context = self::createStub(SessionContext::class);
+        $context->method('isLoggedIn')->willReturn(false);
+        $context->method('getAuthCompleted')->willReturn(false);
+        $context->method('getUserData')->willReturn($this->getUserDataDto());
+        $context->method('getUserProfile')->willReturn($this->getUserProfile());
+
+        return $context;
     }
 
     /**
