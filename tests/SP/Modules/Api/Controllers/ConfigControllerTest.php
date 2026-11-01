@@ -359,6 +359,8 @@ class ConfigControllerTest extends ApiTestCase
         foreach (['app', 'db'] as $type) {
             $this->assertNotEmpty($files->$type);
             $this->assertStringStartsWith($backupRoot . DIRECTORY_SEPARATOR, $files->$type);
+            $this->assertFileExists($files->$type);
+            $this->assertStringEndsWith('.tar.gz', $files->$type);
         }
 
         return $backupRoot;

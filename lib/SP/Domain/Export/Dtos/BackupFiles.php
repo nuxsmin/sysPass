@@ -52,6 +52,16 @@ final readonly class BackupFiles
         return $this->dbBackupFile;
     }
 
+    public function getAppBackupFileCompressed(): BackupFile
+    {
+        return $this->appBackupFile->withExtension('tar.gz');
+    }
+
+    public function getDbBackupFileCompressed(): BackupFile
+    {
+        return $this->dbBackupFile->withExtension('tar.gz');
+    }
+
     public function getHash(): string
     {
         return $this->appBackupFile->getHash();

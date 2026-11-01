@@ -111,6 +111,51 @@ class FileBackupServiceTest extends UnitaryTestCase
         }
     }
 
+    #[Test]
+    public function testDoBackupKeepsCurrentArtifactAndDeletesOlderOnes(): void
+    {
+        $backupPath = TMP_PATH . DIRECTORY_SEPARATOR . 'backup-' . uniqid('', true);
+
+        mkdir($backupPath);
+
+        $currentFiles = [
+            $backupPath . DIRECTORY_SEPARATOR . basename((string)$this->backupFiles->getAppBackupFile()),
+            $backupPath . DIRECTORY_SEPARATOR . basename((string)$this->backupFiles->getDbBackupFile()),
+            $backupPath . DIRECTORY_SEPARATOR . basename((string)$this->backupFiles->getAppBackupFileCompressed()),
+            $backupPath . DIRECTORY_SEPARATOR . basename((string)$this->backupFiles->getDbBackupFileCompressed()),
+        ];
+
+        $staleFiles = [
+            $backupPath . DIRECTORY_SEPARATOR . 'sysPass_app-oldhash.tar.gz',
+            $backupPath . DIRECTORY_SEPARATOR . 'sysPass_db-oldhash.tar.gz',
+            $backupPath . DIRECTORY_SEPARATOR . 'sysPass-oldhash.sql',
+        ];
+
+        foreach (array_merge($currentFiles, $staleFiles) as $file) {
+            file_put_contents($file, 'backup');
+        }
+
+        try {
+            $this->configureSuccessfulBackup();
+
+            $this->fileBackupService->doBackup($backupPath, APP_PATH);
+
+            foreach ($currentFiles as $file) {
+                $this->assertFileExists($file);
+            }
+
+            foreach ($staleFiles as $file) {
+                $this->assertFileDoesNotExist($file);
+            }
+        } finally {
+            foreach (array_merge($currentFiles, $staleFiles) as $file) {
+                @unlink($file);
+            }
+
+            @rmdir($backupPath);
+        }
+    }
+
     private function configureSuccessfulBackup(): void
     {
         $this->config->getConfigData()->setDbName('a_db');

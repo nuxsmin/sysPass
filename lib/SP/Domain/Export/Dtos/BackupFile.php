@@ -67,4 +67,9 @@ final class BackupFile extends Dto
     {
         return new self($this->backupType, $hash, $this->path, $this->extension);
     }
+
+    public function withExtension(string $extension): BackupFile
+    {
+        return new self($this->backupType, $this->hash, $this->path, $extension);
+    }
 }

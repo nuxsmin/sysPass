@@ -145,6 +145,8 @@ final class BackupFile extends Service implements BackupFileService
         $currentFiles = [
             basename((string)$this->backupFiles->getAppBackupFile()),
             basename((string)$this->backupFiles->getDbBackupFile()),
+            basename((string)$this->backupFiles->getAppBackupFileCompressed()),
+            basename((string)$this->backupFiles->getDbBackupFileCompressed()),
         ];
 
         $patterns = [

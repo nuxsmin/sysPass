@@ -328,7 +328,7 @@ final readonly class ConfigManagerPresenter
         $backupFiles = $this->backupFiles->withHash($this->configData->getBackupHash() ?? '');
 
         try {
-            $backupAppFile = $this->fileHandlerFactory->create((string)$backupFiles->getAppBackupFile());
+            $backupAppFile = $this->fileHandlerFactory->create((string)$backupFiles->getAppBackupFileCompressed());
 
             $template->assign('hasBackup', true);
             $template->assign(

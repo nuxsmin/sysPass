@@ -94,8 +94,8 @@ final class BackupController extends ControllerBase
     {
         return [
             'files' => [
-                'app' => (string)$this->backupFiles->getAppBackupFile(),
-                'db' => (string)$this->backupFiles->getDbBackupFile(),
+                'app' => (string)$this->backupFiles->getAppBackupFileCompressed(),
+                'db' => (string)$this->backupFiles->getDbBackupFileCompressed(),
             ],
         ];
     }
