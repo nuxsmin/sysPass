@@ -31,7 +31,9 @@ use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Util\Util;
 use function SP\__u;
 
@@ -50,6 +52,10 @@ final class ViewController extends AccountBase
 
         $id = $this->apiService->getParamInt('id', true);
         $customFields = Util::boolval($this->apiService->getParamString('customFields'));
+
+        if (!$this->accountService->isVisible($id)) {
+            throw new AccountPermissionException(SPException::INFO);
+        }
 
         if ($customFields) {
             $this->apiService->requireMasterPass();

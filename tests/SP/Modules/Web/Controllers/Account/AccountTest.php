@@ -216,6 +216,48 @@ class AccountTest extends IntegrationTestCase
     }
 
     /**
+     * @throws ContainerExceptionInterface
+     * @throws CryptException
+     * @throws EnvironmentIsBrokenException
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerViewLinkEscapedPassword')]
+    public function viewLinkEscapesPassword(): void
+    {
+        $payload = '"><script>alert(1)</script>';
+        $properties = AccountDataGenerator::factory()
+                                          ->buildAccount()
+                                          ->toArray(includeOuter: true);
+        $properties['pass'] = $payload;
+
+        $account = serialize(new Simple($properties));
+        $publicLinkKey = new PublicLinkKey($this->passwordSalt);
+
+        $vault = Vault::factory(new Crypt())->saveData($account, $publicLinkKey->getKey());
+
+        $publicLink = PublicLinkDataGenerator::factory()
+                                             ->buildPublicLink()
+                                             ->mutate(
+                                                 [
+                                                     'dateExpire' => time() + 100,
+                                                     'maxCountViews' => 3,
+                                                     'countViews' => 0,
+                                                     'hash' => $publicLinkKey->getHash(),
+                                                     'data' => $vault->getSerialized()
+                                                 ]
+                                             );
+        $this->addDatabaseMapperResolver(PublicLink::class, new QueryResult([$publicLink]));
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()])
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
      * @return array<string, array{string, string}>
      */
     public static function unauthenticatedAccountMutationRoutesProvider(): array
@@ -1236,6 +1278,26 @@ class AccountTest extends IntegrationTestCase
         )->extract(['id']);
 
         self::assertCount(2, $filter);
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerViewLinkEscapedPassword(string $output): void
+    {
+        self::assertStringNotContainsString('<script>alert(1)</script>', $output);
+        self::assertStringContainsString(
+            '&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;',
+            $output
+        );
+
+        $crawler = new Crawler($output);
+        $password = $crawler->filterXPath('//input[@id="password"]');
+
+        self::assertCount(1, $password);
+        self::assertSame('"><script>alert(1)</script>', $password->attr('value'));
+        self::assertCount(0, $crawler->filterXPath('//script[contains(text(),"alert(1)")]'));
     }
 
     /**
