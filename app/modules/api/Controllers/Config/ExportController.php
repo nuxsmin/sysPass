@@ -70,7 +70,7 @@ final class ExportController extends ControllerBase
         $this->setupApi(AclActionsInterface::CONFIG_EXPORT_RUN);
 
         $password = $this->apiService->getParamString('password');
-        $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
+        $path = $this->pathsContext[Path::BACKUP];
 
         $this->eventDispatcher->notify(
             'run.export.start',

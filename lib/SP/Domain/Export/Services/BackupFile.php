@@ -84,9 +84,7 @@ final class BackupFile extends Service implements BackupFileService
     {
         set_time_limit(0);
 
-        if (!is_dir($backupPath) && !mkdir($backupPath, 0755, true) && !is_dir($backupPath)) {
-            throw ServiceException::error('Unable to create the backups directory');
-        }
+        $backupPath = $this->resolveBackupPath($backupPath);
 
         try {
             $this->deleteOldBackups($backupPath);
@@ -115,6 +113,31 @@ final class BackupFile extends Service implements BackupFileService
     }
 
     /**
+     * Canonicalize the backup root so every later operation uses the resolved
+     * directory instead of a possibly relative or symlinked path.
+     *
+     * @throws ServiceException
+     */
+    private function resolveBackupPath(string $backupPath): string
+    {
+        if ($backupPath === '') {
+            throw ServiceException::error('Unable to create the backups directory');
+        }
+
+        if (!is_dir($backupPath) && !mkdir($backupPath, 0755, true) && !is_dir($backupPath)) {
+            throw ServiceException::error('Unable to create the backups directory');
+        }
+
+        $canonicalPath = realpath($backupPath);
+
+        if ($canonicalPath === false || !is_dir($canonicalPath)) {
+            throw ServiceException::error('Unable to create the backups directory');
+        }
+
+        return rtrim($canonicalPath, DIRECTORY_SEPARATOR) ?: DIRECTORY_SEPARATOR;
+    }
+
+    /**
      * Eliminar las copias de seguridad anteriores
      */
     private function deleteOldBackups(string $backupPath): void
@@ -132,11 +155,32 @@ final class BackupFile extends Service implements BackupFileService
 
         foreach ($patterns as $pattern) {
             foreach (glob(implode(DIRECTORY_SEPARATOR, [$backupPath, $pattern])) ?: [] as $file) {
+                if (!$this->isContainedIn($file, $backupPath)) {
+                    continue;
+                }
+
                 if (!in_array(basename($file), $currentFiles, true)) {
                     @unlink($file);
                 }
             }
         }
+    }
+
+    /**
+     * Check that a path resolves to a location under the canonical backup root.
+     */
+    private function isContainedIn(string $path, string $backupPath): bool
+    {
+        $canonicalPath = realpath($path);
+
+        if ($canonicalPath === false) {
+            return false;
+        }
+
+        return str_starts_with(
+            $canonicalPath,
+            rtrim($backupPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR
+        );
     }
 
     /**

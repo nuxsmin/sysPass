@@ -70,7 +70,7 @@ final class BackupController extends ControllerBase
     {
         $this->setupApi(AclActionsInterface::CONFIG_BACKUP_RUN);
 
-        $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
+        $path = $this->pathsContext[Path::BACKUP];
 
         $this->fileBackupService->doBackup($path, $this->pathsContext[Path::APP]);
 
@@ -84,32 +84,18 @@ final class BackupController extends ControllerBase
             )
         );
 
-        $defaultPath = $this->pathsContext[Path::BACKUP];
-
-        if ($path !== $defaultPath) {
-            $appFile = (string)$this->backupFiles->getAppBackupFile();
-            $dbFile = (string)$this->backupFiles->getDbBackupFile();
-
-            @copy($appFile, (string)$this->backupFiles->withPath($path)->getAppBackupFile());
-            @copy($dbFile, (string)$this->backupFiles->withPath($path)->getDbBackupFile());
-        }
-
-        return ActionResponse::ok(__('Backup process finished'), $this->buildBackupFiles($path));
+        return ActionResponse::ok(__('Backup process finished'), $this->buildBackupFiles());
     }
 
     /**
-     * @param string|null $path
-     *
-     * @return array[]
+     * @return array{files: array{app: string, db: string}}
      */
-    private function buildBackupFiles(?string $path): array
+    private function buildBackupFiles(): array
     {
-        $backupFiles = $this->backupFiles->withPath($path);
-
         return [
             'files' => [
-                'app' => (string)$backupFiles->getAppBackupFile(),
-                'db' => (string)$backupFiles->getDbBackupFile(),
+                'app' => (string)$this->backupFiles->getAppBackupFile(),
+                'db' => (string)$this->backupFiles->getDbBackupFile(),
             ],
         ];
     }

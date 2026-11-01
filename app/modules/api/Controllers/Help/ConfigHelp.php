@@ -36,24 +36,20 @@ final class ConfigHelp implements HelpInterface
     use HelpTrait;
 
     /**
-     * @return array
+     * @return array{}
      */
     public static function backup(): array
     {
-        return
-            [
-                self::getItem('path', __('Path'))
-            ];
+        return [];
     }
 
     /**
-     * @return array
+     * @return array<int, array<string, array{description: string, required: bool}>>
      */
     public static function export(): array
     {
         return
             [
-                self::getItem('path', __('Path')),
                 self::getItem('password', __('Password'))
             ];
     }

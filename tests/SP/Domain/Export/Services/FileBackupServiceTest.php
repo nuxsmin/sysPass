@@ -72,6 +72,47 @@ class FileBackupServiceTest extends UnitaryTestCase
     #[Test]
     public function testDoBackup(): void
     {
+        $this->configureSuccessfulBackup();
+
+        $this->fileBackupService->doBackup(TMP_PATH, APP_PATH);
+    }
+
+    /**
+     * A symlink that matches a cleanup pattern must not make the cleanup follow
+     * it outside the canonical backup root.
+     *
+     * @throws ServiceException
+     * @throws Exception
+     */
+    #[Test]
+    public function testDoBackupDoesNotFollowSymlinkWhenDeletingOldBackups(): void
+    {
+        $backupPath = TMP_PATH . DIRECTORY_SEPARATOR . 'backup-' . uniqid('', true);
+        $outsideFile = TMP_PATH . DIRECTORY_SEPARATOR . 'outside-' . uniqid('', true) . '.sql';
+        $link = $backupPath . DIRECTORY_SEPARATOR . 'sysPass_db-stale.sql';
+
+        mkdir($backupPath);
+        file_put_contents($outsideFile, 'keep');
+
+        try {
+            symlink($outsideFile, $link);
+
+            $this->configureSuccessfulBackup();
+
+            $this->fileBackupService->doBackup($backupPath, APP_PATH);
+
+            $this->assertFileExists($outsideFile);
+            $this->assertSame('keep', file_get_contents($outsideFile));
+            $this->assertTrue(is_link($link));
+        } finally {
+            @unlink($link);
+            @unlink($outsideFile);
+            @rmdir($backupPath);
+        }
+    }
+
+    private function configureSuccessfulBackup(): void
+    {
         $this->config->getConfigData()->setDbName('a_db');
 
         $tablesCount = count(DatabaseTables::TABLES);
@@ -134,8 +175,6 @@ class FileBackupServiceTest extends UnitaryTestCase
             ->expects($this->once())
             ->method('compressDirectory')
             ->with(APP_PATH, BackupFile::BACKUP_INCLUDE_REGEX);
-
-        $this->fileBackupService->doBackup(TMP_PATH, APP_PATH);
     }
 
     private function buildCreateResult(string $type): QueryResult
