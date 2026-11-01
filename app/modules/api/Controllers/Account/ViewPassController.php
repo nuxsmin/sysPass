@@ -24,13 +24,13 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-
-use Exception;
-use SP\Core\Crypt\Crypt;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__u;
 
 /**
  * Class ViewController
@@ -40,40 +40,35 @@ final class ViewPassController extends AccountBase
     /**
      * viewPassAction
      */
-    public function viewPassAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function viewPassAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::ACCOUNT_VIEW_PASS);
+        $this->setupApi(AclActionsInterface::ACCOUNT_VIEW_PASS);
 
-            $id = $this->apiService->getParamInt('id', true);
-            $accountPassData = $this->accountService->getPasswordForId($id);
-            $password = Crypt::decrypt(
-                $accountPassData->getPass(),
-                $accountPassData->getKey(),
-                $this->apiService->getMasterPass()
-            );
+        $id = $this->apiService->getParamInt('id', true);
+        $accountPassData = $this->accountService->getPasswordForId($id);
+        $password = $this->crypt->decrypt(
+            $accountPassData->getPass(),
+            $accountPassData->getKey(),
+            $this->apiService->getMasterPass()
+        );
 
-            $this->accountService->incrementDecryptCounter($id);
+        $this->accountService->incrementDecryptCounter($id);
 
-            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
+        $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 
-            $this->eventDispatcher->notify(
-                'show.account.pass',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Password viewed'))
-                        ->addDetail(__u('Name'), $accountDetails->getName())
-                        ->addDetail(__u('Client'), $accountDetails->getClientName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'show.account.pass',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Password viewed'))
+                    ->addDetail(__u('Name'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    ->addDetail('ID', $id)
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess(["password" => $password], $id));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok('', ["password" => $password], $id);
     }
 }

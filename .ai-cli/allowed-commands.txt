@@ -50,6 +50,16 @@ git diff --stat
 /usr/bin/docker compose config
 /usr/bin/docker compose logs
 
+# --- php: always safe, always through the pinned Docker image ---
+# PHP MUST NOT run on the host. ./.ai-cli/bin/php is the $PHP_BIN wrapper:
+# an ephemeral `docker run --rm` of php-testing-composer:latest over the repo.
+./.ai-cli/bin/php -v
+./.ai-cli/bin/php -l <file>
+./.ai-cli/bin/php vendor/bin/phpunit
+./.ai-cli/bin/php vendor/bin/phpstan analyse
+./.ai-cli/bin/php vendor/bin/phpcs
+./.ai-cli/bin/php vendor/bin/phpunit --coverage-*
+
 # --- Mutations: allowed, logged via bin/ai-run ---
 /usr/bin/gh issue create
 /usr/bin/gh issue comment
@@ -71,6 +81,10 @@ git diff --stat
 # /usr/bin/docker system prune / builder prune / volume prune / network prune
 # /usr/bin/docker compose up / down / build / pull / rm / exec
 # /usr/bin/docker login / logout
+
+# PHP image build (network + docker build): ALWAYS ask the human first.
+# make -C .ai-cli/docker build
+# /usr/bin/docker build ... -f .ai-cli/docker/Dockerfile.composer
 
 # terraform / aws mutations & destructive: ALWAYS ask the human first.
 # No apply, no destroy, no -auto-approve, no state surgery, no resource writes.

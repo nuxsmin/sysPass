@@ -27,6 +27,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Simple;
@@ -35,7 +36,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Account\Repositories\AccountToFavorite;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -48,6 +49,7 @@ class AccountToFavoriteTest extends UnitaryTestCase
     private MockObject|DatabaseInterface $database;
     private AccountToFavorite $accountToFavorite;
 
+    #[Test]
     public function testGetForUserId()
     {
         $id = self::$faker->randomNumber();
@@ -70,6 +72,7 @@ class AccountToFavoriteTest extends UnitaryTestCase
         $this->accountToFavorite->getForUserId($id);
     }
 
+    #[Test]
     public function testDelete()
     {
         $accountId = self::$faker->randomNumber();
@@ -99,6 +102,7 @@ class AccountToFavoriteTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testAdd()
     {
         $accountId = self::$faker->randomNumber();
@@ -135,7 +139,7 @@ class AccountToFavoriteTest extends UnitaryTestCase
         $this->accountToFavorite = new AccountToFavorite(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

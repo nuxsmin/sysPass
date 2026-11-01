@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Plugin\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -35,8 +36,8 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Models\PluginData;
 use SP\Domain\Plugin\Ports\PluginDataService;
 use SP\Domain\Plugin\Services\PluginOperation;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\PluginDataGenerator;
 use SP\Tests\Stubs\PluginDataStub;
 use SP\Tests\UnitaryTestCase;
@@ -58,6 +59,7 @@ class PluginOperationTest extends UnitaryTestCase
      * @throws CryptoException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $pluginDataStorage = new PluginDataStub(100, 'test_data');
@@ -85,6 +87,7 @@ class PluginOperationTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $this->pluginDataService
@@ -102,6 +105,7 @@ class PluginOperationTest extends UnitaryTestCase
      * @throws CryptoException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $pluginDataStorage = new PluginDataStub(100, 'test_data');
@@ -131,6 +135,7 @@ class PluginOperationTest extends UnitaryTestCase
      * @throws CryptoException
      * @throws QueryException
      */
+    #[Test]
     public function testGet()
     {
         $pluginDataStorage = new PluginDataStub(100, 'test_data');
@@ -157,6 +162,7 @@ class PluginOperationTest extends UnitaryTestCase
      * @throws CryptoException
      * @throws QueryException
      */
+    #[Test]
     public function testGetWithNoItem()
     {
         $this->pluginDataService

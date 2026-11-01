@@ -25,8 +25,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Core\Events;
 
-use SP\Core\Events\Event;
-
 /**
  * Interface EventReceiver
  */

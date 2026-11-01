@@ -24,27 +24,26 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
 use SP\Core\Context\ContextBase;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * AccountControllerBase
  */
 abstract class AccountControllerBase extends ControllerBase
 {
-    private const LOGIN_NOT_REQUIRED = ['ViewLinkController'];
+    private const LOGIN_NOT_REQUIRED = [ViewLinkController::class];
 
     /**
      * @throws AuthException
      * @throws SessionTimeout
      */
-    public function __construct(Application $application, WebControllerHelper $webControllerHelper)
+    public function __construct(WebControllerHelper $webControllerHelper)
     {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->initialize();
     }
@@ -57,7 +56,7 @@ abstract class AccountControllerBase extends ControllerBase
      */
     private function initialize(): void
     {
-        if (in_array(static::class, self::LOGIN_NOT_REQUIRED)) {
+        if (!in_array(static::class, self::LOGIN_NOT_REQUIRED, true)) {
             $this->checkLoggedIn();
         }
 

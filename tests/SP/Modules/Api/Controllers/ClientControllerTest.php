@@ -30,6 +30,7 @@ use DI\NotFoundException;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
@@ -53,6 +54,7 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateAction(): void
     {
         $response = $this->createClient(self::PARAMS);
@@ -91,12 +93,13 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateActionDuplicated(): void
     {
         $response = $this->createClient(['name' => 'Google']);
 
         $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Duplicated clientService', $response->error->message);
+        $this->assertEquals('Duplicated client', $response->error->message);
     }
 
     /**
@@ -104,6 +107,7 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateActionRequiredParameters(): void
     {
         $params = self::PARAMS;
@@ -123,6 +127,7 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewAction(): void
     {
         $response = $this->createClient(self::PARAMS);
@@ -157,6 +162,7 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -175,6 +181,7 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditAction(): void
     {
         $response = $this->createClient(self::PARAMS);
@@ -225,6 +232,7 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditActionDuplicated(): void
     {
         $response = $this->createClient(self::PARAMS);
@@ -244,7 +252,7 @@ class ClientControllerTest extends ApiTestCase
         $response = self::processJsonResponse($api);
 
         $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Duplicated clientService', $response->error->message);
+        $this->assertEquals('Duplicated client', $response->error->message);
     }
 
     /**
@@ -252,6 +260,7 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditActionRequiredParameters(): void
     {
         $response = $this->createClient(self::PARAMS);
@@ -281,6 +290,7 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditActionNonExistant(): void
     {
         $params = [
@@ -307,6 +317,7 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      */
     #[DataProvider('searchProvider')]
+    #[Test]
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(
@@ -326,6 +337,7 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteAction(): void
     {
         $response = $this->createClient();
@@ -350,6 +362,7 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -368,6 +381,7 @@ class ClientControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteActionRequiredParameters(): void
     {
         $api = $this->callApi(

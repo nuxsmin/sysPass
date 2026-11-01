@@ -49,7 +49,7 @@ final class Http
                     'Location: %s%s%s',
                     $host,
                     $port,
-                    $_SERVER['REQUEST_URI']
+                    $request->getServer('REQUEST_URI')
                 )
             );
         }

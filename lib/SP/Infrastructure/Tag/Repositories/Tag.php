@@ -31,10 +31,10 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Tag\Models\Tag as TagModel;
 use SP\Domain\Tag\Ports\TagRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -120,14 +120,9 @@ final class Tag extends BaseRepository implements TagRepository
             ->newUpdate()
             ->table(TagModel::TABLE)
             ->cols($tag->toArray(null, ['id', 'hash']))
+            ->col('hash', $this->makeItemHash($tag->getName()))
             ->where('id = :id')
-            ->limit(1)
-            ->bindValues(
-                [
-                    'id' => $tag->getId(),
-                    'hash' => $this->makeItemHash($tag->getName())
-                ]
-            );
+            ->bindValues(['id' => $tag->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the tag'));
 
@@ -268,8 +263,7 @@ final class Tag extends BaseRepository implements TagRepository
             ->newDelete()
             ->from(TagModel::TABLE)
             ->where('id = :id')
-            ->bindValues(['id' => $id])
-            ->limit(1);
+            ->bindValues(['id' => $id]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the tag'));
 

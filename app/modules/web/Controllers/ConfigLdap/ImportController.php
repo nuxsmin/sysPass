@@ -24,11 +24,10 @@
 
 namespace SP\Modules\Web\Controllers\ConfigLdap;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Auth\Exceptions\LdapException;
+use SP\Domain\Auth\Dtos\LdapParams;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -40,7 +39,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Ports\LdapImportService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__;
 use function SP\__u;
@@ -51,11 +50,10 @@ use function SP\__u;
 final class ImportController extends SimpleControllerBase
 {
     public function __construct(
-        Application                        $application,
         SimpleControllerHelper             $simpleControllerHelper,
         private readonly LdapImportService $ldapImportService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**

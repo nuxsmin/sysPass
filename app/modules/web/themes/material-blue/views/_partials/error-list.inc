@@ -5,7 +5,7 @@
  */
 
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 ?>
 <?php if (count($_getvar('errors')) > 0): ?>

@@ -24,32 +24,24 @@
 
 namespace SP\Modules\Web\Controllers\Notification;
 
-
-use SP\Core\Application;
-use SP\Domain\Notification\Ports\NotificationService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\NotificationForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class NotificationSaveBase
  */
 abstract class NotificationSaveBase extends ControllerBase
 {
-    protected NotificationService $notificationService;
-    protected NotificationForm    $form;
+    protected NotificationForm $form;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        NotificationService $notificationService
+        WebControllerHelper $webControllerHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->notificationService = $notificationService;
-        $this->form = new NotificationForm($application, $this->request);
+        $this->form = new NotificationForm($this->config, $this->session, $this->request);
     }
-
 }

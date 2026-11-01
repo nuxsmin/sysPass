@@ -26,15 +26,17 @@ declare(strict_types=1);
 
 namespace SP\Domain\User\Services;
 
-use SP\Core\Application;
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserPassService;
 use SP\Domain\User\Ports\UserRepository;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__u;
 
@@ -44,10 +46,13 @@ use function SP\__u;
 final class UserPass extends Service implements UserPassService
 {
     public function __construct(
-        Application                     $application,
-        private readonly UserRepository $userRepository
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
+        private readonly UserRepository $userRepository,
+        private readonly HashService $hashService
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -60,7 +65,7 @@ final class UserPass extends Service implements UserPassService
         $user = new User(
             [
                 'id' => $id,
-                'pass' => Hash::hashKey($userPass),
+                'pass' => $this->hashService->hashKey($userPass),
                 'isChangePass' => false,
                 'isChangedPass' => true,
                 'isMigrate' => false

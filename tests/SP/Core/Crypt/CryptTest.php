@@ -26,7 +26,8 @@ declare(strict_types=1);
 namespace SP\Tests\Core\Crypt;
 
 use PHPUnit\Framework\Attributes\Group;
-use SP\Core\Crypt\Crypt;
+use PHPUnit\Framework\Attributes\Test;
+use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Tests\UnitaryTestCase;
 
@@ -41,6 +42,7 @@ class CryptTest extends UnitaryTestCase
      *
      * @throws CryptException
      */
+    #[Test]
     public function testMakeSecuredKey()
     {
         (new Crypt())->makeSecuredKey(self::$faker->password);
@@ -53,6 +55,7 @@ class CryptTest extends UnitaryTestCase
      *
      * @throws CryptException
      */
+    #[Test]
     public function testMakeSecuredKeyNoAscii()
     {
         (new Crypt())->makeSecuredKey(self::$faker->password, false);
@@ -65,6 +68,7 @@ class CryptTest extends UnitaryTestCase
      *
      * @throws CryptException
      */
+    #[Test]
     public function testEncryptAndDecrypt()
     {
         $crypt = new Crypt();
@@ -85,6 +89,7 @@ class CryptTest extends UnitaryTestCase
      *
      * @throws CryptException
      */
+    #[Test]
     public function testEncryptAndDecryptWithDifferentPassword()
     {
         $crypt = new Crypt();

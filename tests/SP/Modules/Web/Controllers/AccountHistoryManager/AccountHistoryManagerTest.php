@@ -36,7 +36,7 @@ use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Config\Models\Config;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\IntegrationTestCase;
@@ -48,6 +48,20 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class AccountHistoryManagerTest extends IntegrationTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_contains($statement, "SELECT\n    `Account`.`id`\nFROM\n    `Account`")) {
+                return new QueryResult([new Simple(['id' => 1])]);
+            }
+
+            return $this->resolveDatabaseQuery($queryData);
+        };
+    }
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -106,6 +120,10 @@ class AccountHistoryManagerTest extends IntegrationTestCase
     public function restoreModified()
     {
         $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            if (str_contains($queryData->getQuery()->getStatement(), "SELECT\n    `Account`.`id`\nFROM\n    `Account`")) {
+                return new QueryResult([new Simple(['id' => 1])]);
+            }
+
             /** @noinspection SqlWithoutWhere */
             if (str_starts_with($queryData->getQuery()->getStatement(), 'UPDATE `Account`')) {
                 return new QueryResult([], 1);

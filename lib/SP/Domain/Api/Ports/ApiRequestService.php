@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Api\Ports;
 
-use SP\Domain\Api\Services\ApiRequestException;
+use SP\Domain\Api\Exceptions\ApiRequestException;
 
 /**
  * Class ApiRequest

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,15 +24,20 @@
 
 namespace SP\Modules\Web\Controllers\Error;
 
-
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
 
+use function SP\__;
+
+/**
+ * Class MaintenanceErrorController
+ */
 final class MaintenanceErrorController extends ErrorBase
 {
-    /**
-     * maintenanceErrorAction
-     */
-    public function maintenanceErrorAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function maintenanceErrorAction(): ActionResponse
     {
         $this->layoutHelper->getPublicLayout('error-maintenance');
 
@@ -45,6 +50,6 @@ final class MaintenanceErrorController extends ErrorBase
             ]
         );
 
-        $this->view();
+        return ActionResponse::ok($this->render());
     }
 }

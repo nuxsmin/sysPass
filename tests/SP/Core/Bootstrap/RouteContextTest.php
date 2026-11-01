@@ -28,6 +28,7 @@ namespace SP\Tests\Core\Bootstrap;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use SP\Core\Bootstrap\RouteContext;
@@ -46,6 +47,7 @@ class RouteContextTest extends TestCase
         ];
     }
 
+    #[Test]
     public function testGetRouteContextData()
     {
         $route = 'testController/testAction/param1/param2';
@@ -59,6 +61,7 @@ class RouteContextTest extends TestCase
         $this->assertEquals('param2', $out->methodParams[1]);
     }
 
+    #[Test]
     public function testGetRouteContextDataWithNoaction()
     {
         $route = 'testController';
@@ -71,6 +74,7 @@ class RouteContextTest extends TestCase
         $this->assertCount(0, $out->methodParams);
     }
 
+    #[Test]
     public function testGetRouteContextDataWithActionAndNoParam()
     {
         $route = 'testController/testAction';
@@ -84,6 +88,7 @@ class RouteContextTest extends TestCase
     }
 
     #[DataProvider('wrongRouteProvider')]
+    #[Test]
     public function testGetRouteContextDataWithException(string $route)
     {
         $this->expectException(RuntimeException::class);

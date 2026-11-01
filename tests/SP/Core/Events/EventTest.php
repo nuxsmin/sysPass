@@ -28,9 +28,10 @@ namespace SP\Tests\Core\Events;
 
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use stdClass;
 
@@ -44,6 +45,7 @@ class EventTest extends TestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testGetSource()
     {
         $object = (object)[1];
@@ -57,6 +59,7 @@ class EventTest extends TestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testGetSourceWithException()
     {
         $object = (object)[1];
@@ -68,6 +71,7 @@ class EventTest extends TestCase
         $event->getSource(Exception::class);
     }
 
+    #[Test]
     public function testGetEventMessage()
     {
         $eventMessage = EventMessage::build()->addDescription('test');

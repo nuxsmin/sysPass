@@ -35,6 +35,7 @@ use SP\Domain\Export\Services\XmlClientExport;
 use SP\Tests\Generators\ClientGenerator;
 use SP\Tests\UnitaryTestCase;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class XmlClientExportTest
@@ -52,6 +53,7 @@ class XmlClientExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testExport()
     {
         $client = ClientGenerator::factory()->buildClient();
@@ -82,6 +84,7 @@ class XmlClientExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testExportWithoutCategories()
     {
         $document = new DOMDocument();
@@ -101,6 +104,7 @@ class XmlClientExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testExportWithException()
     {
         $document = new DOMDocument();
@@ -122,7 +126,9 @@ class XmlClientExportTest extends UnitaryTestCase
         $this->clientService = $this->createMock(ClientService::class);
 
         $this->xmlClientExport = new XmlClientExport(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->clientService
         );
     }

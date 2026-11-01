@@ -29,18 +29,15 @@ namespace SP\Domain\Http\Services;
 use Exception;
 use Klein\DataCollection\DataCollection;
 use Klein\DataCollection\HeaderDataCollection;
-use SP\Core\Crypt\Hash;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Http\Header;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Infrastructure\File\FileSystem;
-use SP\Util\Util;
-
-use function SP\logger;
-use function SP\processException;
 
 /**
  * Class Request
@@ -60,8 +57,12 @@ class Request implements RequestService
     /**
      * Request constructor.
      */
-    public function __construct(private readonly \Klein\Request $request, private readonly CryptPKIHandler $cryptPKI)
-    {
+    public function __construct(
+        private readonly \Klein\Request $request,
+        private readonly CryptPKIHandler $cryptPKI,
+        private readonly HashService $hashService,
+        private readonly LoggerInterface $logger = new NullLogger()
+    ) {
         $this->headers = $this->request->headers();
         $this->method = Method::from($this->request->method());
         $this->params = $this->getParamsForMethod();
@@ -83,7 +84,7 @@ class Request implements RequestService
     {
         $server = $this->request->server();
 
-        $this->https = Util::boolval($server->get('HTTPS', 'off'))
+        $this->https = Filter::getBool($server->get('HTTPS', 'off'))
                        || $server->get('SERVER_PORT', 0) === 443;
     }
 
@@ -106,13 +107,18 @@ class Request implements RequestService
             return '';
         }
 
-        $realPath = realpath(FileSystem::buildPath($base, $path));
+        $realPath = realpath(implode(DIRECTORY_SEPARATOR, [$base, $path]));
 
         if ($realPath === false || !str_starts_with($realPath, $base)) {
             return '';
         }
 
         return $realPath;
+    }
+
+    public function resolveSecureAppPath(string $path, ?string $base = null): string
+    {
+        return self::getSecureAppPath($path, $base);
     }
 
     public function getClientAddress(bool $fullForwarded = false): string
@@ -201,14 +207,14 @@ class Request implements RequestService
             $clearData = $this->cryptPKI->decryptRSA(base64_decode($encryptedData));
 
             if ($clearData === null) {
-                logger('No RSA encrypted data from request');
+                $this->logger->debug('No RSA encrypted data from request');
 
                 return $encryptedData;
             }
 
             return $clearData;
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
 
             return $encryptedData;
         }
@@ -294,7 +300,7 @@ class Request implements RequestService
             return (bool)$default;
         }
 
-        return Util::boolval($this->params->get($param));
+        return Filter::getBool($this->params->get($param));
     }
 
     /**
@@ -317,7 +323,7 @@ class Request implements RequestService
                 $uri = $this->params->get($param, '');
             }
 
-            $result = Hash::checkMessage($uri, $key, $hash);
+            $result = $this->hashService->checkMessage($uri, $key, $hash);
         }
 
         if ($result === false) {

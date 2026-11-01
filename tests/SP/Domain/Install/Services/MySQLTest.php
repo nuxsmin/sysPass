@@ -29,17 +29,19 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Database\Dtos\DatabaseTables;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Services\MysqlSetup;
-use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 
 use function SP\__;
@@ -58,11 +60,12 @@ class MySQLTest extends UnitaryTestCase
     private InstallData                      $installData;
     private ConfigDataInterface              $configData;
     private DatabaseFileInterface|MockObject $databaseFile;
-    private DatabaseUtil|MockObject          $databaseUtil;
+    private DatabaseUtilInterface|MockObject $databaseUtil;
 
     /**
      * @throws SPException
      */
+    #[Test]
     public function testConnectDatabaseIsSuccessful(): void
     {
         $this->dbStorage->expects(self::once())->method('getConnectionSimple');
@@ -73,6 +76,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testConnectDatabaseIsNotSuccessful(): void
     {
         $this->dbStorage->expects(self::once())
@@ -90,6 +94,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testSetupUserIsSuccessful(): void
     {
         $query = 'SELECT COUNT(*) FROM mysql.user WHERE `user` = ? AND (`host` = ? OR `host` = ?)';
@@ -114,6 +119,7 @@ class MySQLTest extends UnitaryTestCase
         $this->assertEquals(16, strlen($pass));
     }
 
+    #[Test]
     public function testSetupUserIsNotSuccessful(): void
     {
         $this->dbStorage->expects(self::once())
@@ -126,6 +132,7 @@ class MySQLTest extends UnitaryTestCase
         $this->mysqlService->setupDbUser();
     }
 
+    #[Test]
     public function testCheckDatabaseDoesNotExist(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
@@ -143,6 +150,7 @@ class MySQLTest extends UnitaryTestCase
         $this->assertFalse($this->mysqlService->checkDatabaseExists());
     }
 
+    #[Test]
     public function testCheckDatabaseExists(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
@@ -164,6 +172,7 @@ class MySQLTest extends UnitaryTestCase
      * @throws SPException
      * @throws Exception
      */
+    #[Test]
     public function testCreateDatabaseIsSuccessful(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
@@ -216,6 +225,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateDatabaseIsSuccessfulInHostingMode(): void
     {
         $this->installData->setHostingMode(true);
@@ -235,6 +245,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateDatabaseIsNotSuccessfulWithDuplicateDatabase(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
@@ -259,6 +270,7 @@ class MySQLTest extends UnitaryTestCase
      * @throws SPException
      * @throws Exception
      */
+    #[Test]
     public function testCreateDatabaseIsSuccessfulWithDns(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
@@ -322,6 +334,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateDatabaseIsNotSuccessfulWithCreateError(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
@@ -356,6 +369,7 @@ class MySQLTest extends UnitaryTestCase
      * @throws SPException
      * @throws Exception
      */
+    #[Test]
     public function testCreateDatabaseIsNotSuccessfulWithPermissionError(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
@@ -428,6 +442,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateDatabaseIsNotSuccessfulInHostingMode(): void
     {
         $this->installData->setHostingMode(true);
@@ -455,6 +470,7 @@ class MySQLTest extends UnitaryTestCase
         $this->mysqlService->createDatabase();
     }
 
+    #[Test]
     public function testRollbackIsSuccessful(): void
     {
         $this->configData->setDbUser(self::$faker->userName);
@@ -492,6 +508,7 @@ class MySQLTest extends UnitaryTestCase
         $this->mysqlService->rollback($this->configData->getDbUser());
     }
 
+    #[Test]
     public function testRollbackIsSuccessfulWithSameDnsHost(): void
     {
         $this->configData->setDbUser(self::$faker->userName);
@@ -523,12 +540,13 @@ class MySQLTest extends UnitaryTestCase
         $this->mysqlService->rollback($this->configData->getDbUser());
     }
 
+    #[Test]
     public function testRollbackIsSuccessfulWithHostingMode(): void
     {
         $this->installData->setHostingMode(true);
 
         $dropRegex = '/DROP TABLE IF EXISTS `'.$this->installData->getDbName().'`\.`\w+`/';
-        $this->pdo->expects(self::exactly(count(DatabaseUtil::TABLES)))
+        $this->pdo->expects(self::exactly(count(DatabaseTables::TABLES)))
                   ->method('exec')
                   ->with($this->callback(fn($arg) => preg_match($dropRegex, $arg) > 0));
 
@@ -538,6 +556,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateDBStructureIsSuccessful(): void
     {
         $execArguments = [
@@ -563,6 +582,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateDBStructureIsNotSuccessfulWithUseDatabaseError(): void
     {
         $pdoException = new PDOException("test");
@@ -587,6 +607,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateDBStructureIsNotSuccessfulWithCreateSchemaError(): void
     {
         $execArguments = [
@@ -631,6 +652,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateDBStructureIsNotSuccessfulWithParseSchemaError(): void
     {
         $fileException = new FileException("test");
@@ -666,6 +688,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCheckConnectionIsSuccessful(): void
     {
         $this->databaseUtil->expects(self::once())
@@ -679,6 +702,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCheckConnectionIsNotSuccessful(): void
     {
         $this->databaseUtil->expects(self::once())
@@ -708,6 +732,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateDBUserIsSuccessful(): void
     {
         $user = self::$faker->userName;
@@ -739,6 +764,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateDBUserIsSuccessfulWithDns(): void
     {
         $this->installData->setDbAuthHostDns(self::$faker->domainName);
@@ -780,6 +806,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateDBUserIsSuccessfulWithHostingMode(): void
     {
         $this->installData->setHostingMode(true);
@@ -795,6 +822,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCreateDBUserIsNotSuccessful(): void
     {
         $user = self::$faker->userName;
@@ -827,7 +855,7 @@ class MySQLTest extends UnitaryTestCase
 
         $this->installData = $this->getInstallData();
         $this->configData = $this->config->getConfigData();
-        $this->databaseUtil = $this->createMock(DatabaseUtil::class);
+        $this->databaseUtil = $this->createMock(DatabaseUtilInterface::class);
         $this->mysqlService = new MysqlSetup(
             $this->dbStorage,
             $this->installData,

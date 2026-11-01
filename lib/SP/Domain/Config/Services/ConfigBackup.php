@@ -28,18 +28,23 @@ namespace SP\Domain\Config\Services;
 
 use Exception;
 use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Common\Adapters\SerializedPayloadReader;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Adapters\ConfigData;
+use SP\Domain\Config\Legacy\LegacyConfigData;
+use SP\Domain\Config\Legacy\LegacyConfigDataMapper;
 use SP\Domain\Config\Ports\ConfigBackupService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class ConfigBackup
@@ -47,16 +52,22 @@ use function SP\processException;
 readonly class ConfigBackup implements ConfigBackupService
 {
 
-    public function __construct(private ConfigService $configService)
-    {
+    public function __construct(
+        private ConfigService $configService,
+        private LoggerInterface $logger = new NullLogger()
+    ) {
     }
 
     /**
+     * @throws InvalidClassException
      * @throws SPException
      */
-    public static function configToJson(string $configData): string
+    public function configToJson(string $configData): string
     {
-        return Serde::serializeJson(Serde::deserialize($configData), JSON_PRETTY_PRINT);
+        return Serde::serializeJson(
+            $this->decode($configData),
+            JSON_PRETTY_PRINT
+        );
     }
 
     /**
@@ -68,7 +79,7 @@ readonly class ConfigBackup implements ConfigBackupService
             $this->configService->save('config_backup', $this->packConfigData($configData));
             $this->configService->save('config_backup_date', (string)time());
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
     }
 
@@ -79,12 +90,51 @@ readonly class ConfigBackup implements ConfigBackupService
 
     /**
      * @throws FileException
+     * @throws InvalidClassException
      * @throws ServiceException
      * @throws SPException
      */
     public function restore(ConfigFileService $configFile): ConfigDataInterface
     {
-        return $configFile->save(Serde::deserialize($this->getBackup(), ConfigData::class))->getConfigData();
+        return $configFile->save($this->decode($this->getBackup()))->getConfigData();
+    }
+
+    /**
+     * @throws InvalidClassException
+     */
+    private function decode(string $payload): ConfigData
+    {
+        try {
+            return SerializedPayloadReader::read($payload, ConfigData::class);
+        } catch (InvalidClassException) {
+            try {
+                $legacy = SerializedPayloadReader::read($payload, LegacyConfigData::class);
+            } catch (InvalidClassException $exception) {
+                throw InvalidClassException::error(
+                    __u('Couldn\'t read the configuration backup'),
+                    null,
+                    $exception->getCode(),
+                    $exception
+                );
+            }
+        }
+
+        $config = new ConfigData();
+        $result = LegacyConfigDataMapper::map($legacy, $config);
+
+        if ($result['dropped'] !== []) {
+            $this->logger->warning(
+                sprintf(__u('Dropped legacy configuration fields: %s'), implode(', ', $result['dropped']))
+            );
+        }
+
+        if ($result['unknown'] !== []) {
+            $this->logger->warning(
+                sprintf(__u('Unknown legacy configuration fields: %s'), implode(', ', $result['unknown']))
+            );
+        }
+
+        return $config;
     }
 
     /**
@@ -101,8 +151,6 @@ readonly class ConfigBackup implements ConfigBackupService
 
             return $config;
         } catch (NoSuchItemException $e) {
-            processException($e);
-
             throw new ServiceException(__u('Unable to retrieve the configuration'));
         }
     }

@@ -25,8 +25,6 @@
 namespace SP\Modules\Web\Controllers\ItemPreset;
 
 
-use SP\Core\Acl\Acl;
-use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
@@ -34,31 +32,31 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
-use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\ItemPreset\UseCases\Dtos\GetItemPresetCommand;
+use SP\Domain\ItemPreset\UseCases\GetItemPresetUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\ItemPresetHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Presenters\Helpers\ItemPresetHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class ItemPresetViewBase
  */
 abstract class ItemPresetViewBase extends ControllerBase
 {
-    private ItemPresetService $itemPresetService;
-    private ItemPresetHelper  $itemPresetHelper;
+    private GetItemPresetUseCase $getItemPresetUseCase;
+    private ItemPresetHelper $itemPresetHelper;
 
     public function __construct(
-        Application       $application,
         WebControllerHelper $webControllerHelper,
-        ItemPresetService $itemPresetService,
-        ItemPresetHelper  $itemPresetHelper
+        GetItemPresetUseCase $getItemPresetUseCase,
+        ItemPresetHelper $itemPresetHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->itemPresetService = $itemPresetService;
+        $this->getItemPresetUseCase = $getItemPresetUseCase;
         $this->itemPresetHelper = $itemPresetHelper;
     }
 
@@ -79,13 +77,13 @@ abstract class ItemPresetViewBase extends ControllerBase
         $this->view->addTemplate('item_preset', 'itemshow');
 
         $itemPresetData = $id
-            ? $this->itemPresetService->getById($id)
+            ? $this->getItemPresetUseCase->execute(new GetItemPresetCommand($id))->model
             : new ItemPreset();
 
         $this->itemPresetHelper->setCommon($itemPresetData);
 
         if ($itemPresetData->getType() === null) {
-            $itemPresetData->setType($type);
+            $itemPresetData = $itemPresetData->mutate(['type' => $type]);
         }
 
         switch ($itemPresetData->getType()) {
@@ -104,7 +102,7 @@ abstract class ItemPresetViewBase extends ControllerBase
         }
 
         $this->view->assign('preset', $itemPresetData);
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE));
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');

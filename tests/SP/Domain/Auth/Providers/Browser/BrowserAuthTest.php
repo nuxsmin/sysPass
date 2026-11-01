@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Auth\Providers\Browser;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Providers\Browser\BrowserAuth;
@@ -46,6 +47,7 @@ class BrowserAuthTest extends UnitaryTestCase
     private BrowserAuth               $browserAuth;
     private ConfigDataInterface|MockObject $configData;
 
+    #[Test]
     public function testGetServerAuthUser()
     {
         $this->request
@@ -57,6 +59,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertNull($this->browserAuth->getServerAuthUser());
     }
 
+    #[Test]
     public function testGetServerAuthUserWithAuthUser()
     {
         $this->request
@@ -68,6 +71,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertEquals('test', $this->browserAuth->getServerAuthUser());
     }
 
+    #[Test]
     public function testGetServerAuthUserWithRemoteUser()
     {
         $this->request
@@ -79,6 +83,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertEquals('test', $this->browserAuth->getServerAuthUser());
     }
 
+    #[Test]
     public function testAuthenticate()
     {
         $user = self::$faker->userName;
@@ -110,6 +115,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertTrue($out->isOk());
     }
 
+    #[Test]
     public function testAuthenticateWithAuthBasic()
     {
         $user = self::$faker->userName;
@@ -132,6 +138,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertTrue($out->isOk());
     }
 
+    #[Test]
     public function testAuthenticateWithAuthBasicNoUser()
     {
         $pass = self::$faker->password;
@@ -153,6 +160,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertFalse($out->isOk());
     }
 
+    #[Test]
     public function testAuthenticateWithAuthBasicNoPassword()
     {
         $user = self::$faker->userName;
@@ -174,6 +182,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertFalse($out->isOk());
     }
 
+    #[Test]
     public function testAuthenticateWithServerAuth()
     {
         $user = self::$faker->userName;
@@ -198,6 +207,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertTrue($out->isOk());
     }
 
+    #[Test]
     public function testAuthenticateWithServerAuthFail()
     {
         $user = self::$faker->userName;
@@ -222,6 +232,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertFalse($out->isOk());
     }
 
+    #[Test]
     public function testIsAuthGrantedTrue()
     {
         $this->configData
@@ -232,6 +243,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertTrue($this->browserAuth->isAuthGranted());
     }
 
+    #[Test]
     public function testIsAuthGrantedFalse()
     {
         $this->configData
@@ -242,6 +254,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertFalse($this->browserAuth->isAuthGranted());
     }
 
+    #[Test]
     public function testCheckServerAuthUserWithoutServerAuth()
     {
         $user = self::$faker->userName;
@@ -260,6 +273,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertNull($this->browserAuth->checkServerAuthUser($user));
     }
 
+    #[Test]
     public function testCheckServerAuthUserWithDomain()
     {
         $user = self::$faker->userName;
@@ -278,6 +292,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertTrue($this->browserAuth->checkServerAuthUser($user));
     }
 
+    #[Test]
     public function testCheckServerAuthUserWithDomainAndNoUserDomain()
     {
         $user = self::$faker->userName;
@@ -296,6 +311,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertTrue($this->browserAuth->checkServerAuthUser($user));
     }
 
+    #[Test]
     public function testCheckServerAuthUserWithoutDomain()
     {
         $user = self::$faker->userName;
@@ -313,6 +329,7 @@ class BrowserAuthTest extends UnitaryTestCase
         self::assertTrue($this->browserAuth->checkServerAuthUser($user));
     }
 
+    #[Test]
     public function testCheckServerAuthUserMismatchDomain()
     {
         $user = self::$faker->userName;

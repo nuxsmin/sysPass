@@ -27,7 +27,6 @@ declare(strict_types=1);
 namespace SP\Domain\Account\Services;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Account\Ports\AccountSearchConstants;
@@ -36,11 +35,14 @@ use SP\Domain\Account\Ports\AccountSearchService;
 use SP\Domain\Account\Services\Builders\AccountSearchTokenizer;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Database\QueryResult;
-
-use function SP\processException;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class AccountSearch
@@ -48,12 +50,15 @@ use function SP\processException;
 final class AccountSearch extends Service implements AccountSearchService
 {
     public function __construct(
-        Application                              $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly UserService             $userService,
         private readonly UserGroupService        $userGroupService,
-        private readonly AccountSearchRepository $accountSearchRepository
+        private readonly AccountSearchRepository $accountSearchRepository,
+        private readonly LoggerInterface         $logger = new NullLogger()
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -89,8 +94,8 @@ final class AccountSearch extends Service implements AccountSearchService
                         $userData = $this->userService->getByLogin(Filter::safeSearchString($text));
 
                         $this->accountSearchRepository->withFilterForUser(
-                            $userData->getId(),
-                            $userData->getUserGroupId()
+                            $userData->id,
+                            $userData->userGroupId
                         );
                         break;
                     case AccountSearchConstants::FILTER_OWNER:
@@ -121,7 +126,7 @@ final class AccountSearch extends Service implements AccountSearchService
                         break;
                 }
             } catch (Exception $e) {
-                processException($e);
+                $this->logger->error($e->getMessage());
             }
         }
     }

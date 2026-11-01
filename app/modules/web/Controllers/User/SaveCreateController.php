@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,66 +26,73 @@ namespace SP\Modules\Web\Controllers\User;
 
 
 use Exception;
-use JsonException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\Notification\Ports\MailService;
+use SP\Domain\User\Ports\UserPassRecoverService;
+use SP\Domain\User\UseCases\CreateUserUseCase;
+use SP\Domain\User\UseCases\Dtos\CreateUserCommand;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class SaveCreateController
  */
 final class SaveCreateController extends UserSaveBase
 {
-    use ItemTrait;
-    use JsonTrait;
+    public function __construct(
+        WebControllerHelper    $webControllerHelper,
+        private readonly CreateUserUseCase $createUserUseCase,
+        CustomFieldDataService $customFieldService,
+        MailService            $mailService,
+        UserPassRecoverService $userPassRecoverService
+    ) {
+        parent::__construct(
+            $webControllerHelper,
+            $customFieldService,
+            $mailService,
+            $userPassRecoverService
+        );
+    }
 
-    /**
-     * @return bool
-     * @throws JsonException
-     */
-    public function saveCreateAction()
+    #[Action(ResponseType::JSON)]
+    public function saveCreateAction(): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::USER_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
+        if (!$this->acl->checkUserAccess(AclActionsInterface::USER_CREATE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
 
+        try {
             $this->form->validateFor(AclActionsInterface::USER_CREATE);
 
-            $itemData = $this->form->getItemData();
-
-            $id = $this->userService->create($itemData);
-
-            $this->eventDispatcher->notify(
-                'create.user',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('User added'))
-                        ->addDetail(__u('User'), $itemData->getName())
-                )
+            $result = $this->createUserUseCase->execute(
+                new CreateUserCommand($this->form->getItemData())
             );
 
-            $this->addCustomFieldsForItem(AclActionsInterface::USER, $id, $this->request, $this->customFieldService);
+            $this->addCustomFieldsForItem(
+                AclActionsInterface::USER,
+                $result->id,
+                $this->request,
+                $this->customFieldService
+            );
 
-            $this->checkChangeUserPass($id, $itemData);
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('User added'));
-        } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
+            $this->checkChangeUserPass($result->id, $this->form->getItemData());
+        } catch (SPException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
+
+        return ActionResponse::ok(__u('User added'));
     }
 }

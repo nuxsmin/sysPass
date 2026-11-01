@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Client\Adapters;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Client\Adapters\Client;
@@ -52,6 +53,7 @@ class ClientTest extends UnitaryTestCase
     /**
      * @throws ActionNotFoundException
      */
+    #[Test]
     public function testAdapt(): void
     {
         $client = ClientGenerator::factory()->buildClient();
@@ -78,6 +80,7 @@ class ClientTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testIncludeCustomFields(): void
     {
         $client = ClientGenerator::factory()->buildClient();

@@ -24,20 +24,18 @@
 
 namespace SP\Modules\Web\Controllers\Notification;
 
-
-use JsonException;
-use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Notification\Ports\NotificationService;
-use SP\Html\DataGrid\DataGridInterface;
+use SP\Domain\Notification\UseCases\Dtos\SearchNotificationsCommand;
+use SP\Domain\Notification\UseCases\SearchNotificationsUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Grid\NotificationGrid;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Presenters\Helpers\Grid\NotificationGrid;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class SearchController
@@ -45,62 +43,43 @@ use SP\Mvc\Controller\WebControllerHelper;
 final class SearchController extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
-
-    private NotificationService $notificationService;
-    private NotificationGrid    $notificationGrid;
 
     public function __construct(
-        Application         $application,
         WebControllerHelper $webControllerHelper,
-        NotificationService $notificationService,
-        NotificationGrid    $notificationGrid
+        private readonly SearchNotificationsUseCase $searchNotificationsUseCase,
+        private readonly NotificationGrid $notificationGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->notificationService = $notificationService;
-        $this->notificationGrid = $notificationGrid;
     }
 
-    /**
-     * @return bool
-     * @throws JsonException
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function searchAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function searchAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_SEARCH)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
-            );
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('data', $this->getSearchGrid());
 
-        return $this->returnJsonResponseData(['html' => $this->render()]);
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 
-    /**
-     * getSearchGrid
-     *
-     * @return DataGridInterface
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    protected function getSearchGrid(): DataGridInterface
+    private function getSearchGrid(): \SP\Modules\Web\Html\DataGrid\DataGridInterface
     {
         $itemSearchData = $this->getSearchData(
             $this->configData->getAccountCount(),
             $this->request
         );
 
+        $result = $this->searchNotificationsUseCase->execute(new SearchNotificationsCommand($itemSearchData));
+
         return $this->notificationGrid->updatePager(
-            $this->notificationGrid->getGrid($this->notificationService->search($itemSearchData)),
+            $this->notificationGrid->getGrid(
+                \SP\Domain\Database\Dtos\QueryResult::withTotalNumRows($result->notifications, $result->total)
+            ),
             $itemSearchData
         );
     }

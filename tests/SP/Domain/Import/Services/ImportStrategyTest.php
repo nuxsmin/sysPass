@@ -25,9 +25,11 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Import\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Crypt\CryptInterface;
@@ -41,7 +43,7 @@ use SP\Domain\Import\Services\ImportStrategy;
 use SP\Domain\Import\Services\KeepassImport;
 use SP\Domain\Import\Services\SyspassImport;
 use SP\Domain\Import\Services\XmlFormat;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -77,6 +79,7 @@ class ImportStrategyTest extends UnitaryTestCase
      * @throws FileException
      */
     #[DataProvider('csvImportProvider')]
+    #[Test]
     public function testBuildImportWithCsv(string $fileType)
     {
         $fileHandler = $this->createMock(FileHandlerInterface::class);
@@ -102,6 +105,7 @@ class ImportStrategyTest extends UnitaryTestCase
      * @throws FileException
      */
     #[DataProvider('xmlImportProvider')]
+    #[Test]
     public function testBuildImportWithSyspassXml(string $fileType)
     {
         $fileHandler = $this->createMock(FileHandlerInterface::class);
@@ -142,6 +146,7 @@ class ImportStrategyTest extends UnitaryTestCase
      * @throws FileException
      */
     #[DataProvider('xmlImportProvider')]
+    #[Test]
     public function testBuildImportWithKeepassXml(string $fileType)
     {
         $fileHandler = $this->createMock(FileHandlerInterface::class);
@@ -181,6 +186,7 @@ class ImportStrategyTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      */
+    #[Test]
     public function testBuildImportWithFileException()
     {
         $fileHandler = $this->createMock(FileHandlerInterface::class);
@@ -204,6 +210,7 @@ class ImportStrategyTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      */
+    #[Test]
     public function testBuildImportWithMimeTypeException()
     {
         $fileHandler = $this->createMock(FileHandlerInterface::class);
@@ -231,10 +238,13 @@ class ImportStrategyTest extends UnitaryTestCase
         $this->xmlFileService = $this->createMock(XmlFileService::class);
 
         $this->importStrategy = new ImportStrategy(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->createStub(ImportHelperInterface::class),
             $this->createStub(CryptInterface::class),
-            $this->xmlFileService
+            $this->xmlFileService,
+            new HashServiceAdapter()
         );
     }
 }

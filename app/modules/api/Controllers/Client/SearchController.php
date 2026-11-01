@@ -24,10 +24,10 @@
 
 namespace SP\Modules\Api\Controllers\Client;
 
-
-use Exception;
-use SP\Core\Events\Event;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -40,25 +40,19 @@ final class SearchController extends ClientBase
     /**
      * searchAction
      */
-    public function searchAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function searchAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CLIENT_SEARCH);
+        $this->setupApi(AclActionsInterface::CLIENT_SEARCH);
 
-            $itemSearchData = $this->buildSearchData();
+        $itemSearchData = $this->buildSearchData();
 
-            $this->eventDispatcher->notify('search.client', new Event($this));
+        $this->eventDispatcher->notify('search.client', new Event($this));
 
-            $this->returnResponse(
-                ApiResponse::makeSuccess(
-                    $this->clientService->search($itemSearchData)->getDataAsArray()
-                )
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(
+            '',
+            $this->clientService->search($itemSearchData)->getDataAsArray()
+        );
     }
 
     /**
@@ -67,12 +61,10 @@ final class SearchController extends ClientBase
      */
     private function buildSearchData(): ItemSearchDto
     {
-        $itemSearchData = new ItemSearchDto();
-        $itemSearchData->setSeachString($this->apiService->getParamString('text'));
-        $itemSearchData->setLimitCount(
+        return new ItemSearchDto(
+            $this->apiService->getParamString('text'),
+            0,
             $this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS)
         );
-
-        return $itemSearchData;
     }
 }

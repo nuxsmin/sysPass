@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Core\Context;
 
-use SP\Core\DataCollection;
+use SP\Domain\Common\Models\DataCollection;
 
 /**
  * Class ContextCollection

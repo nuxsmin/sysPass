@@ -24,22 +24,20 @@
 
 namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Services\ConfigUtil;
+use SP\Domain\Config\Dtos\ConfigInput;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Core\Ports\AppLockHandler;
-use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\ConfigTrait;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Controllers\ConfigSaveControllerBase;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__u;
 
@@ -48,16 +46,13 @@ use function SP\__u;
  *
  * @package SP\Modules\Web\Controllers
  */
-final class SaveController extends SimpleControllerBase
+final class SaveController extends ConfigSaveControllerBase
 {
-    use ConfigTrait;
-
     public function __construct(
-        Application            $application,
         SimpleControllerHelper $simpleControllerHelper,
         private readonly AppLockHandler $appLock
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
 
@@ -131,7 +126,7 @@ final class SaveController extends SimpleControllerBase
         $configData->setLogEvents(
             $this->request->analyzeArray(
                 'log_events',
-                fn($items) => ConfigUtil::eventsAdapter($items),
+                fn($items) => ConfigInput::events($items),
                 []
             )
         );

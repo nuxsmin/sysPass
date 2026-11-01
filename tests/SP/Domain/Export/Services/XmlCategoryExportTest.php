@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Export\Services;
 
 use DOMDocument;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -53,6 +54,7 @@ class XmlCategoryExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testExport()
     {
         $category = CategoryGenerator::factory()->buildCategory();
@@ -81,6 +83,7 @@ class XmlCategoryExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testExportWithoutCategories()
     {
         $document = new DOMDocument();
@@ -100,6 +103,7 @@ class XmlCategoryExportTest extends UnitaryTestCase
      * @throws Exception
      * @throws ServiceException
      */
+    #[Test]
     public function testExportWithException()
     {
         $document = new DOMDocument();
@@ -121,7 +125,9 @@ class XmlCategoryExportTest extends UnitaryTestCase
         $this->categoryService = $this->createMock(CategoryService::class);
 
         $this->xmlCategoryExport = new XmlCategoryExport(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->categoryService
         );
     }

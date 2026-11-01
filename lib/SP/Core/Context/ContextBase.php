@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Core\Context;
 
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\ContextException;
 
 use function SP\__u;
 

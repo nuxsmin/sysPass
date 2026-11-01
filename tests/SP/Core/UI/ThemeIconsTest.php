@@ -27,14 +27,16 @@ declare(strict_types=1);
 namespace SP\Tests\Core\UI;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
-use SP\Core\UI\ThemeIcons;
+use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
+use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Html\Assets\FontIcon;
-use SP\Infrastructure\File\FileException;
+use SP\Modules\Web\Html\Assets\FontIcon;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -44,6 +46,7 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class ThemeIconsTest extends UnitaryTestCase
 {
+    #[Test]
     public function testGetIconByNameWithUnknownIcon()
     {
         $themeIcons = new ThemeIcons();
@@ -54,6 +57,7 @@ class ThemeIconsTest extends UnitaryTestCase
         $this->assertEquals('mdl-color-text--indigo-A200', $out->getClass());
     }
 
+    #[Test]
     public function testGetIconByName()
     {
         $themeIcons = new ThemeIcons();
@@ -67,6 +71,7 @@ class ThemeIconsTest extends UnitaryTestCase
         $this->assertEquals('testTitle', $out->getTitle());
     }
 
+    #[Test]
     public function testAddIcon()
     {
         $themeIcons = new ThemeIcons();
@@ -85,10 +90,12 @@ class ThemeIconsTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      */
+    #[Test]
     public function testLoadIconsWithCache()
     {
         $context = $this->createMock(Context::class);
         $fileCache = $this->createMock(FileCacheService::class);
+        $fileLoader = $this->createMock(PhpFileLoaderInterface::class);
         $themeContext = $this->createMock(ThemeContextInterface::class);
         $themeContext->expects($this->never())
                      ->method('getFullPath');
@@ -105,6 +112,6 @@ class ThemeIconsTest extends UnitaryTestCase
                   ->method('load')
                   ->willReturn(new ThemeIcons());
 
-        ThemeIcons::loadIcons($context, $fileCache, $themeContext);
+        ThemeIcons::loadIcons($context, $fileCache, $themeContext, $fileLoader);
     }
 }

@@ -30,10 +30,13 @@ use DI\NotFoundException;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Api\Controllers\Account\AccountController;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
+
+use function SP\Tests\getDbHandler;
 
 /**
  * Class AccountControllerTest
@@ -67,6 +70,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateAction(): void
     {
         $params = self::PARAMS;
@@ -126,6 +130,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testCreateActionNoUserData(): void
     {
         $params = self::PARAMS;
@@ -162,6 +167,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws JsonException
      */
     #[DataProvider('getUnsetParams')]
+    #[Test]
     public function testCreateActionRequiredParameters(string $unsetParam): void
     {
         $params = self::PARAMS;
@@ -182,6 +188,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewPassAction(): void
     {
         $response = $this->createAccount();
@@ -210,6 +217,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewPassActionRequiredParamater(): void
     {
         $api = $this->callApi(
@@ -230,6 +238,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditPassAction(): void
     {
         $response = $this->createAccount();
@@ -274,6 +283,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testEditPassActionRequiredParameters(): void
     {
         $response = $this->createAccount();
@@ -300,6 +310,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewPassActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -318,6 +329,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewAction(): void
     {
         $response = $this->createAccount();
@@ -379,6 +391,72 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
+    public function testViewActionDeniedForPrivateAccountOfAnotherUser(): void
+    {
+        $params = self::PARAMS;
+        $params['private'] = 1;
+        $params['userId'] = 2;
+        $params['userGroupId'] = 2;
+
+        $response = $this->createAccount($params);
+
+        $id = $response->result->itemId;
+
+        $api = $this->callApi(
+            AclActionsInterface::ACCOUNT_VIEW,
+            ['id' => $id]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertInstanceOf(stdClass::class, $response->error);
+        $this->assertEquals(
+            'You don\'t have permission to access this account',
+            $response->error->message
+        );
+        $this->assertFalse(property_exists($response, 'result'));
+        $this->assertSame(0, self::getAccountViewCount($id));
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    #[Test]
+    public function testViewActionAllowsOwnPrivateAccount(): void
+    {
+        $params = self::PARAMS;
+        $params['private'] = 1;
+        $params['userId'] = 1;
+        $params['userGroupId'] = 1;
+
+        $response = $this->createAccount($params);
+
+        $id = $response->result->itemId;
+
+        $api = $this->callApi(
+            AclActionsInterface::ACCOUNT_VIEW,
+            ['id' => $id]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+        $this->assertEquals(1, $response->result->count);
+        $this->assertEquals($id, $response->result->itemId);
+        $this->assertEquals($id, $response->result->result->data->id);
+        $this->assertEquals(1, $response->result->result->data->isPrivate);
+        $this->assertSame(1, self::getAccountViewCount($id));
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    #[Test]
     public function testViewActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -389,7 +467,16 @@ class AccountControllerTest extends ApiTestCase
         $response = self::processJsonResponse($api);
 
         $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('The account doesn\'t exist', $response->error->message);
+        $this->assertEquals('You don\'t have permission to access this account', $response->error->message);
+        $this->assertFalse(property_exists($response, 'result'));
+    }
+
+    private static function getAccountViewCount(int $id): int
+    {
+        $stmt = getDbHandler()->getConnection()->prepare('SELECT countView FROM Account WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+
+        return (int)$stmt->fetchColumn();
     }
 
     /**
@@ -397,6 +484,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testViewActionRequiredParameter(): void
     {
         $api = $this->callApi(
@@ -418,6 +506,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      */
     #[DataProvider('searchProvider')]
+    #[Test]
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
         $api = $this->callApi(
@@ -437,6 +526,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws JsonException
      * @throws NotFoundException
      */
+    #[Test]
     public function testEditAction(): void
     {
         $response = $this->createAccount();
@@ -529,6 +619,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      */
     #[DataProvider('getUnsetParams')]
+    #[Test]
     public function testEditActionRequiredParameter(string $unsetParam): void
     {
         $response = $this->createAccount();
@@ -572,7 +663,8 @@ class AccountControllerTest extends ApiTestCase
      * @throws JsonException
      * @throws NotFoundException
      */
-    public function testEditActionNonExistant(): void
+    #[Test]
+    public function testEditActionDeniedForNonExistantAccount(): void
     {
         $params = [
             'id' => 10,
@@ -599,7 +691,11 @@ class AccountControllerTest extends ApiTestCase
         $response = self::processJsonResponse($api);
 
         $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('The account doesn\'t exist', $response->error->message);
+        $this->assertEquals(
+            'You don\'t have permission to access this account',
+            $response->error->message
+        );
+        $this->assertFalse(property_exists($response, 'result'));
     }
 
     /**
@@ -607,6 +703,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteAction(): void
     {
         $response = $this->createAccount();
@@ -631,6 +728,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteActionNonExistant(): void
     {
         $api = $this->callApi(
@@ -649,6 +747,7 @@ class AccountControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testDeleteActionRequiredParameters(): void
     {
         $api = $this->callApi(

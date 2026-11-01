@@ -24,44 +24,43 @@
 
 namespace SP\Modules\Web\Controllers\CustomField;
 
-use Controllers\Helpers\CustomFields;
-use SP\Core\Application;
+use SP\Modules\Web\Presenters\Helpers\CustomFields;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;
-use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Domain\CustomField\Ports\CustomFieldTypeService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\CustomField\UseCases\Dtos\GetCustomFieldCommand;
+use SP\Domain\CustomField\UseCases\GetCustomFieldUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
-use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 
 /**
  * Class CustomFieldViewBase
  */
 abstract class CustomFieldViewBase extends ControllerBase
 {
-    private CustomFieldDefinitionService $customFieldDefService;
-    private CustomFieldTypeService       $customFieldTypeService;
+    private GetCustomFieldUseCase $getCustomFieldUseCase;
+    private CustomFieldTypeService $customFieldTypeService;
 
     /**
      * @throws AuthException
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                  $application,
-        WebControllerHelper          $webControllerHelper,
-        CustomFieldDefinitionService $customFieldDefService,
+        WebControllerHelper $webControllerHelper,
+        GetCustomFieldUseCase $getCustomFieldUseCase,
         CustomFieldTypeService $customFieldTypeService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->customFieldDefService = $customFieldDefService;
+        $this->getCustomFieldUseCase = $getCustomFieldUseCase;
         $this->customFieldTypeService = $customFieldTypeService;
     }
 
@@ -79,7 +78,7 @@ abstract class CustomFieldViewBase extends ControllerBase
         $this->view->addTemplate('custom_field', 'itemshow');
 
         $customField = $customFieldId
-            ? $this->customFieldDefService->getById($customFieldId)
+            ? $this->getCustomFieldUseCase->execute(new GetCustomFieldCommand($customFieldId))->model
             : new CustomFieldDefinition();
 
         $this->view->assign('field', $customField);

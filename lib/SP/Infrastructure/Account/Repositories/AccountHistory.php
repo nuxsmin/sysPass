@@ -37,7 +37,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -90,7 +90,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
 
         $query = $this->queryFactory
             ->newInsert()
-            ->into(AccountModel::TABLE)
+            ->into(AccountHistoryModel::TABLE)
             ->cols([
                        'accountId' => $accountData->getId(),
                        'clientId' => $accountData->getClientId(),
@@ -184,24 +184,10 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                        'Account.passDate',
                        'Account.passDateChange',
                        'Account.parentId',
-                       'Account.userLogin',
-                       'Account.publicLinkHash',
                        'Account.isModify',
                        'Account.isDeleted',
-                       'Account.mPassHash',
-                       'Category.name AS categoryName',
-                       'User.name AS userName',
-                       'Client.name AS clientName',
-                       'UserGroup.name AS userGroupName',
-                       'UserEdit.name AS userEditName',
-                       'UserEdit.login AS userEditLogin',
                    ])
             ->where('Account.id = :id')
-            ->join('INNER', 'Category', 'Account.categoryId = Category.id')
-            ->join('INNER', 'Client', 'Account.clientId = Client.id')
-            ->join('INNER', 'UserGroup', 'Account.userGroupId = UserGroup.id')
-            ->join('INNER', 'User', 'Account.userId = User.id')
-            ->join('LEFT', 'User AS UserEdit', 'Account.userEditId = UserEdit.id')
             ->bindValues(['id' => $id])
             ->limit(1);
 
@@ -247,8 +233,6 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                        'Account.passDate',
                        'Account.passDateChange',
                        'Account.parentId',
-                       'Account.userLogin',
-                       'Account.publicLinkHash',
                        'Account.isModify',
                        'Account.isDeleted',
                        'Account.mPassHash',
@@ -344,7 +328,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                    ])
             ->join('INNER', 'Category', 'Account.categoryId = Category.id')
             ->join('INNER', 'Client', 'Account.clientId = Client.id')
-            ->orderBy(['Account.date DESC', 'clientName ASC', 'Account.id DESC'])
+            ->orderBy(['IFNULL(Account.dateEdit,Account.dateAdd) DESC', 'clientName ASC', 'Account.id DESC'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
@@ -381,7 +365,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                     'id',
                     'name',
                     'pass',
-                    'key',
+                    '`key`',
                     'mPassHash',
                 ]
             )

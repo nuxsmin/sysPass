@@ -24,21 +24,21 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Core\Application;
-use SP\Core\Events\EventDispatcher;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 /**
  * Class SimpleControllerBase
@@ -47,7 +47,7 @@ abstract class SimpleControllerBase
 {
     use WebControllerTrait;
 
-    protected readonly EventDispatcher            $eventDispatcher;
+    protected readonly EventDispatcherInterface   $eventDispatcher;
     protected readonly ConfigFileService          $config;
     protected readonly SessionContext             $session;
     protected readonly ThemeInterface             $theme;
@@ -56,24 +56,24 @@ abstract class SimpleControllerBase
     protected readonly PhpExtensionCheckerService $extensionChecker;
     protected readonly ConfigDataInterface        $configData;
     protected readonly UriContextInterface        $uriContext;
+    protected readonly HashService                $hashService;
 
     /**
      * @throws SessionTimeout
      */
-    public function __construct(
-        Application $application,
-        SimpleControllerHelper $simpleControllerHelper
-    ) {
+    public function __construct(SimpleControllerHelper $simpleControllerHelper)
+    {
         $this->theme = $simpleControllerHelper->getTheme();
         $this->router = $simpleControllerHelper->getRouter();
         $this->acl = $simpleControllerHelper->getAcl();
         $this->request = $simpleControllerHelper->getRequest();
         $this->extensionChecker = $simpleControllerHelper->getExtensionChecker();
         $this->uriContext = $simpleControllerHelper->getUriContext();
-        $this->config = $application->getConfig();
+        $this->hashService = $simpleControllerHelper->getHashService();
+        $this->config = $simpleControllerHelper->getConfig();
         $this->configData = $this->config->getConfigData();
-        $this->eventDispatcher = $application->getEventDispatcher();
-        $this->session = $application->getContext();
+        $this->eventDispatcher = $simpleControllerHelper->getEventDispatcher();
+        $this->session = $simpleControllerHelper->getContext();
         $this->setup = true;
 
         if (method_exists($this, 'initialize')) {

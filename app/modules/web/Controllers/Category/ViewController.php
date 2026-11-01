@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Category;
 
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -33,8 +33,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__;
 use function SP\__u;
@@ -44,8 +43,6 @@ use function SP\__u;
  */
 final class ViewController extends CategoryViewBase
 {
-    use JsonTrait;
-
     /**
      * View action
      *

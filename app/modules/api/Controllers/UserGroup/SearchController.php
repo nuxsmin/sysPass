@@ -24,51 +24,31 @@
 
 namespace SP\Modules\Api\Controllers\UserGroup;
 
-
-use Exception;
-use SP\Core\Events\Event;
-use SP\Domain\Api\Dtos\ApiResponse;
-use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\User\UseCases\Dtos\SearchUserGroupsCommand;
 
 /**
  * Class SearchController
  */
 final class SearchController extends UserGroupBase
 {
-    /**
-     * searchAction
-     */
-    public function searchAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function searchAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::GROUP_SEARCH);
+        $this->setupApi(AclActionsInterface::GROUP_SEARCH);
 
-            $itemSearchData = $this->buildSearchData();
+        $itemSearchData = new ItemSearchDto(
+            $this->apiService->getParamString('text'),
+            0,
+            $this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS)
+        );
 
-            $this->eventDispatcher->notify('search.userGroup', new Event($this));
+        $result = $this->searchUserGroupsUseCase->execute(new SearchUserGroupsCommand($itemSearchData));
 
-            $this->returnResponse(
-                ApiResponse::makeSuccess($this->userGroupService->search($itemSearchData)->getDataAsArray())
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
-    }
-
-    /**
-     * @return ItemSearchDto
-     * @throws ServiceException
-     */
-    private function buildSearchData(): ItemSearchDto
-    {
-        $itemSearchData = new ItemSearchDto();
-        $itemSearchData->setSeachString($this->apiService->getParamString('text'));
-        $itemSearchData->setLimitCount($this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS));
-
-        return $itemSearchData;
+        return ActionResponse::ok('', $result->result->getDataAsArray());
     }
 }

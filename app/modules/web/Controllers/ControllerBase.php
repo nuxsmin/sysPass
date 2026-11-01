@@ -26,8 +26,6 @@ namespace SP\Modules\Web\Controllers;
 
 use Exception;
 use SebastianBergmann\RecursionContext\Context;
-use SP\Core\Application;
-use SP\Core\Crypt\Hash;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -41,12 +39,13 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\UI\ThemeInterface;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Modules\Web\Controllers\Traits\WebControllerTrait;
-use SP\Mvc\Controller\WebControllerHelper;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 use function SP\logger;
 use function SP\processException;
@@ -69,22 +68,22 @@ abstract class ControllerBase
     protected readonly RequestService              $request;
     protected readonly PhpExtensionCheckerService  $extensionChecker;
     protected readonly TemplateInterface           $view;
-    protected readonly Helpers\LayoutHelper        $layoutHelper;
+    protected readonly \SP\Modules\Web\Presenters\Helpers\LayoutHelper        $layoutHelper;
     protected readonly UriContextInterface         $uriContext;
+    protected readonly HashService                 $hashService;
     protected ?UserDto                             $userDto         = null;
     protected ?ProfileData                         $userProfileData = null;
     protected readonly bool                        $isAjax;
     protected readonly RouteContextData            $routeContextData;
-    protected readonly Helpers\JsonResponseHandler $jsonResponse;
     private readonly BrowserAuthService            $browser;
 
-    public function __construct(Application $application, WebControllerHelper $webControllerHelper)
+    public function __construct(WebControllerHelper $webControllerHelper)
     {
         $this->routeContextData = $webControllerHelper->getRouteContextData();
-        $this->config = $application->getConfig();
+        $this->config = $webControllerHelper->getConfig();
         $this->configData = $this->config->getConfigData();
-        $this->eventDispatcher = $application->getEventDispatcher();
-        $this->session = $application->getContext();
+        $this->eventDispatcher = $webControllerHelper->getEventDispatcher();
+        $this->session = $webControllerHelper->getContext();
         $this->theme = $webControllerHelper->getTheme();
         $this->router = $webControllerHelper->getRouter();
         $this->acl = $webControllerHelper->getAcl();
@@ -94,7 +93,7 @@ abstract class ControllerBase
         $this->layoutHelper = $webControllerHelper->getLayoutHelper();
         $this->view = $webControllerHelper->getTemplate();
         $this->uriContext = $webControllerHelper->getUriContext();
-        $this->jsonResponse = $webControllerHelper->getJsonResponseHandler();
+        $this->hashService = $webControllerHelper->getHashService();
 
         $this->isAjax = $this->request->isAjax();
 
@@ -203,7 +202,7 @@ abstract class ControllerBase
                 $this->request->verifySignature($this->configData->getPasswordSalt());
 
                 $this->view->assign('from', $from);
-                $this->view->assign('from_hash', Hash::signMessage($from, $this->configData->getPasswordSalt()));
+                $this->view->assign('from_hash', $this->hashService->signMessage($from, $this->configData->getPasswordSalt()));
             } catch (SPException $e) {
                 processException($e);
             }

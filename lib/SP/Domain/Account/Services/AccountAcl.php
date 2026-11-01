@@ -26,11 +26,11 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Services;
 
-use SP\Core\Application;
-use SP\Core\Bootstrap\Path;
-use SP\Core\Bootstrap\PathsContext;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Ports\AccountAclService;
@@ -39,14 +39,15 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
+use SP\Domain\Core\Ports\AppPaths;
+use SP\Domain\File\Ports\FileSystemService;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserToUserGroupService;
-use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileSystem;
-
-use function SP\processException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class AccountAcl
@@ -58,13 +59,17 @@ final class AccountAcl extends Service implements AccountAclService
     private UserDto $userData;
 
     public function __construct(
-        Application                             $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly AclInterface           $acl,
         private readonly UserToUserGroupService $userToUserGroupService,
-        private readonly PathsContext $pathsContext,
-        private readonly ?FileCacheService      $fileCache = null
+        private readonly AppPaths               $appPaths,
+        private readonly FileSystemService      $fileSystem,
+        private readonly ?FileCacheService      $fileCache = null,
+        private readonly LoggerInterface        $logger = new NullLogger()
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->userData = $this->context->getUserData();
     }
@@ -151,7 +156,7 @@ final class AccountAcl extends Service implements AccountAclService
                 return $acl;
             }
         } catch (FileException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         return null;
@@ -167,8 +172,8 @@ final class AccountAcl extends Service implements AccountAclService
     {
         $userId = $this->context->getUserData()->id;
 
-        return FileSystem::buildPath(
-            $this->pathsContext[Path::CACHE],
+        return $this->fileSystem->buildPath(
+            $this->appPaths->getCachePath(),
             'accountAcl',
             (string)$userId,
             (string)$accountId,
@@ -378,7 +383,7 @@ final class AccountAcl extends Service implements AccountAclService
                 $this->getCacheFileForAcl($accountAcl->getAccountId(), $accountAcl->getActionId())
             );
         } catch (FileException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
     }
 }

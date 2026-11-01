@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\User\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -35,8 +36,8 @@ use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\User\Ports\UserGroupRepository;
 use SP\Domain\User\Ports\UserToUserGroupService;
 use SP\Domain\User\Services\UserGroup;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\UserGroupGenerator;
 use SP\Tests\Stubs\UserGroupRepositoryStub;
 use SP\Tests\UnitaryTestCase;
@@ -57,6 +58,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testGetById()
     {
         $this->userGroupRepository
@@ -81,6 +83,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByIdWithNoGroup()
     {
         $this->userGroupRepository
@@ -103,6 +106,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testGetUsage()
     {
         $queryResult = new QueryResult([new UserGroupModel()]);
@@ -122,6 +126,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testGetUsageByUsers()
     {
         $queryResult = new QueryResult([new UserGroupModel()]);
@@ -140,6 +145,7 @@ class UserGroupTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdate()
     {
         $userGroup = UserGroupGenerator::factory()->buildUserGroupData();
@@ -160,6 +166,7 @@ class UserGroupTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testUpdateWithNoUsers()
     {
         $userGroup = UserGroupGenerator::factory()->buildUserGroupData()->mutate(['users' => null]);
@@ -179,6 +186,7 @@ class UserGroupTest extends UnitaryTestCase
     /**
      * @throws NoSuchItemException
      */
+    #[Test]
     public function testGetByName()
     {
         $userGroup = UserGroupGenerator::factory()->buildUserGroupData();
@@ -197,6 +205,7 @@ class UserGroupTest extends UnitaryTestCase
     /**
      * @throws NoSuchItemException
      */
+    #[Test]
     public function testGetByNameWithNoGroup()
     {
         $this->userGroupRepository
@@ -214,6 +223,7 @@ class UserGroupTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCreate()
     {
         $userGroup = UserGroupGenerator::factory()->buildUserGroupData();
@@ -237,6 +247,7 @@ class UserGroupTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testCreateWithNoUsers()
     {
         $userGroup = UserGroupGenerator::factory()->buildUserGroupData()->mutate(['users' => null]);
@@ -261,6 +272,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $this->userGroupRepository
@@ -279,6 +291,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithException()
     {
         $this->userGroupRepository
@@ -299,6 +312,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $this->userGroupRepository
@@ -315,6 +329,7 @@ class UserGroupTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithException()
     {
         $this->userGroupRepository
@@ -329,6 +344,7 @@ class UserGroupTest extends UnitaryTestCase
         $this->userGroup->delete(100);
     }
 
+    #[Test]
     public function testSearch()
     {
         $itemSearchData = new ItemSearchDto('test', 1, 10);
@@ -346,6 +362,7 @@ class UserGroupTest extends UnitaryTestCase
         $this->assertEquals($queryResult, $out);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $queryResult = new QueryResult([UserGroupGenerator::factory()->buildUserGroupData()]);
@@ -375,7 +392,13 @@ class UserGroupTest extends UnitaryTestCase
         );
         $this->userToUserGroupService = $this->createMock(UserToUserGroupService::class);
 
-        $this->userGroup = new UserGroup($this->application, $this->userGroupRepository, $this->userToUserGroupService);
+        $this->userGroup = new UserGroup(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->userGroupRepository,
+            $this->userToUserGroupService
+        );
     }
 
 

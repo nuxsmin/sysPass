@@ -24,52 +24,51 @@
 
 namespace SP\Modules\Web\Controllers\Install;
 
-
 use Exception;
-use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Ports\InstallerService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
+
+use function SP\processException;
 
 /**
  * Class InstallController
  */
 final class InstallController extends ControllerBase
 {
-    use JsonTrait;
-
-    private InstallerService $installer;
-
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
-        InstallerService $installer
+        private readonly InstallerService $installer
     ) {
-        parent::__construct($application, $webControllerHelper);
-
-        $this->installer = $installer;
+        parent::__construct($webControllerHelper);
     }
 
-    /**
-     * @return bool
-     * @throws SPException
-     */
-    public function installAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function installAction(): ActionResponse
     {
         $installData = InstallDataFactory::buildFromRequest($this->request);
 
         try {
             $this->installer->run($installData);
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Installation finished'));
+            return ActionResponse::ok(__u('Installation finished'));
         } catch (Exception $e) {
             processException($e);
 
-            return $this->returnJsonResponseException($e);
+            $this->eventDispatcher->notify('exception', new Event($e));
+
+            return ActionResponse::error(
+                $e->getMessage(),
+                $e instanceof SPException ? $e->getHint() : null
+            );
         }
     }
 }

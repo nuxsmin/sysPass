@@ -32,10 +32,10 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -122,13 +122,9 @@ final class Category extends BaseRepository implements CategoryRepository
             ->newUpdate()
             ->table(CategoryModel::TABLE)
             ->cols($category->toArray(null, ['id', 'hash']))
+            ->col('hash', $this->makeItemHash($category->getName()))
             ->where('id = :id')
-            ->bindValues(
-                [
-                    'id' => $category->getId(),
-                    'hash' => $this->makeItemHash($category->getName())
-                ]
-            );
+            ->bindValues(['id' => $category->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the category'));
 

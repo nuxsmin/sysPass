@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Export\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
@@ -33,11 +34,12 @@ use DOMDocument;
 use DOMElement;
 use DOMException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
@@ -52,7 +54,7 @@ use SP\Domain\Export\Ports\XmlTagExportService;
 use SP\Domain\Export\Services\XmlExport;
 use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Domain\User\Dtos\UserDto;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -82,6 +84,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws DOMException
      * @throws SPException
      */
+    #[Test]
     public function testExport()
     {
         $this->context->setUserData(
@@ -229,6 +232,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testExportWithCheckDirectoryException()
     {
         $this->context->setUserData(
@@ -262,6 +266,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testExportWithExportCategoryException()
     {
         $this->context->setUserData(
@@ -305,6 +310,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws EnvironmentIsBrokenException
      * @throws SPException
      */
+    #[Test]
     public function testExportWithExportClientException()
     {
         $this->context->setUserData(
@@ -355,6 +361,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws EnvironmentIsBrokenException
      * @throws SPException
      */
+    #[Test]
     public function testExportWithExportTagException()
     {
         $this->context->setUserData(
@@ -410,6 +417,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws EnvironmentIsBrokenException
      * @throws SPException
      */
+    #[Test]
     public function testExportWithExportAccountException()
     {
         $this->context->setUserData(
@@ -469,6 +477,7 @@ class XmlExportTest extends UnitaryTestCase
      * @throws DOMException
      * @throws SPException
      */
+    #[Test]
     public function testExportWithCryptException()
     {
         $this->context->setUserData(
@@ -526,13 +535,16 @@ class XmlExportTest extends UnitaryTestCase
         $this->crypt = $this->createMock(CryptInterface::class);
 
         $this->xmlExport = new XmlExport(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->phpExtensionCheckerService,
             $this->xmlClientExportService,
             $this->xmlAccountExportService,
             $this->xmlCategoryExportService,
             $this->xmlTagExportService,
-            $this->crypt
+            $this->crypt,
+            new HashServiceAdapter()
         );
     }
 }

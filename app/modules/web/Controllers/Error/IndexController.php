@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,19 +24,22 @@
 
 namespace SP\Modules\Web\Controllers\Error;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+
 /**
  * Class IndexController
- *
- * @package SP\Modules\Web\Controllers
  */
 final class IndexController extends ErrorBase
 {
-    /**
-     * indexAction
-     */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         $this->layoutHelper->getPublicLayout('error');
-        $this->view();
+
+        $this->view->assign('errors', []);
+
+        return ActionResponse::ok($this->render());
     }
 }

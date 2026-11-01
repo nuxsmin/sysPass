@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Http\Providers;
 
-use SP\Core\Crypt\Hash;
+use SP\Domain\Crypt\Services\Hash;
 
 /**
  * Class Uri

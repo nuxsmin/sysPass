@@ -26,13 +26,13 @@ namespace SP\Modules\Web;
 
 use Exception;
 use Klein\Klein;
-use SP\Core\Application;
 use SP\Core\Context\ContextBase;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Core\Context\Session;
 use SP\Core\Context\SessionLifecycleHandler;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\HttpModuleBase;
+use SP\Core\ModuleDependencies;
 use SP\Core\ProvidersHelper;
 use SP\Domain\Common\Providers\Http;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
@@ -47,7 +47,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
-use SP\Domain\Http\Adapters\Address;
+use SP\Domain\Common\Providers\Address;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Providers\Uri;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
@@ -55,12 +55,13 @@ use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Modules\Web\Controllers\Bootstrap\GetEnvironmentController;
 use SP\Modules\Web\Controllers\Error\DatabaseConnectionController;
 use SP\Modules\Web\Controllers\Error\DatabaseErrorController;
 use SP\Modules\Web\Controllers\Error\IndexController as ErrorIndexController;
+use SP\Modules\Web\Controllers\Install\IndexController as InstallIndexController;
 use SP\Modules\Web\Controllers\Install\InstallController;
 use SP\Modules\Web\Controllers\Items\AccountsUserController;
 use SP\Modules\Web\Controllers\Items\CategoriesController;
@@ -70,9 +71,8 @@ use SP\Modules\Web\Controllers\Items\TagsController;
 use SP\Modules\Web\Controllers\Login\LoginController;
 use SP\Modules\Web\Controllers\Resource\CssController;
 use SP\Modules\Web\Controllers\Resource\JsController;
-use SP\Modules\Web\Controllers\Status\CheckNotices;
+use SP\Modules\Web\Controllers\Status\CheckNoticesController;
 use SP\Modules\Web\Controllers\Status\StatusController;
-use SP\Modules\Web\Controllers\Task\TrackStatusController;
 use SP\Modules\Web\Controllers\Upgrade\IndexController as UpgradeIndexController;
 use SP\Modules\Web\Controllers\Upgrade\UpgradeController;
 
@@ -91,16 +91,16 @@ final class Init extends HttpModuleBase
     private const PARTIAL_INIT = [
         CssController::class,
         JsController::class,
+        InstallIndexController::class,
         InstallController::class,
         GetEnvironmentController::class,
-        CheckNotices::class,
+        CheckNoticesController::class,
         StatusController::class,
         UpgradeIndexController::class,
         UpgradeController::class,
         DatabaseConnectionController::class,
         DatabaseErrorController::class,
         ErrorIndexController::class,
-        TrackStatusController::class,
     ];
     /**
      * List of controllers that don't need to update the user's session activity
@@ -130,21 +130,20 @@ final class Init extends HttpModuleBase
     private bool $isIndex = false;
 
     public function __construct(
-        Application                          $application,
+        ModuleDependencies                   $dependencies,
         ProvidersHelper                      $providersHelper,
         RequestService                       $request,
         Klein                                $router,
-        AppLockHandler $appLock,
+        AppLockHandler                       $appLock,
         private readonly CsrfHandler         $csrf,
         private readonly LanguageInterface   $language,
         private readonly ItemPresetService   $itemPresetService,
-        private readonly DatabaseUtil        $databaseUtil,
+        private readonly DatabaseUtilInterface $databaseUtil,
         private readonly UserProfileService  $userProfileService,
         private readonly UriContextInterface $uriContext,
-
     ) {
         parent::__construct(
-            $application,
+            $dependencies,
             $providersHelper,
             $request,
             $router,
@@ -347,7 +346,7 @@ final class Init extends HttpModuleBase
             processException($e);
         }
 
-        return $timeout;
+        return $timeout ?? $this->configData->getSessionTimeout();
     }
 
     /**

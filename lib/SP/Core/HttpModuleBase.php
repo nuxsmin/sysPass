@@ -37,13 +37,13 @@ use SP\Domain\Http\Ports\RequestService;
 abstract class HttpModuleBase extends ModuleBase
 {
     public function __construct(
-        Application                       $application,
+        ModuleDependencies                $dependencies,
         ProvidersHelper                   $providersHelper,
         protected readonly RequestService $request,
         protected readonly Klein          $router,
         protected readonly AppLockHandler $appLock
     ) {
-        parent::__construct($application, $providersHelper);
+        parent::__construct($dependencies, $providersHelper);
     }
 
     /**

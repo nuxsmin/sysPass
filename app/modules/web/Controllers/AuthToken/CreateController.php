@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\AuthToken;
 
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;

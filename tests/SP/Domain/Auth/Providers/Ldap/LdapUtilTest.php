@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Auth\Providers\Ldap;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Auth\Providers\Ldap\LdapUtil;
 use SP\Tests\UnitaryTestCase;
 
@@ -49,6 +50,7 @@ class LdapUtilTest extends UnitaryTestCase
         ];
     }
 
+    #[Test]
     public function testGetAttributesForFilter()
     {
         $attributes = ['memberOf', 'uid', 'sn', 'cn'];
@@ -67,6 +69,7 @@ class LdapUtilTest extends UnitaryTestCase
      * @return void
      */
     #[DataProvider('groupNameProvider')]
+    #[Test]
     public function testGetGroupName(string $group, ?string $expected)
     {
         self::assertEquals($expected, LdapUtil::getGroupName($group));

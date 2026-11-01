@@ -34,7 +34,7 @@ use SP\Domain\ItemPreset\Ports\ItemPresetRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -47,6 +47,8 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
 {
     use RepositoryItemTrait;
 
+    private const READ_ONLY_FIELDS = ['score', 'userName', 'userProfileName', 'userGroupName'];
+
     /**
      * Creates an item
      *
@@ -58,7 +60,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newInsert()
             ->into(ItemPresetModel::TABLE)
-            ->cols($itemPreset->toArray(null, ['id']));
+            ->cols($itemPreset->toArray(null, array_merge(['id'], self::READ_ONLY_FIELDS)));
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the permission'));
 
@@ -76,9 +78,8 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newUpdate()
             ->table(ItemPresetModel::TABLE)
-            ->cols($itemPreset->toArray(null, ['id']))
+            ->cols($itemPreset->toArray(null, array_merge(['id'], self::READ_ONLY_FIELDS)))
             ->where('id = :id')
-            ->limit(1)
             ->bindValues(
                 [
                     'id' => $itemPreset->getId()
@@ -123,7 +124,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(ItemPresetModel::TABLE)
-            ->cols(ItemPresetModel::getCols())
+            ->cols(ItemPresetModel::getCols(self::READ_ONLY_FIELDS))
             ->where('id = :id')
             ->bindValues(['id' => $itemPresetId])
             ->limit(1);
@@ -150,7 +151,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(ItemPresetModel::TABLE)
-            ->cols(ItemPresetModel::getCols())
+            ->cols(ItemPresetModel::getCols(self::READ_ONLY_FIELDS))
             ->cols(
                 [
                     'IF(userId IS NOT NULL, priority + 3, 
@@ -163,13 +164,14 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
                 '(userId = :userId OR userGroupId = :userGroupId  OR userProfileId = :userProfileId
                         OR userGroupId IN (SELECT UserToUserGroup.userGroupId
                         FROM UserToUserGroup
-                        WHERE UserToUserGroup.userId = :userId))'
+                        WHERE UserToUserGroup.userId = :userIdGroup))'
             )
             ->bindValues([
                              'type' => $type,
                              'userId' => $userId,
                              'userGroupId' => $userGroupId,
-                             'userProfileId' => $userProfileId
+                             'userProfileId' => $userProfileId,
+                             'userIdGroup' => $userId
                          ])
             ->orderBy(['score DESC'])
             ->limit(1);
@@ -191,7 +193,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(ItemPresetModel::TABLE)
-            ->cols(ItemPresetModel::getCols());
+            ->cols(ItemPresetModel::getCols(self::READ_ONLY_FIELDS));
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, ItemPresetModel::class));
     }
@@ -235,11 +237,11 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(ItemPresetModel::TABLE)
-            ->cols(ItemPresetModel::getColsWithPreffix('ItemPreset'))
+            ->cols(ItemPresetModel::getColsWithPreffix('ItemPreset', self::READ_ONLY_FIELDS))
             ->cols([
-                       'IF(userId IS NOT NULL, priority + 3, 
-                        IF(userGroupId IS NOT NULL, priority + 2, 
-                        IF(userProfileId IS NOT NULL, priority + 1, 0)))' => 'score',
+                       'IF(ItemPreset.userId IS NOT NULL, ItemPreset.priority + 3, 
+                        IF(ItemPreset.userGroupId IS NOT NULL, ItemPreset.priority + 2, 
+                        IF(ItemPreset.userProfileId IS NOT NULL, ItemPreset.priority + 1, 0)))' => 'score',
                        'User.name' => 'userName',
                        'UserProfile.name' => 'userProfileName',
                        'UserGroup.name' => 'userGroupName'

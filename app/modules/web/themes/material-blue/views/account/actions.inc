@@ -27,7 +27,7 @@ use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Html\DataGrid\Action\DataGridActionInterface;
+use SP\Modules\Web\Html\DataGrid\Action\DataGridActionInterface;
 
 /**
  * @var ThemeIconsInterface $icons

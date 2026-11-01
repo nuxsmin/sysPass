@@ -27,8 +27,9 @@ namespace SP\Tests\Core\Events;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Tests\UnitaryTestCase;
@@ -52,6 +53,7 @@ class EventDispatcherTest extends UnitaryTestCase
         ];
     }
 
+    #[Test]
     public function testAttach()
     {
         $this->eventDispatcher->attach($this->eventReceiver);
@@ -59,6 +61,7 @@ class EventDispatcherTest extends UnitaryTestCase
         self::assertTrue($this->eventDispatcher->has($this->eventReceiver));
     }
 
+    #[Test]
     public function testDetach()
     {
         $this->eventDispatcher->attach($this->eventReceiver);
@@ -71,6 +74,7 @@ class EventDispatcherTest extends UnitaryTestCase
      * @param string $eventName
      */
     #[DataProvider('eventNameProvider')]
+    #[Test]
     public function testNotify(string $eventName)
     {
         $event = new Event($this);
@@ -87,6 +91,7 @@ class EventDispatcherTest extends UnitaryTestCase
         $this->eventDispatcher->notify($eventName, $event);
     }
 
+    #[Test]
     public function testNotifyWithWildcard()
     {
         $event = new Event($this);
@@ -103,6 +108,7 @@ class EventDispatcherTest extends UnitaryTestCase
         $this->eventDispatcher->notify('test', $event);
     }
 
+    #[Test]
     public function testNotifyWithInvalidEvent()
     {
         $this->eventReceiver->expects(self::once())

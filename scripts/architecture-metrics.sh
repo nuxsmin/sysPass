@@ -35,6 +35,10 @@ controller_areas() {
     for directory in app/modules/web/Controllers/*/; do
         area="$(basename "$directory")"
 
+        if [ -z "$(find "$directory" -maxdepth 1 -name '*Controller.php' -print -quit)" ]; then
+            continue
+        fi
+
         if [ -d "tests/SP/Modules/Web/Controllers/${area}" ]; then
             tested=$((tested + 1))
         else
@@ -53,6 +57,35 @@ api_controller_total() {
     find app/modules/api/Controllers -name '*.php' | wc -l | tr -d ' '
 }
 
+
+cross_context_imports() {
+    local total=0
+    local output=""
+    local context
+    local count
+
+    for directory in lib/SP/Domain/*/; do
+        context="$(basename "$directory")"
+
+        case "$context" in
+            Common|Core) continue ;;
+        esac
+
+        count=$(grep -rhE --include='*.php' '^use SP\\Domain\\[A-Za-z]+\\' "$directory" 2>/dev/null \
+            | grep -vE '\\(Ports|Dtos|Models|Enums|Exceptions)\\' \
+            | sed -E 's/^use SP\\Domain\\([A-Za-z]+)\\.*/\1/' \
+            | grep -vE "^(${context}|Common|Core)$" \
+            | wc -l | tr -d ' ')
+
+        if [ "$count" -gt 0 ]; then
+            output="${output}${context}=${count} "
+            total=$((total + count))
+        fi
+    done
+
+    printf '%d (%s)' "$total" "${output% }"
+}
+
 print_metric() {
     printf '%-4s %-62s %s\n' "$1" "$2" "$3"
 }
@@ -60,7 +93,7 @@ print_metric() {
 echo "sysPass architecture metrics"
 echo
 
-print_metric "M1" "Domain files importing any outer layer" "$(count_files '^use SP\\(Infrastructure|Core|Mvc|Html|Modules|Util)\\' lib/SP/Domain)"
+print_metric "M1" "Domain files importing any outer layer" "$(count_files '^use SP\\(Infrastructure|Core|Modules|Util)\\' lib/SP/Domain)"
 print_metric "M2" "Domain files importing Infrastructure" "$(count_files '^use SP\\Infrastructure\\' lib/SP/Domain)"
 print_metric "M3" "Domain files importing SP\\Core" "$(count_files '^use SP\\Core\\' lib/SP/Domain)"
 print_metric "M4" "Domain files importing SP\\Core\\Application" "$(count_files '^use SP\\Core\\Application;' lib/SP/Domain)"
@@ -85,3 +118,4 @@ print_metric "M13" "Core -> Infrastructure outside composition" "$(core_to_infra
 print_metric "M14" "Domain test files importing Infrastructure" "$(count_files '^use SP\\Infrastructure\\' tests/SP/Domain)"
 print_metric "M15" "Web controller areas without integration tests" "$(controller_areas)"
 print_metric "M16" "Test files without #[Group]" "$(count_without_group)"
+print_metric "M17" "Concrete cross-context Domain imports" "$(cross_context_imports)"

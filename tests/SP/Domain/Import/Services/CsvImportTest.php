@@ -26,7 +26,9 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Import\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
@@ -44,8 +46,8 @@ use SP\Domain\Import\Services\CsvImport;
 use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -67,6 +69,7 @@ class CsvImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws FileException
      */
+    #[Test]
     public function testDoImport()
     {
         $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
@@ -143,6 +146,7 @@ class CsvImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws FileException
      */
+    #[Test]
     public function testDoImportWithWrongFields()
     {
         $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
@@ -179,6 +183,7 @@ class CsvImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws FileException
      */
+    #[Test]
     public function testDoImportWithoutLines()
     {
         $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
@@ -212,6 +217,7 @@ class CsvImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws FileException
      */
+    #[Test]
     public function testDoImportWithEmptyClient()
     {
         $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
@@ -278,6 +284,7 @@ class CsvImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws FileException
      */
+    #[Test]
     public function testDoImportWithEmptyCategory()
     {
         $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
@@ -359,6 +366,14 @@ class CsvImportTest extends UnitaryTestCase
         $crypt = $this->createMock(CryptInterface::class);
         $this->fileHandler = $this->createMock(FileHandlerInterface::class);
 
-        $this->csvImport = new CsvImport($this->application, $importHelper, $crypt, $this->fileHandler);
+        $this->csvImport = new CsvImport(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $importHelper,
+            $crypt,
+            new HashServiceAdapter(),
+            $this->fileHandler
+        );
     }
 }

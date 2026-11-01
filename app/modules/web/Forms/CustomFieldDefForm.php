@@ -70,14 +70,15 @@ final class CustomFieldDefForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->customFieldDefData = new CustomFieldDefinition();
-        $this->customFieldDefData->setId($this->itemId);
-        $this->customFieldDefData->setName($this->request->analyzeString('name'));
-        $this->customFieldDefData->setTypeId($this->request->analyzeInt('type'));
-        $this->customFieldDefData->setModuleId($this->request->analyzeInt('module'));
-        $this->customFieldDefData->setHelp($this->request->analyzeString('help'));
-        $this->customFieldDefData->setRequired($this->request->analyzeBool('required', false));
-        $this->customFieldDefData->setIsEncrypted($this->request->analyzeBool('encrypted', false));
+        $this->customFieldDefData = new CustomFieldDefinition([
+            'id' => $this->itemId,
+            'name' => $this->request->analyzeString('name'),
+            'typeId' => $this->request->analyzeInt('type'),
+            'moduleId' => $this->request->analyzeInt('module'),
+            'help' => $this->request->analyzeString('help'),
+            'required' => (int)$this->request->analyzeBool('required', false),
+            'isEncrypted' => (int)$this->request->analyzeBool('encrypted', false),
+        ]);
     }
 
     /**

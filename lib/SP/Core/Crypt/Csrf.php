@@ -29,6 +29,7 @@ namespace SP\Core\Crypt;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CsrfHandler;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\Ports\RequestService;
 

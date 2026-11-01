@@ -25,30 +25,24 @@
 namespace SP\Modules\Web\Controllers\CustomField;
 
 
-use SP\Core\Application;
-use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\CustomFieldDefForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class CustomFieldSaveBase
  */
 abstract class CustomFieldSaveBase extends ControllerBase
 {
-    protected CustomFieldDefinitionService $customFieldDefService;
-    protected CustomFieldDefForm           $form;
+    protected CustomFieldDefForm $form;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        CustomFieldDefinitionService $customFieldDefService
+        WebControllerHelper $webControllerHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->customFieldDefService = $customFieldDefService;
-        $this->form = new CustomFieldDefForm($application, $this->request);
+        $this->form = new CustomFieldDefForm($this->config, $this->session, $this->request);
     }
 }

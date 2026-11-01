@@ -26,17 +26,21 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Account\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Account\Ports\PublicLinkAuthorizationService;
 use SP\Domain\Account\Ports\PublicLinkRepository;
 use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -44,8 +48,8 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\PublicLinkDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -61,12 +65,14 @@ class PublicLinkTest extends UnitaryTestCase
     private PublicLink                      $publicLink;
     private CryptInterface|MockObject       $crypt;
     private MockObject|AccountService       $accountService;
+    private PublicLinkAuthorizationService|MockObject $authorization;
 
     /**
      * @throws QueryException
      * @throws ConstraintException
      * @throws ServiceException
      */
+    #[Test]
     public function testAddLinkView()
     {
         $publicLink = new PublicLinkModel(['hash' => self::$faker->sha1]);
@@ -90,6 +96,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws ServiceException
      */
+    #[Test]
     public function testAddLinkViewWithoutHash()
     {
         $publicLinkData = new PublicLinkModel();
@@ -105,6 +112,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws ServiceException
      */
+    #[Test]
     public function testAddLinkViewWithUseInfo()
     {
         $properties = [
@@ -140,6 +148,7 @@ class PublicLinkTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetByHash()
     {
         $hash = self::$faker->sha1;
@@ -160,6 +169,7 @@ class PublicLinkTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetByHashNotFound()
     {
         $hash = self::$faker->sha1;
@@ -181,6 +191,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws ServiceException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 9));
@@ -201,6 +212,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws ServiceException
      */
+    #[Test]
     public function testDeleteByIdBatchWithCountMismatch()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 9));
@@ -217,6 +229,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLink->deleteByIdBatch($ids);
     }
 
+    #[Test]
     public function testCreateLinkHash()
     {
         $this->assertNotEmpty(PublicLink::createLinkHash());
@@ -227,6 +240,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testUpdate()
     {
         $publicLinkList = PublicLinkDataGenerator::factory()->buildPublicLinkList();
@@ -243,6 +257,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -255,6 +270,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLink->delete($id);
     }
 
+    #[Test]
     public function testSearch()
     {
         $itemSearchData = new ItemSearchDto(self::$faker->colorName);
@@ -271,6 +287,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws SPException
      */
+    #[Test]
     public function testGetHashForItem()
     {
         $itemId = self::$faker->randomNumber();
@@ -291,6 +308,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws SPException
      */
+    #[Test]
     public function testGetHashForItemNotFound()
     {
         $itemId = self::$faker->randomNumber();
@@ -316,6 +334,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testRefresh()
     {
         $id = self::$faker->randomNumber();
@@ -342,6 +361,11 @@ class PublicLinkTest extends UnitaryTestCase
                 })
             )
             ->willReturn(true);
+
+        $this->authorization
+            ->expects(self::once())
+            ->method('check')
+            ->with($publicLinkData->getItemId());
 
         $passData = ['pass' => self::$faker->password, 'key' => self::$faker->sha1];
 
@@ -375,6 +399,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testRefreshNotFound()
     {
         $id = self::$faker->randomNumber();
@@ -395,6 +420,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @return void
      * @throws EnvironmentIsBrokenException
      */
+    #[Test]
     public function testGetPublicLinkKey()
     {
         $hash = self::$faker->sha1;
@@ -409,6 +435,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @return void
      * @throws EnvironmentIsBrokenException
      */
+    #[Test]
     public function testGetPublicLinkKeyWithoutHash()
     {
         $actual = $this->publicLink->getPublicLinkKey();
@@ -422,6 +449,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws SPException
      * @throws NoSuchItemException
      */
+    #[Test]
     public function testGetById()
     {
         $itemId = self::$faker->randomNumber();
@@ -443,6 +471,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws SPException
      * @throws NoSuchItemException
      */
+    #[Test]
     public function testGetByIdNotFound()
     {
         $itemId = self::$faker->randomNumber();
@@ -462,6 +491,7 @@ class PublicLinkTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testGetAllBasic()
     {
         $this->expectException(ServiceException::class);
@@ -470,6 +500,7 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLink->getAll();
     }
 
+    #[Test]
     public function testGetUseInfo()
     {
         $hash = self::$faker->sha1;
@@ -512,6 +543,7 @@ class PublicLinkTest extends UnitaryTestCase
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
     public function testCreate()
     {
         $publicLinkData = PublicLinkDataGenerator::factory()->buildPublicLink();
@@ -532,6 +564,11 @@ class PublicLinkTest extends UnitaryTestCase
                 })
             )
             ->willReturn($result);
+
+        $this->authorization
+            ->expects(self::once())
+            ->method('check')
+            ->with($publicLinkData->getItemId());
 
         $passData = ['pass' => self::$faker->password, 'key' => self::$faker->sha1];
 
@@ -556,6 +593,25 @@ class PublicLinkTest extends UnitaryTestCase
         $this->assertEquals($result->getLastId(), $actual);
     }
 
+    #[Test]
+    public function testCreateRejectsAnUnauthorizedAccount(): void
+    {
+        $publicLinkData = PublicLinkDataGenerator::factory()->buildPublicLink();
+
+        $this->authorization
+            ->expects(self::once())
+            ->method('check')
+            ->with($publicLinkData->getItemId())
+            ->willThrowException(new AccountPermissionException(SPException::INFO));
+
+        $this->publicLinkRepository->expects(self::never())->method('create');
+
+        $this->expectException(AccountPermissionException::class);
+
+        $this->publicLink->create($publicLinkData);
+    }
+
+    #[Test]
     public function testCalcDateExpire()
     {
         $expireDate = time() + $this->config->getConfigData()->getPublinksMaxTime();
@@ -578,16 +634,21 @@ class PublicLinkTest extends UnitaryTestCase
 
         $this->accountService = $this->createMock(AccountService::class);
         $this->crypt = $this->createMock(CryptInterface::class);
+        $this->authorization = $this->createMock(PublicLinkAuthorizationService::class);
 
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, self::$faker->password);
 
         $this->publicLink =
             new PublicLink(
-                $this->application,
+                $this->config,
+                $this->eventDispatcherStub,
+                $this->context,
                 $this->publicLinkRepository,
                 $request,
                 $this->accountService,
-                $this->crypt
+                $this->authorization,
+                $this->crypt,
+                new StatelessMasterKeyStore($this->context)
             );
     }
 }

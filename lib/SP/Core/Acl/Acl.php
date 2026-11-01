@@ -27,8 +27,8 @@ declare(strict_types=1);
 
 namespace SP\Core\Acl;
 
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
@@ -107,6 +107,7 @@ final readonly class Acl implements AclActionsInterface, AclInterface
 
         switch ($actionId) {
             case self::ACCOUNT_VIEW:
+            case self::ACCOUNT_SEARCH:
                 return $userDto->isAdminAcc || $userProfile->isAccView() || $userProfile->isAccEdit();
             case self::ACCOUNT_VIEW_PASS:
                 return $userDto->isAdminAcc || $userProfile->isAccViewPass();
@@ -203,6 +204,8 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             case self::CONFIG_CRYPT:
                 return $userProfile->isConfigEncryption();
             case self::CONFIG_BACKUP:
+            case self::CONFIG_BACKUP_RUN:
+            case self::CONFIG_EXPORT_RUN:
                 return $userProfile->isConfigBackup();
             case self::ACCESS_MANAGE:
                 return $userProfile->isMgmUsers()

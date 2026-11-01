@@ -26,9 +26,10 @@ declare(strict_types=1);
 namespace SP\Tests\Infrastructure\Database;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
-use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\Database\DatabaseException;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
+use SP\Domain\Core\Exceptions\DatabaseException;
 use SP\Infrastructure\Database\PDOWrapper;
 use SP\Tests\UnitaryTestCase;
 
@@ -43,6 +44,7 @@ class PDOWrapperTest extends UnitaryTestCase
      * @throws DatabaseException
      * @throws Exception
      */
+    #[Test]
     public function testBuild()
     {
         $dsn = 'mysql:charset=utf8;host=localhost;port=3306;dbname=test';

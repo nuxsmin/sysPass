@@ -24,84 +24,48 @@
 
 namespace SP\Modules\Web\Controllers\UserGroup;
 
-
-use JsonException;
-use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\User\Ports\UserGroupService;
-use SP\Html\DataGrid\DataGridInterface;
-use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Grid\UserGroupGrid;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Domain\User\UseCases\Dtos\SearchUserGroupsCommand;
+use SP\Domain\User\UseCases\SearchUserGroupsUseCase;
+use SP\Modules\Web\Controllers\SearchGridControllerBase;
+use SP\Modules\Web\Presenters\Helpers\Grid\UserGroupGrid;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
 
 /**
  * Class SearchController
  */
-final class SearchController extends ControllerBase
+final class SearchController extends SearchGridControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
-
-    private UserGroupService $userGroupService;
-    private UserGroupGrid    $userGroupGrid;
 
     public function __construct(
-        Application      $application,
-        WebControllerHelper $webControllerHelper,
-        UserGroupService $userGroupService,
-        UserGroupGrid    $userGroupGrid
+        \SP\Modules\Web\Mvc\Controller\WebControllerHelper $webControllerHelper,
+        private readonly SearchUserGroupsUseCase $searchUserGroupsUseCase,
+        private readonly UserGroupGrid $userGroupGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->userGroupService = $userGroupService;
-        $this->userGroupGrid = $userGroupGrid;
     }
 
-    /**
-     * Search action
-     *
-     * @return bool
-     * @throws JsonException
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function searchAction(): bool
-    {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::GROUP_SEARCH)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
-            );
-        }
-
-        $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
-        $this->view->assign('data', $this->getSearchGrid());
-
-        return $this->returnJsonResponseData(['html' => $this->render()]);
-    }
-
-    /**
-     * getSearchGrid
-     *
-     * @return DataGridInterface
-     * @throws ConstraintException
-     * @throws QueryException
-     */
     protected function getSearchGrid(): DataGridInterface
     {
-        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
+
+        $result = $this->searchUserGroupsUseCase->execute(new SearchUserGroupsCommand($itemSearchData));
 
         return $this->userGroupGrid->updatePager(
-            $this->userGroupGrid->getGrid($this->userGroupService->search($itemSearchData)),
+            $this->userGroupGrid->getGrid($result->result),
             $itemSearchData
         );
+    }
+
+    protected function getAclAction(): int
+    {
+        return AclActionsInterface::GROUP_SEARCH;
     }
 }

@@ -24,66 +24,40 @@
 
 namespace SP\Modules\Web\Controllers\Eventlog;
 
-
 use Exception;
-use JsonException;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Auth\Services\AuthException;
-use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Security\Ports\EventlogService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Security\UseCases\ClearEventlogUseCase;
+use SP\Domain\Security\UseCases\Dtos\ClearEventlogCommand;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class ClearController
  */
 final class ClearController extends ControllerBase
 {
-    use JsonTrait;
-
-    private EventlogService $eventlogService;
-
-    /**
-     * @throws SessionTimeout
-     * @throws AuthException
-     * @throws JsonException
-     */
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
-        EventlogService $eventlogService
+        private readonly ClearEventlogUseCase $clearEventlogUseCase
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->eventlogService = $eventlogService;
     }
 
-
-    /**
-     * @return bool
-     * @throws JsonException
-     */
-    public function clearAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function clearAction(): ActionResponse
     {
         try {
-            $this->eventlogService->clear();
-
-            $this->eventDispatcher->notify(
-                'clear.eventlog',
-                new Event($this, EventMessage::build()->addDescription(__u('Event log cleared')))
-            );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Event log cleared'));
+            $this->clearEventlogUseCase->execute(new ClearEventlogCommand());
         } catch (Exception $e) {
-            processException($e);
-
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
+
+        return ActionResponse::ok(__u('Event log cleared'));
     }
 }

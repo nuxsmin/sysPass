@@ -26,13 +26,16 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Services;
 
-use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountDto;
 use SP\Domain\Account\Ports\AccountPresetService;
+use SP\Domain\Account\Ports\PasswordValidator;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -40,7 +43,6 @@ use SP\Domain\ItemPreset\Models\AccountPermission;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Mvc\Controller\Validators\PasswordValidator;
 
 /**
  * Class AccountPreset
@@ -48,14 +50,16 @@ use SP\Mvc\Controller\Validators\PasswordValidator;
 final class AccountPreset extends Service implements AccountPresetService
 {
     public function __construct(
-        Application                                   $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly ItemPresetService $itemPresetService,
         private readonly AccountToUserGroupRepository $accountToUserGroupRepository,
         private readonly AccountToUserRepository      $accountToUserRepository,
         private readonly ConfigDataInterface          $configData,
         private readonly PasswordValidator $passwordValidator
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

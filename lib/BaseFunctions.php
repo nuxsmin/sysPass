@@ -261,7 +261,7 @@ function initModule(string $module): array
         if (is_array($definitions)) {
             return $definitions;
         }
-    } catch (Infrastructure\File\FileException $e) {
+    } catch (Domain\Core\Exceptions\FileException $e) {
         throw new SPException('Either module dir or module file don\'t exist');
     }
 

@@ -25,8 +25,6 @@
 namespace SP\Modules\Web\Controllers\UserProfile;
 
 
-use SP\Core\Acl\Acl;
-use SP\Core\Application;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -36,10 +34,12 @@ use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserProfile;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\User\UseCases\Dtos\GetUserProfileCommand;
+use SP\Domain\User\UseCases\GetUserProfileUseCase;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class UserProfileViewBase
@@ -49,19 +49,21 @@ abstract class UserProfileViewBase extends ControllerBase
     use ItemTrait;
 
     private UserProfileService $userProfileService;
+    private GetUserProfileUseCase $getUserProfileUseCase;
     private CustomFieldDataService $customFieldService;
 
     public function __construct(
-        Application         $application,
         WebControllerHelper $webControllerHelper,
         UserProfileService  $userProfileService,
+        GetUserProfileUseCase $getUserProfileUseCase,
         CustomFieldDataService $customFieldService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
         $this->userProfileService = $userProfileService;
+        $this->getUserProfileUseCase = $getUserProfileUseCase;
         $this->customFieldService = $customFieldService;
     }
 
@@ -81,13 +83,13 @@ abstract class UserProfileViewBase extends ControllerBase
         $this->view->addTemplate('user_profile', 'itemshow');
 
         $profile = $profileId
-            ? $this->userProfileService->getById($profileId)
+            ? $this->getUserProfileUseCase->execute(new GetUserProfileCommand($profileId))->model
             : new UserProfile();
 
         $this->view->assign('profile', $profile);
-        $this->view->assign('profileData', $profile->getProfile() ?: new ProfileData());
+        $this->view->assign('profileData', $profile->hydrate(ProfileData::class) ?? new ProfileData());
 
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE));
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign(

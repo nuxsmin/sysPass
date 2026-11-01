@@ -30,6 +30,7 @@ use Exception;
 use SessionHandlerInterface;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\SPException;

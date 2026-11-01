@@ -26,6 +26,7 @@ use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
+use SP\Domain\Common\Providers\Version;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\getFromEnv;
@@ -55,8 +56,10 @@ try {
 
     if (!DEBUG) {
         $cachePath = getFromEnv('CACHE_PATH', FileSystem::buildPath(APP_PATH, 'cache'));
-        $containerBuilder->enableCompilation($cachePath);
-        $containerBuilder->writeProxiesToFile(true, FileSystem::buildPath($cachePath, 'proxies'));
+        $containerCachePath = FileSystem::buildPath($cachePath, 'container', Version::getVersionStringNormalized());
+
+        $containerBuilder->enableCompilation($containerCachePath);
+        $containerBuilder->writeProxiesToFile(true, FileSystem::buildPath($containerCachePath, 'proxies'));
     }
 
     return $containerBuilder

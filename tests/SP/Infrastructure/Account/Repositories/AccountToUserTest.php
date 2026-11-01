@@ -27,15 +27,16 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Common\Models\Item;
+use SP\Domain\Account\Models\AccountItem;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Account\Repositories\AccountToUser;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -52,6 +53,7 @@ class AccountToUserTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testDeleteTypeByAccountId(): void
     {
         $accountId = self::$faker->randomNumber();
@@ -75,6 +77,7 @@ class AccountToUserTest extends UnitaryTestCase
         $this->assertTrue($this->accountToUser->deleteByAccountId($accountId));
     }
 
+    #[Test]
     public function testGetUserGroupsByAccountId(): void
     {
         $id = self::$faker->randomNumber();
@@ -84,7 +87,7 @@ class AccountToUserTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return $query->getBindValues()['accountId'] === $id
-                       && $arg->getMapClassName() === Item::class
+                       && $arg->getMapClassName() === AccountItem::class
                        && !empty($query->getStatement());
             }
         );
@@ -102,6 +105,7 @@ class AccountToUserTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testDeleteByUserGroupId(): void
     {
         $accountId = self::$faker->randomNumber();
@@ -129,6 +133,7 @@ class AccountToUserTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testAddByType(): void
     {
         $userGroups = self::getRandomNumbers(10);
@@ -153,6 +158,7 @@ class AccountToUserTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testDeleteByAccountId(): void
     {
         $accountId = self::$faker->randomNumber();
@@ -186,7 +192,7 @@ class AccountToUserTest extends UnitaryTestCase
         $this->accountToUser = new AccountToUser(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

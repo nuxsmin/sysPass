@@ -27,9 +27,13 @@ declare(strict_types=1);
 namespace SP\Domain\Account\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Ports\AccountCryptService;
@@ -42,9 +46,7 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 
-use function SP\__;
 use function SP\__u;
-use function SP\logger;
 
 /**
  * Class AccountMasterPassword
@@ -52,13 +54,16 @@ use function SP\logger;
 final class AccountMasterPassword extends Service implements AccountMasterPasswordService
 {
     public function __construct(
-        Application                            $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly AccountService        $accountService,
         private readonly AccountHistoryService $accountHistoryService,
         private readonly CryptInterface        $crypt,
-        private readonly AccountCryptService   $accountCryptService
+        private readonly AccountCryptService   $accountCryptService,
+        private readonly LoggerInterface       $logger = new NullLogger()
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -139,16 +144,16 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
         foreach ($accounts as $account) {
             // No realizar cambios si está en modo demo
             if ($configData->isDemoEnabled()) {
-                $accountsOk[] = $account->getId();
+                $accountsOk[] = $account->id;
                 continue;
             }
 
             if ($counter % 100 === 0) {
                 $eta = self::getETA($startTime, $counter, $numAccounts);
 
-                logger(
+                $this->logger->debug(
                     sprintf(
-                        __('Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
+                        __u('Updated accounts: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
                         $counter,
                         $numAccounts,
                         round(($counter * 100) / $numAccounts, 2),
@@ -160,7 +165,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
 
             if (isset($account->mPassHash) && $account->mPassHash !== $currentMasterPassHash) {
                 $eventMessage->addDescription(__u('The record\'s master password does not match'));
-                $eventMessage->addDetail($account->getName(), $account->getId());
+                $eventMessage->addDetail($account->name, $account->id);
                 continue;
             }
 
@@ -168,17 +173,17 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 $encryptedPassword = $this->accountCryptService
                     ->getPasswordEncrypted(
                         $this->crypt->decrypt(
-                            $account->getPass(),
-                            $account->getKey(),
+                            $account->pass,
+                            $account->key,
                             $updateMasterPassRequest->getCurrentMasterPass()
                         ),
                         $updateMasterPassRequest->getNewMasterPass()
                     );
 
                 // Call the specific updater
-                $passUpdater($account->getId(), $encryptedPassword);
+                $passUpdater($account->id, $encryptedPassword);
 
-                $accountsOk[] = $account->getId();
+                $accountsOk[] = $account->id;
                 $counter++;
             } catch (SPException $e) {
                 $this->eventDispatcher->notify('exception', new Event($e));
@@ -186,7 +191,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 $errorCount++;
 
                 $eventMessage->addDescription(__u('Error while updating the account\'s password'));
-                $eventMessage->addDetail($account->getName(), $account->getId());
+                $eventMessage->addDetail($account->name, $account->id);
             }
         }
 

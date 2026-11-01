@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Plugin\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -33,7 +34,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginCompatility;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -52,6 +53,7 @@ class PluginCompatilityTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCheckForWithCompatible()
     {
         $plugin = $this->createMock(Plugin::class);
@@ -75,6 +77,7 @@ class PluginCompatilityTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCheckForWithNoCompatible()
     {
         $plugin = $this->createMock(Plugin::class);
@@ -103,6 +106,11 @@ class PluginCompatilityTest extends UnitaryTestCase
 
         $this->pluginManagerService = $this->createMock(PluginManagerService::class);
 
-        $this->pluginCompatibility = new PluginCompatility($this->application, $this->pluginManagerService);
+        $this->pluginCompatibility = new PluginCompatility(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->pluginManagerService
+        );
     }
 }

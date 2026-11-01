@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Account\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Account\Dtos\PublicLinkKey;
 use SP\Tests\UnitaryTestCase;
 
@@ -41,6 +42,7 @@ class PublicLinkKeyTest extends UnitaryTestCase
     /**
      * @throws EnvironmentIsBrokenException
      */
+    #[Test]
     public function testGetKeyWithoutHash()
     {
         $publicLinkKey = new PublicLinkKey(self::$faker->sha1);
@@ -52,6 +54,7 @@ class PublicLinkKeyTest extends UnitaryTestCase
     /**
      * @throws EnvironmentIsBrokenException
      */
+    #[Test]
     public function testGetKeyWithHash()
     {
         $hash = self::$faker->sha1;

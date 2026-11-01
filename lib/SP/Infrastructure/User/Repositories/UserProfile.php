@@ -31,9 +31,9 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\UserProfile as UserProfileModel;
 use SP\Domain\User\Ports\UserProfileRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -58,8 +58,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
         $query = $this->queryFactory
             ->newDelete()
             ->from(UserProfileModel::TABLE)
-            ->where('id = :id', ['id' => $id])
-            ->limit(1);
+            ->where('id = :id', ['id' => $id]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the profile'));
 
@@ -224,8 +223,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
             ->newUpdate()
             ->table(UserProfileModel::TABLE)
             ->cols($userProfile->toArray(null, ['id']))
-            ->where('id = :id', ['id' => $userProfile->getId()])
-            ->limit(1);
+            ->where('id = :id', ['id' => $userProfile->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the profile'));
 

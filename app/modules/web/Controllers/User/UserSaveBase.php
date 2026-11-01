@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers\User;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPMailer\PHPMailer\Exception;
-use SP\Core\Application;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -35,40 +34,37 @@ use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserPassRecoverService;
-use SP\Domain\User\Ports\UserService;
-use SP\Domain\User\Services\UserPassRecover;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\UserForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class UserSaveBase
  */
 abstract class UserSaveBase extends ControllerBase
 {
-    protected UserService $userService;
+    use ItemTrait;
+
     protected CustomFieldDataService $customFieldService;
     protected UserForm  $form;
     private MailService            $mailService;
     private UserPassRecoverService $userPassRecoverService;
 
     public function __construct(
-        Application            $application,
         WebControllerHelper    $webControllerHelper,
-        UserService $userService,
         CustomFieldDataService $customFieldService,
         MailService            $mailService,
         UserPassRecoverService $userPassRecoverService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->userService = $userService;
         $this->customFieldService = $customFieldService;
         $this->mailService = $mailService;
         $this->userPassRecoverService = $userPassRecoverService;
-        $this->form = new UserForm($application, $this->request);
+        $this->form = new UserForm($this->config, $this->session, $this->request);
     }
 
     /**
@@ -89,7 +85,7 @@ abstract class UserSaveBase extends ControllerBase
             $this->mailService->send(
                 __('Password Change'),
                 $userData->getEmail(),
-                UserPassRecover::getMailMessage($hash)
+                $this->userPassRecoverService->getMailMessage($hash, $this->uriContext->getWebUri())
             );
         }
     }

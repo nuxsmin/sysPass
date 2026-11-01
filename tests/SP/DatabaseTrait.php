@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests;
 
 use PDO;
-use SP\Infrastructure\Database\DatabaseException;
+use SP\Domain\Core\Exceptions\DatabaseException;
 
 /**
  *
@@ -68,26 +68,55 @@ trait DatabaseTrait
         $dbName = getenv('DB_NAME');
 
         foreach (FIXTURE_FILES as $file) {
+            if (!is_readable($file)) {
+                error_log(sprintf('Cannot read fixtures from: %s', $file));
+
+                exit(1);
+            }
+
             if (!empty($dbPass)) {
                 $cmd = sprintf(
-                    'mysql -h %s -u %s -p%s %s < %s',
+                    'mysql -h %s -u %s -p%s %s',
                     $dbServer,
                     $dbUser,
                     $dbPass,
-                    $dbName,
-                    $file
+                    $dbName
                 );
             } else {
                 $cmd = sprintf(
-                    'mysql -h %s -u %s %s < %s',
+                    'mysql -h %s -u %s %s',
                     $dbServer,
                     $dbUser,
-                    $dbName,
-                    $file
+                    $dbName
                 );
             }
 
-            exec($cmd, $output, $res);
+            $process = proc_open(
+                $cmd,
+                [
+                    0 => ['pipe', 'r'],
+                    1 => ['pipe', 'w'],
+                    2 => ['pipe', 'w']
+                ],
+                $pipes
+            );
+
+            if (is_resource($process) === false) {
+                error_log(sprintf('Cannot run command: %s', $cmd));
+
+                exit(1);
+            }
+
+            fwrite($pipes[0], file_get_contents($file) ?: '');
+            fclose($pipes[0]);
+
+            $stdout = stream_get_contents($pipes[1]);
+            $stderr = stream_get_contents($pipes[2]);
+
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+
+            $res = proc_close($process);
 
             if ($res !== 0) {
                 /** @noinspection ForgottenDebugOutputInspection */
@@ -95,7 +124,7 @@ trait DatabaseTrait
                 /** @noinspection ForgottenDebugOutputInspection */
                 error_log(sprintf('CMD: %s', $cmd));
                 /** @noinspection ForgottenDebugOutputInspection */
-                error_log(print_r($output, true));
+                error_log($stderr ?: $stdout);
 
                 exit(1);
             }

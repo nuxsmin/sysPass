@@ -24,12 +24,14 @@
 
 namespace SP\Modules\Api\Controllers\Client;
 
-
-use Exception;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class DeleteController
@@ -39,33 +41,28 @@ final class DeleteController extends ClientBase
     /**
      * deleteAction
      */
-    public function deleteAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function deleteAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CLIENT_DELETE);
+        $this->setupApi(AclActionsInterface::CLIENT_DELETE);
 
-            $id = $this->apiService->getParamInt('id', true);
+        $id = $this->apiService->getParamInt('id', true);
 
-            $clientData = $this->clientService->getById($id);
+        $clientData = $this->clientService->getById($id);
 
-            $this->clientService->delete($id);
+        $this->clientService->delete($id);
 
-            $this->eventDispatcher->notify(
-                'delete.client',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Client deleted'))
-                        ->addDetail(__u('Name'), $clientData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'delete.client',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Client deleted'))
+                    ->addDetail(__u('Name'), $clientData->getName())
+                    ->addDetail('ID', $id)
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, $id, __('Client deleted')));
-        } catch (Exception $e) {
-            $this->returnResponseException($e);
-
-            processException($e);
-        }
+        return ActionResponse::ok(__('Client deleted'), $clientData, $id);
     }
 }

@@ -27,7 +27,7 @@ namespace SP\Domain\Html\Services;
 
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Http\Services\Request as HttpRequest;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class MinifyFile

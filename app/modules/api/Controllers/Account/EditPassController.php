@@ -24,13 +24,16 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-use Exception;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Dtos\AccountRequest;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Account\Dtos\AccountUpdateDto;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class EditPassController
@@ -40,53 +43,46 @@ final class EditPassController extends AccountBase
     /**
      * viewPassAction
      */
-    public function editPassAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function editPassAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::ACCOUNT_EDIT_PASS);
+        $this->setupApi(AclActionsInterface::ACCOUNT_EDIT_PASS);
 
-            $accountRequest = $this->buildAccountRequest();
+        $accountRequest = $this->buildAccountRequest();
 
-            $this->accountPresetService->checkPasswordPreset($accountRequest);
+        $accountRequest = $this->accountPresetService->checkPasswordPreset($accountRequest);
 
-            $this->accountService->editPassword($accountRequest);
+        $this->accountService->editPassword($accountRequest->id, $accountRequest);
 
-            $accountDetails = $this->accountService->getByIdEnriched($accountRequest->id)->getAccountVData();
+        $accountDetails = $this->accountService->getByIdEnriched($accountRequest->id)->getAccountVData();
 
-            $this->eventDispatcher->notify(
-                'edit.account.pass',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Password updated'))
-                        ->addDetail(__u('Name'), $accountDetails->getName())
-                        ->addDetail(__u('Client'), $accountDetails->getClientName())
-                        ->addDetail('ID', $accountDetails->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'edit.account.pass',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Password updated'))
+                    ->addDetail(__u('Name'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    ->addDetail('ID', $accountDetails->getId())
+            )
+        );
 
-            $this->returnResponse(
-                ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Password updated'))
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Password updated'), $accountDetails, $accountRequest->id);
     }
 
     /**
-     * @return AccountRequest
      * @throws ServiceException
      */
-    private function buildAccountRequest(): AccountRequest
+    private function buildAccountRequest(): AccountUpdateDto
     {
-        $accountRequest = new AccountRequest();
-        $accountRequest->id = $this->apiService->getParamInt('id', true);
-        $accountRequest->pass = $this->apiService->getParamString('pass', true);
-        $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
-        $accountRequest->userEditId = $this->context->getUserData()->getId();
-
-        return $accountRequest;
+        return AccountUpdateDto::fromArray(
+            [
+                'id'             => $this->apiService->getParamInt('id', true),
+                'pass'           => $this->apiService->getParamString('pass', true),
+                'passDateChange' => $this->apiService->getParamInt('expireDate'),
+                'userEditId'     => $this->context->getUserData()->id,
+            ]
+        );
     }
 }

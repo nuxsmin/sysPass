@@ -25,30 +25,24 @@
 namespace SP\Modules\Web\Controllers\ItemPreset;
 
 
-use SP\Core\Application;
-use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Forms\ItemsPresetForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class ItemPresetSaveBase
  */
 abstract class ItemPresetSaveBase extends ControllerBase
 {
-    protected ItemPresetService $itemPresetService;
-    protected ItemsPresetForm   $form;
+    protected ItemsPresetForm $form;
 
     public function __construct(
-        Application $application,
-        WebControllerHelper $webControllerHelper,
-        ItemPresetService $itemPresetService
+        WebControllerHelper $webControllerHelper
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
 
-        $this->itemPresetService = $itemPresetService;
-        $this->form = new ItemsPresetForm($application, $this->request);
+        $this->form = new ItemsPresetForm($this->config, $this->session, $this->request);
     }
 }

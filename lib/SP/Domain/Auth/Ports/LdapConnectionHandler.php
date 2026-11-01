@@ -26,8 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Ports;
 
-use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
+use SP\Domain\Auth\Exceptions\LdapException;
+use SP\Domain\Auth\Dtos\LdapParams;
 
 /**
  * Interface LdapConnectionHandler

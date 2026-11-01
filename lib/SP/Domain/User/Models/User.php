@@ -52,7 +52,9 @@ class User extends Model implements ItemWithIdAndNameModel
     protected ?string $email           = null;
     protected ?string $notes           = null;
     protected ?int    $userGroupId     = null;
+    protected ?string $userGroupName   = null;
     protected ?int    $userProfileId   = null;
+    protected ?string $userProfileName = null;
     protected ?bool   $isAdminApp      = null;
     protected ?bool   $isAdminAcc      = null;
     protected ?bool   $isDisabled      = null;
@@ -108,6 +110,11 @@ class User extends Model implements ItemWithIdAndNameModel
     public function getUserProfileId(): ?int
     {
         return $this->userProfileId;
+    }
+
+    public function getUserProfileName(): ?string
+    {
+        return $this->userProfileName;
     }
 
     public function isAdminApp(): ?bool

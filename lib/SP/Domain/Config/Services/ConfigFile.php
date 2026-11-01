@@ -39,12 +39,12 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConfigException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
-use SP\Infrastructure\File\FileException;
-
-use function SP\logger;
-use function SP\processException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class ConfigFile
@@ -58,7 +58,8 @@ class ConfigFile implements ConfigFileService
         private readonly XmlFileStorageService $fileStorage,
         private readonly FileCacheService      $fileCache,
         private readonly Context $context,
-        private ?ConfigDataInterface           $configData = null
+        private ?ConfigDataInterface           $configData = null,
+        private readonly LoggerInterface       $logger = new NullLogger()
     ) {
         $this->configData = $configData ?? $this->initialize();
     }
@@ -71,12 +72,10 @@ class ConfigFile implements ConfigFileService
         try {
             $configData = $this->loadFromCache() ?? $this->loadFromFile() ?? $this->generateNewConfig();
 
-            logger('Config loaded');
+            $this->logger->debug('Config loaded');
 
             return $configData;
         } catch (Exception $e) {
-            processException($e);
-
             throw ConfigException::critical($e->getMessage(), null, $e->getCode(), $e);
         }
     }
@@ -90,7 +89,19 @@ class ConfigFile implements ConfigFileService
             return null;
         }
 
-        $configData = $this->fileCache->loadWith(ConfigData::class);
+        try {
+            $configData = $this->fileCache->loadWith(ConfigData::class);
+        } catch (InvalidClassException $e) {
+            $this->logger->warning(sprintf('Config cache is not readable, regenerating: %s', $e->getMessage()));
+
+            try {
+                $this->fileCache->delete();
+            } catch (FileException $deleteException) {
+                $this->logger->warning(sprintf('Unable to delete the config cache: %s', $deleteException->getMessage()));
+            }
+
+            return null;
+        }
 
         if ($configData->countAttributes() === 0) {
             $this->fileCache->delete();
@@ -98,7 +109,7 @@ class ConfigFile implements ConfigFileService
             return null;
         }
 
-        logger('Config cache loaded');
+        $this->logger->debug('Config cache loaded');
 
         return $configData;
     }
@@ -120,7 +131,7 @@ class ConfigFile implements ConfigFileService
 
             return $configData;
         } catch (ReflectionException|FileException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         return null;
@@ -128,6 +139,7 @@ class ConfigFile implements ConfigFileService
 
     /**
      * Map the config array keys with ConfigData class setters
+     * @param array<string, mixed> $items
      * @throws ReflectionException
      */
     private function configMapper(array $items): ConfigDataInterface
@@ -207,7 +219,7 @@ class ConfigFile implements ConfigFileService
 
         $this->save($configData);
 
-        logger('Config file created', 'INFO');
+        $this->logger->info('Config file created');
 
         return $configData;
     }
@@ -241,7 +253,7 @@ class ConfigFile implements ConfigFileService
     public function generateUpgradeKey(): ConfigFileService
     {
         if (empty($this->configData->getUpgradeKey())) {
-            logger('Generating upgrade key');
+            $this->logger->debug('Generating upgrade key');
 
             return $this->save($this->configData->setUpgradeKey(Password::generateRandomBytes(16)));
         }

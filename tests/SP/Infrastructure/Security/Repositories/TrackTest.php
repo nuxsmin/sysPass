@@ -31,6 +31,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -39,7 +40,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Security\Models\Track as TrackModel;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\Security\Repositories\Track;
 use SP\Tests\Generators\TrackGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -58,6 +59,7 @@ class TrackTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testClear()
     {
         $callback = new Callback(
@@ -79,6 +81,7 @@ class TrackTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUnlock()
     {
         $callbackCreate = new Callback(
@@ -104,6 +107,7 @@ class TrackTest extends UnitaryTestCase
         $this->assertEquals(1, $out);
     }
 
+    #[Test]
     public function testGetTracksForClientFromTime()
     {
         $track = TrackGenerator::factory()->buildTrack();
@@ -132,6 +136,7 @@ class TrackTest extends UnitaryTestCase
         $this->track->getTracksForClientFromTime($track);
     }
 
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -142,8 +147,7 @@ class TrackTest extends UnitaryTestCase
                 $params = $query->getBindValues();
                 $searchStringLike = '%' . $item->getSeachString() . '%';
 
-                return count($params) === 2
-                       && $params['time'] === 1000
+                return count($params) === 1
                        && $params['source'] === $searchStringLike
                        && $arg->getMapClassName() === TrackModel::class
                        && is_a($query, SelectInterface::class)
@@ -159,6 +163,7 @@ class TrackTest extends UnitaryTestCase
         $this->track->search($item, 1000);
     }
 
+    #[Test]
     public function testSearchWithEmptyString()
     {
         $item = new ItemSearchDto();
@@ -168,8 +173,7 @@ class TrackTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 1
-                       && $params['time'] === 1000
+                return count($params) === 0
                        && $arg->getMapClassName() === TrackModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
@@ -188,6 +192,7 @@ class TrackTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testAdd()
     {
         $track = TrackGenerator::factory()->buildTrack();
@@ -227,7 +232,7 @@ class TrackTest extends UnitaryTestCase
         $this->track = new Track(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

@@ -26,16 +26,16 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Tag\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Tag\Ports\TagRepository;
 use SP\Domain\Tag\Services\Tag;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Domain\Tag\Exceptions\TagException;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\ItemSearchDataGenerator;
 use SP\Tests\Generators\TagGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -52,9 +52,10 @@ class TagTest extends UnitaryTestCase
 
     /**
      * @throws ConstraintException
-     * @throws NoSuchItemException
+     * @throws TagException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -72,6 +73,7 @@ class TagTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithNotFound()
     {
         $id = self::$faker->randomNumber();
@@ -82,15 +84,17 @@ class TagTest extends UnitaryTestCase
             ->with($id)
             ->willReturn(new QueryResult());
 
-        $this->expectException(NoSuchItemException::class);
+        $this->expectException(TagException::class);
+        $this->expectExceptionCode(TagException::NOT_FOUND);
         $this->expectExceptionMessage('Tag not found');
 
         $this->tag->delete($id);
     }
 
     /**
-     * @throws NoSuchItemException
+     * @throws TagException
      */
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -109,8 +113,9 @@ class TagTest extends UnitaryTestCase
     }
 
     /**
-     * @throws NoSuchItemException
+     * @throws TagException
      */
+    #[Test]
     public function testGetByIdWithUnknownId()
     {
         $id = self::$faker->randomNumber();
@@ -121,15 +126,17 @@ class TagTest extends UnitaryTestCase
             ->with($id)
             ->willReturn(new QueryResult([]));
 
-        $this->expectException(NoSuchItemException::class);
+        $this->expectException(TagException::class);
+        $this->expectExceptionCode(TagException::NOT_FOUND);
         $this->expectExceptionMessage('Tag not found');
 
         $this->tag->getById($id);
     }
 
     /**
-     * @throws NoSuchItemException
+     * @throws TagException
      */
+    #[Test]
     public function testGetByName()
     {
         $name = self::$faker->colorName();
@@ -148,8 +155,9 @@ class TagTest extends UnitaryTestCase
     }
 
     /**
-     * @throws NoSuchItemException
+     * @throws TagException
      */
+    #[Test]
     public function testGetByNameWithUnknownName()
     {
         $name = self::$faker->colorName();
@@ -160,12 +168,14 @@ class TagTest extends UnitaryTestCase
             ->with($name)
             ->willReturn(new QueryResult([]));
 
-        $this->expectException(NoSuchItemException::class);
+        $this->expectException(TagException::class);
+        $this->expectExceptionCode(TagException::NOT_FOUND);
         $this->expectExceptionMessage('Tag not found');
 
         $this->tag->getByName($name);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $tag = TagGenerator::factory()->buildTag();
@@ -185,6 +195,7 @@ class TagTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $tag = TagGenerator::factory()->buildTag();
@@ -205,6 +216,7 @@ class TagTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -219,9 +231,9 @@ class TagTest extends UnitaryTestCase
     }
 
     /**
-     * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testDeleteByIdBatchError()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
@@ -232,7 +244,8 @@ class TagTest extends UnitaryTestCase
             ->with($ids)
             ->willReturn(new QueryResult(null, 0));
 
-        $this->expectException(ServiceException::class);
+        $this->expectException(TagException::class);
+        $this->expectExceptionCode(TagException::DELETE_FAILED);
         $this->expectExceptionMessage('Error while removing the tags');
 
         $this->tag->deleteByIdBatch($ids);
@@ -243,6 +256,7 @@ class TagTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $tag = TagGenerator::factory()->buildTag();
@@ -256,6 +270,7 @@ class TagTest extends UnitaryTestCase
         $this->tag->update($tag);
     }
 
+    #[Test]
     public function testSearch()
     {
         $itemSearch = ItemSearchDataGenerator::factory()->buildItemSearchData();
@@ -274,7 +289,7 @@ class TagTest extends UnitaryTestCase
 
         $this->tagRepository = $this->createMock(TagRepository::class);
 
-        $this->tag = new Tag($this->application, $this->tagRepository);
+        $this->tag = new Tag($this->config, $this->eventDispatcherStub, $this->context, $this->tagRepository);
     }
 
 

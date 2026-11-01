@@ -63,12 +63,13 @@ use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
@@ -111,7 +112,8 @@ abstract class IntegrationTestCase extends TestCase
         string $uri,
         array  $paramsGet = [],
         array  $paramsPost = [],
-        array  $files = []
+        array  $files = [],
+        array  $server = []
     ): Request {
         $server = array_merge(
             $_SERVER,
@@ -121,7 +123,8 @@ abstract class IntegrationTestCase extends TestCase
                 'HTTP_USER_AGENT' => self::$faker->userAgent(),
                 'HTTP_HOST' => 'localhost'
                 //'QUERY_STRING' => $query
-            ]
+            ],
+            $server
         );
 
         return new Request(
@@ -182,7 +185,7 @@ abstract class IntegrationTestCase extends TestCase
         $configFileService = $this->createStub(ConfigFileService::class);
         $configFileService->method('getConfigData')->willReturn($configData);
 
-        $databaseUtil = self::createStub(\SP\Infrastructure\Database\DatabaseUtil::class);
+        $databaseUtil = self::createStub(DatabaseUtilInterface::class);
         $databaseUtil->method('checkDatabaseConnection')->willReturn(true);
         $databaseUtil->method('checkDatabaseTables')->willReturn(true);
 
@@ -213,7 +216,7 @@ abstract class IntegrationTestCase extends TestCase
             LdapConnectionHandler::class => self::createStub(LdapConnectionHandler::class),
             'backup.dbArchiveHandler' => self::createStub(ArchiveHandler::class),
             'backup.appArchiveHandler' => self::createStub(ArchiveHandler::class),
-            \SP\Infrastructure\Database\DatabaseUtil::class => $databaseUtil,
+            DatabaseUtilInterface::class => $databaseUtil,
             Context::class => $this->getContext(),
             MailService::class => self::createStub(MailService::class),
             DbStorageHandler::class => self::createStub(DbStorageHandler::class),
@@ -248,14 +251,24 @@ abstract class IntegrationTestCase extends TestCase
                 return $this->databaseQueryResolver->call($this, $queryData);
             }
 
-            $mapClassName = $queryData->getMapClassName();
-
-            if (isset($this->databaseMapperResolvers[$mapClassName])) {
-                return $this->databaseMapperResolvers[$mapClassName];
-            }
-
-            return new QueryResult([], 1, 100);
+            return $this->resolveDatabaseQuery($queryData);
         };
+    }
+
+    /**
+     * Resolves a query result from the registered database mapper resolvers
+     *
+     * @return QueryResult<\SP\Domain\Common\Models\Model>
+     */
+    protected function resolveDatabaseQuery(QueryData $queryData): QueryResult
+    {
+        $mapClassName = $queryData->getMapClassName();
+
+        if (isset($this->databaseMapperResolvers[$mapClassName])) {
+            return $this->databaseMapperResolvers[$mapClassName];
+        }
+
+        return new QueryResult([], 1, 100);
     }
 
     /**

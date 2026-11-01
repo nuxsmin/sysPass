@@ -37,6 +37,8 @@ use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
  */
 interface MasterPassService
 {
+    public const PARAM_MASTER_PASS_HASH = 'masterPwd';
+
     /**
      * Check whether the user's master password was updated
      *

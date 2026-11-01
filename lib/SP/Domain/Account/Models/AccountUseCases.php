@@ -55,11 +55,15 @@ trait AccountUseCases
     {
         $account->userId = $accountDto->userId;
         $account->userGroupId = $accountDto->userGroupId;
+        $account->userEditId = $accountDto->userEditId ?? $accountDto->userId;
         $account->name = $accountDto->name;
         $account->clientId = $accountDto->clientId;
+        $account->categoryId = $accountDto->categoryId;
         $account->login = $accountDto->login;
         $account->url = $accountDto->url;
         $account->notes = $accountDto->notes;
+        $account->pass = $accountDto->pass;
+        $account->key = $accountDto->key;
         $account->isPrivate = (int)$accountDto->isPrivate;
         $account->isPrivateGroup = (int)$accountDto->isPrivateGroup;
         $account->passDateChange = $accountDto->passDateChange;

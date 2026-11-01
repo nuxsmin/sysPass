@@ -26,20 +26,21 @@ declare(strict_types=1);
 namespace SP\Domain\Config\Services;
 
 use Exception;
-use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Dtos\ConfigRequest;
 use SP\Domain\Config\Models\Config as ConfigModel;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigRepository;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
-use function SP\__;
-use function SP\processException;
+use function SP\__u;
 
 /**
  * Class Config
@@ -47,9 +48,14 @@ use function SP\processException;
 final class Config extends Service implements ConfigService
 {
 
-    public function __construct(Application $application, private readonly ConfigRepository $configRepository)
+    public function __construct(
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
+        private readonly ConfigRepository $configRepository
+    )
     {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -77,7 +83,7 @@ final class Config extends Service implements ConfigService
 
         if ($result->getNumRows() === 0 && $default === null) {
             throw new NoSuchItemException(
-                sprintf(__('Parameter not found (%s)'), $param)
+                sprintf(__u('Parameter not found (%s)'), $param)
             );
         }
 
@@ -101,8 +107,6 @@ final class Config extends Service implements ConfigService
                 $this
             );
         } catch (Exception $e) {
-            processException($e);
-
             throw new ServiceException(
                 $e->getMessage(),
                 SPException::ERROR,

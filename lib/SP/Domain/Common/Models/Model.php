@@ -111,7 +111,10 @@ abstract class Model implements JsonSerializable, ArrayAccess
 
     final public static function getColsWithPreffix(string $preffix, ?array $exclude = null): array
     {
-        return array_map(static fn(string $name) => sprintf('%s.%s', $preffix, $name), self::getCols($exclude));
+        return array_map(
+            static fn(string $name) => sprintf('%s.%s', $preffix, self::quoteColumn($name)),
+            array_keys((new static())->toArray(null, $exclude))
+        );
     }
 
     /**
@@ -123,17 +126,36 @@ abstract class Model implements JsonSerializable, ArrayAccess
      */
     final public static function getCols(?array $exclude = null): array
     {
-        return array_keys((new static())->toArray(null, $exclude));
+        return array_map(
+            static fn(string $name) => self::quoteColumn($name),
+            array_keys((new static())->toArray(null, $exclude))
+        );
+    }
+
+    private static function quoteColumn(string $name): string
+    {
+        return $name === 'key' ? '`key`' : $name;
     }
 
     public function offsetExists(mixed $offset): bool
     {
-        return array_key_exists($offset, $this->properties);
+        return array_key_exists($offset, $this->getAccessibleProperties());
     }
 
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->properties[$offset];
+        return $this->getAccessibleProperties()[$offset] ?? null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getAccessibleProperties(): array
+    {
+        $properties = get_object_vars($this);
+        unset($properties['properties'], $properties['fields']);
+
+        return $properties + $this->properties;
     }
 
     public function offsetSet(mixed $offset, mixed $value): void

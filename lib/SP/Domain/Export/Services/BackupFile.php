@@ -29,24 +29,26 @@ namespace SP\Domain\Export\Services;
 
 use Exception;
 use PDO;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Database\Dtos\DatabaseTables;
 use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
+use SP\Domain\Database\Ports\QueryFactoryInterface;
+use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Ports\BackupFileService;
 use SP\Domain\File\Ports\ArchiveHandlerInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Infrastructure\Common\Repositories\Query;
-use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__u;
 
@@ -57,17 +59,20 @@ final class BackupFile extends Service implements BackupFileService
 {
     public const         BACKUP_INCLUDE_REGEX = /** @lang RegExp */
         '#^(?:[A-Z]:)?(?:/(?!(\.git|backup|cache|temp|vendor|tests))[^/]+)+/[^/]+\.\w+$#Di';
-    private const        BACKUP_PREFIX        = 'sysPassBackup';
 
     public function __construct(
-        Application                              $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly DatabaseInterface       $database,
-        private readonly DatabaseUtil            $databaseUtil,
+        private readonly DatabaseUtilInterface   $databaseUtil,
         private readonly FileHandlerInterface    $dbBackupFile,
         private readonly ArchiveHandlerInterface $dbArchiveHandler,
         private readonly ArchiveHandlerInterface $appArchiveHandler,
+        private readonly BackupFiles             $backupFiles,
+        private readonly QueryFactoryInterface   $queryFactory
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -78,6 +83,8 @@ final class BackupFile extends Service implements BackupFileService
     public function doBackup(string $backupPath, string $applicationPath): void
     {
         set_time_limit(0);
+
+        $backupPath = $this->resolveBackupPath($backupPath);
 
         try {
             $this->deleteOldBackups($backupPath);
@@ -92,7 +99,7 @@ final class BackupFile extends Service implements BackupFileService
             $this->backupTables($configData->getDbName());
             $this->backupApp($applicationPath);
 
-            $this->config->save($configData->setBackupHash($this->buildHash()));
+            $this->config->save($configData->setBackupHash($this->backupFiles->getHash()));
         } catch (Exception $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 
@@ -106,15 +113,75 @@ final class BackupFile extends Service implements BackupFileService
     }
 
     /**
+     * Canonicalize the backup root so every later operation uses the resolved
+     * directory instead of a possibly relative or symlinked path.
+     *
+     * @throws ServiceException
+     */
+    private function resolveBackupPath(string $backupPath): string
+    {
+        if ($backupPath === '') {
+            throw ServiceException::error('Unable to create the backups directory');
+        }
+
+        if (!is_dir($backupPath) && !mkdir($backupPath, 0755, true) && !is_dir($backupPath)) {
+            throw ServiceException::error('Unable to create the backups directory');
+        }
+
+        $canonicalPath = realpath($backupPath);
+
+        if ($canonicalPath === false || !is_dir($canonicalPath)) {
+            throw ServiceException::error('Unable to create the backups directory');
+        }
+
+        return rtrim($canonicalPath, DIRECTORY_SEPARATOR) ?: DIRECTORY_SEPARATOR;
+    }
+
+    /**
      * Eliminar las copias de seguridad anteriores
      */
     private function deleteOldBackups(string $backupPath): void
     {
-        FileSystem::deleteByPattern(
-            $backupPath,
+        $currentFiles = [
+            basename((string)$this->backupFiles->getAppBackupFile()),
+            basename((string)$this->backupFiles->getDbBackupFile()),
+            basename((string)$this->backupFiles->getAppBackupFileCompressed()),
+            basename((string)$this->backupFiles->getDbBackupFileCompressed()),
+        ];
+
+        $patterns = [
             AppInfoInterface::APP_NAME . '_db-*',
             AppInfoInterface::APP_NAME . '_app-*',
             AppInfoInterface::APP_NAME . '*.sql',
+        ];
+
+        foreach ($patterns as $pattern) {
+            foreach (glob(implode(DIRECTORY_SEPARATOR, [$backupPath, $pattern])) ?: [] as $file) {
+                if (!$this->isContainedIn($file, $backupPath)) {
+                    continue;
+                }
+
+                if (!in_array(basename($file), $currentFiles, true)) {
+                    @unlink($file);
+                }
+            }
+        }
+    }
+
+    /**
+     * Check that a path resolves to a location under the canonical backup root.
+     */
+    private function isContainedIn(string $path, string $backupPath): bool
+    {
+        $canonicalPath = realpath($path);
+
+        if ($canonicalPath === false) {
+            return false;
+        }
+
+        return str_starts_with(
+            $canonicalPath,
+            rtrim($backupPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR
         );
     }
 
@@ -155,9 +222,9 @@ final class BackupFile extends Service implements BackupFileService
         $views = $this->getViews();
 
         foreach ($tables as $table) {
-            $query = Query::buildForMySQL(sprintf('SHOW CREATE TABLE %s', $table), []);
+            $query = $this->queryFactory->buildQuery(sprintf('SHOW CREATE TABLE %s', $table), []);
 
-            $data = $this->database->runQuery(QueryData::build($query))->getData();
+            $data = $this->database->runQuery($this->queryFactory->buildQueryData($query))->getData();
 
             $sqlOut = [
                 '-- ',
@@ -172,9 +239,9 @@ final class BackupFile extends Service implements BackupFileService
         }
 
         foreach ($views as $view) {
-            $query = Query::buildForMySQL(sprintf('SHOW CREATE TABLE %s', $view), []);
+            $query = $this->queryFactory->buildQuery(sprintf('SHOW CREATE TABLE %s', $view), []);
 
-            $data = $this->database->runQuery(QueryData::build($query))->getData();
+            $data = $this->database->runQuery($this->queryFactory->buildQueryData($query))->getData();
 
             $sqlOut = [
                 '-- ',
@@ -190,11 +257,11 @@ final class BackupFile extends Service implements BackupFileService
 
         // Save tables' values
         foreach ($tables as $table) {
-            $query = Query::buildForMySQL(sprintf('SELECT * FROM `%s`', $table), []);
+            $query = $this->queryFactory->buildQuery(sprintf('SELECT * FROM `%s`', $table), []);
 
             // Get table records
             $rows = $this->database->doFetchWithOptions(
-                QueryData::build($query),
+                $this->queryFactory->buildQueryData($query),
                 [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL],
                 PDO::FETCH_NUM,
                 false
@@ -235,7 +302,6 @@ final class BackupFile extends Service implements BackupFileService
         $this->dbBackupFile->write(implode(PHP_EOL, $sqlOut));
 
         $this->dbArchiveHandler->compressFile($this->dbBackupFile->getFile());
-
         $this->dbBackupFile->delete();
     }
 
@@ -244,7 +310,7 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function getTables(): array
     {
-        return array_filter(DatabaseUtil::TABLES, static fn(string $t) => strrpos($t, '_v') === false);
+        return array_filter(DatabaseTables::TABLES, static fn(string $t) => strrpos($t, '_v') === false);
     }
 
     /**
@@ -252,7 +318,7 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function getViews(): array
     {
-        return array_filter(DatabaseUtil::TABLES, static fn(string $t) => strrpos($t, '_v') !== false);
+        return array_filter(DatabaseTables::TABLES, static fn(string $t) => strrpos($t, '_v') !== false);
     }
 
     /**
@@ -269,13 +335,5 @@ final class BackupFile extends Service implements BackupFileService
         );
 
         $this->appArchiveHandler->compressDirectory($directory, self::BACKUP_INCLUDE_REGEX);
-    }
-
-    /**
-     * @return string
-     */
-    private function buildHash(): string
-    {
-        return sha1(uniqid(self::BACKUP_PREFIX, true));
     }
 }

@@ -26,9 +26,9 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Ports;
 
-use SP\Domain\Auth\Providers\Ldap\AttributeCollection;
-use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapResults;
+use SP\Domain\Auth\Models\AttributeCollection;
+use SP\Domain\Auth\Exceptions\LdapException;
+use SP\Domain\Auth\Dtos\LdapResults;
 
 /**
  * Class LdapActions

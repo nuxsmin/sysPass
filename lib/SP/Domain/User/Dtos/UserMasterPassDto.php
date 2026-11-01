@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\User\Dtos;
 
-use SP\Domain\User\Services\UserMasterPassStatus;
+use SP\Domain\User\Models\UserMasterPassStatus;
 
 /**
  * Class UserMasterPassDto

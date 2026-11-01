@@ -26,7 +26,7 @@
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Html\DataGrid\DataGrid;
+use SP\Modules\Web\Html\DataGrid\DataGrid;
 
 use function SP\__;
 

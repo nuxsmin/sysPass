@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Stubs;
 
 use Closure;
-use SP\Mvc\View\OutputHandlerInterface;
+use SP\Modules\Web\Mvc\View\OutputHandlerInterface;
 
 /**
  * Class OutputHandlerStub

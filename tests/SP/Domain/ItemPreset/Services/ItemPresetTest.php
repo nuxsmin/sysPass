@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\ItemPreset\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
@@ -34,8 +35,8 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Ports\ItemPresetRepository;
 use SP\Domain\ItemPreset\Services\ItemPreset;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\ItemPresetDataGenerator;
 use SP\Tests\Generators\ItemSearchDataGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -55,6 +56,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $itemPreset = ItemPresetDataGenerator::factory()->buildItemPresetData((object)['foo' => 'bar']);
@@ -72,6 +74,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testGetForUser()
     {
         $itemPreset = ItemPresetDataGenerator::factory()->buildItemPresetData((object)['foo' => 'bar']);
@@ -91,6 +94,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $itemPreset = ItemPresetDataGenerator::factory()->buildItemPresetData((object)['foo' => 'bar']);
@@ -109,6 +113,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testGetForCurrentUser()
     {
         $itemPreset = ItemPresetDataGenerator::factory()->buildItemPresetData((object)['foo' => 'bar']);
@@ -131,6 +136,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = array_map(static fn() => self::$faker->randomNumber(3), range(0, 4));
@@ -151,6 +157,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithException()
     {
         $ids = array_map(static fn() => self::$faker->randomNumber(3), range(0, 4));
@@ -170,6 +177,7 @@ class ItemPresetTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetAll()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -192,6 +200,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws Exception
      */
+    #[Test]
     public function testGetById()
     {
         $itemPreset = ItemPresetDataGenerator::factory()->buildItemPresetData((object)['foo' => 'bar']);
@@ -221,6 +230,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws Exception
      */
+    #[Test]
     public function testGetByIdWithNoRows()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -244,6 +254,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearch()
     {
         $itemPreset = ItemPresetDataGenerator::factory()->buildItemPresetData((object)['foo' => 'bar']);
@@ -268,6 +279,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -290,6 +302,7 @@ class ItemPresetTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithNoRows()
     {
         $queryResult = $this->createMock(QueryResult::class);
@@ -316,6 +329,11 @@ class ItemPresetTest extends UnitaryTestCase
 
         $this->itemPresetRepository = $this->createMock(ItemPresetRepository::class);
 
-        $this->itemPreset = new ItemPreset($this->application, $this->itemPresetRepository);
+        $this->itemPreset = new ItemPreset(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->itemPresetRepository
+        );
     }
 }

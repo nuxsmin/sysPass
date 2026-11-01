@@ -39,7 +39,7 @@
     use SP\Domain\Core\UI\ThemeIconsInterface;
     use SP\Domain\Install\Services\Installer;
     use SP\Domain\Plugin\Ports\Plugin;
-    use SP\Mvc\View\TemplateInterface;
+    use SP\Modules\Web\Mvc\View\TemplateInterface;
 
     use function SP\__;
 

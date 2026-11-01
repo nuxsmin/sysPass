@@ -25,16 +25,23 @@ declare(strict_types=1);
 
 namespace SP\Tests\Modules\Cli\Commands;
 
+use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Domain\Config\Services\ConfigFile;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Core\Bootstrap\AppPathsAdapter;
+use SP\Core\Bootstrap\PathsContext;
+use SP\Domain\Core\Ports\AppPaths;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Domain\Export\Services\BackupFileHelper;
+use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
+use SP\Domain\Export\Dtos\BackupType;
 use SP\Modules\Cli\Commands\BackupCommand;
+use SP\Core\Bootstrap\Path;
 use SP\Tests\Modules\Cli\CliTestCase;
 
 use function SP\Tests\recreateDir;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  *
@@ -49,14 +56,16 @@ class BackupCommandTest extends CliTestCase
     /**
      * @var string[]
      */
-    protected static array $commandInputData = [
-        '--path' => TMP_PATH
-    ];
+    protected static array $commandInputData = [];
+
+    private string $backupPath;
+    private string $applicationPath;
 
     /**
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testBackupFails(): void
     {
         $inputData = ['--path' => '/non/existant/path'];
@@ -76,6 +85,7 @@ class BackupCommandTest extends CliTestCase
      * @throws FileNotFoundException
      * @throws NotFoundException
      */
+    #[Test]
     public function testBackupIsSuccessful(): void
     {
         $this->setupDatabase();
@@ -97,28 +107,41 @@ class BackupCommandTest extends CliTestCase
 
     private function checkBackupFilesAreCreated(): void
     {
-        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
+        $pathsContext = self::$dic->get(PathsContext::class);
 
-        $this->assertFileExists(
-            BackupFileHelper::getAppBackupFilename(
-                TMP_PATH,
-                $configData->getBackupHash(),
-                true
-            )
+        $hash = $configData->getBackupHash();
+        $backupPath = $pathsContext[Path::BACKUP];
+
+        $appBackupFiles = glob(sprintf('%s/sysPass_app-%s*', $backupPath, $hash)) ?: [];
+        $dbBackupFiles = glob(sprintf('%s/sysPass_db-%s*', $backupPath, $hash)) ?: [];
+
+        $this->assertNotEmpty($appBackupFiles);
+        $this->assertNotEmpty($dbBackupFiles);
+
+        $this->assertContains(
+            (string)new BackupFileDto(BackupType::app, $hash, $backupPath, 'tar.gz'),
+            $appBackupFiles
         );
-        $this->assertFileExists(
-            BackupFileHelper::getDbBackupFilename(
-                TMP_PATH,
-                $configData->getBackupHash(),
-                true
-            )
+        $this->assertContains(
+            (string)new BackupFileDto(BackupType::db, $hash, $backupPath, 'tar.gz'),
+            $dbBackupFiles
         );
+
+        foreach (array_merge($appBackupFiles, $dbBackupFiles) as $backupFile) {
+            $this->assertSame('gz', pathinfo($backupFile, PATHINFO_EXTENSION));
+        }
+
+        $this->assertEmpty(glob(sprintf('%s/sysPass_app-%s.tar', $backupPath, $hash)) ?: []);
+        $this->assertEmpty(glob(sprintf('%s/sysPass_db-%s.tar', $backupPath, $hash)) ?: []);
+        $this->assertEmpty(glob(sprintf('%s/sysPass_db-%s.sql', $backupPath, $hash)) ?: []);
     }
 
     /**
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testBackupFromEnvironmentVarIsAbort(): void
     {
         putenv(sprintf('%s=%s',
@@ -142,6 +165,7 @@ class BackupCommandTest extends CliTestCase
      * @throws NotFoundException
      * @throws FileNotFoundException
      */
+    #[Test]
     public function testBackupFromEnvironmentVarIsSuccessful(): void
     {
         $this->setEnvironmentVariables();
@@ -166,7 +190,7 @@ class BackupCommandTest extends CliTestCase
     {
         putenv(sprintf('%s=%s',
                 BackupCommand::$envVarsMapping['path'],
-                TMP_PATH)
+                self::$dic->get(PathsContext::class)[Path::BACKUP])
         );
     }
 
@@ -175,6 +199,62 @@ class BackupCommandTest extends CliTestCase
         $this->unsetEnvironmentVariables();
 
         parent::setUp();
+
+        self::buildContainer();
+
+        $this->backupPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'backup_cmd_' . uniqid('', true);
+        $this->applicationPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'app_cmd_' . uniqid('', true);
+
+        mkdir($this->backupPath);
+        mkdir($this->applicationPath);
+        file_put_contents($this->applicationPath . DIRECTORY_SEPARATOR . 'config.xml', 'test');
+
+        $pathsContext = $this->buildPathsContext();
+
+        if (self::$dic instanceof Container) {
+            self::$dic->set(PathsContext::class, $pathsContext);
+            self::$dic->set(AppPaths::class, new AppPathsAdapter($pathsContext));
+        }
+    }
+
+    protected function tearDown(): void
+    {
+        $this->unsetEnvironmentVariables();
+        $this->deleteDirectory($this->backupPath);
+        $this->deleteDirectory($this->applicationPath);
+
+        parent::tearDown();
+    }
+
+    private function buildPathsContext(): PathsContext
+    {
+        $current = self::$dic->get(PathsContext::class);
+        $pathsContext = new PathsContext();
+
+        foreach (Path::cases() as $path) {
+            if ($path === Path::APP
+                || $path === Path::BACKUP
+                || !$current->offsetExists($path)
+            ) {
+                continue;
+            }
+
+            $pathsContext->addPath($path, $current[$path]);
+        }
+
+        $pathsContext->addPath(Path::APP, $this->applicationPath);
+        $pathsContext->addPath(Path::BACKUP, $this->backupPath);
+
+        return $pathsContext;
+    }
+
+    private function deleteDirectory(string $directory): void
+    {
+        foreach (glob($directory . DIRECTORY_SEPARATOR . '*') ?: [] as $file) {
+            is_dir($file) ? $this->deleteDirectory($file) : @unlink($file);
+        }
+
+        @rmdir($directory);
     }
 
     private function unsetEnvironmentVariables(): void

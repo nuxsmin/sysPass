@@ -120,4 +120,6 @@ interface RequestService
     public function getRequest(): Request;
 
     public function getServer(string $key): string;
+
+    public function resolveSecureAppPath(string $path, ?string $base = null): string;
 }

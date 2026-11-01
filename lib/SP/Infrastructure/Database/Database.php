@@ -48,17 +48,20 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Database;
 
+use SP\Domain\Core\Exceptions\DatabaseException;
+
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryInterface;
 use Exception;
 use PDO;
 use PDOStatement;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventDispatcher;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Domain\Database\Enums\DbStorageDriver;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Database\Ports\QueryDataInterface;
@@ -78,7 +81,7 @@ final class Database implements DatabaseInterface
      * DB constructor.
      *
      * @param DbStorageHandler $dbStorageHandler
-     * @param EventDispatcher $eventDispatcher
+     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
         private readonly DbStorageHandler         $dbStorageHandler,
@@ -163,10 +166,10 @@ final class Database implements DatabaseInterface
             processException($e);
 
             if ((int)$e->getCode() === 23000) {
-                throw ConstraintException::error(__u('Integrity constraint'), $e->getMessage(), $e->getCode(), $e);
+                throw ConstraintException::error(__u('Integrity constraint'), $e->getMessage(), (int)$e->getCode(), $e);
             }
 
-            throw QueryException::critical($e->getMessage(), (string)$e->getCode(), $e->getCode(), $e);
+            throw QueryException::critical($e->getMessage(), (string)$e->getCode(), (int)$e->getCode(), $e);
         }
     }
 

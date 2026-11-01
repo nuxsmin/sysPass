@@ -24,18 +24,17 @@
 
 namespace SP\Modules\Web\Controllers\AccountHistoryManager;
 
-use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Html\DataGrid\DataGridInterface;
-use SP\Modules\Web\Controllers\Helpers\Grid\AccountHistoryGrid;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
+use SP\Modules\Web\Presenters\Helpers\Grid\AccountHistoryGrid;
 use SP\Modules\Web\Controllers\SearchGridControllerBase;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class SearchController
@@ -51,12 +50,11 @@ final class SearchController extends SearchGridControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                            $application,
         WebControllerHelper                    $webControllerHelper,
         private readonly AccountHistoryService $accountHistoryService,
         private readonly AccountHistoryGrid    $accountHistoryGrid
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

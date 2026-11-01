@@ -24,9 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\AccountFile;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Models\File;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountService;
@@ -37,10 +36,10 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandler;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 use function SP\__;
 use function SP\__u;
@@ -57,12 +56,12 @@ final class UploadController extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                         $application,
         WebControllerHelper                 $webControllerHelper,
         private readonly AccountFileService $accountFileService,
-        private readonly AccountService     $accountService
+        private readonly AccountService     $accountService,
+        private readonly FileHandlerFactoryInterface $fileHandlerFactory
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }
@@ -106,7 +105,7 @@ final class UploadController extends ControllerBase
                 );
             }
 
-            $fileHandler = new FileHandler($file['tmp_name']);
+            $fileHandler = $this->fileHandlerFactory->create($file['tmp_name']);
 
             $fileData = [
                 'accountId' => $accountId,

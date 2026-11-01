@@ -30,17 +30,17 @@ use Exception;
 use PDOException;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
+use SP\Domain\Database\Dtos\DatabaseTables;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Install\Adapters\InstallData;
-use SP\Infrastructure\Database\DatabaseException;
-use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\DatabaseException;
+use SP\Domain\Core\Exceptions\FileException;
 
-use function SP\__;
 use function SP\__u;
-use function SP\logger;
-use function SP\processException;
 
 /**
  * Class MysqlSetupService
@@ -51,7 +51,8 @@ final readonly class MysqlSetup implements DatabaseSetupService
         private DbStorageHandler      $dbStorage,
         private InstallData           $installData,
         private DatabaseFileInterface $databaseFile,
-        private DatabaseUtil          $databaseUtil
+        private DatabaseUtilInterface $databaseUtil,
+        private LoggerInterface       $logger = new NullLogger()
     ) {
     }
 
@@ -68,8 +69,6 @@ final readonly class MysqlSetup implements DatabaseSetupService
         try {
             $this->dbStorage->getConnectionSimple();
         } catch (SPException $e) {
-            processException($e);
-
             throw new SPException(
                 __u('Unable to connect to DB'),
                 SPException::ERROR,
@@ -107,10 +106,8 @@ final readonly class MysqlSetup implements DatabaseSetupService
                 $this->createDBUser($user, $pass);
             }
         } catch (PDOException $e) {
-            processException($e);
-
             throw new SPException(
-                sprintf(__('Unable to check the sysPass user (%s)'), $user),
+                sprintf(__u('Unable to check the sysPass user (%s)'), $user),
                 SPException::CRITICAL,
                 __u('Please, check the DB connection user rights'),
                 $e->getCode(),
@@ -133,7 +130,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
             return;
         }
 
-        logger('Creating DB user');
+        $this->logger->debug('Creating DB user');
 
         try {
             $query = 'CREATE USER %s@%s IDENTIFIED BY %s';
@@ -164,8 +161,6 @@ final readonly class MysqlSetup implements DatabaseSetupService
 
             $dbc->exec('FLUSH PRIVILEGES');
         } catch (PDOException $e) {
-            processException($e);
-
             throw new SPException(
                 sprintf(__u('Error while creating the MySQL connection user \'%s\''), $user),
                 SPException::CRITICAL,
@@ -203,7 +198,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                 );
             } catch (PDOException $e) {
                 throw new SPException(
-                    sprintf(__('Error while creating the DB (\'%s\')'), $e->getMessage()),
+                    sprintf(__u('Error while creating the DB (\'%s\')'), $e->getMessage()),
                     SPException::CRITICAL,
                     __u('Please check the database user permissions'),
                     $e->getCode(),
@@ -238,12 +233,10 @@ final readonly class MysqlSetup implements DatabaseSetupService
 
                 $dbc->exec('FLUSH PRIVILEGES');
             } catch (PDOException $e) {
-                processException($e);
-
                 $this->rollback($dbUser);
 
                 throw new SPException(
-                    sprintf(__('Error while setting the database permissions (\'%s\')'), $e->getMessage()),
+                    sprintf(__u('Error while setting the database permissions (\'%s\')'), $e->getMessage()),
                     SPException::CRITICAL,
                     __u('Please check the database user permissions'),
                     $e->getCode(),
@@ -278,7 +271,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
         $dbc = $this->dbStorage->getConnectionSimple();
 
         if ($this->installData->isHostingMode()) {
-            foreach (DatabaseUtil::TABLES as $table) {
+            foreach (DatabaseTables::TABLES as $table) {
                 $dbc->exec(
                     sprintf(
                         'DROP TABLE IF EXISTS `%s`.`%s`',
@@ -318,7 +311,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
             }
         }
 
-        logger('Rollback');
+        $this->logger->debug('Rollback');
     }
 
     /**
@@ -333,7 +326,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
         } catch (PDOException $e) {
             throw new SPException(
                 sprintf(
-                    __('Error while selecting \'%s\' database (%s)'),
+                    __u('Error while selecting \'%s\' database (%s)'),
                     $this->installData->getDbName(),
                     $e->getMessage()
                 ),
@@ -363,24 +356,20 @@ final readonly class MysqlSetup implements DatabaseSetupService
                 $dbc->exec($query);
             }
         } catch (PDOException $e) {
-            processException($e);
-
             $this->rollback();
 
             throw new SPException(
-                sprintf(__('Error while creating the DB (\'%s\')'), $e->getMessage()),
+                sprintf(__u('Error while creating the DB (\'%s\')'), $e->getMessage()),
                 SPException::CRITICAL,
                 __u('Error while creating database structure.'),
                 $e->getCode(),
                 $e
             );
         } catch (FileException $e) {
-            processException($e);
-
             $this->rollback();
 
             throw new SPException(
-                sprintf(__('Error while creating the DB (\'%s\')'), $e->getMessage()),
+                sprintf(__u('Error while creating the DB (\'%s\')'), $e->getMessage()),
                 SPException::ERROR,
                 $e->getMessage(),
                 $e->getCode(),

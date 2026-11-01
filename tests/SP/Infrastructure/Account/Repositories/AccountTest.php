@@ -28,6 +28,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
@@ -58,6 +59,7 @@ class AccountTest extends UnitaryTestCase
     private Account                         $account;
     private AccountFilterBuilder|MockObject $accountFilterUser;
 
+    #[Test]
     public function testGetTotalNumAccounts(): void
     {
         $callback = new Callback(
@@ -71,6 +73,7 @@ class AccountTest extends UnitaryTestCase
         $this->account->getTotalNumAccounts();
     }
 
+    #[Test]
     public function testGetPasswordForId(): void
     {
         $callback = new Callback(
@@ -94,6 +97,7 @@ class AccountTest extends UnitaryTestCase
         $this->account->getPasswordForId(1);
     }
 
+    #[Test]
     public function testGetPasswordHistoryForId(): void
     {
         $callback = new Callback(
@@ -121,6 +125,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testIncrementDecryptCounter(): void
     {
         $id = 1;
@@ -144,6 +149,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testIncrementDecryptCounterNoRows(): void
     {
         $id = 1;
@@ -167,6 +173,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testCreate(): void
     {
         $account = AccountDataGenerator::factory()->buildAccount();
@@ -207,6 +214,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testEditPassword(): void
     {
         $account = AccountDataGenerator::factory()->buildAccount();
@@ -234,6 +242,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdatePassword(): void
     {
         $id = self::$faker->randomNumber();
@@ -260,6 +269,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testEditRestore(): void
     {
         $account = AccountDataGenerator::factory()->buildAccount();
@@ -300,6 +310,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete(): void
     {
         $id = 1;
@@ -320,6 +331,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithouResults(): void
     {
         $id = 1;
@@ -342,6 +354,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testUpdate(): void
     {
         $account = AccountDataGenerator::factory()->buildAccount();
@@ -379,6 +392,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testUpdateWithoutGroup(): void
     {
         $account = AccountDataGenerator::factory()->buildAccount();
@@ -416,6 +430,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testUpdateWithoutOwner(): void
     {
         $account = AccountDataGenerator::factory()->buildAccount();
@@ -453,6 +468,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testUpdateBulk(): void
     {
         $account = AccountDataGenerator::factory()->buildAccount();
@@ -483,6 +499,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testUpdateBulkWithoutOwner(): void
     {
         $account = AccountDataGenerator::factory()->buildAccount();
@@ -515,6 +532,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testUpdateBulkWithoutGroup(): void
     {
         $account = AccountDataGenerator::factory()->buildAccount();
@@ -545,6 +563,7 @@ class AccountTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testUpdateBulkNoFieldsToUpdate(): void
     {
         $this->database->expects(self::never())->method('runQuery');
@@ -552,6 +571,7 @@ class AccountTest extends UnitaryTestCase
         $this->account->updateBulk(0, new AccountModel(), false, false);
     }
 
+    #[Test]
     public function testGetById(): void
     {
         $id = self::$faker->randomNumber();
@@ -572,6 +592,7 @@ class AccountTest extends UnitaryTestCase
         $this->account->getById($id);
     }
 
+    #[Test]
     public function testGetByIdEnriched(): void
     {
         $id = self::$faker->randomNumber(2);
@@ -592,6 +613,7 @@ class AccountTest extends UnitaryTestCase
         $this->account->getByIdEnriched($id);
     }
 
+    #[Test]
     public function testGetAll(): void
     {
         $callback = new Callback(
@@ -610,6 +632,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch(): void
     {
         $ids = [self::$faker->randomNumber(2), self::$faker->randomNumber(2), self::$faker->randomNumber(2)];
@@ -636,6 +659,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database->expects(self::never())->method('runQuery');
@@ -643,6 +667,7 @@ class AccountTest extends UnitaryTestCase
         $this->account->deleteByIdBatch([]);
     }
 
+    #[Test]
     public function testSearch(): void
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -668,6 +693,7 @@ class AccountTest extends UnitaryTestCase
         $this->account->search($item);
     }
 
+    #[Test]
     public function testSearchWithoutString(): void
     {
         $callback = new Callback(
@@ -687,6 +713,7 @@ class AccountTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ConstraintException
      */
+    #[Test]
     public function testIncrementViewCounter(): void
     {
         $id = 1;
@@ -711,6 +738,7 @@ class AccountTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testIncrementViewCounterNoRows(): void
     {
         $id = 1;
@@ -731,6 +759,7 @@ class AccountTest extends UnitaryTestCase
         $this->account->incrementViewCounter($id);
     }
 
+    #[Test]
     public function testGetDataForLink(): void
     {
         $id = self::$faker->randomNumber();
@@ -751,6 +780,7 @@ class AccountTest extends UnitaryTestCase
         $this->account->getDataForLink($id);
     }
 
+    #[Test]
     public function testGetForUser(): void
     {
         $id = self::$faker->randomNumber(2);
@@ -773,6 +803,7 @@ class AccountTest extends UnitaryTestCase
         $this->account->getForUser($id);
     }
 
+    #[Test]
     public function testGetForUserWithoutAccount(): void
     {
         $callback = new Callback(
@@ -792,6 +823,7 @@ class AccountTest extends UnitaryTestCase
         $this->account->getForUser();
     }
 
+    #[Test]
     public function testGetLinked(): void
     {
         $id = self::$faker->randomNumber();
@@ -814,11 +846,12 @@ class AccountTest extends UnitaryTestCase
         $this->account->getLinked($id);
     }
 
+    #[Test]
     public function testGetAccountsPassData(): void
     {
         $callback = new Callback(
             function (QueryData $arg) {
-                return $arg->getMapClassName() === AccountModel::class
+                return $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );
@@ -844,7 +877,7 @@ class AccountTest extends UnitaryTestCase
             $this->database,
             $this->context,
             $queryFactory,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $this->accountFilterUser
         );
     }

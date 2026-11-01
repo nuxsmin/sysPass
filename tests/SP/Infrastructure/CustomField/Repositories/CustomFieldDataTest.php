@@ -32,6 +32,7 @@ use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use SP\Domain\Common\Models\Simple as SimpleModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -40,7 +41,7 @@ use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\CustomField\Repositories\CustomFieldData;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\CustomFieldDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -58,6 +59,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteBatch()
     {
         $itemIds = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -88,6 +90,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteBatchWithNoItems()
     {
         $moduleId = self::$faker->randomNumber();
@@ -105,6 +108,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCheckExists()
     {
         $itemId = self::$faker->randomNumber();
@@ -138,6 +142,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCheckExistsWithNoResults()
     {
         $itemId = self::$faker->randomNumber();
@@ -167,6 +172,7 @@ class CustomFieldDataTest extends UnitaryTestCase
         self::assertFalse($this->customFieldData->checkExists($itemId, $moduleId, $definitionId));
     }
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -190,6 +196,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData(true);
@@ -223,6 +230,7 @@ class CustomFieldDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData(true);
@@ -255,6 +263,7 @@ class CustomFieldDataTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testGetForModuleAndItemId()
     {
         $itemId = self::$faker->randomNumber();
@@ -281,6 +290,7 @@ class CustomFieldDataTest extends UnitaryTestCase
         $this->customFieldData->getForModuleAndItemId($moduleId, $itemId);
     }
 
+    #[Test]
     public function testGetAllEncrypted()
     {
         $callback = new Callback(
@@ -310,7 +320,7 @@ class CustomFieldDataTest extends UnitaryTestCase
         $this->customFieldData = new CustomFieldData(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

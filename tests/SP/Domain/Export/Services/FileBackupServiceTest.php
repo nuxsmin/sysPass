@@ -28,22 +28,26 @@ namespace SP\Tests\Domain\Export\Services;
 
 use PDO;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Bootstrap\Path;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Database\Dtos\DatabaseTables;
 use SP\Domain\Database\Ports\DatabaseInterface;
-use SP\Domain\Export\Ports\BackupFileHelperService;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
+use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
+use SP\Domain\Export\Dtos\BackupFiles;
+use SP\Domain\Export\Dtos\BackupType;
 use SP\Domain\Export\Services\BackupFile;
 use SP\Domain\File\Ports\ArchiveHandlerInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Database\Ports\QueryDataInterface;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 use stdClass;
 
@@ -55,7 +59,7 @@ use stdClass;
 class FileBackupServiceTest extends UnitaryTestCase
 {
     private BackupFile                         $fileBackupService;
-    private BackupFileHelperService|MockObject $backupFiles;
+    private BackupFiles $backupFiles;
     private DatabaseInterface|MockObject       $database;
     private MockObject|FileHandlerInterface    $dbFileHandler;
     private ArchiveHandlerInterface|MockObject $dbArchiveHandler;
@@ -65,11 +69,98 @@ class FileBackupServiceTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws Exception
      */
+    #[Test]
     public function testDoBackup(): void
+    {
+        $this->configureSuccessfulBackup();
+
+        $this->fileBackupService->doBackup(TMP_PATH, APP_PATH);
+    }
+
+    /**
+     * A symlink that matches a cleanup pattern must not make the cleanup follow
+     * it outside the canonical backup root.
+     *
+     * @throws ServiceException
+     * @throws Exception
+     */
+    #[Test]
+    public function testDoBackupDoesNotFollowSymlinkWhenDeletingOldBackups(): void
+    {
+        $backupPath = TMP_PATH . DIRECTORY_SEPARATOR . 'backup-' . uniqid('', true);
+        $outsideFile = TMP_PATH . DIRECTORY_SEPARATOR . 'outside-' . uniqid('', true) . '.sql';
+        $link = $backupPath . DIRECTORY_SEPARATOR . 'sysPass_db-stale.sql';
+
+        mkdir($backupPath);
+        file_put_contents($outsideFile, 'keep');
+
+        try {
+            symlink($outsideFile, $link);
+
+            $this->configureSuccessfulBackup();
+
+            $this->fileBackupService->doBackup($backupPath, APP_PATH);
+
+            $this->assertFileExists($outsideFile);
+            $this->assertSame('keep', file_get_contents($outsideFile));
+            $this->assertTrue(is_link($link));
+        } finally {
+            @unlink($link);
+            @unlink($outsideFile);
+            @rmdir($backupPath);
+        }
+    }
+
+    #[Test]
+    public function testDoBackupKeepsCurrentArtifactAndDeletesOlderOnes(): void
+    {
+        $backupPath = TMP_PATH . DIRECTORY_SEPARATOR . 'backup-' . uniqid('', true);
+
+        mkdir($backupPath);
+
+        $currentFiles = [
+            $backupPath . DIRECTORY_SEPARATOR . basename((string)$this->backupFiles->getAppBackupFile()),
+            $backupPath . DIRECTORY_SEPARATOR . basename((string)$this->backupFiles->getDbBackupFile()),
+            $backupPath . DIRECTORY_SEPARATOR . basename((string)$this->backupFiles->getAppBackupFileCompressed()),
+            $backupPath . DIRECTORY_SEPARATOR . basename((string)$this->backupFiles->getDbBackupFileCompressed()),
+        ];
+
+        $staleFiles = [
+            $backupPath . DIRECTORY_SEPARATOR . 'sysPass_app-oldhash.tar.gz',
+            $backupPath . DIRECTORY_SEPARATOR . 'sysPass_db-oldhash.tar.gz',
+            $backupPath . DIRECTORY_SEPARATOR . 'sysPass-oldhash.sql',
+        ];
+
+        foreach (array_merge($currentFiles, $staleFiles) as $file) {
+            file_put_contents($file, 'backup');
+        }
+
+        try {
+            $this->configureSuccessfulBackup();
+
+            $this->fileBackupService->doBackup($backupPath, APP_PATH);
+
+            foreach ($currentFiles as $file) {
+                $this->assertFileExists($file);
+            }
+
+            foreach ($staleFiles as $file) {
+                $this->assertFileDoesNotExist($file);
+            }
+        } finally {
+            foreach (array_merge($currentFiles, $staleFiles) as $file) {
+                @unlink($file);
+            }
+
+            @rmdir($backupPath);
+        }
+    }
+
+    private function configureSuccessfulBackup(): void
     {
         $this->config->getConfigData()->setDbName('a_db');
 
-        $tablesCount = count(DatabaseUtil::TABLES);
+        $tablesCount = count(DatabaseTables::TABLES);
         $tablesType = ['table', 'view'];
 
         $queryResults = array_map(
@@ -81,7 +172,7 @@ class FileBackupServiceTest extends UnitaryTestCase
             ->expects(self::exactly($tablesCount))
             ->method('runQuery')
             ->with(
-                new Callback(static function (QueryData $queryData) {
+                new Callback(static function (QueryDataInterface $queryData) {
                     return preg_match('/^SHOW CREATE TABLE \w+$/', $queryData->getQuery()->getStatement()) === 1;
                 })
             )
@@ -96,7 +187,7 @@ class FileBackupServiceTest extends UnitaryTestCase
             ->expects(self::exactly($tablesCount - 2))
             ->method('doFetchWithOptions')
             ->with(
-                new Callback(static function (QueryData $queryData) {
+                new Callback(static function (QueryDataInterface $queryData) {
                     return preg_match('/^SELECT \* FROM `\w+`$/', $queryData->getQuery()->getStatement()) === 1;
                 }),
                 [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL],
@@ -129,8 +220,6 @@ class FileBackupServiceTest extends UnitaryTestCase
             ->expects($this->once())
             ->method('compressDirectory')
             ->with(APP_PATH, BackupFile::BACKUP_INCLUDE_REGEX);
-
-        $this->fileBackupService->doBackup(TMP_PATH, APP_PATH);
     }
 
     private function buildCreateResult(string $type): QueryResult
@@ -153,6 +242,7 @@ class FileBackupServiceTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws Exception
      */
+    #[Test]
     public function testDoBackupWithException(): void
     {
         $this->config->getConfigData()->setDbName('a_db');
@@ -185,18 +275,25 @@ class FileBackupServiceTest extends UnitaryTestCase
         parent::setUp();
 
         $this->database = $this->createMock(DatabaseInterface::class);
-        $this->backupFiles = $this->createMock(BackupFileHelperService::class);
+        $this->backupFiles = new BackupFiles(
+            new BackupFileDto(BackupType::app, 'test', TMP_PATH, 'tar'),
+            new BackupFileDto(BackupType::db, 'test', TMP_PATH, 'sql')
+        );
         $this->dbFileHandler = $this->createMock(FileHandlerInterface::class);
         $this->dbArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);
         $this->appArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);
 
         $this->fileBackupService = new BackupFile(
-            $this->application,
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
             $this->database,
-            $this->createStub(DatabaseUtil::class),
+            $this->createStub(DatabaseUtilInterface::class),
             $this->dbFileHandler,
             $this->dbArchiveHandler,
-            $this->appArchiveHandler
+            $this->appArchiveHandler,
+            $this->backupFiles,
+            new \SP\Infrastructure\Database\QueryFactoryAdapter()
         );
     }
 }

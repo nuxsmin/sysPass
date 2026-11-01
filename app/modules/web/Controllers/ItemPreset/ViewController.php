@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,56 +24,39 @@
 
 namespace SP\Modules\Web\Controllers\ItemPreset;
 
-use Exception;
-use JsonException;
-use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Exceptions\SPException;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class ViewController
- *
- * @package SP\Modules\Web\Controllers
  */
 final class ViewController extends ItemPresetViewBase
 {
-    use ItemTrait;
-    use JsonTrait;
-
-    /**
-     * View action
-     *
-     * @param  int  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function viewAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function viewAction(int $id): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_VIEW)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_VIEW)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
 
+        try {
             $this->view->assign('header', __('Display Value'));
             $this->view->assign('isView', true);
 
             $this->setViewData($id);
-
-            $this->eventDispatcher->notify('show.itemPreset', new Event($this));
-
-            return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        } catch (SPException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
         }
+
+        $this->eventDispatcher->notify('show.itemPreset', new Event($this));
+
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 }

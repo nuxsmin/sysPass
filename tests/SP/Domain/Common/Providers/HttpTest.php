@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Common\Providers;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Common\Providers\Http;
@@ -42,6 +43,7 @@ class HttpTest extends TestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testCheckHttps()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
@@ -63,12 +65,18 @@ class HttpTest extends TestCase
                 ->method('getHttpHost')
                 ->willReturn('localhost');
 
+        $request->expects($this->once())
+                ->method('getServer')
+                ->with('REQUEST_URI')
+                ->willReturn('/index.php');
+
         Http::checkHttps($configData, $request);
     }
 
     /**
      * @throws Exception
      */
+    #[Test]
     public function testCheckHttpsWithNoHttpsEnabled()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
@@ -87,12 +95,16 @@ class HttpTest extends TestCase
         $request->expects($this->never())
                 ->method('getHttpHost');
 
+        $request->expects($this->never())
+                ->method('getServer');
+
         Http::checkHttps($configData, $request);
     }
 
     /**
      * @throws Exception
      */
+    #[Test]
     public function testCheckHttpsWithHttpsEnabledAndHttpsRequest()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
@@ -111,6 +123,9 @@ class HttpTest extends TestCase
 
         $request->expects($this->never())
                 ->method('getHttpHost');
+
+        $request->expects($this->never())
+                ->method('getServer');
 
         Http::checkHttps($configData, $request);
     }

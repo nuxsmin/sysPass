@@ -30,6 +30,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Notification\Dtos\MailMessage;
 
 /**
  * Class UserPassRecoverService
@@ -38,6 +39,8 @@ use SP\Domain\Core\Exceptions\SPException;
  */
 interface UserPassRecoverService
 {
+    public function getMailMessage(string $hash, string $baseUri): MailMessage;
+
     /**
      * @throws SPException
      * @throws ServiceException

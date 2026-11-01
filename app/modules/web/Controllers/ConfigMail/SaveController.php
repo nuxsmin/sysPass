@@ -24,28 +24,25 @@
 
 namespace SP\Modules\Web\Controllers\ConfigMail;
 
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
-use SP\Domain\Config\Services\ConfigUtil;
+use SP\Domain\Config\Dtos\ConfigInput;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\ConfigTrait;
+use SP\Modules\Web\Controllers\ConfigSaveControllerBase;
 
 use function SP\__u;
 
 /**
  * Class SaveController
  */
-final class SaveController extends SimpleControllerBase
+final class SaveController extends ConfigSaveControllerBase
 {
-    use ConfigTrait;
-
     /**
      * @throws SPException
      */
@@ -65,7 +62,7 @@ final class SaveController extends SimpleControllerBase
         $mailFrom = $this->request->analyzeEmail('mail_from');
         $mailRequests = $this->request->analyzeBool('mail_requests_enabled', false);
         $mailAuth = $this->request->analyzeBool('mail_auth_enabled', false);
-        $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients', ''));
+        $mailRecipients = ConfigInput::mailAddresses($this->request->analyzeString('mail_recipients', ''));
 
         if ($mailEnabled && (empty($mailServer) || empty($mailFrom))) {
             return ActionResponse::error(__u('Missing Mail parameters'));
@@ -80,7 +77,7 @@ final class SaveController extends SimpleControllerBase
             $configData->setMailRecipients($mailRecipients);
             $configData->setMailAuthenabled($mailAuth);
             $configData->setMailEvents(
-                $this->request->analyzeArray('mail_events', fn($items) => ConfigUtil::eventsAdapter($items), [])
+                $this->request->analyzeArray('mail_events', fn($items) => ConfigInput::events($items), [])
             );
 
             if ($mailAuth) {

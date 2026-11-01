@@ -26,8 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Import\Services;
 
-use SP\Core\Application;
-use SP\Core\Crypt\Hash;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
@@ -36,8 +34,12 @@ use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
@@ -48,8 +50,8 @@ use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Ports\ImportService;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__u;
 
@@ -72,11 +74,14 @@ abstract class ImportBase extends Service implements ImportService
     private array                      $cache;
 
     public function __construct(
-        Application                       $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         ImportHelperInterface $importHelper,
-        protected readonly CryptInterface $crypt
+        protected readonly CryptInterface $crypt,
+        protected readonly HashService $hashService
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $this->accountService = $importHelper->getAccountService();
         $this->categoryService = $importHelper->getCategoryService();
@@ -170,7 +175,7 @@ abstract class ImportBase extends Service implements ImportService
     {
         if (!empty($importParams->getMasterPassword())) {
             try {
-                return Hash::checkHashKey(
+                return $this->hashService->checkHashKey(
                     $importParams->getMasterPassword(),
                     $this->configService->getByParam('masterPwd')
                 );

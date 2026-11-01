@@ -27,16 +27,17 @@ declare(strict_types=1);
 namespace SP\Domain\Import\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Auth\Ports\LdapActionsService;
-use SP\Domain\Auth\Ports\LdapConnectionHandler;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Ports\LdapService;
-use SP\Domain\Auth\Providers\Ldap\LdapBase;
-use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
-use SP\Domain\Auth\Providers\Ldap\LdapResults;
+use SP\Domain\Auth\Ports\LdapServiceFactory;
+use SP\Domain\Auth\Exceptions\LdapException;
+use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Auth\Dtos\LdapResults;
+use SP\Domain\Common\Ports\TranslationService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Domain\Import\Dtos\LdapImportResultsDto;
@@ -46,9 +47,7 @@ use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
 
-use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class LdapImport
@@ -56,13 +55,15 @@ use function SP\processException;
 final class LdapImport extends Service implements LdapImportService
 {
     public function __construct(
-        Application                         $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly UserService        $userService,
         private readonly UserGroupService   $userGroupService,
-        private readonly LdapActionsService $ldapActionsService,
-        private readonly LdapConnectionHandler $ldapConnection
+        private readonly LdapServiceFactory $ldapServiceFactory,
+        private readonly TranslationService $translationService
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -87,7 +88,7 @@ final class LdapImport extends Service implements LdapImportService
             $entry = $iterator->current();
             $userGroup = [
                 'name' => $this->flattenEntry($entry[$ldapImportParams->getUserGroupNameAttribute()]) ?? null,
-                'description' => __('Imported from LDAP')
+                'description' => $this->translationService->translate(__u('Imported from LDAP'))
             ];
 
             if (!empty($userGroup['name'])) {
@@ -105,8 +106,6 @@ final class LdapImport extends Service implements LdapImportService
 
                     $importResults->addSyncedObject();
                 } catch (Exception $e) {
-                    processException($e);
-
                     $this->eventDispatcher->notify('exception', new Event($e));
 
                     $importResults->addErrorObject();
@@ -145,12 +144,7 @@ final class LdapImport extends Service implements LdapImportService
      */
     private function getLdap(LdapParams $ldapParams): LdapService
     {
-        return LdapBase::factory(
-            $this->eventDispatcher,
-            $this->ldapConnection,
-            $this->ldapActionsService,
-            $ldapParams,
-        );
+        return $this->ldapServiceFactory->create($ldapParams);
     }
 
     private function flattenEntry(array|string|null $entry): ?string
@@ -185,7 +179,7 @@ final class LdapImport extends Service implements LdapImportService
                 'name' => $this->flattenEntry($entry[$ldapImportParams->getUserNameAttribute()]) ?? null,
                 'login' => $this->flattenEntry($entry[$ldapImportParams->getLoginAttribute()]) ?? null,
                 'email' => $this->flattenEntry($entry['mail']) ?? null,
-                'notes' => __('Imported from LDAP'),
+                'notes' => $this->translationService->translate(__u('Imported from LDAP')),
                 'userGroupId' => $ldapImportParams->getDefaultUserGroup(),
                 'userProfileId' => $ldapImportParams->getDefaultUserProfile(),
                 'isLdap' => true
@@ -209,8 +203,6 @@ final class LdapImport extends Service implements LdapImportService
 
                     $importResults->addSyncedObject();
                 } catch (Exception $e) {
-                    processException($e);
-
                     $this->eventDispatcher->notify('exception', new Event($e));
 
                     $importResults->addErrorObject();

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,77 +24,59 @@
 
 namespace SP\Modules\Web\Controllers\UserGroup;
 
-
-use Exception;
-use JsonException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Domain\User\UseCases\Dtos\DeleteUserGroupCommand;
+use SP\Domain\User\UseCases\Dtos\DeleteUserGroupsCommand;
+use SP\Domain\User\UseCases\DeleteUserGroupUseCase;
+use SP\Domain\User\UseCases\DeleteUserGroupsUseCase;
+use SP\Modules\Web\Controllers\ControllerBase;
+
+use function SP\__u;
 
 /**
  * Class DeleteController
  */
-final class DeleteController extends UserGroupSaveBase
+final class DeleteController extends ControllerBase
 {
-    use ItemTrait;
-    use JsonTrait;
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        private readonly DeleteUserGroupUseCase $deleteUserGroupUseCase,
+        private readonly DeleteUserGroupsUseCase $deleteUserGroupsUseCase
+    ) {
+        parent::__construct($webControllerHelper);
 
-    /**
-     * Delete action
-     *
-     * @param  int|null  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function deleteAction(?int $id = null): bool
+        $this->checkLoggedIn();
+    }
+
+    #[Action(ResponseType::JSON)]
+    public function deleteAction(?int $id = null): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::GROUP_DELETE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            if ($id === null) {
-                $this->userGroupService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
-
-                $this->eventDispatcher->notify(
-                    'delete.userGroup.selection',
-                    new Event($this, EventMessage::build()->addDescription(__u('Groups deleted')))
-                );
-
-                $this->deleteCustomFieldsForItem(AclActionsInterface::GROUP, $id, $this->customFieldService);
-
-                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Groups deleted'));
-            }
-
-            $this->userGroupService->delete($id);
-
-            $this->eventDispatcher->notify(
-                'delete.userGroup',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Group deleted'))
-                        ->addDetail(__u('Group'), $id)
-                        ->addExtra('userGroupId', $id)
-                )
-            );
-
-            $this->deleteCustomFieldsForItem(AclActionsInterface::GROUP, $id, $this->customFieldService);
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Group deleted'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::GROUP_DELETE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        try {
+            if ($id === null) {
+                $ids = array_map(
+                    'intval',
+                    $this->request->analyzeArray('items') ?? []
+                );
+
+                $this->deleteUserGroupsUseCase->execute(new DeleteUserGroupsCommand($ids));
+
+                return ActionResponse::ok(__u('Groups deleted'));
+            }
+
+            $this->deleteUserGroupUseCase->execute(new DeleteUserGroupCommand($id));
+        } catch (SPException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
+        }
+
+        return ActionResponse::ok(__u('Group deleted'));
     }
 }

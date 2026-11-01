@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\ConfigEncryption;
 
 use PHPMailer\PHPMailer\Exception;
-use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -38,7 +37,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__u;
 
@@ -49,11 +48,10 @@ final class SaveTempController extends SimpleControllerBase
 {
 
     public function __construct(
-        Application                                 $application,
         SimpleControllerHelper                      $simpleControllerHelper,
         private readonly TemporaryMasterPassService $temporaryMasterPassService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**

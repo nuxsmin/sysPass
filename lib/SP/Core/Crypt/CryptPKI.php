@@ -30,7 +30,7 @@ use phpseclib\Crypt\RSA;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\processException;
 

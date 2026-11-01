@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Config\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Common\Services\ServiceException;
@@ -35,8 +36,8 @@ use SP\Domain\Config\Services\Config;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\ConfigGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -55,6 +56,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $config = ConfigGenerator::factory()->buildConfig();
@@ -76,6 +78,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSaveWithNoExistingParameter()
     {
         $config = ConfigGenerator::factory()->buildConfig();
@@ -101,6 +104,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSaveWithExistingParameter()
     {
         $config = ConfigGenerator::factory()->buildConfig();
@@ -125,6 +129,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testGetByParam()
     {
         $parameter = self::$faker->colorName();
@@ -147,6 +152,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testGetByParamWithDefaultValue()
     {
         $parameter = self::$faker->colorName();
@@ -169,6 +175,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testGetByParamWithNoFound()
     {
         $parameter = self::$faker->colorName();
@@ -190,6 +197,7 @@ class ConfigTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws SPException
      */
+    #[Test]
     public function testGetByParamWithException()
     {
         $parameter = self::$faker->colorName();
@@ -209,6 +217,7 @@ class ConfigTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testSaveBatch()
     {
         $this->configRepository
@@ -229,9 +238,9 @@ class ConfigTest extends UnitaryTestCase
             ->willReturn(new QueryResult([1]));
 
         $configRequest = new ConfigRequest();
-        $configRequest->add(self::$faker->colorName, self::$faker->text);
-        $configRequest->add(self::$faker->colorName, self::$faker->text);
-        $configRequest->add(self::$faker->colorName, self::$faker->text);
+        $configRequest->add(self::$faker->unique()->colorName, self::$faker->text);
+        $configRequest->add(self::$faker->unique()->colorName, self::$faker->text);
+        $configRequest->add(self::$faker->unique()->colorName, self::$faker->text);
 
         $this->configService->saveBatch($configRequest);
     }
@@ -239,6 +248,7 @@ class ConfigTest extends UnitaryTestCase
     /**
      * @throws ServiceException
      */
+    #[Test]
     public function testSaveBatchWithException()
     {
         $this->configRepository
@@ -274,6 +284,11 @@ class ConfigTest extends UnitaryTestCase
 
         $this->configRepository = $this->createMock(ConfigRepository::class);
 
-        $this->configService = new Config($this->application, $this->configRepository);
+        $this->configService = new Config(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->configRepository
+        );
     }
 }

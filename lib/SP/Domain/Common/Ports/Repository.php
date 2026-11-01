@@ -28,7 +28,7 @@ namespace SP\Domain\Common\Ports;
 use Closure;
 use Exception;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Interface Repository

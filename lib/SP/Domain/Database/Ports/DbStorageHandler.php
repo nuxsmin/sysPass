@@ -26,8 +26,8 @@ declare(strict_types=1);
 namespace SP\Domain\Database\Ports;
 
 use PDO;
-use SP\Infrastructure\Database\DatabaseException;
-use SP\Infrastructure\Database\DbStorageDriver;
+use SP\Domain\Core\Exceptions\DatabaseException;
+use SP\Domain\Database\Enums\DbStorageDriver;
 
 /**
  * Interface DbStorageHandler

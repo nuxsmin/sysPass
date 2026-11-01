@@ -25,9 +25,11 @@ declare(strict_types=1);
 
 namespace SP\Domain\Security\Services;
 
-use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -35,7 +37,7 @@ use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Models\Eventlog as EventlogModel;
 use SP\Domain\Security\Ports\EventlogRepository;
 use SP\Domain\Security\Ports\EventlogService;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class Eventlog
@@ -44,11 +46,13 @@ final class Eventlog extends Service implements EventlogService
 {
 
     public function __construct(
-        Application                         $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly EventlogRepository $eventLogRepository,
         private readonly RequestService $request
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

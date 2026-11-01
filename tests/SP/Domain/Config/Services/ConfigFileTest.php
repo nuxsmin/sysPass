@@ -28,16 +28,18 @@ namespace SP\Tests\Domain\Config\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Services\ConfigFile;
 use SP\Domain\Core\Exceptions\ConfigException;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -54,6 +56,7 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws ConfigException
      * @throws Exception
      */
+    #[Test]
     public function testInitializeWithProvided()
     {
         $this->fileCacheService
@@ -90,6 +93,7 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws ConfigException
      * @throws Exception
      */
+    #[Test]
     public function testInitializeWithCache()
     {
         $this->fileCacheService
@@ -127,6 +131,7 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws ConfigException
      * @throws Exception
      */
+    #[Test]
     public function testInitializeWithCacheAndNoAttributes()
     {
         $this->fileCacheService
@@ -189,6 +194,51 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws ConfigException
      * @throws Exception
      */
+    #[Test]
+    public function testInitializeWithUnreadableCacheFallsBackToFile()
+    {
+        $this->fileCacheService
+            ->expects(self::once())
+            ->method('exists')
+            ->willReturn(true);
+
+        $time = time();
+
+        $this->fileStorageService
+            ->expects(self::once())
+            ->method('getFileTime')
+            ->willReturn($time);
+
+        $this->fileCacheService
+            ->expects(self::once())
+            ->method('isExpiredDate')
+            ->with($time)
+            ->willReturn(false);
+
+        $this->fileCacheService
+            ->expects(self::once())
+            ->method('loadWith')
+            ->with(ConfigData::class)
+            ->willThrowException(InvalidClassException::error('test'));
+
+        $this->fileCacheService
+            ->expects(self::once())
+            ->method('delete');
+
+        $this->ensureConfigFileIsUsed();
+
+        new ConfigFile(
+            $this->fileStorageService,
+            $this->fileCacheService,
+            $this->context
+        );
+    }
+
+    /**
+     * @throws ConfigException
+     * @throws Exception
+     */
+    #[Test]
     public function testInitializeWithExistingFile()
     {
         $this->fileCacheService
@@ -209,6 +259,7 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws ConfigException
      * @throws Exception
      */
+    #[Test]
     public function testInitializeWithGenerateNewConfig()
     {
         $this->fileCacheService
@@ -247,6 +298,7 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws ConfigException
      * @throws Exception
      */
+    #[Test]
     public function testInitializeWithExceptionFromCache()
     {
         $this->fileCacheService
@@ -287,6 +339,7 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws ConfigException
      * @throws Exception
      */
+    #[Test]
     public function testInitializeWithExceptionFromCacheExpired()
     {
         $this->fileCacheService
@@ -324,6 +377,7 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws ConfigException
      * @throws Exception
      */
+    #[Test]
     public function testInitializeWithExceptionCacheDelete()
     {
         $this->fileCacheService
@@ -370,6 +424,7 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      */
+    #[Test]
     public function testSave()
     {
         $this->fileCacheService
@@ -424,6 +479,7 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws Exception
      * @throws FileException
      */
+    #[Test]
     public function testSaveWithoutCommit()
     {
         $this->fileCacheService
@@ -474,6 +530,7 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws FileException
      * @throws EnvironmentIsBrokenException
      */
+    #[Test]
     public function testGenerateUpgradeKey()
     {
         $this->fileCacheService
@@ -513,6 +570,7 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws FileException
      * @throws EnvironmentIsBrokenException
      */
+    #[Test]
     public function testGenerateUpgradeKeyWithExistingKey()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
@@ -537,6 +595,7 @@ class ConfigFileTest extends UnitaryTestCase
      * @throws ConfigException
      * @throws Exception
      */
+    #[Test]
     public function testReload()
     {
         $this->fileCacheService

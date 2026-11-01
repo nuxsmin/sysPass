@@ -26,10 +26,11 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Auth\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Auth\Services\LoginBase;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
@@ -48,6 +49,7 @@ class LoginBaseTest extends UnitaryTestCase
     private RequestService|MockObject $request;
     private TrackService|MockObject   $trackService;
 
+    #[Test]
     public function testCheckTracking()
     {
         $this->trackService
@@ -65,6 +67,7 @@ class LoginBaseTest extends UnitaryTestCase
         $this->loginBase->check();
     }
 
+    #[Test]
     public function testCheckTrackingWithNoTracking()
     {
         $this->trackService
@@ -75,6 +78,7 @@ class LoginBaseTest extends UnitaryTestCase
         $this->loginBase->check();
     }
 
+    #[Test]
     public function testAddTracking()
     {
         $this->trackService
@@ -84,6 +88,7 @@ class LoginBaseTest extends UnitaryTestCase
         $this->loginBase->add();
     }
 
+    #[Test]
     public function testAddTrackingWithException()
     {
         $this->trackService
@@ -121,7 +126,13 @@ class LoginBaseTest extends UnitaryTestCase
 
         $this->request = $this->createMock(RequestService::class);
 
-        $this->loginBase = new class($this->application, $this->trackService, $this->request) extends LoginBase {
+        $this->loginBase = new class(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->trackService,
+            $this->request
+        ) extends LoginBase {
             public function check(): void
             {
                 $this->checkTracking();

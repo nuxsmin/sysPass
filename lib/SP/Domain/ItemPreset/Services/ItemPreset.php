@@ -26,17 +26,19 @@ declare(strict_types=1);
 
 namespace SP\Domain\ItemPreset\Services;
 
-use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Ports\ItemPresetRepository;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -48,9 +50,14 @@ use function SP\__u;
 final class ItemPreset extends Service implements ItemPresetService
 {
 
-    public function __construct(Application $application, private readonly ItemPresetRepository $itemPresetRepository)
+    public function __construct(
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
+        private readonly ItemPresetRepository $itemPresetRepository
+    )
     {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**

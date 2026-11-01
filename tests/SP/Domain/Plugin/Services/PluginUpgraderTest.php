@@ -26,13 +26,14 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Plugin\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginUpgrader;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\Generators\PluginGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -48,13 +49,19 @@ class PluginUpgraderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpgradeForWithCompatibleVersion()
     {
-        $pluginModel = PluginGenerator::factory()->buildPlugin();
+        $pluginModel = PluginGenerator::factory()->buildPlugin()->mutate(['versionLevel' => '1000.1']);
 
         $pluginManagerService = $this->createMock(PluginManagerService::class);
 
-        $pluginUpgrader = new PluginUpgrader($this->application, $pluginManagerService);
+        $pluginUpgrader = new PluginUpgrader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
 
         $plugin = self::createMock(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
@@ -63,9 +70,7 @@ class PluginUpgraderTest extends UnitaryTestCase
                              ->method('getByName')
                              ->willReturn($pluginModel);
 
-        [$version, $build] = explode('.', $pluginModel->getVersionLevel());
-
-        $upgradeVersion = sprintf('%d.%d', (int)$version + 100, (int)$build);
+        $upgradeVersion = '1100.1';
 
         $plugin->expects($this->once())
                ->method('onUpgrade')
@@ -83,13 +88,19 @@ class PluginUpgraderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpgradeForWithNoCompatibleVersion()
     {
-        $pluginModel = PluginGenerator::factory()->buildPlugin();
+        $pluginModel = PluginGenerator::factory()->buildPlugin()->mutate(['versionLevel' => '1000.1']);
 
         $pluginManagerService = $this->createMock(PluginManagerService::class);
 
-        $pluginUpgrader = new PluginUpgrader($this->application, $pluginManagerService);
+        $pluginUpgrader = new PluginUpgrader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
 
         $plugin = self::createMock(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
@@ -98,9 +109,7 @@ class PluginUpgraderTest extends UnitaryTestCase
                              ->method('getByName')
                              ->willReturn($pluginModel);
 
-        [$version, $build] = explode('.', $pluginModel->getVersionLevel());
-
-        $upgradeVersion = sprintf('%d.%d', (int)$version - 100, (int)$build);
+        $upgradeVersion = '1000.1';
 
         $plugin->expects($this->never())
                ->method('onUpgrade');
@@ -116,13 +125,19 @@ class PluginUpgraderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpgradeForWithNullVersion()
     {
         $pluginModel = PluginGenerator::factory()->buildPlugin()->mutate(['versionLevel' => null]);
 
         $pluginManagerService = $this->createMock(PluginManagerService::class);
 
-        $pluginUpgrader = new PluginUpgrader($this->application, $pluginManagerService);
+        $pluginUpgrader = new PluginUpgrader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
 
         $plugin = self::createMock(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');
@@ -147,11 +162,17 @@ class PluginUpgraderTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testUpgradeForWithException()
     {
         $pluginManagerService = $this->createMock(PluginManagerService::class);
 
-        $pluginUpgrader = new PluginUpgrader($this->application, $pluginManagerService);
+        $pluginUpgrader = new PluginUpgrader(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $pluginManagerService
+        );
 
         $plugin = self::createMock(Plugin::class);
         $plugin->method('getName')->willReturn('test_plugin');

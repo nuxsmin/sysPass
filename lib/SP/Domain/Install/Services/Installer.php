@@ -28,7 +28,6 @@ declare(strict_types=1);
 namespace SP\Domain\Install\Services;
 
 use Exception;
-use SP\Core\Crypt\Hash;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Models\Config;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -38,6 +37,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerService;
@@ -48,11 +48,10 @@ use SP\Domain\User\Models\UserProfile;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
+use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Installer class
@@ -62,9 +61,9 @@ final class Installer implements InstallerService
     /**
      * sysPass' version and build number
      */
-    public const VERSION      = [4, 0, 0];
-    public const VERSION_TEXT = '4.0';
-    public const BUILD        = 21031301;
+    public const VERSION      = Version::VERSION;
+    public const VERSION_TEXT = Version::VERSION_TEXT;
+    public const BUILD        = Version::BUILD;
 
     private RequestService $request;
     private ?InstallData   $installData = null;
@@ -77,7 +76,8 @@ final class Installer implements InstallerService
         private readonly UserProfileService     $userProfileService,
         private readonly ConfigService          $configService,
         private readonly DatabaseConnectionData $databaseConnectionData,
-        private readonly DatabaseSetupService $databaseSetup
+        private readonly DatabaseSetupService $databaseSetup,
+        private readonly HashService $hashService
     ) {
         $this->request = $request;
     }
@@ -281,6 +281,14 @@ final class Installer implements InstallerService
     {
         $user = null;
 
+        $this->databaseConnectionData
+            ->setDbSocket($this->installData->getDbSocket())
+            ->setDbHost($this->installData->getDbHost())
+            ->setDbPort($this->installData->getDbPort())
+            ->setDbName($this->installData->getDbName())
+            ->setDbUser($this->installData->getDbAdminUser())
+            ->setDbPass($this->installData->getDbAdminPass());
+
         $this->databaseSetup->connectDatabase();
 
         if ($this->installData->isHostingMode()) {
@@ -315,7 +323,7 @@ final class Installer implements InstallerService
                 new Config(
                     [
                         'parameter' => 'masterPwd',
-                        'value' => Hash::hashKey($this->installData->getMasterPassword())
+                        'value' => $this->hashService->hashKey($this->installData->getMasterPassword())
                     ]
                 )
             );
@@ -323,8 +331,6 @@ final class Installer implements InstallerService
                 new Config(['parameter' => 'lastupdatempass', 'value' => (string)time()])
             );
         } catch (Exception $e) {
-            processException($e);
-
             $this->databaseSetup->rollback($this->config->getConfigData()->getDbUser());
 
             throw new SPException($e->getMessage(), SPException::CRITICAL, __u('Warn to developer'), $e->getCode(), $e);
@@ -364,8 +370,6 @@ final class Installer implements InstallerService
                 throw new SPException(__u('Error while creating \'admin\' user'));
             }
         } catch (Exception $e) {
-            processException($e);
-
             $this->databaseSetup->rollback($this->config->getConfigData()->getDbUser());
 
             throw new SPException(

@@ -24,63 +24,47 @@
 
 namespace SP\Modules\Web\Controllers\ItemPreset;
 
-
-use Exception;
-use JsonException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Domain\ItemPreset\UseCases\CreateItemPresetUseCase;
+use SP\Domain\ItemPreset\UseCases\Dtos\CreateItemPresetCommand;
+
+use function SP\__u;
 
 /**
  * Class SaveCreateController
  */
 final class SaveCreateController extends ItemPresetSaveBase
 {
-    use JsonTrait;
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        private readonly CreateItemPresetUseCase $createItemPresetUseCase
+    ) {
+        parent::__construct($webControllerHelper);
+    }
 
-    /**
-     * @return bool
-     * @throws JsonException
-     */
-    public function saveCreateAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveCreateAction(): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_CREATE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
 
+        try {
             $this->form->validateFor(AclActionsInterface::ITEMPRESET_CREATE);
 
-            $itemData = $this->form->getItemData();
-
-            $id = $this->itemPresetService->create($itemData);
-
-            $this->eventDispatcher->notify(
-                'create.itemPreset',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Value created'))
-                        ->addDetail(__u('Type'), $itemData->getItemPreset()->getType())
-                        ->addDetail(__u('ID'), $id)
-                )
+            $result = $this->createItemPresetUseCase->execute(
+                new CreateItemPresetCommand($this->form->getItemData())
             );
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Value created'));
-        } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        } catch (SPException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
         }
+
+        return ActionResponse::ok(__u('Value created'));
     }
 }

@@ -26,20 +26,21 @@ declare(strict_types=1);
 namespace SP\Domain\User\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Core\Application;
-use SP\Core\Messages\MailMessage;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Html\Html;
+use SP\Domain\Common\Providers\Html;
 use SP\Domain\User\Models\UserPassRecover as UserPassRecoverModel;
 use SP\Domain\User\Ports\UserPassRecoverRepository;
 use SP\Domain\User\Ports\UserPassRecoverService;
 
-use function SP\__;
 use function SP\__u;
 
 /**
@@ -57,27 +58,58 @@ final class UserPassRecover extends Service implements UserPassRecoverService
     public const MAX_PASS_RECOVER_LIMIT = 3;
 
     public function __construct(
-        Application                                $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly UserPassRecoverRepository $userPassRecoverRepository
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
-    public static function getMailMessage(string $hash, string $baseUri): MailMessage
+    public function getMailMessage(string $hash, string $baseUri): MailMessage
     {
+        $url = $this->buildResetUrl($baseUri, $hash);
+
         $mailMessage = new MailMessage();
-        $mailMessage->setTitle(__('Password Change'));
-        $mailMessage->addDescription(__('A request for changing your user password has been done.'));
+        $mailMessage->setTitle(__u('Password Change'));
+        $mailMessage->addDescription(__u('A request for changing your user password has been done.'));
         $mailMessage->addDescriptionLine();
-        $mailMessage->addDescription(__('In order to complete the process, please go to this URL:'));
+        $mailMessage->addDescription(__u('In order to complete the process, please go to this URL:'));
         $mailMessage->addDescriptionLine();
-        $mailMessage->addDescription(
-            Html::anchorText(sprintf('%s/index.php?r=userPassReset/reset/%s', $baseUri, $hash))
-        );
+        $mailMessage->addDescription(Html::anchorText($url));
         $mailMessage->addDescriptionLine();
-        $mailMessage->addDescription(__('If you have not requested this action, please dismiss this message.'));
+        $mailMessage->addDescription(__u('If you have not requested this action, please dismiss this message.'));
 
         return $mailMessage;
+    }
+
+    /**
+     * @throws SPException
+     */
+    private function buildResetUrl(string $baseUri, string $hash): string
+    {
+        $baseUri = rtrim(trim($baseUri), '/');
+        $parts = parse_url($baseUri);
+
+        if ($parts === false
+            || !isset($parts['scheme'], $parts['host'])
+            || $parts['host'] === ''
+            || !in_array(strtolower($parts['scheme']), ['http', 'https'], true)
+            || isset($parts['user'])
+            || isset($parts['pass'])
+            || isset($parts['query'])
+            || isset($parts['fragment'])
+        ) {
+            throw new SPException(
+                __u('Password reset is not available'),
+                SPException::ERROR,
+                __u('The application URL is not valid. Please contact the administrator.')
+            );
+        }
+
+        return Html::getSafeUrl(
+            sprintf('%s/index.php?r=userPassReset/reset/%s', $baseUri, rawurlencode($hash))
+        );
     }
 
     /**

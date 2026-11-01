@@ -31,6 +31,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\UpdateInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
@@ -40,9 +41,9 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Auth\Repositories\AuthToken;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\AuthTokenGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -61,6 +62,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearch()
     {
         $item = new ItemSearchDto(self::$faker->name);
@@ -92,6 +94,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearchWithoutString(): void
     {
         $callback = new Callback(
@@ -116,6 +119,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatch()
     {
         $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
@@ -147,6 +151,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByIdBatchWithNoIds(): void
     {
         $this->database
@@ -156,6 +161,7 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authToken->deleteByIdBatch([]);
     }
 
+    #[Test]
     public function testGetTokenByUserId()
     {
         $id = self::$faker->randomNumber();
@@ -181,6 +187,7 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authToken->getTokenByUserId($id);
     }
 
+    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -211,6 +218,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdate()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
@@ -262,6 +270,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testUpdateWithDuplicate()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
@@ -297,6 +306,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testRefreshVaultByUserId()
     {
         $userId = self::$faker->randomNumber();
@@ -333,6 +343,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -352,6 +363,7 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authToken->delete($id);
     }
 
+    #[Test]
     public function testGetAll()
     {
         $callback = new Callback(
@@ -375,6 +387,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testRefreshTokenByUserId()
     {
         $userId = self::$faker->randomNumber();
@@ -403,6 +416,7 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authToken->refreshTokenByUserId($userId, $token);
     }
 
+    #[Test]
     public function testGetTokenByToken()
     {
         $actionId = self::$faker->randomNumber();
@@ -435,6 +449,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
@@ -484,6 +499,7 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws DuplicatedItemException
      * @throws QueryException
      */
+    #[Test]
     public function testCreateWithDuplicate()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
@@ -524,7 +540,7 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authToken = new AuthToken(
             $this->database,
             $this->context,
-            $this->application->getEventDispatcher(),
+            $this->eventDispatcherStub,
             $queryFactory,
         );
     }

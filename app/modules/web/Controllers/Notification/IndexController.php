@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,42 +24,65 @@
 
 namespace SP\Modules\Web\Controllers\Notification;
 
-use DI\DependencyException;
-use DI\NotFoundException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Domain\Notification\UseCases\Dtos\SearchNotificationsCommand;
+use SP\Domain\Notification\UseCases\SearchNotificationsUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Presenters\Helpers\Grid\NotificationGrid;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class IndexController
- *
- * @package SP\Modules\Web\Controllers
  */
 final class IndexController extends ControllerBase
 {
-    /**
-     * indexAction
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     *
-     * TODO: remove?
-     */
-    public function indexAction(): void
+    use ItemTrait;
+
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        private readonly SearchNotificationsUseCase $searchNotificationsUseCase,
+        private readonly NotificationGrid $notificationGrid
+    ) {
+        parent::__construct($webControllerHelper);
+
+        $this->checkLoggedIn();
+    }
+
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION)) {
-            return;
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('index');
-
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->view();
+        return ActionResponse::ok($this->render());
+    }
+
+    private function getSearchGrid(): DataGridInterface
+    {
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
+
+        $result = $this->searchNotificationsUseCase->execute(new SearchNotificationsCommand($itemSearchData));
+
+        return $this->notificationGrid->updatePager(
+            $this->notificationGrid->getGrid(
+                QueryResult::withTotalNumRows($result->notifications, $result->total)
+            ),
+            $itemSearchData
+        );
     }
 }

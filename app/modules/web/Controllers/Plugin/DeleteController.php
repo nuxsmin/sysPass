@@ -24,18 +24,20 @@
 
 namespace SP\Modules\Web\Controllers\Plugin;
 
-
 use Exception;
-use JsonException;
-use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Plugin\Ports\PluginManagerService;
+use SP\Domain\Plugin\UseCases\DeletePluginUseCase;
+use SP\Domain\Plugin\UseCases\DeletePluginsUseCase;
+use SP\Domain\Plugin\UseCases\Dtos\DeletePluginCommand;
+use SP\Domain\Plugin\UseCases\Dtos\DeletePluginsCommand;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class DeleteController
@@ -43,59 +45,41 @@ use SP\Mvc\Controller\WebControllerHelper;
 final class DeleteController extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
-
-    private PluginManagerService $pluginService;
 
     public function __construct(
-        Application $application,
         WebControllerHelper $webControllerHelper,
-        PluginManagerService $pluginService
+        private readonly DeletePluginUseCase $deletePluginUseCase,
+        private readonly DeletePluginsUseCase $deletePluginsUseCase
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
-
-        $this->pluginService = $pluginService;
     }
 
-    /**
-     * resetAction
-     *
-     * @param  int|null  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function deleteAction(?int $id = null): bool
+    #[Action(ResponseType::JSON)]
+    public function deleteAction(?int $id = null): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN_DELETE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            if ($id === null) {
-                $this->pluginService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
-
-                $this->eventDispatcher->notify('delete.plugin.selection', new Event($this));
-
-                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Plugins deleted'));
-            }
-
-            $this->pluginService->delete($id);
-
-            $this->eventDispatcher->notify('delete.plugin', new Event($this));
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Plugin deleted'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN_DELETE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        try {
+            if ($id === null) {
+                $ids = array_map(
+                    'intval',
+                    $this->request->analyzeArray('items') ?? []
+                );
+
+                $this->deletePluginsUseCase->execute(new DeletePluginsCommand($ids));
+
+                return ActionResponse::ok(__u('Plugins deleted'));
+            }
+
+            $this->deletePluginUseCase->execute(new DeletePluginCommand($id));
+        } catch (Exception $e) {
+            return ActionResponse::error($e->getMessage());
+        }
+
+        return ActionResponse::ok(__u('Plugin deleted'));
     }
 }

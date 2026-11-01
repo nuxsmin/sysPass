@@ -29,9 +29,7 @@ namespace SP\Domain\Config\Services;
 use SP\Domain\Common\Providers\Environment;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\File\FileSystem;
 
-use function SP\__;
 use function SP\__u;
 use function SP\getFromEnv;
 
@@ -40,33 +38,6 @@ use function SP\getFromEnv;
  */
 final class ConfigUtil
 {
-
-    /**
-     * Adaptador para convertir una cadena de direcciones de email a un array
-     */
-    public static function mailAddressesAdapter(string $mailAddresses): array
-    {
-        if (empty($mailAddresses)) {
-            return [];
-        }
-
-        return array_filter(
-            explode(',', $mailAddresses),
-            static fn($value) => filter_var($value, FILTER_VALIDATE_EMAIL)
-        );
-    }
-
-    /**
-     * Adaptador para convertir una cadena de eventos a un array
-     */
-    public static function eventsAdapter(array $events): array
-    {
-        return array_filter(
-            $events,
-            static fn($value) => preg_match('/^[a-z][a-z.]+$/i', $value)
-        );
-    }
-
     /**
      * Comprobar el archivo de configuración.
      * Esta función comprueba que el archivo de configuración exista y los permisos sean correctos.
@@ -75,7 +46,7 @@ final class ConfigUtil
      */
     public static function checkConfigDir(): void
     {
-        $configPath = getFromEnv('CONFIG_PATH', FileSystem::buildPath(APP_PATH, 'config'));
+        $configPath = getFromEnv('CONFIG_PATH', implode(DIRECTORY_SEPARATOR, [APP_PATH, 'config']));
 
         if (!is_dir($configPath)) {
             clearstatcache();
@@ -97,7 +68,7 @@ final class ConfigUtil
             throw new ConfigException(
                 __u('\'/app/config\' directory permissions are wrong'),
                 SPException::ERROR,
-                sprintf(__('Current: %s - Needed: 750'), $configPerms)
+                sprintf(__u('Current: %s - Needed: 750'), $configPerms)
             );
         }
     }

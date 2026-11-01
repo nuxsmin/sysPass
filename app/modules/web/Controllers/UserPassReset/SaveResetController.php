@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,65 +24,51 @@
 
 namespace SP\Modules\Web\Controllers\UserPassReset;
 
-
 use Exception;
-use JsonException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Security\Ports\TrackService;
+use SP\Domain\User\UseCases\Dtos\ResetPasswordCommand;
+use SP\Domain\User\UseCases\ResetPasswordUseCase;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class SaveResetController
  */
 final class SaveResetController extends UserPassResetSaveBase
 {
-    use JsonTrait;
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        TrackService $trackService,
+        private readonly ResetPasswordUseCase $resetPasswordUseCase
+    ) {
+        parent::__construct($webControllerHelper, $trackService);
+    }
 
-    /**
-     * @return bool
-     * @throws JsonException
-     */
-    public function saveResetAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveResetAction(): ActionResponse
     {
         try {
             $this->checkTracking();
 
             $pass = $this->request->analyzeEncrypted('password');
-            $passR = $this->request->analyzeEncrypted('password_repeat');
+            $passRepeat = $this->request->analyzeEncrypted('password_repeat');
 
-            if (!$pass || !$passR) {
-                throw new ValidationException(__u('Password cannot be blank'));
-            }
-
-            if ($pass !== $passR) {
-                throw new ValidationException(__u('Passwords do not match'));
-            }
-
-            $hash = $this->request->analyzeString('hash');
-
-            $userId = $this->userPassRecoverService->getUserIdForHash($hash);
-
-            $this->userPassRecoverService->toggleUsedByHash($hash);
-
-            $this->userService->updatePass($userId, $pass);
-
-            $user = $this->userService->getById($userId);
-
-            $this->eventDispatcher->notify(
-                'edit.user.password',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Password updated'))
-                        ->addDetail(__u('User'), $user->getLogin())
-                        ->addExtra('userId', $userId)
-                        ->addExtra('email', $user->getEmail())
+            $this->resetPasswordUseCase->execute(
+                new ResetPasswordCommand(
+                    $this->request->analyzeString('hash'),
+                    $pass,
+                    $passRepeat
                 )
             );
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Password updated'));
+            return ActionResponse::ok(__u('Password updated'));
         } catch (Exception $e) {
             processException($e);
 
@@ -90,7 +76,10 @@ final class SaveResetController extends UserPassResetSaveBase
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error(
+                $e->getMessage(),
+                $e instanceof SPException ? $e->getHint() : null
+            );
         }
     }
 }

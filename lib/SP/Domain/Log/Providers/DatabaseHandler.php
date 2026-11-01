@@ -27,18 +27,21 @@ declare(strict_types=1);
 namespace SP\Domain\Log\Providers;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
 use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
+use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Security\Models\Eventlog;
 use SP\Domain\Security\Ports\EventlogService;
 use Throwable;
-
-use function SP\processException;
 
 /**
  * Class DatabaseHandler
@@ -50,11 +53,15 @@ final class DatabaseHandler extends Provider implements EventReceiver
     private readonly string $events;
 
     public function __construct(
-        Application                        $application,
-        private readonly EventlogService   $eventlogService,
-        private readonly LanguageInterface $language
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
+        private readonly EventlogService            $eventlogService,
+        private readonly LanguageInterface          $language,
+        private readonly EventMessageFormatterInterface $messageFormatter,
+        private readonly LoggerInterface            $logger = new NullLogger()
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
 
         $configEvents = $this->config->getConfigData()->getLogEvents();
 
@@ -90,13 +97,17 @@ final class DatabaseHandler extends Provider implements EventReceiver
             $properties['level'] = 'ERROR';
             $properties['description'] = (string)$source;
         } else {
-            $properties['description'] = $event->getEventMessage()?->composeText();
+            $eventMessage = $event->getEventMessage();
+
+            $properties['description'] = $eventMessage !== null
+                ? $this->messageFormatter->composeText($eventMessage)
+                : null;
         }
 
         try {
             $this->eventlogService->create(new Eventlog($properties));
         } catch (Exception $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
 
         $this->language->unsetAppLocales();

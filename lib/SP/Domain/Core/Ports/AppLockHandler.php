@@ -25,7 +25,7 @@
 namespace SP\Domain\Core\Ports;
 
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class AppLock
@@ -44,6 +44,12 @@ interface AppLockHandler
      * @throws SPException
      */
     public function lock(int $userId, string $subject): void;
+
+    /**
+     * @throws FileException
+     * @throws SPException
+     */
+    public function tryLock(int $userId, string $subject): bool;
 
     public function unlock(): void;
 }

@@ -32,23 +32,20 @@ use DOMElement;
 use DOMNodeList;
 use DOMXPath;
 use Exception;
-use SP\Core\Crypt\Hash;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Providers\Version;
+use SP\Domain\Common\Providers\XmlIntegrity;
 use SP\Domain\Core\Exceptions\CryptException;
-use SP\Domain\Export\Services\XmlVerify;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Domain\Tag\Models\Tag;
 
-use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Import assets from a sysPass exported XML file
@@ -124,7 +121,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
             ->item(0)
             ?->getAttribute('hash');
 
-        if (!empty($hash) && !Hash::checkHashKey($importParams->getPassword(), $hash)) {
+        if (!empty($hash) && !$this->hashService->checkHashKey($importParams->getPassword(), $hash)) {
             throw ImportException::error(__u('Wrong encryption password'));
         }
 
@@ -145,8 +142,6 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                     $importParams->getPassword()
                 );
             } catch (CryptException $e) {
-                processException($e);
-
                 $this->eventDispatcher->notify('exception', new Event($e));
 
                 continue;
@@ -185,7 +180,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
     {
         $key = $importParams->getPassword() ?? sha1($this->configData->getPasswordSalt());
 
-        if (!XmlVerify::checkXmlHash($this->document, $key)) {
+        if (!XmlIntegrity::checkHash($this->document, $key, $this->hashService)) {
             $this->eventDispatcher->notify(
                 'run.import.syspass.process.verify',
                 new Event(
@@ -238,7 +233,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 'exception',
                 new Event(
                     $e,
-                    EventMessage::build()->addDescription(__('Unable to import categories'))
+                    EventMessage::build()->addDescription(__u('Unable to import categories'))
                 )
             );
 
@@ -282,7 +277,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 'exception',
                 new Event(
                     $e,
-                    EventMessage::build()->addDescription(__('Unable to import clients'))
+                    EventMessage::build()->addDescription(__u('Unable to import clients'))
                 )
             );
 
@@ -326,7 +321,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 'exception',
                 new Event(
                     $e,
-                    EventMessage::build()->addDescription(__('Unable to import tags'))
+                    EventMessage::build()->addDescription(__u('Unable to import tags'))
                 )
             );
 
@@ -382,7 +377,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                     'exception',
                     new Event(
                         $e,
-                        EventMessage::build()->addDescription(__('Unable to import account'))
+                        EventMessage::build()->addDescription(__u('Unable to import account'))
                     )
                 );
 

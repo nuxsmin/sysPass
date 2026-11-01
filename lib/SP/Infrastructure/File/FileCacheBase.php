@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\File;
 
+use SP\Domain\Core\Exceptions\FileException;
+
 use SP\Domain\Storage\Ports\FileCacheService;
 
 use function SP\__;

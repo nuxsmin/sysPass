@@ -41,9 +41,9 @@ use SP\Domain\User\Models\UserProfile as UserProfileModel;
 use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
-use SP\Infrastructure\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -73,10 +73,9 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newUpdate()
             ->table(UserModel::TABLE)
-            ->cols($user->toArray(null, ['id', 'hashSalt']))
+            ->cols($user->toArray(null, ['id', 'hashSalt', 'userGroupName', 'userProfileName']))
             ->set('lastUpdate', 'NOW()')
-            ->where('id = :id', ['id' => $user->getId()])
-            ->limit(1);
+            ->where('id = :id', ['id' => $user->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the user'));
 
@@ -101,8 +100,8 @@ final class User extends BaseRepository implements UserRepository
             ->where('id <> :id')
             ->where(
                 'UPPER(:login) = UPPER(login) 
-                OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\'
-                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\''
+                OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\')
+                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\')'
             )
             ->bindValues(
                 [
@@ -132,9 +131,8 @@ final class User extends BaseRepository implements UserRepository
             ->table(UserModel::TABLE)
             ->cols($user->toArray(['pass', 'isChangePass', 'isChangedPass', 'isMigrate']))
             ->set('lastUpdate', 'NOW()')
-            ->set('hashSalt', '')
-            ->where('id = :id', ['id' => $user->getId()])
-            ->limit(1);
+            ->set('hashSalt', "''")
+            ->where('id = :id', ['id' => $user->getId()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'));
 
@@ -155,8 +153,7 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newDelete()
             ->from(UserModel::TABLE)
-            ->where('id = :id', ['id' => $id])
-            ->limit(1);
+            ->where('id = :id', ['id' => $id]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the user'));
 
@@ -177,8 +174,8 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE))
-            ->cols(UserGroupModel::getColsWithPreffix(UserGroupModel::TABLE))
+            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName', 'userProfileName']))
+            ->cols(['UserGroup.name AS userGroupName'])
             ->from(UserModel::TABLE)
             ->innerJoin(
                 UserGroupModel::TABLE,
@@ -239,10 +236,12 @@ final class User extends BaseRepository implements UserRepository
                 UserProfileModel::TABLE,
                 sprintf('%s.id = %s.userProfileId', UserProfileModel::TABLE, UserModel::TABLE)
             )
-            ->cols(UserModel::getCols(['hash']))
-            ->cols(UserGroupModel::getColsWithPreffix(UserGroupModel::TABLE))
-            ->cols(UserProfileModel::getColsWithPreffix(UserProfileModel::TABLE))
-            ->orderBy(['name'])
+            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName', 'userProfileName', 'hash']))
+            ->cols([
+                       'UserGroup.name AS userGroupName',
+                       'UserProfile.name AS userProfileName'
+                   ])
+            ->orderBy([sprintf('%s.name', UserModel::TABLE)])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
@@ -251,7 +250,7 @@ final class User extends BaseRepository implements UserRepository
         }
 
         if (!empty($itemSearchData->getSeachString())) {
-            $query->where(sprintf('%s.name LIKE :name OR %s.login LIKE :login', UserModel::TABLE, UserModel::TABLE));
+            $query->where(sprintf('(%s.name LIKE :name OR %s.login LIKE :login)', UserModel::TABLE, UserModel::TABLE));
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
 
@@ -279,11 +278,16 @@ final class User extends BaseRepository implements UserRepository
             throw DuplicatedItemException::error(__u('Duplicated user login/email'));
         }
 
+        $userData = array_filter(
+            $user->toArray(null, ['id', 'userGroupName', 'userProfileName']),
+            static fn($value) => $value !== null
+        );
+        $userData['hashSalt'] = '';
+
         $query = $this->queryFactory
             ->newInsert()
             ->into(UserModel::TABLE)
-            ->cols($user->toArray(null, ['id', 'hashSalt']))
-            ->set('hashSalt', '');
+            ->cols($userData);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the user'));
 
@@ -307,8 +311,8 @@ final class User extends BaseRepository implements UserRepository
             ->from(UserModel::TABLE)
             ->where(
                 'UPPER(:login) = UPPER(login) 
-                OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\'
-                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\''
+                OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\')
+                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\')'
             )
             ->bindValues(
                 [
@@ -333,16 +337,15 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE))
-            ->cols(UserGroupModel::getColsWithPreffix(UserGroupModel::TABLE))
+            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName', 'userProfileName']))
+            ->cols(['UserGroup.name AS userGroupName'])
             ->from(UserModel::TABLE)
             ->innerJoin(
                 UserGroupModel::TABLE,
                 sprintf('%s.id = %s.userGroupId', UserGroupModel::TABLE, UserModel::TABLE)
             )
-            ->where(sprintf('%s.login = :login', UserModel::TABLE))
-            ->orWhere(sprintf('%s.ssoLogin = :login', UserModel::TABLE))
-            ->bindValues(['login' => $login])
+            ->where(sprintf('(%s.login = :login OR %s.ssoLogin = :ssoLogin)', UserModel::TABLE, UserModel::TABLE))
+            ->bindValues(['login' => $login, 'ssoLogin' => $login])
             ->limit(1);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, UserModel::class));
@@ -360,7 +363,7 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(UserModel::TABLE)
-            ->cols(UserModel::getCols())
+            ->cols(UserModel::getCols(['userGroupName', 'userProfileName']))
             ->orderBy(['name']);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, UserModel::class));
@@ -386,8 +389,7 @@ final class User extends BaseRepository implements UserRepository
             ->set('lastUpdateMPass', 'UNIX_TIMESTAMP()')
             ->set('isMigrate', 0)
             ->set('isChangedPass', 0)
-            ->where('id = :id', ['id' => $id])
-            ->limit(1);
+            ->where('id = :id', ['id' => $id]);
 
         return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
@@ -408,8 +410,7 @@ final class User extends BaseRepository implements UserRepository
             ->table(UserModel::TABLE)
             ->set('lastLogin', 'NOW()')
             ->set('loginCount', 'loginCount + 1')
-            ->where('id = :id', ['id' => $id])
-            ->limit(1);
+            ->where('id = :id', ['id' => $id]);
 
         return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
@@ -427,9 +428,8 @@ final class User extends BaseRepository implements UserRepository
             ->newSelect()
             ->cols(['id'])
             ->from(UserModel::TABLE)
-            ->where('UPPER(login) = UPPER(:login)')
-            ->where('UPPER(ssoLogin) = UPPER(:login)')
-            ->bindValues(['login' => $login]);
+            ->where('(UPPER(login) = UPPER(:login) OR UPPER(ssoLogin) = UPPER(:ssoLogin))')
+            ->bindValues(['login' => $login, 'ssoLogin' => $login]);
 
         return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
@@ -452,14 +452,12 @@ final class User extends BaseRepository implements UserRepository
                        'email' => $user->getEmail(),
                        'isLdap' => $user->isLdap()
                    ])
-            ->set('hashSalt', '')
+            ->set('hashSalt', "''")
             ->set('lastLogin', 'NOW()')
             ->set('lastUpdate', 'NOW()')
             ->set('loginCount', 'loginCount + 1')
-            ->where('UPPER(login) = UPPER(:login)')
-            ->where('UPPER(ssoLogin) = UPPER(:login)')
-            ->bindValues(['login' => $user->getLogin()])
-            ->limit(1);
+            ->where('(UPPER(login) = UPPER(:login) OR UPPER(ssoLogin) = UPPER(:ssoLogin))')
+            ->bindValues(['login' => $user->getLogin(), 'ssoLogin' => $user->getLogin()]);
 
         return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
@@ -483,8 +481,7 @@ final class User extends BaseRepository implements UserRepository
             ->newUpdate()
             ->table(UserModel::TABLE)
             ->cols(['preferences' => $userPreferences->toJson()])
-            ->where('id = :id', ['id' => $id])
-            ->limit(1);
+            ->where('id = :id', ['id' => $id]);
 
         return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();
     }
@@ -503,7 +500,7 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE))
+            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['userGroupName', 'userProfileName']))
             ->from(UserModel::TABLE)
             ->innerJoin(
                 UserGroupModel::TABLE,
@@ -516,14 +513,14 @@ final class User extends BaseRepository implements UserRepository
             ->where(sprintf('%s.email IS NOT NULL', UserModel::TABLE))
             ->where(
                 sprintf(
-                    '(%s.userGroupId = :userGroupId OR %s.userGroupId = :userGroupId)',
+                    '(%s.userGroupId = :userGroupIdUser OR %s.userGroupId = :userGroupIdUserToUserGroup)',
                     UserModel::TABLE,
                     UserToUserGroupModel::TABLE
                 )
             )
             ->where(sprintf('%s.isDisabled = 0', UserModel::TABLE))
             ->orderBy([sprintf('%s.login', UserModel::TABLE)])
-            ->bindValues(['userGroupId' => $groupId]);
+            ->bindValues(['userGroupIdUser' => $groupId, 'userGroupIdUserToUserGroup' => $groupId]);
 
         return $this->db->runQuery(QueryData::build($query)->setMapClassName(UserModel::class));
     }
@@ -539,7 +536,7 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getCols())
+            ->cols(UserModel::getCols(['userGroupName', 'userProfileName']))
             ->from(UserModel::TABLE)
             ->where('email IS NOT NULL')
             ->where('isDisabled = 0')
@@ -561,7 +558,7 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserModel::getCols())
+            ->cols(UserModel::getCols(['userGroupName', 'userProfileName']))
             ->from(UserModel::TABLE)
             ->where('id IN (:ids)', ['ids' => $ids])
             ->where('email IS NOT NULL')
@@ -596,7 +593,7 @@ final class User extends BaseRepository implements UserRepository
                     )
                     ->where(
                         sprintf(
-                            '%s.userId = :userId OR %s.userEditId = :userId',
+                            '%s.userId = :userIdAccount OR %s.userEditId = :userIdAccountEdit',
                             AccountModel::TABLE,
                             AccountModel::TABLE
                         )
@@ -622,7 +619,7 @@ final class User extends BaseRepository implements UserRepository
                         ClientModel::TABLE,
                         sprintf('%s.id = %s.clientId', ClientModel::TABLE, AccountModel::TABLE)
                     )
-                    ->where(sprintf('%s.userId = :userId', AccountToUserModel::TABLE))
+                    ->where(sprintf('%s.userId = :userIdAccountToUser', AccountToUserModel::TABLE))
                     ->cols(
                         [
                             sprintf('%s.accountId as id', AccountToUserModel::TABLE),
@@ -644,7 +641,7 @@ final class User extends BaseRepository implements UserRepository
                             UserToUserGroupModel::TABLE
                         )
                     )
-                    ->where(sprintf('%s.userId = :userId', UserToUserGroupModel::TABLE))
+                    ->where(sprintf('%s.userId = :userIdUserToUserGroup', UserToUserGroupModel::TABLE))
                     ->cols(
                         [
                             sprintf('%s.userGroupId AS id', UserToUserGroupModel::TABLE),
@@ -666,7 +663,7 @@ final class User extends BaseRepository implements UserRepository
                         ClientModel::TABLE,
                         sprintf('%s.id = %s.clientId', ClientModel::TABLE, AccountModel::TABLE)
                     )
-                    ->where(sprintf('%s.userId = :userId', PublicLinkModel::TABLE))
+                    ->where(sprintf('%s.userId = :userIdPublicLink', PublicLinkModel::TABLE))
                     ->cols(
                         [
                             sprintf('%s.id AS id', PublicLinkModel::TABLE),
@@ -681,7 +678,13 @@ final class User extends BaseRepository implements UserRepository
                 'Items'
             )
             ->orderBy(['Items.ref'])
-            ->bindValues(['userId' => $id]);
+            ->bindValues([
+                'userIdAccount' => $id,
+                'userIdAccountEdit' => $id,
+                'userIdAccountToUser' => $id,
+                'userIdUserToUserGroup' => $id,
+                'userIdPublicLink' => $id,
+            ]);
 
         return $this->db->runQuery(QueryData::build($query));
     }

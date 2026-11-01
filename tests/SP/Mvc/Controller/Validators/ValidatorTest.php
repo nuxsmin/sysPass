@@ -26,8 +26,9 @@ declare(strict_types=1);
 namespace SP\Tests\Mvc\Controller\Validators;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use SP\Mvc\Controller\Validators\Validator;
+use SP\Modules\Web\Mvc\Controller\Validators\Validator;
 
 /**
  * Class ValidatorTest
@@ -40,6 +41,7 @@ class ValidatorTest extends TestCase
     public const VALID_STRING = 'abcDE123_!';
     public const VALID_REGEX  = '^[a-zA-Z\d_!]+$';
 
+    #[Test]
     public function testMatchRegex()
     {
         $this->assertTrue(Validator::matchRegex(self::VALID_STRING, self::VALID_REGEX));
@@ -49,6 +51,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse(Validator::matchRegex(self::VALID_STRING, $regex));
     }
 
+    #[Test]
     public function testHasLetters()
     {
         $this->assertTrue(Validator::hasLetters(self::VALID_STRING));
@@ -58,6 +61,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse(Validator::hasLetters($string));
     }
 
+    #[Test]
     public function testHasUpper()
     {
         $this->assertTrue(Validator::hasUpper(self::VALID_STRING));
@@ -67,6 +71,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse(Validator::hasUpper($string));
     }
 
+    #[Test]
     public function testHasSymbols()
     {
         $this->assertTrue(Validator::hasSymbols(self::VALID_STRING));
@@ -76,6 +81,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse(Validator::hasSymbols($string));
     }
 
+    #[Test]
     public function testHasNumbers()
     {
         $this->assertTrue(Validator::hasNumbers(self::VALID_STRING));
@@ -85,6 +91,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse(Validator::hasNumbers($string));
     }
 
+    #[Test]
     public function testHasLower()
     {
         $this->assertTrue(Validator::hasLower(self::VALID_STRING));
@@ -94,6 +101,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse(Validator::hasLower($string));
     }
 
+    #[Test]
     public function testIsRegex()
     {
         $this->assertNotFalse(Validator::isRegex(self::VALID_REGEX));

@@ -26,13 +26,15 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Import\Services;
 
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use RuntimeException;
-use SP\Core\Crypt\Crypt;
+use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
@@ -48,7 +50,7 @@ use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\Import\Services\SyspassImport;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -77,6 +79,7 @@ class SyspassImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws Exception
      */
+    #[Test]
     public function testDoImportWithNoMasterPassword()
     {
         $importParamsDto = $this->createStub(ImportParamsDto::class);
@@ -194,6 +197,7 @@ class SyspassImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws Exception
      */
+    #[Test]
     public function testDoImportWithMasterPassword()
     {
         $importParamsDto = $this->createMock(ImportParamsDto::class);
@@ -284,6 +288,7 @@ class SyspassImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws Exception
      */
+    #[Test]
     public function testDoImportWithItemsByName()
     {
         $importParamsDto = $this->createStub(ImportParamsDto::class);
@@ -354,6 +359,7 @@ class SyspassImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws Exception
      */
+    #[Test]
     public function testDoImportWithMasterPasswordAndNoConfigHash()
     {
         $importParamsDto = $this->createMock(ImportParamsDto::class);
@@ -442,6 +448,7 @@ class SyspassImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws Exception
      */
+    #[Test]
     public function testDoImportWithTagException()
     {
         $importParamsDto = $this->createStub(ImportParamsDto::class);
@@ -497,6 +504,7 @@ class SyspassImportTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testDoImportWithCategoryException()
     {
         $importParamsDto = $this->createStub(ImportParamsDto::class);
@@ -546,6 +554,7 @@ class SyspassImportTest extends UnitaryTestCase
     /**
      * @throws Exception
      */
+    #[Test]
     public function testDoImportWithClientException()
     {
         $importParamsDto = $this->createStub(ImportParamsDto::class);
@@ -600,6 +609,7 @@ class SyspassImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws Exception
      */
+    #[Test]
     public function testDoImportWithEncryptedFile()
     {
         $importHelper = new ImportHelper(
@@ -701,7 +711,15 @@ class SyspassImportTest extends UnitaryTestCase
                 })
             );
 
-        $sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+        $sysPassImport = new SyspassImport(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $importHelper,
+            $this->crypt,
+            new HashServiceAdapter(),
+            $document
+        );
 
         $out = $sysPassImport->doImport($importParamsDto);
 
@@ -712,6 +730,7 @@ class SyspassImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws Exception
      */
+    #[Test]
     public function testDoImportWithEncryptedFileAndCryptoException()
     {
         $importHelper = new ImportHelper(
@@ -764,7 +783,15 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('create');
 
-        $sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+        $sysPassImport = new SyspassImport(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $importHelper,
+            $this->crypt,
+            new HashServiceAdapter(),
+            $document
+        );
 
         $out = $sysPassImport->doImport($importParamsDto);
 
@@ -775,6 +802,7 @@ class SyspassImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws Exception
      */
+    #[Test]
     public function testDoImportWithAccountException()
     {
         $importParamsDto = $this->createStub(ImportParamsDto::class);
@@ -791,7 +819,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(4))
             ->method('create')
             ->with(self::callback(static fn(Client $client) => !empty($client->getName())))
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 3)));
+            ->willReturn(1001, 1002, 1003, 1004);
 
         $this->categoryService
             ->expects(self::exactly(5))
@@ -808,7 +836,7 @@ class SyspassImportTest extends UnitaryTestCase
                                                      empty($category->getDescription())
                 )
             )
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 4)));
+            ->willReturn(2001, 2002, 2003, 2004, 2005);
 
         $this->tagService
             ->expects(self::exactly(7))
@@ -822,7 +850,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(7))
             ->method('create')
             ->with(self::callback(static fn(Tag $tag) => !empty($tag->getName())))
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 6)));
+            ->willReturn(3001, 3002, 3003, 3004, 3005, 3006, 3007);
 
         $this->crypt
             ->expects(self::never())
@@ -861,7 +889,15 @@ class SyspassImportTest extends UnitaryTestCase
         $document = new DOMDocument();
         $document->load(self::SYSPASS_FILE, LIBXML_NOBLANKS);
 
-        $this->sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+        $this->sysPassImport = new SyspassImport(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $importHelper,
+            $this->crypt,
+            new HashServiceAdapter(),
+            $document
+        );
     }
 
 }

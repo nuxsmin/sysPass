@@ -24,14 +24,11 @@
 
 namespace SP\Modules\Api\Controllers\Category;
 
-
-use Klein\Klein;
-use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Category\Ports\CategoryAdapter;
 use SP\Domain\Category\Ports\CategoryService;
-use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Modules\Api\Controllers\ApiControllerHelper;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Modules\Api\Controllers\Help\CategoryHelp;
 
@@ -40,26 +37,17 @@ use SP\Modules\Api\Controllers\Help\CategoryHelp;
  */
 abstract class CategoryBase extends ControllerBase
 {
-    protected CategoryService $categoryService;
-    protected CategoryAdapter $categoryAdapter;
-
     /**
      * @throws InvalidClassException
      */
     public function __construct(
-        Application     $application,
-        Klein           $router,
-        ApiService      $apiService,
-        AclInterface    $acl,
-        CategoryService $categoryService,
-        CategoryAdapter $categoryAdapter
+        ApiControllerHelper                $controllerHelper,
+        ApiService                         $apiService,
+        protected readonly CategoryService $categoryService,
+        protected readonly CategoryAdapter $categoryAdapter
     ) {
-        parent::__construct($application, $router, $apiService, $acl);
-
-        $this->categoryService = $categoryService;
-        $this->categoryAdapter = $categoryAdapter;
+        parent::__construct($controllerHelper, $apiService);
 
         $this->apiService->setHelpClass(CategoryHelp::class);
     }
-
 }

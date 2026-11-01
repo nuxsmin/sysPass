@@ -27,6 +27,7 @@ namespace SP\Tests\Core;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Core\Exceptions\CheckException;
@@ -54,6 +55,7 @@ class PhpExtensionCheckerTest extends UnitaryTestCase
      * @return void
      */
     #[DataProvider('extensionMethodDataProvider')]
+    #[Test]
     public function testCallMagicMethod(string $method)
     {
         $phpExtensionChecker = new PhpExtensionChecker();
@@ -61,6 +63,7 @@ class PhpExtensionCheckerTest extends UnitaryTestCase
         $this->assertTrue($phpExtensionChecker->{$method}());
     }
 
+    #[Test]
     public function testCallMagicMethodWithUnknownMethod()
     {
         $phpExtensionChecker = new PhpExtensionChecker();
@@ -71,6 +74,7 @@ class PhpExtensionCheckerTest extends UnitaryTestCase
         $phpExtensionChecker->test();
     }
 
+    #[Test]
     public function testCallMagicMethodWithUnknownExtension()
     {
         $phpExtensionChecker = new PhpExtensionChecker();
@@ -78,6 +82,7 @@ class PhpExtensionCheckerTest extends UnitaryTestCase
         self::assertFalse($phpExtensionChecker->checkTest());
     }
 
+    #[Test]
     public function testCheckMandatory()
     {
         $phpExtensionChecker = new PhpExtensionChecker();
@@ -89,6 +94,7 @@ class PhpExtensionCheckerTest extends UnitaryTestCase
     /**
      * @throws CheckException
      */
+    #[Test]
     public function testCheckIsAvailable()
     {
         $phpExtensionChecker = new PhpExtensionChecker();
@@ -102,6 +108,7 @@ class PhpExtensionCheckerTest extends UnitaryTestCase
     /**
      * @throws CheckException
      */
+    #[Test]
     public function testCheckIsAvailableWithUnknown()
     {
         $phpExtensionChecker = new PhpExtensionChecker();
@@ -112,6 +119,7 @@ class PhpExtensionCheckerTest extends UnitaryTestCase
     /**
      * @throws CheckException
      */
+    #[Test]
     public function testCheckIsAvailableWithUnknownAndException()
     {
         $phpExtensionChecker = new PhpExtensionChecker();
@@ -122,6 +130,7 @@ class PhpExtensionCheckerTest extends UnitaryTestCase
         $this->assertFalse($phpExtensionChecker->checkIsAvailable('test', true));
     }
 
+    #[Test]
     public function testGetMissing()
     {
         $phpExtensionChecker = new PhpExtensionChecker();

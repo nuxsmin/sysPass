@@ -27,22 +27,21 @@ declare(strict_types=1);
 namespace SP\Domain\Upgrade\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Common\Attributes\UpgradeVersion;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
-use SP\Infrastructure\Database\MysqlFileParser;
-use SP\Infrastructure\File\FileHandler;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\Database\Ports\DatabaseFileFactoryInterface;
 
-use function SP\__;
 use function SP\__u;
-use function SP\logger;
-use function SP\processException;
 
 /**
  * Class UpgradeDatabase
@@ -51,11 +50,15 @@ use function SP\processException;
 final class UpgradeDatabase extends Service implements UpgradeHandlerService
 {
     public function __construct(
-        Application                        $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly DatabaseInterface $database,
-        private readonly string $sqlPath
+        private readonly string $sqlPath,
+        private readonly DatabaseFileFactoryInterface $databaseFileFactory,
+        private readonly LoggerInterface $logger = new NullLogger()
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -76,9 +79,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
             try {
                 $this->database->runQueryRaw($query);
             } catch (Exception $e) {
-                processException($e);
-
-                logger('SQL: ' . $query);
+                $this->logger->debug('SQL: ' . $query);
 
                 $this->eventDispatcher->notify(
                     'exception',
@@ -95,7 +96,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
         }
 
         if ($count === 0) {
-            logger(__('Update file does not contain data'), 'ERROR');
+            $this->logger->error(__u('Update file does not contain data'));
 
             throw UpgradeException::error(__u('Update file does not contain data'), $version);
         }
@@ -118,13 +119,11 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
      */
     private function getQueriesFromFile(string $version): iterable
     {
-        $filename = FileSystem::buildPath($this->sqlPath, str_replace('.', '', $version) . '.sql');
+        $filename = implode(DIRECTORY_SEPARATOR, [$this->sqlPath, str_replace('.', '', $version) . '.sql']);
 
         try {
-            return (new MysqlFileParser(new FileHandler($filename)))->parse('$$');
+            return $this->databaseFileFactory->create($filename)->parse('$$');
         } catch (Exception $e) {
-            processException($e);
-
             throw UpgradeException::error($e->getMessage());
         }
     }

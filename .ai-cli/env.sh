@@ -42,7 +42,11 @@ GH_BIN="$AI_CLI_ROOT/bin/gh"
 AWS_BIN="$AI_CLI_ROOT/bin/aws"
 TERRAFORM_BIN="$AI_CLI_ROOT/bin/terraform"
 DOCKER_BIN="$AI_CLI_ROOT/bin/docker"
-export GH_BIN AWS_BIN TERRAFORM_BIN DOCKER_BIN
+# PHP always runs inside Docker — never invoke the host `php`.
+# PHP_BIN is a wrapper over `$DOCKER_BIN run` with the repo bind-mounted.
+PHP_BIN="$AI_CLI_ROOT/bin/php"
+PHP_IMAGE="${PHP_IMAGE:-php-testing-composer:latest}"
+export GH_BIN AWS_BIN TERRAFORM_BIN DOCKER_BIN PHP_BIN PHP_IMAGE
 
 # Never let the AWS CLI open an interactive pager.
 export AWS_PAGER=""
@@ -61,5 +65,7 @@ if ! "$TERRAFORM_BIN" --version > /dev/null 2>&1; then
   echo "WARNING: terraform not found via $TERRAFORM_BIN — tf commands unavailable" >&2
 fi
 if ! "$DOCKER_BIN" version > /dev/null 2>&1; then
-  echo "WARNING: docker not found via $DOCKER_BIN — docker commands unavailable" >&2
+  echo "WARNING: docker not found via $DOCKER_BIN — docker/php commands unavailable" >&2
+elif ! "$DOCKER_BIN" image inspect "$PHP_IMAGE" > /dev/null 2>&1; then
+  echo "WARNING: PHP image '$PHP_IMAGE' not found — build it with: make -C .ai-cli/docker build" >&2
 fi

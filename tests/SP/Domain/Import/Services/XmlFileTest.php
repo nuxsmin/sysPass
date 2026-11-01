@@ -29,10 +29,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\XmlFile;
 use SP\Domain\Import\Services\XmlFormat;
-use SP\Infrastructure\File\FileException;
-use SP\Infrastructure\File\FileHandler;
+use SP\Domain\Core\Exceptions\FileException;
+use SP\Tests\Stubs\InMemoryFileHandler;
 use SP\Tests\UnitaryTestCase;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class XmlFileTest
@@ -59,9 +60,10 @@ class XmlFileTest extends UnitaryTestCase
      * @throws FileException
      */
     #[DataProvider('fileFormatProvider')]
+    #[Test]
     public function testDetectFormat(string $file, XmlFormat $format)
     {
-        $fileHandler = new FileHandler($file);
+        $fileHandler = new InMemoryFileHandler($file, (string)file_get_contents($file));
 
         $xmlFile = new XmlFile();
         $out = $xmlFile->builder($fileHandler)->detectFormat();
@@ -73,10 +75,13 @@ class XmlFileTest extends UnitaryTestCase
      * @throws ImportException
      * @throws FileException
      */
+    #[Test]
     public function testDetectFormatWithException()
     {
-        $fileHandler = new FileHandler(self::$faker->filePath(), 'w');
-        $fileHandler->write('<?xml version="1.0" encoding="utf-8" standalone="yes"?><Test></Test>');
+        $fileHandler = new InMemoryFileHandler(
+            self::$faker->filePath(),
+            '<?xml version="1.0" encoding="utf-8" standalone="yes"?><Test></Test>'
+        );
 
         $xmlFile = new XmlFile();
 
@@ -90,10 +95,13 @@ class XmlFileTest extends UnitaryTestCase
      * @throws ImportException
      * @throws FileException
      */
+    #[Test]
     public function testBuilder()
     {
-        $fileHandler = new FileHandler(self::$faker->filePath(), 'w');
-        $fileHandler->write('<?xml version="1.0" encoding="utf-8" standalone="yes"?><Test></Test>');
+        $fileHandler = new InMemoryFileHandler(
+            self::$faker->filePath(),
+            '<?xml version="1.0" encoding="utf-8" standalone="yes"?><Test></Test>'
+        );
 
         $xmlFile = new XmlFile();
         $out = $xmlFile->builder($fileHandler);
@@ -105,10 +113,13 @@ class XmlFileTest extends UnitaryTestCase
      * @throws ImportException
      * @throws FileException
      */
+    #[Test]
     public function testBuilderWithException()
     {
-        $fileHandler = new FileHandler(self::$faker->filePath(), 'w');
-        $fileHandler->write('<?xml version="1.0" encoding="utf-8" standalone="yes"?><Test>');
+        $fileHandler = new InMemoryFileHandler(
+            self::$faker->filePath(),
+            '<?xml version="1.0" encoding="utf-8" standalone="yes"?><Test>'
+        );
 
         $xmlFile = new XmlFile();
 
@@ -118,6 +129,7 @@ class XmlFileTest extends UnitaryTestCase
         $xmlFile->builder($fileHandler);
     }
 
+    #[Test]
     public function testGetDocument()
     {
         $xmlFile = new XmlFile();

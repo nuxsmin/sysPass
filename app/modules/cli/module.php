@@ -42,6 +42,7 @@ const MODULE_PATH = __DIR__;
 const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
 
 return [
+    Logger::class => create(Logger::class)->constructor('syspass'),
     LoggerInterface::class => static fn(Logger $logger, PathsContext $pathsContext) => $logger->pushHandler(
         new StreamHandler($pathsContext[Path::LOG_FILE])
     ),

@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Common\Providers;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Common\Providers\Environment;
 
@@ -36,11 +37,13 @@ use SP\Domain\Common\Providers\Environment;
 class EnvironmentTest extends TestCase
 {
 
+    #[Test]
     public function testCheckIsWindows()
     {
         $this->assertFalse(Environment::checkIsWindows());
     }
 
+    #[Test]
     public function testCheckPhpVersion()
     {
         $this->assertTrue(Environment::checkPhpVersion());

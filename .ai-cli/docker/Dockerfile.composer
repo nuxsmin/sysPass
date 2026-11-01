@@ -1,0 +1,28 @@
+ARG COMPOSER_VERSION
+
+FROM composer:${COMPOSER_VERSION}
+
+RUN apk add --no-cache \
+  mariadb-client \
+  icu-dev \
+  autoconf \
+  gcc \
+  g++ \
+  gettext-dev \
+  zlib-dev \
+  libjpeg-turbo-dev \
+  libpng-dev \
+  freetype-dev \
+  libxml2-dev \
+  openldap-dev \
+  linux-headers \
+  font-freefont
+
+RUN pecl install xdebug \
+  && docker-php-ext-configure gd \
+    --with-jpeg \
+    --with-freetype \
+  && docker-php-ext-install -j$(nproc) intl gettext pdo_mysql opcache gd xmlwriter simplexml ldap \
+  && docker-php-ext-enable xdebug intl pdo_mysql gettext gd xmlwriter simplexml ldap
+  
+USER 1000

@@ -29,7 +29,7 @@ use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Config\Models\Config as ConfigModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Interface ConfigRepository

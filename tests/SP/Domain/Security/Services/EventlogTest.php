@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Security\Services;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -36,7 +37,7 @@ use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Models\Eventlog as EventlogModel;
 use SP\Domain\Security\Ports\EventlogRepository;
 use SP\Domain\Security\Services\Eventlog;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -54,6 +55,7 @@ class EventlogTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testSearch()
     {
         $itemSearchData = new ItemSearchDto('test');
@@ -71,6 +73,7 @@ class EventlogTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $eventlog = new EventlogModel(
@@ -112,6 +115,7 @@ class EventlogTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testClear()
     {
         $this->eventlogRepository
@@ -128,7 +132,13 @@ class EventlogTest extends UnitaryTestCase
         $this->eventlogRepository = $this->createMock(EventlogRepository::class);
         $this->request = $this->createMock(RequestService::class);
 
-        $this->eventlog = new Eventlog($this->application, $this->eventlogRepository, $this->request);
+        $this->eventlog = new Eventlog(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->eventlogRepository,
+            $this->request
+        );
     }
 
 }

@@ -24,7 +24,7 @@
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Domain\Html\Html;
+use SP\Domain\Common\Providers\Html;
 
 use function SP\__;
 

@@ -4,7 +4,7 @@ on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, 'feat/*' ]
   workflow_dispatch:
 
 jobs:
@@ -22,6 +22,15 @@ jobs:
         run: |
           sudo locale-gen es_ES.UTF-8 en_US.UTF-8 && sudo update-locale
 
+      - name: Install test font
+        run: |
+          sudo apt-get update && sudo apt-get install -y fonts-freefont-otf || sudo apt-get install -y fonts-freefont-ttf
+          sudo mkdir -p /usr/share/fonts/freefont
+          font=$(find /usr/share/fonts \( -name 'FreeSans.otf' -o -name 'FreeSans.ttf' \) -print -quit)
+          test -n "$font"
+          sudo ln -sf "$font" /usr/share/fonts/freefont/FreeSans.otf
+          ls -l /usr/share/fonts/freefont/FreeSans.otf
+
       - name: Setup PHP with tools
         uses: shivammathur/setup-php@v2
         with:
@@ -29,6 +38,7 @@ jobs:
           extensions: mbstring, intl, gd, ldap, gettext, pdo_mysql
           # tools: phpunit
           coverage: xdebug
+          ini-values: zend.assertions=1
         env:
           fail-fast: true
 
@@ -54,13 +64,20 @@ jobs:
             --prefer-dist
 
       - name: Unitary tests
-        uses: paambaati/codeclimate-action@v5
         env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           XDEBUG_MODE: coverage
+        run: ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary --testsuite core
+
+      - name: Coverage gate
+        run: php scripts/coverage-gate.php --gate
+
+      - name: Upload unit coverage
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary --testsuite core
-          coverageLocations: ./tests/_output/coverage-clover.xml:clover
+          name: coverage-unitary
+          path: ./tests/_output/coverage-clover.xml
+          if-no-files-found: ignore
 
   integration:
     name: Build & Test (IT) ${{ matrix.php }}/${{ matrix.platform }}
@@ -69,7 +86,7 @@ jobs:
     strategy:
       matrix:
         platform: [ 'ubuntu-latest' ]
-        php: [ '8.1', '8.2' ]
+        php: [ '8.2' ]
     runs-on: ${{ matrix.platform }}
     env:
       DB_SERVER: 127.0.0.1
@@ -89,6 +106,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup locales
+        run: |
+          sudo locale-gen es_ES.UTF-8 en_US.UTF-8 && sudo update-locale
+
       - name: Setup PHP with tools
         uses: shivammathur/setup-php@v2
         with:
@@ -96,8 +117,18 @@ jobs:
           extensions: mbstring, intl, gd, ldap, gettext, pdo_mysql
           # tools: phpunit
           coverage: xdebug
+          ini-values: zend.assertions=1
         env:
           fail-fast: true
+
+      - name: Install test font
+        run: |
+          sudo apt-get update && sudo apt-get install -y fonts-freefont-otf || sudo apt-get install -y fonts-freefont-ttf
+          sudo mkdir -p /usr/share/fonts/freefont
+          font=$(find /usr/share/fonts \( -name 'FreeSans.otf' -o -name 'FreeSans.ttf' \) -print -quit)
+          test -n "$font"
+          sudo ln -sf "$font" /usr/share/fonts/freefont/FreeSans.otf
+          ls -l /usr/share/fonts/freefont/FreeSans.otf
 
       - name: Get composer cache directory
         id: composer-cache
@@ -134,10 +165,14 @@ jobs:
         run: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite modules --group integration --no-coverage
 
       - name: Integration tests
-        uses: paambaati/codeclimate-action@v4
         env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           XDEBUG_MODE: coverage
+        run: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite core
+
+      - name: Upload integration coverage
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          coverageCommand: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite core
-          coverageLocations: ./tests/_output/coverage-clover.xml:clover
+          name: coverage-integration-${{ matrix.php }}
+          path: ./tests/_output/coverage-clover.xml
+          if-no-files-found: ignore

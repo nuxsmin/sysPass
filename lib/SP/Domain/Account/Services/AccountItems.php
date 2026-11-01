@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Services;
 
-use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Ports\AccountItemsService;
@@ -35,11 +34,14 @@ use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-
-use function SP\processException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 
 /**
  * Class AccountItems
@@ -47,12 +49,15 @@ use function SP\processException;
 final class AccountItems extends Service implements AccountItemsService
 {
     public function __construct(
-        Application                                   $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly AccountToUserGroupRepository $accountToUserGroupRepository,
         private readonly AccountToUserRepository      $accountToUserRepository,
         private readonly AccountToTagRepository       $accountToTagRepository,
+        private readonly LoggerInterface              $logger = new NullLogger(),
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -177,7 +182,7 @@ final class AccountItems extends Service implements AccountItemsService
                 $this->accountToTagRepository->add($accountId, $accountCreateDto->tags);
             }
         } catch (SPException $e) {
-            processException($e);
+            $this->logger->error($e->getMessage());
         }
     }
 }

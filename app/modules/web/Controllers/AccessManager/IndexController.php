@@ -24,8 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\AccessManager;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Services\AuthException;
@@ -42,13 +41,13 @@ use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Helpers\Grid\AuthTokenGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\PublicLinkGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\UserGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\UserGroupGrid;
-use SP\Modules\Web\Controllers\Helpers\Grid\UserProfileGrid;
-use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Presenters\Helpers\Grid\AuthTokenGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\PublicLinkGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\UserGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\UserGroupGrid;
+use SP\Modules\Web\Presenters\Helpers\Grid\UserProfileGrid;
+use SP\Modules\Web\Presenters\Helpers\TabsGridHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class IndexController
@@ -62,7 +61,6 @@ final class IndexController extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        Application                         $application,
         WebControllerHelper                 $webControllerHelper,
         protected TabsGridHelper            $tabsGridHelper,
         private readonly UserGrid           $userGrid,
@@ -76,7 +74,7 @@ final class IndexController extends ControllerBase
         private readonly AuthTokenService   $authTokenService,
         private readonly PublicLinkService  $publicLinkService
     ) {
-        parent::__construct($application, $webControllerHelper);
+        parent::__construct($webControllerHelper);
 
         $this->checkLoggedIn();
     }

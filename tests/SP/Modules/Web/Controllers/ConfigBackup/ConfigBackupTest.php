@@ -55,7 +55,7 @@ class ConfigBackupTest extends IntegrationTestCase
                     DIRECTORY_SEPARATOR .
                     'sysPass_app-' .
                     $this->passwordSalt .
-                    '.gz';
+                    '.tar.gz';
 
         file_put_contents($filename, 'test_data_app');
 
@@ -86,7 +86,7 @@ class ConfigBackupTest extends IntegrationTestCase
                     DIRECTORY_SEPARATOR .
                     'sysPass_db-' .
                     $this->passwordSalt .
-                    '.gz';
+                    '.tar.gz';
 
         file_put_contents($filename, 'test_data_db');
 
@@ -117,7 +117,7 @@ class ConfigBackupTest extends IntegrationTestCase
                     DIRECTORY_SEPARATOR .
                     'sysPass_export-' .
                     $this->passwordSalt .
-                    '.gz';
+                    '.tar.gz';
 
         file_put_contents($filename, 'test_data_export');
 

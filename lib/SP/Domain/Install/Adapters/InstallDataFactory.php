@@ -37,10 +37,10 @@ final class InstallDataFactory
         $installData = new InstallData();
         $installData->setSiteLang($request->analyzeString('sitelang', 'en_US'));
         $installData->setAdminLogin($request->analyzeString('adminlogin', 'admin'));
-        $installData->setAdminPass($request->analyzeEncrypted('adminpass'));
-        $installData->setMasterPassword($request->analyzeEncrypted('masterpassword'));
+        $installData->setAdminPass($request->analyzeEncrypted('adminpass') ?? '');
+        $installData->setMasterPassword($request->analyzeEncrypted('masterpassword') ?? '');
         $installData->setDbAdminUser($request->analyzeString('dbuser', 'root'));
-        $installData->setDbAdminPass($request->analyzeEncrypted('dbpass'));
+        $installData->setDbAdminPass($request->analyzeEncrypted('dbpass') ?? '');
         $installData->setDbName($request->analyzeString('dbname', 'syspass'));
         $installData->setDbHost($request->analyzeString('dbhost', 'localhost'));
         $installData->setHostingMode($request->analyzeBool('hostingmode', false));

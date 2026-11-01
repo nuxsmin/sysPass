@@ -24,17 +24,19 @@
 
 namespace SP\Modules\Web\Controllers\UserPassReset;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Util\ErrorUtil;
 
 /**
  * Class IndexController
- *
- * @package SP\Modules\Web\Controllers
  */
 final class IndexController extends ControllerBase
 {
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         $this->layoutHelper->getCustomLayout('request', strtolower($this->routeContextData->actionName));
 
@@ -42,6 +44,6 @@ final class IndexController extends ControllerBase
             ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, true, 'request');
         }
 
-        $this->view();
+        return ActionResponse::ok($this->render());
     }
 }

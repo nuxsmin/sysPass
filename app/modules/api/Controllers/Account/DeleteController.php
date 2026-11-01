@@ -24,12 +24,14 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-
-use Exception;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class DeleteController
@@ -39,34 +41,29 @@ final class DeleteController extends AccountBase
     /**
      * deleteAction
      */
-    public function deleteAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function deleteAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::ACCOUNT_DELETE);
+        $this->setupApi(AclActionsInterface::ACCOUNT_DELETE);
 
-            $id = $this->apiService->getParamInt('id', true);
+        $id = $this->apiService->getParamInt('id', true);
 
-            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
+        $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 
-            $this->accountService->delete($id);
+        $this->accountService->delete($id);
 
-            $this->eventDispatcher->notify(
-                'delete.account',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Account removed'))
-                        ->addDetail(__u('Name'), $accountDetails->getName())
-                        ->addDetail(__u('Client'), $accountDetails->getClientName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'delete.account',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Account removed'))
+                    ->addDetail(__u('Name'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    ->addDetail('ID', $id)
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $id, __('Account removed')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Account removed'), $accountDetails, $id);
     }
 }

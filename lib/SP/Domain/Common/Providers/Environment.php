@@ -48,4 +48,29 @@ final class Environment
     {
         return PHP_VERSION_ID >= self::MIN_PHP_VERSION && PHP_VERSION_ID < self::MAX_PHP_VERSION;
     }
+
+    /**
+     * Obtener el tamaño máximo de subida de PHP.
+     */
+    public static function getMaxUpload(): int
+    {
+        return min(
+            self::convertShortUnit(ini_get('upload_max_filesize')),
+            self::convertShortUnit(ini_get('post_max_size')),
+            self::convertShortUnit(ini_get('memory_limit'))
+        );
+    }
+
+    public static function convertShortUnit(string $value): int
+    {
+        if (preg_match('/(\d+)([KMGkmg])/', $value, $match)) {
+            return match (strtoupper($match[2])) {
+                'K' => (int)$match[1] * 1024,
+                'M' => (int)$match[1] * (1024 ** 2),
+                'G' => (int)$match[1] * (1024 ** 3)
+            };
+        }
+
+        return (int)$value;
+    }
 }

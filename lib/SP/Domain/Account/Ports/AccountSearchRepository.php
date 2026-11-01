@@ -30,7 +30,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Common\Ports\Repository;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class AccountSearchRepository

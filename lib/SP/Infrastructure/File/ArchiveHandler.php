@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\File;
 
+use SP\Domain\Core\Exceptions\FileException;
+
 use Phar;
 use PharData;
 use SP\Domain\Core\PhpExtensionCheckerService;
@@ -47,7 +49,8 @@ class ArchiveHandler implements ArchiveHandlerInterface
 
     private static function makeArchiveName(string $archive): string
     {
-        // return preg_replace('/\.gz$/', '', $archive);
+        $archive = preg_replace('/\.[^.\/]+$/', '', $archive) ?? $archive;
+
         return sprintf('%s.tar', $archive);
     }
 
@@ -61,10 +64,9 @@ class ArchiveHandler implements ArchiveHandlerInterface
         $this->archive->buildFromDirectory($directory, $regex);
         $packed = $this->archive->compress(Phar::GZ);
 
-        // Delete the non-compressed archive
         (new FileHandler($this->archive->getPath()))->delete();
 
-        return $packed->getFileInfo()->getPathname();
+        return $packed->getPath();
     }
 
     /**
@@ -77,10 +79,9 @@ class ArchiveHandler implements ArchiveHandlerInterface
         $this->archive->addFile($file, basename($file));
         $packed = $this->archive->compress(Phar::GZ);
 
-        // Delete the non-compressed files
         (new FileHandler($file))->delete();
         (new FileHandler($this->archive->getPath()))->delete();
 
-        return $packed->getFileInfo()->getPath();
+        return $packed->getPath();
     }
 }

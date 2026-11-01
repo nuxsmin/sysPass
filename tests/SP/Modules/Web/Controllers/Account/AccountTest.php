@@ -27,26 +27,38 @@ declare(strict_types=1);
 namespace SP\Tests\Modules\Web\Controllers\Account;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Vault;
+use SP\Domain\Core\Crypt\Crypt;
+use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
 use SP\Domain\Account\Dtos\PublicLinkKey;
+use SP\Domain\Account\Ports\AccountRepository;
+use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Account\Models\PublicLink;
+use SP\Domain\Common\Adapters\SerializedPayloadRewriter;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Acl\AccountPermissionException;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
+use SP\Infrastructure\Database\QueryData;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\PublicLinkDataGenerator;
@@ -64,6 +76,21 @@ use Symfony\Component\DomCrawler\Crawler;
 #[InjectVault]
 class AccountTest extends IntegrationTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_contains($statement, "SELECT\n    `Account`.`id`\nFROM\n    `Account`")) {
+                return new QueryResult([new Simple(['id' => 1])]);
+            }
+
+            return $this->resolveDatabaseQuery($queryData);
+        };
+    }
+
     protected function getUserDataDto(): UserDto
     {
         $userPreferences = UserDataGenerator::factory()->buildUserPreferencesData()->mutate(['topNavbar' => true]);
@@ -186,6 +213,355 @@ class AccountTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws CryptException
+     * @throws EnvironmentIsBrokenException
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerViewLinkEscapedPassword')]
+    public function viewLinkEscapesPassword(): void
+    {
+        $payload = '"><script>alert(1)</script>';
+        $properties = AccountDataGenerator::factory()
+                                          ->buildAccount()
+                                          ->toArray(includeOuter: true);
+        $properties['pass'] = $payload;
+
+        $account = serialize(new Simple($properties));
+        $publicLinkKey = new PublicLinkKey($this->passwordSalt);
+
+        $vault = Vault::factory(new Crypt())->saveData($account, $publicLinkKey->getKey());
+
+        $publicLink = PublicLinkDataGenerator::factory()
+                                             ->buildPublicLink()
+                                             ->mutate(
+                                                 [
+                                                     'dateExpire' => time() + 100,
+                                                     'maxCountViews' => 3,
+                                                     'countViews' => 0,
+                                                     'hash' => $publicLinkKey->getHash(),
+                                                     'data' => $vault->getSerialized()
+                                                 ]
+                                             );
+        $this->addDatabaseMapperResolver(PublicLink::class, new QueryResult([$publicLink]));
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()])
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function unauthenticatedAccountMutationRoutesProvider(): array
+    {
+        return [
+            'saveDelete' => ['account/saveDelete/100', 'delete'],
+            'saveEdit' => ['account/saveEdit/100', 'update'],
+            'saveEditPass' => ['account/saveEditPass/100', 'editPassword'],
+            'saveEditRestore' => ['account/saveEditRestore/1/100', 'restoreModified'],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, int[]}>
+     */
+    public static function accountMutationActionsProvider(): array
+    {
+        return [
+            'saveDelete' => ['account/saveDelete/100', 'delete', [AclActionsInterface::ACCOUNT_DELETE]],
+            'saveEdit' => ['account/saveEdit/100', 'update', [AclActionsInterface::ACCOUNT_EDIT]],
+            'saveEditPass' => ['account/saveEditPass/100', 'editPassword', [AclActionsInterface::ACCOUNT_EDIT_PASS]],
+            'saveEditRestoreWithoutEdit' => [
+                'account/saveEditRestore/1/100',
+                'restoreModified',
+                [AclActionsInterface::ACCOUNT_EDIT],
+            ],
+            'saveEditRestoreWithoutEditPass' => [
+                'account/saveEditRestore/1/100',
+                'restoreModified',
+                [AclActionsInterface::ACCOUNT_EDIT_PASS],
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function accountMutationRepositoryMethodsProvider(): array
+    {
+        return [
+            'saveDelete' => ['account/saveDelete/100', 'delete'],
+            'saveEdit' => ['account/saveEdit/100', 'update'],
+            'saveEditPass' => ['account/saveEditPass/100', 'editPassword'],
+            'saveEditRestore' => ['account/saveEditRestore/1/100', 'restoreModified'],
+        ];
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[DataProvider('unauthenticatedAccountMutationRoutesProvider')]
+    public function unauthenticatedAccountMutationsAreRejected(string $route, string $serviceMethod): void
+    {
+        $accountService = $this->createMock(AccountService::class);
+        $accountService->expects(self::never())->method($serviceMethod);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => $route]),
+            [
+                Context::class => $this->getUnauthenticatedContext(),
+                AccountService::class => $accountService,
+            ]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('');
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[DataProvider('accountMutationActionsProvider')]
+    public function accountMutationWithoutActionIsRejected(
+        string $route,
+        string $serviceMethod,
+        array  $actions
+    ): void {
+        $acl = $this->createMock(AclInterface::class);
+        $acl->method('checkUserAccess')
+            ->willReturnCallback(static fn(int $actionId) => !in_array($actionId, $actions, true));
+
+        $accountService = $this->createMock(AccountService::class);
+        $accountService->expects(self::never())->method($serviceMethod);
+        $accountService->expects(self::never())->method('isVisible');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => $route]),
+            [
+                AclInterface::class => $acl,
+                AccountService::class => $accountService,
+            ]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
+        );
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[DataProvider('accountMutationRepositoryMethodsProvider')]
+    public function accountMutationWithoutVisibilityIsRejected(string $route, string $repositoryMethod): void
+    {
+        $accountRepository = $this->createMock(AccountRepository::class);
+        $accountRepository->method('isVisible')->willReturn(false);
+        $accountRepository->expects(self::never())->method($repositoryMethod);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => $route]),
+            [AccountRepository::class => $accountRepository]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to access this account","data":null}'
+        );
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function serviceRejectsInvisibleAccountMutations(): void
+    {
+        $accountRepository = $this->createMock(AccountRepository::class);
+        $accountRepository->method('isVisible')->willReturn(false);
+        $accountRepository->expects(self::never())->method('delete');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php'),
+            [AccountRepository::class => $accountRepository]
+        );
+
+        $this->expectException(AccountPermissionException::class);
+
+        $container->get(AccountService::class)->delete(100);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws CryptException
+     * @throws EnvironmentIsBrokenException
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerViewLink')]
+    public function viewLinkWithoutLogin(): void
+    {
+        $account = serialize(Simple::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccount()));
+        $publicLinkKey = new PublicLinkKey($this->passwordSalt);
+
+        $vault = Vault::factory(new Crypt())->saveData($account, $publicLinkKey->getKey());
+
+        $publicLink = PublicLinkDataGenerator::factory()
+                                             ->buildPublicLink()
+                                             ->mutate(
+                                                 [
+                                                     'dateExpire' => time() + 100,
+                                                     'maxCountViews' => 3,
+                                                     'countViews' => 0,
+                                                     'hash' => $publicLinkKey->getHash(),
+                                                     'data' => $vault->getSerialized()
+                                                 ]
+                                             );
+        $this->addDatabaseMapperResolver(PublicLink::class, new QueryResult([$publicLink]));
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()]),
+            [Context::class => $this->getUnauthenticatedContext()]
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws CryptException
+     * @throws EnvironmentIsBrokenException
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerViewLink')]
+    public function viewLinkLegacyPayload()
+    {
+        $account = serialize(Simple::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccount()));
+        $publicLinkKey = new PublicLinkKey($this->passwordSalt);
+
+        $vault = Vault::factory(new Crypt())->saveData($account, $publicLinkKey->getKey());
+
+        $legacyPayload = SerializedPayloadRewriter::rewrite(
+            $vault->getSerialized(),
+            [
+                Vault::class => 'SP\Core\Crypt\Vault',
+                Crypt::class => 'SP\Core\Crypt\Crypt',
+            ]
+        );
+
+        $publicLink = PublicLinkDataGenerator::factory()
+                                             ->buildPublicLink()
+                                             ->mutate(
+                                                 [
+                                                     'dateExpire' => time() + 100,
+                                                     'maxCountViews' => 3,
+                                                     'countViews' => 0,
+                                                     'hash' => $publicLinkKey->getHash(),
+                                                     'data' => $legacyPayload
+                                                 ]
+                                             );
+        $this->addDatabaseMapperResolver(PublicLink::class, new QueryResult([$publicLink]));
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()]),
+            [DatabaseUtilInterface::class => $this->databaseUtilStub()]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        self::assertSame($legacyPayload, $publicLink->getData());
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerViewLinkError')]
+    public function viewLinkUnreadablePayload()
+    {
+        $payload = 'not-a-serialized-payload';
+        $publicLink = $this->buildPublicLinkWithPayload($payload);
+
+        $publicLinkService = $this->createMock(PublicLinkService::class);
+        $publicLinkService->method('getByHash')->willReturn($publicLink);
+        $publicLinkService->expects(self::never())->method('addLinkView');
+
+        $accountService = $this->createMock(AccountService::class);
+        $accountService->expects(self::never())->method('incrementViewCounter');
+        $accountService->expects(self::never())->method('incrementDecryptCounter');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()]),
+            [
+                PublicLinkService::class => $publicLinkService,
+                AccountService::class => $accountService,
+                DatabaseUtilInterface::class => $this->databaseUtilStub(),
+            ]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        self::assertSame($payload, $publicLink->getData());
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerViewLinkError')]
+    public function viewLinkEmptyPayload()
+    {
+        $payload = '';
+        $publicLink = $this->buildPublicLinkWithPayload($payload);
+
+        $publicLinkService = $this->createMock(PublicLinkService::class);
+        $publicLinkService->method('getByHash')->willReturn($publicLink);
+        $publicLinkService->expects(self::never())->method('addLinkView');
+
+        $accountService = $this->createMock(AccountService::class);
+        $accountService->expects(self::never())->method('incrementViewCounter');
+        $accountService->expects(self::never())->method('incrementDecryptCounter');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()]),
+            [
+                PublicLinkService::class => $publicLinkService,
+                AccountService::class => $accountService,
+                DatabaseUtilInterface::class => $this->databaseUtilStub(),
+            ]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        self::assertSame($payload, $publicLink->getData());
     }
 
     /**
@@ -902,6 +1278,88 @@ class AccountTest extends IntegrationTestCase
         )->extract(['id']);
 
         self::assertCount(2, $filter);
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerViewLinkEscapedPassword(string $output): void
+    {
+        self::assertStringNotContainsString('<script>alert(1)</script>', $output);
+        self::assertStringContainsString(
+            '&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;',
+            $output
+        );
+
+        $crawler = new Crawler($output);
+        $password = $crawler->filterXPath('//input[@id="password"]');
+
+        self::assertCount(1, $password);
+        self::assertSame('"><script>alert(1)</script>', $password->attr('value'));
+        self::assertCount(0, $crawler->filterXPath('//script[contains(text(),"alert(1)")]'));
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerViewLinkError(string $output): void
+    {
+        $crawler = new Crawler($output);
+        $filter = $crawler->filterXPath('//ul[contains(@class,"errors")]/li[contains(@class,"msg-warning")]');
+
+        self::assertCount(1, $filter);
+    }
+
+    /**
+     * @return SessionContext
+     * @throws Exception
+     * @throws \SP\Domain\Core\Exceptions\SPException
+     */
+    private function getUnauthenticatedContext(): SessionContext
+    {
+        $context = self::createStub(SessionContext::class);
+        $context->method('isLoggedIn')->willReturn(false);
+        $context->method('getAuthCompleted')->willReturn(false);
+        $context->method('getUserData')->willReturn($this->getUserDataDto());
+        $context->method('getUserProfile')->willReturn($this->getUserProfile());
+
+        return $context;
+    }
+
+    /**
+     * @return DatabaseUtilInterface
+     * @throws Exception
+     */
+    private function databaseUtilStub(): DatabaseUtilInterface
+    {
+        $databaseUtil = $this->createStub(DatabaseUtilInterface::class);
+        $databaseUtil->method('checkDatabaseConnection')->willReturn(true);
+        $databaseUtil->method('checkDatabaseTables')->willReturn(true);
+
+        return $databaseUtil;
+    }
+
+    /**
+     * @param string $payload
+     * @return PublicLink
+     */
+    private function buildPublicLinkWithPayload(string $payload): PublicLink
+    {
+        $publicLinkKey = new PublicLinkKey($this->passwordSalt);
+
+        return PublicLinkDataGenerator::factory()
+                                      ->buildPublicLink()
+                                      ->mutate(
+                                          [
+                                              'dateExpire' => time() + 100,
+                                              'maxCountViews' => 3,
+                                              'countViews' => 0,
+                                              'hash' => $publicLinkKey->getHash(),
+                                              'data' => $payload
+                                          ]
+                                      );
     }
 
     /**

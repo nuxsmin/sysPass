@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Core;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Language;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -48,6 +49,7 @@ class LanguageTest extends UnitaryTestCase
     private RequestService|MockObject $request;
     private Language                       $language;
 
+    #[Test]
     public function testSetLocales()
     {
         $locale = 'es_ES';
@@ -59,6 +61,7 @@ class LanguageTest extends UnitaryTestCase
         $this->assertEquals($locale . '.utf8', getenv('LANGUAGE'));
     }
 
+    #[Test]
     public function testSetLanguage()
     {
         $locale = 'es_ES';
@@ -75,6 +78,7 @@ class LanguageTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testSetLanguageForceWithUserLanguage()
     {
         $locale = 'es_ES';
@@ -98,6 +102,7 @@ class LanguageTest extends UnitaryTestCase
         $this->assertEquals($locale, $this->context->getLocale());
     }
 
+    #[Test]
     public function testSetLanguageForceWithAppLanguage()
     {
         $locale = 'es_ES';
@@ -120,6 +125,7 @@ class LanguageTest extends UnitaryTestCase
         $this->assertEquals($appLocale, $this->context->getLocale());
     }
 
+    #[Test]
     public function testSetLanguageForceWithBrowserLanguage()
     {
         $locale = 'es_ES';
@@ -148,6 +154,7 @@ class LanguageTest extends UnitaryTestCase
         $this->assertEquals($browserLocale, $this->context->getLocale());
     }
 
+    #[Test]
     public function testGetAvailableLanguages()
     {
         $out = Language::getAvailableLanguages();
@@ -155,6 +162,7 @@ class LanguageTest extends UnitaryTestCase
         $this->assertCount(14, $out);
     }
 
+    #[Test]
     public function testSetAppLocales()
     {
         $locale = 'es_ES';
@@ -174,6 +182,7 @@ class LanguageTest extends UnitaryTestCase
         $this->assertEquals($appLocale . '.utf8', getenv('LANGUAGE'));
     }
 
+    #[Test]
     public function testUnsetAppLocales()
     {
         $locale = 'es_ES';

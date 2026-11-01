@@ -51,10 +51,6 @@ class IndexControllerTest extends IntegrationTestCase
     #[BodyChecker('outputCheckerIndex')]
     public function index()
     {
-        $this->markTestSkipped(
-            'Baseline debt (P0-1): ConfigManager views were modularised in 1128bdf4 and this assertion still expects the old markup.'
-        );
-
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configManager/index'])
         );
@@ -82,10 +78,17 @@ class IndexControllerTest extends IntegrationTestCase
     private function outputCheckerIndex(string $output): void
     {
         $crawler = new Crawler($output);
-        $filter = $crawler->filterXPath(
-            '//div[contains(@id, \'tabs-\')]//form'
-        )->extract(['id']);
 
-        self::assertCount(5, $filter);
+        $tabs = $crawler->filterXPath('//div[starts-with(@id, \'tabs-\')]');
+
+        self::assertCount(9, $tabs);
+
+        $forms = $crawler->filterXPath('//div[starts-with(@id, \'tabs-\')]//form')->extract(['id']);
+
+        self::assertCount(9, $forms);
+
+        foreach (['frmConfig', 'frmAccounts', 'frmWiki', 'frmLdap', 'frmMail', 'frmCrypt', 'frmExport', 'fileUploadForm'] as $formId) {
+            self::assertContains($formId, $forms);
+        }
     }
 }

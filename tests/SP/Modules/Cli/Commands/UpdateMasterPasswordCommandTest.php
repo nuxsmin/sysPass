@@ -34,6 +34,7 @@ use SP\Tests\Modules\Cli\CliTestCase;
 
 use function SP\Tests\recreateDir;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  *
@@ -44,6 +45,9 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
 
     use DatabaseTrait;
 
+    private const CURRENT_MASTERPASS = '12345678900';
+    private const NEW_MASTERPASS     = '00123456789';
+
     /**
      * @var string
      */
@@ -52,14 +56,15 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @var string[]
      */
     protected static array $commandInputData = [
-        '--currentMasterPassword' => 'a_pass',
-        '--masterPassword' => 'a_new_pass'
+        '--currentMasterPassword' => self::CURRENT_MASTERPASS,
+        '--masterPassword'        => self::NEW_MASTERPASS
     ];
 
     /**
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testUpdateAborted(): void
     {
         $commandTester = $this->executeCommandTest(
@@ -76,6 +81,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws FileNotFoundException
      * @throws NotFoundException
      */
+    #[Test]
     public function testUpdateIsSuccessful(): void
     {
         $inputData = array_merge(
@@ -102,6 +108,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testUpdateFromEnvironmentVarIsAbort(): void
     {
         $this->setEnvironmentVariables();
@@ -121,11 +128,11 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
     {
         putenv(sprintf('%s=%s',
                 UpdateMasterPasswordCommand::$envVarsMapping['currentMasterPassword'],
-                AccountCryptServiceTest::CURRENT_MASTERPASS)
+                self::CURRENT_MASTERPASS)
         );
         putenv(sprintf('%s=%s',
                 UpdateMasterPasswordCommand::$envVarsMapping['masterPassword'],
-                AccountCryptServiceTest::NEW_MASTERPASS)
+                self::NEW_MASTERPASS)
         );
     }
 
@@ -133,6 +140,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testUpdateFromEnvironmentVarBlankCurrentMasterPassword(): void
     {
         putenv(sprintf('%s=',
@@ -154,6 +162,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testUpdateFromEnvironmentVarBlankMasterPassword(): void
     {
         putenv(sprintf('%s=',
@@ -175,6 +184,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testUpdateFromEnvironmentVarIsSuccessful(): void
     {
         putenv(sprintf('%s=true',
@@ -198,11 +208,12 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testSameMasterPassword(): void
     {
         $inputData = [
-            '--currentMasterPassword' => AccountCryptServiceTest::CURRENT_MASTERPASS,
-            '--masterPassword' => AccountCryptServiceTest::CURRENT_MASTERPASS,
+            '--currentMasterPassword' => self::CURRENT_MASTERPASS,
+            '--masterPassword' => self::CURRENT_MASTERPASS,
             '--update' => null
         ];
 
@@ -220,11 +231,12 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      * @throws DependencyException
      * @throws NotFoundException
      */
+    #[Test]
     public function testWrongMasterPassword(): void
     {
         $inputData = [
             '--currentMasterPassword' => uniqid('', true),
-            '--masterPassword' => AccountCryptServiceTest::NEW_MASTERPASS,
+            '--masterPassword' => self::NEW_MASTERPASS,
             '--update' => null
         ];
 

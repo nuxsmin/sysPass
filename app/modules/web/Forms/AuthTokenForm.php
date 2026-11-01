@@ -25,9 +25,12 @@
 namespace SP\Modules\Web\Forms;
 
 use SP\Domain\Auth\Models\AuthToken;
-use SP\Domain\Auth\Services\AuthToken as AuthTokenService;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Http\Ports\RequestService;
 
 use function SP\__u;
 
@@ -40,6 +43,16 @@ final class AuthTokenForm extends FormBase implements FormInterface
 {
     protected ?AuthToken $authTokenData = null;
     protected bool       $refresh       = false;
+
+    public function __construct(
+        ConfigFileService            $config,
+        Context                      $context,
+        RequestService               $request,
+        private readonly AclInterface $acl,
+        ?int                         $itemId = null
+    ) {
+        parent::__construct($config, $context, $request, $itemId);
+    }
 
     /**
      * Validar el formulario
@@ -99,8 +112,18 @@ final class AuthTokenForm extends FormBase implements FormInterface
             throw new ValidationException(__u('Action not set'));
         }
 
+        $userData = $this->context->getUserData();
+
+        if (!$userData->isAdminApp) {
+            if ($this->authTokenData->getUserId() !== $userData->id
+                || !$this->acl->checkUserAccess($this->authTokenData->getActionId())
+            ) {
+                throw new ValidationException(__u('You don\'t have permission to do this operation'));
+            }
+        }
+
         if (empty($this->authTokenData->getHash())
-            && (AuthTokenService::isSecuredAction($this->authTokenData->getActionId())
+            && (AuthToken::isSecuredAction($this->authTokenData->getActionId())
                 || $this->isRefresh())
         ) {
             throw new ValidationException(__u('Password cannot be blank'));

@@ -26,10 +26,12 @@ declare(strict_types=1);
 
 namespace SP\Domain\Import\Services;
 
-use SP\Core\Application;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportService;
 use SP\Domain\Import\Ports\ImportStrategyService;
@@ -41,11 +43,13 @@ use SP\Domain\Import\Ports\ItemsImportService;
 final class Import extends Service implements ImportService
 {
     public function __construct(
-        Application                            $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly ImportStrategyService $importStrategy,
         private readonly Repository            $repository
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
 

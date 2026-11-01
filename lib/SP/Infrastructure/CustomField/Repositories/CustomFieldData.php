@@ -29,13 +29,11 @@ use Exception;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
-use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
-use SP\Domain\CustomField\Models\CustomFieldType as CustomFieldTypeModel;
 use SP\Domain\CustomField\Ports\CustomFieldDataRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class CustomFieldData
@@ -186,8 +184,11 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
         $query = $this->queryFactory
             ->newSelect()
             ->from(CustomFieldDataModel::TABLE)
-            ->cols(CustomFieldDataModel::getCols())
-            ->where('key IS NOT NULL')
+            ->cols(array_map(
+                static fn(string $col) => $col === 'key' ? '`key`' : $col,
+                CustomFieldDataModel::getCols()
+            ))
+            ->where('`key` IS NOT NULL')
             ->orderBy(['definitionId ASC']);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, CustomFieldDataModel::class));
@@ -204,26 +205,30 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
      */
     public function getForModuleAndItemId(int $moduleId, ?int $itemId): QueryResult
     {
-        $cols = array_merge(
-            CustomFieldDefinitionModel::getColsWithPreffix('CF_Definition', ['field', 'typeId']),
-            CustomFieldDataModel::getColsWithPreffix(
-                'CF_Data',
-                ['id', 'moduleId', 'itemId', 'definitionId']
-            ),
-            CustomFieldTypeModel::getColsWithPreffix('CF_Type')
-        );
-
         $query = $this->queryFactory
             ->newSelect()
             ->from('CustomFieldDefinition AS CF_Definition')
-            ->cols($cols)
+            ->cols([
+                       'CF_Definition.id AS definitionId',
+                       'CF_Definition.name AS definitionName',
+                       'CF_Definition.moduleId',
+                       'CF_Definition.required',
+                       'CF_Definition.help',
+                       'CF_Definition.showInList',
+                       'CF_Definition.isEncrypted',
+                       'CF_Data.data',
+                       'CF_Data.`key`',
+                       'CF_Type.id AS typeId',
+                       'CF_Type.name AS typeName',
+                       'CF_Type.text AS typeText',
+                   ])
             ->leftJoin(
                 'CustomFieldData AS CF_Data',
                 'CF_Data.definitionId = CF_Definition.id AND CF_Data.itemId = :itemId'
             )
             ->innerJoin('CustomFieldType as CF_Type', 'CF_Type.id = CF_Definition.typeId')
             ->where('CF_Definition.moduleId = :moduleId')
-            ->orderBy(['CF_Definition.required DESC', 'CF_Definition.text ASC'])
+            ->orderBy(['CF_Definition.required DESC', 'CF_Type.text ASC'])
             ->bindValues([
                              'moduleId' => $moduleId,
                              'itemId' => $itemId

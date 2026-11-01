@@ -24,61 +24,32 @@
 
 namespace SP\Modules\Api\Controllers\Tag;
 
-
-use Exception;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
-use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Tag\Models\Tag;
+use SP\Domain\Tag\UseCases\Dtos\GetTagCommand;
+use SP\Domain\Tag\UseCases\Dtos\UpdateTagCommand;
+
+use function SP\__;
 
 /**
  * Class EditController
  */
 final class EditController extends TagBase
 {
-    /**
-     * editAction
-     */
-    public function editAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function editAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::TAG_EDIT);
+        $this->setupApi(AclActionsInterface::TAG_EDIT);
 
-            $tagData = $this->buildTagData();
+        $id = $this->apiService->getParamInt('id', true);
+        $name = $this->apiService->getParamString('name', true);
 
-            $this->tagService->update($tagData);
+        $this->updateTagUseCase->execute(new UpdateTagCommand($id, $name));
 
-            $this->eventDispatcher->notify(
-                'edit.tag',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Tag updated'))
-                        ->addDetail(__u('Name'), $tagData->getName())
-                        ->addDetail('ID', $tagData->getId())
-                )
-            );
+        $tag = $this->getTagUseCase->execute(new GetTagCommand($id))->tag;
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $tagData->getId(), __('Tag updated')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
-    }
-
-    /**
-     * @return Tag
-     * @throws ServiceException
-     */
-    private function buildTagData(): Tag
-    {
-        $tagData = new Tag();
-        $tagData->setId($this->apiService->getParamInt('id', true));
-        $tagData->setName($this->apiService->getParamString('name', true));
-
-        return $tagData;
+        return ActionResponse::ok(__('Tag updated'), $tag, $id);
     }
 }

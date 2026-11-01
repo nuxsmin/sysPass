@@ -30,8 +30,8 @@ use DI\ContainerBuilder;
 use Exception;
 use Klein\Request;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use SP\Core\Application;
 use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
@@ -50,6 +50,7 @@ class DefinitionsTest extends TestCase
      * @throws Exception
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
+    #[Test]
     public function testGetDefinitions()
     {
         define('APP_MODULE', 'test');
@@ -90,12 +91,21 @@ class DefinitionsTest extends TestCase
         $containerBuilder->addDefinitions(DomainDefinitions::getDefinitions(), $definitions, $mockedDefinitions);
         $out = $containerBuilder->build();
 
-        $this->assertInstanceOf(Application::class, $out->get(Application::class));
-
         foreach (array_keys($definitions) as $definition) {
             if (class_exists($definition)) {
                 $this->assertInstanceOf($definition, $out->get($definition));
             }
         }
+    }
+
+    #[Test]
+    public function testNoWildcardPortBindings(): void
+    {
+        $wildcards = array_filter(
+            array_keys(DomainDefinitions::getDefinitions()),
+            static fn(mixed $key): bool => is_string($key) && str_contains($key, '*')
+        );
+
+        $this->assertSame([], array_values($wildcards));
     }
 }

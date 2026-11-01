@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Notification\Ports;
 
 use PHPMailer\PHPMailer\Exception;
-use SP\Core\Messages\MailMessage;
+use SP\Domain\Notification\Dtos\MailMessage;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Notification\Dtos\MailParams;
@@ -38,6 +38,16 @@ use SP\Domain\Notification\Dtos\MailParams;
  */
 interface MailService
 {
+    public const EVENTS = [
+        'create.',
+        'delete.',
+        'edit.',
+        'save.',
+        'import.ldap.end',
+        'run.backup.end',
+        'run.import.end',
+    ];
+
     public static function getParamsFromConfig(ConfigDataInterface $configData): MailParams;
 
     /**

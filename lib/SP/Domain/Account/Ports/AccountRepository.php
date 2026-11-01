@@ -33,7 +33,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class AccountRepository
@@ -231,11 +231,27 @@ interface AccountRepository extends Repository
     public function getById(int $accountId): QueryResult;
 
     /**
+     * Checks whether the account is visible to the current user
+     *
+     * @param int $accountId
+     *
+     * @return bool
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function isVisible(int $accountId): bool;
+
+    /**
      * Returns all the items
      *
      * @return QueryResult
      */
     public function getAll(): QueryResult;
+
+    /**
+     * @return QueryResult<AccountModel>
+     */
+    public function getAllForExport(): QueryResult;
 
     /**
      * Deletes all the items for given ids

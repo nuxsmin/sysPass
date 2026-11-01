@@ -24,14 +24,13 @@
 
 namespace SP\Modules\Web\Controllers\ConfigMail;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Config\Services\ConfigUtil;
+use SP\Domain\Config\Dtos\ConfigInput;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -40,8 +39,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Notification\Dtos\MailParams;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
-use SP\Modules\Web\Controllers\Traits\ConfigTrait;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__u;
 
@@ -50,14 +48,11 @@ use function SP\__u;
  */
 final class CheckController extends SimpleControllerBase
 {
-    use ConfigTrait;
-
     public function __construct(
-        Application                  $application,
         SimpleControllerHelper       $simpleControllerHelper,
         private readonly MailService $mailService
     ) {
-        parent::__construct($application, $simpleControllerHelper);
+        parent::__construct($simpleControllerHelper);
     }
 
     /**
@@ -69,7 +64,7 @@ final class CheckController extends SimpleControllerBase
     {
         $mailParams = $this->handleMailConfig();
 
-        $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
+        $mailRecipients = ConfigInput::mailAddresses($this->request->analyzeString('mail_recipients'));
 
         if (empty($mailParams->getServer()) || empty($mailParams->getFrom()) || count($mailRecipients) === 0) {
             throw new ValidationException(SPException::ERROR, __u('Missing Mail parameters'));

@@ -26,9 +26,11 @@ declare(strict_types=1);
 
 namespace SP\Domain\Log\Providers;
 
+use SP\Domain\Log\Ports\FileHandlerProvider;
+
 /**
  * Class LogHandler
  */
-final class LogHandler extends LoggerBase
+final class LogHandler extends LoggerBase implements FileHandlerProvider
 {
 }

@@ -44,7 +44,7 @@ use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -94,11 +94,11 @@ final class Account extends BaseRepository implements AccountRepository
         $query = $this->accountFilterUser
             ->buildFilter()
             ->cols([
-                       'Account.id,',
+                       'Account.id',
                        'Account.name',
                        'Account.login',
                        'Account.pass',
-                       'Account.key',
+                       'Account.`key`',
                        'Account.parentId',
                    ])
             ->where('Account.id = :id')
@@ -120,11 +120,11 @@ final class Account extends BaseRepository implements AccountRepository
         $query = $this->accountFilterUser
             ->buildFilterHistory()
             ->cols([
-                       'AccountHistory.id,',
+                       'AccountHistory.id',
                        'AccountHistory.name',
                        'AccountHistory.login',
                        'AccountHistory.pass',
-                       'AccountHistory.key',
+                       'AccountHistory.`key`',
                        'AccountHistory.parentId',
                        'AccountHistory.mPassHash',
                    ])
@@ -170,8 +170,7 @@ final class Account extends BaseRepository implements AccountRepository
             ->newInsert()
             ->into(AccountModel::TABLE)
             ->cols($account->toArray(null, ['countDecrypt', 'countView', 'dateAdd', 'dateEdit', 'id']))
-            ->set('dateAdd', 'NOW()')
-            ->set('passDate', 'UNIX_TIMESTAMP()');
+            ->set('dateAdd', 'NOW()');
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the account'));
 
@@ -462,6 +461,27 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
+     * Checks whether the account is visible to the current user
+     *
+     * @param int $accountId
+     *
+     * @return bool
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function isVisible(int $accountId): bool
+    {
+        $query = $this->accountFilterUser
+            ->buildFilter()
+            ->cols(['Account.id'])
+            ->where('Account.id = :id')
+            ->bindValues(['id' => $accountId])
+            ->limit(1);
+
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
+    }
+
+    /**
      * Returns all the items
      *
      * @return QueryResult
@@ -474,6 +494,23 @@ final class Account extends BaseRepository implements AccountRepository
             ->newSelect()
             ->from(AccountModel::TABLE)
             ->cols(AccountModel::getCols(['pass', 'key']));
+
+        return $this->db->runQuery(QueryData::buildWithMapper($query, AccountModel::class));
+    }
+
+    /**
+     * Returns all the items for exporting
+     *
+     * @return QueryResult<AccountModel>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getAllForExport(): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(AccountModel::TABLE)
+            ->cols(AccountModel::getCols());
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, AccountModel::class));
     }
@@ -582,7 +619,7 @@ final class Account extends BaseRepository implements AccountRepository
                        'Account.name',
                        'Account.login',
                        'Account.pass',
-                       'Account.key',
+                       'Account.`key`',
                        'Account.url',
                        'Account.notes',
                        'Client.name AS clientName',
@@ -667,10 +704,10 @@ final class Account extends BaseRepository implements AccountRepository
                        'id',
                        'name',
                        'pass',
-                       'key',
+                       '`key`',
                    ])
             ->where('BIT_LENGTH(pass) > 0');
 
-        return $this->db->runQuery(QueryData::buildWithMapper($query, AccountModel::class));
+        return $this->db->runQuery(QueryData::build($query));
     }
 }

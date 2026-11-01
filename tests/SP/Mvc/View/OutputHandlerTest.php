@@ -27,8 +27,9 @@ declare(strict_types=1);
 namespace SP\Tests\Mvc\View;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use SP\Mvc\View\OutputHandler;
+use SP\Modules\Web\Mvc\View\OutputHandler;
 
 /**
  * Class OutputHandlerTest
@@ -37,6 +38,7 @@ use SP\Mvc\View\OutputHandler;
 class OutputHandlerTest extends TestCase
 {
 
+    #[Test]
     public function testBufferedContent()
     {
         $callback = function () {

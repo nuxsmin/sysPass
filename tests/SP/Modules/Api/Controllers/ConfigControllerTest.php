@@ -29,9 +29,11 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use JsonException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Infrastructure\File\FileSystem;
 use SP\Tests\Modules\Api\ApiTestCase;
 use stdClass;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * Class ConfigControllerTest
@@ -46,6 +48,7 @@ class ConfigControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
     public function testExportAction(): void
     {
         $api = $this->callApi(
@@ -61,30 +64,38 @@ class ConfigControllerTest extends ApiTestCase
         $this->assertEquals(0, $response->result->resultCode);
         $this->assertNotEmpty($response->result->result->files->xml);
         $this->assertFileExists($response->result->result->files->xml);
+
+        $this->assertExportResponseStaysInBackupRoot($response);
     }
 
     /**
+     * The API no longer accepts a path, so a traversal value must be ignored
+     * instead of creating or writing outside the configured backup directory.
+     *
      * @throws DependencyException
      * @throws NotFoundException
      * @throws JsonException
      */
-    public function testExportActionCustomPath(): void
+    #[Test]
+    public function testExportActionIgnoresTraversalPath(): void
     {
+        $escape = 'syspass-escape-' . uniqid('', true);
+
         $api = $this->callApi(
             AclActionsInterface::CONFIG_EXPORT_RUN,
             [
-                'path' => TMP_PATH . '/export/custom/path'
+                'path' => '../' . $escape
             ]
         );
 
         $response = self::processJsonResponse($api);
 
         $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(1, $response->result->count);
-        $this->assertEquals('Export process finished', $response->result->resultMessage);
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertNotEmpty($response->result->result->files->xml);
-        $this->assertFileExists($response->result->result->files->xml);
+
+        $backupRoot = $this->assertExportResponseStaysInBackupRoot($response);
+
+        $this->assertDirectoryDoesNotExist(dirname(REAL_APP_ROOT) . DIRECTORY_SEPARATOR . $escape);
+        $this->assertDirectoryDoesNotExist(FileSystem::buildPath($backupRoot, '..', $escape));
     }
 
     /**
@@ -92,19 +103,25 @@ class ConfigControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
-    public function testExportActionInvalidPath(): void
+    #[Test]
+    public function testExportActionIgnoresAbsolutePath(): void
     {
+        $escape = FileSystem::buildPath(TMP_PATH, 'syspass-export-escape-' . uniqid('', true));
+
         $api = $this->callApi(
             AclActionsInterface::CONFIG_EXPORT_RUN,
             [
-                'path' => '/export/custom/path'
+                'path' => $escape
             ]
         );
 
         $response = self::processJsonResponse($api);
 
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertStringContainsString('Unable to create the directory', $response->error->message);
+        $this->assertEquals(0, $response->result->resultCode);
+
+        $this->assertExportResponseStaysInBackupRoot($response);
+
+        $this->assertDirectoryDoesNotExist($escape);
     }
 
     /**
@@ -112,6 +129,70 @@ class ConfigControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
+    #[Test]
+    public function testExportActionIgnoresRelativePath(): void
+    {
+        $subdirectory = 'export-subdir-' . uniqid('', true);
+
+        $api = $this->callApi(
+            AclActionsInterface::CONFIG_EXPORT_RUN,
+            [
+                'path' => $subdirectory
+            ]
+        );
+
+        $response = self::processJsonResponse($api);
+
+        $this->assertEquals(0, $response->result->resultCode);
+
+        $backupRoot = $this->assertExportResponseStaysInBackupRoot($response);
+
+        $this->assertDirectoryDoesNotExist(FileSystem::buildPath($backupRoot, $subdirectory));
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    #[Test]
+    public function testExportActionIgnoresSymlinkPath(): void
+    {
+        $backupRoot = $this->getBackupRoot();
+        $outsidePath = FileSystem::buildPath(TMP_PATH, 'syspass-export-outside-' . uniqid('', true));
+        $linkPath = FileSystem::buildPath($backupRoot, 'syspass-export-link-' . uniqid('', true));
+
+        mkdir($outsidePath);
+        symlink($outsidePath, $linkPath);
+
+        try {
+            $api = $this->callApi(
+                AclActionsInterface::CONFIG_EXPORT_RUN,
+                [
+                    'path' => FileSystem::buildPath($linkPath, 'nested')
+                ]
+            );
+
+            $response = self::processJsonResponse($api);
+
+            $this->assertEquals(0, $response->result->resultCode);
+
+            $this->assertExportResponseStaysInBackupRoot($response);
+
+            $this->assertDirectoryDoesNotExist(FileSystem::buildPath($outsidePath, 'nested'));
+            $this->assertSame([], glob(FileSystem::buildPath($outsidePath, '*')) ?: []);
+        } finally {
+            @unlink($linkPath);
+            @rmdir($outsidePath);
+        }
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    #[Test]
     public function testBackupAction(): void
     {
         $api = $this->callApi(
@@ -124,11 +205,41 @@ class ConfigControllerTest extends ApiTestCase
         $this->assertEquals(0, $response->result->resultCode);
         $this->assertEquals(1, $response->result->count);
         $this->assertEquals('Backup process finished', $response->result->resultMessage);
+
+        $backupRoot = $this->assertBackupResponseStaysInBackupRoot($response);
+
+        $this->assertBackupFilesWrittenUnder($backupRoot);
+    }
+
+    /**
+     * The API no longer accepts a path, so a traversal value must be ignored
+     * instead of creating or writing outside the configured backup directory.
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    #[Test]
+    public function testBackupActionIgnoresTraversalPath(): void
+    {
+        $escape = 'syspass-escape-' . uniqid('', true);
+
+        $api = $this->callApi(
+            AclActionsInterface::CONFIG_BACKUP_RUN,
+            [
+                'path' => '../' . $escape
+            ]
+        );
+
+        $response = self::processJsonResponse($api);
+
         $this->assertEquals(0, $response->result->resultCode);
-        $this->assertNotEmpty($response->result->result->files->app);
-        $this->assertNotEmpty($response->result->result->files->db);
-        $this->assertFileExists($response->result->result->files->app);
-        $this->assertFileExists($response->result->result->files->db);
+
+        $backupRoot = $this->assertBackupResponseStaysInBackupRoot($response);
+
+        $this->assertDirectoryDoesNotExist(dirname(REAL_APP_ROOT) . DIRECTORY_SEPARATOR . $escape);
+        $this->assertDirectoryDoesNotExist(FileSystem::buildPath($backupRoot, '..', $escape));
+        $this->assertBackupFilesWrittenUnder($backupRoot);
     }
 
     /**
@@ -136,19 +247,26 @@ class ConfigControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
-    public function testBackupActionInvalidPath(): void
+    #[Test]
+    public function testBackupActionIgnoresAbsolutePath(): void
     {
+        $escape = FileSystem::buildPath(TMP_PATH, 'syspass-escape-' . uniqid('', true));
+
         $api = $this->callApi(
             AclActionsInterface::CONFIG_BACKUP_RUN,
             [
-                'path' => '/backup/custom/path'
+                'path' => $escape
             ]
         );
 
         $response = self::processJsonResponse($api);
 
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertStringContainsString('Unable to create the backups directory', $response->error->message);
+        $this->assertEquals(0, $response->result->resultCode);
+
+        $backupRoot = $this->assertBackupResponseStaysInBackupRoot($response);
+
+        $this->assertDirectoryDoesNotExist($escape);
+        $this->assertBackupFilesWrittenUnder($backupRoot);
     }
 
     /**
@@ -156,24 +274,101 @@ class ConfigControllerTest extends ApiTestCase
      * @throws NotFoundException
      * @throws JsonException
      */
-    public function testBackupActionCustomPath(): void
+    #[Test]
+    public function testBackupActionIgnoresSymlinkPath(): void
     {
+        $backupRoot = $this->getBackupRoot();
+        $outsidePath = FileSystem::buildPath(TMP_PATH, 'syspass-outside-' . uniqid('', true));
+        $linkPath = FileSystem::buildPath($backupRoot, 'syspass-link-' . uniqid('', true));
+
+        mkdir($outsidePath);
+        symlink($outsidePath, $linkPath);
+
+        try {
+            $api = $this->callApi(
+                AclActionsInterface::CONFIG_BACKUP_RUN,
+                [
+                    'path' => FileSystem::buildPath($linkPath, 'nested')
+                ]
+            );
+
+            $response = self::processJsonResponse($api);
+
+            $this->assertEquals(0, $response->result->resultCode);
+
+            $this->assertBackupResponseStaysInBackupRoot($response);
+
+            $this->assertDirectoryDoesNotExist(FileSystem::buildPath($outsidePath, 'nested'));
+            $this->assertSame([], glob(FileSystem::buildPath($outsidePath, '*')) ?: []);
+            $this->assertBackupFilesWrittenUnder($backupRoot);
+        } finally {
+            @unlink($linkPath);
+            @rmdir($outsidePath);
+        }
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws JsonException
+     */
+    #[Test]
+    public function testBackupActionIgnoresRelativePath(): void
+    {
+        $subdirectory = 'subdir-' . uniqid('', true);
+
         $api = $this->callApi(
             AclActionsInterface::CONFIG_BACKUP_RUN,
             [
-                'path' => TMP_PATH . '/backup/custom/path'
+                'path' => $subdirectory
             ]
         );
 
         $response = self::processJsonResponse($api);
 
         $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(1, $response->result->count);
-        $this->assertEquals('Backup process finished', $response->result->resultMessage);
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertNotEmpty($response->result->result->files->app);
-        $this->assertNotEmpty($response->result->result->files->db);
-        $this->assertFileExists($response->result->result->files->app);
-        $this->assertFileExists($response->result->result->files->db);
+
+        $backupRoot = $this->assertBackupResponseStaysInBackupRoot($response);
+
+        $this->assertDirectoryDoesNotExist(FileSystem::buildPath($backupRoot, $subdirectory));
+        $this->assertBackupFilesWrittenUnder($backupRoot);
+    }
+
+    private function getBackupRoot(): string
+    {
+        return FileSystem::buildPath(REAL_APP_ROOT, 'app', 'backup');
+    }
+
+    private function assertExportResponseStaysInBackupRoot(stdClass $response): string
+    {
+        $backupRoot = $this->getBackupRoot();
+        $file = $response->result->result->files->xml;
+
+        $this->assertNotEmpty($file);
+        $this->assertStringStartsWith($backupRoot . DIRECTORY_SEPARATOR, $file);
+        $this->assertFileExists($file);
+
+        return $backupRoot;
+    }
+
+    private function assertBackupResponseStaysInBackupRoot(stdClass $response): string
+    {
+        $backupRoot = $this->getBackupRoot();
+        $files = $response->result->result->files;
+
+        foreach (['app', 'db'] as $type) {
+            $this->assertNotEmpty($files->$type);
+            $this->assertStringStartsWith($backupRoot . DIRECTORY_SEPARATOR, $files->$type);
+            $this->assertFileExists($files->$type);
+            $this->assertStringEndsWith('.tar.gz', $files->$type);
+        }
+
+        return $backupRoot;
+    }
+
+    private function assertBackupFilesWrittenUnder(string $backupRoot): void
+    {
+        $this->assertNotEmpty(glob(FileSystem::buildPath($backupRoot, 'sysPass_app-*.tar.gz')) ?: []);
+        $this->assertNotEmpty(glob(FileSystem::buildPath($backupRoot, 'sysPass_db-*.tar.gz')) ?: []);
     }
 }

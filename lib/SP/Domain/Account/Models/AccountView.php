@@ -65,6 +65,14 @@ final class AccountView extends Model
     protected ?string $userEditLogin      = null;
     protected ?string $publicLinkHash     = null;
 
+    /**
+     * @deprecated Kept for backwards compatibility with API controllers.
+     */
+    public function getAccountVData(): self
+    {
+        return $this;
+    }
+
     public function getCategoryName(): ?string
     {
         return $this->categoryName;

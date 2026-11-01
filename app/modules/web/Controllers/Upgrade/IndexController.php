@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,39 +24,36 @@
 
 namespace SP\Modules\Web\Controllers\Upgrade;
 
-
-use SP\Core\Acl\Actions;
-use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\ActionsInterface;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class IndexController
  */
 final class IndexController extends ControllerBase
 {
-    private Actions $actions;
-
-    public function __construct(Application $application, WebControllerHelper $webControllerHelper, ActionsInterface $actions)
-    {
-        parent::__construct($application, $webControllerHelper);
-
-        $this->actions = $actions;
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        private readonly ActionsInterface $actions
+    ) {
+        parent::__construct($webControllerHelper);
     }
 
     /**
-     * indexAction
-     *
      * @throws FileException
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         $this->layoutHelper->getPublicLayout('index', 'upgrade');
 
         $this->actions->reset();
 
-        $this->view();
+        return ActionResponse::ok($this->render());
     }
 }

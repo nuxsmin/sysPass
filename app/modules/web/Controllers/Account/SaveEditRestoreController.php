@@ -24,9 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Common\Attributes\Action;
@@ -34,7 +33,7 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 use function SP\__u;
 
@@ -44,13 +43,11 @@ use function SP\__u;
 final class SaveEditRestoreController extends AccountControllerBase
 {
     public function __construct(
-        Application                            $application,
         WebControllerHelper                    $webControllerHelper,
         private readonly AccountService        $accountService,
         private readonly AccountHistoryService $accountHistoryService
     ) {
         parent::__construct(
-            $application,
             $webControllerHelper
         );
     }
@@ -67,6 +64,16 @@ final class SaveEditRestoreController extends AccountControllerBase
     #[Action(ResponseType::JSON)]
     public function saveEditRestoreAction(int $historyId, int $id): ActionResponse
     {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT)
+            || !$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT_PASS)
+        ) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
+        if (!$this->accountService->isVisible($id)) {
+            return ActionResponse::error(__u('You don\'t have permission to access this account'));
+        }
+
         $this->accountService->restoreModified($this->accountHistoryService->getById($historyId));
 
         $this->eventDispatcher->notify(

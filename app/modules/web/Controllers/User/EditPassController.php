@@ -25,61 +25,42 @@
 namespace SP\Modules\Web\Controllers\User;
 
 
-use Exception;
-use JsonException;
-use SP\Core\Events\Event;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\User\Models\User;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Exceptions\SPException;
+
+use function SP\__;
+use function SP\__u;
 
 /**
  * Class EditPassController
  */
 final class EditPassController extends UserViewBase
 {
-    use JsonTrait;
-
-    /**
-     * Edit user's pass action
-     *
-     * @param  int  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function editPassAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function editPassAction(int $id): ActionResponse
     {
-        try {
-            // Comprobar si el usuario a modificar es distinto al de la sesión
-            if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT_PASS, $id)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
+        // Comprobar si el usuario a modificar es distinto al de la sesión
+        if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT_PASS, $id)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
 
+        try {
             $this->view->addTemplate('user_pass', 'itemshow');
 
             $this->view->assign('header', __('Password Change'));
             $this->view->assign('isView', false);
             $this->view->assign('route', 'user/saveEditPass/'.$id);
-
-            $user = $id
-                ? $this->userService->getById($id)
-                : new User();
-
-            $this->view->assign('user', $user);
-
-            $this->eventDispatcher->notify('show.user.editPass', new Event($this));
-
-            return $this->returnJsonResponseData(['html' => $this->render()]);
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+            $this->view->assign('user', $this->getUser($id));
+        } catch (SPException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
         }
+
+        $this->eventDispatcher->notify('show.user.editPass', new Event($this));
+
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 }

@@ -39,6 +39,9 @@ class Track extends Model
     protected ?int    $timeUnlock = null;
     protected ?string $ipv4       = null;
     protected ?string $ipv6       = null;
+    protected ?string $dateTime       = null;
+    protected ?string $dateTimeUnlock = null;
+    protected ?int    $tracked        = null;
 
     public function getId(): ?int
     {
@@ -73,5 +76,20 @@ class Track extends Model
     public function getTimeUnlock(): ?int
     {
         return $this->timeUnlock;
+    }
+
+    public function getDateTime(): ?string
+    {
+        return $this->dateTime;
+    }
+
+    public function getDateTimeUnlock(): ?string
+    {
+        return $this->dateTimeUnlock;
+    }
+
+    public function getTracked(): ?int
+    {
+        return $this->tracked;
     }
 }

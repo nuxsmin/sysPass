@@ -29,11 +29,12 @@ namespace SP\Domain\Import\Services;
 use DOMDocument;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Import\Ports\XmlFileService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use ValueError;
 
 use function SP\__u;
-use function SP\logger;
 
 /**
  * Class XmlFile
@@ -42,7 +43,7 @@ final readonly class XmlFile implements XmlFileService
 {
     private DOMDocument $document;
 
-    public function __construct()
+    public function __construct(private readonly LoggerInterface $logger = new NullLogger())
     {
         $this->createDocument();
     }
@@ -65,8 +66,8 @@ final readonly class XmlFile implements XmlFileService
     {
         $fileHandler->checkIsReadable();
 
-        $self = new self();
-        $self->readXMLFile($fileHandler->getFile());
+        $self = new self($this->logger);
+        $self->readXMLFile($fileHandler->readToString());
 
         return $self;
     }
@@ -76,13 +77,13 @@ final readonly class XmlFile implements XmlFileService
      *
      * @throws ImportException
      */
-    protected function readXMLFile(string $file): void
+    protected function readXMLFile(string $content): void
     {
         libxml_use_internal_errors(true);
 
-        if ($this->document->load($file, LIBXML_PARSEHUGE) === false) {
+        if ($this->document->loadXML($content, LIBXML_PARSEHUGE) === false) {
             foreach (libxml_get_errors() as $error) {
-                logger(__METHOD__ . ' - ' . $error->message);
+                $this->logger->debug(__METHOD__ . ' - ' . $error->message);
             }
 
             throw ImportException::error(__u('Internal error'), __u('Unable to process the XML file'));

@@ -24,8 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -50,6 +50,14 @@ final class SaveEditController extends AccountSaveBase
     #[Action(ResponseType::JSON)]
     public function saveEditAction(int $id): ActionResponse
     {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
+        if (!$this->accountService->isVisible($id)) {
+            return ActionResponse::error(__u('You don\'t have permission to access this account'));
+        }
+
         $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_EDIT, $id);
 
         $this->accountService->update($id, $this->accountForm->getItemData());

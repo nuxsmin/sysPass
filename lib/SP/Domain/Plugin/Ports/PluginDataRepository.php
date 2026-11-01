@@ -28,7 +28,7 @@ namespace SP\Domain\Plugin\Ports;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class PluginDataRepository

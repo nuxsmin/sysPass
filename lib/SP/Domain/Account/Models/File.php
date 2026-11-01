@@ -43,6 +43,8 @@ class File extends Model implements ItemWithIdAndNameModel
     protected ?string $extension = null;
     protected ?string $thumb     = null;
     protected ?int    $size      = null;
+    protected ?string $accountName = null;
+    protected ?string $clientName  = null;
 
     public function getId(): ?int
     {
@@ -90,5 +92,15 @@ class File extends Model implements ItemWithIdAndNameModel
     public function getSize(): ?int
     {
         return $this->size;
+    }
+
+    public function getAccountName(): ?string
+    {
+        return $this->accountName;
+    }
+
+    public function getClientName(): ?string
+    {
+        return $this->clientName;
     }
 }

@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Core\Context;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\RunClassInSeparateProcess;
 use SP\Core\Context\SessionLifecycleHandler;
 use SP\Domain\Core\Exceptions\SPException;
@@ -43,6 +44,7 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testCleanSession()
     {
         session_start();
@@ -57,6 +59,7 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testStart()
     {
         $this->assertEquals(PHP_SESSION_NONE, session_status());
@@ -70,6 +73,7 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testStartWithHeadersSent()
     {
         $this->assertEquals(PHP_SESSION_NONE, session_status());
@@ -86,6 +90,7 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testStartWithGarbageSessionWithDestroyTimeout()
     {
         session_start();
@@ -101,6 +106,7 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testStartWithGarbageSessionAndNewId()
     {
         session_start();
@@ -119,6 +125,7 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testRegenerate()
     {
         $this->assertEquals(PHP_SESSION_NONE, session_status());
@@ -135,6 +142,7 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testRestart()
     {
         $this->assertEquals(PHP_SESSION_NONE, session_status());
@@ -152,6 +160,7 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
+    #[Test]
     public function testClean()
     {
         $this->assertEquals(PHP_SESSION_NONE, session_status());
@@ -166,11 +175,13 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
         $this->assertArrayNotHasKey('test', $_SESSION);
     }
 
+    #[Test]
     public function testNeedsRegenerate()
     {
         $this->assertFalse(SessionLifecycleHandler::needsRegenerate(time()));
     }
 
+    #[Test]
     public function testNeedsRegenerateWithTimeout()
     {
         $this->assertTrue(SessionLifecycleHandler::needsRegenerate(time() - 2000));

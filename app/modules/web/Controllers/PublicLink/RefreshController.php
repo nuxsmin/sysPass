@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,50 +24,42 @@
 
 namespace SP\Modules\Web\Controllers\PublicLink;
 
-
 use Exception;
-use JsonException;
-use SP\Core\Events\Event;
+use SP\Domain\Account\UseCases\Dtos\RefreshPublicLinkCommand;
+use SP\Domain\Account\UseCases\RefreshPublicLinkUseCase;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class RefreshController
  */
 final class RefreshController extends PublicLinkSaveBase
 {
-    use JsonTrait;
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        private readonly RefreshPublicLinkUseCase $refreshPublicLinkUseCase
+    ) {
+        parent::__construct($webControllerHelper);
+    }
 
-    /**
-     * Create action
-     *
-     * @param  int  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function refreshAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function refreshAction(int $id): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_REFRESH)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            $this->publicLinkService->refresh($id);
-
-            $this->eventDispatcher->notify('edit.publicLink.refresh', new Event($this));
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Link updated'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_REFRESH)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        try {
+            $this->refreshPublicLinkUseCase->execute(new RefreshPublicLinkCommand($id));
+        } catch (Exception $e) {
+            return ActionResponse::error($e->getMessage());
+        }
+
+        return ActionResponse::ok(__u('Link updated'));
     }
 }

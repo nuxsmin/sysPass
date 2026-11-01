@@ -24,48 +24,43 @@
 
 namespace SP\Modules\Api\Controllers\Category;
 
-
-use Exception;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use function SP\__;
+use function SP\__u;
 
 final class EditController extends CategoryBase
 {
     /**
      * editAction
      */
-    public function editAction(): void
+    #[Action(ResponseType::JSON_RPC)]
+    public function editAction(): ActionResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CATEGORY_EDIT);
+        $this->setupApi(AclActionsInterface::CATEGORY_EDIT);
 
-            $categoryData = $this->buildCategoryData();
+        $categoryData = $this->buildCategoryData();
 
-            $this->categoryService->update($categoryData);
+        $this->categoryService->update($categoryData);
 
-            $this->eventDispatcher->notify(
-                'edit.category',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Category updated'))
-                        ->addDetail(__u('Name'), $categoryData->getName())
-                        ->addDetail('ID', $categoryData->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'edit.category',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Category updated'))
+                    ->addDetail(__u('Name'), $categoryData->getName())
+                    ->addDetail('ID', $categoryData->getId())
+            )
+        );
 
-            $this->returnResponse(
-                ApiResponse::makeSuccess($categoryData, $categoryData->getId(), __('Category updated'))
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ActionResponse::ok(__('Category updated'), $categoryData, $categoryData->getId());
     }
 
     /**
@@ -74,11 +69,12 @@ final class EditController extends CategoryBase
      */
     private function buildCategoryData(): Category
     {
-        $categoryData = new Category();
-        $categoryData->setId($this->apiService->getParamInt('id', true));
-        $categoryData->setName($this->apiService->getParamString('name', true));
-        $categoryData->setDescription($this->apiService->getParamString('description'));
-
-        return $categoryData;
+        return new Category(
+            [
+                'id'          => $this->apiService->getParamInt('id', true),
+                'name'        => $this->apiService->getParamString('name', true),
+                'description' => $this->apiService->getParamString('description'),
+            ]
+        );
     }
 }

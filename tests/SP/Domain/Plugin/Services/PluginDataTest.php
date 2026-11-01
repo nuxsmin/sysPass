@@ -25,9 +25,11 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Plugin\Services;
 
+use SP\Core\Context\StatelessMasterKeyStore;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Context\ContextException;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
@@ -38,8 +40,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
 use SP\Domain\Plugin\Ports\PluginDataRepository;
 use SP\Domain\Plugin\Services\PluginData;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\Generators\PluginDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -59,6 +61,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDelete()
     {
         $this->pluginDataRepository
@@ -75,6 +78,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteWithException()
     {
         $this->pluginDataRepository
@@ -94,6 +98,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByItemId()
     {
         $this->pluginDataRepository
@@ -110,6 +115,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    #[Test]
     public function testDeleteByItemIdWithException()
     {
         $this->pluginDataRepository
@@ -131,6 +137,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ContextException
      */
+    #[Test]
     public function testUpdate()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
@@ -166,6 +173,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws CryptException
      * @throws QueryException
      */
+    #[Test]
     public function testCreate()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
@@ -202,6 +210,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws CryptException
      * @throws QueryException
      */
+    #[Test]
     public function testGetByItemId()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
@@ -234,6 +243,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws QueryException
      * @throws ServiceException
      */
+    #[Test]
     public function testGetByItemIdWithNoRows()
     {
         $this->pluginDataRepository
@@ -258,6 +268,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws CryptException
      */
+    #[Test]
     public function testGetByName()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
@@ -290,6 +301,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws ServiceException
      */
+    #[Test]
     public function testGetByNameWithNoRows()
     {
         $queryResult = new QueryResult([]);
@@ -318,6 +330,7 @@ class PluginDataTest extends UnitaryTestCase
      * @throws SPException
      * @throws QueryException
      */
+    #[Test]
     public function testGetAll()
     {
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'super_secret');
@@ -351,6 +364,13 @@ class PluginDataTest extends UnitaryTestCase
         $this->pluginDataRepository = $this->createMock(PluginDataRepository::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
-        $this->pluginData = new PluginData($this->application, $this->pluginDataRepository, $this->crypt);
+        $this->pluginData = new PluginData(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->pluginDataRepository,
+            $this->crypt,
+            new StatelessMasterKeyStore($this->context)
+        );
     }
 }

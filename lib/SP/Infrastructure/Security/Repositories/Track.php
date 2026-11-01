@@ -32,7 +32,7 @@ use SP\Domain\Security\Models\Track as TrackModel;
 use SP\Domain\Security\Ports\TrackRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -44,6 +44,8 @@ use function SP\__u;
 final class Track extends BaseRepository implements TrackRepository
 {
     public const TABLE = 'Track';
+
+    private const COMPUTED_FIELDS = ['dateTime', 'dateTimeUnlock', 'tracked'];
 
     /**
      * @param TrackModel $track
@@ -57,7 +59,7 @@ final class Track extends BaseRepository implements TrackRepository
         $query = $this->queryFactory
             ->newInsert()
             ->into(self::TABLE)
-            ->cols($track->toArray(null, ['id', 'time']))
+            ->cols($track->toArray(null, array_merge(['id', 'time'], self::COMPUTED_FIELDS)))
             ->set('time', 'UNIX_TIMESTAMP()');
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating track'));
@@ -118,7 +120,7 @@ final class Track extends BaseRepository implements TrackRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(TrackModel::getCols())
+            ->cols(TrackModel::getCols(self::COMPUTED_FIELDS))
             ->where('time >= :time AND (ipv4 = :ipv4 OR ipv6 = :ipv6) AND source = :source AND timeUnlock IS NULL')
             ->bindValues([
                              'time' => $track->getTime(),
@@ -147,14 +149,13 @@ final class Track extends BaseRepository implements TrackRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(TrackModel::getCols())
+            ->cols(TrackModel::getCols(self::COMPUTED_FIELDS))
             ->cols([
                        'FROM_UNIXTIME(time)' => 'dateTime',
                        'FROM_UNIXTIME(timeUnlock)' => 'dateTimeUnlock',
-                       'IF(time >= :time AND timeUnlock IS NULL, 1, 0)' => 'tracked'
+                       sprintf('IF(time >= %d AND timeUnlock IS NULL, 1, 0)', $time) => 'tracked'
                    ])
             ->orderBy(['time DESC'])
-            ->bindValues(['time' => $time])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

@@ -45,14 +45,14 @@ class SPException extends Exception
      * @param int $type
      * @param string|null $hint
      * @param int $code
-     * @param Exception|null $previous
+     * @param Throwable|null $previous
      */
     public function __construct(
         string            $message,
         protected int     $type = self::ERROR,
         protected ?string $hint = null,
         int               $code = 0,
-        Exception         $previous = null
+        ?Throwable        $previous = null
     ) {
         parent::__construct($message, $code, $previous);
     }

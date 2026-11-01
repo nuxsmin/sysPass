@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Modules\Web\Controllers\AccountFavorite;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -43,6 +44,7 @@ class AccountFavoriteTest extends IntegrationTestCase
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
+    #[Test]
     public function testMarkAction()
     {
         $container = $this->buildContainer(
@@ -59,6 +61,7 @@ class AccountFavoriteTest extends IntegrationTestCase
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
+    #[Test]
     public function testUnmarkAction()
     {
         $container = $this->buildContainer(

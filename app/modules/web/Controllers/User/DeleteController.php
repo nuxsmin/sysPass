@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,81 +25,59 @@
 namespace SP\Modules\Web\Controllers\User;
 
 
-use Exception;
-use JsonException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\UseCases\DeleteUserUseCase;
+use SP\Domain\User\UseCases\DeleteUsersUseCase;
+use SP\Domain\User\UseCases\Dtos\DeleteUserCommand;
+use SP\Domain\User\UseCases\Dtos\DeleteUsersCommand;
+use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class DeleteController
  */
-final class DeleteController extends UserSaveBase
+final class DeleteController extends ControllerBase
 {
-    use ItemTrait;
-    use JsonTrait;
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        private readonly DeleteUserUseCase $deleteUserUseCase,
+        private readonly DeleteUsersUseCase $deleteUsersUseCase
+    ) {
+        parent::__construct($webControllerHelper);
 
-    /**
-     * Delete action
-     *
-     * @param  int|null  $id
-     *
-     * @return bool
-     * @throws JsonException
-     */
-    public function deleteAction(?int $id = null): bool
+        $this->checkLoggedIn();
+    }
+
+    #[Action(ResponseType::JSON)]
+    public function deleteAction(?int $id = null): ActionResponse
     {
-        try {
-            if (!$this->acl->checkUserAccess(AclActionsInterface::USER_DELETE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
-                );
-            }
-
-            if ($id === null) {
-                $this->userService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
-
-                $this->eventDispatcher->notify(
-                    'delete.user.selection',
-                    new Event(
-                        $this,
-                        EventMessage::build()
-                            ->addDescription(__u('Users deleted'))
-                            ->setExtra('userId', $this->getItemsIdFromRequest($this->request))
-                    )
-                );
-
-                $this->deleteCustomFieldsForItem(AclActionsInterface::USER, $id, $this->customFieldService);
-
-                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Users deleted'));
-            }
-
-            $this->userService->delete($id);
-
-            $this->deleteCustomFieldsForItem(AclActionsInterface::USER, $id, $this->customFieldService);
-
-            $this->eventDispatcher->notify(
-                'delete.user',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('User deleted'))
-                        ->addDetail(__u('User'), $id)
-                        ->addExtra('userId', $id)
-                )
-            );
-
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('User deleted'));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notify('exception', new Event($e));
-
-            return $this->returnJsonResponseException($e);
+        if (!$this->acl->checkUserAccess(AclActionsInterface::USER_DELETE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
+
+        try {
+            if ($id === null) {
+                $ids = array_map(
+                    'intval',
+                    $this->request->analyzeArray('items') ?? []
+                );
+
+                $this->deleteUsersUseCase->execute(new DeleteUsersCommand($ids));
+
+                return ActionResponse::ok(__u('Users deleted'));
+            }
+
+            $this->deleteUserUseCase->execute(new DeleteUserCommand($id));
+        } catch (SPException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
+        }
+
+        return ActionResponse::ok(__u('User deleted'));
     }
 }

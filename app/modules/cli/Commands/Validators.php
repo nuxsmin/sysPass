@@ -26,6 +26,8 @@ namespace SP\Modules\Cli\Commands;
 
 use RuntimeException;
 
+use function SP\__u;
+
 /**
  *
  */

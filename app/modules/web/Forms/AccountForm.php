@@ -24,12 +24,13 @@
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Ports\AccountPresetService;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Http\Ports\RequestService;
@@ -45,12 +46,13 @@ final class AccountForm extends FormBase implements FormInterface
     private null|AccountCreateDto|AccountUpdateDto $accountDto = null;
 
     public function __construct(
-        Application                           $application,
+        ConfigFileService                     $config,
+        Context                               $context,
         RequestService                        $request,
         private readonly AccountPresetService $accountPresetService,
         ?int                                  $itemId = null
     ) {
-        parent::__construct($application, $request, $itemId);
+        parent::__construct($config, $context, $request, $itemId);
     }
 
     /**

@@ -30,7 +30,7 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Services\UpdatedMasterPassException;
-use SP\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 use function SP\__;
 use function SP\processException;

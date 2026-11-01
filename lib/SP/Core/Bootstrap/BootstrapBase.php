@@ -138,15 +138,6 @@ abstract class BootstrapBase implements BootstrapInterface
 
     abstract public static function run(BootstrapInterface $bootstrap, ModuleInterface $initModule): void;
 
-    final protected static function getClassFor(string $module, string $controllerName, string $actionName): string
-    {
-        return sprintf(
-            'SP\Modules\%s\Controllers\%s\%sController',
-            ucfirst($module),
-            ucfirst($controllerName),
-            ucfirst($actionName)
-        );
-    }
 
     /**
      * Handle the request through the router

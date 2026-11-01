@@ -28,10 +28,11 @@ namespace SP\Tests\Infrastructure\File;
 use DOMDocument;
 use DOMException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\XmlFileStorage;
 use SP\Tests\UnitaryTestCase;
 
@@ -63,6 +64,7 @@ class XmlFileStorageTest extends UnitaryTestCase
     /**
      * @throws FileException
      */
+    #[Test]
     public function testGetFileTime()
     {
         $time = self::$faker->unixTime();
@@ -78,6 +80,7 @@ class XmlFileStorageTest extends UnitaryTestCase
      * @throws FileException
      * @throws DOMException
      */
+    #[Test]
     public function testSave()
     {
         $document = new DOMDocument();
@@ -110,6 +113,7 @@ class XmlFileStorageTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws FileException
      */
+    #[Test]
     public function testLoad()
     {
         $file = self::$faker->filePath();
@@ -143,6 +147,7 @@ class XmlFileStorageTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws FileException
      */
+    #[Test]
     public function testLoadWithWrongFile()
     {
         $this->fileHandler
@@ -168,6 +173,7 @@ class XmlFileStorageTest extends UnitaryTestCase
      * @throws ServiceException
      * @throws FileException
      */
+    #[Test]
     public function testLoadWithNoNodes()
     {
         $file = self::$faker->filePath();

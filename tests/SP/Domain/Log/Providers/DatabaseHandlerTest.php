@@ -27,12 +27,14 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Log\Providers;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Core\Messages\EventMessageFormatter;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
@@ -53,6 +55,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
     private DatabaseHandler              $databaseHandler;
     private ConfigData                   $configData;
 
+    #[Test]
     public function testGetEventsString()
     {
         $expected = 'test_a\.|test_b\.|upgrade\.|acl\.deny|plugin\.load\.error|show\.authToken|clear\.eventlog|clear\.track|refresh\.masterPassword|update\.masterPassword\.start|update\.masterPassword\.end|request\.account|edit\.user\.password|save\.config\.|create\.tempMasterPassword|run\.import\.start|run\.import\.end';
@@ -61,13 +64,21 @@ class DatabaseHandlerTest extends UnitaryTestCase
         $this->assertEquals($expected, $out);
     }
 
+    #[Test]
     public function testGetEventsStringWithNoConfiguredEvents()
     {
         $expected = 'upgrade\.|acl\.deny|plugin\.load\.error|show\.authToken|clear\.eventlog|clear\.track|refresh\.masterPassword|update\.masterPassword\.start|update\.masterPassword\.end|request\.account|edit\.user\.password|save\.config\.|create\.tempMasterPassword|run\.import\.start|run\.import\.end';
 
         $this->configData->setLogEvents([]);
 
-        $databaseHandler = new DatabaseHandler($this->application, $this->eventLogService, $this->language);
+        $databaseHandler = new DatabaseHandler(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->eventLogService,
+            $this->language,
+            new EventMessageFormatter()
+        );
         $out = $databaseHandler->getEvents();
 
         $this->assertEquals($expected, $out);
@@ -76,6 +87,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testUpdate()
     {
         $eventMessage = EventMessage::build()->addDescription('a_description')->addDetail('a_detail', 'a_value');
@@ -90,7 +102,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
             ->method('create')
             ->with(
                 self::callback(static function (Eventlog $eventlog) use ($eventMessage) {
-                    return $eventlog->getDescription() === $eventMessage->composeText()
+                    return $eventlog->getDescription() === (new EventMessageFormatter())->composeText($eventMessage)
                            && $eventlog->getAction() === 'test_a.update'
                            && $eventlog->getLevel() == 'INFO';
                 })
@@ -106,6 +118,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testUpdateWithNoEventMessage()
     {
         $event = new Event($this);
@@ -135,6 +148,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testUpdateWithSPExceptionMessage()
     {
         $event = new Event(SPException::error('an_exception', 'a_hint'));
@@ -165,6 +179,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
     /**
      * @throws InvalidClassException
      */
+    #[Test]
     public function testUpdateWithException()
     {
         $this->language
@@ -202,6 +217,13 @@ class DatabaseHandlerTest extends UnitaryTestCase
         $this->eventLogService = $this->createMock(EventlogService::class);
         $this->language = $this->createMock(LanguageInterface::class);
 
-        $this->databaseHandler = new DatabaseHandler($this->application, $this->eventLogService, $this->language);
+        $this->databaseHandler = new DatabaseHandler(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->eventLogService,
+            $this->language,
+            new EventMessageFormatter()
+        );
     }
 }

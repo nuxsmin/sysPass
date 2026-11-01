@@ -24,8 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Client;
 
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -33,9 +33,8 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
 
 use function SP\__u;
 
@@ -45,7 +44,6 @@ use function SP\__u;
 final class DeleteController extends ClientSaveBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     /**
      * Delete action

@@ -28,12 +28,12 @@ namespace SP\Domain\Account\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Core\Application;
-use SP\Core\Crypt\Vault;
+use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Account\Dtos\PublicLinkKey;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Account\Ports\PublicLinkAuthorizationService;
 use SP\Domain\Account\Ports\PublicLinkRepository;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Common\Adapters\Serde;
@@ -41,16 +41,18 @@ use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\Http\Providers\Uri;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 
 use function SP\__u;
 
@@ -65,13 +67,17 @@ final class PublicLink extends Service implements PublicLinkService
     public const TYPE_ACCOUNT = 1;
 
     public function __construct(
-        Application                           $application,
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
         private readonly PublicLinkRepository $publicLinkRepository,
         private readonly RequestService $request,
         private readonly AccountService       $accountService,
-        private readonly CryptInterface       $crypt
+        private readonly PublicLinkAuthorizationService $publicLinkAuthorization,
+        private readonly CryptInterface       $crypt,
+        private readonly MasterKeyStore       $masterKeyStore
     ) {
-        parent::__construct($application);
+        parent::__construct($config, $eventDispatcher, $context);
     }
 
     /**
@@ -79,7 +85,12 @@ final class PublicLink extends Service implements PublicLinkService
      */
     public static function getLinkForHash(string $baseUrl, string $hash): string
     {
-        return (new Uri($baseUrl))->addParam('r', 'account/viewLink/' . $hash)->getUri();
+        return sprintf('%s/index.php?r=publicLink/view/%s', $baseUrl, $hash);
+    }
+
+    public function buildLinkUrl(string $baseUrl, string $hash): string
+    {
+        return self::getLinkForHash($baseUrl, $hash);
     }
 
     /**
@@ -152,6 +163,8 @@ final class PublicLink extends Service implements PublicLinkService
      */
     private function buildPublicLink(PublicLinkModel $publicLink): PublicLinkModel
     {
+        $this->publicLinkAuthorization->check($publicLink->getItemId());
+
         $key = $this->getPublicLinkKey();
 
         return $publicLink->mutate(
@@ -194,7 +207,7 @@ final class PublicLink extends Service implements PublicLinkService
             'pass' => $this->crypt->decrypt(
                 $account['pass'],
                 $account['key'],
-                $this->getMasterKeyFromContext()
+                $this->masterKeyStore->get()
             ),
             'key' => null,
         ];

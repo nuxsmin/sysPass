@@ -42,8 +42,8 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Class AccountService
@@ -146,6 +146,17 @@ interface AccountService
     public function getById(int $id): Account;
 
     /**
+     * Checks whether the account is visible to the current user
+     *
+     * @param int $id The account ID
+     *
+     * @return bool
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function isVisible(int $id): bool;
+
+    /**
      * Updates external items for the account
      *
      * @param int $id The account ID
@@ -236,6 +247,11 @@ interface AccountService
      * @return Account[]
      */
     public function getAllBasic(): array;
+
+    /**
+     * @return Account[]
+     */
+    public function getAllForExport(): array;
 
     /**
      * @param ItemSearchDto $itemSearchData

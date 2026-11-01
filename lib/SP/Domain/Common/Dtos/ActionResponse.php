@@ -33,8 +33,6 @@ use SP\Domain\Common\Enums\ResponseStatus;
 use SP\Domain\Core\Exceptions\SPException;
 use stdClass;
 
-use function SP\__;
-
 /**
  * Class ActionResponse
  */
@@ -44,23 +42,33 @@ final readonly class ActionResponse implements JsonSerializable
     public function __construct(
         public ResponseStatus             $status,
         public array|string|Closure $subject,
-        public array|string|stdClass|null $extra = null
+        public array|string|stdClass|JsonSerializable|null $extra = null,
+        public ?int $itemId = null
     ) {
     }
 
-    public static function ok(array|string|stdClass $subject, array|string|null $extra = null): ActionResponse
-    {
-        return new self(ResponseStatus::OK, $subject, $extra);
+    public static function ok(
+        array|string|stdClass $subject,
+        array|string|stdClass|JsonSerializable|null $extra = null,
+        ?int $itemId = null
+    ): ActionResponse {
+        return new self(ResponseStatus::OK, $subject, $extra, $itemId);
     }
 
-    public static function error(array|string|stdClass $subject, array|string|null $extra = null): ActionResponse
-    {
-        return new self(ResponseStatus::ERROR, $subject, $extra);
+    public static function error(
+        array|string|stdClass $subject,
+        array|string|stdClass|JsonSerializable|null $extra = null,
+        ?int $itemId = null
+    ): ActionResponse {
+        return new self(ResponseStatus::ERROR, $subject, $extra, $itemId);
     }
 
-    public static function warning(array|string|stdClass $subject, array|string|null $extra = null): ActionResponse
-    {
-        return new self(ResponseStatus::WARNING, $subject, $extra);
+    public static function warning(
+        array|string|stdClass $subject,
+        array|string|stdClass|JsonSerializable|null $extra = null,
+        ?int $itemId = null
+    ): ActionResponse {
+        return new self(ResponseStatus::WARNING, $subject, $extra, $itemId);
     }
 
     /**
@@ -98,9 +106,6 @@ final readonly class ActionResponse implements JsonSerializable
 
     private function adaptSubject(): string|array
     {
-        return match (gettype($this->subject)) {
-            'string' => __($this->subject),
-            'array' => array_map('SP\__', $this->subject)
-        };
+        return $this->subject;
     }
 }

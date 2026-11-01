@@ -24,14 +24,13 @@
 
 namespace SP\Modules\Web\Controllers\AccountFile;
 
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\File\FileSystem;
 
 use function SP\__u;
 
@@ -60,7 +59,7 @@ final class ViewController extends AccountFileBase
 
         $this->view->addTemplate('file', 'itemshow');
 
-        if (FileSystem::isImage($fileDto->type)) {
+        if ($this->fileSystem->isImage($fileDto->type)) {
             $this->view->assign('data', chunk_split(base64_encode($fileDto->content)));
             $this->view->assign('fileData', $fileDto);
             $this->view->assign('isImage', 1);

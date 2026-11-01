@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Auth\Providers;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Providers\AuthProvider;
@@ -52,6 +53,7 @@ class AuthProviderTest extends UnitaryTestCase
      * @throws AuthException
      * @throws Exception
      */
+    #[Test]
     public function testRegisterAuthFail()
     {
         $auth1 = $this->createMock(AuthService::class);
@@ -68,6 +70,7 @@ class AuthProviderTest extends UnitaryTestCase
      * @throws AuthException
      * @throws Exception
      */
+    #[Test]
     public function testDoAuth()
     {
         $userLoginData = new UserLoginDto();
@@ -124,6 +127,6 @@ class AuthProviderTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->authProvider = new AuthProvider($this->application);
+        $this->authProvider = new AuthProvider($this->config, $this->eventDispatcherStub, $this->context);
     }
 }

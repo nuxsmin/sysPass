@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\File;
 
+use SP\Domain\Core\Exceptions\FileException;
+
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Storage\Ports\YamlFileStorageService;
 use Symfony\Component\Yaml\Yaml;

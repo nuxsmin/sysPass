@@ -32,7 +32,10 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Auth\Models\AuthToken;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AuthTokenGenerator;
 use SP\Tests\IntegrationTestCase;
@@ -44,6 +47,9 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class AuthTokenTest extends IntegrationTestCase
 {
+    private const USER_ID       = 100;
+    private const OTHER_USER_ID = 200;
+
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -128,8 +134,8 @@ class AuthTokenTest extends IntegrationTestCase
     public function saveCreate()
     {
         $data = [
-            'users' => self::$faker->randomNumber(3),
-            'actions' => self::$faker->randomNumber(3),
+            'users' => self::USER_ID,
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
             'pass' => self::$faker->sha1()
         ];
 
@@ -148,11 +154,64 @@ class AuthTokenTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    public function saveCreateForAnotherUserIsDenied()
+    {
+        $data = [
+            'users' => self::OTHER_USER_ID,
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
+            'pass' => self::$faker->sha1()
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data)
+        );
+
+        $this->expectOutputRegex('/You don\'t have permission to do this operation/');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveCreateForActionWithoutPermissionIsDenied()
+    {
+        $acl = $this->createMock(AclInterface::class);
+        $acl->method('checkUserAccess')->willReturnCallback(
+            static fn(int $actionId): bool => $actionId === AclActionsInterface::AUTHTOKEN_CREATE
+        );
+        $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId): string => (string)$actionId);
+
+        $data = [
+            'users' => self::USER_ID,
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
+            'pass' => self::$faker->sha1()
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data),
+            [AclInterface::class => $acl]
+        );
+
+        $this->expectOutputRegex('/You don\'t have permission to do this operation/');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
     public function saveEdit()
     {
         $data = [
-            'users' => self::$faker->randomNumber(3),
-            'actions' => self::$faker->randomNumber(3),
+            'users' => self::USER_ID,
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
             'pass' => self::$faker->sha1()
         ];
 
@@ -163,6 +222,29 @@ class AuthTokenTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Authorization updated","data":null}');
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditForAnotherUserIsDenied()
+    {
+        $data = [
+            'users' => self::OTHER_USER_ID,
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
+            'pass' => self::$faker->sha1()
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveEdit/100'], $data)
+        );
+
+        $this->expectOutputRegex('/You don\'t have permission to do this operation/');
+
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -213,6 +295,11 @@ class AuthTokenTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    protected function getUserDataDto(): UserDto
+    {
+        return parent::getUserDataDto()->mutate(['id' => self::USER_ID]);
     }
 
     /**
