@@ -28,6 +28,7 @@ namespace SP\Core\Context;
 
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Crypt\Ports\MasterKeyStore;
 
 use function SP\__u;
