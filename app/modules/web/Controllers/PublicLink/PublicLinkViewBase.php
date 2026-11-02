@@ -60,7 +60,10 @@ abstract class PublicLinkViewBase extends ControllerBase
             : new PublicLinkList();
 
         $this->view->assign('publicLink', $publicLink);
-        $this->view->assign('usageInfo', unserialize($publicLink->getUseInfo(), ['allowed_classes' => false]));
+        $this->view->assign(
+            'usageInfo',
+            unserialize($publicLink->getUseInfo() ?? '', ['allowed_classes' => false])
+        );
         $this->view->assign(
             'accounts',
             SelectItemAdapter::factory($this->accountService->getForUser())

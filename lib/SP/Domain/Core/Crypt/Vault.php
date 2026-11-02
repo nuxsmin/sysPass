@@ -36,6 +36,7 @@ use SP\Domain\Core\Exceptions\CryptException;
  *
  * @package SP\Core\Crypt
  */
+#[\AllowDynamicProperties]
 final class Vault implements VaultInterface
 {
     private ?string $data    = null;

@@ -79,7 +79,18 @@ jobs:
       - name: Unitary tests
         env:
           XDEBUG_MODE: coverage
-        run: ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary --testsuite core
+        run: |
+          set -o pipefail
+          mkdir -p tests/_output
+          php -d error_reporting=E_ALL ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary --testsuite core --fail-on-deprecation --display-deprecations --log-events-text ./tests/_output/deprecation-events-core.txt 2>&1 | tee ./tests/_output/phpunit-unitary-${{ matrix.php }}.log
+
+      - name: Deprecation gate (core)
+        if: always()
+        run: |
+          php scripts/deprecation-gate.php \
+            --suite=core \
+            --events=./tests/_output/deprecation-events-core.txt \
+            --command="php -d error_reporting=E_ALL ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary --testsuite core --fail-on-deprecation --display-deprecations"
 
       - name: Coverage gate
         run: php scripts/coverage-gate.php --gate
@@ -90,6 +101,16 @@ jobs:
         with:
           name: coverage-unitary
           path: ./tests/_output/coverage-clover.xml
+          if-no-files-found: ignore
+
+      - name: Upload unit logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deprecation-logs-unitary-${{ matrix.php }}
+          path: |
+            ./tests/_output/phpunit-unitary-${{ matrix.php }}.log
+            ./tests/_output/deprecation-events-core.txt
           if-no-files-found: ignore
 
   integration:
@@ -301,7 +322,18 @@ jobs:
       - name: Modules tests
         env:
           XDEBUG_MODE: coverage
-        run: ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite modules
+        run: |
+          set -o pipefail
+          mkdir -p tests/_output
+          php -d error_reporting=E_ALL ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite modules --fail-on-deprecation --display-deprecations --log-events-text ./tests/_output/deprecation-events-modules.txt 2>&1 | tee ./tests/_output/phpunit-modules-${{ matrix.php }}.log
+
+      - name: Deprecation gate (modules)
+        if: always()
+        run: |
+          php scripts/deprecation-gate.php \
+            --suite=modules \
+            --events=./tests/_output/deprecation-events-modules.txt \
+            --command="php -d error_reporting=E_ALL ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite modules --fail-on-deprecation --display-deprecations"
 
       - name: Upload modules coverage
         if: always()
@@ -309,4 +341,14 @@ jobs:
         with:
           name: coverage-modules-${{ matrix.php }}
           path: ./tests/_output/coverage-clover.xml
+          if-no-files-found: ignore
+
+      - name: Upload modules logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deprecation-logs-modules-${{ matrix.php }}
+          path: |
+            ./tests/_output/phpunit-modules-${{ matrix.php }}.log
+            ./tests/_output/deprecation-events-modules.txt
           if-no-files-found: ignore

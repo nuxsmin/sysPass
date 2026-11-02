@@ -69,7 +69,7 @@ final class AccountSearchHelper extends HelperBase
      */
     private bool $filterOn = false;
     private bool $isAjax   = false;
-    private int  $queryTimeStart;
+    private float $queryTimeStart;
     private bool                    $isIndex;
     private ?AccountSearchFilterDto $accountSearchFilter = null;
 

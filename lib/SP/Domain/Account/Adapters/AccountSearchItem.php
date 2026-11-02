@@ -120,7 +120,7 @@ final class AccountSearchItem
 
     public function getShortClientName(): string
     {
-        return Html::truncate($this->accountSearchView->getClientName(), $this->textMaxLength / 3);
+        return Html::truncate($this->accountSearchView->getClientName(), intdiv($this->textMaxLength, 3));
     }
 
     public function getClientLink(): ?string
