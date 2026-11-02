@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f1fd5b6b837c038ba1abd6a7bde91e36",
+    "content-hash": "6c4c142d618c8cc0a97491f2a13eb7a2",
     "packages": [
         {
             "name": "ademarre/binary-to-text-php",
-            "version": "dev-master",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ademarre/binary-to-text-php.git",
@@ -23,7 +23,6 @@
             "require": {
                 "php": ">=5.2.14"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-0": {
