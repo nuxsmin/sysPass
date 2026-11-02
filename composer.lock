@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4ecc2ea2c2202a56e723132826e721d1",
+    "content-hash": "3d03596f21711575891c5d195ccf4d47",
     "packages": [
         {
             "name": "ademarre/binary-to-text-php",
@@ -4016,20 +4016,15 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.11.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "6adbd118e6c0515dd2f36b06cde1d6da40f1b8ec"
-            },
+            "version": "2.1.32",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/6adbd118e6c0515dd2f36b06cde1d6da40f1b8ec",
-                "reference": "6adbd118e6c0515dd2f36b06cde1d6da40f1b8ec",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e126cad1e30a99b137b8ed75a85a676450ebb227",
+                "reference": "e126cad1e30a99b137b8ed75a85a676450ebb227",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2|^8.0"
+                "php": "^7.4|^8.0"
             },
             "conflict": {
                 "phpstan/phpstan-shim": "*"
@@ -4070,7 +4065,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-24T07:01:22+00:00"
+            "time": "2025-11-11T15:18:17+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -6677,11 +6672,11 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "symfony/yaml": 0,
-        "roave/security-advisories": 20,
-        "symfony/error-handler": 0,
         "mikey179/vfsstream": 0,
-        "symfony/dom-crawler": 0
+        "roave/security-advisories": 20,
+        "symfony/dom-crawler": 0,
+        "symfony/error-handler": 0,
+        "symfony/yaml": 0
     },
     "prefer-stable": false,
     "prefer-lowest": false,
@@ -6697,9 +6692,9 @@
         "ext-libxml": "*",
         "ext-mbstring": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.3.36"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
