@@ -66,7 +66,7 @@ class SPException extends Exception
         string    $message,
         ?string   $hint = null,
         int       $code = 0,
-        Exception $previous = null
+        ?Exception $previous = null
     ): static {
         return new static($message, SPException::ERROR, $hint, $code, $previous);
     }
@@ -75,7 +75,7 @@ class SPException extends Exception
         string    $message,
         ?string   $hint = null,
         int       $code = 0,
-        Exception $previous = null
+        ?Exception $previous = null
     ): static {
         return new static($message, SPException::CRITICAL, $hint, $code, $previous);
     }
@@ -84,7 +84,7 @@ class SPException extends Exception
         string    $message,
         ?string   $hint = null,
         int       $code = 0,
-        Exception $previous = null
+        ?Exception $previous = null
     ): static {
         return new static($message, SPException::WARNING, $hint, $code, $previous);
     }
@@ -93,7 +93,7 @@ class SPException extends Exception
         string    $message,
         ?string   $hint = null,
         int       $code = 0,
-        Exception $previous = null
+        ?Exception $previous = null
     ): static {
         return new static($message, SPException::INFO, $hint, $code, $previous);
     }

@@ -151,7 +151,7 @@ abstract class ImportBase extends Service implements ImportService
         $this->counter++;
     }
 
-    final protected function getOrSetCache(string $type, int|string $key, callable $value = null): mixed
+    final protected function getOrSetCache(string $type, int|string $key, ?callable $value = null): mixed
     {
         $hash = sha1($type . $key);
 

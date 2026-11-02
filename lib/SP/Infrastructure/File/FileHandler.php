@@ -188,7 +188,7 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      *
      * @throws FileException
      */
-    public function readChunked(callable $chunker = null, ?float $rate = null): void
+    public function readChunked(?callable $chunker = null, ?float $rate = null): void
     {
         $memoryLimit = ini_get('memory_limit');
         $maxRate = ($memoryLimit < 0

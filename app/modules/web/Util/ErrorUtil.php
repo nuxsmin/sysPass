@@ -117,7 +117,7 @@ final class ErrorUtil
         }
     }
 
-    private static function addErrorTemplate(TemplateInterface $view, string $replace = null): void
+    private static function addErrorTemplate(TemplateInterface $view, ?string $replace = null): void
     {
         if ($replace === null) {
             $view->reset();

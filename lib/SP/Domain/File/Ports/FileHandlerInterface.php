@@ -67,7 +67,7 @@ interface FileHandlerInterface
      *
      * @throws FileException
      */
-    public function readChunked(callable $chunker = null, ?float $rate = null): void;
+    public function readChunked(?callable $chunker = null, ?float $rate = null): void;
 
     /**
      * Checks if the file is writable

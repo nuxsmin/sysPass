@@ -86,7 +86,7 @@ final class LayoutHelper extends HelperBase
      *
      * @return LayoutHelper
      */
-    public function getFullLayout(string $page, AclInterface $acl = null): LayoutHelper
+    public function getFullLayout(string $page, ?AclInterface $acl = null): LayoutHelper
     {
         $this->view->addTemplate('main', '_layouts');
         $this->view->assign('useFixedHeader', true);

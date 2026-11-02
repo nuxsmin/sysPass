@@ -63,7 +63,7 @@ final class InMemoryFileHandler implements FileHandlerInterface
         return $this;
     }
 
-    public function readChunked(callable $chunker = null, ?float $rate = null): void
+    public function readChunked(?callable $chunker = null, ?float $rate = null): void
     {
         $chunker?->__invoke($this->content);
     }

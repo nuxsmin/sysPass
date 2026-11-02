@@ -41,7 +41,7 @@ interface DataGridDataInterface
     public function addDataRowSource(
         string   $source,
         bool     $isMethod = false,
-        callable $filter = null,
+        ?callable $filter = null,
         bool     $truncate = true
     ): void;
 
