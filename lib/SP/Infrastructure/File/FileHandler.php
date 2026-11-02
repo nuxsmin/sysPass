@@ -75,6 +75,7 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     public function readToString(): string
     {
         $this->autoDetectEOL();
+        $this->rewind();
 
         try {
             $data = $this->fread($this->getSize());
@@ -138,11 +139,17 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     {
         $this->lock();
 
-        if ($this->fwrite($data) === false) {
-            throw FileException::error(sprintf(__('Unable to read/write the file (%s)'), $this->file));
-        }
+        try {
+            $this->rewind();
 
-        $this->unlock();
+            if ($this->ftruncate(0) === false || $this->fwrite($data) === false) {
+                throw FileException::error(sprintf(__u('Unable to read/write the file (%s)'), $this->file));
+            }
+
+            $this->fflush();
+        } finally {
+            $this->unlock();
+        }
 
         return $this;
     }

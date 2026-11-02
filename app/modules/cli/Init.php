@@ -89,6 +89,11 @@ final class Init extends ModuleBase
         $this->initCli();
     }
 
+    public function getName(): string
+    {
+        return 'cli';
+    }
+
     /**
      * @throws Exception
      */

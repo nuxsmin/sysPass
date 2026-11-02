@@ -47,16 +47,12 @@ final class MysqlHandler implements DbStorageHandler
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
     ];
 
-    private ?PDO            $pdo = null;
-    private readonly string $connectionUri;
-    private readonly string $connectionUriSimple;
+    private ?PDO $pdo = null;
 
     public function __construct(
         private readonly DatabaseConnectionData $connectionData,
         private readonly PDOWrapper             $PDOWrapper
     ) {
-        $this->connectionUri = self::getConnectionUri($connectionData);
-        $this->connectionUriSimple = self::getConnectionUri($connectionData, false);
     }
 
     public static function getConnectionUri(
@@ -98,7 +94,11 @@ final class MysqlHandler implements DbStorageHandler
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ];
 
-            $this->pdo = $this->PDOWrapper->build($this->connectionUriSimple, $this->connectionData, $opts);
+            $this->pdo = $this->PDOWrapper->build(
+                self::getConnectionUri($this->connectionData, false),
+                $this->connectionData,
+                $opts
+            );
         }
 
         return $this->pdo;
@@ -144,7 +144,11 @@ final class MysqlHandler implements DbStorageHandler
         if (!$this->pdo) {
             $this->checkConnectionData(true);
 
-            $this->pdo = $this->PDOWrapper->build($this->connectionUri, $this->connectionData, self::PDO_OPTS);
+            $this->pdo = $this->PDOWrapper->build(
+                self::getConnectionUri($this->connectionData),
+                $this->connectionData,
+                self::PDO_OPTS
+            );
 
             // Set prepared statement emulation depending on server version
             $serverVersion = $this->pdo->getAttribute(PDO::ATTR_SERVER_VERSION);

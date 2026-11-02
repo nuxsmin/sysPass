@@ -26,6 +26,8 @@ sysPass.Requests = function (sysPassApp) {
 
     const log = sysPassApp.log;
 
+    const RESPONSE_STATUS_CODES = {OK: 0, ERROR: 1, WARNING: 2};
+
     /**
      * Historial de consultas AJAX
      *
@@ -154,6 +156,10 @@ sysPass.Requests = function (sysPassApp) {
             success: function (response) {
                 if (typeof callbackOk !== "function") {
                     return true;
+                }
+
+                if (response && typeof response.status === "string") {
+                    response.status = RESPONSE_STATUS_CODES[response.status] ?? response.status;
                 }
 
                 // Añadir entrada al historial

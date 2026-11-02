@@ -103,6 +103,11 @@ final class AccountSearchItem
         return Html::truncate($this->accountSearchView->getUrl(), $this->textMaxLength);
     }
 
+    public function getSafeUrl(): string
+    {
+        return Html::getSafeUrl((string)$this->accountSearchView->getUrl());
+    }
+
     public function isUrlIslink(): bool
     {
         return preg_match('#^\w+://#', $this->accountSearchView->getUrl()) === 1;

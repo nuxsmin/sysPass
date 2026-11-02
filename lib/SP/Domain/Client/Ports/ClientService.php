@@ -26,7 +26,6 @@ declare(strict_types=1);
 namespace SP\Domain\Client\Ports;
 
 use SP\Domain\Client\Models\Client;
-use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -107,7 +106,7 @@ interface ClientService
     /**
      * Returns all clients visible for a given user
      *
-     * @return Item[]
+     * @return Client[]
      * @throws QueryException
      * @throws ConstraintException
      */

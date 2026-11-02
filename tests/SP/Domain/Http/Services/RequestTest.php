@@ -709,22 +709,13 @@ class RequestTest extends UnitaryTestCase
     #[Test]
     public function testVerifySignature()
     {
-        $params = [
-            'a' => 1,
-            'b' => 2,
-            'c' => 3
-        ];
-        $signature = Hash::signMessage(implode('&', $params), 'a_key');
+        $query = 'a=1&b=2&c=3';
+        $signature = Hash::signMessage($query, 'a_key');
 
         $this->ensureGet();
 
+        $this->server->set('QUERY_STRING', $query . '&h=' . $signature);
         $this->paramsGet->set('h', $signature);
-
-        $this->kleinRequest
-            ->expects(self::once())
-            ->method('params')
-            ->with('h')
-            ->willReturn($params);
 
         $request = new Request($this->kleinRequest, $this->cryptPKI, $this->hashService);
 

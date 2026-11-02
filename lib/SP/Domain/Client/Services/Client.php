@@ -183,13 +183,16 @@ final class Client extends Service implements ClientService
     /**
      * Returns all clients visible for a given user
      *
-     * @return Simple[]
+     * @return ClientModel[]
      * @throws QueryException
      * @throws ConstraintException
      * @throws SPException
      */
     public function getAllForUser(): array
     {
-        return $this->clientRepository->getAllForFilter($this->accountFilterUser)->getDataAsArray();
+        return array_map(
+            static fn(Simple|ClientModel $client): ClientModel => ClientModel::buildFromSimpleModel($client),
+            $this->clientRepository->getAllForFilter($this->accountFilterUser)->getDataAsArray()
+        );
     }
 }

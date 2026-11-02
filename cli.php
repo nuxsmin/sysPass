@@ -33,6 +33,8 @@ const APP_ROOT = __DIR__;
 const APP_MODULE = 'cli';
 
 try {
+    require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'bootstrap.php';
+
     $dic = FileSystem::require(FileSystem::buildPath(APP_ROOT, 'lib', 'Base.php'), ContainerInterface::class);
 
     logger('------------');

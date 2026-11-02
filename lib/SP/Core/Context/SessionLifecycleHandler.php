@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Core\Context;
 
-use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\__u;
@@ -73,7 +72,7 @@ final class SessionLifecycleHandler
     {
         if (session_status() != PHP_SESSION_ACTIVE
             && (headers_sent($filename, $line)
-                || !session_start(self::SESSION_OPTIONS))
+                || !session_start(self::options()))
         ) {
             logger(sprintf('Headers sent in %s:%d file', $filename, $line));
 
@@ -83,7 +82,7 @@ final class SessionLifecycleHandler
         if (isset($_SESSION[self::DESTROY_TIME_KEY])) {
             if ($_SESSION[self::DESTROY_TIME_KEY] < time() - self::DESTROY_TIMEOUT) {
                 session_destroy();
-                session_start(self::SESSION_OPTIONS);
+                session_start(self::options());
             }
 
             if (isset($_SESSION[self::NEW_ID_KEY])) {
@@ -95,11 +94,25 @@ final class SessionLifecycleHandler
     }
 
     /**
+     * @return array<string, string>
+     */
+    private static function options(): array
+    {
+        $options = self::SESSION_OPTIONS;
+
+        if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off') {
+            $options['cookie_secure'] = '0';
+        }
+
+        return $options;
+    }
+
+    /**
      * @return string[]
      */
     private static function optionsWithoutStrictMode(): array
     {
-        return array_merge(self::SESSION_OPTIONS, ['use_strict_mode' => '0']);
+        return array_merge(self::options(), ['use_strict_mode' => '0']);
     }
 
     /**
@@ -131,19 +144,9 @@ final class SessionLifecycleHandler
     {
         self::start();
 
-        $sessionId = session_create_id(sprintf('%s-', AppInfoInterface::APP_NAME));
+        session_regenerate_id(true);
 
-        $_SESSION[self::NEW_ID_KEY] = $sessionId;
-        $_SESSION[self::DESTROY_TIME_KEY] = time();
-
-        session_commit();
-        session_id($sessionId);
-        session_start(self::optionsWithoutStrictMode());
-
-        unset($_SESSION[self::DESTROY_TIME_KEY]);
-        unset($_SESSION[self::NEW_ID_KEY]);
-
-        return $sessionId;
+        return session_id();
     }
 
     /**

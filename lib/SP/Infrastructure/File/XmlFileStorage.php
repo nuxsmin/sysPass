@@ -69,6 +69,10 @@ final readonly class XmlFileStorage implements XmlFileStorageService
     {
         $this->fileHandler->checkIsWritable();
 
+        while ($this->document->firstChild !== null) {
+            $this->document->removeChild($this->document->firstChild);
+        }
+
         $root = $this->document->createElement($node);
         $this->document->appendChild($root);
         $this->serializeItems($data, $root);

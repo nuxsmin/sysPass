@@ -71,8 +71,20 @@ class InstallCommandTest extends CliTestCase
      */
     public static function setUpBeforeClass(): void
     {
-        // Backup current config file content in a variable
-        self::$currentConfig = getResource('config', 'config.xml');
+        // Start from the pristine test config, not a config modified by another test
+        $config = file_get_contents(
+            REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'res'
+            . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.xml'
+        );
+
+        if ($config === false) {
+            self::fail('Unable to read the pristine test config');
+        }
+
+        self::$currentConfig = $config;
+
+        saveResource('config', 'config.xml', self::$currentConfig);
+        recreateDir(CACHE_PATH);
 
         parent::setUpBeforeClass();
     }

@@ -235,14 +235,14 @@ final class Installer implements InstallerService
 
             // Check whether sysPass is running on docker. Not so accurate,
             // but avoid some overhead from parsing /proc/self/cgroup
-            if (getenv('SYSPASS_DIR') !== false) {
+            if (getenv('SYSPASS_DIR') !== false || $address === '') {
                 $this->installData->setDbAuthHost('%');
             } else {
                 $this->installData->setDbAuthHost($address);
 
                 $dnsHostname = gethostbyaddr($address);
 
-                if (strlen($dnsHostname) < 60) {
+                if (is_string($dnsHostname) && $dnsHostname !== '' && strlen($dnsHostname) < 60) {
                     $this->installData->setDbAuthHostDns($dnsHostname);
                 }
             }
