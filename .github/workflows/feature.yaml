@@ -18,6 +18,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install asset tooling
+        run: npm ci
+
+      - name: Build assets
+        run: bash scripts/build-assets.sh
+
       - name: Setup locales
         run: |
           sudo locale-gen es_ES.UTF-8 en_US.UTF-8 && sudo update-locale
@@ -105,6 +117,18 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install asset tooling
+        run: npm ci
+
+      - name: Build assets
+        run: bash scripts/build-assets.sh
 
       - name: Setup locales
         run: |

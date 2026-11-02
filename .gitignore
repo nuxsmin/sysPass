@@ -71,5 +71,21 @@ tests/.phpunit.cache
 
 *.log
 
+node_modules/
+
+# Generated front-end assets
+public/js/*.min.js
+public/js/*.min.js.map
+public/css/*.min.css
+public/css/*.css.map
+public/vendor/js/*.min.js
+public/vendor/js/*.min.js.map
+public/vendor/css/*.min.css
+public/vendor/css/*.css.map
+app/modules/web/themes/material-blue/js/*.min.js
+app/modules/web/themes/material-blue/js/*.min.js.map
+app/modules/web/themes/material-blue/css/*.min.css
+app/modules/web/themes/material-blue/css/*.css.map
+
 .kilo/plans/
 .phpactor.json
