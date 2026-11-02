@@ -28,9 +28,11 @@ namespace SP\Core\Definitions;
 
 use Aura\SqlQuery\QueryFactory;
 use Klein\Request as KleinRequest;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler as MSyslogHandler;
 use Monolog\Handler\SyslogUdpHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use phpseclib\Crypt\RSA;
 use Psr\Container\ContainerInterface;
@@ -348,8 +350,10 @@ final class CoreDefinitions
                 }
             ),
             LoggerInterface::class => factory(function (ConfigDataInterface $configData, PathsContext $pathsContext) {
-                $handlers = [];
-                $handlers[] = new StreamHandler($pathsContext[Path::LOG_FILE]);
+                $fileHandler = new StreamHandler($pathsContext[Path::LOG_FILE], Level::Debug);
+                $fileHandler->setFormatter(new LineFormatter(null, 'Y-m-d H:i:s'));
+
+                $handlers = [$fileHandler];
 
                 if ($configData->isInstalled()) {
                     if ($configData->isSyslogRemoteEnabled()
@@ -360,7 +364,7 @@ final class CoreDefinitions
                             $configData->getSyslogServer(),
                             $configData->getSyslogPort(),
                             LOG_USER,
-                            Logger::DEBUG,
+                            Level::Debug,
                             true,
                             'syspass'
                         );
