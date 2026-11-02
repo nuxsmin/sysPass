@@ -380,6 +380,7 @@ final class CoreDefinitions
             DomainLoggerInterface::class => create(FunctionLogger::class),
             \GuzzleHttp\Client::class => create(\GuzzleHttp\Client::class)
                 ->constructor(factory([Client::class, 'getOptions'])),
+            \GuzzleHttp\ClientInterface::class => get(\GuzzleHttp\Client::class),
             LanguageInterface::class => autowire(Language::class)->constructorParameter(
                 'localesPath',
                 factory(

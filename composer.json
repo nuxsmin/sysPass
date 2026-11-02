@@ -39,7 +39,7 @@
     "klein/klein": "^2.1",
     "php-di/php-di": "^7.0",
     "doctrine/common": "^v2.7",
-    "guzzlehttp/guzzle": "^6.3",
+    "guzzlehttp/guzzle": "^7.0",
     "monolog/monolog": "^3.11",
     "vlucas/phpdotenv": "^v4.1",
     "ext-pdo": "*",
