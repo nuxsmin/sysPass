@@ -1,4 +1,4 @@
-# 0008 - Browser smoke suite for page-load actions
+# 0009 - Browser smoke suite for page-load actions
 
 Status: Accepted (2026-11-01)
 Related: ADR-0004 (#2041), tracking #1976
