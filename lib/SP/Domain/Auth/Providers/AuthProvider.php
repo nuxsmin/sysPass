@@ -70,11 +70,11 @@ final class AuthProvider extends Provider implements AuthProviderService
      */
     public function registerAuth(AuthService $auth, AuthType $authTypeEnum): void
     {
-        if ($this->auths->contains($auth)) {
+        if ($this->auths->offsetExists($auth)) {
             throw AuthException::error(__u('Authentication already initialized'), $auth::class);
         }
 
-        $this->auths->attach($auth, $authTypeEnum);
+        $this->auths->offsetSet($auth, $authTypeEnum);
     }
 
     /**

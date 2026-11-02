@@ -111,11 +111,11 @@ final class SerializedPayloadReader
         }
 
         if (is_object($value)) {
-            if ($seen->contains($value)) {
+            if ($seen->offsetExists($value)) {
                 return;
             }
 
-            $seen->attach($value);
+            $seen->offsetSet($value);
 
             foreach ((array)$value as $property) {
                 self::assertFullyDecoded($property, $seen, $depth + 1);
