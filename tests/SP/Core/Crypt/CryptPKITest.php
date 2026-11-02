@@ -75,13 +75,23 @@ class CryptPKITest extends UnitaryTestCase
     {
         $this->cryptPki->createKeys();
 
-        $this->assertNull($this->cryptPki->decryptRSA('invalid'));
-        $this->assertNull(
-            $this->cryptPki->decryptRSA(str_repeat("\0", CryptPKI::KEY_SIZE / 8))
-        );
-        $this->assertNull(
-            $this->cryptPki->decryptRSA(str_repeat("\xff", CryptPKI::KEY_SIZE / 8))
-        );
+        // Ubuntu 24.04's OpenSSL 3.0.13 backports PKCS#1 v1.5 implicit rejection
+        // (random plaintext instead of a padding error) while phpseclib only
+        // detects it from OpenSSL >=3.2, so invalid input would not deterministically
+        // return null. Force the pure-PHP engine for these cases (see #2113).
+        RSA::forceEngine('PHP');
+
+        try {
+            $this->assertNull($this->cryptPki->decryptRSA('invalid'));
+            $this->assertNull(
+                $this->cryptPki->decryptRSA(str_repeat("\0", CryptPKI::KEY_SIZE / 8))
+            );
+            $this->assertNull(
+                $this->cryptPki->decryptRSA(str_repeat("\xff", CryptPKI::KEY_SIZE / 8))
+            );
+        } finally {
+            RSA::forceEngine(null);
+        }
     }
 
     /**
