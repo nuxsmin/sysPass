@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Common\Providers;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -44,8 +45,33 @@ class EnvironmentTest extends TestCase
     }
 
     #[Test]
-    public function testCheckPhpVersion()
+    #[DataProvider('phpVersionProvider')]
+    public function testCheckPhpVersion(int $phpVersionId, bool $expected)
     {
-        $this->assertTrue(Environment::checkPhpVersion());
+        $this->assertSame($expected, Environment::checkPhpVersion($phpVersionId));
+    }
+
+    public static function phpVersionProvider(): iterable
+    {
+        yield 'PHP 8.2 is rejected' => [80200, false];
+        yield 'PHP 8.3 is accepted' => [80300, true];
+        yield 'PHP 8.4 is accepted' => [80400, true];
+        yield 'PHP 8.5 is accepted' => [80500, true];
+        yield 'PHP 8.6 is rejected' => [80600, false];
+    }
+
+    #[Test]
+    public function testCheckPhpVersionUsesRuntimeVersionByDefault()
+    {
+        $expected = PHP_VERSION_ID >= Environment::MIN_PHP_VERSION
+                    && PHP_VERSION_ID < Environment::MAX_PHP_VERSION;
+
+        $this->assertSame($expected, Environment::checkPhpVersion());
+    }
+
+    #[Test]
+    public function testSupportedPhpVersionLabelsAreDerivedFromConstants()
+    {
+        $this->assertSame(['8.3', '8.5'], Environment::getSupportedPhpVersionLabels());
     }
 }

@@ -172,8 +172,10 @@ abstract class BootstrapBase implements BootstrapInterface
         $this->extensionChecker->checkMandatory();
 
         if (!self::$checkPhpVersion) {
+            [$minPhpVersion, $maxPhpVersion] = Environment::getSupportedPhpVersionLabels();
+
             throw InitializationException::error(
-                sprintf(__('Required PHP version >= %s <= %s'), '8.2', '8.3'),
+                sprintf(__('Required PHP version >= %s <= %s'), $minPhpVersion, $maxPhpVersion),
                 __u('Please update the PHP version to run sysPass')
             );
         }

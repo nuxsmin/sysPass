@@ -30,8 +30,8 @@ namespace SP\Domain\Common\Providers;
  */
 final class Environment
 {
-    private const MIN_PHP_VERSION = 80200;
-    private const MAX_PHP_VERSION = 80400;
+    public const MIN_PHP_VERSION = 80300;
+    public const MAX_PHP_VERSION = 80600;
 
     /**
      * Comprobar si sysPass se ejecuta en W$indows.
@@ -43,10 +43,34 @@ final class Environment
 
     /**
      * Comprobar la versión de PHP.
+     *
+     * @param int|null $phpVersionId PHP_VERSION_ID value, defaults to the running interpreter
      */
-    public static function checkPhpVersion(): bool
+    public static function checkPhpVersion(?int $phpVersionId = null): bool
     {
-        return PHP_VERSION_ID >= self::MIN_PHP_VERSION && PHP_VERSION_ID < self::MAX_PHP_VERSION;
+        $phpVersionId ??= PHP_VERSION_ID;
+
+        return $phpVersionId >= self::MIN_PHP_VERSION && $phpVersionId < self::MAX_PHP_VERSION;
+    }
+
+    /**
+     * Obtener los límites de versión de PHP soportados, para mostrar en mensajes.
+     *
+     * The upper bound is exclusive, so the displayed maximum is the highest accepted version.
+     *
+     * @return array{0: string, 1: string}
+     */
+    public static function getSupportedPhpVersionLabels(): array
+    {
+        return [
+            self::formatVersionId(self::MIN_PHP_VERSION),
+            self::formatVersionId(self::MAX_PHP_VERSION - 1),
+        ];
+    }
+
+    private static function formatVersionId(int $versionId): string
+    {
+        return intdiv($versionId, 10000) . '.' . intdiv($versionId % 10000, 100);
     }
 
     /**
