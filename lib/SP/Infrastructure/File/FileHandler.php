@@ -74,7 +74,6 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      */
     public function readToString(): string
     {
-        $this->autoDetectEOL();
         $this->rewind();
 
         try {
@@ -91,22 +90,12 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     }
 
     /**
-     * @return void
-     */
-    private function autoDetectEOL(): void
-    {
-        ini_set('auto_detect_line_endings', true);
-    }
-
-    /**
      * Reads data from a CSV file
      *
      * @throws FileException
      */
     public function readFromCsv(string $delimiter): iterable
     {
-        $this->autoDetectEOL();
-
         while (!$this->eof()) {
             $data = $this->fgetcsv($delimiter);
 
@@ -123,8 +112,6 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      */
     public function read(): iterable
     {
-        $this->autoDetectEOL();
-
         while (!$this->eof()) {
             yield $this->fgets();
         }

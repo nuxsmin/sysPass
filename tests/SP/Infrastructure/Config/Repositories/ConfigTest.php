@@ -32,6 +32,7 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Config\Models\Config as ConfigModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -51,6 +52,8 @@ use SP\Tests\UnitaryTestCase;
 class ConfigTest extends UnitaryTestCase
 {
     private Config $configRepository;
+
+    private MockObject|DatabaseInterface $database;
 
     #[Test]
     public function testGetByParam()

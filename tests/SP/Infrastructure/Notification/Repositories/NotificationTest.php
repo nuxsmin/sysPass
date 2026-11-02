@@ -33,6 +33,7 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -54,6 +55,8 @@ class NotificationTest extends UnitaryTestCase
 {
 
     private Notification $notification;
+
+    private MockObject|DatabaseInterface $database;
 
     #[Test]
     public function testGetByIdBatch()

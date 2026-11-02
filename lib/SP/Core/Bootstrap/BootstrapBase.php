@@ -65,6 +65,9 @@ abstract class BootstrapBase implements BootstrapInterface
     public const CONTEXT_ACTION_NAME = '_actionName';
 
     protected const OOPS_MESSAGE = 'Oops, it looks like this content does not exist...';
+
+    private const E_STRICT_BIT = 2048;
+
     /**
      * @deprecated Use {@link AppLock} instead
      */
@@ -211,7 +214,7 @@ abstract class BootstrapBase implements BootstrapInterface
         if (DEBUG) {
             Debug::enable();
         } else {
-            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
+            error_reporting(E_ALL & ~(E_DEPRECATED | self::E_STRICT_BIT | E_NOTICE));
 
             if (!headers_sent()) {
                 ini_set('display_errors', 0);

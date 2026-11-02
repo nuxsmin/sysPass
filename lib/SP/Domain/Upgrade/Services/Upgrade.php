@@ -96,7 +96,7 @@ final class Upgrade extends Service implements UpgradeService
         }
 
         try {
-            $class = get_class();
+            $class = static::class;
 
             $this->eventDispatcher->notify(
                 sprintf('upgrade.%s.start', $class),
