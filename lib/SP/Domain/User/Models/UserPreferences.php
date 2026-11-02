@@ -26,12 +26,15 @@ declare(strict_types=1);
 namespace SP\Domain\User\Models;
 
 use SP\Domain\Common\Models\Model;
+use SP\Domain\Common\Models\SerializesModelProperties;
 
 /**
  * Class UserPreferences
  */
 class UserPreferences extends Model
 {
+    use SerializesModelProperties;
+
     protected ?string $lang                     = null;
     protected ?string $theme                    = null;
     protected int     $resultsPerPage           = 0;
