@@ -15,6 +15,8 @@ use SP\Mvc\View\Template;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png"
           href="<?php echo $_getvar('logo_icon'); ?>">
+    <link rel="apple-touch-icon" type="image/png"
+          href="<?php echo $_getvar('app_icon'); ?>">
     <?php foreach ($_getvar('cssLinks') as $cssLink): ?>
         <link rel="stylesheet" href="<?php echo $cssLink; ?>"/>
     <?php endforeach; ?>

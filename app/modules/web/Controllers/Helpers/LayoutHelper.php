@@ -106,6 +106,7 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('app_website_url', AppInfoInterface::APP_WEBSITE_URL);
         $this->view->assign('app_blog_url', AppInfoInterface::APP_BLOG_URL);
         $this->view->assign('app_version', Installer::VERSION_TEXT);
+        $this->view->assign('app_icon', $baseUrl . '/public/images/apple-touch-icon.png');
         $this->view->assign('logo_icon', $baseUrl . '/public/images/logo_icon.png');
         $this->view->assign('logo_no_bg_color', $baseUrl . '/public/images/logo_full_nobg_outline_color.png');
         $this->view->assign('logo_no_bg', $baseUrl . '/public/images/logo_full_nobg_outline.png');
