@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e922e1972a06590741237e2f09e3a951",
+    "content-hash": "f1fd5b6b837c038ba1abd6a7bde91e36",
     "packages": [
         {
             "name": "ademarre/binary-to-text-php",
@@ -6566,7 +6566,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "~8.2 || ~8.3",
+        "php": ">=8.3 <8.6",
         "ext-pdo": "*",
         "ext-dom": "*",
         "ext-gd": "*",
@@ -6578,8 +6578,5 @@
         "ext-mbstring": "*"
     },
     "platform-dev": [],
-    "platform-overrides": {
-        "php": "8.2"
-    },
     "plugin-api-version": "2.6.0"
 }

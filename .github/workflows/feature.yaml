@@ -13,6 +13,8 @@ jobs:
     strategy:
       matrix:
         platform: [ 'ubuntu-latest' ]
+        # PHP 8.2 is temporary until P4-4 (#2002). The --ignore-platform-reqs
+        # install below keeps this job working after #1988 requires PHP >=8.3.
         php: [ '8.2' ]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -98,6 +100,8 @@ jobs:
     strategy:
       matrix:
         platform: [ 'ubuntu-latest' ]
+        # PHP 8.2 is temporary until P4-4 (#2002). The --ignore-platform-reqs
+        # install below keeps this job working after #1988 requires PHP >=8.3.
         php: [ '8.2' ]
     runs-on: ${{ matrix.platform }}
     env:
