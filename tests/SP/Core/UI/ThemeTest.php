@@ -39,6 +39,7 @@ use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -110,6 +111,33 @@ class ThemeTest extends UnitaryTestCase
         $current = Theme::getThemeName($this->config->getConfigData(), $context);
 
         $this->assertEquals($userDto->preferences->getTheme(), $current);
+    }
+
+    /**
+     * @throws Exception
+     * @throws SPException
+     */
+    #[Test]
+    public function testGetThemeNameAuthenticatedWithBlankThemeFallsBackToSiteTheme(): void
+    {
+        $context = $this->createMock(SessionContext::class);
+        $context->expects(self::once())
+                ->method('isLoggedIn')
+                ->willReturn(true);
+
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData())
+                          ->mutate(['preferences' => new UserPreferences(['theme' => ''])]);
+
+        $context->expects(self::once())
+                ->method('getUserData')
+            ->willReturn($userDto);
+
+        $configData = $this->config->getConfigData();
+        $configData->setSiteTheme(self::$faker->colorName);
+
+        $current = Theme::getThemeName($this->config->getConfigData(), $context);
+
+        $this->assertSame($configData->getSiteTheme(), $current);
     }
 
     #[Test]

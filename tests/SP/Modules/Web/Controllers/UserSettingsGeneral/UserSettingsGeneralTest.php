@@ -30,6 +30,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Ports\UserService;
 use SP\Tests\BodyChecker;
 use SP\Tests\IntegrationTestCase;
@@ -69,6 +70,50 @@ final class UserSettingsGeneralTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    #[Test]
+    #[BodyChecker('outputCheckerSave')]
+    public function saveWithEmptyThemeStoresNull(): void
+    {
+        $persistedPreferences = null;
+
+        $userService = $this->createMock(UserService::class);
+        $userService->expects(self::once())
+                    ->method('updatePreferencesById')
+                    ->willReturnCallback(
+                        static function (int $userId, UserPreferences $preferences) use (&$persistedPreferences): int {
+                            $persistedPreferences = $preferences;
+
+                            return 1;
+                        }
+                    );
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'userSettingsGeneral/save'],
+                [
+                    'userlang' => 'en_US',
+                    'usertheme' => '',
+                    'resultsperpage' => 12,
+                    'account_link' => 1,
+                    'sort_views' => 1,
+                    'top_navbar' => 1,
+                    'optional_actions' => 1,
+                    'resultsascards' => 1,
+                    'check_notifications' => 1,
+                    'show_account_search_filters' => 1,
+                ]
+            ),
+            [UserService::class => $userService]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        self::assertInstanceOf(UserPreferences::class, $persistedPreferences);
+        self::assertNull($persistedPreferences->toArray()['theme']);
     }
 
     private function outputCheckerSave(string $output): void

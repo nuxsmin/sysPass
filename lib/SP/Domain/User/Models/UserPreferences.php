@@ -51,7 +51,7 @@ class UserPreferences extends Model
 
     public function getTheme(): ?string
     {
-        return $this->theme;
+        return $this->theme !== null && trim($this->theme) !== '' ? $this->theme : null;
     }
 
     public function getResultsPerPage(): int
