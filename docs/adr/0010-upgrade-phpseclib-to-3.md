@@ -30,7 +30,7 @@ Adopt option (a).
 
    Keep `roave/security-advisories` unchanged.
 
-2. Companion changes are owned by other issues: remove `config.platform.php` (#1988), upgrade Guzzle to `^7.15.2` (#1993), and regenerate the lock with the `8.3.36` platform (#1996).
+2. Companion changes are owned by other issues: remove `config.platform.php` (#1988), upgrade Guzzle to `^7.15.2` (#1993), implement this migration in #2088 (P2-9), and regenerate the lock (#1996).
 
 3. Migrate the call sites:
 
@@ -41,7 +41,7 @@ Adopt option (a).
 
 4. Do not regenerate keys. phpseclib 3.0.57 loads the existing PKCS#1 private and PKCS#8 public keys; existing ciphertexts decrypt with the same result. The 1024-bit key size is unchanged and remains out of scope.
 
-5. Ordering: #1987 decision → #1988 → #1993 → phpseclib implementation (follow-up owner) → #1996 lock regeneration. The phpseclib implementation must be scheduled before #1996 because #1996 owns the lock. #1987 closes with the decision only.
+5. Ordering: #1987 decision → #1988 → #1993 → #2088 (P2-9 phpseclib implementation) → #1996 lock regeneration. #2088 must land before #1996 because #1996 owns the final lock. #1987 closes with the decision only.
 
 ## Considered options
 
@@ -62,3 +62,4 @@ Adopt option (a).
 - #1987: decision and evidence (`tests/_output/1987-proposal.md`).
 - #1977: PHP 8.5 upgrade tracking issue and plan.
 - #1988, #1993, #1996: companion constraint and lock changes.
+- #2088: P2-9 implementation of the phpseclib 3 migration.
