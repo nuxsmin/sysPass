@@ -139,6 +139,18 @@ class HashTest extends UnitaryTestCase
     }
 
     #[Test]
+    public function testHashKeyUsesRuntimeDefaultBcryptCost()
+    {
+        $hashInfo = password_get_info(Hash::hashKey(self::PASSWORD));
+
+        $this->assertSame(PASSWORD_BCRYPT, $hashInfo['algo']);
+        $this->assertSame(
+            PHP_VERSION_ID >= 80400 ? 12 : 10,
+            $hashInfo['options']['cost']
+        );
+    }
+
+    #[Test]
     public function testHashKey()
     {
         for ($i = 2; $i <= 128; $i *= 2) {

@@ -158,7 +158,13 @@ class XmlExportTest extends UnitaryTestCase
 
         $encrypted = $xml->documentElement->getElementsByTagName('Encrypted')->item(0);
 
-        $this->assertStringStartsWith('$2y$10$', $encrypted->attributes->getNamedItem('hash')->nodeValue);
+        $hashInfo = password_get_info($encrypted->attributes->getNamedItem('hash')->nodeValue);
+
+        $this->assertSame(PASSWORD_BCRYPT, $hashInfo['algo']);
+        $this->assertSame(
+            PHP_VERSION_ID >= 80400 ? 12 : 10,
+            $hashInfo['options']['cost']
+        );
 
         $this->assertEquals(4, $encrypted->childNodes->count());
 
