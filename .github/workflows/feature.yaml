@@ -13,9 +13,9 @@ jobs:
     strategy:
       matrix:
         platform: [ 'ubuntu-latest' ]
-        # PHP 8.2 is temporary until P4-4 (#2002). The --ignore-platform-reqs
-        # install below keeps this job working after #1988 requires PHP >=8.3.
-        php: [ '8.2' ]
+        # PHPUnit 12 requires PHP >=8.3, so this job runs 8.3-8.5 only.
+        # Remaining PHP 8.2 jobs are removed by P4-4 (#2002).
+        php: [ '8.3', '8.4', '8.5' ]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
@@ -71,7 +71,6 @@ jobs:
         run: |
           composer install \
             --prefer-dist \
-            --ignore-platform-reqs \
             --no-interaction \
             --no-plugins \
             --no-scripts \
