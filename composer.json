@@ -18,6 +18,9 @@
   },
   "config": {
     "classmap-authoritative": false,
+    "platform": {
+      "php": "8.3.36"
+    },
     "allow-plugins": {
       "ocramius/package-versions": true
     }
@@ -49,8 +52,8 @@
     "ext-libxml": "*",
     "ext-mbstring": "*",
     "league/fractal": "^0.20",
-    "symfony/console": "^v5.1",
-    "symfony/lock": "^v5.0",
+    "symfony/console": "^7.4",
+    "symfony/lock": "^7.4",
     "aura/sqlquery": "~3.0",
     "laminas/laminas-ldap": "^2.20",
     "symfony/yaml": "@stable"

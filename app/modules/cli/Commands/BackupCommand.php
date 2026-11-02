@@ -30,6 +30,7 @@ use RuntimeException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Ports\AppPaths;
 use SP\Domain\Export\Ports\BackupFileService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,6 +45,7 @@ use function SP\__u;
  *
  * @package SP\Modules\Cli\Commands
  */
+#[AsCommand(name: 'sp:backup')]
 final class BackupCommand extends CommandBase
 {
     /**
@@ -52,10 +54,6 @@ final class BackupCommand extends CommandBase
     public static array $envVarsMapping = [
         'path' => 'BACKUP_PATH'
     ];
-    /**
-     * @var string
-     */
-    protected static $defaultName = 'sp:backup';
 
     public function __construct(
         private readonly BackupFileService $fileBackupService,
