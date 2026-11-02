@@ -1,6 +1,6 @@
 # 0004 - Test strategy and CI gating
 
-Status: Accepted (2026-10-31); amended by ADR-0009 (2026-11-01)
+Status: Accepted (2026-10-31); amended by ADR-0009 (2026-11-01) and by ADR-0011 (2026-11-02, which assigns template-migration gating to HTTP Integration Tests and browser coverage to page loading only)
 Issue: #2041 (plan P11-4, decisions D4 and P10-6, tracking #1976)
 
 ## Context

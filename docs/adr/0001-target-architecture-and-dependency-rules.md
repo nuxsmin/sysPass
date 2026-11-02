@@ -23,6 +23,8 @@ This ADR records the target architecture as it stands after the migration: the l
 | **Modules** `SP\Modules\{Web,Api,Cli}\` (`app/modules`) | Driving adapters: HTTP, JSON-RPC and CLI request mapping, response mapping, view and theme rendering, presentation helpers | Domain ports, models, DTOs, use cases, domain exceptions; Core bootstrap contracts | Infrastructure outside their own bootstrap files, concrete Domain services (including static calls), presentation globals in Domain code |
 | **Presentation** `SP\Modules\Web\{Mvc,Html}\` (`app/modules/web`) | Templates, DataGrid, icons, select items and view helpers | Domain ports and models; module code | Domain concrete services, Infrastructure |
 
+> Superseded for template files by ADR-0011: templates depend on nothing and receive a View Model. The row above still governs the PHP classes of the Presentation layer (helpers, components, DataGrid).
+
 ### Hard rules
 
 The first six rules are enforced by `tests/SP/Architecture/LayerDependencyTest.php` through `LayerRules`. Rule 7 is enforced by the same test for imports and by container wiring for resolution. Rule 8 is enforced by `tests/SP/Core/Definitions/ContainerWiringTest.php`.
@@ -55,4 +57,4 @@ The first six rules are enforced by `tests/SP/Architecture/LayerDependencyTest.p
 
 - Plan: `.kilo/plans/hexagonal-migration.md` sections 1 and 5.
 - Tests: `tests/SP/Architecture/LayerRules.php`, `tests/SP/Architecture/LayerDependencyTest.php`, `tests/SP/Core/Definitions/ContainerWiringTest.php`.
-- Related decisions: ADR-0002 (translation and error policy), ADR-0003 (use case convention), ADR-0004 (test strategy).
+- Related decisions: ADR-0002 (translation and error policy), ADR-0003 (use case convention), ADR-0004 (test strategy), ADR-0011 (supersedes the Presentation row for template files).

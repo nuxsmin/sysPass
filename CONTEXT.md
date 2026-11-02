@@ -99,7 +99,7 @@ One of the driving adapters `Web`, `Api` or `Cli`. A Module maps requests and re
 _Avoid_: context, plugin, component
 
 **Presentation**:
-The rendering concern of the Web module: templates, DataGrid, icons, select items and view helpers. It depends on Domain ports and models, never on concrete Domain services or Infrastructure.
+The rendering concern of the Web module: templates, DataGrid, icons, select items and view helpers. Templates receive a View Model and call no application code; anything they may render is decided by the caller, not fetched by the template.
 _Avoid_: view layer, frontend, theme
 
 **Presentation Global**:
@@ -115,7 +115,7 @@ The automated check that enforces the layer dependency rules and the container w
 _Avoid_: lint, static analysis
 
 **Allowlist**:
-An explicit list of tolerated architecture violations, used while the migration was incomplete. It is now empty; new violations fail the Architecture Test instead of extending it.
+An explicit list of tolerated violations that may only shrink. The Architecture Test allowlist is empty and stays empty; a migration or escaping allowlist is valid only while removing entries is the sole permitted edit.
 _Avoid_: baseline, exceptions list, ignore list
 
 **Container Wiring**:
@@ -129,6 +129,36 @@ _Avoid_: KPI, score
 **Coverage Gate**:
 The CI check that compares per-layer statement coverage with the thresholds in the coverage configuration. Only use cases and Domain services are gated today.
 _Avoid_: coverage report, quality gate
+
+### Rendering
+
+**Render Target**:
+The shape of one Web response's content: a Page, a Fragment or Rendered Markup carried inside an Action Response. A Render Target is declared, never inferred from the request.
+_Avoid_: view mode, AJAX vs normal, isAjax branch
+
+**Page**:
+A complete Web response carrying the application shell and its content, served when a Route is loaded directly. Not a wiki page or a user-facing document.
+_Avoid_: full page, layout, static page
+
+**Fragment**:
+A Web response carrying only the content a View Binder inserts into the shell, served by its own Route rather than by branching inside a Page Action.
+_Avoid_: partial, AJAX response, snippet
+
+**Rendered Markup**:
+Template output carried as an opaque value, produced only by the renderer or an allowlisted Presentation helper. Escaping it again corrupts it; producing it outside that allowlist is the only way to send unescaped output.
+_Avoid_: raw HTML, safe string, HTML string
+
+**View Model**:
+The declared set of values one template is given to render. A template reads its View Model and calls no application code.
+_Avoid_: view bag, assigned vars, context array
+
+**View Binder**:
+The client-side behaviour attached to a rendered target: the handlers, widgets and re-initialisation a Fragment or Page needs after it enters the DOM. A Fragment names its Binder so the mapping exists once.
+_Avoid_: trigger, page callback, data-onclick handler
+
+**Theme**:
+The named set of templates and static assets one installation serves, selected by site configuration and overridable per user. Only the built-in Theme is supported. It is a set of files, not a colour scheme, and not the Presentation concern that renders with it.
+_Avoid_: skin, palette, look and feel, view layer (a Theme names the served file set, not the rendering concern)
 
 ### Errors and events
 
@@ -223,11 +253,11 @@ An automated browser test that loads a page and fails on broken Page-load Action
 _Avoid_: end-to-end test, E2E test, browser test
 
 **Page-load Action**:
-A Web action that the browser requests as part of loading a page, returning rendered HTML or a JSON action response. It is not the JSON-RPC API at `api.php`, which the browser never calls.
+A Web action the browser requests as part of loading a page, returning a Page, a Fragment or an Action Response carrying Rendered Markup. It is not the JSON-RPC API, which the browser never calls.
 _Avoid_: API request, API call
 
 **Render Contract**:
-The DOM roots and non-empty text a page must show for its load to count as successful. It covers presence, not position or styling.
+The DOM roots, non-empty text and dispatch attributes a page must show for its load to count as successful. It covers presence, not position or styling; a dispatch attribute or View Binder name is contract, so renaming one is a breaking change.
 _Avoid_: snapshot, visual check, layout assertion
 
 **Page Readiness**:
@@ -391,7 +421,7 @@ The URL prefix under which the installation is served, empty when installed at a
 _Avoid_: web root, subfolder
 
 **Action Response**:
-The module-neutral outcome returned by a controller: a success or error subject plus optional data and metadata. Each module adapter translates or serialises it.
+The module-neutral outcome returned by a controller: a success or error subject plus optional data and metadata. Each module adapter translates or serialises it. The Web adapter carries Rendered Markup in a typed payload rather than as an untyped data key.
 _Avoid_: HTTP response, JSON response, view model
 
 **JSON-RPC**:

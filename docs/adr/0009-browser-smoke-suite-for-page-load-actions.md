@@ -1,7 +1,7 @@
 # 0009 - Browser smoke suite for page-load actions
 
-Status: Accepted (2026-11-01)
-Related: ADR-0004 (#2041), tracking #1976
+Status: Accepted (2026-11-01); amended by ADR-0011 (2026-11-02) — the suite is not yet implemented, tier A gates the transport and boot changes only, and folding `bootstrap/getEnvironment` into the shell changes the boot path this suite's readiness is defined against.
+Related: ADR-0004 (#2041), ADR-0011 (#2089), tracking #1976
 
 ## Context
 
