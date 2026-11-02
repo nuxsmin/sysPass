@@ -31,6 +31,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\Common\Models\Simple;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Infrastructure\Database\QueryData;
 use SP\Tests\IntegrationTestCase;
 
 /**
@@ -140,6 +143,23 @@ class ConfigBackupTest extends IntegrationTestCase
     #[Test]
     public function fileBackup()
     {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            if (str_contains($queryData->getQuery()->getStatement(), 'SHOW CREATE TABLE')) {
+                return new QueryResult(
+                    [
+                        new Simple(
+                            [
+                                'Create Table' => 'CREATE TABLE `t` (`id` int)',
+                                'Create View' => 'CREATE VIEW `v` AS SELECT 1'
+                            ]
+                        )
+                    ]
+                );
+            }
+
+            return $this->resolveDatabaseQuery($queryData);
+        };
+
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configBackup/fileBackup'])
         );

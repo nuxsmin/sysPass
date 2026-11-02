@@ -71,7 +71,7 @@ class ConfigEncryptionTest extends IntegrationTestCase
      * @throws Exception
      */
     #[Test]
-    #[InjectConfigParam(['masterPwd' => '$2y$10$6imglyA01feP1AnEmlAgUeQPa7vysHeKQLz0MDA1Zf7iG6ep.7PaC'])]
+    #[InjectConfigParam(['masterPwd' => '$2y$10$5JmIEndJa1SjqFntx1As1uuI6S0yPzl6Rxv7kNrDt3DDkFCmS8FlW'])]
     #[TestWith([false], 'Change accounts encryption')]
     #[TestWith([true], 'Change only hash')]
     public function save(bool $noAccountChange)
