@@ -72,3 +72,4 @@ tests/.phpunit.cache
 *.log
 
 .kilo/plans/
+.phpactor.json

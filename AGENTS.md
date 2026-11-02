@@ -33,7 +33,3 @@ The five canonical defaults: `needs-triage`, `needs-info`, `ready-for-agent`, `r
 ### Domain docs
 
 Single-context: one `CONTEXT.md` plus `docs/adr/` at the repo root. See `docs/agents/domain.md`.
-
-### Applications incubator
-
-New applications live self-contained under `apps/<name>/` — see `apps/README.md`. To migrate one to its own repository, run `scripts/graduate.sh` (dry-run first; creates a repo and pushes, so confirm with the user before the real run).
