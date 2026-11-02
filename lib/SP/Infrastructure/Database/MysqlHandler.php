@@ -40,13 +40,6 @@ use function SP\__u;
  */
 final class MysqlHandler implements DbStorageHandler
 {
-    private const PDO_OPTS = [
-        PDO::ATTR_EMULATE_PREPARES => false,
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::MYSQL_ATTR_FOUND_ROWS => true,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-    ];
-
     private ?PDO $pdo = null;
 
     public function __construct(
@@ -135,6 +128,19 @@ final class MysqlHandler implements DbStorageHandler
     }
 
     /**
+     * @return array<int, mixed>
+     */
+    private static function getPdoOptions(): array
+    {
+        return [
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PdoMysqlAttributes::foundRows() => true,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+        ];
+    }
+
+    /**
      * Set up a database connection with the given connection data
      *
      * @throws DatabaseException
@@ -147,7 +153,7 @@ final class MysqlHandler implements DbStorageHandler
             $this->pdo = $this->PDOWrapper->build(
                 self::getConnectionUri($this->connectionData),
                 $this->connectionData,
-                self::PDO_OPTS
+                self::getPdoOptions()
             );
 
             // Set prepared statement emulation depending on server version
