@@ -39,6 +39,7 @@ use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\Services\Request;
+use SP\Tests\Stubs\KleinRequestStub;
 use SP\Tests\UnitaryTestCase;
 
 use function PHPUnit\Framework\exactly;
@@ -51,7 +52,7 @@ use function PHPUnit\Framework\exactly;
 class RequestTest extends UnitaryTestCase
 {
 
-    private \Klein\Request|MockObject       $kleinRequest;
+    private KleinRequestStub                $kleinRequest;
     private CryptPKIHandler|MockObject $cryptPKI;
     private HashServiceAdapter $hashService;
     private HeaderDataCollection|MockObject $headers;
@@ -79,10 +80,7 @@ class RequestTest extends UnitaryTestCase
 
     private function ensureGet(): void
     {
-        $this->kleinRequest
-            ->expects(self::once())
-            ->method('method')
-            ->willReturn('GET');
+        $this->kleinRequest->setMethod('GET');
     }
 
     /**
@@ -268,10 +266,7 @@ class RequestTest extends UnitaryTestCase
 
     private function ensurePost(): void
     {
-        $this->kleinRequest
-            ->expects(self::once())
-            ->method('method')
-            ->willReturn('POST');
+        $this->kleinRequest->setMethod('POST');
     }
 
     #[Test]
@@ -709,6 +704,8 @@ class RequestTest extends UnitaryTestCase
     #[Test]
     public function testVerifySignature()
     {
+        $this->expectNotToPerformAssertions();
+
         $query = 'a=1&b=2&c=3';
         $signature = Hash::signMessage($query, 'a_key');
 
@@ -728,6 +725,8 @@ class RequestTest extends UnitaryTestCase
     #[Test]
     public function testVerifySignatureWithParam()
     {
+        $this->expectNotToPerformAssertions();
+
         $signature = Hash::signMessage('a_value', 'a_key');
 
         $this->ensureGet();
@@ -748,14 +747,16 @@ class RequestTest extends UnitaryTestCase
     {
         $this->ensureGet();
 
-        $this->kleinRequest->expects(self::never())->method('params');
-
         $request = new Request($this->kleinRequest, $this->cryptPKI, $this->hashService);
 
         $this->expectException(SPException::class);
         $this->expectExceptionMessage('URI string altered');
 
-        $request->verifySignature('a_key');
+        try {
+            $request->verifySignature('a_key');
+        } finally {
+            $this->assertSame(0, $this->kleinRequest->getParamsCalls());
+        }
     }
 
     #[Test]
@@ -998,42 +999,20 @@ class RequestTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->kleinRequest = $this->createMock(\Klein\Request::class);
+        $this->kleinRequest = new KleinRequestStub();
         $this->cryptPKI = $this->createMock(CryptPKIHandler::class);
         $this->hashService = new HashServiceAdapter();
         $this->headers = $this->createMock(HeaderDataCollection::class);
 
-        $this->kleinRequest
-            ->expects(self::atMost(1))
-            ->method('headers')
-            ->willReturn($this->headers);
+        $this->kleinRequest->setHeaders($this->headers);
 
         $this->paramsGet = new DataCollection();
-
-        $this->kleinRequest
-            ->expects(self::atMost(1))
-            ->method('paramsGet')
-            ->willReturn($this->paramsGet);
-
-        $paramsPost = new DataCollection();
-
-        $this->kleinRequest
-            ->expects(self::atMost(1))
-            ->method('paramsPost')
-            ->willReturn($paramsPost);
+        $this->kleinRequest->setParamsGet($this->paramsGet);
 
         $this->server = new DataCollection();
-
-        $this->kleinRequest
-            ->expects(self::any())
-            ->method('server')
-            ->willReturn($this->server);
+        $this->kleinRequest->setServer($this->server);
 
         $this->files = new DataCollection();
-
-        $this->kleinRequest
-            ->expects(self::any())
-            ->method('files')
-            ->willReturn($this->files);
+        $this->kleinRequest->setFiles($this->files);
     }
 }

@@ -27,7 +27,6 @@ namespace SP\Tests\Domain\Html\Services;
 
 use Klein\DataCollection\HeaderDataCollection;
 use Klein\DataCollection\ServerDataCollection;
-use Klein\Request;
 use Klein\Response;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -37,6 +36,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Html\Services\MinifyJs;
 use SP\Domain\Core\Exceptions\FileException;
+use SP\Tests\Stubs\KleinRequestStub;
 use SP\Tests\UnitaryTestCase;
 use TypeError;
 
@@ -49,7 +49,7 @@ class MinifyJsTest extends UnitaryTestCase
 {
 
     private Response|MockObject $response;
-    private Request|MockObject  $request;
+    private KleinRequestStub $request;
     private MinifyJs            $minifyJs;
 
     /**
@@ -113,9 +113,7 @@ class MinifyJsTest extends UnitaryTestCase
                 )
                 ->willReturn($etag);
 
-        $this->request->expects(self::once())
-                      ->method('headers')
-                      ->willReturn($headers);
+        $this->request->setHeaders($headers);
 
         $server = $this->createMock(ServerDataCollection::class);
         $server->expects(self::once())
@@ -123,9 +121,7 @@ class MinifyJsTest extends UnitaryTestCase
                ->with('SERVER_PROTOCOL')
                ->willReturn('http');
 
-        $this->request->expects(self::once())
-                      ->method('server')
-                      ->willReturn($server);
+        $this->request->setServer($server);
 
         $this->response->expects(self::once())
                        ->method('header')
@@ -199,9 +195,7 @@ class MinifyJsTest extends UnitaryTestCase
             ->with(\SP\Domain\Http\Header::IF_NONE_MATCH->value)
                 ->willReturn(self::$faker->sha1);
 
-        $this->request->expects(self::once())
-                      ->method('headers')
-                      ->willReturn($headers);
+        $this->request->setHeaders($headers);
 
         $this->response->expects(self::exactly(5))
                        ->method('header')
@@ -300,7 +294,7 @@ class MinifyJsTest extends UnitaryTestCase
         parent::setUp();
 
         $this->response = $this->createMock(Response::class);
-        $this->request = $this->createMock(Request::class);
+        $this->request = new KleinRequestStub();
 
         $this->minifyJs = new \SP\Domain\Html\Services\MinifyJs($this->response, $this->request);
     }

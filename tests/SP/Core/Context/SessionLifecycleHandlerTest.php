@@ -28,7 +28,7 @@ namespace SP\Tests\Core\Context;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\RunClassInSeparateProcess;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use SP\Core\Context\SessionLifecycleHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Tests\UnitaryTestCase;
@@ -37,7 +37,7 @@ use SP\Tests\UnitaryTestCase;
  * Class SessionUtilTest
  */
 #[Group('unitary')]
-#[RunClassInSeparateProcess]
+#[RunTestsInSeparateProcesses]
 class SessionLifecycleHandlerTest extends UnitaryTestCase
 {
 

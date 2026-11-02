@@ -63,8 +63,6 @@ use SP\Tests\Generators\UserProfileDataGenerator;
 use SP\Tests\UnitaryTestCase;
 use stdClass;
 
-use function PHPUnit\Framework\onConsecutiveCalls;
-
 /**
  * Class ApiServiceTest
  *
@@ -540,7 +538,7 @@ class ApiTest extends UnitaryTestCase
 
         $this->apiRequest->expects(self::exactly(3))
                          ->method('get')
-                         ->will(onConsecutiveCalls($authToken, $authToken, $authToken));
+                         ->willReturnOnConsecutiveCalls($authToken, $authToken, $authToken);
 
         $vaultKey = sha1($authToken . $authToken);
 
@@ -594,7 +592,7 @@ class ApiTest extends UnitaryTestCase
 
         $this->apiRequest->expects(self::exactly(3))
                          ->method('get')
-                         ->will(onConsecutiveCalls($authToken, $authToken, $authToken));
+                         ->willReturnOnConsecutiveCalls($authToken, $authToken, $authToken);
 
         $vault = Vault::factory(new Crypt())->saveData(self::$faker->password, sha1(self::$faker->password));
 

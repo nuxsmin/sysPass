@@ -62,8 +62,8 @@ class ConfigBackupTest extends UnitaryTestCase
             ->with(
                 ...
                 self::withConsecutive(
-                    ['config_backup', self::isType('string')],
-                    ['config_backup_date', self::isType('string')]
+                    ['config_backup', self::isString()],
+                    ['config_backup_date', self::isString()]
                 )
             );
 
