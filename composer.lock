@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6c4c142d618c8cc0a97491f2a13eb7a2",
+    "content-hash": "a10f4d10ba0725d3a82e9f489a3d9bd7",
     "packages": [
         {
             "name": "ademarre/binary-to-text-php",
@@ -1387,34 +1387,40 @@
         },
         {
             "name": "laminas/laminas-ldap",
-            "version": "2.18.1",
+            "version": "2.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-ldap.git",
-                "reference": "c337026c6c3555d06bcae37e95ffe92cafcea08a"
+                "reference": "0af21ed3f77ef88326839f90e95f3b390ab84725"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-ldap/zipball/c337026c6c3555d06bcae37e95ffe92cafcea08a",
-                "reference": "c337026c6c3555d06bcae37e95ffe92cafcea08a",
+                "url": "https://api.github.com/repos/laminas/laminas-ldap/zipball/0af21ed3f77ef88326839f90e95f3b390ab84725",
+                "reference": "0af21ed3f77ef88326839f90e95f3b390ab84725",
                 "shasum": ""
             },
             "require": {
                 "ext-ldap": "*",
-                "php": "~8.1.0 || ~8.2.0 || ~8.3.0"
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
             },
             "conflict": {
+                "amphp/amp": "<2.6.4",
+                "amphp/dns": "<2.4.0",
+                "amphp/socket": "<2.3.1",
                 "zendframework/zend-ldap": "*"
             },
             "require-dev": {
-                "laminas/laminas-coding-standard": "~2.5.0",
+                "laminas/laminas-coding-standard": "~3.1.0",
                 "laminas/laminas-config": "^3.8.0",
                 "laminas/laminas-eventmanager": "^3.6.0",
                 "laminas/laminas-stdlib": "^3.15.0",
-                "php-mock/php-mock-phpunit": "^2.6.1",
-                "phpunit/phpunit": "^9.5.26",
-                "psalm/plugin-phpunit": "^0.18.4",
-                "vimeo/psalm": "^5.16"
+                "php-mock/php-mock-phpunit": "^2.14.0",
+                "phpunit/phpunit": "^11.5.55",
+                "psalm/plugin-phpunit": "^0.19.5",
+                "symfony/console": "^6.0 || ^7.0",
+                "symfony/filesystem": "^6.0 || ^7.0",
+                "symfony/string": "^6.0 || ^7.0",
+                "vimeo/psalm": "^6.14"
             },
             "suggest": {
                 "laminas/laminas-eventmanager": "Laminas\\EventManager component"
@@ -1449,7 +1455,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2023-12-06T11:19:05+00:00"
+            "time": "2026-05-01T13:27:43+00:00"
         },
         {
             "name": "laravel/serializable-closure",
