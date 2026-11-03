@@ -191,6 +191,9 @@ abstract class IntegrationTestCase extends TestCase
 
         $database = self::createStub(DatabaseInterface::class);
         $database->method('runQuery')->willReturnCallback($this->getDatabaseReturn());
+        $database->method('doFetchWithOptions')->willReturnCallback(
+            fn(QueryData $queryData): iterable => $this->getDatabaseReturn()($queryData)->getDataAsArray()
+        );
         $database->method('beginTransaction')->willReturn(true);
         $database->method('endTransaction')->willReturn(true);
         $database->method('rollbackTransaction')->willReturn(true);

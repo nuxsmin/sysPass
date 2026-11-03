@@ -33,6 +33,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountCacheDto;
+use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountCacheService;
 use SP\Domain\Account\Ports\AccountToFavoriteService;
@@ -76,8 +77,7 @@ class AccountSearchDataTest extends UnitaryTestCase
     #[Test]
     public function testBuildFrom(): void
     {
-        $accountSearchView =
-            array_map(static fn() => AccountDataGenerator::factory()->buildAccountSearchView(), range(0, 4));
+        $accountSearchView = $this->buildUniqueAccountSearchViews();
         $numResults = count($accountSearchView);
 
         $queryResult = new QueryResult($accountSearchView);
@@ -126,8 +126,7 @@ class AccountSearchDataTest extends UnitaryTestCase
     #[Test]
     public function testBuildFromWithColorCacheException(): void
     {
-        $accountSearchVData =
-            array_map(static fn() => AccountDataGenerator::factory()->buildAccountSearchView(), range(0, 4));
+        $accountSearchVData = $this->buildUniqueAccountSearchViews();
         $numResults = count($accountSearchVData);
 
         $queryResult = new QueryResult($accountSearchVData);
@@ -181,6 +180,26 @@ class AccountSearchDataTest extends UnitaryTestCase
             $fileCache,
             $this->config->getConfigData(),
             $this->createStub(UriContextInterface::class)
+        );
+    }
+
+
+    /**
+     * Unique client ids keep the color cache save count deterministic.
+     *
+     * @return AccountSearchView[]
+     */
+    private function buildUniqueAccountSearchViews(): array
+    {
+        return array_map(
+            static function (int $index): AccountSearchView {
+                $account = AccountDataGenerator::factory()->buildAccountSearchView();
+
+                return new AccountSearchView(
+                    array_merge($account->toArray(null, null, true), ['clientId' => $index + 1])
+                );
+            },
+            range(0, 4)
         );
     }
 
