@@ -31,6 +31,8 @@ use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserProfile;
 
+use function SP\__u;
+
 /**
  * Class UserProfileForm
  *

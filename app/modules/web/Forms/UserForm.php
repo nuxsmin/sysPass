@@ -29,6 +29,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\User\Models\User;
 
+use function SP\__u;
+
 /**
  * Class UserForm
  *

@@ -29,6 +29,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\User\Models\UserGroup;
 
+use function SP\__u;
+
 /**
  * Class UserGroupForm
  *
