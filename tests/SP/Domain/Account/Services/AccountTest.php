@@ -1162,6 +1162,7 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testCreate()
     {
+        $notBefore = time();
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountCreateDto = $accountDataGenerator->buildAccountCreateDto();
@@ -1190,7 +1191,15 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn(null);
 
         $this->accountRepository->expects(self::once())->method('create')
-            ->with(AccountModel::create($accountCreateDto->withEncryptedPassword($encryptedPassword)))
+            ->with(
+                new Callback(
+                    fn(AccountModel $account) => $this->assertCreatedAccountMatches(
+                        AccountModel::create($accountCreateDto->withEncryptedPassword($encryptedPassword)),
+                        $account,
+                        $notBefore
+                    )
+                )
+            )
             ->willReturn(new QueryResult(null, 0, $id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')
@@ -1208,6 +1217,7 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testCreateCannotChangePermissions()
     {
+        $notBefore = time();
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
         $userData = $this->context->getUserData();
@@ -1241,7 +1251,15 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn(null);
 
         $this->accountRepository->expects(self::once())->method('create')
-            ->with(AccountModel::create($accountCreateDto->withEncryptedPassword($encryptedPassword)))
+            ->with(
+                new Callback(
+                    fn(AccountModel $account) => $this->assertCreatedAccountMatches(
+                        AccountModel::create($accountCreateDto->withEncryptedPassword($encryptedPassword)),
+                        $account,
+                        $notBefore
+                    )
+                )
+            )
             ->willReturn(new QueryResult(null, 0, $id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')
@@ -1559,6 +1577,29 @@ class AccountTest extends UnitaryTestCase
             ->willReturn(new QueryResult(null, 0));
 
         $this->assertFalse($this->account->incrementDecryptCounter($id));
+    }
+
+    /**
+     * Compares every Account field except passDate, which is set from the wall clock
+     * while the writer runs. It is only allowed to fall within the elapsed window.
+     */
+    private function assertCreatedAccountMatches(
+        AccountModel $expected,
+        AccountModel $actual,
+        int $notBefore
+    ): bool {
+        self::assertSame(
+            $expected->toArray(null, ['passDate']),
+            $actual->toArray(null, ['passDate'])
+        );
+
+        $passDate = $actual->getPassDate();
+
+        self::assertNotNull($passDate);
+        self::assertGreaterThanOrEqual($notBefore, $passDate);
+        self::assertLessThanOrEqual(time(), $passDate);
+
+        return true;
     }
 
     protected function setUp(): void
