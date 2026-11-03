@@ -14,7 +14,6 @@ jobs:
       matrix:
         platform: [ 'ubuntu-latest' ]
         # PHPUnit 12 requires PHP >=8.3, so this job runs 8.3-8.5 only.
-        # Remaining PHP 8.2 jobs are removed by P4-4 (#2002).
         php: [ '8.3', '8.4', '8.5' ]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -121,7 +120,6 @@ jobs:
       matrix:
         platform: [ 'ubuntu-latest' ]
         # PHPUnit 12 requires PHP >=8.3, so this job runs 8.3-8.5 only.
-        # Remaining PHP 8.2 jobs are removed by P4-4 (#2002).
         php: [ '8.3', '8.4', '8.5' ]
     runs-on: ${{ matrix.platform }}
     env:
@@ -232,7 +230,6 @@ jobs:
       matrix:
         platform: [ 'ubuntu-latest' ]
         # PHPUnit 12 requires PHP >=8.3, so this job runs 8.3-8.5 only.
-        # Remaining PHP 8.2 jobs are removed by P4-4 (#2002).
         php: [ '8.3', '8.4', '8.5' ]
     runs-on: ${{ matrix.platform }}
     env:

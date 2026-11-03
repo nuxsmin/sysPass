@@ -51,7 +51,7 @@ Readiness is defined per page as: the page's explicit `readySelector` is present
 
 ### Environment
 
-The runner generates a fresh configuration directory and points `CONFIG_PATH` at it; it refuses to start if `CONFIG_PATH` resolves to `app/config`, so a local run cannot touch a real instance. It installs with `sp:install` (`app/modules/cli/Commands/InstallCommand.php:56-72`) against MariaDB 10.3 and PHP 8.3, the supported floor. CI temporarily runs PHP 8.2 until P4-4 (#2002).
+The runner generates a fresh configuration directory and points `CONFIG_PATH` at it; it refuses to start if `CONFIG_PATH` resolves to `app/config`, so a local run cannot touch a real instance. It installs with `sp:install` (`app/modules/cli/Commands/InstallCommand.php:56-72`) against MariaDB 10.3 and PHP 8.3, the supported floor; CI runs PHP 8.3–8.5.
 
 The UI suite owns a dedicated seed fixture under `tests/ui/fixtures/`, derived from `tests/res/datasets/syspass.sql` but with known credentials — including a known admin master password, which the shared fixture does not provide. The shared fixture is not modified, so DB-backed integration tests keep their contract. E2E credentials are committed with an obvious test-only naming convention: env indirection buys no security for a throwaway database and makes local reproduction harder.
 
