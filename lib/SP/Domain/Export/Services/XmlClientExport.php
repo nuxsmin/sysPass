@@ -93,7 +93,7 @@ final class XmlClientExport extends XmlExportEntityBase implements XmlClientExpo
                 $nodeClient->appendChild(
                     $this->document->createElement(
                         'description',
-                        $this->document->createTextNode($client->getDescription())->nodeValue
+                        $this->document->createTextNode((string)$client->getDescription())->nodeValue
                     )
                 );
             }

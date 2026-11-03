@@ -91,6 +91,20 @@ class FileHandlerTest extends TestCase
         self::assertSame([['foo\\"bar', 'baz']], $rows);
     }
 
+    #[Test]
+    public function testReadFromCsvIgnoresTrailingBlankLines(): void
+    {
+        $file = $this->createCsvFile("one;two;three\n\n");
+
+        try {
+            $rows = iterator_to_array((new FileHandler($file))->readFromCsv(';'));
+        } finally {
+            unlink($file);
+        }
+
+        self::assertSame([['one', 'two', 'three']], $rows);
+    }
+
     private function createCsvFile(string $contents): string
     {
         $file = tempnam(sys_get_temp_dir(), 'syspass-csv-');

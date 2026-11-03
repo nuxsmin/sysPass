@@ -103,6 +103,10 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
                 throw FileException::error(__u('Error while reading the CSV file file'), $this->file);
             }
 
+            if ($data === [null]) {
+                continue;
+            }
+
             yield $data;
         }
     }
