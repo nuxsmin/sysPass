@@ -175,6 +175,54 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
         $this->assertArrayNotHasKey('test', $_SESSION);
     }
 
+    /**
+     * PHP 8.4 deprecated changing session.sid_bits_per_character and
+     * session.sid_length, fixing the session ID format at 32 hex characters.
+     */
+    #[Test]
+    public function testSessionOptionsDoNotSetDeprecatedSessionIdFormat(): void
+    {
+        $options = (new \ReflectionClass(SessionLifecycleHandler::class))
+            ->getConstant('SESSION_OPTIONS');
+
+        self::assertIsArray($options);
+        self::assertArrayNotHasKey('sid_bits_per_character', $options);
+        self::assertArrayNotHasKey('sid_length', $options);
+    }
+
+    /**
+     * @throws SPException
+     */
+    #[Test]
+    public function testStartDoesNotTriggerSessionIdDeprecation(): void
+    {
+        if (PHP_VERSION_ID < 80400) {
+            self::markTestSkipped('Session ID INI settings are deprecated on PHP >= 8.4');
+        }
+
+        $deprecations = [];
+
+        set_error_handler(
+            static function (int $errno, string $errstr) use (&$deprecations): bool {
+                if ($errno === E_DEPRECATED) {
+                    $deprecations[] = $errstr;
+
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+        try {
+            SessionLifecycleHandler::start();
+        } finally {
+            restore_error_handler();
+        }
+
+        self::assertSame([], $deprecations);
+    }
+
     #[Test]
     public function testNeedsRegenerate()
     {
@@ -191,6 +239,8 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     {
         parent::tearDown();
 
-        session_destroy();
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
     }
 }

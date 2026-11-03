@@ -46,8 +46,7 @@ final class SessionLifecycleHandler
         'cookie_secure' => '1',
         'cookie_samesite' => 'Strict',
         'use_trans_sid' => '0',
-        'cache_limiter' => 'nocache',
-        'sid_bits_per_character' => '6'
+        'cache_limiter' => 'nocache'
     ];
     private const NEW_ID_KEY         = 'new_session_id';
     private const DESTROY_TIMEOUT    = 300;
