@@ -53,6 +53,18 @@ class UserPreferencesSerializationTest extends TestCase
                                        . 'IAKgBjaGVja05vdGlmaWNhdGlvbnMiO2I6MTtzOjI3OiIAKgBzaG93QWNjb3VudFNlYXJj'
                                        . 'aEZpbHRlcnMiO2I6MDtzOjEwOiIAKgB1c2VyX2lkIjtpOjc7fQ==';
 
+    /**
+     * PHP 8.2-era payload for the legacy SP\DataModel\UserPreferencesData layout: every property
+     * is underscore-prefixed and the class name predates the current namespace. It exercises both
+     * SerializedPayloadRewriter and the legacy name normalisation in __unserialize().
+     */
+    private const LEGACY_UNDERSCORE_PAYLOAD = 'TzozMjoiU1BcRGF0YU1vZGVsXFVzZXJQcmVmZXJlbmNlc0RhdGEiOjExOntzOjg6Il91c2VyX2lkIjtpOjE7czo1'
+                                                . 'OiJfbGFuZyI7czo1OiJlc19FUyI7czo2OiJfdGhlbWUiO3M6MTM6Im1hdGVyaWFsLWJsdWUiO3M6MTU6Il9yZXN1'
+                                                . 'bHRzUGVyUGFnZSI7aTo2O3M6MTI6Il9hY2NvdW50TGluayI7YjoxO3M6MTA6Il9zb3J0Vmlld3MiO2I6MTtzOjEw'
+                                                . 'OiJfdG9wTmF2YmFyIjtiOjA7czoxNjoiX29wdGlvbmFsQWN0aW9ucyI7YjoxO3M6MTU6Il9yZXN1bHRzQXNDYXJk'
+                                                . 'cyI7YjoxO3M6MTk6Il9jaGVja05vdGlmaWNhdGlvbnMiO2I6MTtzOjI1OiJfc2hvd0FjY291bnRTZWFyY2hGaWx0'
+                                                . 'ZXJzIjtiOjA7fQ==';
+
     #[Test]
     public function serializationMatchesPreChangeRepresentation(): void
     {
@@ -143,6 +155,46 @@ class UserPreferencesSerializationTest extends TestCase
             ],
             $preferences->toArray()
         );
+    }
+
+    #[Test]
+    public function legacyUnderscorePayloadRestoresEveryProperty(): void
+    {
+        $expected = [
+            'lang' => 'es_ES',
+            'theme' => 'material-blue',
+            'resultsPerPage' => 6,
+            'accountLink' => true,
+            'sortViews' => true,
+            'topNavbar' => false,
+            'optionalActions' => true,
+            'resultsAsCards' => true,
+            'checkNotifications' => true,
+            'showAccountSearchFilters' => false,
+            'user_id' => 1,
+        ];
+
+        $payload = SerializedPayloadRewriter::rewrite(
+            base64_decode(self::LEGACY_UNDERSCORE_PAYLOAD, true)
+        );
+
+        $preferences = unserialize($payload, ['allowed_classes' => [UserPreferences::class]]);
+
+        $this->assertInstanceOf(UserPreferences::class, $preferences);
+        $this->assertSame($expected, $preferences->toArray());
+        $this->assertSame($expected, $preferences->toArray(null, null, true));
+        $this->assertSame('es_ES', $preferences->getLang());
+        $this->assertSame('material-blue', $preferences->getTheme());
+        $this->assertSame(6, $preferences->getResultsPerPage());
+        $this->assertSame(1, $preferences->getUserId());
+
+        $roundTripped = unserialize(
+            serialize($preferences),
+            ['allowed_classes' => [UserPreferences::class]]
+        );
+
+        $this->assertInstanceOf(UserPreferences::class, $roundTripped);
+        $this->assertSame($expected, $roundTripped->toArray());
     }
 
     #[Test]

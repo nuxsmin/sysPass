@@ -62,6 +62,24 @@ class ProfileDataSerializationTest extends TestCase
                                        . 'IgAqAG1nbUl0ZW1zUHJlc2V0IjtiOjA7czo2OiIAKgBldmwiO2I6MDtzOjE4OiIAKgBtZ2'
                                        . '1DdXN0b21GaWVsZHMiO2I6MTt9';
 
+    /**
+     * PHP 8.2-era payload for the legacy SP\DataModel\ProfileData layout: every property is
+     * underscore-prefixed and the class name predates the current namespace. It exercises both
+     * SerializedPayloadRewriter and the legacy name normalisation in __unserialize().
+     */
+    private const LEGACY_UNDERSCORE_PAYLOAD = 'TzoyNDoiU1BcRGF0YU1vZGVsXFByb2ZpbGVEYXRhIjozMTp7czo4OiJfYWNjVmlldyI7YjoxO3M6MTI6Il9hY2NW'
+                                                . 'aWV3UGFzcyI7YjowO3M6MTU6Il9hY2NWaWV3SGlzdG9yeSI7YjoxO3M6ODoiX2FjY0VkaXQiO2I6MDtzOjEyOiJf'
+                                                . 'YWNjRWRpdFBhc3MiO2I6MTtzOjc6Il9hY2NBZGQiO2I6MDtzOjEwOiJfYWNjRGVsZXRlIjtiOjE7czo5OiJfYWNj'
+                                                . 'RmlsZXMiO2I6MDtzOjExOiJfYWNjUHJpdmF0ZSI7YjoxO3M6MTY6Il9hY2NQcml2YXRlR3JvdXAiO2I6MDtzOjE0'
+                                                . 'OiJfYWNjUGVybWlzc2lvbiI7YjoxO3M6MTU6Il9hY2NQdWJsaWNMaW5rcyI7YjowO3M6MTY6Il9hY2NHbG9iYWxT'
+                                                . 'ZWFyY2giO2I6MTtzOjE0OiJfY29uZmlnR2VuZXJhbCI7YjowO3M6MTc6Il9jb25maWdFbmNyeXB0aW9uIjtiOjE7'
+                                                . 'czoxMzoiX2NvbmZpZ0JhY2t1cCI7YjowO3M6MTM6Il9jb25maWdJbXBvcnQiO2I6MTtzOjk6Il9tZ21Vc2VycyI7'
+                                                . 'YjowO3M6MTA6Il9tZ21Hcm91cHMiO2I6MTtzOjEyOiJfbWdtUHJvZmlsZXMiO2I6MDtzOjE0OiJfbWdtQ2F0ZWdv'
+                                                . 'cmllcyI7YjoxO3M6MTM6Il9tZ21DdXN0b21lcnMiO2I6MDtzOjEzOiJfbWdtQXBpVG9rZW5zIjtiOjE7czoxNToi'
+                                                . 'X21nbVB1YmxpY0xpbmtzIjtiOjA7czoxMjoiX21nbUFjY291bnRzIjtiOjE7czo4OiJfbWdtVGFncyI7YjowO3M6'
+                                                . 'OToiX21nbUZpbGVzIjtiOjE7czoxNToiX21nbUl0ZW1zUHJlc2V0IjtiOjA7czo0OiJfZXZsIjtiOjE7czoxNjoi'
+                                                . 'X21nbUN1c3RvbUZpZWxkcyI7YjowO3M6MTE6ImxlZ2FjeUV4dHJhIjtzOjc6ImtlZXAtbWUiO30=';
+
     #[Test]
     public function serializationMatchesPreChangeRepresentation(): void
     {
@@ -187,6 +205,65 @@ class ProfileDataSerializationTest extends TestCase
                 'mgmCustomFields' => true,
             ],
             $profile->toArray()
+        );
+    }
+
+    #[Test]
+    public function legacyUnderscorePayloadRestoresEveryProperty(): void
+    {
+        $expected = [
+            'accView' => true,
+            'accViewPass' => false,
+            'accViewHistory' => true,
+            'accEdit' => false,
+            'accEditPass' => true,
+            'accAdd' => false,
+            'accDelete' => true,
+            'accFiles' => false,
+            'accPrivate' => true,
+            'accPrivateGroup' => false,
+            'accPermission' => true,
+            'accPublicLinks' => false,
+            'accGlobalSearch' => true,
+            'configGeneral' => false,
+            'configEncryption' => true,
+            'configBackup' => false,
+            'configImport' => true,
+            'mgmUsers' => false,
+            'mgmGroups' => true,
+            'mgmProfiles' => false,
+            'mgmCategories' => true,
+            'mgmCustomers' => false,
+            'mgmApiTokens' => true,
+            'mgmPublicLinks' => false,
+            'mgmAccounts' => true,
+            'mgmTags' => false,
+            'mgmFiles' => true,
+            'mgmItemsPreset' => false,
+            'evl' => true,
+            'mgmCustomFields' => false,
+        ];
+
+        $payload = SerializedPayloadRewriter::rewrite(
+            base64_decode(self::LEGACY_UNDERSCORE_PAYLOAD, true)
+        );
+
+        $profile = unserialize($payload, ['allowed_classes' => [ProfileData::class]]);
+
+        $this->assertInstanceOf(ProfileData::class, $profile);
+        $this->assertSame($expected, $profile->toArray());
+        $this->assertSame(
+            $expected + ['legacyExtra' => 'keep-me'],
+            $profile->toArray(null, null, true)
+        );
+        $this->assertSame('keep-me', $profile->toArray(null, null, true)['legacyExtra']);
+
+        $roundTripped = unserialize(serialize($profile), ['allowed_classes' => [ProfileData::class]]);
+
+        $this->assertInstanceOf(ProfileData::class, $roundTripped);
+        $this->assertSame(
+            $profile->toArray(null, null, true),
+            $roundTripped->toArray(null, null, true)
         );
     }
 
