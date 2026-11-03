@@ -215,12 +215,21 @@ class AccountTest extends UnitaryTestCase
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
+        $account = $accountDataGenerator->buildAccount()
+                                        ->mutate(['userId' => 101, 'userGroupId' => 201]);
 
         $this->context->setUserData(
             UserDto::fromModel(
                 UserDataGenerator::factory()
                                  ->buildUserData()
-                                 ->mutate(['isAdminApp' => false, 'isAdminAcc' => false])
+                                 ->mutate(
+                                     [
+                                         'id' => 100,
+                                         'userGroupId' => 200,
+                                         'isAdminApp' => false,
+                                         'isAdminAcc' => false
+                                     ]
+                                 )
             )
         );
 
@@ -234,7 +243,7 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn(null);
         $this->accountRepository->expects(self::exactly(2))->method('getById')
                                 ->with($id)
-                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+                                ->willReturn(new QueryResult([$account]));
         $this->accountRepository->expects(self::once())->method('update')
             ->with($id, AccountModel::update($accountUpdateDto), false, false);
         $this->accountItemsService->expects(self::once())->method('updateItems')
