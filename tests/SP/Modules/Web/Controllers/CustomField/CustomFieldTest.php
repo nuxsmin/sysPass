@@ -224,8 +224,8 @@ class CustomFieldTest extends IntegrationTestCase
     {
         return [
             'name' => self::$faker->colorName(),
-            'type' => self::$faker->randomNumber(2),
-            'module' => self::$faker->randomNumber(2),
+            'type' => self::$faker->numberBetween(1, 99),
+            'module' => self::$faker->numberBetween(1, 99),
             'help' => self::$faker->text(),
             'required' => self::$faker->boolean(),
             'encrypted' => self::$faker->boolean(),

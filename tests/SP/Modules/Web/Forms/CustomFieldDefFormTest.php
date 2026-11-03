@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Modules\Web\Forms;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -53,6 +54,32 @@ class CustomFieldDefFormTest extends UnitaryTestCase
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Field name not set');
+
+        $form->validateFor(AclActionsInterface::CUSTOMFIELD_CREATE);
+    }
+
+    public static function invalidRequiredIdProvider(): array
+    {
+        return [
+            'zero type' => [0, 1, 'Field type not set'],
+            'zero module' => [1, 0, 'Field module not set'],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('invalidRequiredIdProvider')]
+    public function zeroRequiredIdRaisesValidationError(int $type, int $module, string $message): void
+    {
+        $this->request->method('analyzeString')->willReturn('name');
+        $this->request->method('analyzeInt')->willReturnCallback(
+            static fn(string $param): int => $param === 'type' ? $type : $module
+        );
+        $this->request->method('analyzeBool')->willReturn(false);
+
+        $form = new CustomFieldDefForm($this->config, $this->context, $this->request);
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage($message);
 
         $form->validateFor(AclActionsInterface::CUSTOMFIELD_CREATE);
     }
