@@ -206,7 +206,7 @@ class Request implements RequestService
         try {
             $clearData = $this->cryptPKI->decryptRSA(base64_decode($encryptedData));
 
-            if ($clearData === null) {
+            if ($clearData === null || !self::isValidPlaintext($clearData)) {
                 $this->logger->debug('No RSA encrypted data from request');
 
                 return $encryptedData;
@@ -218,6 +218,11 @@ class Request implements RequestService
 
             return $encryptedData;
         }
+    }
+
+    private static function isValidPlaintext(string $data): bool
+    {
+        return !str_contains($data, "\0") && mb_check_encoding($data, 'UTF-8');
     }
 
     public function analyzeString(string $param, ?string $default = null): ?string

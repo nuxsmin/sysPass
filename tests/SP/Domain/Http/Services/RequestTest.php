@@ -698,6 +698,42 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('value_encrypted', $out);
     }
 
+    #[Test]
+    public function testAnalyzeEncryptedWithNulDecryptedData()
+    {
+        $this->ensureGet();
+
+        $this->paramsGet->set('test', 'new-password');
+
+        $this->cryptPKI
+            ->expects(self::once())
+            ->method('decryptRSA')
+            ->with(base64_decode('new-password'))
+            ->willReturn("\0\0\0");
+
+        $request = new Request($this->kleinRequest, $this->cryptPKI, $this->hashService);
+
+        $this->assertSame('new-password', $request->analyzeEncrypted('test'));
+    }
+
+    #[Test]
+    public function testAnalyzeEncryptedWithBinaryDecryptedData()
+    {
+        $this->ensureGet();
+
+        $this->paramsGet->set('test', 'new-password');
+
+        $this->cryptPKI
+            ->expects(self::once())
+            ->method('decryptRSA')
+            ->with(base64_decode('new-password'))
+            ->willReturn("\xff\xfe");
+
+        $request = new Request($this->kleinRequest, $this->cryptPKI, $this->hashService);
+
+        $this->assertSame('new-password', $request->analyzeEncrypted('test'));
+    }
+
     /**
      * @throws SPException
      */

@@ -15,6 +15,7 @@ return [
         'patterns' => [
             '/^Return type of Klein\\\\DataCollection\\\\DataCollection::(?:getIterator|offsetExists|offsetGet|offsetSet|offsetUnset|count)\(.*\) should either be compatible with .*$/',
             '/^Klein\\\\[A-Za-z0-9_\\\\]+::[A-Za-z0-9_]+\(\): Implicitly marking parameter \$[A-Za-z0-9_]+ as nullable is deprecated, the explicit nullable type must be used instead$/',
+            '/^Non-canonical cast \(boolean\) is deprecated, use the \(bool\) cast instead$/',
         ],
     ],
 ];

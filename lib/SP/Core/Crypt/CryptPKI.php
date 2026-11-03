@@ -109,6 +109,10 @@ final class CryptPKI implements CryptPKIHandler
      */
     public function decryptRSA(string $data): ?string
     {
+        if (strlen($data) !== self::KEY_SIZE / 8) {
+            return null;
+        }
+
         try {
             $privateKey = PublicKeyLoader::loadPrivateKey($this->getPrivateKey());
 

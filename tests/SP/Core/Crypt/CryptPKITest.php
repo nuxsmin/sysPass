@@ -98,6 +98,24 @@ class CryptPKITest extends UnitaryTestCase
      * @throws FileException
      */
     #[Test]
+    public function testDecryptRSAWithNonBlockLengthInput(): void
+    {
+        $this->cryptPki->createKeys();
+
+        $this->assertNull($this->cryptPki->decryptRSA((string)base64_decode('new-password')));
+        $this->assertNull($this->cryptPki->decryptRSA(''));
+        $this->assertNull(
+            $this->cryptPki->decryptRSA(str_repeat('a', CryptPKI::KEY_SIZE / 8 - 1))
+        );
+        $this->assertNull(
+            $this->cryptPki->decryptRSA(str_repeat('a', CryptPKI::KEY_SIZE / 8 + 1))
+        );
+    }
+
+    /**
+     * @throws FileException
+     */
+    #[Test]
     public function testGetPublicKey(): void
     {
         $this->publicKey->save('test');
