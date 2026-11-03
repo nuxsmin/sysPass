@@ -66,7 +66,7 @@ class AccountFileTest extends UnitaryTestCase
     public function testCreate(): void
     {
         $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())
-            ->mutate(['type' => self::$faker->mimeType()]);
+            ->mutate(['type' => 'text/plain']);
 
         $this->imageUtil
             ->expects(self::never())
@@ -88,7 +88,8 @@ class AccountFileTest extends UnitaryTestCase
     #[Test]
     public function testCreateWithThumbnail(): void
     {
-        $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
+        $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())
+            ->mutate(['type' => 'image/png']);
 
         $this->accountFileRepository
             ->expects(self::once())
