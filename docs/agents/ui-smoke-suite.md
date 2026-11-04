@@ -4,7 +4,7 @@ Starter guide for the isolated browser smoke harness. The full contributor, tria
 
 `scripts/ui-smoke.sh` is shared repository tooling for contributors, reviewers and CI. `.ai-cli/` is ONLY for AI agents; it is not the canonical home for this runner or any other human/CI entry point.
 
-Current scope: #2076 / #2077 / plan U1 and U2. The suite provisions a fresh synthetic instance with `sp:install`, loads the anonymous login page, and then exercises the seeded authenticated shell through positive readiness contracts. Account creation/editing pages remain later slices.
+Current scope: #2076 / #2077 / #2079 / plan U1, U2 and U4. The suite provisions a fresh synthetic instance with `sp:install`, loads the anonymous login page, and then exercises the seeded authenticated shell through positive readiness contracts. Account view, create and edit are covered in both in-shell navigation and direct full-page URL modes.
 
 ## Prerequisites
 
