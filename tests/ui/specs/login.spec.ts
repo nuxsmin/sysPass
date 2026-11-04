@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../src/session';
 
 import { loginContract } from '../src/contracts';
 import {
@@ -17,7 +17,7 @@ test('the configured fixed user agent wins over the desktop device descriptor', 
   expect(testInfo.project.use.isMobile).toBe(false);
 });
 
-test('anonymous login page loads with its current boot contract', async ({ baseURL, context, page }) => {
+test('anonymous login page loads with its current boot contract', async ({ baseURL, isolatedPage: { context, page } }) => {
   if (!baseURL) {
     throw new Error('UI smoke base URL is missing');
   }

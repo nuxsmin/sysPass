@@ -2,6 +2,7 @@ import { test as base, expect } from '@playwright/test';
 import type { BrowserContext } from '@playwright/test';
 
 import { BROWSER_LOCALE, FIXED_USER_AGENT } from './env';
+import { FailureEvidenceRecorder } from './failure-evidence';
 
 type BrowserCookies = Awaited<ReturnType<BrowserContext['cookies']>>;
 
@@ -9,11 +10,14 @@ export interface SessionState {
   cookies: BrowserCookies;
 }
 
+interface IsolatedPage {
+  page: import('@playwright/test').Page;
+  context: BrowserContext;
+}
+
 interface SessionFixtures {
-  sessionPage: {
-    page: import('@playwright/test').Page;
-    context: BrowserContext;
-  };
+  sessionPage: IsolatedPage;
+  isolatedPage: IsolatedPage;
 }
 
 interface SessionWorkerFixtures {
@@ -38,7 +42,31 @@ export const test = base.extend<SessionFixtures, SessionWorkerFixtures>({
     },
     { scope: 'worker' },
   ],
-  sessionPage: async ({ browser, baseURL, sharedSession }, use) => {
+  isolatedPage: async ({ browser, baseURL }, use, testInfo) => {
+    if (!baseURL) {
+      throw new Error('UI smoke base URL is missing');
+    }
+
+    const context = await browser.newContext({
+      baseURL,
+      locale: BROWSER_LOCALE,
+      userAgent: FIXED_USER_AGENT,
+      viewport: { width: 1280, height: 720 },
+      serviceWorkers: 'block',
+    });
+    const page = await context.newPage();
+    const evidence = new FailureEvidenceRecorder(page, context, testInfo);
+
+    try {
+      await use({ page, context });
+    } finally {
+      await evidence.finalize().catch((error: unknown) => {
+        console.warn(`[ui-smoke evidence] ${error instanceof Error ? error.message : String(error)}`);
+      });
+      await context.close();
+    }
+  },
+  sessionPage: async ({ browser, baseURL, sharedSession }, use, testInfo) => {
     if (!baseURL) {
       throw new Error('UI smoke base URL is missing');
     }
@@ -56,10 +84,14 @@ export const test = base.extend<SessionFixtures, SessionWorkerFixtures>({
     }
 
     const page = await context.newPage();
+    const evidence = new FailureEvidenceRecorder(page, context, testInfo);
 
     try {
       await use({ page, context });
     } finally {
+      await evidence.finalize().catch((error: unknown) => {
+        console.warn(`[ui-smoke evidence] ${error instanceof Error ? error.message : String(error)}`);
+      });
       sharedSession.cookies = await context.cookies();
       await context.close();
     }
