@@ -783,7 +783,7 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testGetForUser(): void
     {
-        $id = self::$faker->randomNumber(2);
+        $id = self::$faker->randomNumber(2, true);
 
         $callback = new Callback(
             function (QueryData $arg) use ($id) {
