@@ -298,7 +298,7 @@ class AccountTest extends UnitaryTestCase
         $account = new AccountModel(
             [
                 'userId' => $accountUpdateDto->userId,
-                'userGroupId' => self::$faker->randomNumber(),
+                'userGroupId' => $accountUpdateDto->userGroupId + 1,
             ]
         );
 
@@ -376,7 +376,7 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn($itemPreset);
         $account = new AccountModel(
             [
-                'userId' => self::$faker->randomNumber(),
+                'userId' => $accountUpdateDto->userId + 1,
                 'userGroupId' => $accountUpdateDto->userGroupId,
             ]
         );
