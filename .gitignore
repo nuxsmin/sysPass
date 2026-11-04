@@ -60,6 +60,7 @@ vendor/*
 doc/*
 build/*
 !build/docker-compose-demo.yml
+!build/demo/
 tests/_output/*
 
 composer.phar

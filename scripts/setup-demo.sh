@@ -274,7 +274,7 @@ compose run --rm -T --no-deps \
   --entrypoint php \
   app scripts/configure-demo.php
 
-compose up -d --force-recreate app
+compose up -d --force-recreate app api web
 
 printf 'Waiting for sysPass'
 APP_READY=0
