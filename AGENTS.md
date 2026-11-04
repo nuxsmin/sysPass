@@ -80,6 +80,8 @@ Include scope, decisions, blockers and actual verification results in the comple
 - Ask before commands not covered by the allowlist.
 - AWS, Terraform and Docker mutations require explicit human approval. The documented exception is the ephemeral Docker invocation performed by `$PHP_BIN`.
 - Run PHP only inside Docker through `"$PHP_BIN"` (`.ai-cli/bin/php`). Never invoke host PHP, execute `vendor/bin/*` directly, or use Composer scripts that invoke host PHP.
+- `.ai-cli/` is AI-agent tooling only. Shared human/CI entry points belong in
+  `scripts/` (for example `scripts/ui-smoke.sh`), not in `.ai-cli/bin/`.
 - Ask for human approval before building or rebuilding the PHP image with `make -C .ai-cli/docker build`.
 - Keep secrets out of command arguments and logs; use the supported environment, stdin or file-based inputs.
 - Preserve unrelated worktree changes and keep credentials, production data and generated runtime files out of patches.

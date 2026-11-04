@@ -41,7 +41,7 @@ Anonymous/login tests never inherit authenticated state. Authenticate once throu
 
 The initial smoke job uses PHP 8.3 and MariaDB 10.3. Existing PHP checks cover the supported 8.3-8.5 range (`composer.json`: `>=8.3 <8.6`); a browser/PHP matrix is not required.
 
-Provide `.ai-cli/bin/ui-smoke`, its allowed-command entry and starter prerequisite/run instructions. Define PHP/server/database/Node/browser execution locations, mounts, ports and lifetimes. Respect existing execution-time CLI/Docker approval rules; this decision does not grant permission to build images or create resources.
+Provide `scripts/ui-smoke.sh` as shared repository tooling, its allowed-command entry and starter prerequisite/run instructions. `.ai-cli/` remains AI-agent tooling only. Define PHP/server/database/Node/browser execution locations, mounts, ports and lifetimes. Respect existing execution-time CLI/Docker approval rules; this decision does not grant permission to build images or create resources.
 
 Generate runner-owned configuration/cache/temp/session/output paths and verify the effective paths inside PHP before mutation. Explicit forwarding and mounts are needed: the current PHP wrapper forwards neither `CONFIG_PATH` nor installer variables and mounts only the repository. Reject developer paths and aliases/symlinks into them, non-owned database names and arbitrary external origins. Never reuse a developer server. Cleanup after success/failure/interruption removes only run-owned resources.
 

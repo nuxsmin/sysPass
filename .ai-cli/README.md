@@ -2,6 +2,13 @@
 
 Minimal, reproducible CLI setup for AI sessions in this repo.
 
+## Scope: AI agents only
+
+`.ai-cli/` is ONLY for AI agents and their session wrappers, command templates,
+permission lists and logs. It is not a human or CI entry point. Shared runners,
+build scripts and contributor/CI tooling belong in `scripts/`, `tests/` or the
+application code. Do not add human-facing or CI-only commands here.
+
 ## 1. Load env (every session)
 
 ```sh

@@ -61,6 +61,10 @@ git diff --stat
 ./.ai-cli/bin/php vendor/bin/phpunit --coverage-*
 
 # --- Mutations: allowed, logged via bin/ai-run ---
+# UI smoke runner: creates and removes only runner-owned Docker resources for a
+# synthetic, isolated instance. Run it only with explicit approval; never point
+# it at developer configuration or an existing server.
+./scripts/ui-smoke.sh
 /usr/bin/gh issue create
 /usr/bin/gh issue comment
 /usr/bin/gh issue edit (--add-label/--remove-label/--add-assignee only)

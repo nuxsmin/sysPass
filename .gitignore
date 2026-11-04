@@ -73,6 +73,11 @@ tests/.phpunit.cache
 
 node_modules/
 
+# UI smoke harness local installs and reports
+tests/ui/.browsers/
+tests/ui/test-results/
+tests/ui/playwright-report/
+
 # Generated front-end assets
 public/js/*.min.js
 public/js/*.min.js.map
