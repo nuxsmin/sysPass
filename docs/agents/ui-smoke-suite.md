@@ -4,7 +4,7 @@ Starter guide for the isolated browser smoke harness. The full contributor, tria
 
 `scripts/ui-smoke.sh` is shared repository tooling for contributors, reviewers and CI. `.ai-cli/` is ONLY for AI agents; it is not the canonical home for this runner or any other human/CI entry point.
 
-Current scope: #2076 / plan U1. The suite provisions a fresh synthetic instance with `sp:install` and loads the anonymous login page. Fixtures, the authenticated shell, positive readiness contracts and account pages are later slices and are not implemented here.
+Current scope: #2076 / #2077 / plan U1 and U2. The suite provisions a fresh synthetic instance with `sp:install`, loads the anonymous login page, and then exercises the seeded authenticated shell through positive readiness contracts. Account creation/editing pages remain later slices.
 
 ## Prerequisites
 
@@ -72,6 +72,8 @@ The runner requires Docker permission and creates runner-owned containers, a net
 | Application temp | `<run root>/app-temp` bind-mounted over `<repo>/app/temp` | Per run, removed afterwards |
 | Sessions | `<run root>/sessions` via `session.save_path` | Per run, removed afterwards |
 | Output | `<run root>/output` (JUnit, Playwright output) | Per run, removed afterwards |
+| Fixture credentials | `tests/ui/fixtures/e2e-fixture.json` | Committed; synthetic only |
+| Authentication state | Playwright worker memory and `<run root>/sessions` | Never written to artifacts; removed afterwards |
 
 The web server listens only on a random `127.0.0.1` port and is reachable only for the run. The origin is passed to Playwright as `SP_UI_BASE_URL` after the runner has proved it belongs to this run. Browser locale is `en-US`; application locale is `en_US`; the User-Agent is fixed; there is one worker and zero retries.
 
@@ -88,8 +90,26 @@ Before any container or database mutation, `tests/ui/src/preflight.mjs` rejects:
 
 The runner also verifies `CONFIG_PATH`, `CONFIG_FILE`, `CACHE_PATH`, `LOG_FILE`, `session.save_path` and the effective `Path::CACHE`/`Path::TMP` bindings inside PHP before installing. MariaDB is started without `MYSQL_DATABASE`; normal `sp:install` creates the unique database and schema. Developer `app/config`, `app/cache` and `app/temp` fingerprints must be unchanged when the run finishes.
 
+## Synthetic fixtures
+
+`tests/ui/fixtures/e2e-fixture.json` is the committed source of truth for the isolated fixture. It contains only synthetic `E2E_*` credentials, stable logical IDs and fixture text. The runner reads the admin login, password and known Master Password from it and passes them to `sp:install` through the run-owned environment file; secrets are not passed on process arguments.
+
+After installation, `tests/ui/fixtures/seed.php` applies the fixture:
+
+- it configures the isolated `config.xml` through `ConfigFileService` with `filesEnabled=1`, update and notice checks disabled, `debug=false`, demo mode disabled and HTTP Basic auto-login disabled so the seeded form login uses database authentication;
+- it pre-generates the run-owned PKI key pair with `CryptPKIHandler` so login encryption is deterministic, and writes user preferences needed by the session;
+- it creates the demo user, group and profile plus a synthetic client, category, parent account, child account and child account file;
+- it derives the login hash with `HashService`, the user vault with `UserMasterPassService` and the account ciphertext with `AccountCryptService`;
+- it verifies the login hash, Master Password metadata, both user vaults, both account ciphertexts, user preferences, the file row and the application configuration before the server starts.
+
+For a `--keep` debugging run, invoke `tests/ui/fixtures/seed.php` with the same run-owned environment file, network and repository/run-root mounts as the runner, using `--reset` or `--verify`. Do not point it at a developer database or configuration.
+
+`--reset` deletes only the stable fixture rows and recreates them with the same logical IDs. The runner resets twice, verifies after each reset, and never touches `tests/SP` fixtures or `tests/res/datasets`. Session files and cookie jars stay in the run root or worker memory and are excluded from artifacts.
+
 ## Current checks
 
-`tests/ui/specs/login.spec.ts` loads `index.php?r=login/index` and asserts the page-specific login form (`#box-login`, `#frmLogin`, field and button roots, dispatch attributes) plus the current `bootstrap/getEnvironment` boot contract (`status: OK`, `loggedIn: false`, `locale: en_US`, a CSRF token and a public key). It fails on uncaught page/console errors, unexpected failed requests and critical error markup.
+`tests/ui/specs/login.spec.ts` loads `index.php?r=login/index` and asserts the page-specific login form (`#box-login`, `#frmLogin`, field and button roots, dispatch attributes) plus the current `bootstrap/getEnvironment` boot contract (`status: OK`, `loggedIn: false`, `locale: en_US`, a null CSRF token for the anonymous session and a public key). It fails on uncaught page/console errors, unexpected failed requests and critical error markup.
 
-Readiness contracts, fixture data and authenticated navigation belong to #2077 and #2078. `bootstrap/getEnvironment` is the current boot contract; #2096 will replace it and must update this probe in the same change.
+`tests/ui/specs/shell.spec.ts` uses a separate authenticated worker session. It logs in through the UI exactly once, then runs sequentially: the first test asserts the shell root, completed `bootstrap/getEnvironment`, `account/index` and `items/notifications` actions, meaningful account-list content, a hidden loading overlay, a 300 ms action-scoped quiet window within the 15 s readiness deadline, disabled update/notice flags and no pending or failed routes. Later tests wait through the real 120-second SID rotation and prove that the rotated cookie carries into a fresh sequential context without a second login. Missing or pending routes are reported together with the observed route set.
+
+Anonymous/login tests keep their own clean Playwright contexts and never receive the seeded cookie jar. `bootstrap/getEnvironment` is the current boot contract; #2096 will replace it and must update these probes in the same change.

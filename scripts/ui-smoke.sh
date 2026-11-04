@@ -112,6 +112,7 @@ command -v git >/dev/null 2>&1 || fail "git is required on the host"
 require_file "$REPO_ROOT/vendor/autoload.php" "Composer dependencies missing: source .ai-cli/env.sh and run '\$PHP_BIN /usr/bin/composer install --prefer-dist --no-interaction --no-plugins --no-scripts'"
 require_file "$REPO_ROOT/node_modules/.bin/esbuild" "Root asset tooling missing: run 'npm ci' in the repository root"
 require_file "$REPO_ROOT/public/js/app-main.min.js" "Built assets missing: run 'bash scripts/build-assets.sh'"
+require_file "$UI_DIR/fixtures/e2e-fixture.json" "Synthetic E2E fixture definition missing"
 require_executable "$UI_DIR/node_modules/.bin/playwright" "UI harness missing: run 'npm ci' in tests/ui"
 CHROMIUM_EXECUTABLE="${SP_UI_CHROMIUM_EXECUTABLE:-}"
 if [ -n "$CHROMIUM_EXECUTABLE" ]; then
@@ -177,8 +178,23 @@ for marker_dir in config cache sessions app-cache app-temp; do
 done
 
 DB_PASSWORD="$(node -e "process.stdout.write(require('node:crypto').randomBytes(24).toString('base64url'))")"
-ADMIN_PASSWORD="$(node -e "process.stdout.write(require('node:crypto').randomBytes(24).toString('base64url'))")"
-MASTER_PASSWORD="$(node -e "process.stdout.write(require('node:crypto').randomBytes(24).toString('base64url'))")"
+FIXTURE_FILE="$UI_DIR/fixtures/e2e-fixture.json"
+
+fixture_value() {
+  node -e '
+    const fs = require("node:fs");
+    const data = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+    const value = process.argv[2].split(".").reduce((item, key) => item?.[key], data);
+
+    if (typeof value !== "string") process.exit(1);
+
+    process.stdout.write(value);
+  ' "$FIXTURE_FILE" "$1"
+}
+
+ADMIN_LOGIN="$(fixture_value credentials.admin.login)" || fail "Synthetic admin login is missing from the fixture"
+ADMIN_PASSWORD="$(fixture_value credentials.admin.password)" || fail "Synthetic admin password is missing from the fixture"
+MASTER_PASSWORD="$(fixture_value credentials.admin.masterPassword)" || fail "Synthetic admin Master Password is missing from the fixture"
 
 {
   printf 'MARIADB_ROOT_PASSWORD=%s\n' "$DB_PASSWORD"
@@ -186,7 +202,7 @@ MASTER_PASSWORD="$(node -e "process.stdout.write(require('node:crypto').randomBy
 } > "$RUN_ROOT/env/db.env"
 
 {
-  printf 'ADMIN_LOGIN=E2E_Admin\n'
+  printf 'ADMIN_LOGIN=%s\n' "$ADMIN_LOGIN"
   printf 'ADMIN_PASSWORD=%s\n' "$ADMIN_PASSWORD"
   printf 'DATABASE_HOST=db\n'
   printf 'DATABASE_NAME=%s\n' "$DATABASE_NAME"
@@ -201,6 +217,7 @@ MASTER_PASSWORD="$(node -e "process.stdout.write(require('node:crypto').randomBy
   printf 'CONFIG_FILE=%s/config/config.xml\n' "$RUN_ROOT"
   printf 'CACHE_PATH=%s/cache\n' "$RUN_ROOT"
   printf 'LOG_FILE=%s/config/syspass.log\n' "$RUN_ROOT"
+  printf 'SP_UI_FIXTURE_FILE=%s\n' "$FIXTURE_FILE"
   printf 'SP_UI_RUN_ROOT=%s\n' "$RUN_ROOT"
   printf 'SP_UI_RUN_ID=%s\n' "$RUN_ID"
 } > "$RUN_ROOT/env/install.env"
@@ -274,6 +291,7 @@ PHP_ARGS=(
   php
   -d "session.save_path=$RUN_ROOT/sessions"
   -d "upload_tmp_dir=$RUN_ROOT/temp"
+  -d "error_reporting=E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED"
 )
 
 # This intentionally uses the pinned image through $DOCKER_BIN rather than the
@@ -294,6 +312,13 @@ EOS
 then
   fail "Installer did not create the run-owned database: $DATABASE_NAME"
 fi
+
+echo "Applying the synthetic E2E fixture..."
+"$DOCKER_BIN" run "${PHP_ARGS[@]}" tests/ui/fixtures/seed.php --reset
+"$DOCKER_BIN" run "${PHP_ARGS[@]}" tests/ui/fixtures/seed.php --verify
+echo "Re-applying the synthetic E2E fixture to prove reset is stable..."
+"$DOCKER_BIN" run "${PHP_ARGS[@]}" tests/ui/fixtures/seed.php --reset
+"$DOCKER_BIN" run "${PHP_ARGS[@]}" tests/ui/fixtures/seed.php --verify
 
 echo "Starting the run-owned web server..."
 "$DOCKER_BIN" run -d \
