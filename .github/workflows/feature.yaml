@@ -13,10 +13,23 @@ jobs:
     strategy:
       matrix:
         platform: [ 'ubuntu-latest' ]
-        php: [ '8.2' ]
+        # PHPUnit 12 requires PHP >=8.3, so this job runs 8.3-8.5 only.
+        php: [ '8.3', '8.4', '8.5' ]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install asset tooling
+        run: npm ci
+
+      - name: Build assets
+        run: bash scripts/build-assets.sh
 
       - name: Setup locales
         run: |
@@ -57,7 +70,6 @@ jobs:
         run: |
           composer install \
             --prefer-dist \
-            --ignore-platform-reqs \
             --no-interaction \
             --no-plugins \
             --no-scripts \
@@ -66,7 +78,18 @@ jobs:
       - name: Unitary tests
         env:
           XDEBUG_MODE: coverage
-        run: ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary --testsuite core
+        run: |
+          set -o pipefail
+          mkdir -p tests/_output
+          php -d error_reporting=E_ALL ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary --testsuite core --fail-on-deprecation --display-deprecations --log-events-text ./tests/_output/deprecation-events-core.txt 2>&1 | tee ./tests/_output/phpunit-unitary-${{ matrix.php }}.log
+
+      - name: Deprecation gate (core)
+        if: always()
+        run: |
+          php scripts/deprecation-gate.php \
+            --suite=core \
+            --events=./tests/_output/deprecation-events-core.txt \
+            --command="php -d error_reporting=E_ALL ./vendor/bin/phpunit -c ./tests/phpunit.xml --group unitary --testsuite core --fail-on-deprecation --display-deprecations"
 
       - name: Coverage gate
         run: php scripts/coverage-gate.php --gate
@@ -79,6 +102,16 @@ jobs:
           path: ./tests/_output/coverage-clover.xml
           if-no-files-found: ignore
 
+      - name: Upload unit logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deprecation-logs-unitary-${{ matrix.php }}
+          path: |
+            ./tests/_output/phpunit-unitary-${{ matrix.php }}.log
+            ./tests/_output/deprecation-events-core.txt
+          if-no-files-found: ignore
+
   integration:
     name: Build & Test (IT) ${{ matrix.php }}/${{ matrix.platform }}
     if: ${{ vars.TESTS_INTEGRATION_ENABLED  == 'true' }}
@@ -86,7 +119,8 @@ jobs:
     strategy:
       matrix:
         platform: [ 'ubuntu-latest' ]
-        php: [ '8.2' ]
+        # PHPUnit 12 requires PHP >=8.3, so this job runs 8.3-8.5 only.
+        php: [ '8.3', '8.4', '8.5' ]
     runs-on: ${{ matrix.platform }}
     env:
       DB_SERVER: 127.0.0.1
@@ -106,6 +140,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install asset tooling
+        run: npm ci
+
+      - name: Build assets
+        run: bash scripts/build-assets.sh
+
       - name: Setup locales
         run: |
           sudo locale-gen es_ES.UTF-8 en_US.UTF-8 && sudo update-locale
@@ -145,7 +191,6 @@ jobs:
         run: |
           composer install \
             --prefer-dist \
-            --ignore-platform-reqs \
             --no-interaction \
             --no-plugins \
             --no-scripts \
@@ -175,4 +220,132 @@ jobs:
         with:
           name: coverage-integration-${{ matrix.php }}
           path: ./tests/_output/coverage-clover.xml
+          if-no-files-found: ignore
+
+  modules:
+    name: Build & Test (Modules) ${{ matrix.php }}/${{ matrix.platform }}
+    if: ${{ vars.TESTS_INTEGRATION_ENABLED  == 'true' }}
+    needs: [ unitary ]
+    strategy:
+      matrix:
+        platform: [ 'ubuntu-latest' ]
+        # PHPUnit 12 requires PHP >=8.3, so this job runs 8.3-8.5 only.
+        php: [ '8.3', '8.4', '8.5' ]
+    runs-on: ${{ matrix.platform }}
+    env:
+      DB_SERVER: 127.0.0.1
+      DB_NAME: syspass
+      DB_USER: root
+      DB_PASS: syspass
+      DB_PORT: 3306
+    services:
+      mariadb:
+        image: mariadb:10.3
+        env:
+          MYSQL_DATABASE: ${{ env.DB_NAME }}
+          MYSQL_ROOT_PASSWORD: ${{ env.DB_PASS }}
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install asset tooling
+        run: npm ci
+
+      - name: Build assets
+        run: bash scripts/build-assets.sh
+
+      - name: Setup locales
+        run: |
+          sudo locale-gen es_ES.UTF-8 en_US.UTF-8 && sudo update-locale
+
+      - name: Setup PHP with tools
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, intl, gd, ldap, gettext, pdo_mysql
+          # tools: phpunit
+          coverage: xdebug
+          ini-values: zend.assertions=1
+        env:
+          fail-fast: true
+
+      - name: Install test font
+        run: |
+          sudo apt-get update && sudo apt-get install -y fonts-freefont-otf || sudo apt-get install -y fonts-freefont-ttf
+          sudo mkdir -p /usr/share/fonts/freefont
+          font=$(find /usr/share/fonts \( -name 'FreeSans.otf' -o -name 'FreeSans.ttf' \) -print -quit)
+          test -n "$font"
+          sudo ln -sf "$font" /usr/share/fonts/freefont/FreeSans.otf
+          ls -l /usr/share/fonts/freefont/FreeSans.otf
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: |
+          composer install \
+            --prefer-dist \
+            --no-interaction \
+            --no-plugins \
+            --no-scripts \
+            --prefer-dist
+
+      - name: Setup database
+        run: |
+          set -euo pipefail
+
+          MYSQL_OPTS="-h ${DB_SERVER} -P ${DB_PORT} -u ${DB_USER} -p${DB_PASS}"
+
+          mysql ${MYSQL_OPTS} -e 'DROP DATABASE IF EXISTS `'"$DB_NAME"'`;'
+          mysql ${MYSQL_OPTS} -e 'CREATE DATABASE `'"${DB_NAME}"'` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
+          mysql ${MYSQL_OPTS} ${DB_NAME} < ./schemas/dbstructure.sql
+
+      - name: Modules tests
+        env:
+          XDEBUG_MODE: coverage
+        run: |
+          set -o pipefail
+          mkdir -p tests/_output
+          php -d error_reporting=E_ALL ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite modules --fail-on-deprecation --display-deprecations --log-events-text ./tests/_output/deprecation-events-modules.txt 2>&1 | tee ./tests/_output/phpunit-modules-${{ matrix.php }}.log
+
+      - name: Deprecation gate (modules)
+        if: always()
+        run: |
+          php scripts/deprecation-gate.php \
+            --suite=modules \
+            --events=./tests/_output/deprecation-events-modules.txt \
+            --command="php -d error_reporting=E_ALL ./vendor/bin/phpunit -c ./tests/phpunit.xml --testsuite modules --fail-on-deprecation --display-deprecations"
+
+      - name: Upload modules coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-modules-${{ matrix.php }}
+          path: ./tests/_output/coverage-clover.xml
+          if-no-files-found: ignore
+
+      - name: Upload modules logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deprecation-logs-modules-${{ matrix.php }}
+          path: |
+            ./tests/_output/phpunit-modules-${{ matrix.php }}.log
+            ./tests/_output/deprecation-events-modules.txt
           if-no-files-found: ignore

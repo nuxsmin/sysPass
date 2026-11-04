@@ -156,9 +156,9 @@ function formatStackTrace(Throwable $e): string
 /**
  * Process an exception and log into the error log
  *
- * @param Exception $exception
+ * @param Throwable $exception
  */
-function processException(Exception $exception): void
+function processException(Throwable $exception): void
 {
     logger(
         sprintf(

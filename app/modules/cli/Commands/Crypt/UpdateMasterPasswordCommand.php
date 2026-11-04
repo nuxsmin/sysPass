@@ -37,6 +37,7 @@ use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Cli\Commands\CommandBase;
 use SP\Modules\Cli\Commands\Validators;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -52,6 +53,7 @@ use function SP\__u;
  *
  * @package SP\Modules\Cli\Commands\Crypt
  */
+#[AsCommand(name: 'sp:crypt:update-master-password')]
 final class UpdateMasterPasswordCommand extends CommandBase
 {
     use LockableTrait;
@@ -64,10 +66,6 @@ final class UpdateMasterPasswordCommand extends CommandBase
         'masterPassword'        => 'MASTER_PASSWORD',
         'update'                => 'UPDATE',
     ];
-    /**
-     * @var string
-     */
-    protected static          $defaultName = 'sp:crypt:update-master-password';
     private MasterPassService $masterPassService;
     private ConfigService $configService;
     private AccountService $accountService;
@@ -144,6 +142,8 @@ final class UpdateMasterPasswordCommand extends CommandBase
                 $this->configService->getByParam(MasterPassService::PARAM_MASTER_PASS_HASH)
             );
 
+            $update = $this->isUpdateRequested($input);
+
             if (!$this->getUpdate($input, $style)) {
                 $this->logger->debug(__u('Master password update aborted'));
                 $style->info(__('Master password update aborted'));
@@ -155,7 +155,7 @@ final class UpdateMasterPasswordCommand extends CommandBase
             $style->warning(__('All accounts passwords will be encrypted again.'));
             $style->warning(__('Users will need to enter the new Master Password.'));
             $style->warning(
-                printf(
+                sprintf(
                     __('It will be updated %s accounts. This process could take some time long.'),
                     $this->accountService->getTotalNumAccounts()
                 )
@@ -163,7 +163,9 @@ final class UpdateMasterPasswordCommand extends CommandBase
             $style->newLine();
             $style->caution(__('This is a critical process, please do not cancel/close this CLI'));
 
-            $style->ask(__('Please, press any key to continue'));
+            if (!$update) {
+                $style->ask(__('Please, press any key to continue'));
+            }
 
             $this->masterPassService->changeMasterPassword($request);
 
@@ -290,18 +292,21 @@ final class UpdateMasterPasswordCommand extends CommandBase
         InputInterface $input,
         StyleInterface $style
     ): bool {
-        $option = 'update';
-
-        $envUpdate = self::getEnvVarForOption($option);
-
-        $value = $envUpdate !== false
-            ? Filter::getBool($envUpdate)
-            : $input->getOption($option);
-
-        if ($value === false) {
+        if (!$this->isUpdateRequested($input)) {
             return $style->confirm(__('Update master password? (This process cannot be undone)'), false);
         }
 
         return true;
+    }
+
+    private function isUpdateRequested(InputInterface $input): bool
+    {
+        $option = 'update';
+
+        $envUpdate = self::getEnvVarForOption($option);
+
+        return $envUpdate !== false
+            ? Filter::getBool($envUpdate)
+            : (bool)$input->getOption($option);
     }
 }

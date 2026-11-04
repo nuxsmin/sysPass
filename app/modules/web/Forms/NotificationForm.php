@@ -28,6 +28,8 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Notification\Models\Notification;
 
+use function SP\__u;
+
 /**
  * Class NotificationForm
  *

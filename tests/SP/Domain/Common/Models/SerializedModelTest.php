@@ -68,6 +68,18 @@ final class SerializedModelTest extends TestCase
     }
 
     #[Test]
+    public function hydratesJsonPreferencesWithBlankThemeAsNull(): void
+    {
+        $preferences = new UserPreferences(['lang' => 'en_US', 'theme' => '']);
+        $model = new User(['preferences' => $preferences->toJson()]);
+
+        $hydrated = $model->hydrate(UserPreferences::class);
+
+        self::assertInstanceOf(UserPreferences::class, $hydrated);
+        self::assertNull($hydrated->getTheme());
+    }
+
+    #[Test]
     public function hydratesSerializedPreferences(): void
     {
         $preferences = new UserPreferences(['lang' => 'es_ES', 'resultsPerPage' => 6]);

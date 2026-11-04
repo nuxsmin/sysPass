@@ -26,7 +26,11 @@ declare(strict_types=1);
 
 namespace SP\Core\Crypt;
 
-use phpseclib\Crypt\RSA;
+use LengthException;
+use OutOfRangeException;
+use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Crypt\RSA;
+use RuntimeException;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\File\Ports\FileHandlerInterface;
@@ -47,7 +51,6 @@ final class CryptPKI implements CryptPKIHandler
      * @throws SPException
      */
     public function __construct(
-        private readonly RSA                  $rsa,
         private readonly FileHandlerInterface $publicKeyFile,
         private readonly FileHandlerInterface $privateKeyFile
     ) {
@@ -78,10 +81,10 @@ final class CryptPKI implements CryptPKIHandler
      */
     public function createKeys(): void
     {
-        $keys = $this->rsa->createKey(self::KEY_SIZE);
+        $privateKey = RSA::createKey(self::KEY_SIZE);
 
-        $this->publicKeyFile->save($keys['publickey']);
-        $this->privateKeyFile->save($keys['privatekey'])->chmod(0600);
+        $this->publicKeyFile->save($privateKey->getPublicKey()->toString('PKCS8'));
+        $this->privateKeyFile->save($privateKey->toString('PKCS1'))->chmod(0600);
     }
 
     public static function getMaxDataSize(): int
@@ -106,10 +109,23 @@ final class CryptPKI implements CryptPKIHandler
      */
     public function decryptRSA(string $data): ?string
     {
-        $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
-        $this->rsa->loadKey($this->getPrivateKey(), RSA::PRIVATE_FORMAT_PKCS1);
+        if (strlen($data) !== self::KEY_SIZE / 8) {
+            return null;
+        }
 
-        return @$this->rsa->decrypt($data) ?: null;
+        try {
+            $privateKey = PublicKeyLoader::loadPrivateKey($this->getPrivateKey());
+
+            if (!$privateKey instanceof RSA\PrivateKey) {
+                return null;
+            }
+
+            return $privateKey
+                       ->withPadding(RSA::ENCRYPTION_PKCS1)
+                       ->decrypt($data) ?: null;
+        } catch (RuntimeException | LengthException | OutOfRangeException $e) {
+            return null;
+        }
     }
 
     /**

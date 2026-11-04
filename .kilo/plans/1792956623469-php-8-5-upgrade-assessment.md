@@ -62,7 +62,7 @@ Versions below were checked against upstream release metadata (Packagist, vendor
 | `guzzlehttp/guzzle` | 6.5.8 | EOL. Used in `lib/SP/Core/Definitions/CoreDefinitions.php:293` (DI `GuzzleHttp\Client`) and `app/modules/web/Controllers/Status/StatusBase.php:28` (`ClientInterface`). Small surface. | `7.x`. Upgrade, do not remove. |
 | `ademarre/binary-to-text-php` | `dev-master` | Unpinned branch dependency. | Pin to a commit or tag (D5). |
 | `klein/klein` | 2.1.2 | Used throughout web/API bootstrap. | Keep. Verify under 8.5 through tests. |
-| `phpseclib/phpseclib` | 2.0.47 | Used in `lib/SP/Core/Crypt/CryptPKI.php:29` and `CoreDefinitions.php:35`. | Keep 2.x. Verify under 8.5. Migration to 3.x is out of scope. |
+| `phpseclib/phpseclib` | 2.0.47 | Used in `lib/SP/Core/Crypt/CryptPKI.php:29` and `CoreDefinitions.php:35`. | Upgrade to `^3.0.57` (D7, P2-9/#2088); migrate `CryptPKI`, `CoreDefinitions`, and tests. Keep legacy keys. |
 | `phpstan/phpstan` | 1.11.8 | Dev tool. | Upgrade only if its parser fails on 8.5 syntax. |
 
 No known 8.5 blocker from constraints: `php-di/php-di` 7.0.7, `defuse/php-encryption` 2.4.0, `league/fractal` 0.20.1, `aura/sqlquery` 3.0.0, `vlucas/phpdotenv` 4.3.0, `phpmailer/phpmailer` 6.9.1, `nikic/php-parser` 5.1.0.
@@ -138,9 +138,10 @@ Exit: baseline recorded, deprecation list complete, dependency blockers confirme
    3. `symfony/console` and `symfony/lock`: `7.4`. Adapt `app/modules/cli` if signatures change. Keep `symfony/lock`.
    4. `monolog/monolog`: `3.x` (`>= 3.11`). Adapt `CoreDefinitions.php` and `app/modules/cli/module.php` for `LogRecord`/`Level`. Check any custom handler or formatter.
    5. `guzzlehttp/guzzle`: `7.x`. Check `CoreDefinitions.php:293` and `StatusBase.php`.
-   6. `phpunit/phpunit`: `12.x`. Run `--migrate-configuration`.
-   7. `phpstan/phpstan` only if its parser fails on 8.5.
-4. Regenerate `composer.lock` with `composer update --with-all-dependencies` on PHP 8.5, after the above.
+   6. `phpseclib/phpseclib`: `^3.0.57`; migrate `CryptPKI`, `CoreDefinitions`, and `CryptPKITest` (D7, P2-9/#2088).
+   7. `phpunit/phpunit`: `12.x`. Run `--migrate-configuration`.
+   8. `phpstan/phpstan` only if its parser fails on 8.5.
+4. Regenerate `composer.lock` with `composer update --with-all-dependencies` on PHP 8.3.36, after the above.
 
 ### Phase 3: runtime gate and metadata
 
@@ -180,7 +181,7 @@ Each Phase 2 dependency is its own commit. Keep the current runtime gate and CI 
 
 ## Out of scope
 
-- `phpseclib` 2 to 3.
+- ~~`phpseclib` 2 to 3.~~ Superseded by D7 (#1987); implemented in P2-9 (#2088).
 - Replacing Klein, Aura.SqlQuery, or Fractal.
 - PHP 8.6 readiness.
 - Effort estimates.

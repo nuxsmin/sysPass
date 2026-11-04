@@ -43,7 +43,7 @@ final class UnauthorizedPageException extends SPException
      * @param int $code
      * @param Exception|null $previous
      */
-    public function __construct(int $type, int $code = 0, Exception $previous = null)
+    public function __construct(int $type, int $code = 0, ?Exception $previous = null)
     {
         parent::__construct(
             __u('You don\'t have permission to access this page'),

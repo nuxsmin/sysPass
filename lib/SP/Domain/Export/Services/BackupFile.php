@@ -222,16 +222,12 @@ final class BackupFile extends Service implements BackupFileService
         $views = $this->getViews();
 
         foreach ($tables as $table) {
-            $query = $this->queryFactory->buildQuery(sprintf('SHOW CREATE TABLE %s', $table), []);
-
-            $data = $this->database->runQuery($this->queryFactory->buildQueryData($query))->getData();
-
             $sqlOut = [
                 '-- ',
                 sprintf('-- Table %s', strtoupper($table)),
                 '-- ',
                 sprintf('DROP TABLE IF EXISTS `%s`;', $table),
-                sprintf('%s;', $data->{'Create Table'}),
+                sprintf('%s;', $this->getSchemaDefinition($table, 'Create Table')),
                 ''
             ];
 
@@ -239,16 +235,12 @@ final class BackupFile extends Service implements BackupFileService
         }
 
         foreach ($views as $view) {
-            $query = $this->queryFactory->buildQuery(sprintf('SHOW CREATE TABLE %s', $view), []);
-
-            $data = $this->database->runQuery($this->queryFactory->buildQueryData($query))->getData();
-
             $sqlOut = [
                 '-- ',
                 sprintf('-- View %s', strtoupper($view)),
                 '-- ',
-                sprintf('DROP TABLE IF EXISTS `%s`;', $view),
-                sprintf('%s;', $data->{'Create View'}),
+                sprintf('DROP VIEW IF EXISTS `%s`;', $view),
+                sprintf('%s;', $this->getSchemaDefinition($view, 'Create View')),
                 ''
             ];
 
@@ -319,6 +311,35 @@ final class BackupFile extends Service implements BackupFileService
     private function getViews(): array
     {
         return array_filter(DatabaseTables::TABLES, static fn(string $t) => strrpos($t, '_v') !== false);
+    }
+
+    /**
+     * Fetch the CREATE statement for a table or view.
+     *
+     * SHOW CREATE TABLE is not a SELECT, so it must be fetched through
+     * doFetchWithOptions() instead of runQuery().
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
+     */
+    private function getSchemaDefinition(string $object, string $column): string
+    {
+        $query = $this->queryFactory->buildQuery(sprintf('SHOW CREATE TABLE `%s`', $object), []);
+
+        foreach ($this->database->doFetchWithOptions(
+            $this->queryFactory->buildQueryData($query),
+            [],
+            PDO::FETCH_ASSOC
+        ) as $row) {
+            if (isset($row[$column])) {
+                return (string)$row[$column];
+            }
+
+            break;
+        }
+
+        throw ServiceException::error(sprintf(__u('Unable to get the schema of %s'), $object));
     }
 
     /**

@@ -1107,7 +1107,7 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
 
     public function isLdapTlsEnabled(): bool
     {
-        return $this->get(ConfigDataInterface::LDAP_TLS_ENABLED, false);
+        return (bool)$this->get(ConfigDataInterface::LDAP_TLS_ENABLED, false);
     }
 
     public function setLdapTlsEnabled(?bool $ldapTlsEnabled): ConfigDataInterface
@@ -1220,7 +1220,7 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
 
     public function isLdapDatabaseEnabled(): bool
     {
-        return $this->get(ConfigDataInterface::LDAP_DATABASE_ENABLED, true);
+        return (bool)$this->get(ConfigDataInterface::LDAP_DATABASE_ENABLED, true);
     }
 
     public function setLdapDatabaseEnabled(?bool $ldapDatabaseEnabled): ConfigDataInterface

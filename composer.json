@@ -19,7 +19,7 @@
   "config": {
     "classmap-authoritative": false,
     "platform": {
-      "php": "8.2"
+      "php": "8.3.36"
     },
     "allow-plugins": {
       "ocramius/package-versions": true
@@ -31,16 +31,16 @@
   "minimum-stability": "stable",
   "name": "syspass/syspass",
   "require": {
-    "php": "~8.2 || ~8.3",
+    "php": ">=8.3 <8.6",
     "defuse/php-encryption": "^2.1",
     "phpmailer/phpmailer": "^6.0",
-    "ademarre/binary-to-text-php": "dev-master",
-    "phpseclib/phpseclib": "^2.0",
+    "ademarre/binary-to-text-php": "3.0.0",
+    "phpseclib/phpseclib": "^3.0.57",
     "klein/klein": "^2.1",
     "php-di/php-di": "^7.0",
     "doctrine/common": "^v2.7",
-    "guzzlehttp/guzzle": "^6.3",
-    "monolog/monolog": "^1.23",
+    "guzzlehttp/guzzle": "^7.0",
+    "monolog/monolog": "^3.11",
     "vlucas/phpdotenv": "^v4.1",
     "ext-pdo": "*",
     "ext-dom": "*",
@@ -52,20 +52,20 @@
     "ext-libxml": "*",
     "ext-mbstring": "*",
     "league/fractal": "^0.20",
-    "symfony/console": "^v5.1",
-    "symfony/lock": "^v5.0",
+    "symfony/console": "^7.4",
+    "symfony/lock": "^7.4",
     "aura/sqlquery": "~3.0",
-    "laminas/laminas-ldap": "^2.17",
+    "laminas/laminas-ldap": "^2.20",
     "symfony/yaml": "@stable"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
     "symfony/error-handler": "@stable",
-    "phpunit/phpunit": "^11",
+    "phpunit/phpunit": "^12.5",
     "fakerphp/faker": "^v1.23",
     "nikic/php-parser": "^v5",
     "squizlabs/php_codesniffer": "^3",
-    "phpstan/phpstan": "^1.9",
+    "phpstan/phpstan": "2.1.32",
     "mikey179/vfsstream": "@stable",
     "symfony/dom-crawler": "@stable"
   },

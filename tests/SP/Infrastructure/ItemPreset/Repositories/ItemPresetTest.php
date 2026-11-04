@@ -34,6 +34,7 @@ use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -56,6 +57,8 @@ class ItemPresetTest extends UnitaryTestCase
 {
 
     private ItemPreset $itemPreset;
+
+    private MockObject|DatabaseInterface $database;
 
     #[Test]
     public function testGetByFilter()

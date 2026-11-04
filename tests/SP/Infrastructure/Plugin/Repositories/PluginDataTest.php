@@ -33,6 +33,7 @@ use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -52,6 +53,8 @@ class PluginDataTest extends UnitaryTestCase
 {
 
     private PluginData $pluginData;
+
+    private MockObject|DatabaseInterface $database;
 
     #[Test]
     public function testGetAll()

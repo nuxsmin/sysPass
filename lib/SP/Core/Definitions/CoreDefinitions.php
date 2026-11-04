@@ -28,11 +28,12 @@ namespace SP\Core\Definitions;
 
 use Aura\SqlQuery\QueryFactory;
 use Klein\Request as KleinRequest;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler as MSyslogHandler;
 use Monolog\Handler\SyslogUdpHandler;
+use Monolog\Level;
 use Monolog\Logger;
-use phpseclib\Crypt\RSA;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use SessionHandlerInterface;
@@ -234,7 +235,10 @@ final class CoreDefinitions
                         ->constructor(
                             create(FileHandler::class)
                                 ->constructor(
-                                    factory(static fn(PathsContext $p) => $p[Path::CONFIG_FILE])
+                                    factory(static fn(PathsContext $p) => $p[Path::CONFIG_FILE]),
+                                    factory(
+                                        static fn(PathsContext $p) => self::readWriteMode($p[Path::CONFIG_FILE])
+                                    )
                                 )
                         ),
                     create(FileCache::class)
@@ -322,14 +326,17 @@ final class CoreDefinitions
             LdapAuthService::class => autowire(LdapAuth::class),
             AuthProviderService::class => factory(
                 static function (
+                    ContainerInterface  $container,
                     AuthProvider        $authProvider,
                     ConfigDataInterface $configData,
-                    LdapAuthService     $ldapAuth,
                     BrowserAuthService  $browserAuth,
                     DatabaseAuthService $databaseAuth,
                 ) {
                     if ($configData->isLdapEnabled()) {
-                        $authProvider->registerAuth($ldapAuth, AuthType::Ldap);
+                        $authProvider->registerAuth(
+                            $container->get(LdapAuthService::class),
+                            AuthType::Ldap
+                        );
                     }
 
                     if ($configData->isAuthBasicEnabled()) {
@@ -342,8 +349,10 @@ final class CoreDefinitions
                 }
             ),
             LoggerInterface::class => factory(function (ConfigDataInterface $configData, PathsContext $pathsContext) {
-                $handlers = [];
-                $handlers[] = new StreamHandler($pathsContext[Path::LOG_FILE]);
+                $fileHandler = new StreamHandler($pathsContext[Path::LOG_FILE], Level::Debug);
+                $fileHandler->setFormatter(new LineFormatter(null, 'Y-m-d H:i:s'));
+
+                $handlers = [$fileHandler];
 
                 if ($configData->isInstalled()) {
                     if ($configData->isSyslogRemoteEnabled()
@@ -354,7 +363,7 @@ final class CoreDefinitions
                             $configData->getSyslogServer(),
                             $configData->getSyslogPort(),
                             LOG_USER,
-                            Logger::DEBUG,
+                            Level::Debug,
                             true,
                             'syspass'
                         );
@@ -370,6 +379,7 @@ final class CoreDefinitions
             DomainLoggerInterface::class => create(FunctionLogger::class),
             \GuzzleHttp\Client::class => create(\GuzzleHttp\Client::class)
                 ->constructor(factory([Client::class, 'getOptions'])),
+            \GuzzleHttp\ClientInterface::class => get(\GuzzleHttp\Client::class),
             LanguageInterface::class => autowire(Language::class)->constructorParameter(
                 'localesPath',
                 factory(
@@ -414,9 +424,8 @@ final class CoreDefinitions
                 );
 
                 return new CryptPKI(
-                    new RSA(),
-                    new FileHandler($publicKeyPath, 'w'),
-                    new FileHandler($privateKeyPath, 'w')
+                    new FileHandler($publicKeyPath, self::readWriteMode($publicKeyPath)),
+                    new FileHandler($privateKeyPath, self::readWriteMode($privateKeyPath))
                 );
             }),
             FileCacheService::class => create(FileCache::class),
@@ -518,6 +527,11 @@ final class CoreDefinitions
             FileCacheFactoryInterface::class => autowire(FileCacheFactory::class),
             PhpFileLoaderInterface::class => create(PhpFileLoader::class)
         ];
+    }
+
+    private static function readWriteMode(string $path): string
+    {
+        return is_file($path) ? 'r+' : 'w+';
     }
 
     private static function getPaths(string $rootPath): array

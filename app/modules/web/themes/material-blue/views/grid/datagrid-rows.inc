@@ -40,7 +40,7 @@ if ($dataGridData->getDataCount() > 0):
 
                 if (!empty($value)):
                     if ($rowSrc['truncate'] === true):
-                        $value = Html::truncate($value, 150 / $numFields);
+                        $value = Html::truncate($value, intdiv(150, $numFields));
                     endif;
                 else:
                     $value = '&nbsp;';

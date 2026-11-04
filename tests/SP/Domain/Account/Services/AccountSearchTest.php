@@ -29,7 +29,7 @@ namespace SP\Tests\Domain\Account\Services;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\Builder\InvocationStubber;
+use PHPUnit\Framework\MockObject\InvocationStubber;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
@@ -59,7 +59,7 @@ class AccountSearchTest extends UnitaryTestCase
     /**
      * @param string $search
      */
-    #[DataProvider('searchUsingStringDataProvider')]
+    #[DataProvider('searchUsingStringOnlyDataProvider')]
     #[Test]
     public function testGetByFilter(string $search)
     {

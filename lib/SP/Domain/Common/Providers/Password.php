@@ -52,7 +52,7 @@ final class Password
      * @return string
      * @throws RandomException
      */
-    public static function randomPassword(int $length = 16, int $flags = null): string
+    public static function randomPassword(int $length = 16, ?int $flags = null): string
     {
         if ($flags === null) {
             $flags = self::FLAG_PASSWORD_SPECIAL | self::FLAG_PASSWORD_NUMBER | self::FLAG_PASSWORD_STRENGTH;

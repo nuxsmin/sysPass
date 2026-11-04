@@ -21,53 +21,51 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
-         backupGlobals="false"
-         bootstrap="./SP/bootstrap.php"
-         colors="true"
-         processIsolation="false"
-         stopOnFailure="false"
-         cacheDirectory=".phpunit.cache"
-         backupStaticProperties="false">
-    <coverage>
-        <report>
-            <clover outputFile="./_output/coverage-clover.xml"/>
-            <text outputFile="php://stdout" showUncoveredFiles="true"
-                  showOnlySummary="true"/>
-        </report>
-    </coverage>
-    <testsuites>
-        <testsuite name="core">
-            <directory suffix=".php">./SP/Core</directory>
-            <directory suffix=".php">./SP/Domain</directory>
-            <directory suffix=".php">./SP/Infrastructure</directory>
-            <directory suffix=".php">./SP/Mvc</directory>
-            <directory suffix=".php">./SP/Util</directory>
-            <directory suffix="Test.php">./SP/Architecture</directory>
-            <exclude>./SP/Domain/Account/Services/Builders/AccountSearchTokenizerDataTrait.php</exclude>
-            <exclude>./SP/Domain/Export/Services/XmlTrait.php</exclude>
-        </testsuite>
-        <testsuite name="modules">
-            <directory suffix=".php">./SP/Modules/Web</directory>
-            <directory suffix="Test.php">./SP/Modules/Api</directory>
-            <directory suffix="Test.php">./SP/Modules/Cli</directory>
-        </testsuite>
-    </testsuites>
-    <logging/>
-    <source>
-        <include>
-            <directory suffix=".php">../lib/SP</directory>
-            <directory suffix=".php">../app/modules/web</directory>
-        </include>
-        <exclude>
-            <directory suffix=".php">../app/modules/web/Html/Assets</directory>
-            <directory suffix=".php">../app/modules/web/Html/DataGrid</directory>
-            <file>../lib/SP/Domain/Config/Adapters/ConfigData.php</file>
-        </exclude>
-    </source>
-    <php>
-        <ini name="zend.assertions" value="1"/>
-    </php>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.5/phpunit.xsd" backupGlobals="false" bootstrap="./SP/bootstrap.php" colors="true" processIsolation="false" stopOnFailure="false" cacheDirectory=".phpunit.cache" backupStaticProperties="false" failOnDeprecation="true" displayDetailsOnTestsThatTriggerDeprecations="true">
+  <coverage>
+    <report>
+      <clover outputFile="./_output/coverage-clover.xml"/>
+      <text outputFile="php://stdout" showUncoveredFiles="true" showOnlySummary="true"/>
+    </report>
+  </coverage>
+  <testsuites>
+    <testsuite name="core">
+      <directory suffix=".php">./SP/Core</directory>
+      <directory suffix=".php">./SP/Domain</directory>
+      <directory suffix=".php">./SP/Infrastructure</directory>
+      <directory suffix=".php">./SP/Mvc</directory>
+      <directory suffix=".php">./SP/Util</directory>
+      <directory suffix="Test.php">./SP/Architecture</directory>
+      <exclude>./SP/Domain/Account/Services/Builders/AccountSearchTokenizerDataTrait.php</exclude>
+      <exclude>./SP/Domain/Export/Services/XmlTrait.php</exclude>
+    </testsuite>
+    <testsuite name="modules">
+      <directory suffix=".php">./SP/Modules/Web</directory>
+      <directory suffix="Test.php">./SP/Modules/Api</directory>
+      <directory suffix="Test.php">./SP/Modules/Cli</directory>
+    </testsuite>
+  </testsuites>
+  <logging/>
+  <source ignoreIndirectDeprecations="true" ignoreSuppressionOfPhpDeprecations="true">
+    <include>
+      <directory suffix=".php">../lib/SP</directory>
+      <directory suffix=".php">../app/modules/web</directory>
+      <directory suffix=".php">../app/modules/api</directory>
+      <directory suffix=".php">../app/modules/cli</directory>
+      <file>../lib/Base.php</file>
+      <file>../lib/BaseFunctions.php</file>
+      <file>../index.php</file>
+      <file>../api.php</file>
+      <file>../cli.php</file>
+    </include>
+    <exclude>
+      <directory suffix=".php">../app/modules/web/Html/Assets</directory>
+      <file>../lib/SP/Domain/Config/Adapters/ConfigData.php</file>
+    </exclude>
+  </source>
+  <php>
+    <ini name="zend.assertions" value="1"/>
+    <!-- E_ALL; PHPUnit cannot parse symbolic constants in this element -->
+    <ini name="error_reporting" value="32767"/>
+  </php>
 </phpunit>

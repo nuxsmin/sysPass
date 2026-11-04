@@ -162,7 +162,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
 
             $groupName = $DOMXPath->query($path . '/../Name')->item(0)->nodeValue;
 
-            $this->getEntryFor($groupName)?->attach($this->mapEntryToAccount($entryData, $groupName));
+            $this->getEntryFor($groupName)?->offsetSet($this->mapEntryToAccount($entryData, $groupName));
         }
     }
 

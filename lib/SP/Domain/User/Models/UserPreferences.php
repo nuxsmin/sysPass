@@ -26,12 +26,15 @@ declare(strict_types=1);
 namespace SP\Domain\User\Models;
 
 use SP\Domain\Common\Models\Model;
+use SP\Domain\Common\Models\SerializesModelProperties;
 
 /**
  * Class UserPreferences
  */
 class UserPreferences extends Model
 {
+    use SerializesModelProperties;
+
     protected ?string $lang                     = null;
     protected ?string $theme                    = null;
     protected int     $resultsPerPage           = 0;
@@ -51,7 +54,7 @@ class UserPreferences extends Model
 
     public function getTheme(): ?string
     {
-        return $this->theme;
+        return $this->theme !== null && trim($this->theme) !== '' ? $this->theme : null;
     }
 
     public function getResultsPerPage(): int

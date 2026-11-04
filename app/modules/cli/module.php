@@ -22,7 +22,9 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use SP\Core\Bootstrap\Path;
@@ -44,7 +46,8 @@ const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
 return [
     Logger::class => create(Logger::class)->constructor('syspass'),
     LoggerInterface::class => static fn(Logger $logger, PathsContext $pathsContext) => $logger->pushHandler(
-        new StreamHandler($pathsContext[Path::LOG_FILE])
+        (new StreamHandler($pathsContext[Path::LOG_FILE], Level::Debug))
+            ->setFormatter(new LineFormatter(null, 'Y-m-d H:i:s'))
     ),
     Application::class => create(Application::class),
     OutputInterface::class => create(ConsoleOutput::class)

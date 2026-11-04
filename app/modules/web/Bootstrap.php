@@ -220,6 +220,10 @@ final class Bootstrap extends BootstrapBase
         ActionResponse   $actionResponse,
         Response         $response
     ): void {
+        if ($response->isLocked()) {
+            return;
+        }
+
         /** @var ReflectionAttribute<Action> $attribute */
         $attribute = array_reduce(
             $method->getAttributes(Action::class),
@@ -236,7 +240,7 @@ final class Bootstrap extends BootstrapBase
                 break;
             case ResponseType::CALLBACK:
                 if ($actionResponse->subject instanceof Closure) {
-                    $actionResponse->subject->call($this, $response);
+                    $actionResponse->subject->__invoke($response);
                 }
                 break;
             default:

@@ -74,7 +74,7 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      */
     public function readToString(): string
     {
-        $this->autoDetectEOL();
+        $this->rewind();
 
         try {
             $data = $this->fread($this->getSize());
@@ -90,27 +90,21 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     }
 
     /**
-     * @return void
-     */
-    private function autoDetectEOL(): void
-    {
-        ini_set('auto_detect_line_endings', true);
-    }
-
-    /**
      * Reads data from a CSV file
      *
      * @throws FileException
      */
     public function readFromCsv(string $delimiter): iterable
     {
-        $this->autoDetectEOL();
-
         while (!$this->eof()) {
-            $data = $this->fgetcsv($delimiter);
+            $data = $this->fgetcsv($delimiter, '"', '\\');
 
             if ($data === false) {
                 throw FileException::error(__u('Error while reading the CSV file file'), $this->file);
+            }
+
+            if ($data === [null]) {
+                continue;
             }
 
             yield $data;
@@ -122,8 +116,6 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      */
     public function read(): iterable
     {
-        $this->autoDetectEOL();
-
         while (!$this->eof()) {
             yield $this->fgets();
         }
@@ -138,11 +130,17 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     {
         $this->lock();
 
-        if ($this->fwrite($data) === false) {
-            throw FileException::error(sprintf(__('Unable to read/write the file (%s)'), $this->file));
-        }
+        try {
+            $this->rewind();
 
-        $this->unlock();
+            if ($this->ftruncate(0) === false || $this->fwrite($data) === false) {
+                throw FileException::error(sprintf(__u('Unable to read/write the file (%s)'), $this->file));
+            }
+
+            $this->fflush();
+        } finally {
+            $this->unlock();
+        }
 
         return $this;
     }
@@ -181,7 +179,7 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      *
      * @throws FileException
      */
-    public function readChunked(callable $chunker = null, ?float $rate = null): void
+    public function readChunked(?callable $chunker = null, ?float $rate = null): void
     {
         $memoryLimit = ini_get('memory_limit');
         $maxRate = ($memoryLimit < 0

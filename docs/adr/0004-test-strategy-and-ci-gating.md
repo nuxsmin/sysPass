@@ -1,6 +1,6 @@
 # 0004 - Test strategy and CI gating
 
-Status: Accepted (2026-10-31)
+Status: Accepted (2026-10-31); amended by ADR-0009 (2026-11-01) and by ADR-0011 (2026-11-02, which assigns template-migration gating to HTTP Integration Tests and browser coverage to page loading only)
 Issue: #2041 (plan P11-4, decisions D4 and P10-6, tracking #1976)
 
 ## Context
@@ -70,7 +70,7 @@ The workflow runs on pushes to `master`, pull requests targeting `master` or `fe
 
 - **Keep only unit tests.** Rejected: use cases with fakes cannot catch broken SQL, and the migration's riskiest changes were repository queries and namespace moves.
 - **Keep repository tests mocked.** Rejected: asserting generated SQL does not prove that MariaDB accepts it or returns the expected rows. The DB-backed tests found real defects during P10-2.
-- **Add a browser end-to-end suite.** Rejected for now: it adds a second runtime, browser binaries and flakiness for behaviour the in-process web bootstrap already covers. Revisit only for flows that depend on real HTTP semantics.
+- **Add a browser end-to-end suite.** Rejected for now: it adds a second runtime, browser binaries and flakiness for behaviour the in-process web bootstrap already covers. Revisit only for flows that depend on real HTTP semantics. ADR-0009 later accepts a browser suite limited to page-load observability; the rejection still stands for workflow and layout testing.
 - **Make the integration job opt-in per pull request.** Rejected in D4: the web controller tests had been excluded from CI for years and silently regressed. The repository variable enables the job by default.
 - **Gate every layer's coverage immediately.** Rejected: module coverage comes from the integration job, and a global gate would either fail on untested adapters or force low-value tests. Gate the core layers first and extend deliberately.
 - **Use docblock annotations instead of attributes.** Rejected: the suite standardised on PHPUnit attributes (`#[Test]`, `#[Group]`) and the metrics script checks for them.

@@ -29,6 +29,7 @@ use DOMDocument;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Export\Services\XmlClientExport;
@@ -78,6 +79,37 @@ class XmlClientExportTest extends UnitaryTestCase
         ];
 
         $this->checkNodes($out->firstChild->childNodes, $nodes);
+    }
+
+    /**
+     * @throws Exception
+     * @throws ServiceException
+     */
+    #[Test]
+    public function testExportWithNullDescription()
+    {
+        $client = new Client(
+            [
+                'id' => self::$faker->randomNumber(3),
+                'name' => self::$faker->colorName(),
+                'description' => null,
+            ]
+        );
+
+        $this->clientService
+            ->expects(self::once())
+            ->method('getAll')
+            ->willReturn([$client]);
+
+        $out = $this->xmlClientExport->export();
+
+        $this->checkNodes(
+            $out->firstChild->childNodes,
+            [
+                'name' => $client->getName(),
+                'description' => '',
+            ]
+        );
     }
 
     /**

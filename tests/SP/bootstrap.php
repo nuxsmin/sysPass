@@ -143,7 +143,31 @@ if (!function_exists('\gettext')) {
 
 function getRealIpAddress(): string
 {
-    return trim(shell_exec('ip a s eth0 | awk \'$1 == "inet" {print $2}\' | cut -d"/" -f1')) ?: '127.0.0.1';
+    $output = shell_exec("ip -o -4 addr show scope global | awk '$3 == \"inet\" {print $4; exit}' | cut -d\"/\" -f1");
+
+    return getRealIpAddressFromOutput($output);
+}
+
+function getRealIpAddressFromOutput(?string $output): string
+{
+    $address = trim((string)$output);
+
+    if (str_contains($address, '/')) {
+        [$address] = explode('/', $address, 2);
+    }
+
+    if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
+        return $address;
+    }
+
+    $hostname = gethostname();
+    $hostnameAddress = $hostname !== false ? gethostbyname($hostname) : '';
+
+    if (filter_var($hostnameAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
+        return $hostnameAddress;
+    }
+
+    return '127.0.0.1';
 }
 
 function getDbHandler(?DatabaseConnectionData $connectionData = null): MysqlHandler

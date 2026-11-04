@@ -92,7 +92,7 @@ final class XmlCategoryExport extends XmlExportEntityBase implements XmlCategory
                 $nodeCategory->appendChild(
                     $this->document->createElement(
                         'description',
-                        $this->document->createTextNode($category->getDescription())->nodeValue
+                        $this->document->createTextNode((string)$category->getDescription())->nodeValue
                     )
                 );
             }

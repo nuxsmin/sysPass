@@ -52,7 +52,7 @@ final readonly class PathsContext implements ArrayAccess
      */
     public function offsetExists(mixed $offset): bool
     {
-        return $this->paths->contains($offset);
+        return $this->paths->offsetExists($offset);
     }
 
     /**
@@ -78,11 +78,11 @@ final readonly class PathsContext implements ArrayAccess
      */
     public function addPath(Path $path, string $value): void
     {
-        if ($this->paths->contains($path)) {
+        if ($this->paths->offsetExists($path)) {
             throw new ValueError('Duplicated path found: ' . $path->name);
         }
 
-        $this->paths->attach($path, $value);
+        $this->paths->offsetSet($path, $value);
     }
 
     /**

@@ -32,6 +32,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Export\Services\XmlCategoryExport;
@@ -77,6 +78,37 @@ class XmlCategoryExportTest extends UnitaryTestCase
         ];
 
         $this->checkNodes($out->firstChild->childNodes, $nodes);
+    }
+
+    /**
+     * @throws Exception
+     * @throws ServiceException
+     */
+    #[Test]
+    public function testExportWithNullDescription()
+    {
+        $category = new Category(
+            [
+                'id' => self::$faker->randomNumber(3),
+                'name' => self::$faker->colorName(),
+                'description' => null,
+            ]
+        );
+
+        $this->categoryService
+            ->expects(self::once())
+            ->method('getAll')
+            ->willReturn([$category]);
+
+        $out = $this->xmlCategoryExport->export();
+
+        $this->checkNodes(
+            $out->firstChild->childNodes,
+            [
+                'name' => $category->getName(),
+                'description' => '',
+            ]
+        );
     }
 
     /**

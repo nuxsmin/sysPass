@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\User\Models;
 
 use SP\Domain\Common\Models\Model;
+use SP\Domain\Common\Models\SerializesModelProperties;
 
 /**
  * Class ProfileData
@@ -34,6 +35,8 @@ use SP\Domain\Common\Models\Model;
  */
 class ProfileData extends Model
 {
+    use SerializesModelProperties;
+
     protected bool $accView          = false;
     protected bool $accViewPass      = false;
     protected bool $accViewHistory   = false;

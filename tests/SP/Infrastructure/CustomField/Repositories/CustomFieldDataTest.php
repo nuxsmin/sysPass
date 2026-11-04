@@ -34,6 +34,7 @@ use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Simple as SimpleModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -54,6 +55,8 @@ class CustomFieldDataTest extends UnitaryTestCase
 {
 
     private CustomFieldData $customFieldData;
+
+    private MockObject|DatabaseInterface $database;
 
     /**
      * @throws ConstraintException

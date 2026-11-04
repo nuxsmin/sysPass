@@ -54,7 +54,7 @@ final class DataGridHeaderSort extends DataGridHeaderBase
 
     public function addSortField(DataGridSortInterface $field): DataGridHeaderSort
     {
-        $this->sortFields->attach($field);
+        $this->sortFields->offsetSet($field);
 
         return $this;
     }

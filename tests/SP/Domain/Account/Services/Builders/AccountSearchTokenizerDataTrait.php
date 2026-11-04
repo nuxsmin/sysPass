@@ -128,4 +128,12 @@ trait AccountSearchTokenizerDataTrait
             ...array_map(static fn($value) => [$value, $value], $conditions),
         ];
     }
+
+    public static function searchUsingStringOnlyDataProvider(): array
+    {
+        return array_map(
+            static fn(array $data): array => [$data[0]],
+            self::searchUsingStringDataProvider()
+        );
+    }
 }

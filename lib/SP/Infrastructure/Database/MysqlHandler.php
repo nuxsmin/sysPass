@@ -40,23 +40,12 @@ use function SP\__u;
  */
 final class MysqlHandler implements DbStorageHandler
 {
-    private const PDO_OPTS = [
-        PDO::ATTR_EMULATE_PREPARES => false,
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::MYSQL_ATTR_FOUND_ROWS => true,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-    ];
-
-    private ?PDO            $pdo = null;
-    private readonly string $connectionUri;
-    private readonly string $connectionUriSimple;
+    private ?PDO $pdo = null;
 
     public function __construct(
         private readonly DatabaseConnectionData $connectionData,
         private readonly PDOWrapper             $PDOWrapper
     ) {
-        $this->connectionUri = self::getConnectionUri($connectionData);
-        $this->connectionUriSimple = self::getConnectionUri($connectionData, false);
     }
 
     public static function getConnectionUri(
@@ -98,7 +87,11 @@ final class MysqlHandler implements DbStorageHandler
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ];
 
-            $this->pdo = $this->PDOWrapper->build($this->connectionUriSimple, $this->connectionData, $opts);
+            $this->pdo = $this->PDOWrapper->build(
+                self::getConnectionUri($this->connectionData, false),
+                $this->connectionData,
+                $opts
+            );
         }
 
         return $this->pdo;
@@ -135,6 +128,19 @@ final class MysqlHandler implements DbStorageHandler
     }
 
     /**
+     * @return array<int, mixed>
+     */
+    private static function getPdoOptions(): array
+    {
+        return [
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PdoMysqlAttributes::foundRows() => true,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+        ];
+    }
+
+    /**
      * Set up a database connection with the given connection data
      *
      * @throws DatabaseException
@@ -144,7 +150,11 @@ final class MysqlHandler implements DbStorageHandler
         if (!$this->pdo) {
             $this->checkConnectionData(true);
 
-            $this->pdo = $this->PDOWrapper->build($this->connectionUri, $this->connectionData, self::PDO_OPTS);
+            $this->pdo = $this->PDOWrapper->build(
+                self::getConnectionUri($this->connectionData),
+                $this->connectionData,
+                self::getPdoOptions()
+            );
 
             // Set prepared statement emulation depending on server version
             $serverVersion = $this->pdo->getAttribute(PDO::ATTR_SERVER_VERSION);

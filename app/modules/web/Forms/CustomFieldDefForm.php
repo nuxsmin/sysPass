@@ -28,6 +28,8 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;
 
+use function SP\__u;
+
 /**
  * Class CustomFieldDefForm
  *

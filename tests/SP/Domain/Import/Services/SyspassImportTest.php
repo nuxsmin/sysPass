@@ -96,7 +96,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(4))
             ->method('create')
             ->with(self::callback(static fn(Client $client) => !empty($client->getName())))
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 3)));
+            ->willReturn(1001, 1002, 1003, 1004);
 
         $this->categoryService
             ->expects(self::exactly(5))
@@ -113,7 +113,7 @@ class SyspassImportTest extends UnitaryTestCase
                                                      empty($category->getDescription())
                 )
             )
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 4)));
+            ->willReturn(2001, 2002, 2003, 2004, 2005);
 
         $this->tagService
             ->expects(self::exactly(7))
@@ -127,7 +127,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(7))
             ->method('create')
             ->with(self::callback(static fn(Tag $tag) => !empty($tag->getName())))
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 6)));
+            ->willReturn(3001, 3002, 3003, 3004, 3005, 3006, 3007);
 
         $this->crypt
             ->expects(self::never())
@@ -217,7 +217,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(4))
             ->method('create')
             ->with(self::callback(static fn(Client $client) => !empty($client->getName())))
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 3)));
+            ->willReturn(...range(1001, 1004));
 
         $this->categoryService
             ->expects(self::exactly(5))
@@ -234,7 +234,7 @@ class SyspassImportTest extends UnitaryTestCase
                                                      empty($category->getDescription())
                 )
             )
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 4)));
+            ->willReturn(...range(2001, 2005));
 
         $this->tagService
             ->expects(self::exactly(7))
@@ -248,7 +248,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(7))
             ->method('create')
             ->with(self::callback(static fn(Tag $tag) => !empty($tag->getName())))
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 6)));
+            ->willReturn(...range(3001, 3007));
 
         $this->configService
             ->expects(self::once())
@@ -299,7 +299,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(4))
             ->method('getByName')
             ->with(...self::withConsecutive(['Apple'], ['CSV Client 1'], ['Google'], ['KK']))
-            ->willReturn(...array_map(static fn() => new Client(['id' => self::$faker->randomNumber(3)]), range(0, 3)));
+            ->willReturn(...array_map(static fn(int $id) => new Client(['id' => $id]), range(1001, 1004)));
 
         $this->clientService
             ->expects(self::never())
@@ -310,7 +310,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('getByName')
             ->with(...self::withConsecutive(['CSV Category 1'], ['Linux'], ['SSH'], ['Test'], ['Web']))
             ->willReturn(
-                ...array_map(static fn() => new Category(['id' => self::$faker->randomNumber(3)]), range(0, 4))
+                ...array_map(static fn(int $id) => new Category(['id' => $id]), range(2001, 2005))
             );
 
         $this->categoryService
@@ -323,7 +323,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->with(
                 ...self::withConsecutive(['Apache'], ['Debian'], ['JBoss'], ['MySQL'], ['server'], ['SSH'], ['www'])
             )
-            ->willReturn(...array_map(static fn() => new Tag(['id' => self::$faker->randomNumber(3)]), range(0, 6)));
+            ->willReturn(...array_map(static fn(int $id) => new Tag(['id' => $id]), range(3001, 3007)));
 
         $this->tagService
             ->expects(self::never())
@@ -379,7 +379,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(4))
             ->method('create')
             ->with(self::callback(static fn(Client $client) => !empty($client->getName())))
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 3)));
+            ->willReturn(...range(1001, 1004));
 
         $this->categoryService
             ->expects(self::exactly(5))
@@ -396,7 +396,7 @@ class SyspassImportTest extends UnitaryTestCase
                                                      empty($category->getDescription())
                 )
             )
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 4)));
+            ->willReturn(...range(2001, 2005));
 
         $this->tagService
             ->expects(self::exactly(7))
@@ -410,7 +410,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(7))
             ->method('create')
             ->with(self::callback(static fn(Tag $tag) => !empty($tag->getName())))
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 6)));
+            ->willReturn(...range(3001, 3007));
 
         $this->configService
             ->expects(self::once())
@@ -459,7 +459,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(4))
             ->method('getByName')
             ->with(...self::withConsecutive(['Apple'], ['CSV Client 1'], ['Google'], ['KK']))
-            ->willReturn(...array_map(static fn() => new Client(['id' => self::$faker->randomNumber(3)]), range(0, 3)));
+            ->willReturn(...array_map(static fn(int $id) => new Client(['id' => $id]), range(1001, 1004)));
 
         $this->clientService
             ->expects(self::never())
@@ -470,7 +470,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('getByName')
             ->with(...self::withConsecutive(['CSV Category 1'], ['Linux'], ['SSH'], ['Test'], ['Web']))
             ->willReturn(
-                ...array_map(static fn() => new Category(['id' => self::$faker->randomNumber(3)]), range(0, 4))
+                ...array_map(static fn(int $id) => new Category(['id' => $id]), range(2001, 2005))
             );
 
         $this->categoryService
@@ -576,7 +576,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('getByName')
             ->with(...self::withConsecutive(['CSV Category 1'], ['Linux'], ['SSH'], ['Test'], ['Web']))
             ->willReturn(
-                ...array_map(static fn() => new Category(['id' => self::$faker->randomNumber(3)]), range(0, 4))
+                ...array_map(static fn(int $id) => new Category(['id' => $id]), range(2001, 2005))
             );
 
         $this->categoryService
@@ -638,7 +638,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(3))
             ->method('create')
             ->with(self::callback(static fn(Client $client) => !empty($client->getName())))
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 3)));
+            ->willReturn(...range(1001, 1004));
 
         $this->categoryService
             ->expects(self::exactly(4))
@@ -655,7 +655,7 @@ class SyspassImportTest extends UnitaryTestCase
                                                      empty($category->getDescription())
                 )
             )
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 4)));
+            ->willReturn(...range(2001, 2005));
 
         $this->tagService
             ->expects(self::exactly(6))
@@ -669,7 +669,7 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::exactly(6))
             ->method('create')
             ->with(self::callback(static fn(Tag $tag) => !empty($tag->getName())))
-            ->willReturn(...array_map(static fn() => self::$faker->randomNumber(3), range(0, 6)));
+            ->willReturn(...range(3001, 3007));
 
         $this->crypt
             ->expects(self::exactly(4))
@@ -899,5 +899,4 @@ class SyspassImportTest extends UnitaryTestCase
             $document
         );
     }
-
 }

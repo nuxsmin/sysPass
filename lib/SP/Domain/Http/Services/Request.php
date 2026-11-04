@@ -206,7 +206,7 @@ class Request implements RequestService
         try {
             $clearData = $this->cryptPKI->decryptRSA(base64_decode($encryptedData));
 
-            if ($clearData === null) {
+            if ($clearData === null || !self::isValidPlaintext($clearData)) {
                 $this->logger->debug('No RSA encrypted data from request');
 
                 return $encryptedData;
@@ -218,6 +218,11 @@ class Request implements RequestService
 
             return $encryptedData;
         }
+    }
+
+    private static function isValidPlaintext(string $data): bool
+    {
+        return !str_contains($data, "\0") && mb_check_encoding($data, 'UTF-8');
     }
 
     public function analyzeString(string $param, ?string $default = null): ?string
@@ -318,7 +323,7 @@ class Request implements RequestService
             // Strips out the hash param from the URI to get the
             // route which will be checked against the computed HMAC
             if ($param === null) {
-                $uri = implode('&', $this->request->params('h'));
+                $uri = $this->getUriWithoutSignature();
             } else {
                 $uri = $this->params->get($param, '');
             }
@@ -334,6 +339,17 @@ class Request implements RequestService
                 1
             );
         }
+    }
+
+    private function getUriWithoutSignature(): string
+    {
+        return implode(
+            '&',
+            array_filter(
+                explode('&', $this->getServer('QUERY_STRING')),
+                static fn(string $part): bool => !str_starts_with($part, 'h=')
+            )
+        );
     }
 
     /**

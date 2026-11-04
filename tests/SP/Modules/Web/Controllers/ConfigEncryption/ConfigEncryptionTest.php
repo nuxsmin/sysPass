@@ -34,9 +34,13 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Ports\AppLockHandler;
+use SP\Domain\Crypt\Ports\MasterPassService;
+use SP\Domain\Crypt\Services\Hash;
+use SP\Domain\Crypt\Services\MasterPass;
 use SP\Domain\User\Dtos\UserDto;
-use SP\Tests\InjectConfigParam;
 use SP\Tests\InjectVault;
 use SP\Tests\IntegrationTestCase;
 
@@ -71,7 +75,6 @@ class ConfigEncryptionTest extends IntegrationTestCase
      * @throws Exception
      */
     #[Test]
-    #[InjectConfigParam(['masterPwd' => '$2y$10$6imglyA01feP1AnEmlAgUeQPa7vysHeKQLz0MDA1Zf7iG6ep.7PaC'])]
     #[TestWith([false], 'Change accounts encryption')]
     #[TestWith([true], 'Change only hash')]
     public function save(bool $noAccountChange)
@@ -99,9 +102,31 @@ class ConfigEncryptionTest extends IntegrationTestCase
             ->method('getConfigData')
             ->willReturn($configData);
 
+        $masterPassHash = Hash::hashKey('a_password');
+        $configService = self::createStub(ConfigService::class);
+        $configService
+            ->method('getByParam')
+            ->willReturnCallback(
+                static fn(string $parameter, mixed $default = null): ?string => match ($parameter) {
+                    MasterPassService::PARAM_MASTER_PASS_HASH => $masterPassHash,
+                    MasterPass::PARAM_MASTER_PASS_TIME => '0',
+                    default => $default,
+                }
+            );
+        $configService
+            ->method('save')
+            ->willReturn(true);
+
+        $cryptPKI = self::createStub(CryptPKIHandler::class);
+        $cryptPKI
+            ->method('decryptRSA')
+            ->willReturn(null);
+
         $definitions = [
             ConfigFileService::class => $configFileService,
             AppLockHandler::class => $appLockHandler,
+            ConfigService::class => $configService,
+            CryptPKIHandler::class => $cryptPKI,
         ];
 
         $container = $this->buildContainer(

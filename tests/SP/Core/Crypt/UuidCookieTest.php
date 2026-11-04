@@ -26,7 +26,6 @@ declare(strict_types=1);
 namespace SP\Tests\Core\Crypt;
 
 use Klein\DataCollection\DataCollection;
-use Klein\Request;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
@@ -35,6 +34,7 @@ use SP\Domain\Crypt\Services\Hash;
 use SP\Core\Crypt\UuidCookie;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Http\Ports\RequestService;
+use SP\Tests\Stubs\KleinRequestStub;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -65,10 +65,7 @@ class UuidCookieTest extends UnitaryTestCase
                 ->with('SYSPASS_UUID', false)
                 ->willReturn($data);
 
-        $request = $this->createMock(Request::class);
-        $request->expects(self::once())
-                ->method('cookies')
-                ->willReturn($cookies);
+        $request = new KleinRequestStub(cookies: $cookies);
 
         $this->requestInterface
             ->expects(self::once())
@@ -94,10 +91,7 @@ class UuidCookieTest extends UnitaryTestCase
                 ->with('SYSPASS_UUID', false)
                 ->willReturn(false);
 
-        $request = $this->createMock(Request::class);
-        $request->expects(self::once())
-                ->method('cookies')
-                ->willReturn($cookies);
+        $request = new KleinRequestStub(cookies: $cookies);
 
         $this->requestInterface
             ->expects(self::once())
@@ -124,10 +118,7 @@ class UuidCookieTest extends UnitaryTestCase
                 ->with('SYSPASS_UUID', false)
                 ->willReturn($data);
 
-        $request = $this->createMock(Request::class);
-        $request->expects(self::once())
-                ->method('cookies')
-                ->willReturn($cookies);
+        $request = new KleinRequestStub(cookies: $cookies);
 
         $this->requestInterface
             ->expects(self::once())
@@ -154,10 +145,7 @@ class UuidCookieTest extends UnitaryTestCase
                 ->with('SYSPASS_UUID', false)
                 ->willReturn($data);
 
-        $request = $this->createMock(Request::class);
-        $request->expects(self::once())
-                ->method('cookies')
-                ->willReturn($cookies);
+        $request = new KleinRequestStub(cookies: $cookies);
 
         $this->requestInterface
             ->expects(self::once())

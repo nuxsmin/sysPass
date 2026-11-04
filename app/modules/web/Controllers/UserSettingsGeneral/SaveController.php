@@ -92,11 +92,13 @@ final class SaveController extends SimpleControllerBase
      */
     private function getUserPreferencesData(UserDto $userData): UserPreferences
     {
+        $theme = $this->request->analyzeString('usertheme', 'material-blue');
+
         return ($userData->preferences ?? new UserPreferences())->mutate(
             [
                 'user_id' => $userData->id,
                 'lang' => $this->request->analyzeString('userlang'),
-                'theme' => $this->request->analyzeString('usertheme', 'material-blue'),
+                'theme' => $theme !== null && $theme !== '' ? $theme : null,
                 'resultsPerPage' => $this->request->analyzeInt('resultsperpage', 12),
                 'accountLink' => $this->request->analyzeBool('account_link', false),
                 'sortViews' => $this->request->analyzeBool('sort_views', false),

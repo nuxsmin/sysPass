@@ -26,7 +26,6 @@ use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\Session;
 use SP\Core\Crypt\Csrf;
-use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
@@ -53,7 +52,8 @@ return [
                        [Path::PLUGINS, FileSystem::buildPath(__DIR__, 'plugins')],
                    ]),
     BootstrapInterface::class => autowire(Bootstrap::class),
-    ModuleInterface::class => autowire(Init::class),
+    ModuleInterface::class => autowire(Init::class)
+        ->constructorParameter('sessionHandler', get(SessionHandlerInterface::class)),
     CssController::class => autowire(
         CssController::class
     )->constructorParameter('minify', get(CssMinifyService::class)),
@@ -61,8 +61,8 @@ return [
         JsController::class
     )->constructorParameter('minify', get(JsMinifyService::class)),
     Context::class => factory(
-        static function (ConfigDataInterface $configData, SessionHandlerInterface $sessionHandler = null) {
-            return new Session($sessionHandler);
+        static function () {
+            return new Session();
         }
     ),
     SessionContext::class => get(Context::class),

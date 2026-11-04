@@ -26,6 +26,7 @@ namespace SP\Modules\Web;
 
 use Exception;
 use Klein\Klein;
+use SessionHandlerInterface;
 use SP\Core\Context\ContextBase;
 use SP\Domain\Core\Context\ContextException;
 use SP\Core\Context\Session;
@@ -141,6 +142,7 @@ final class Init extends HttpModuleBase
         private readonly DatabaseUtilInterface $databaseUtil,
         private readonly UserProfileService  $userProfileService,
         private readonly UriContextInterface $uriContext,
+        private readonly ?SessionHandlerInterface $sessionHandler = null,
     ) {
         parent::__construct(
             $dependencies,
@@ -167,6 +169,10 @@ final class Init extends HttpModuleBase
     public function initialize(string $controller): void
     {
         logger(__METHOD__);
+
+        if ($this->sessionHandler !== null) {
+            session_set_save_handler($this->sessionHandler);
+        }
 
         $this->isIndex = $controller === 'index';
 

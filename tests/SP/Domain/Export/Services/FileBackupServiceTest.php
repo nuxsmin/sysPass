@@ -29,7 +29,6 @@ namespace SP\Tests\Domain\Export\Services;
 use PDO;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Bootstrap\Path;
@@ -46,10 +45,9 @@ use SP\Domain\Export\Services\BackupFile;
 use SP\Domain\File\Ports\ArchiveHandlerInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Database\Ports\QueryDataInterface;
-use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\UnitaryTestCase;
-use stdClass;
+use Generator;
 
 /**
  * Class FileBackupServiceTest
@@ -64,6 +62,8 @@ class FileBackupServiceTest extends UnitaryTestCase
     private MockObject|FileHandlerInterface    $dbFileHandler;
     private ArchiveHandlerInterface|MockObject $dbArchiveHandler;
     private ArchiveHandlerInterface|MockObject $appArchiveHandler;
+    /** @var list<string> */
+    private array $writtenSql = [];
 
     /**
      * @throws ServiceException
@@ -75,6 +75,29 @@ class FileBackupServiceTest extends UnitaryTestCase
         $this->configureSuccessfulBackup();
 
         $this->fileBackupService->doBackup(TMP_PATH, APP_PATH);
+    }
+
+    /**
+     * The dump must contain the schema DDL for every table and view, not only
+     * the INSERT statements.
+     *
+     * @throws ServiceException
+     * @throws Exception
+     */
+    #[Test]
+    public function testDoBackupWritesCompleteSchemaDdl(): void
+    {
+        $this->configureSuccessfulBackup();
+
+        $this->fileBackupService->doBackup(TMP_PATH, APP_PATH);
+
+        $sql = implode('', $this->writtenSql);
+
+        self::assertSame(25, substr_count($sql, 'CREATE TABLE `'));
+        self::assertSame(2, substr_count($sql, 'CREATE VIEW `'));
+        self::assertStringContainsString('CREATE TABLE `Client`', $sql);
+        self::assertStringContainsString('CREATE VIEW `account_data_v`', $sql);
+        self::assertStringContainsString('INSERT INTO `Client`', $sql);
     }
 
     /**
@@ -161,44 +184,50 @@ class FileBackupServiceTest extends UnitaryTestCase
         $this->config->getConfigData()->setDbName('a_db');
 
         $tablesCount = count(DatabaseTables::TABLES);
-        $tablesType = ['table', 'view'];
-
-        $queryResults = array_map(
-            fn($i) => $this->buildCreateResult($tablesType[$i % 2]),
-            range(0, $tablesCount)
-        );
 
         $this->database
-            ->expects(self::exactly($tablesCount))
-            ->method('runQuery')
-            ->with(
-                new Callback(static function (QueryDataInterface $queryData) {
-                    return preg_match('/^SHOW CREATE TABLE \w+$/', $queryData->getQuery()->getStatement()) === 1;
-                })
-            )
-            ->willReturn(...$queryResults);
-
-        $rows = static function () {
-            yield ['a', 1, false];
-            yield ['b', 2, true];
-        };
-
-        $this->database
-            ->expects(self::exactly($tablesCount - 2))
+            ->expects(self::exactly($tablesCount * 2 - 2))
             ->method('doFetchWithOptions')
-            ->with(
-                new Callback(static function (QueryDataInterface $queryData) {
-                    return preg_match('/^SELECT \* FROM `\w+`$/', $queryData->getQuery()->getStatement()) === 1;
-                }),
-                [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL],
-                PDO::FETCH_NUM,
-                false
-            )
-            ->willReturnCallback($rows);
+            ->willReturnCallback(function (QueryDataInterface $queryData, array $options, int $mode): Generator {
+                $statement = $queryData->getQuery()->getStatement();
+
+                if (preg_match('/^SHOW CREATE TABLE `([^`]+)`$/', $statement, $matches) === 1) {
+                    $name = $matches[1];
+
+                    if (str_ends_with($name, '_v')) {
+                        return (static function () use ($name): Generator {
+                            yield [
+                                'View' => $name,
+                                'Create View' => sprintf('CREATE VIEW `%s` AS SELECT 1', $name)
+                            ];
+                        })();
+                    }
+
+                    return (static function () use ($name): Generator {
+                        yield [
+                            'Table' => $name,
+                            'Create Table' => sprintf('CREATE TABLE `%s` (`id` int)', $name)
+                        ];
+                    })();
+                }
+
+                self::assertSame([PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL], $options);
+                self::assertSame(PDO::FETCH_NUM, $mode);
+
+                return (static function (): Generator {
+                    yield ['a', 1, false];
+                    yield ['b', 2, true];
+                })();
+            });
 
         $this->dbFileHandler
             ->expects($this->exactly(79))
-            ->method('write');
+            ->method('write')
+            ->willReturnCallback(function (string $data): FileHandlerInterface {
+                $this->writtenSql[] = $data;
+
+                return $this->dbFileHandler;
+            });
 
         $this->dbFileHandler
             ->expects($this->once())
@@ -222,20 +251,27 @@ class FileBackupServiceTest extends UnitaryTestCase
             ->with(APP_PATH, BackupFile::BACKUP_INCLUDE_REGEX);
     }
 
-    private function buildCreateResult(string $type): QueryResult
+    #[Test]
+    public function testDoBackupFailsWhenTheSchemaDefinitionIsMissing(): void
     {
-        $data = new stdClass();
+        $this->config->getConfigData()->setDbName('a_db');
 
-        switch ($type) {
-            case 'table':
-                $data->{'Create Table'} = 'CREATE TABLE';
-                break;
-            case 'view':
-                $data->{'Create View'} = 'CREATE VIEW';
-                break;
-        }
+        $this->dbFileHandler
+            ->expects(self::once())
+            ->method('write')
+            ->willReturnSelf();
 
-        return new QueryResult([$data]);
+        $this->database
+            ->expects(self::once())
+            ->method('doFetchWithOptions')
+            ->willReturn((static function (): Generator {
+                yield from [];
+            })());
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Error while doing the backup');
+
+        $this->fileBackupService->doBackup(TMP_PATH, APP_PATH);
     }
 
     /**
@@ -274,6 +310,7 @@ class FileBackupServiceTest extends UnitaryTestCase
     {
         parent::setUp();
 
+        $this->writtenSql = [];
         $this->database = $this->createMock(DatabaseInterface::class);
         $this->backupFiles = new BackupFiles(
             new BackupFileDto(BackupType::app, 'test', TMP_PATH, 'tar'),
