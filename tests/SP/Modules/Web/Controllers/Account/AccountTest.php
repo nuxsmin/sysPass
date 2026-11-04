@@ -1025,6 +1025,83 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[BodyChecker('outputCheckerAccountContentPage')]
+    public function viewDirectPageUsesAccountContentView(): void
+    {
+        $this->addDatabaseMapperResolver(
+            AccountView::class,
+            new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
+        );
+
+        $this->addDatabaseMapperResolver(
+            Item::class,
+            new QueryResult(
+                [
+                    new Item(
+                        ['id' => self::$faker->randomNumber(3), 'name' => self::$faker->colorName()]
+                    )
+                ]
+            )
+        );
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'account/view/id/' . self::$faker->randomNumber(3)]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerCreateAccountContentPage')]
+    public function createDirectPageUsesAccountContentView(): void
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/create'])
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerAccountContentPage')]
+    public function editDirectPageUsesAccountContentView(): void
+    {
+        $this->addDatabaseMapperResolver(
+            AccountView::class,
+            new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
+        );
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'account/edit/' . self::$faker->randomNumber(3)]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
     #[BodyChecker('outputCheckerDelete')]
     public function delete()
     {
@@ -1473,5 +1550,37 @@ class AccountTest extends IntegrationTestCase
         )->extract(['id']);
 
         self::assertCount(3, $filter);
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerAccountContentPage(string $output): void
+    {
+        $crawler = new Crawler($output);
+
+        self::assertCount(
+            1,
+            $crawler->filterXPath('//div[@id="content" and @data-page="account"]'),
+            'Direct account pages must stamp the account view binder on #content'
+        );
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerCreateAccountContentPage(string $output): void
+    {
+        $this->outputCheckerAccountContentPage($output);
+
+        $crawler = new Crawler($output);
+
+        self::assertCount(
+            1,
+            $crawler->filterXPath('//select[@id="parent_account_id" and @data-item-id="0"]'),
+            'The blank account create parent select must expose data-item-id="0"'
+        );
     }
 }
