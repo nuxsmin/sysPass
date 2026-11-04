@@ -59,6 +59,7 @@ tools/
 vendor/*
 doc/*
 build/*
+!build/docker-compose-demo.yml
 tests/_output/*
 
 composer.phar
