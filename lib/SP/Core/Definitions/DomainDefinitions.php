@@ -123,7 +123,6 @@ final class DomainDefinitions
         'SP\Domain\Crypt\Ports\TemporaryMasterPassService' => 'SP\Domain\Crypt\Services\TemporaryMasterPass',
 
         // CustomField
-        'SP\Domain\CustomField\Ports\CustomFieldAdapter' => 'SP\Domain\CustomField\Adapters\CustomField',
         'SP\Domain\CustomField\Ports\CustomFieldCryptService' => 'SP\Domain\CustomField\Services\CustomFieldCrypt',
         'SP\Domain\CustomField\Ports\CustomFieldDataRepository' => 'SP\Infrastructure\CustomField\Repositories\CustomFieldData',
         'SP\Domain\CustomField\Ports\CustomFieldDataService' => 'SP\Domain\CustomField\Services\CustomFieldData',

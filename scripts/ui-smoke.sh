@@ -231,12 +231,16 @@ echo "Run root:  $RUN_ROOT"
   --env-file "$RUN_ROOT/env/db.env" \
   "$DB_IMAGE" >/dev/null
 
-echo "Waiting for MariaDB..."
+echo "Waiting for MariaDB to accept TCP connections from the application network..."
 DB_READY=0
 for _ in $(seq 1 120); do
-  if "$DOCKER_BIN" exec -i "$DB_CONTAINER" sh -s >/dev/null 2>&1 <<'EOS'
-mysqladmin ping -uroot -p"$MARIADB_ROOT_PASSWORD" --silent
-EOS
+  if "$DOCKER_BIN" run --rm \
+    --network "$NETWORK_NAME" \
+    --env-file "$RUN_ROOT/env/db.env" \
+    -v "$REPO_ROOT:$REPO_ROOT" \
+    -w "$REPO_ROOT" \
+    "$PHP_IMAGE" \
+    php "$REPO_ROOT/tests/ui/server/check-db.php" >/dev/null 2>&1
   then
     DB_READY=1
     break
@@ -244,7 +248,8 @@ EOS
   sleep 1
 done
 
-[ "$DB_READY" -eq 1 ] || fail "MariaDB did not become ready"
+[ "$DB_READY" -eq 1 ] || fail "MariaDB did not accept TCP connections from the application network"
+# end readiness probe
 
 if "$DOCKER_BIN" exec -i "$DB_CONTAINER" sh -s >/dev/null 2>&1 <<'EOS'
 mysql -uroot -p"$MARIADB_ROOT_PASSWORD" -N -e "SHOW DATABASES LIKE '${SP_UI_RUN_DATABASE}'" 2>/dev/null | grep -q .
@@ -308,6 +313,7 @@ echo "Starting the run-owned web server..."
   php \
   -d "session.save_path=$RUN_ROOT/sessions" \
   -d "upload_tmp_dir=$RUN_ROOT/temp" \
+  -d "error_reporting=E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED" \
   -S "0.0.0.0:8080" \
   -t "$REPO_ROOT" \
   "$REPO_ROOT/tests/ui/server/router.php" >/dev/null

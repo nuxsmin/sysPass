@@ -157,7 +157,7 @@ final class InstallData
 
     public function setSiteLang(string $siteLang): void
     {
-        $this->siteLang = $siteLang;
+        $this->siteLang = preg_replace('/\.utf-?8$/i', '', $siteLang) ?? $siteLang;
     }
 
     public function getDbAuthHostDns(): ?string

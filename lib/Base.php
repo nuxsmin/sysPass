@@ -22,11 +22,8 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use DI\ContainerBuilder;
 use Dotenv\Dotenv;
-use SP\Core\Definitions\CoreDefinitions;
-use SP\Core\Definitions\DomainDefinitions;
-use SP\Domain\Common\Providers\Version;
+use SP\Core\Definitions\ContainerFactory;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\getFromEnv;
@@ -52,24 +49,19 @@ define('DEBUG', getFromEnv('DEBUG', false));
 
 try {
     $moduleDefinitions = initModule(APP_MODULE);
-
-    $containerBuilder = new ContainerBuilder();
+    $compilationPath = null;
 
     if (!DEBUG) {
         $cachePath = getFromEnv('CACHE_PATH', FileSystem::buildPath(APP_PATH, 'cache'));
-        $containerCachePath = FileSystem::buildPath($cachePath, 'container', Version::getVersionStringNormalized());
-
-        $containerBuilder->enableCompilation($containerCachePath);
-        $containerBuilder->writeProxiesToFile(true, FileSystem::buildPath($containerCachePath, 'proxies'));
+        $compilationPath = ContainerFactory::getCompilationPath($cachePath, APP_MODULE);
     }
 
-    return $containerBuilder
-        ->addDefinitions(
-            CoreDefinitions::getDefinitions(APP_ROOT, APP_MODULE),
-            DomainDefinitions::getDefinitions(),
-            $moduleDefinitions
-        )
-        ->build();
+    return ContainerFactory::createBuilder(
+        APP_ROOT,
+        APP_MODULE,
+        $moduleDefinitions,
+        $compilationPath
+    )->build();
 } catch (Exception $e) {
     processException($e);
 

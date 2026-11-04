@@ -237,7 +237,7 @@ final class CoreDefinitions
                                 ->constructor(
                                     factory(static fn(PathsContext $p) => $p[Path::CONFIG_FILE]),
                                     factory(
-                                        static fn(PathsContext $p) => self::readWriteMode($p[Path::CONFIG_FILE])
+                                        static fn(PathsContext $p) => is_file($p[Path::CONFIG_FILE]) ? 'r+' : 'w+'
                                     )
                                 )
                         ),
@@ -424,8 +424,8 @@ final class CoreDefinitions
                 );
 
                 return new CryptPKI(
-                    new FileHandler($publicKeyPath, self::readWriteMode($publicKeyPath)),
-                    new FileHandler($privateKeyPath, self::readWriteMode($privateKeyPath))
+                    new FileHandler($publicKeyPath, is_file($publicKeyPath) ? 'r+' : 'w+'),
+                    new FileHandler($privateKeyPath, is_file($privateKeyPath) ? 'r+' : 'w+')
                 );
             }),
             FileCacheService::class => create(FileCache::class),
@@ -527,11 +527,6 @@ final class CoreDefinitions
             FileCacheFactoryInterface::class => autowire(FileCacheFactory::class),
             PhpFileLoaderInterface::class => create(PhpFileLoader::class)
         ];
-    }
-
-    private static function readWriteMode(string $path): string
-    {
-        return is_file($path) ? 'r+' : 'w+';
     }
 
     private static function getPaths(string $rootPath): array

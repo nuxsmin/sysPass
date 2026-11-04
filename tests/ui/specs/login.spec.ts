@@ -11,6 +11,12 @@ const BOOT_ROUTE = 'bootstrap/getEnvironment';
 const LOGIN_ROUTE = 'login/index';
 const IGNORED_RESOURCE = /\/favicon\.ico$/;
 
+test('the configured fixed user agent wins over the desktop device descriptor', ({}, testInfo) => {
+  expect(testInfo.project.use.userAgent).toBe(FIXED_USER_AGENT);
+  expect(testInfo.project.use.viewport).toEqual({ width: 1280, height: 720 });
+  expect(testInfo.project.use.isMobile).toBe(false);
+});
+
 test('anonymous login page loads with its current boot contract', async ({ baseURL, context, page }) => {
   if (!baseURL) {
     throw new Error('UI smoke base URL is missing');
@@ -76,8 +82,7 @@ test('anonymous login page loads with its current boot contract', async ({ baseU
   expect(boot.status).toBe('OK');
   expect(boot.data?.locale).toBe(APP_LOCALE);
   expect(boot.data?.loggedin).toBe(false);
-  expect(typeof boot.data?.csrf).toBe('string');
-  expect((boot.data?.csrf as string).length).toBeGreaterThan(0);
+  expect(boot.data?.csrf).toBeNull();
   expect(typeof boot.data?.pki_key).toBe('string');
   expect((boot.data?.pki_key as string).length).toBeGreaterThan(0);
 

@@ -64,12 +64,12 @@ final class Mail extends Service implements MailService
     public static function getParamsFromConfig(ConfigDataInterface $configData): MailParams
     {
         return new MailParams(
-            $configData->getMailServer(),
+            $configData->getMailServer() ?? '',
             $configData->getMailPort(),
-            $configData->getMailUser(),
-            $configData->getMailPass(),
-            $configData->getMailSecurity(),
-            $configData->getMailFrom(),
+            $configData->getMailUser() ?? '',
+            $configData->getMailPass() ?? '',
+            $configData->getMailSecurity() ?? '',
+            $configData->getMailFrom() ?? '',
             $configData->isMailAuthenabled()
         );
     }
