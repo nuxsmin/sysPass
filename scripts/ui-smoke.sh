@@ -404,16 +404,9 @@ set +e
 PLAYWRIGHT_STATUS=$?
 set -e
 
-SUMMARY_DIR="$SUMMARY_ROOT/$RUN_ID"
-
-if [ -d "$RUN_ROOT/output" ]; then
-  ui_smoke_remove_error_context "$RUN_ROOT/output"
-
-  if node "$UI_DIR/src/retain.mjs" --output "$RUN_ROOT/output" --destination "$SUMMARY_DIR"; then
-    echo "Retained sanitized summary: $SUMMARY_DIR"
-  else
-    echo "WARNING: failed to retain sanitized summary artifacts" >&2
-  fi
+if ! ui_smoke_finalize_report "$RUN_ROOT/output" "$SUMMARY_ROOT" "$UI_DIR" "$RUN_ID"; then
+  echo "ERROR: run artifacts were not retained and verified" >&2
+  exit 1
 fi
 
 if [ "$PLAYWRIGHT_STATUS" -ne 0 ]; then

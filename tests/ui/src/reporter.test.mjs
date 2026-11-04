@@ -66,6 +66,28 @@ test('the reporter writes summary, JUnit and an allowlisted manifest for a flaky
   );
 });
 
+test('the reporter never writes a green summary or JUnit for a failed run with only passing tests', () => {
+  const outputDir = mkdtempSync(path.join(tmpdir(), 'sp-ui-reporter-run-failed-'));
+  const login = fakeTest('login', 'logs in');
+  const shell = fakeTest('shell', 'loads shell', '/repo/tests/ui/specs/shell.spec.ts');
+  const reporter = new SanitizedArtifactReporter({ outputDir, runId: 'run-failed' });
+
+  reporter.onBegin({ rootDir: '/repo', grep: null }, fakeSuite([login, shell]));
+  reporter.onTestEnd(login, result('passed'));
+  reporter.onTestEnd(shell, result('passed'));
+  reporter.onEnd({ status: 'failed', duration: 99 });
+
+  const summary = JSON.parse(readOutput(outputDir, 'run-summary.json'));
+  const junit = readOutput(outputDir, 'junit.xml');
+
+  assert.equal(summary.resultStatus, 'failed');
+  assert.notEqual(summary.status, 'passed');
+  assert.equal(summary.completeTierA, false);
+  assert.match(junit, /sp-ui.status" value="failed"/);
+  assert.match(junit, /<error type="failed"/);
+  assert.doesNotMatch(junit, /sp-ui.status" value="passed"/);
+});
+
 test('the reporter marks a setup failure that never completes Tier A', () => {
   const outputDir = mkdtempSync(path.join(tmpdir(), 'sp-ui-reporter-setup-'));
   const reporter = new SanitizedArtifactReporter({ outputDir, runId: 'run-2' });

@@ -267,6 +267,43 @@ test('JUnit makes every non-green run outcome visible to XML consumers', () => {
   assert.match(flakyXml, /sp-ui.status" value="flaky"/);
 });
 
+test('a non-passed run result with only passing tests is never a complete Tier A success', () => {
+  for (const resultStatus of [
+    'failed',
+    'timedout',
+    'interrupted',
+    'setup-failed',
+    'partial',
+    'flaky',
+    'unknown',
+  ]) {
+    const summary = build(
+      [
+        testRun({ title: 'login', statuses: ['passed'] }),
+        testRun({ title: 'shell', file: 'shell.spec.ts', statuses: ['passed'] }),
+      ],
+      { resultStatus },
+    );
+    const xml = renderJUnit(summary);
+
+    assert.notEqual(summary.status, 'passed', `resultStatus ${resultStatus} must not summarize as passed`);
+    assert.equal(summary.resultStatus, resultStatus);
+    assert.equal(summary.completeTierA, false);
+    assert.match(
+      xml,
+      new RegExp(`sp-ui.status" value="${summary.status}"`),
+      `resultStatus ${resultStatus} must be visible in JUnit`,
+    );
+    assert.doesNotMatch(xml, /sp-ui.completeTierA" value="true"/);
+    assert.match(xml, /<error type="(?:cancelled|failed|flaky|partial|setup-failed|timedout)"/);
+    assert.doesNotMatch(
+      xml,
+      /sp-ui.status" value="passed"/,
+      `resultStatus ${resultStatus} must not emit a passing sp-ui.status property`,
+    );
+  }
+});
+
 test('JUnit marks setup failures and partial selections with a suite-level error', () => {
   const setup = build([], {
     setupFailure: true,

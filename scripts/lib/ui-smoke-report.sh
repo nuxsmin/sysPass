@@ -11,11 +11,73 @@ ui_smoke_remove_error_context() {
   find "$output_dir" -type f -name 'error-context.md' -delete 2>/dev/null || true
 }
 
+# ui_smoke_verify_retained SUMMARY_DIR
+#
+# Succeed only when every allowlisted retained artifact exists and is non-empty.
+ui_smoke_verify_retained() {
+  local summary_dir=${1:-}
+  local artifact
+  local missing=0
+
+  for artifact in run-summary.json junit.xml upload-manifest.json; do
+    if [ ! -s "$summary_dir/$artifact" ]; then
+      echo "ERROR: retained artifact missing or empty: $summary_dir/$artifact" >&2
+      missing=1
+    fi
+  done
+
+  return "$missing"
+}
+
+# ui_smoke_retain_artifacts OUTPUT_DIR SUMMARY_DIR UI_DIR
+#
+# Run the retention step and then prove that all three allowlisted artifacts
+# were retained. A zero exit from the retention command alone is not success.
+ui_smoke_retain_artifacts() {
+  local output_dir=$1
+  local summary_dir=$2
+  local ui_dir=$3
+
+  if ! node "$ui_dir/src/retain.mjs" --output "$output_dir" --destination "$summary_dir"; then
+    echo "ERROR: failed to retain sanitized summary artifacts" >&2
+    return 1
+  fi
+
+  ui_smoke_verify_retained "$summary_dir"
+}
+
+# ui_smoke_finalize_report OUTPUT_DIR SUMMARY_ROOT UI_DIR RUN_ID
+#
+# Retention entry point for a run that reached Playwright. Prints success only
+# after the complete allowlisted set has been verified.
+ui_smoke_finalize_report() {
+  local output_dir=$1
+  local summary_root=$2
+  local ui_dir=$3
+  local run_id=$4
+  local summary_dir="$summary_root/$run_id"
+
+  if [ ! -d "$output_dir" ]; then
+    echo "ERROR: run output directory is missing: $output_dir" >&2
+    return 1
+  fi
+
+  ui_smoke_remove_error_context "$output_dir"
+
+  if ! ui_smoke_retain_artifacts "$output_dir" "$summary_dir" "$ui_dir"; then
+    return 1
+  fi
+
+  echo "Retained sanitized summary: $summary_dir"
+  return 0
+}
+
 # ui_smoke_setup_report STATUS OUTPUT_DIR RUN_ROOT SUMMARY_ROOT UI_DIR RUN_ID STARTED_AT
 #
 # Write and retain a setup-failure report when the runner did not reach or
 # finish Playwright. Returns non-zero when a required summary cannot be
-# produced or retained, and prints success only after a summary exists.
+# produced or retained, and prints success only after the complete retained
+# artifact set exists.
 ui_smoke_setup_report() {
   local status=$1
   local output_dir=$2
@@ -43,19 +105,24 @@ ui_smoke_setup_report() {
 
   ui_smoke_remove_error_context "$output_dir"
 
+  summary_dir="$summary_root/$run_id"
+
+  if [ -s "$summary_dir/run-summary.json" ] \
+    && [ -s "$summary_dir/junit.xml" ] \
+    && [ -s "$summary_dir/upload-manifest.json" ]; then
+    remove_temporary_output
+    return 0
+  fi
+
   if [ -f "$output_dir/run-summary.json" ]; then
-    summary_dir="$summary_root/$run_id"
-
-    if [ ! -f "$summary_dir/run-summary.json" ]; then
-      if ! node "$ui_dir/src/retain.mjs" --output "$output_dir" --destination "$summary_dir" >/dev/null 2>&1; then
-        echo "ERROR: failed to retain sanitized summary" >&2
-        remove_temporary_output
-        return 1
-      fi
-
-      echo "Retained sanitized summary: $summary_dir"
+    if ! ui_smoke_retain_artifacts "$output_dir" "$summary_dir" "$ui_dir" >/dev/null 2>&1; then
+      ui_smoke_verify_retained "$summary_dir" || true
+      echo "ERROR: failed to retain sanitized summary" >&2
+      remove_temporary_output
+      return 1
     fi
 
+    echo "Retained sanitized summary: $summary_dir"
     remove_temporary_output
     return 0
   fi
@@ -84,9 +151,8 @@ ui_smoke_setup_report() {
     return 1
   fi
 
-  summary_dir="$summary_root/$run_id"
-
-  if ! node "$ui_dir/src/retain.mjs" --output "$output_dir" --destination "$summary_dir" >/dev/null 2>&1; then
+  if ! ui_smoke_retain_artifacts "$output_dir" "$summary_dir" "$ui_dir" >/dev/null 2>&1; then
+    ui_smoke_verify_retained "$summary_dir" || true
     echo "ERROR: failed to retain sanitized setup-failure summary" >&2
     remove_temporary_output
     return 1

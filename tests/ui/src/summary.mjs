@@ -272,7 +272,7 @@ export function buildRunSummary({
 
   if (isCancelled) {
     status = 'cancelled';
-  } else if (setupFailure) {
+  } else if (setupFailure || resultStatus === 'setup-failed') {
     status = 'setup-failed';
   } else if (resultStatus === 'timedout') {
     status = 'timedout';
@@ -280,13 +280,20 @@ export function buildRunSummary({
     status = 'failed';
   } else if (counts.flaky > 0) {
     status = 'flaky';
+  } else if (resultStatus === 'failed' || resultStatus === 'unknown') {
+    status = 'failed';
+  } else if (resultStatus === 'flaky') {
+    status = 'flaky';
   } else if (
+    resultStatus === 'partial' ||
     partialSelection ||
     counts.skipped > 0 ||
     counts.notRun > 0 ||
     counts.completed !== counts.selected
   ) {
     status = 'partial';
+  } else if (resultStatus !== 'passed') {
+    status = 'failed';
   }
 
   const completeTierA =
