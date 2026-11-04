@@ -4,11 +4,20 @@ const JSON_ROUTES = new Set([
   'login/login',
   'items/notifications',
 ]);
-const LOGIN_ROUTES = new Set(['login/index', 'login/login']);
 const LOGOUT_SCRIPT = /sysPassApp\.actions\.main\.logout\s*\(/;
 const LOGIN_LOCATION = /(?:\?|&)r=login(?:\/|&|$)/;
+const NAVIGATION_REQUEST_ABORT = /net::ERR_ABORTED/;
 const NAVIGATION_BODY_LOSS =
   /navigated away|No resource with given identifier found|Target page, context or browser has been closed/i;
+const REDIRECT_BODY_UNAVAILABLE = /Response body is unavailable for redirect responses/i;
+
+/**
+ * @param {string | null} route
+ * @returns {boolean}
+ */
+function isLoginRoute(route) {
+  return route === 'login' || (route !== null && route.startsWith('login/'));
+}
 
 /**
  * Extract the `controller/action` pair from an `r` query parameter.
@@ -176,6 +185,28 @@ export class PageDiagnostics {
   /** @param {Contract | null} contract */
   setContract(contract) {
     this.contract = contract;
+    this.reinspectRecords();
+  }
+
+  /**
+   * Re-evaluate bodies recorded before a contract was installed so a contract
+   * set immediately before or during navigation still checks content and
+   * format for responses that arrived first.
+   */
+  reinspectRecords() {
+    for (const record of this.records) {
+      if (record.body === undefined || record.cancelled) {
+        continue;
+      }
+
+      record.format = this.resolveFormat(record);
+
+      if (record.format === 'json') {
+        this.inspectJson(record, record.body);
+      } else {
+        this.inspectHtml(record, record.body);
+      }
+    }
   }
 
   /** @param {boolean} value */
@@ -209,18 +240,26 @@ export class PageDiagnostics {
    * @param {{route?: string}} [extra]
    */
   addWarning(kind, message, extra = {}) {
+    const dedupeKey = `${kind}\0${message}\0${extra.route ?? ''}`;
+
+    if (this.warningList.some((warning) => `${warning.kind}\0${warning.message}\0${warning.route ?? ''}` === dedupeKey)) {
+      return;
+    }
+
     this.warningList.push({ kind, message, ...extra });
   }
 
   /**
-   * Mark requests that are currently in flight as expected navigation
-   * cancellations. Called when the main frame starts a new navigation.
+   * Mark requests already in flight in the navigation mode being left as
+   * expected navigation cancellations. Called when the main frame starts a
+   * new navigation; requests started afterwards belong to the new mode and are
+   * never covered by this flag.
    */
   beginNavigation() {
     this.navigationStartedAt = this.now();
 
     for (const record of this.requests.values()) {
-      if (record.finishedAt === undefined) {
+      if (record.finishedAt === undefined && record.startedAt <= this.navigationStartedAt) {
         record.expectedAbort = true;
       }
     }
@@ -325,6 +364,17 @@ export class PageDiagnostics {
       this.recordSessionLoss(`redirect to the login page from ${record.url}`, record.route);
     }
 
+    if (status >= 300 && status < 400) {
+      // Redirect responses have no readable body in Playwright. Finish the
+      // record without scheduling an inspection so the real
+      // "Response body is unavailable for redirect responses" error is never
+      // misreported as a body-inspection failure.
+      record.inspected = true;
+      record.finishedAt = this.now();
+      this.pending.delete(id);
+      return;
+    }
+
     if (!record.route) {
       record.finishedAt = this.now();
       return;
@@ -379,6 +429,7 @@ export class PageDiagnostics {
     }
 
     record.body = body;
+    record.format = this.resolveFormat(record);
     record.inspected = true;
     record.finishedAt = this.now();
     this.pending.delete(id);
@@ -504,21 +555,36 @@ export class PageDiagnostics {
       return;
     }
 
+    if (
+      record.status !== undefined &&
+      record.status >= 300 &&
+      record.status < 400 &&
+      REDIRECT_BODY_UNAVAILABLE.test(message)
+    ) {
+      record.inspected = true;
+      record.finishedAt = this.now();
+      this.pending.delete(id);
+      return;
+    }
+
     const navigationCancelled =
       NAVIGATION_BODY_LOSS.test(message) &&
       (record.expectedAbort ||
         (this.navigationStartedAt !== null &&
           this.navigationStartedAt >= (record.respondedAt ?? record.startedAt)));
 
-    record.inspected = true;
     record.finishedAt = this.now();
     this.pending.delete(id);
 
     if (navigationCancelled) {
       record.cancelled = true;
+      // A cancelled action was not inspected successfully and must never
+      // satisfy a required-action contract.
+      record.inspected = false;
       return;
     }
 
+    record.inspected = false;
     this.addProblem(
       'body-inspection',
       `action ${record.route} body could not be inspected: ${message}`,
@@ -590,14 +656,16 @@ export class PageDiagnostics {
       return;
     }
 
-    if (record.expectedAbort) {
+    if (record.expectedAbort && NAVIGATION_REQUEST_ABORT.test(errorText)) {
       record.cancelled = true;
+      record.inspected = false;
       record.finishedAt = this.now();
       this.pending.delete(id);
       return;
     }
 
     record.error = errorText;
+    record.inspected = false;
     record.finishedAt = this.now();
     this.pending.delete(id);
 
@@ -661,6 +729,7 @@ export class PageDiagnostics {
         record.route === route &&
         record.startedAt >= since &&
         record.finishedAt !== undefined &&
+        record.cancelled !== true &&
         record.inspected !== false,
     );
   }
@@ -703,6 +772,54 @@ export class PageDiagnostics {
   }
 
   /**
+   * @param {Problem} problem
+   * @returns {string}
+   */
+  formatProblem(problem) {
+    const route = problem.route ? ` [${problem.route}]` : '';
+
+    return `${problem.kind}${route}: ${problem.message}`;
+  }
+
+  /**
+   * Append every recorded problem to a readiness failure so request, HTTP,
+   * JSON, session-loss and login-page causes are not replaced by a generic
+   * completion timeout.
+   *
+   * @param {string} message
+   * @returns {string}
+   */
+  appendProblems(message) {
+    if (this.problemList.length === 0) {
+      return message;
+    }
+
+    const details = this.problemList.map((problem) => this.formatProblem(problem)).join(' | ');
+
+    return message.includes(details) ? message : `${message}; detector problems: ${details}`;
+  }
+
+  /**
+   * @param {unknown} error
+   * @returns {unknown}
+   */
+  withProblems(error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const combined = this.appendProblems(message);
+
+    return combined === message ? error : new Error(combined);
+  }
+
+  /**
+   * @param {string} baseMessage
+   */
+  assertNoRecordedProblems(baseMessage) {
+    if (this.problemList.length > 0) {
+      throw new Error(this.appendProblems(baseMessage));
+    }
+  }
+
+  /**
    * @param {string[]} expected
    * @param {number} since
    * @returns {string}
@@ -727,6 +844,8 @@ export class PageDiagnostics {
    */
   async waitForAction(route, since, deadline) {
     while (this.now() < deadline) {
+      this.assertNoRecordedProblems(this.describeMissing([route], since));
+
       const completed = this.completedActions(route, since);
 
       if (completed.length > 0) {
@@ -736,7 +855,7 @@ export class PageDiagnostics {
       await this.sleep(10);
     }
 
-    throw new Error(this.describeMissing([route], since));
+    throw new Error(this.appendProblems(this.describeMissing([route], since)));
   }
 
   /**
@@ -796,11 +915,13 @@ export class PageDiagnostics {
     const pending = this.pendingRoutes(since);
 
     throw new Error(
-      [
-        `No ${this.quietWindowMs}ms action-scoped quiet window before the readiness deadline`,
-        `pending: ${pending.join(', ') || 'none'}`,
-        `observed: ${this.observedRoutes(since).join(', ') || 'none'}`,
-      ].join('; '),
+      this.appendProblems(
+        [
+          `No ${this.quietWindowMs}ms action-scoped quiet window before the readiness deadline`,
+          `pending: ${pending.join(', ') || 'none'}`,
+          `observed: ${this.observedRoutes(since).join(', ') || 'none'}`,
+        ].join('; '),
+      ),
     );
   }
 
@@ -818,14 +939,29 @@ export class PageDiagnostics {
   assertNotOnLoginPage(since, currentUrl) {
     const route = parseActionRoute(currentUrl);
 
-    if (route !== null && LOGIN_ROUTES.has(route)) {
-      this.addProblem('login-page', `unexpected login page after authenticated readiness began: ${currentUrl}`, {
-        url: currentUrl,
-      });
+    if (isLoginRoute(route)) {
+      this.addProblem(
+        'login-page',
+        `unexpected login page after authenticated readiness began: ${currentUrl} (route: ${route})`,
+        { route: route ?? undefined, url: currentUrl },
+      );
     }
 
-    if (this.records.some((record) => record.route === 'login/index' && record.startedAt >= since)) {
-      this.addProblem('login-navigation', 'unexpected navigation to the login page after authenticated readiness began');
+    const loginNavigation = this.records.find(
+      (record) =>
+        isLoginRoute(record.route) &&
+        record.startedAt >= since &&
+        // A POST to login/login is the authentication action, not an
+        // unexpected navigation to the login page.
+        record.method !== 'POST',
+    );
+
+    if (loginNavigation) {
+      this.addProblem(
+        'login-navigation',
+        `unexpected navigation to the login page after authenticated readiness began (route: ${loginNavigation.route})`,
+        { route: loginNavigation.route ?? undefined, url: loginNavigation.url },
+      );
     }
   }
 

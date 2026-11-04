@@ -27,11 +27,13 @@ test('anonymous login page loads with its current boot contract', async ({ baseU
   expect(await page.evaluate(() => navigator.userAgent)).toBe(FIXED_USER_AGENT);
 
   const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+  const contract = loginContract();
+  tracker.setContract(contract);
   const since = Date.now();
 
   try {
     await page.goto(`/index.php?r=${LOGIN_ROUTE}`, { waitUntil: 'domcontentloaded' });
-    await tracker.waitForReady(loginContract(), since);
+    await tracker.waitForReady(contract, since);
 
     const boot = tracker.getJson('bootstrap/getEnvironment') as
       | {

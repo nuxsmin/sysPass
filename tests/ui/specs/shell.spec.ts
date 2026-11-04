@@ -39,6 +39,7 @@ test.describe.configure({ mode: 'serial' });
 
 test('authenticates once and loads the complete seeded shell', async ({ sessionPage: { page, context } }) => {
   const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+  tracker.setContract(SHELL_CONTRACT);
 
   try {
     const since = await loginThroughUi(page, ADMIN_CREDENTIALS);
@@ -63,10 +64,6 @@ test('authenticates once and loads the complete seeded shell', async ({ sessionP
 
     const accountIndex = tracker.getAction('account/index', since);
     expect(accountIndex?.status).toBe(200);
-    expect(accountIndex?.body).toContain(FIXTURE.names.parentAccount);
-    expect(accountIndex?.body).toContain(FIXTURE.names.childAccount);
-    expect(accountIndex?.body).toContain(FIXTURE.names.client);
-    expect(accountIndex?.body).toContain(FIXTURE.names.category);
 
     await expect(page.locator('body')).toHaveClass(/main/);
     await expect(page.locator('#wrap')).toBeVisible();
@@ -88,6 +85,7 @@ test('reuses the authenticated session across 120-second SID regeneration', asyn
   test.setTimeout(180_000);
 
   const tracker = new ActionTracker(page, context, { sessionEstablished: true });
+  tracker.setContract(SHELL_CONTRACT);
   const baselineSince = Date.now();
 
   try {
@@ -123,12 +121,14 @@ test('a fresh sequential context uses the rotated cookies without logging in aga
   sessionPage: { page, context },
 }) => {
   const tracker = new ActionTracker(page, context, { sessionEstablished: true });
+  tracker.setContract(SHELL_CONTRACT);
   const since = Date.now();
 
   try {
     await page.goto('/index.php?r=index', { waitUntil: 'domcontentloaded' });
     await tracker.waitForReady(SHELL_CONTRACT, since);
 
+    expect(tracker.observedRoutes(since)).not.toContain('login');
     expect(tracker.observedRoutes(since)).not.toContain('login/login');
     expect(tracker.observedRoutes(since)).not.toContain('login/index');
 

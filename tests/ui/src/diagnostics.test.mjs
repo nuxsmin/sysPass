@@ -383,6 +383,173 @@ test('classifyMarkup reports critical and warning sources separately', () => {
   assert.ok(result.warnings.some((item) => item.includes('msg-warning')));
 });
 
+test('readiness surfaces a recorded request failure instead of only a missing action', async () => {
+  const detector = makeDetector();
+  detector.setContract(CONTRACT);
+
+  start(detector, '1', 'account/index');
+  detector.observeRequestFailure({ id: '1', errorText: 'net::ERR_CONNECTION_RESET' });
+
+  await assert.rejects(
+    () => detector.waitForActions(['account/index'], 0, Date.now() + 200),
+    (error) =>
+      /account\/index/.test(error.message) &&
+      /request-failed/.test(error.message) &&
+      /action account\/index failed: GET/.test(error.message) &&
+      /ERR_CONNECTION_RESET/.test(error.message),
+  );
+});
+
+test('readiness surfaces session loss before blocking on expected actions', async () => {
+  const detector = makeDetector({ sessionEstablished: true });
+  detector.setContract(CONTRACT);
+
+  complete(detector, '1', 'bootstrap/getEnvironment', {
+    body: JSON.stringify({ status: 10, description: 'Session not started or timed out' }),
+  });
+
+  await assert.rejects(
+    () => detector.waitForActions(['account/index'], 0, Date.now() + 200),
+    (error) => /session-loss/.test(error.message) && /session lost/.test(error.message),
+  );
+});
+
+test('a contract installed after body inspection re-evaluates content and format', () => {
+  const detector = makeDetector();
+
+  complete(detector, '1', 'account/index', { body: '<div id="search-rows"></div>' });
+  assert.deepEqual(detector.problems(), []);
+  assert.equal(detector.completedActions('account/index', 0).length, 1);
+
+  detector.setContract(CONTRACT);
+
+  assert.ok(
+    detector
+      .problems()
+      .some((problem) => problem.kind === 'missing-content' && problem.route === 'account/index'),
+    'the contract must inspect records whose bodies were recorded before it was installed',
+  );
+});
+
+test('a late contract install re-inspects a JSON body whose route was not preconfigured', () => {
+  const detector = makeDetector();
+
+  complete(detector, '1', 'custom/action', { body: JSON.stringify({ status: 'ERROR' }) });
+  assert.deepEqual(detector.problems(), []);
+
+  detector.setContract({
+    name: 'late-contract',
+    actions: [{ route: 'custom/action', format: 'json' }],
+  });
+
+  assert.equal(detector.problems()[0]?.kind, 'json-status');
+  assert.equal(detector.problems()[0]?.route, 'custom/action');
+});
+
+test('a navigation does not hide a non-abort request failure', () => {
+  const detector = makeDetector();
+
+  start(detector, '1', 'account/index');
+  detector.beginNavigation();
+  detector.observeRequestFailure({ id: '1', errorText: 'net::ERR_CONNECTION_RESET' });
+
+  const [problem] = detector.problems();
+  assert.equal(problem.kind, 'request-failed');
+  assert.equal(problem.route, 'account/index');
+  assert.equal(detector.records[0].cancelled, false);
+});
+
+test('a cancelled required action is never reported as completed or inspected', () => {
+  const detector = makeDetector();
+  detector.setContract(CONTRACT);
+
+  start(detector, '1', 'account/index');
+  detector.observeResponse({
+    id: '1',
+    url: 'http://127.0.0.1:1234/index.php?r=account/index',
+    status: 200,
+    headers: { 'content-type': 'text/html' },
+  });
+  detector.beginNavigation();
+  detector.observeBodyFailure({
+    id: '1',
+    message: 'Response body is not available for a response that was navigated away from.',
+  });
+
+  assert.equal(detector.records[0].cancelled, true);
+  assert.equal(detector.records[0].inspected, false);
+  assert.deepEqual(detector.completedActions('account/index', 0), []);
+});
+
+test('the bare login route is detected as a login page', () => {
+  const detector = makeDetector({ sessionEstablished: true });
+
+  detector.assertNotOnLoginPage(0, 'http://127.0.0.1:1234/index.php?r=login');
+
+  assert.equal(detector.problems()[0].kind, 'login-page');
+  assert.match(detector.problems()[0].message, /\?r=login/);
+});
+
+test('a navigation record for the bare login route is detected', () => {
+  const detector = makeDetector({ sessionEstablished: true });
+
+  start(detector, '1', 'login');
+  detector.assertNotOnLoginPage(0, 'http://127.0.0.1:1234/index.php?r=index');
+
+  assert.ok(detector.problems().some((problem) => problem.kind === 'login-navigation'));
+});
+
+test('the login action itself is not reported as an unexpected login navigation', () => {
+  const detector = makeDetector({ sessionEstablished: true });
+
+  start(detector, '1', 'login/login', { method: 'POST' });
+  detector.assertNotOnLoginPage(0, 'http://127.0.0.1:1234/index.php?r=index');
+
+  assert.deepEqual(detector.problems(), []);
+});
+
+test('a tracked redirect does not report an unavailable redirect body', () => {
+  const detector = makeDetector({ sessionEstablished: true });
+  detector.setContract(CONTRACT);
+
+  start(detector, '1', 'account/index');
+  detector.observeResponse({
+    id: '1',
+    url: 'http://127.0.0.1:1234/index.php?r=account/index',
+    status: 302,
+    headers: { location: '/index.php?r=login' },
+  });
+  detector.observeBodyFailure({
+    id: '1',
+    message: 'Response body is unavailable for redirect responses',
+  });
+
+  const kinds = detector.problems().map((problem) => problem.kind);
+  assert.ok(kinds.includes('session-loss'));
+  assert.ok(!kinds.includes('body-inspection'), 'redirect bodies must not be read');
+  assert.equal(detector.records[0].inspected, true);
+  assert.deepEqual(detector.pendingRoutes(), []);
+});
+
+test('a non-login redirect does not produce a spurious body failure', () => {
+  const detector = makeDetector({ sessionEstablished: true });
+  detector.setContract(CONTRACT);
+
+  start(detector, '1', 'account/index');
+  detector.observeResponse({
+    id: '1',
+    url: 'http://127.0.0.1:1234/index.php?r=account/index',
+    status: 307,
+    headers: { location: '/index.php?r=items/notifications' },
+  });
+  detector.observeBodyFailure({
+    id: '1',
+    message: 'Response body is unavailable for redirect responses',
+  });
+
+  assert.deepEqual(detector.problems(), []);
+});
+
 test('a JSON content type wins over an HTML fragment expectation so status 10 is not missed', () => {
   const detector = makeDetector({ sessionEstablished: true });
   detector.setContract(CONTRACT);

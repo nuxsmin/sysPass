@@ -232,42 +232,53 @@ export class ActionTracker {
     deadline = Date.now() + this.timeoutMs,
   ): Promise<void> {
     this.detector.setContract(contract);
-    await this.detector.waitForActions(
-      contract.actions.map((action) => action.route),
-      since,
-      deadline,
-    );
-
-    const overlay: PageContract['conditions'][number] = {
-      kind: 'hidden',
-      selector: '#wrap-loading',
-      label: 'loading overlay must be hidden',
-    };
-    const conditions = contract.conditions.some(
-      (condition) => condition.kind === 'hidden' && condition.selector === '#wrap-loading',
-    )
-      ? contract.conditions
-      : [...contract.conditions, overlay];
-
-    await waitForConditions(conditions, this.probe(), deadline);
-    await this.detector.waitForQuiet(since, deadline);
-    await this.detector.drain();
 
     if (this.detector.sessionEstablished) {
       this.detector.assertNotOnLoginPage(since, this.page.url());
     }
 
-    this.detector.observeMarkup(await this.page.content());
-
-    for (const warning of this.detector.warnings() as Array<{ message: string }>) {
-      if (!this.reportedWarnings.has(warning.message)) {
-        this.reportedWarnings.add(warning.message);
-        console.warn(`[ui-smoke warning] ${warning.message}`);
-      }
-    }
-
-    await waitForConditions([overlay], this.probe(), deadline);
     this.detector.assertNoProblems();
+
+    try {
+      await this.detector.waitForActions(
+        contract.actions.map((action) => action.route),
+        since,
+        deadline,
+      );
+
+      const overlay: PageContract['conditions'][number] = {
+        kind: 'hidden',
+        selector: '#wrap-loading',
+        label: 'loading overlay must be hidden',
+      };
+      const conditions = contract.conditions.some(
+        (condition) => condition.kind === 'hidden' && condition.selector === '#wrap-loading',
+      )
+        ? contract.conditions
+        : [...contract.conditions, overlay];
+
+      await waitForConditions(conditions, this.probe(), deadline);
+      await this.detector.waitForQuiet(since, deadline);
+      await this.detector.drain();
+
+      if (this.detector.sessionEstablished) {
+        this.detector.assertNotOnLoginPage(since, this.page.url());
+      }
+
+      this.detector.observeMarkup(await this.page.content());
+
+      for (const warning of this.detector.warnings() as Array<{ message: string }>) {
+        if (!this.reportedWarnings.has(warning.message)) {
+          this.reportedWarnings.add(warning.message);
+          console.warn(`[ui-smoke warning] ${warning.message}`);
+        }
+      }
+
+      await waitForConditions([overlay], this.probe(), deadline);
+      this.detector.assertNoProblems();
+    } catch (error) {
+      throw this.detector.withProblems(error);
+    }
   }
 
   async waitForActions(routes: string[], since: number, deadline: number): Promise<unknown[]> {
