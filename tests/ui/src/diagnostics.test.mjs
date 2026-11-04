@@ -12,6 +12,21 @@ const CONTRACT = {
   ],
 };
 
+const ACCOUNT_VIEW_CONTRACT = {
+  name: 'test-account-view',
+  actions: [
+    { route: 'account/view', format: 'html', content: ['E2E_Child_Account'] },
+    { route: 'accountFile/list', format: 'html', content: ['E2E_notes.txt'] },
+    { route: 'items/accountsUser', format: 'json', content: ['E2E_Parent_Account'] },
+  ],
+};
+
+const ACCOUNT_SHELL_MARKUP = [
+  '<div id="title">Account Details - E2E_Child_Account</div>',
+  '<div id="list-account-files"></div>',
+  '<select id="parent_account_id"><option value="">Select Account</option></select>',
+].join('');
+
 function makeDetector(options = {}) {
   return new PageDiagnostics({
     quietWindowMs: 20,
@@ -65,6 +80,50 @@ test('a suppressed dispatch fails when no request was issued even with surroundi
 
   const result = detector.result();
   assert.equal(result.problems.length, 0, 'missing dispatch is reported by readiness');
+});
+
+test('a suppressed account initializer fails with the missing file route even when a panel exists', async () => {
+  const detector = makeDetector();
+  detector.setContract(ACCOUNT_VIEW_CONTRACT);
+
+  complete(detector, '1', 'account/view', { body: ACCOUNT_SHELL_MARKUP });
+
+  await assert.rejects(
+    () => detector.waitForActions(['accountFile/list', 'items/accountsUser'], 0, Date.now() + 40),
+    (error) => /accountFile\/list/.test(error.message) && /observed: account\/view/.test(error.message),
+  );
+});
+
+test('a static file-list placeholder fails the account file contract with its route named', () => {
+  const detector = makeDetector();
+  detector.setContract(ACCOUNT_VIEW_CONTRACT);
+
+  complete(detector, '1', 'account/view', { body: ACCOUNT_SHELL_MARKUP });
+  complete(detector, '2', 'accountFile/list', {
+    body: '<div id="list-account-files"></div>',
+  });
+
+  const problem = detector
+    .problems()
+    .find((entry) => entry.kind === 'missing-content' && entry.route === 'accountFile/list');
+
+  assert.equal(problem?.route, 'accountFile/list');
+  assert.match(problem?.message ?? '', /E2E_notes\.txt/);
+});
+
+test('a missing linked-account action fails with the parent route named despite the placeholder option', async () => {
+  const detector = makeDetector();
+  detector.setContract(ACCOUNT_VIEW_CONTRACT);
+
+  complete(detector, '1', 'account/view', { body: ACCOUNT_SHELL_MARKUP });
+  complete(detector, '2', 'accountFile/list', {
+    body: '<div id="list-account-files">E2E_notes.txt</div>',
+  });
+
+  await assert.rejects(
+    () => detector.waitForAction('items/accountsUser', 0, Date.now() + 40),
+    /items\/accountsUser/,
+  );
 });
 
 test('an action HTTP failure is attributed to its route', async () => {

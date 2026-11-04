@@ -1,6 +1,15 @@
+import type { Page } from '@playwright/test';
+
 import { test, expect } from '../src/session';
 import { ADMIN_CREDENTIALS, FIXTURE } from '../src/fixture';
-import { loginContract, shellContract } from '../src/contracts';
+import {
+  accountCreateContract,
+  accountEditContract,
+  accountViewContract,
+  loginContract,
+  shellContract,
+  type AccountNavigationMode,
+} from '../src/contracts';
 import { loginThroughUi } from '../src/login';
 import { ActionTracker } from '../src/readiness';
 
@@ -12,6 +21,13 @@ const SHELL_CONTRACT = shellContract({
   client: FIXTURE.names.client,
   category: FIXTURE.names.category,
 });
+
+const ACCOUNT_PAGE_OPTIONS = {
+  accountId: FIXTURE.ids.accounts.child,
+  accountName: FIXTURE.names.childAccount,
+  parentAccount: FIXTURE.names.parentAccount,
+  childFile: FIXTURE.names.childFile,
+};
 
 interface BootPayload {
   status?: string;
@@ -33,6 +49,32 @@ interface NotificationsPayload {
     message?: string;
     notifications?: unknown[];
   };
+}
+
+async function openSeededShell(page: Page, tracker: ActionTracker): Promise<void> {
+  tracker.setContract(SHELL_CONTRACT);
+  const since = Date.now();
+
+  await page.goto('/index.php?r=index', { waitUntil: 'domcontentloaded' });
+  await tracker.waitForReady(SHELL_CONTRACT, since);
+}
+
+async function openInShellAccountView(page: Page, tracker: ActionTracker): Promise<void> {
+  const link = page
+    .locator('#search-rows .account-label', { hasText: FIXTURE.names.childAccount })
+    .locator('[data-onclick="account/view"]')
+    .first();
+
+  await expect(link).toHaveAttribute('data-action-route', 'account/view');
+  await expect(link).toHaveAttribute('data-item-id', String(FIXTURE.ids.accounts.child));
+
+  const contract = accountViewContract({ mode: 'in-shell', ...ACCOUNT_PAGE_OPTIONS });
+
+  tracker.setContract(contract);
+  const since = Date.now();
+
+  await link.click();
+  await tracker.waitForReady(contract, since);
 }
 
 test.describe.configure({ mode: 'serial' });
@@ -145,4 +187,143 @@ test('a fresh sequential context uses the rotated cookies without logging in aga
 test('the login contract is available for anonymous navigation', () => {
   expect(loginContract().actions.map((action) => action.route)).toContain('login/index');
   expect(READINESS_TIMEOUT_MS).toBe(15_000);
+});
+
+test('account view loads in-shell with the seeded file and linked-account content', async ({
+  sessionPage: { page, context },
+}) => {
+  const tracker = new ActionTracker(page, context, { sessionEstablished: true });
+
+  try {
+    await openSeededShell(page, tracker);
+    await openInShellAccountView(page, tracker);
+  } finally {
+    tracker.dispose();
+  }
+});
+
+test('account create loads in-shell with the seeded linked-account option', async ({
+  sessionPage: { page, context },
+}) => {
+  const tracker = new ActionTracker(page, context, { sessionEstablished: true });
+
+  try {
+    await openSeededShell(page, tracker);
+
+    const link = page.locator('a.btn-menu[data-route="account/create"]').first();
+    await expect(link).toHaveAttribute('data-view', 'account');
+
+    const contract = accountCreateContract({
+      mode: 'in-shell',
+      parentAccount: FIXTURE.names.parentAccount,
+    });
+
+    tracker.setContract(contract);
+    const since = Date.now();
+
+    await link.click();
+    await tracker.waitForReady(contract, since);
+  } finally {
+    tracker.dispose();
+  }
+});
+
+test('account edit loads in-shell with the seeded file and linked-account content', async ({
+  sessionPage: { page, context },
+}) => {
+  const tracker = new ActionTracker(page, context, { sessionEstablished: true });
+
+  try {
+    await openSeededShell(page, tracker);
+    await openInShellAccountView(page, tracker);
+
+    const link = page.locator('.item-actions [data-onclick="account/edit"]').first();
+    await expect(link).toHaveAttribute('data-action-route', 'account/edit');
+    await expect(link).toHaveAttribute('data-item-id', String(FIXTURE.ids.accounts.child));
+
+    const contract = accountEditContract({ mode: 'in-shell', ...ACCOUNT_PAGE_OPTIONS });
+
+    tracker.setContract(contract);
+    const since = Date.now();
+
+    await link.click();
+    await tracker.waitForReady(contract, since);
+  } finally {
+    tracker.dispose();
+  }
+});
+
+test('account view loads by direct full-page URL with file and linked-account actions', async ({
+  sessionPage: { page, context },
+}) => {
+  const contract = accountViewContract({ mode: 'direct', ...ACCOUNT_PAGE_OPTIONS });
+  const tracker = new ActionTracker(page, context, { sessionEstablished: true });
+  tracker.setContract(contract);
+  const since = Date.now();
+
+  try {
+    await page.goto(`/index.php?r=account/view/${FIXTURE.ids.accounts.child}`, {
+      waitUntil: 'domcontentloaded',
+    });
+    await tracker.waitForReady(contract, since);
+  } finally {
+    tracker.dispose();
+  }
+});
+
+test('account create loads by direct full-page URL with the seeded linked-account option', async ({
+  sessionPage: { page, context },
+}) => {
+  const contract = accountCreateContract({
+    mode: 'direct',
+    parentAccount: FIXTURE.names.parentAccount,
+  });
+  const tracker = new ActionTracker(page, context, { sessionEstablished: true });
+  tracker.setContract(contract);
+  const since = Date.now();
+
+  try {
+    await page.goto('/index.php?r=account/create', { waitUntil: 'domcontentloaded' });
+    await tracker.waitForReady(contract, since);
+  } finally {
+    tracker.dispose();
+  }
+});
+
+test('account edit loads by direct full-page URL with file and linked-account actions', async ({
+  sessionPage: { page, context },
+}) => {
+  const contract = accountEditContract({ mode: 'direct', ...ACCOUNT_PAGE_OPTIONS });
+  const tracker = new ActionTracker(page, context, { sessionEstablished: true });
+  tracker.setContract(contract);
+  const since = Date.now();
+
+  try {
+    await page.goto(`/index.php?r=account/edit/${FIXTURE.ids.accounts.child}`, {
+      waitUntil: 'domcontentloaded',
+    });
+    await tracker.waitForReady(contract, since);
+  } finally {
+    tracker.dispose();
+  }
+});
+
+test('account contracts require file-list and linked-account actions in both navigation modes', () => {
+  for (const mode of ['in-shell', 'direct'] as AccountNavigationMode[]) {
+    expect(accountViewContract({ mode, ...ACCOUNT_PAGE_OPTIONS }).actions.map((action) => action.route)).toEqual([
+      'account/view',
+      'accountFile/list',
+      'items/accountsUser',
+    ]);
+    expect(accountEditContract({ mode, ...ACCOUNT_PAGE_OPTIONS }).actions.map((action) => action.route)).toEqual([
+      'account/edit',
+      'accountFile/list',
+      'items/accountsUser',
+    ]);
+    expect(
+      accountCreateContract({ mode, parentAccount: FIXTURE.names.parentAccount }).actions.map(
+        (action) => action.route,
+      ),
+    ).toEqual(['account/create', 'items/accountsUser']);
+  }
 });
