@@ -1,97 +1,126 @@
 # 0009 - Browser smoke suite for page-load actions
 
-Status: Accepted (2026-11-01); amended by ADR-0011 (2026-11-02) — the suite is not yet implemented, tier A gates the transport and boot changes only, and folding `bootstrap/getEnvironment` into the shell changes the boot path this suite's readiness is defined against.
-Related: ADR-0004 (#2041), ADR-0011 (#2089), tracking #1976
+Status: Accepted (2026-11-01); amended by ADR-0011 (2026-11-02) and the quality-review plan revision (2026-11-04). The suite and CI job remain unimplemented and unqualified.
+Related: ADR-0004 (#2041), ADR-0011 (#2089), suite #2075 and #2076-#2086, transport/boot #2096-#2098, attachment decision #2116, tracking #1976.
 
 ## Context
 
-ADR-0004 deliberately left browser end-to-end testing out, on the grounds that the in-process HTTP Integration Test covers routing, controller, use case and view. That holds for server-rendered HTML, but it cannot observe what the browser does after the response arrives. Every page boots `public/js/app-main.js`, which calls `index.php?r=bootstrap/getEnvironment` (`app/modules/web/Controllers/Bootstrap/GetEnvironmentController.php:95`) before binding any view behaviour. The authenticated shell then loads `account/index` (`public/js/app-triggers.js:269-270`) and `items/notifications` (`public/js/app-actions.js:1551-1559`), and account forms load `accountFile/list` and `items/accountsUser` (`public/js/app-actions.js:378-393,450-472`). When one of those requests fails or returns an error envelope, the user sees an empty content area, error markup, a stuck loading overlay or a silently swallowed JavaScript exception. None of that is visible to a test that dispatches a request in-process and asserts the body.
+ADR-0004 left browser end-to-end testing out because in-process HTTP Integration Tests cover routing, controller, use case and view. Those tests remain the right safety net for server-rendered content, but do not observe subsequent JavaScript initialization, request dispatch or fragment insertion.
 
-The suite shape in ADR-0004 also trusted that adding a second runtime was not worth the cost. The follow-up defect that motivated this ADR shows the cost of *not* having one: `status/checkRelease` is called by the shell (`public/js/app-actions.js:698`) but no matching controller exists, so the request returns 404 and the failure is reduced to a warning icon (`app-actions.js:726-730`). No PHP-level test could catch it, because the broken contract is between the rendered page and the request it makes.
+The current browser boot calls `bootstrap/getEnvironment` before binding views. The shell automatically loads `account/index` and `items/notifications`; account pages load files and parent-account items. Missing requests, failed responses or initialization errors can leave an empty area, static panel, stuck overlay or swallowed exception despite a valid initial HTML response.
 
-Two terms need pinning down for this decision. The browser never calls `api.php`; that is a token-authenticated JSON-RPC endpoint (`app/modules/api/Bootstrap.php:88-163`) used only by external clients. The browser's "API" is a **page-load action**: a web action at `index.php?r=<controller>/<action>` that returns an HTML fragment or an `ActionResponse` envelope (`lib/SP/Domain/Common/Dtos/ActionResponse.php:98-105`). This decision is about page-load actions, not the JSON-RPC API.
+The motivating defect is the shell's `status/checkRelease` request with no matching controller. PHP-level response assertions alone do not prove the browser dispatched the right action. This particular request is disabled in the deterministic suite, so the suite does not claim to detect that defect under its configured environment.
+
+Page-load Actions are Web actions used by the browser, currently under `index.php?r=<controller>/<action>`, returning HTML or an Action Response. They are not the token-authenticated `api.php` JSON-RPC API. The vocabulary is defined in `CONTEXT.md`.
 
 ## Decision
 
-### Scope
+### Scope and tiers
 
-The suite detects **loading and rendering failures caused by page-load actions**. It does not test layout: assertions are limited to presence and non-empty text of expected DOM roots, the loading overlay's state, console output and network outcomes. Geometry, computed styles and element positions are out of scope, so an unstyled but complete page passes.
+Detect missing or broken critical Page-load Actions and rendering/initialization failures. Assert specific DOM roots, meaningful action-produced content and dispatch/binding attributes, never layout, geometry or visual snapshots. The suite does not replace authorization, escaping or cryptographic compatibility tests.
 
-The suite is **read-only**. It does not save, delete, copy passwords, export or upload; those are workflow tests for a later suite. Page loads only.
+Page-load specs perform no user-initiated business writes: no save/delete/copy/export/upload/dialog workflows. Login, session activity, account view counters and audit writes are expected. The installer is a separate, explicitly stateful exception.
 
-### Tooling
+- **Tier A:** anonymous login, authenticated shell, and account view/create/edit in both in-shell and direct full-page navigation. The shell requires completed account-list and notification actions; view/edit require file-list content and create/edit require eligible parent-account options. Every page/mode must issue and complete its required actions and show the expected content. Static headings, placeholder options and a non-empty shell are insufficient.
+- **Tier B:** in-shell navigation to `accessManager`, `itemManager`, `securityManager`, `configManager`, `notification`, `userSettingsManager` and `plugin`. Assert each index's own positive contract and automatic actions. Report failures independently as annotation-only until this tier qualifies; do not hide a Tier A failure or falsely mark failed cases as passes.
+- **Installer:** an optional separate selection on a completely separate instance/configuration/cache/temp/session namespace and unique nonexistent database. Run last when selected, with zero retries and complete recreation before rerun. It does not block initial Tier A observation.
 
-A Playwright (TypeScript) suite in `tests/ui/` with its own `package.json` and lockfile, Chromium only, `workers: 1`, `retries: 0` locally and `1` in CI, fixed `en_US` locale and a fixed User-Agent. The User-Agent must be stable because the CSRF key is `sha1(User-Agent + client address)` (`lib/SP/Core/Crypt/Csrf.php:83-86`). Login happens once through the UI and is reused as Playwright `storageState`.
+Tier A is the browser prerequisite for ADR-0011's transport and boot changes only. HTTP Integration Tests, not browser availability, gate template migrations. Execution and required-check promotion are separate; no tier is currently claimed to gate merges.
 
-The runner is invoked through `.ai-cli/bin/ui-smoke` and that wrapper is added to `.ai-cli/allowed-commands.txt`, so agent sessions run it the way they run `$PHP_BIN`. No global npm installs.
+**Baseline defect owned by #2079:** `ControllerBase::upgradeView()` stamps direct-account `contentPage` as `view`/`create`/`edit`, while `app-triggers.js` registers `views.account`. Reproduce and minimally fix the missing initialization before declaring Tier A green. Do not remove required-action assertions or silently quarantine this defect.
 
-### Page tiers
+### Tooling and sessions
 
-- **Tier A (gating):** the pages that fire page-load actions — the logged-out login page, the main shell (which auto-loads `account/index`), account view, account create and account edit, each navigated both in-shell through `getContent` and by direct full-page URL. Account view/create/edit exercise different bootstrap branches: in-shell is the normal user path, direct URL is the full-page `upgradeView()` branch.
-- **Tier B (non-gating until stable):** in-shell navigation to the seven server-rendered indexes — `accessManager`, `itemManager`, `securityManager`, `configManager`, `notification`, `userSettingsManager`, `plugin` — asserting each content root is present and non-empty with no error markup. No dialogs: they are user-triggered, not page loads.
-- **Install wizard:** one separate spec, because it needs an uninstalled database. It runs last in the same CI job against a second empty database and does not share the seeded instance.
+Use Playwright/TypeScript in `tests/ui/` with its own package and lockfile, Chromium, one worker, browser locale `en-US`, application locale `en_US`, and stable User-Agent/client address. CSRF depends on User-Agent and client address. Default to zero retries locally and in CI; an explicit diagnostic retry must preserve first-attempt outcomes/evidence and use `failOnFlakyTests` for Tier A. Type-check the harness and forbid focused tests in CI.
 
-### Failure criteria
+Build application assets with root `npm ci` and `bash scripts/build-assets.sh`, then install the separate UI lockfile and pinned Chromium. No global packages or unpinned `npx` downloads. Node already exists in the asset toolchain; this adds a separate browser-test package, not the first Node dependency.
 
-A page load fails when any of these occur:
+Anonymous/login tests never inherit authenticated state. Authenticate once through the UI for the seeded suite; carry live cookie/storage changes between sequential authenticated contexts rather than repeatedly restoring an immutable snapshot. Verify reuse across legitimate 120-second SID regeneration (`SessionLifecycleHandler`, `Init::checkSessionLifeTime()`), which deletes the previous ID. Never silently re-login after actual session loss. Authenticated tests must not revisit the session-destroying login route.
 
-1. An uncaught `pageerror` or unhandled rejection.
-2. A `console.error` entry (the application funnels `log.error` there, `public/js/app-main.js:264-266`).
-3. Any `index.php?r=*` response with HTTP status 400 or above.
-4. HTTP 200 with an `ActionResponse` whose `status` is `ERROR`.
-5. `#content .error.round` (`public/js/app-main.js:388-392`) or `.toast-error` present.
-6. `#wrap-loading` still displayed after network quiet (`app/modules/web/themes/material-blue/js/app-theme.js:47-67`).
-7. An expected DOM root for that page is missing or empty.
+### Isolation and installation
 
-`WARNING` is annotated but does not fail. A response with `status: 10` (session expired, `app/modules/web/Mvc/Controller/ControllerTrait.php:61-70`) fails the spec as **session lost**; the suite does not silently re-authenticate, because that would hide the failure it exists to catch.
+The initial smoke job uses PHP 8.3 and MariaDB 10.3. Existing PHP checks cover the supported 8.3-8.5 range (`composer.json`: `>=8.3 <8.6`); a browser/PHP matrix is not required.
 
-### Readiness
+Provide `.ai-cli/bin/ui-smoke`, its allowed-command entry and starter prerequisite/run instructions. Define PHP/server/database/Node/browser execution locations, mounts, ports and lifetimes. Respect existing execution-time CLI/Docker approval rules; this decision does not grant permission to build images or create resources.
 
-Readiness is defined per page as: the page's explicit `readySelector` is present, the loading overlay is hidden, and no `index.php?r=*` request has been in flight for 300 ms. A hard cap of 15 s applies; a timeout reports which request was still pending. `networkidle` is not used: the application polls notifications every 120 s (`public/js/app-triggers.js:263-267`) and its default AJAX `timeout` is `0` (`public/js/app-requests.js:37-52`), so "idle" is not a reliable state.
+Generate runner-owned configuration/cache/temp/session/output paths and verify the effective paths inside PHP before mutation. Explicit forwarding and mounts are needed: the current PHP wrapper forwards neither `CONFIG_PATH` nor installer variables and mounts only the repository. Reject developer paths and aliases/symlinks into them, non-owned database names and arbitrary external origins. Never reuse a developer server. Cleanup after success/failure/interruption removes only run-owned resources.
 
-### Environment
+Separate application caches, including `Path::CACHE/config.cache`, per instance. `CACHE_PATH` only relocates DI compilation; it does not override application cache bindings. Use verified path bindings or isolated mounts/workspaces rather than assumed environment support. The installer and seeded instances must not share these caches.
 
-The runner generates a fresh configuration directory and points `CONFIG_PATH` at it; it refuses to start if `CONFIG_PATH` resolves to `app/config`, so a local run cannot touch a real instance. It installs with `sp:install` (`app/modules/cli/Commands/InstallCommand.php:56-72`) against MariaDB 10.3 and PHP 8.3, the supported floor; CI runs PHP 8.3–8.5.
+Normal `sp:install` owns creation of its unique nonexistent database and schema. Do not precreate that database through service `MYSQL_DATABASE` or preload `schemas/dbstructure.sql`. An explicitly selected hosting-mode alternative uses a pre-created empty database and has its own test. The browser wizard likewise owns database/schema creation; do not CLI-install its instance first.
 
-The UI suite owns a dedicated seed fixture under `tests/ui/fixtures/`, derived from `tests/res/datasets/syspass.sql` but with known credentials — including a known admin master password, which the shared fixture does not provide. The shared fixture is not modified, so DB-backed integration tests keep their contract. E2E credentials are committed with an obvious test-only naming convention: env indirection buys no security for a throwaway database and makes local reproduction harder.
+Own the fixture under `tests/ui/fixtures/`, reusing logical examples rather than unknown shared encrypted state. Generate matching login/master-password metadata, vault/account ciphertext and configuration using current cryptographic abstractions; document generation/reset and verify consistency, not merely shell login. Apply data after installation without replacing the schema. Provide stable IDs and meaningful synthetic file/parent content; set `filesEnabled=1` in application configuration. Keep shared datasets and `tests/SP/` untouched.
 
-`debug` is off, and `CHECK_UPDATES`/`CHECK_NOTICES` are disabled so CI does not depend on the internet. The missing `status/checkRelease` controller is tracked as its own defect, not encoded into the suite.
+Commit clearly named synthetic `E2E_*` credentials for reproduction. Never use real data. Live authentication-state files are temporary and excluded from artifacts. Disable debug, update/notice checks and their external dependencies; those checks remain explicitly uncovered, and `status/checkRelease` stays a separate defect, not a Known Failure.
 
-### Known-failure ratchet
+### Failure criteria and readiness
 
-The suite starts with an empty allowlist. An entry is keyed by `(spec, route, failure kind)` with a reason and an issue link; no regex matching over messages. An allowlisted failure that stops occurring is itself a failure, so entries can only be removed. This keeps the suite green on the day a known defect is filed without letting the list rot.
+Attach listeners before navigation: context `weberror` or per-page `pageerror`, console errors, request start/finish/failure and response events. Track actions through response-body inspection and drain pending diagnostic work before passing.
+
+A load fails on uncaught errors/rejections, console errors, unexpected request failures, action HTTP >=400, parsed JSON `ERROR`, malformed expected envelopes, missing actions/content/binding attributes, critical markup or a stuck overlay. Include client error/toast markup and server `.errors.round .msg-critical` without requiring `#content` on login/install pages. Warnings are annotations, not failures; plural `errors` containers can contain warnings.
+
+Detect JSON `status: 10`, unexpected login redirects/pages and logout-script responses. Empty HTTP 200 bodies and missing authenticated fragments also fail, but classify these as invalid responses unless session loss is established. No silent re-authentication. Attribute action failures to routes, or retain source/page information for global JS errors without inventing a route.
+
+Readiness requires the positive per-page/mode contract, completed and inspected expected actions, specific content, hidden overlay, drained diagnostics and 300 ms without an in-flight Page-load Action. One 15 s deadline bounds readiness/diagnostics. Report missing/pending actions and unmet DOM/overlay conditions, including when an action was never sent. Scope listeners and teardown to avoid cross-test contamination; ignore only proven expected navigation/teardown cancellations.
+
+Do not use global `networkidle`: momentary idleness does not establish initialization, notifications are periodic, and the default AJAX timeout is zero. Automate fault-injection tests for every failure class, including suppressed dispatch, invalid responses, session variants, warnings, hanging actions and late body-inspection failures. Real smoke specs keep core actions real.
+
+### Known Failure admission
+
+Start with an empty registry; #2080 is optional and does not block early CI. Entries match exactly `(spec, route, kind)` with a reason, issue link and explicit maintainer admission. Only narrowly deterministic failures qualify; never flakes, setup/isolation or session-loss failures. Other failures in the same spec still fail.
+
+When the corresponding spec executes without the known failure, the stale entry fails with removal instructions. Unselected/skipped specs do not imply a fix. New admissions are exceptional reviewed changes, not a claim that an initially empty list can literally only shrink. The #2079 baseline must be fixed, not waived.
 
 ### Evidence
 
-On failure the suite uploads a screenshot, the browser console log and the failed request's URL and status. It does not persist request bodies, HAR files or Playwright traces from CI: this is a password manager, and login and account forms POST secrets. Trace capture is available behind an explicit local flag and is never uploaded.
+Persist sanitized summary/JUnit on every run: run/commit/environment, selection/completion/skips, first attempts, retries, durations and failure classes. Keep summaries through qualification; incomplete/setup-failed runs cannot appear as complete success. Preserve failing-attempt diagnostics even if a diagnostic retry succeeds.
 
-### CI
+Upload only an explicit allowlist of sanitized logs/normalized route-URL-status, masked screenshots and safe reports. Scrub query values, console/exception/JUnit text and sensitive DOM regions. Disable automatic DOM/error-context attachments unless proven sanitized. Synthetic-canary tests verify the complete reporter/output/upload path.
 
-`.github/workflows/feature.yaml` gains a third job, `ui`, gated by the repository variable `TESTS_UI_ENABLED` in the same way the integration job is gated by `TESTS_INTEGRATION_ENABLED`. It redeclares the MariaDB 10.3 service and schema load rather than depending on the integration job's container. Tier A has a budget of about five minutes. The job runs with `continue-on-error: false` and gates pull requests once the variable is enabled, after a 30-day stability window. Failures produce JUnit output and GitHub annotations; the suite does not file issues automatically — triage stays with the existing label workflow.
+Never persist/upload CI request/response bodies, HAR, traces/video, authentication state, cookies, configuration snapshots, keys or temporary fixture dumps. CI forces forbidden capture off regardless of local flags; telemetry is off. Local traces require explicit opt-in against synthetic isolated data and are never uploaded.
+
+### CI observation and promotion
+
+Add an independent, stably named `ui` check in #2084 once #2079 and #2081 are complete. It owns its disposable database service and installer provisioning, not the integration job's container or schema-load recipe. Known Failure machinery, Tier B and the wizard are not blockers.
+
+`TESTS_UI_ENABLED == 'true'` controls execution only: enable it at the start of observation. Run on relevant PRs, master updates, manual dispatch and daily master scheduling without accidentally scheduling unrelated jobs. Verify applicable rules do not already require the observation check through an aggregate workflow. Tier A failures fail the UI check with `continue-on-error: false`; merge-required promotion is separate.
+
+In #2086, qualify at least 30 consecutive days, with at least one complete master Tier A run per day and at least 30 complete runs. Skips, cancellations, setup failures, missing daily results and partial selections do not qualify. Retain first-attempt/retry counts, durations, every failure's cause/resolution and environment/commit identity. No unexplained first-attempt failures or unresolved flakes are allowed; material contract/harness changes restart the affected tier's window. Tier A spec execution has a five-minute budget; setup/job deadlines and actual durations are recorded separately.
+
+Only after real qualification does a maintainer configure/verify branch protection or a ruleset requiring the stable check, prove a failing ordinary PR cannot merge, and document bypass/disabled/skipped behavior. Neither the execution switch nor `continue-on-error: false` alone establishes a merge gate. Tier B needs its own complete 30-day history or stays annotation-only; unfinished optional work does not delay Tier A. The suite does not auto-file issues; triage follows existing labels.
+
+### Boot and transport evolution
+
+The current `bootstrap/getEnvironment` request is the baseline. #2096 removes it; #2097/#2098 split page/fragment routes. Update probes, expected actions, response predicates and both navigation-mode contracts in the same changes, retaining negative proof that missing initialization fails. Do not retain an obsolete matcher or assert both old and future contracts as a compatibility scheme.
+
+#2096 owns additional logout/install browser compatibility checks for its boot change, outside the initial Tier A. Logout uses a disposable session; installation reuses #2083's separate instance when available or an isolated check owned by #2096. These checks do not delay initial Tier A observation.
+
+Follow the latest #2089 decisions: clean URLs are independent, the future attachment choice is pending #2116, and HTTP Integration Tests gate template migrations. ADR-0011's stale details are corrected through #2112, not treated as shipped behavior.
 
 ## Considered options
 
-- **Reuse Symfony Panther/BrowserKit.** Rejected: it would keep one toolchain but cannot observe network responses, uncaught JavaScript errors or the loading overlay, which are the signals this suite exists to collect.
-- **Extend the in-process HTTP Integration Test.** Rejected: it executes no JavaScript, so it cannot see a page that boots and then fails its first request. It remains the right level for server-rendered content.
-- **Cover the full workflow in the browser.** Rejected for now: writes, dialogs and clipboard behaviour multiply runtime and flakiness, and the page-load failures are independent of them.
-- **Use `networkidle`.** Rejected: the application polls on a 120 s interval and sets no AJAX timeout, so idleness is neither reached nor meaningful.
-- **Persist HAR or traces from CI for richer debugging.** Rejected: both can contain decrypted vault data and POSTed passwords.
-- **Auto-file GitHub issues on failure.** Rejected: it duplicates the triage label workflow and needs deduplication logic that is not worth building yet.
-- **Assert layout as well, since the browser is already running.** Rejected: layout correctness is a different, high-maintenance problem; it would obscure the page-load signal this suite is built to produce.
-- **Keep external update/notice checks enabled.** Rejected: they make CI depend on third-party availability and would bake a known 404 into the allowlist.
+- **Symfony Panther or BrowserKit:** BrowserKit does not execute browser JavaScript; Panther does and can inspect console/overlay state. Playwright is preferred for convenient network/event instrumentation and diagnostic APIs, not because PHP browser tooling lacks JavaScript capability.
+- **In-process HTTP Integration Tests only:** retained for broad rendering/security contracts, but insufficient to prove browser dispatch and initialization.
+- **Full business workflows or visual assertions:** deferred because they add different state, runtime and maintenance concerns that obscure page-load failures.
+- **Global network idle:** rejected in favor of positive action contracts and bounded readiness.
+- **CI HAR/traces or automatic issue creation:** rejected for secret exposure and unnecessary triage/deduplication complexity.
+- **External update/notice checks:** disabled for determinism and explicitly outside this configured coverage.
 
 ## Consequences
 
-- A new CI job and a Node toolchain exist alongside the PHP toolchain. They are isolated in `tests/ui/` and intentionally do not participate in the Composer or PHPUnit pipeline.
-- Tier A is the regression net for the browser boot path; tier B grows into it only after proving stable.
-- The page-load action vocabulary and the distinction from the JSON-RPC API are recorded in `CONTEXT.md`, so future work does not conflate them.
-- The `status/checkRelease` defect remains a normal code issue rather than a permanent known failure.
-- ADR-0004's "no browser end-to-end suite" clause is amended: it still holds for workflow and layout testing, not for page-load observability.
+- Adds a separate browser-test package and CI check alongside existing PHP checks and Node asset tooling; it does not join the Composer/PHPUnit pipeline.
+- ADR-0004's no-browser-suite decision is amended only for critical page-load observability, not general workflows or layout.
+- Isolation and trustworthy positive contracts precede rollout; safe early Tier A observation precedes optional breadth and required-check promotion.
+
+## Revision history
+
+- **2026-11-01:** original acceptance of the browser page-load smoke layer.
+- **2026-11-02:** ADR-0011 limited its prerequisite role to transport/boot changes and identified the forthcoming boot-contract change.
+- **2026-11-04:** quality review revised provisioning/isolation, positive contracts, session lifecycle, diagnostics, artifact safety, retry policy, early observation and evidence-based promotion; corrected the Panther rationale and kept implementation/qualification explicitly pending.
 
 ## References
 
-- ADR-0004: test strategy and CI gating.
-- ADR-0002: translation and error policy (assertion levels).
-- Code: `public/js/app-main.js:264-266,388-392,428-433`, `public/js/app-actions.js:378-393,450-472,698,1551-1559`, `public/js/app-triggers.js:263-270`, `public/js/app-requests.js:37-52,172-194`, `app/modules/web/themes/material-blue/js/app-theme.js:47-67`, `lib/SP/Domain/Common/Dtos/ActionResponse.php:98-105`, `lib/SP/Core/Crypt/Csrf.php:83-86`, `app/modules/web/Mvc/Controller/ControllerTrait.php:61-70`, `app/modules/web/Controllers/Bootstrap/GetEnvironmentController.php:95`.
-- Environment: `build/docker-compose-demo.yml:15-16`, `.github/workflows/feature.yaml:97-105,154-162`, `tests/res/datasets/syspass.sql`, `tests/res/config/config.xml`.
-- Plan: `.kilo/plans/ui-smoke-suite.md`.
+- ADR-0004 (test strategy), ADR-0002 (error assertions), ADR-0006 (independent clean URLs), ADR-0011 (SSR).
+- `ControllerBase::upgradeView()`, `public/js/app-triggers.js`, `public/js/app-actions.js`, `public/js/app-requests.js`, `ControllerTrait::sessionLogout()`, `GetEnvironmentController`, `Login/IndexController`, `SessionLifecycleHandler`, `lib/SP/Core/Crypt/Session.php`.
+- `composer.json`, `scripts/build-assets.sh`, `.ai-cli/bin/php`, `lib/Base.php`, `CoreDefinitions`, `InstallCommand`, `MysqlSetup`, `.github/workflows/feature.yaml`, shared fixtures under `tests/res/`.
+- Implementation plan: `.kilo/plans/ui-smoke-suite.md`; authoritative issues: #2075 and its children.

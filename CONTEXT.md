@@ -249,7 +249,7 @@ An Integration Test that dispatches an in-process request through the Web bootst
 _Avoid_: browser test, Selenium test
 
 **UI Smoke Test**:
-An automated browser test that loads a page and fails on broken Page-load Actions, JavaScript errors, error markup or a stuck loading overlay. It asserts the Render Contract only, never layout, and exercises no workflow.
+An automated browser test that loads a page and fails on broken Page-load Actions, JavaScript errors, error markup, session loss or a stuck loading overlay. It asserts the Render Contract only, never layout, and performs no user-initiated business writes.
 _Avoid_: end-to-end test, E2E test, browser test
 
 **Page-load Action**:
@@ -257,19 +257,19 @@ A Web action the browser requests as part of loading a page, returning a Page, a
 _Avoid_: API request, API call
 
 **Render Contract**:
-The DOM roots, non-empty text and dispatch attributes a page must show for its load to count as successful. It covers presence, not position or styling; a dispatch attribute or View Binder name is contract, so renaming one is a breaking change.
+The DOM roots, meaningful rendered content, dispatch attributes and required Page-load Actions a page must satisfy for its load to count as successful. Each required action must be issued and completed. It covers presence, not position or styling; a dispatch attribute or View Binder name is contract, so renaming one is a breaking change.
 _Avoid_: snapshot, visual check, layout assertion
 
 **Page Readiness**:
-The state in which a Render Contract may be asserted: the page's ready selector is present, the loading overlay is hidden, and no Page-load Action has been in flight for the quiet window.
+The state in which a page's required actions and body checks have completed, pending diagnostics are resolved, its ready selector is present, the loading overlay is hidden, and the action-scoped quiet window has elapsed. Whole-page network idleness alone does not establish this state.
 _Avoid_: network idle, load event
 
 **Test Tier**:
-The gating classification of a UI Smoke Test: tier A gates CI, tier B reports until it has a stable history.
+The gating classification of a UI Smoke Test: tier A is the initial candidate for a required check, while tier B reports until it independently qualifies. A tier becomes merge-required only after evidence-based promotion, not merely because its tests execute.
 _Avoid_: priority, level
 
 **Known Failure**:
-An allowlisted UI Smoke Test failure, keyed by spec, route and failure kind, with a reason and an issue link. An entry that stops failing is itself a failure, so the list can only shrink.
+An allowlisted UI Smoke Test failure, keyed by spec, route and failure kind, with a reason and an issue link. It is a narrow, deterministic failure admitted explicitly by a maintainer; flakes, setup failures and session-lost failures are never entries. When its corresponding spec executes without that failure, the stale entry itself fails the run and must be removed. New admissions require explicit review.
 _Avoid_: baseline, whitelist, ignore list
 
 **Adapter Integration Test**:
@@ -309,7 +309,7 @@ The mandatory `unitary` or `integration` classification of a test class. It sele
 _Avoid_: suite, category
 
 **CI Gating**:
-The rule that a change is not verified until both the unitary job and the integration job have run. The integration job is enabled by repository configuration, not per pull request.
+The rule that a change is not verified until both the unitary job and the integration job have run. The integration job is enabled by repository configuration, not per pull request. An additional UI tier becomes merge-required only after qualified promotion; an execution flag alone does not establish that merge policy.
 _Avoid_: pipeline, build
 
 ### Domain
