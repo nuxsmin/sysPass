@@ -452,7 +452,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                         echo $_getvar('sk'); ?>"
                                         data-action-route="items/accountsUser"
                                         data-item-id="<?php
-                                        echo $gotData ? $_getvar('accountId') : ''; ?>"
+                                        echo $gotData ? (int)$_getvar('accountId') : 0; ?>"
                                         data-selected-id="<?php
                                         echo $gotData ? $accountView->getParentId() : ''; ?>">
                                     <option value=""><?php

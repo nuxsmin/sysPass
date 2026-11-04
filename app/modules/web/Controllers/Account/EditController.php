@@ -90,7 +90,7 @@ final class EditController extends AccountViewBase
         $this->eventDispatcher->notify('show.account.edit', new Event($this));
 
         if ($this->isAjax === false) {
-            $this->upgradeView();
+            $this->upgradeView('account');
         }
 
         return ActionResponse::ok($this->render());
