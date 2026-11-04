@@ -4,7 +4,7 @@ Starter guide for the isolated browser smoke harness. The full contributor, tria
 
 `scripts/ui-smoke.sh` is shared repository tooling for contributors, reviewers and CI. `.ai-cli/` is ONLY for AI agents; it is not the canonical home for this runner or any other human/CI entry point.
 
-Current scope: #2076 / #2077 / #2079 / plan U1, U2 and U4. The suite provisions a fresh synthetic instance with `sp:install`, loads the anonymous login page, and then exercises the seeded authenticated shell through positive readiness contracts. Account view, create and edit are covered in both in-shell navigation and direct full-page URL modes.
+Current scope: #2076 / #2077 / #2079 / #2081 / plan U1, U2 and U4. The suite provisions a fresh synthetic instance with `sp:install`, loads the anonymous login page, and then exercises the seeded authenticated shell through positive readiness contracts. Account view, create and edit are covered in both in-shell navigation and direct full-page URL modes.
 
 ## Prerequisites
 
@@ -58,6 +58,8 @@ CI and human contributors invoke `scripts/ui-smoke.sh` directly. AI sessions may
 
 The runner requires Docker permission and creates runner-owned containers, a network, a database and a run directory. It never pulls or builds images, never reuses a developer server or database, and refuses an externally supplied `E2E_BASE_URL`.
 
+Selection is `SP_UI_TIER` (default `A`) plus optional `SP_UI_SPECS`. A subset or grep-filtered run is recorded as partial. `SP_UI_DIAGNOSTIC_RETRY=1` enables one explicit local retry while retaining first-attempt outcomes; CI disables retries. `SP_UI_LOCAL_TRACE=1` is an opt-in trace for the synthetic runner instance only, is forced off in CI, and is never uploaded.
+
 ## Execution model
 
 | Piece | Location | Lifetime |
@@ -71,11 +73,22 @@ The runner requires Docker permission and creates runner-owned containers, a net
 | Application cache | `<run root>/app-cache` bind-mounted over `<repo>/app/cache` (`Path::CACHE/config.cache`) | Per run, removed afterwards |
 | Application temp | `<run root>/app-temp` bind-mounted over `<repo>/app/temp` | Per run, removed afterwards |
 | Sessions | `<run root>/sessions` via `session.save_path` | Per run, removed afterwards |
-| Output | `<run root>/output` (JUnit, Playwright output) | Per run, removed afterwards |
+| Output | `<run root>/output` (summary, JUnit, Playwright output) | Per run, removed afterwards |
+| Retained evidence | `tests/ui/summaries/<run-id>/` (allowlisted summary/JUnit/manifest) | Kept through qualification |
 | Fixture credentials | `tests/ui/fixtures/e2e-fixture.json` | Committed; synthetic only |
 | Authentication state | Playwright worker memory and `<run root>/sessions` | Never written to artifacts; removed afterwards |
 
-The web server listens only on a random `127.0.0.1` port and is reachable only for the run. The origin is passed to Playwright as `SP_UI_BASE_URL` after the runner has proved it belongs to this run. Browser locale is `en-US`; application locale is `en_US`; the User-Agent is fixed; there is one worker and zero retries.
+The web server listens only on a random `127.0.0.1` port and is reachable only for the run. The origin is passed to Playwright as `SP_UI_BASE_URL` after the runner has proved it belongs to this run. Browser locale is `en-US`; application locale is `en_US`; the User-Agent is fixed; there is one worker and zero retries by default (an explicit local diagnostic retry requires `SP_UI_DIAGNOSTIC_RETRY=1` and CI keeps retries at zero).
+
+## Evidence and artifacts
+
+Every run writes `run-summary.json`, `junit.xml` and `upload-manifest.json` through the harness reporter. They record the selected tier/specs, commit and safe environment identity, attempted/completed/skipped counts, first-attempt results, retry counts, durations and normalized failure classes. A run that is partial, setup-failed, cancelled or flaky is never reported as a complete Tier A success.
+
+A failed attempt writes only sanitized diagnostics under `failures/`: a masked screenshot, sanitized console/error output and normalized route/URL/status information. Absolute file paths are reduced to repository-relative paths. No request or response bodies, HAR, trace, video, authentication state, cookies, configuration snapshot, private key, DOM snapshot or temporary fixture dump is uploaded. Playwright's automatic page snapshot is disabled at source (`PLAYWRIGHT_NO_COPY_PROMPT`), and any `error-context.md` file is removed by the reporter, the runner cleanup and the retention step before the artifact set is kept. It is not part of the allowlist.
+
+`scripts/ui-smoke.sh` retains the allowlisted summary/JUnit/manifest under `tests/ui/summaries/<run-id>/` on every run, including failure, so qualification history does not depend on a failed run's temporary output. The upload manifest is the only description of files a CI artifact step may publish.
+
+`tests/ui/src/*.test.mjs` includes a synthetic-canary end-to-end test that deliberately fails a Playwright spec and inspects the reporter/output/upload path for canary leakage in logs, URLs, DOM text and error output. `scripts/ui-smoke.sh` runs the whole Node test suite (`cd tests/ui && npm run test:unit`) before Playwright, and a harness failure stops the run before any container is created.
 
 ## Isolation and refusal rules
 

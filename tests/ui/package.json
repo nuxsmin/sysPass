@@ -7,6 +7,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "playwright test",
+    "test:unit": "node --test src/*.test.mjs",
     "test:preflight": "node --test src/preflight.test.mjs"
   },
   "devDependencies": {

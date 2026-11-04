@@ -17,6 +17,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 UI_DIR="$REPO_ROOT/tests/ui"
+# shellcheck source=lib/ui-smoke-report.sh
+. "$SCRIPT_DIR/lib/ui-smoke-report.sh"
+SUMMARY_ROOT="${SP_UI_SUMMARY_DIR:-$UI_DIR/summaries}"
+RUN_STARTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+FALLBACK_RUN_ID="ui-smoke.setup-$(date -u +%Y%m%dT%H%M%SZ)-$$"
 DOCKER_BIN="${DOCKER_BIN:-docker}"
 PHP_IMAGE="${PHP_IMAGE:-php-testing-composer:latest}"
 DB_IMAGE="${SP_UI_DB_IMAGE:-mariadb:10.3}"
@@ -57,10 +62,32 @@ require_executable() {
   [ -x "$1" ] || fail "$2"
 }
 
+setup_report() {
+  local status=$1
+
+  ui_smoke_setup_report \
+    "$status" \
+    "${RUN_ROOT:-}/output" \
+    "${RUN_ROOT:-}" \
+    "$SUMMARY_ROOT" \
+    "$UI_DIR" \
+    "${RUN_ID:-$FALLBACK_RUN_ID}" \
+    "$RUN_STARTED_AT"
+}
+
 cleanup() {
   local status=$?
 
   trap - EXIT INT TERM
+
+  if [ -n "${RUN_ROOT:-}" ]; then
+    ui_smoke_remove_error_context "$RUN_ROOT/output"
+  fi
+
+  if ! setup_report "$status"; then
+    echo "ERROR: failed to write the setup-failure report" >&2
+    status=1
+  fi
 
   if [ "$KEEP" -eq 1 ]; then
     echo "Kept run resources for inspection:"
@@ -71,10 +98,10 @@ cleanup() {
   fi
 
   if [ -n "${WEB_CONTAINER:-}" ]; then
-    "$DOCKER_BIN" rm -f "$WEB_CONTAINER" >/dev/null 2>&1 || true
+    "$DOCKER_BIN" rm -f -v "$WEB_CONTAINER" >/dev/null 2>&1 || true
   fi
   if [ -n "${DB_CONTAINER:-}" ]; then
-    "$DOCKER_BIN" rm -f "$DB_CONTAINER" >/dev/null 2>&1 || true
+    "$DOCKER_BIN" rm -f -v "$DB_CONTAINER" >/dev/null 2>&1 || true
   fi
   if [ -n "${NETWORK_NAME:-}" ]; then
     "$DOCKER_BIN" network rm "$NETWORK_NAME" >/dev/null 2>&1 || true
@@ -121,6 +148,12 @@ else
   [ -d "$UI_DIR/.browsers" ] \
     || fail "Pinned Chromium missing: run 'cd tests/ui && ./node_modules/.bin/playwright install chromium'"
 fi
+
+echo "Running the UI harness unit tests..."
+(
+  cd "$UI_DIR"
+  node --test src/*.test.mjs
+)
 
 fingerprint() {
   if [ -d "$1" ]; then
@@ -349,16 +382,44 @@ node "$UI_DIR/src/wait-for-http.mjs" \
   --timeout 120
 
 echo "Running the UI smoke suite..."
+PLAYWRIGHT_STATUS=0
+set +e
 (
   cd "$UI_DIR"
   SP_UI_BASE_URL="$ORIGIN" \
   SP_UI_RUN_ROOT="$RUN_ROOT" \
   SP_UI_RUN_ID="$RUN_ID" \
   SP_UI_OUTPUT_DIR="$RUN_ROOT/output" \
+  SP_UI_REPO_ROOT="$REPO_ROOT" \
   SP_UI_CHROMIUM_EXECUTABLE="$CHROMIUM_EXECUTABLE" \
+  SP_UI_TIER="${SP_UI_TIER:-A}" \
+  SP_UI_SPECS="${SP_UI_SPECS:-}" \
+  SP_UI_LOCAL_TRACE="${SP_UI_LOCAL_TRACE:-0}" \
+  SP_UI_DIAGNOSTIC_RETRY="${SP_UI_DIAGNOSTIC_RETRY:-0}" \
+  CI="${CI:-false}" \
+  PLAYWRIGHT_NO_COPY_PROMPT=1 \
   PLAYWRIGHT_BROWSERS_PATH="$UI_DIR/.browsers" \
   ./node_modules/.bin/playwright test --config=playwright.config.ts
 )
+PLAYWRIGHT_STATUS=$?
+set -e
+
+SUMMARY_DIR="$SUMMARY_ROOT/$RUN_ID"
+
+if [ -d "$RUN_ROOT/output" ]; then
+  ui_smoke_remove_error_context "$RUN_ROOT/output"
+
+  if node "$UI_DIR/src/retain.mjs" --output "$RUN_ROOT/output" --destination "$SUMMARY_DIR"; then
+    echo "Retained sanitized summary: $SUMMARY_DIR"
+  else
+    echo "WARNING: failed to retain sanitized summary artifacts" >&2
+  fi
+fi
+
+if [ "$PLAYWRIGHT_STATUS" -ne 0 ]; then
+  echo "UI smoke run failed with status $PLAYWRIGHT_STATUS" >&2
+  exit "$PLAYWRIGHT_STATUS"
+fi
 
 DEVELOPER_CONFIG_AFTER="$(fingerprint "$REPO_ROOT/app/config")"
 DEVELOPER_CACHE_AFTER="$(fingerprint "$REPO_ROOT/app/cache")"
