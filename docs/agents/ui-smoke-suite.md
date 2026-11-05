@@ -40,25 +40,116 @@ Run these once from a clean checkout. They are deliberately not executed by the 
 3. Make the pinned container images available. Building and pulling images are Docker mutations and need explicit human approval:
 
    ```sh
-   make -C .ai-cli/docker build          # php-testing-composer:latest
+   make -C scripts/docker build          # php-testing-composer:latest
    docker pull mariadb:10.3
    ```
+
+   `scripts/docker/` is the shared build path for contributors and CI; the
+   workflow builds the same Dockerfile with the same `scripts/docker` build
+   context.
 
    PHP 8.3 is the supported floor (`composer.json`: `>=8.3 <8.6`).
 
 ## Run
 
 ```sh
-./scripts/ui-smoke.sh
+TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh
 ```
+
+`TESTS_UI_ENABLED` must be exactly `true`. Any other value, including unset,
+makes the runner exit before checking prerequisites or creating resources. A
+skipped run writes no summary and is never a complete Tier A observation.
 
 Use `--keep` only for debugging; it leaves the run root, network and containers in place for inspection. Do not reuse them for another run.
 
 CI and human contributors invoke `scripts/ui-smoke.sh` directly. AI sessions may source `.ai-cli/env.sh` for the approved wrappers, but `.ai-cli/` is not part of the shared CI or contributor invocation path.
 
+## CI observation
+
+`.github/workflows/ui-smoke.yml` is an isolated workflow so its daily schedule
+can only start the UI job. It runs on pull requests targeting `master` or
+`feat/*`, pushes to `master`, manual dispatch and a daily schedule. Scheduled
+runs check out `master` explicitly and record the observed commit.
+
+`TESTS_UI_ENABLED` is a repository variable used as an execution switch. When
+it is not exactly `true`, the job is skipped; a skipped job is not Tier A
+evidence. The switch is not a merge gate. Tier A failures fail the UI check,
+but promoting it to a required check is a separate maintainer operation.
+
+### Required-check verification before observation (2026-11-05)
+
+The read-only check was executed against `nuxsmin/sysPass` on 2026-11-05 with
+an authenticated `gh` wrapper. The results were mixed and are recorded exactly
+as observed rather than as a "not required" verdict:
+
+- `GET /repos/nuxsmin/sysPass/branches/master/protection` succeeded and
+  returned `required_status_checks.contexts: []` and
+  `required_status_checks.checks: []`.
+- `GET /repos/nuxsmin/sysPass/rulesets` succeeded and returned `[]`.
+- The aggregate-workflow scan could not complete: `GET
+  /repos/nuxsmin/sysPass/contents/.github/workflows` returned HTTP 404 because
+  remote `master` (observed commit `23d8989156f2db685139a056c390da97bc3ac95d`)
+  has no `.github/workflows` directory. The script therefore exited 1 instead
+  of claiming the check was not required.
+- A separate read-only `GET /repos/nuxsmin/sysPass/actions/workflows` returned
+  one active workflow, `Feature Build & Test` (`.github/workflows/feature.yaml`);
+  its recent runs were on feature branches, not `master`. That does not
+  establish a required-check reference on `master`, but the missing
+  default-branch workflow directory remains an unresolved blocker for the full
+  aggregate scan.
+
+No branch protection, ruleset, variable or required-check setting was changed.
+Required-check promotion remains a maintainer operation after qualification.
+
+The same read-only verification is reproducible with:
+
+```sh
+source .ai-cli/env.sh
+GH_BIN="$GH_BIN" bash scripts/ci/check-ui-required.sh nuxsmin/sysPass
+```
+
+The script reads branch protection contexts/checks, ruleset required status
+checks and the other workflow definitions, prints what it found, and exits
+non-zero when the UI check already appears required, an aggregate reference
+needs review, or a required read cannot be completed. It only issues read-only
+GET requests; it is not run by CI and changes no settings. Workflow content is
+requested through the REST raw media type, so it needs no GNU-specific
+`base64 --decode` and works on BSD/macOS hosts. If `gh` is unavailable or
+unauthenticated it fails with exit 127; a failed API read exits 1 instead of
+being reported as "not required".
+
+The job builds the shared PHP 8.3 testing image from
+`scripts/docker/Dockerfile.php-testing`, pulls MariaDB 10.3 and lets the
+runner create its own disposable database container and network. It does not
+reuse the integration job's database, schema load or container, and it does
+not set `MYSQL_DATABASE`. The setup window is stamped at job start and again by
+the runner immediately before Playwright starts, after provisioning (database
+start, `sp:install`, fixture seeding and web readiness), so the recorded setup
+duration includes real setup and never includes spec execution. The bounds are
+distinct: page readiness uses its 15-second deadline, the Tier A spec run has a
+20-minute step timeout and a five-minute spec-duration budget, setup has
+explicit per-step timeouts plus a 30-minute aggregate guard, and the job has a
+45-minute timeout. The tested `scripts/ci/check-setup-budget.sh` guard runs after
+the runner and fails the job when either stamp is missing, empty, non-numeric,
+negative, zero or not ordered before the other, and when the observed setup
+window exceeds its budget; `ci-report` repeats the same validation on the
+retained evidence so an invalid or over-budget window is never a complete
+Tier A observation. The runner retains sanitized summaries on
+every run and the workflow uploads only the explicit allowlist with 90-day
+retention, and only after the retained-set verification succeeds, so partial or
+duplicate sets are never published. If any pre-run step fails, or the run is
+cancelled before or during setup, the workflow writes the same sanitized
+setup-failed summary, JUnit and manifest through the shared helpers instead of
+leaving the upload step empty.
+
+Tier B and the installer wizard are later additions. They must use their own
+independent selection/job or instance and annotate failures without making
+them required; this initial job has no dependency on them and no later result
+may hide a Tier A failure.
+
 The runner requires Docker permission and creates runner-owned containers, a network, a database and a run directory. It never pulls or builds images, never reuses a developer server or database, and refuses an externally supplied `E2E_BASE_URL`.
 
-Selection is `SP_UI_TIER` (default `A`) plus optional `SP_UI_SPECS`. A subset or grep-filtered run is recorded as partial. `SP_UI_DIAGNOSTIC_RETRY=1` enables one explicit local retry while retaining first-attempt outcomes; CI disables retries. `SP_UI_LOCAL_TRACE=1` is an opt-in trace for the synthetic runner instance only, is forced off in CI, and is never uploaded.
+Selection is `SP_UI_TIER` (default `A`) plus optional `SP_UI_SPECS`. A subset or grep-filtered run is recorded as partial. Default retries are zero locally and in CI. An explicit `SP_UI_DIAGNOSTIC_RETRY=1`, or the `workflow_dispatch` `diagnostic_retry` input, enables one diagnostic retry with `failOnFlakyTests`; first-attempt evidence is preserved and a retry-success is reported flaky and rejected by `ci-report` as incomplete Tier A. CI never enables retries implicitly. `SP_UI_LOCAL_TRACE=1` is an opt-in trace for the synthetic runner instance only, is forced off in CI, and is never uploaded.
 
 ## Execution model
 
@@ -78,7 +169,7 @@ Selection is `SP_UI_TIER` (default `A`) plus optional `SP_UI_SPECS`. A subset or
 | Fixture credentials | `tests/ui/fixtures/e2e-fixture.json` | Committed; synthetic only |
 | Authentication state | Playwright worker memory and `<run root>/sessions` | Never written to artifacts; removed afterwards |
 
-The web server listens only on a random `127.0.0.1` port and is reachable only for the run. The origin is passed to Playwright as `SP_UI_BASE_URL` after the runner has proved it belongs to this run. Browser locale is `en-US`; application locale is `en_US`; the User-Agent is fixed; there is one worker and zero retries by default (an explicit local diagnostic retry requires `SP_UI_DIAGNOSTIC_RETRY=1` and CI keeps retries at zero).
+The web server listens only on a random `127.0.0.1` port and is reachable only for the run. The origin is passed to Playwright as `SP_UI_BASE_URL` after the runner has proved it belongs to this run. Browser locale is `en-US`; application locale is `en_US`; the User-Agent is fixed; there is one worker and zero retries by default. An explicit diagnostic retry requires `SP_UI_DIAGNOSTIC_RETRY=1` or the dispatch input and is always rejected as complete Tier A evidence when it only succeeds on retry.
 
 ## Evidence and artifacts
 
@@ -86,7 +177,9 @@ Every run writes `run-summary.json`, `junit.xml` and `upload-manifest.json` thro
 
 A failed attempt writes only sanitized diagnostics under `failures/`: a masked screenshot, sanitized console/error output and normalized route/URL/status information. Absolute file paths are reduced to repository-relative paths. No request or response bodies, HAR, trace, video, authentication state, cookies, configuration snapshot, private key, DOM snapshot or temporary fixture dump is uploaded. Playwright's automatic page snapshot is disabled at source (`PLAYWRIGHT_NO_COPY_PROMPT`), and any `error-context.md` file is removed by the reporter, the runner cleanup and the retention step before the artifact set is kept. It is not part of the allowlist.
 
-`scripts/ui-smoke.sh` retains the allowlisted summary/JUnit/manifest under `tests/ui/summaries/<run-id>/` on every run, including failure, so qualification history does not depend on a failed run's temporary output. The upload manifest is the only description of files a CI artifact step may publish.
+`scripts/ui-smoke.sh` retains the allowlisted summary/JUnit/manifest under `tests/ui/summaries/<run-id>/` on every run, including failure, so qualification history does not depend on a failed run's temporary output. The upload manifest records the retained set, and CI publishes only an explicit allowlist: `run-summary.json`, `junit.xml`, `upload-manifest.json` and `failures/**/{screenshot.png,console.log,failure.json}`. Before upload, verification checks the manifest against that same allowlist and rejects unknown, duplicate, unsafe, missing or unlisted entries, so the workflow's hardcoded paths and the manifest cannot silently diverge. The workflow never uploads the summary directory as a whole, and it does not resolve upload paths from the manifest dynamically because GitHub Actions cannot consume a manifest-supplied path set safely. Verification runs before upload and upload is gated on its success: a genuine Tier A test failure still publishes its complete verified set, while an empty, duplicated or partial set fails before publishing and is never uploaded.
+
+If an `npm ci`, asset build, image build, Composer install or `tests/ui` install step fails before `scripts/ui-smoke.sh` runs, or the run is cancelled before or during setup, the workflow still writes a sanitized setup-failed summary, JUnit and manifest through `scripts/lib/ui-smoke-report.sh` and `setup-report.mjs`. When the runner already retained a complete set, the fallback leaves it untouched. A partial set that still has the authoritative `run-summary.json` is repaired through the normal retention path, which regenerates the missing derived JUnit/manifest artifacts. A partial set without a usable summary is replaced with a setup-failed set in the same directory, so `ci-report` sees exactly one summary and rejects it as incomplete Tier A evidence.
 
 `tests/ui/src/*.test.mjs` includes a synthetic-canary end-to-end test that deliberately fails a Playwright spec and inspects the reporter/output/upload path for canary leakage in logs, URLs, DOM text and error output. `scripts/ui-smoke.sh` runs the whole Node test suite (`cd tests/ui && npm run test:unit`) before Playwright, and a harness failure stops the run before any container is created.
 
