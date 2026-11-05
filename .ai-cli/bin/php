@@ -15,8 +15,8 @@
 #   PHP_IMAGE       image to run (default php-testing-composer:latest)
 #   XDEBUG_MODE     passed through; default "off" for speed
 #
-# The image is built from .ai-cli/docker/Dockerfile.composer:
-#   make -C .ai-cli/docker build
+# The image is built from scripts/docker/Dockerfile.php-testing:
+#   make -C scripts/docker build
 set -euo pipefail
 
 _SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -27,7 +27,7 @@ REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 
 if ! "$DOCKER_BIN" image inspect "$PHP_IMAGE" > /dev/null 2>&1; then
   echo "ERROR: PHP image not found: $PHP_IMAGE" >&2
-  echo "Build it with: make -C \"$REPO_ROOT/.ai-cli/docker\" build" >&2
+  echo "Build it with: make -C \"$REPO_ROOT/scripts/docker\" build" >&2
   exit 1
 fi
 

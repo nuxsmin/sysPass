@@ -10,7 +10,7 @@
 # Usage:
 #   scripts/setup-demo.sh [--build-image] [--reset] [--no-fixtures]
 #
-#   --build-image   Rebuild the PHP image with make -C .ai-cli/docker build.
+#   --build-image   Rebuild the PHP image with make -C scripts/docker build.
 #   --reset         Drop and recreate the application database (destructive).
 #   --no-fixtures   Do not load demo fixture data after a fresh install.
 #
@@ -61,7 +61,7 @@ settings and admin/master credentials are then applied.
 Usage:
   scripts/setup-demo.sh [--build-image] [--reset] [--no-fixtures]
 
-  --build-image   Rebuild the PHP image with make -C .ai-cli/docker build.
+  --build-image   Rebuild the PHP image with make -C scripts/docker build.
   --reset         Drop and recreate the application database (destructive).
   --no-fixtures   Do not load demo fixture data after a fresh install.
 
@@ -144,9 +144,9 @@ build_image() {
   docker_dir="$(cd "$(dirname "$DOCKER")" && pwd)"
 
   if [ "$docker_dir" != "$(pwd)" ]; then
-    PATH="$docker_dir:$PATH" make -C "$ROOT/.ai-cli/docker" build
+    PATH="$docker_dir:$PATH" make -C "$ROOT/scripts/docker" build
   else
-    make -C "$ROOT/.ai-cli/docker" build
+    make -C "$ROOT/scripts/docker" build
   fi
 }
 
@@ -161,7 +161,7 @@ if [ "$BUILD_IMAGE" -eq 1 ] || ! "$DOCKER" image inspect "$PHP_IMAGE" >/dev/null
     fi
   else
     echo "PHP image not found: $PHP_IMAGE" >&2
-    echo "Run with --build-image, or build it with: make -C .ai-cli/docker build" >&2
+    echo "Run with --build-image, or build it with: make -C scripts/docker build" >&2
     exit 1
   fi
 fi

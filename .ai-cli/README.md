@@ -110,13 +110,16 @@ source .ai-cli/env.sh
 
 ### Building / rebuilding the image
 
-The image definition and build target are vendored in `.ai-cli/docker/`
-(`Dockerfile.composer` + `Makefile`, Composer 2.7 → PHP 8.3):
+The shared image definition and build entry point live in `scripts/docker/`
+(Composer 2.7 → PHP 8.3). Contributors, CI and AI sessions all use it:
 
 ```sh
-make -C .ai-cli/docker build          # tags php-testing-composer:latest and :2.7
-COMPOSER_VERSION=2.7 make -C .ai-cli/docker build
+make -C scripts/docker build          # tags php-testing-composer:latest and :2.7
+COMPOSER_VERSION=2.7 make -C scripts/docker build
 ```
+
+`.ai-cli/docker/Makefile` remains only as an AI-session compatibility target and
+delegates to `scripts/docker`; it does not own a second recipe.
 
 Building is a Docker mutation: ask the human first (see `allowed-commands.txt`).
 The build uses the network (`--pull`); the package set includes

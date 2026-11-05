@@ -87,8 +87,8 @@ git diff --stat
 # /usr/bin/docker login / logout
 
 # PHP image build (network + docker build): ALWAYS ask the human first.
-# make -C .ai-cli/docker build
-# /usr/bin/docker build ... -f .ai-cli/docker/Dockerfile.composer
+# make -C scripts/docker build
+# /usr/bin/docker build ... -f scripts/docker/Dockerfile.php-testing
 
 # terraform / aws mutations & destructive: ALWAYS ask the human first.
 # No apply, no destroy, no -auto-approve, no state surgery, no resource writes.

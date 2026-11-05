@@ -1,11 +1,10 @@
-COMPOSER_VERSION=2.7
+# AI-session compatibility target.
+#
+# `scripts/docker/Makefile` is the single shared image build entry point for
+# contributors, CI and AI sessions. This file only delegates so the Dockerfile,
+# build context and recipe stay in one place.
+COMPOSER_VERSION ?= 2.7
 
 .PHONY: build
 build:
-	docker build \
-	--build-arg "COMPOSER_VERSION=${COMPOSER_VERSION}" \
-	--pull \
-	--tag php-testing-composer:latest \
-	--tag php-testing-composer:${COMPOSER_VERSION} \
-	--file Dockerfile.composer \
-	.
+	$(MAKE) -C ../../scripts/docker build COMPOSER_VERSION="$(COMPOSER_VERSION)"

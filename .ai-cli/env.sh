@@ -67,5 +67,5 @@ fi
 if ! "$DOCKER_BIN" version > /dev/null 2>&1; then
   echo "WARNING: docker not found via $DOCKER_BIN — docker/php commands unavailable" >&2
 elif ! "$DOCKER_BIN" image inspect "$PHP_IMAGE" > /dev/null 2>&1; then
-  echo "WARNING: PHP image '$PHP_IMAGE' not found — build it with: make -C .ai-cli/docker build" >&2
+  echo "WARNING: PHP image '$PHP_IMAGE' not found — build it with: make -C scripts/docker build" >&2
 fi
