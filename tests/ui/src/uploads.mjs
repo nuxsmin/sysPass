@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto';
-import { copyFileSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+
+import { renderJUnit } from './summary.mjs';
 
 export const ALLOWED_ROOT_ARTIFACTS = new Set([
   'run-summary.json',
@@ -170,6 +172,27 @@ export function listArtifacts(root, relative = '') {
  * @returns {{schemaVersion: number, generatedAt: string, files: {path: string, bytes: number, sha256: string}[]}}
  */
 export function retainArtifacts(outputDir, destinationDir, { now = new Date() } = {}) {
+  const summaryPath = path.join(outputDir, 'run-summary.json');
+  const junitPath = path.join(outputDir, 'junit.xml');
+
+  // The run summary is authoritative and JUnit is derived from it. When a
+  // retained set lost only its derived artifacts, regenerate them before the
+  // allowlist copy instead of failing or publishing an incomplete set.
+  if (existsSync(summaryPath) && !existsSync(junitPath)) {
+    try {
+      const summary = JSON.parse(readFileSync(summaryPath, 'utf8'));
+
+      if (!summary || typeof summary !== 'object') {
+        throw new Error('cannot regenerate JUnit from an invalid run summary');
+      }
+
+      writeFileSync(junitPath, renderJUnit(summary));
+    } catch {
+      // Leave JUnit missing; the caller verifies the allowlisted set and
+      // fails closed instead of inventing evidence from an invalid summary.
+    }
+  }
+
   const allowed = allowedArtifacts(listArtifacts(outputDir)).filter(
     (relativePath) => relativePath !== 'upload-manifest.json',
   );
@@ -182,7 +205,11 @@ export function retainArtifacts(outputDir, destinationDir, { now = new Date() } 
     const destination = path.join(destinationDir, relativePath);
 
     mkdirSync(path.dirname(destination), { recursive: true });
-    copyFileSync(source, destination);
+
+    if (path.resolve(source) !== path.resolve(destination)) {
+      copyFileSync(source, destination);
+    }
+
     files.push({ path: relativePath, contents: readFileSync(source) });
   }
 

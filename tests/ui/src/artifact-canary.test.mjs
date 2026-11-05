@@ -18,6 +18,7 @@ import {
 const UI_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PLAYWRIGHT = path.join(UI_DIR, 'node_modules', '.bin', 'playwright');
 const BROWSERS = path.join(UI_DIR, '.browsers');
+const CI_REPORT = path.join(UI_DIR, 'src', 'ci-report.mjs');
 const CANARY = 'CANARY_E2E_SECRET_6f2a9c';
 const MIN_UNMASKED_CONTENT_FRACTION = 0.5;
 
@@ -431,6 +432,14 @@ test('a diagnostic retry keeps first-attempt failure evidence and never claims T
   assert.equal(summary.counts.flaky, 1);
   assert.match(junit, /first attempt failed/);
   assert.doesNotMatch(JSON.stringify(summary), /CANARY_RETRY_SECRET/);
+
+  const report = spawnSync(process.execPath, [CI_REPORT, '--summaries', outputDir], {
+    encoding: 'utf8',
+    env: { ...process.env, GITHUB_STEP_SUMMARY: '' },
+  });
+
+  assert.notEqual(report.status, 0, 'a retry-success flaky run must be rejected by ci-report');
+  assert.match(report.stderr, /flaky/);
 
   for (const file of files.filter((candidate) => /\.(json|xml|log|txt)$/.test(candidate))) {
     assert.doesNotMatch(

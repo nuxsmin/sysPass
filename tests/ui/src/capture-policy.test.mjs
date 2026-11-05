@@ -52,13 +52,22 @@ test('trace is off by default and diagnostic retry is explicit', () => {
   assert.equal(retry.failOnFlakyTests, true);
 });
 
-test('CI disables diagnostic retries unless they are separately explicit', () => {
+test('CI keeps diagnostic retries at zero by default', () => {
+  const policy = resolveCapturePolicy({ CI: 'true' }, { syntheticRun: true });
+
+  assert.equal(policy.retries, 0);
+  assert.equal(policy.failOnFlakyTests, false);
+});
+
+test('CI enables one diagnostic retry only when explicitly opted in', () => {
   const policy = resolveCapturePolicy(
     { CI: 'true', SP_UI_DIAGNOSTIC_RETRY: '1' },
     { syntheticRun: true },
   );
 
-  assert.equal(policy.retries, 0);
+  assert.equal(policy.retries, 1);
+  assert.equal(policy.failOnFlakyTests, true);
+  assert.match(policy.reasons.join('\n'), /explicit diagnostic retry/i);
 });
 
 test('telemetry environment disables tracking without affecting trace opt-in', () => {

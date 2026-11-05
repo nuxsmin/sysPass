@@ -2,7 +2,10 @@
 # ui-smoke — isolated, single-command UI smoke run for sysPass.
 #
 # Usage:
-#   ./scripts/ui-smoke.sh [--keep]
+#   TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh [--keep]
+#
+# TESTS_UI_ENABLED must be the exact value "true"; otherwise the runner exits
+# without provisioning anything and without producing Tier A evidence.
 #
 # Requires (installed beforehand, never downloaded by this script):
 #   - Docker images php-testing-composer:latest and mariadb:10.3
@@ -28,7 +31,7 @@ DB_IMAGE="${SP_UI_DB_IMAGE:-mariadb:10.3}"
 KEEP=0
 
 usage() {
-  sed -n '2,14p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,17p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [ "$#" -gt 0 ]; do
@@ -54,12 +57,31 @@ fail() {
   exit 1
 }
 
+# The execution switch is intentionally strict: only the exact value "true"
+# enables a real run. A skipped run performs no provisioning, writes no
+# qualification evidence and must never be read as a complete Tier A run.
+if [ "${TESTS_UI_ENABLED:-}" != "true" ]; then
+  echo "UI smoke skipped: TESTS_UI_ENABLED is not 'true'."
+  echo "No provisioning was performed and no Tier A qualification evidence was produced."
+  exit 0
+fi
+
 require_file() {
   [ -e "$1" ] || fail "$2"
 }
 
 require_executable() {
-  [ -x "$1" ] || fail "$2"
+  local target=$1
+  local message=$2
+
+  case "$target" in
+    */*)
+      [ -x "$target" ] || fail "$message"
+      ;;
+    *)
+      command -v "$target" >/dev/null 2>&1 || fail "$message"
+      ;;
+  esac
 }
 
 setup_report() {
@@ -132,7 +154,7 @@ command -v node >/dev/null 2>&1 || fail "Node.js 20+ is required on the host"
 command -v git >/dev/null 2>&1 || fail "git is required on the host"
 
 "$DOCKER_BIN" image inspect "$PHP_IMAGE" >/dev/null 2>&1 \
-  || fail "PHP image not found: $PHP_IMAGE (build it with explicit approval: make -C .ai-cli/docker build)"
+  || fail "PHP image not found: $PHP_IMAGE (build it with explicit approval: make -C scripts/docker build)"
 "$DOCKER_BIN" image inspect "$DB_IMAGE" >/dev/null 2>&1 \
   || fail "Database image not found: $DB_IMAGE (pull it with explicit approval; this runner never pulls images)"
 
@@ -382,6 +404,11 @@ node "$UI_DIR/src/wait-for-http.mjs" \
   --timeout 120
 
 echo "Running the UI smoke suite..."
+# The setup window for CI ends here, after provisioning and before any spec
+# runs. Only the workflow consumes this stamp; local runs are unaffected.
+if [ -n "${GITHUB_ENV:-}" ]; then
+  printf 'UI_SMOKE_SPECS_STARTED_MS=%s\n' "$(date +%s%3N)" >> "$GITHUB_ENV"
+fi
 PLAYWRIGHT_STATUS=0
 set +e
 (

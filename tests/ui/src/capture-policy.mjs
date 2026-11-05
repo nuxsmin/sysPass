@@ -42,7 +42,9 @@ export function resolveCapturePolicy(env = process.env, { syntheticRun = false }
   }
 
   if (ci && retryRequested) {
-    reasons.push('CI disables diagnostic retries; first-attempt results remain the qualification signal');
+    reasons.push(
+      'explicit diagnostic retry enabled; a retry-success run is reported flaky and is not complete Tier A evidence',
+    );
   }
 
   return {
@@ -52,8 +54,8 @@ export function resolveCapturePolicy(env = process.env, { syntheticRun = false }
     screenshot: 'off',
     telemetry: false,
     uploadTrace: false,
-    retries: ci || !retryRequested ? 0 : 1,
-    failOnFlakyTests: !ci && retryRequested,
+    retries: retryRequested ? 1 : 0,
+    failOnFlakyTests: retryRequested,
     traceError,
     reasons,
     environment: { ...TELEMETRY_ENVIRONMENT },

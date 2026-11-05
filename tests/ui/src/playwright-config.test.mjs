@@ -26,3 +26,14 @@ test('the fixed user agent wins over the desktop device descriptor', () => {
     'the fixed user agent must be applied after the device descriptor',
   );
 });
+
+test('the resolved capture policy controls retries and flaky rejection', () => {
+  const contents = readFileSync(CONFIG, 'utf8');
+
+  assert.match(contents, /retries:\s*capture\.retries/, 'retries must come from the capture policy');
+  assert.match(
+    contents,
+    /failOnFlakyTests:\s*capture\.failOnFlakyTests/,
+    'flaky rejection must come from the capture policy',
+  );
+});
