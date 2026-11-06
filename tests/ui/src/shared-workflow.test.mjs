@@ -141,6 +141,107 @@ test('the setup stamp precedes the runner and every setup step stays bounded', (
   }
 });
 
+test('npm caching covers both root and UI lockfiles', () => {
+  const job = parseJob(read(), 'run');
+  const node = findStep(job, (step) => step.uses === 'actions/setup-node@v4');
+
+  assert.ok(node, 'the job must set up Node.js');
+  assert.equal(node.with.cache, 'npm');
+  const dependencyPaths = String(node.with['cache-dependency-path'])
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  assert.ok(dependencyPaths.includes('package-lock.json'), 'the root lockfile must be cached');
+  assert.ok(
+    dependencyPaths.includes('tests/ui/package-lock.json'),
+    'the UI harness lockfile must be cached',
+  );
+});
+
+test('the PHP image builds through buildx with a GHA layer cache', () => {
+  const job = parseJob(read(), 'run');
+  const buildxIndex = stepIndex(job, (step) => step.uses === 'docker/setup-buildx-action@v3');
+  const buildIndex = stepIndex(job, (step) => step.uses === 'docker/build-push-action@v6');
+  const buildx = job.steps[buildxIndex];
+  const build = job.steps[buildIndex];
+
+  assert.ok(buildx, 'the job must set up Docker Buildx');
+  assert.ok(build, 'the job must build the PHP image with build-push-action');
+  assert.ok(buildxIndex < buildIndex, 'Buildx setup must precede the image build');
+
+  assert.equal(build.with.context, 'scripts/docker');
+  assert.equal(build.with.file, 'Dockerfile.php-testing');
+  assert.match(build.with['build-args'], /COMPOSER_VERSION=2\.7/);
+  assert.equal(build.with.tags, 'php-testing-composer:latest');
+  assert.equal(build.with.load, 'true');
+  assert.match(build.with['cache-from'], /type=gha/);
+  assert.match(build.with['cache-from'], /scope=php-testing-composer/);
+  assert.match(build.with['cache-to'], /type=gha/);
+  assert.match(build.with['cache-to'], /mode=max/);
+  assert.match(build.with['cache-to'], /scope=php-testing-composer/);
+});
+
+test('the image verification follows the build and checks PHP and Composer', () => {
+  const job = parseJob(read(), 'run');
+  const buildIndex = stepIndex(job, (step) => step.uses === 'docker/build-push-action@v6');
+  const verifyIndex = stepIndex(job, (step) => /Verify the PHP 8\.3 test image/.test(step.name ?? ''));
+  const verify = job.steps[verifyIndex];
+
+  assert.ok(verify, 'the job must verify the built image');
+  assert.ok(buildIndex < verifyIndex, 'verification must follow the build');
+  assert.match(verify.run, /docker run --rm --entrypoint php php-testing-composer:latest -r/);
+  assert.match(verify.run, /PHP_VERSION_ID >= 80300/);
+  assert.match(verify.run, /docker run --rm --entrypoint php php-testing-composer:latest -v/);
+});
+
+test('the Composer cache is restored and mounted into the install container', () => {
+  const job = parseJob(read(), 'run');
+  const cacheIndex = stepIndex(job, (step) => /Restore Composer cache/.test(step.name ?? ''));
+  const installIndex = stepIndex(job, (step) => /Install Composer dependencies/.test(step.name ?? ''));
+  const cache = job.steps[cacheIndex];
+  const install = job.steps[installIndex];
+
+  assert.ok(cache, 'the job must restore the Composer cache');
+  assert.ok(install, 'the job must install Composer dependencies');
+  assert.ok(cacheIndex < installIndex, 'the Composer cache must be restored before install');
+  assert.equal(cache.uses, 'actions/cache@v4');
+  assert.match(cache.with.path, /runner\.temp/);
+  assert.match(cache.with.path, /composer-cache/);
+  assert.match(cache.with.key, /composer\.lock/);
+  assert.equal(cache.with['restore-keys'], 'composer-${{ runner.os }}-');
+
+  assert.match(install.run, /COMPOSER_CACHE_DIR=\/tmp\/composer-cache/);
+  assert.match(install.run, /runner\.temp \}\}\/composer-cache:\/tmp\/composer-cache/);
+});
+
+test('the Playwright browser cache is restored before the UI harness install', () => {
+  const job = parseJob(read(), 'run');
+  const cacheIndex = stepIndex(job, (step) => /Restore Playwright browsers/.test(step.name ?? ''));
+  const installIndex = stepIndex(job, (step) =>
+    /Install locked UI harness and pinned Chromium/.test(step.name ?? ''),
+  );
+  const cache = job.steps[cacheIndex];
+
+  assert.ok(cache, 'the job must restore Playwright browsers');
+  assert.ok(cacheIndex < installIndex, 'the browser cache must be restored before the harness install');
+  assert.equal(cache.uses, 'actions/cache@v4');
+  assert.equal(cache.with.path, 'tests/ui/.browsers');
+  assert.match(cache.with.key, /tests\/ui\/package-lock\.json/);
+  assert.equal(cache.with['restore-keys'], 'playwright-${{ runner.os }}-');
+});
+
+test('MariaDB stays runner-owned and is pulled per job', () => {
+  const raw = read();
+  const job = parseJob(raw, 'run');
+  const pull = findStep(job, (step) => /Pull disposable MariaDB 10\.3/.test(step.name ?? ''));
+
+  assert.ok(pull, 'the job must pull MariaDB explicitly');
+  assert.equal(pull.run, 'docker pull mariadb:10.3');
+  assert.doesNotMatch(raw, /^\s*services:\s*$/m, 'a job service must not replace the run-owned database');
+  assert.doesNotMatch(raw, /mariadb:10\.3\s*\n\s*env:/, 'MariaDB must not be declared as a job service');
+});
+
 test('the setup guard runs after the runner so provisioning is included', () => {
   const job = parseJob(read(), 'run');
   const guardIndex = stepIndex(job, isSetupGuard);
