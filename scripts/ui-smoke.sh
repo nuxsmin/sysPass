@@ -22,7 +22,24 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 UI_DIR="$REPO_ROOT/tests/ui"
 # shellcheck source=lib/ui-smoke-report.sh
 . "$SCRIPT_DIR/lib/ui-smoke-report.sh"
-SUMMARY_ROOT="${SP_UI_SUMMARY_DIR:-$UI_DIR/summaries}"
+SELECTED_TIER="$(printf '%s' "${SP_UI_TIER:-A}" | tr '[:lower:]' '[:upper:]')"
+case "$SELECTED_TIER" in
+  A)
+    DEFAULT_SUMMARY_ROOT="$UI_DIR/summaries/tier-A"
+    ;;
+  B)
+    # Tier B evidence is retained in a sibling root so Tier A qualification can
+    # never accidentally consume, replace or hide it.
+    DEFAULT_SUMMARY_ROOT="$UI_DIR/summaries/tier-B"
+    ;;
+  *)
+    echo "ERROR: SP_UI_TIER must be A or B; received '${SP_UI_TIER:-}'" >&2
+    exit 2
+    ;;
+esac
+SP_UI_TIER="$SELECTED_TIER"
+export SP_UI_TIER
+SUMMARY_ROOT="${SP_UI_SUMMARY_DIR:-$DEFAULT_SUMMARY_ROOT}"
 RUN_STARTED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 FALLBACK_RUN_ID="ui-smoke.setup-$(date -u +%Y%m%dT%H%M%SZ)-$$"
 DOCKER_BIN="${DOCKER_BIN:-docker}"
@@ -405,10 +422,13 @@ node "$UI_DIR/src/wait-for-http.mjs" \
 
 echo "Running the UI smoke suite..."
 # The setup window for CI ends here, after provisioning and before any spec
-# runs. Only the workflow consumes this stamp; local runs are unaffected.
+# runs. Local runs print the same pre-spec stamp so a manual ci-report can reuse
+# exact setup bounds instead of guessing.
+SPECS_STARTED_MS="$(date +%s%3N)"
 if [ -n "${GITHUB_ENV:-}" ]; then
-  printf 'UI_SMOKE_SPECS_STARTED_MS=%s\n' "$(date +%s%3N)" >> "$GITHUB_ENV"
+  printf 'UI_SMOKE_SPECS_STARTED_MS=%s\n' "$SPECS_STARTED_MS" >> "$GITHUB_ENV"
 fi
+printf 'UI_SMOKE_SPECS_STARTED_MS=%s\n' "$SPECS_STARTED_MS"
 PLAYWRIGHT_STATUS=0
 set +e
 (
@@ -419,7 +439,7 @@ set +e
   SP_UI_OUTPUT_DIR="$RUN_ROOT/output" \
   SP_UI_REPO_ROOT="$REPO_ROOT" \
   SP_UI_CHROMIUM_EXECUTABLE="$CHROMIUM_EXECUTABLE" \
-  SP_UI_TIER="${SP_UI_TIER:-A}" \
+  SP_UI_TIER="$SELECTED_TIER" \
   SP_UI_SPECS="${SP_UI_SPECS:-}" \
   SP_UI_LOCAL_TRACE="${SP_UI_LOCAL_TRACE:-0}" \
   SP_UI_DIAGNOSTIC_RETRY="${SP_UI_DIAGNOSTIC_RETRY:-0}" \

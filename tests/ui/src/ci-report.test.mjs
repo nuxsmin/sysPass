@@ -40,6 +40,32 @@ function completeSummary(overrides = {}) {
   };
 }
 
+function completeTierBSummary(overrides = {}) {
+  return completeSummary({
+    status: 'passed',
+    completeTierA: false,
+    completeTierB: true,
+    selection: {
+      tier: 'B',
+      selectedSpecs: [
+        'accessManager.spec.ts',
+        'itemManager.spec.ts',
+        'securityManager.spec.ts',
+        'configManager.spec.ts',
+        'notification.spec.ts',
+        'userSettingsManager.spec.ts',
+        'plugin.spec.ts',
+      ],
+      explicit: false,
+      partialSelection: false,
+      partialReasons: [],
+    },
+    counts: { selected: 7, completed: 7, failed: 0, skipped: 0, retries: 0, knownFailed: 0, newFailed: 0 },
+    firstAttemptResults: { passed: 7, failed: 0, skipped: 0 },
+    ...overrides,
+  });
+}
+
 function writeSummary(root, summary) {
   writeFileSync(path.join(root, 'run-summary.json'), `${JSON.stringify(summary, null, 2)}\n`);
 }
@@ -799,4 +825,375 @@ test('the ci-report CLI exits non-zero for admitted known and for stale entries'
   assert.notEqual(stale.status, 0);
   assert.match(readFileSync(stepSummary, 'utf8'), /remove the stale entry/i);
   assert.match(stale.stderr, /::error::/);
+});
+
+test('Tier B is evaluated independently and can never satisfy Tier A', () => {
+  const tierB = completeTierBSummary();
+
+  const asTierB = evaluateRunSummary(tierB, { tier: 'B' });
+  assert.equal(asTierB.ok, true, asTierB.reasons.join('; '));
+  assert.equal(asTierB.completeTierB, true);
+  assert.equal(asTierB.completeTierA, false);
+
+  const asTierA = evaluateRunSummary(tierB, { tier: 'A' });
+  assert.equal(asTierA.ok, false);
+  assert.match(asTierA.reasons.join('\n'), /not a complete Tier A selection|belongs to Tier B/i);
+
+  const tierA = completeSummary();
+  const tierAAsB = evaluateRunSummary(tierA, { tier: 'B' });
+  assert.equal(tierAAsB.ok, false);
+  assert.match(tierAAsB.reasons.join('\n'), /complete Tier B|belongs to Tier A/i);
+});
+
+test('the ci-report CLI renders Tier B separately, annotates failures and keeps a failing exit', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'sp-ui-ci-report-tier-b-'));
+  const summaryDir = path.join(root, 'run-1');
+  const stepSummary = path.join(root, 'step-summary.md');
+  const setupStartedMs = 1_700_000_000_000;
+
+  mkdirSync(summaryDir, { recursive: true });
+  writeSummary(summaryDir, completeTierBSummary());
+  writeFileSync(stepSummary, '');
+
+  const passing = spawnSync(
+    process.execPath,
+    [
+      CLI,
+      '--summaries',
+      root,
+      '--tier',
+      'B',
+      '--budget-seconds',
+      '300',
+      '--setup-started-ms',
+      String(setupStartedMs),
+      '--setup-finished-ms',
+      String(setupStartedMs + 60_000),
+    ],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: stepSummary } },
+  );
+
+  assert.equal(passing.status, 0, passing.stderr);
+  const passMarkdown = readFileSync(stepSummary, 'utf8');
+  assert.match(passMarkdown, /UI smoke Tier B observation/);
+  assert.match(passMarkdown, /Complete Tier B \| yes/);
+  assert.match(passMarkdown, /Tier B spec duration/);
+  assert.doesNotMatch(passMarkdown, /Tier A spec duration/);
+  assert.match(passMarkdown, /may be counted as one Tier B observation/);
+  assert.doesNotMatch(passMarkdown, /Tier A observation/);
+
+  const failedTest = {
+    title: 'accessManager/index loads its own tabbed content in-shell',
+    file: 'tests/ui/specs/accessManager.spec.ts',
+    project: 'chromium',
+    skipped: false,
+    expectedStatus: 'passed',
+    firstAttemptStatus: 'failed',
+    finalStatus: 'failed',
+    retries: 0,
+    durationMs: 42,
+    attempts: [
+      {
+        attempt: 1,
+        retryIndex: 0,
+        firstAttempt: true,
+        status: 'failed',
+        durationMs: 42,
+        failureClass: 'http',
+        route: 'accessManager/index',
+        failureProblems: [{ route: 'accessManager/index', failureKind: 'http' }],
+        errorMessage: 'http [accessManager/index]: action accessManager/index returned HTTP 500',
+        errorStack: '',
+      },
+    ],
+  };
+
+  writeSummary(
+    summaryDir,
+    completeTierBSummary({
+      status: 'failed',
+      completeTierB: false,
+      tests: [failedTest],
+      counts: { selected: 7, completed: 7, failed: 1, skipped: 0, retries: 0, knownFailed: 0, newFailed: 1 },
+      firstAttemptResults: { passed: 6, failed: 1, skipped: 0 },
+      newFailures: [{ spec: 'accessManager.spec.ts', route: 'accessManager/index', failureKind: 'http' }],
+      failureClasses: { http: 1 },
+    }),
+  );
+  writeFileSync(stepSummary, '');
+
+  const failing = spawnSync(
+    process.execPath,
+    [
+      CLI,
+      '--summaries',
+      root,
+      '--tier',
+      'B',
+      '--budget-seconds',
+      '300',
+      '--setup-started-ms',
+      String(setupStartedMs),
+      '--setup-finished-ms',
+      String(setupStartedMs + 60_000),
+    ],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: stepSummary } },
+  );
+
+  assert.notEqual(failing.status, 0, 'a Tier B failure must not exit zero');
+  assert.match(failing.stderr, /::warning .*accessManager\/index/);
+  assert.match(failing.stderr, /::error::UI smoke is not a complete Tier B observation/);
+  const failMarkdown = readFileSync(stepSummary, 'utf8');
+  assert.match(failMarkdown, /UI smoke Tier B observation/);
+  assert.match(failMarkdown, /Complete Tier B \| no/);
+  assert.match(failMarkdown, /must not be counted as a Tier B observation/);
+  assert.doesNotMatch(failMarkdown, /Tier A observation/);
+});
+
+test('run-summary discovery is non-recursive and never walks into a sibling or nested tier root', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'sp-ui-tier-roots-'));
+  const tierA = path.join(root, 'tier-A');
+  const tierB = path.join(root, 'tier-B');
+  const runA = path.join(tierA, 'run-a');
+  const runB = path.join(tierB, 'run-b');
+
+  mkdirSync(runA, { recursive: true });
+  mkdirSync(runB, { recursive: true });
+  writeSummary(runA, completeSummary());
+  writeSummary(runB, completeTierBSummary());
+
+  assert.deepEqual(findRunSummaries(tierA), [path.join(runA, 'run-summary.json')]);
+  assert.deepEqual(findRunSummaries(tierB), [path.join(runB, 'run-summary.json')]);
+
+  const legacyA = path.join(root, 'legacy-A');
+  const legacyRunA = path.join(legacyA, 'run-a');
+  const nestedTierB = path.join(legacyA, 'tier-B', 'run-b');
+
+  mkdirSync(legacyRunA, { recursive: true });
+  mkdirSync(nestedTierB, { recursive: true });
+  writeSummary(legacyRunA, completeSummary());
+  writeSummary(nestedTierB, completeTierBSummary());
+
+  assert.deepEqual(
+    findRunSummaries(legacyA),
+    [path.join(legacyRunA, 'run-summary.json')],
+    'a nested Tier B root must not contribute a Tier A summary',
+  );
+
+  const onlyNestedB = mkdtempSync(path.join(tmpdir(), 'sp-ui-tier-only-nested-b-'));
+  const hiddenB = path.join(onlyNestedB, 'tier-B', 'run-b');
+  mkdirSync(hiddenB, { recursive: true });
+  writeSummary(hiddenB, completeTierBSummary());
+
+  assert.deepEqual(
+    findRunSummaries(onlyNestedB),
+    [],
+    'a Tier A report must fail instead of consuming a nested Tier B summary',
+  );
+});
+
+test('a Tier A report over its root cannot consume Tier B evidence and a Tier B report cannot consume Tier A evidence', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'sp-ui-tier-scoped-report-'));
+  const tierA = path.join(root, 'tier-A');
+  const tierB = path.join(root, 'tier-B');
+  const runA = path.join(tierA, 'run-a');
+  const runB = path.join(tierB, 'run-b');
+  const stepSummary = path.join(root, 'step-summary.md');
+  const setupStartedMs = 1_700_000_000_000;
+
+  mkdirSync(runA, { recursive: true });
+  mkdirSync(runB, { recursive: true });
+  writeSummary(runA, completeSummary());
+  writeSummary(runB, completeTierBSummary());
+  writeFileSync(stepSummary, '');
+
+  const reportA = spawnSync(
+    process.execPath,
+    [
+      CLI,
+      '--summaries',
+      tierA,
+      '--tier',
+      'A',
+      '--budget-seconds',
+      '300',
+      '--setup-started-ms',
+      String(setupStartedMs),
+      '--setup-finished-ms',
+      String(setupStartedMs + 60_000),
+    ],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: stepSummary } },
+  );
+
+  assert.equal(reportA.status, 0, reportA.stderr);
+  const markdownA = readFileSync(stepSummary, 'utf8');
+  assert.match(markdownA, /UI smoke Tier A observation/);
+  assert.doesNotMatch(markdownA, /Tier B observation/);
+  assert.doesNotMatch(markdownA, /Complete Tier B/);
+
+  writeFileSync(stepSummary, '');
+
+  const reportB = spawnSync(
+    process.execPath,
+    [
+      CLI,
+      '--summaries',
+      tierB,
+      '--tier',
+      'B',
+      '--budget-seconds',
+      '300',
+      '--setup-started-ms',
+      String(setupStartedMs),
+      '--setup-finished-ms',
+      String(setupStartedMs + 60_000),
+    ],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: stepSummary } },
+  );
+
+  assert.equal(reportB.status, 0, reportB.stderr);
+  const markdownB = readFileSync(stepSummary, 'utf8');
+  assert.match(markdownB, /UI smoke Tier B observation/);
+  assert.doesNotMatch(markdownB, /Tier A observation/);
+
+  const wrongRoot = spawnSync(
+    process.execPath,
+    [
+      CLI,
+      '--summaries',
+      tierB,
+      '--tier',
+      'A',
+      '--budget-seconds',
+      '300',
+      '--setup-started-ms',
+      String(setupStartedMs),
+      '--setup-finished-ms',
+      String(setupStartedMs + 60_000),
+    ],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: '' } },
+  );
+
+  assert.notEqual(wrongRoot.status, 0, 'a Tier B summary must not qualify a Tier A report');
+  assert.match(wrongRoot.stderr, /belongs to Tier B|not a complete Tier A selection/);
+});
+
+test('ci-report accepts a per-run directory so accumulated tier history does not break the single-summary rule', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'sp-ui-tier-history-'));
+  const tierB = path.join(root, 'tier-B');
+  const runOne = path.join(tierB, 'run-1');
+  const runTwo = path.join(tierB, 'run-2');
+  const stepSummary = path.join(root, 'step-summary.md');
+  const setupStartedMs = 1_700_000_000_000;
+
+  mkdirSync(runOne, { recursive: true });
+  mkdirSync(runTwo, { recursive: true });
+  writeSummary(runOne, completeTierBSummary({ runId: 'sp-ui-smoke.run-1' }));
+  writeSummary(
+    runTwo,
+    completeTierBSummary({ runId: 'sp-ui-smoke.run-2', status: 'failed', completeTierB: false }),
+  );
+  writeFileSync(stepSummary, '');
+
+  const perRun = spawnSync(
+    process.execPath,
+    [
+      CLI,
+      '--summaries',
+      runOne,
+      '--tier',
+      'b',
+      '--budget-seconds',
+      '300',
+      '--setup-started-ms',
+      String(setupStartedMs),
+      '--setup-finished-ms',
+      String(setupStartedMs + 60_000),
+    ],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: stepSummary } },
+  );
+
+  assert.equal(perRun.status, 0, perRun.stderr);
+  assert.match(readFileSync(stepSummary, 'utf8'), /UI smoke Tier B observation/);
+
+  const accumulatedRoot = spawnSync(
+    process.execPath,
+    [CLI, '--summaries', tierB, '--tier', 'B', '--budget-seconds', '300'],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: '' } },
+  );
+
+  assert.notEqual(accumulatedRoot.status, 0, 'the accumulating tier root is not a single-run input');
+  assert.match(accumulatedRoot.stderr, /expected one run-summary\.json, found 2/);
+});
+
+test('ci-report rejects an invalid tier as a usage error instead of rendering a Tier Z report', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'sp-ui-ci-report-bad-tier-'));
+  const summaryDir = path.join(root, 'run-1');
+  const stepSummary = path.join(root, 'step-summary.md');
+
+  mkdirSync(summaryDir, { recursive: true });
+  writeSummary(summaryDir, completeSummary());
+  writeFileSync(stepSummary, '');
+
+  const report = spawnSync(
+    process.execPath,
+    [CLI, '--summaries', root, '--tier', 'Z', '--budget-seconds', '300'],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: stepSummary } },
+  );
+
+  assert.equal(report.status, 2, 'an unknown tier is a usage error, not an observation');
+  assert.match(report.stderr, /Unknown UI smoke tier: Z/);
+  assert.doesNotMatch(report.stdout, /Tier Z/);
+  assert.equal(readFileSync(stepSummary, 'utf8'), '', 'no observation may be rendered for an invalid tier');
+});
+
+test('the runner normalizes lower-case tier tokens and rejects unknown tiers as a usage error', () => {
+  const baseEnv = { ...process.env };
+
+  delete baseEnv.SP_UI_TIER;
+  delete baseEnv.TESTS_UI_ENABLED;
+  delete baseEnv.SP_UI_SPECS;
+
+  const invalid = spawnSync('bash', [RUNNER], {
+    cwd: path.resolve(UI_DIR, '..', '..'),
+    encoding: 'utf8',
+    env: { ...baseEnv, SP_UI_TIER: 'Z', TESTS_UI_ENABLED: 'false' },
+  });
+
+  assert.equal(invalid.status, 2, invalid.stderr);
+  assert.match(invalid.stderr, /SP_UI_TIER must be A or B; received 'Z'/);
+
+  for (const token of ['a', 'b']) {
+    const lowercase = spawnSync('bash', [RUNNER], {
+      cwd: path.resolve(UI_DIR, '..', '..'),
+      encoding: 'utf8',
+      env: { ...baseEnv, SP_UI_TIER: token, TESTS_UI_ENABLED: 'false' },
+    });
+
+    assert.equal(lowercase.status, 0, lowercase.stderr);
+    assert.match(lowercase.stdout, /UI smoke skipped: TESTS_UI_ENABLED is not 'true'/);
+  }
+});
+
+test('the runner keeps sibling Tier A and Tier B summary roots', () => {
+  const source = readFileSync(RUNNER, 'utf8');
+
+  assert.match(source, /summaries\/tier-A/, 'Tier A must retain a dedicated summary root');
+  assert.match(source, /summaries\/tier-B/, 'Tier B must retain a dedicated summary root');
+  assert.doesNotMatch(
+    source,
+    /DEFAULT_SUMMARY_ROOT="\$UI_DIR\/summaries"$/m,
+    'Tier A must not use the shared parent that also contains Tier B',
+  );
+});
+
+test('an over-budget Tier B observation is labelled Tier B, not Tier A', () => {
+  const evaluation = evaluateRunSummary(
+    completeTierBSummary({ durationMs: TIER_A_BUDGET_MS + 1 }),
+    { tier: 'B' },
+  );
+
+  assert.equal(evaluation.ok, false);
+  assert.match(evaluation.reasons.join('\n'), /Tier B duration .* exceeds/);
+  assert.doesNotMatch(evaluation.reasons.join('\n'), /Tier A duration/);
 });

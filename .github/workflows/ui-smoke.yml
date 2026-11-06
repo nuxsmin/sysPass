@@ -127,7 +127,7 @@ jobs:
       - name: Run Tier A UI smoke
         timeout-minutes: 20
         env:
-          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries
+          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-A
           # Default CI retries stay at zero. A workflow_dispatch operator may
           # explicitly opt in to one diagnostic retry; failOnFlakyTests still
           # rejects a retry-success as complete Tier A evidence.
@@ -159,7 +159,7 @@ jobs:
         if: cancelled() || failure()
         timeout-minutes: 3
         env:
-          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries
+          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-A
           SP_UI_SETUP_ERROR: UI smoke workflow failed before the runner retained Playwright evidence.
         run: |
           set -euo pipefail
@@ -172,7 +172,7 @@ jobs:
         if: always()
         timeout-minutes: 3
         env:
-          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries
+          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-A
         run: |
           node tests/ui/src/ci-report.mjs \
             --summaries "$SP_UI_SUMMARY_DIR" \
@@ -190,7 +190,7 @@ jobs:
         if: always()
         timeout-minutes: 3
         env:
-          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries
+          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-A
         run: |
           set -euo pipefail
           source scripts/lib/ui-smoke-report.sh
@@ -209,11 +209,11 @@ jobs:
         with:
           name: ui-smoke-tier-a-${{ github.sha }}-${{ github.run_id }}
           path: |
-            ${{ runner.temp }}/ui-summaries/*/run-summary.json
-            ${{ runner.temp }}/ui-summaries/*/junit.xml
-            ${{ runner.temp }}/ui-summaries/*/upload-manifest.json
-            ${{ runner.temp }}/ui-summaries/*/failures/**/screenshot.png
-            ${{ runner.temp }}/ui-summaries/*/failures/**/console.log
-            ${{ runner.temp }}/ui-summaries/*/failures/**/failure.json
+            ${{ runner.temp }}/ui-summaries/tier-A/*/run-summary.json
+            ${{ runner.temp }}/ui-summaries/tier-A/*/junit.xml
+            ${{ runner.temp }}/ui-summaries/tier-A/*/upload-manifest.json
+            ${{ runner.temp }}/ui-summaries/tier-A/*/failures/**/screenshot.png
+            ${{ runner.temp }}/ui-summaries/tier-A/*/failures/**/console.log
+            ${{ runner.temp }}/ui-summaries/tier-A/*/failures/**/failure.json
           if-no-files-found: error
           retention-days: 90

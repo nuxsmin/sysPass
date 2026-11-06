@@ -7,7 +7,6 @@ import {
   buildRunSummary,
   renderJUnit,
   resolveSelection,
-  TIER_A_SPECS,
 } from './summary.mjs';
 import { buildUploadManifest, listArtifacts } from './uploads.mjs';
 
@@ -54,7 +53,6 @@ export function writeSetupFailureReport({
     tier: process.env.SP_UI_TIER ?? 'A',
     specs: process.env.SP_UI_SPECS ?? '',
     grep: false,
-    availableSpecs: TIER_A_SPECS,
   });
   const summary = buildRunSummary({
     runId,

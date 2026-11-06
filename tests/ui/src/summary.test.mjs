@@ -3,6 +3,7 @@ import test from 'node:test';
 
 import {
   TIER_A_SPECS,
+  TIER_B_SPECS,
   buildRunSummary,
   classifyFailure,
   renderJUnit,
@@ -554,4 +555,64 @@ test('JUnit exposes known, new and stale registry evidence without suppressing f
   assert.match(staleXml, /sp-ui.staleKnownFailures" value="1"/);
   assert.match(staleXml, /<error type="known-failure-stale"/);
   assert.match(staleXml, /remove the stale entry/i);
+});
+
+test('a complete Tier B selection is complete for Tier B and never Tier A', () => {
+  const selection = resolveSelection({
+    tier: 'B',
+    specs: '',
+    grep: false,
+    availableSpecs: TIER_B_SPECS,
+  });
+  const summary = build(
+    TIER_B_SPECS.map((spec) => testRun({ title: spec, file: spec, statuses: ['passed'] })),
+    {
+      selection,
+      environment: { ...ENVIRONMENT, tier: 'B' },
+    },
+  );
+
+  assert.equal(selection.partialSelection, false);
+  assert.equal(selection.selectedSpecs.length, TIER_B_SPECS.length);
+  assert.equal(summary.status, 'passed');
+  assert.equal(summary.completeTierB, true);
+  assert.equal(summary.completeTierA, false);
+});
+
+test('an incomplete or failing Tier B selection is never complete Tier B', () => {
+  const partialSelection = resolveSelection({
+    tier: 'B',
+    specs: 'accessManager.spec.ts',
+    grep: false,
+    availableSpecs: ['accessManager.spec.ts'],
+  });
+  const partial = build([testRun({ title: 'access', file: 'accessManager.spec.ts', statuses: ['passed'] })], {
+    selection: partialSelection,
+    environment: { ...ENVIRONMENT, tier: 'B' },
+  });
+
+  assert.equal(partialSelection.partialSelection, true);
+  assert.equal(partial.status, 'partial');
+  assert.equal(partial.completeTierB, false);
+  assert.equal(partial.completeTierA, false);
+
+  const failureSelection = resolveSelection({
+    tier: 'B',
+    specs: '',
+    grep: false,
+    availableSpecs: TIER_B_SPECS,
+  });
+  const failed = build(
+    TIER_B_SPECS.map((spec, index) =>
+      testRun({ title: spec, file: spec, statuses: [index === 0 ? 'failed' : 'passed'] }),
+    ),
+    {
+      selection: failureSelection,
+      environment: { ...ENVIRONMENT, tier: 'B' },
+    },
+  );
+
+  assert.equal(failed.status, 'failed');
+  assert.equal(failed.completeTierB, false);
+  assert.equal(failed.completeTierA, false);
 });

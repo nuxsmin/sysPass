@@ -46,6 +46,8 @@ const FIXED_REGRESSION_REFS = new Set([
   'https://github.com/nuxsmin/sysPass/issues/2079',
 ]);
 const DETECTOR_PREFIX = /(?:^|[;\s])([a-z][a-z0-9-]*) \[([A-Za-z0-9_./-]+)\]:/;
+const MISSING_ACTION_ROUTE =
+  /Expected Page-load Actions were not completed within the readiness deadline: ([A-Za-z0-9_./-]+)/;
 const DETECTOR_PROBLEM =
   /(?:^|[|;\n\s]+)([a-z][a-z0-9-]*)(?: \[([A-Za-z0-9_./-]+)\])?:(?!\/\/)/g;
 const DETECTOR_PROBLEM_KINDS = new Set([
@@ -324,7 +326,13 @@ export function extractFailureRoute(message) {
 
   const match = DETECTOR_PREFIX.exec(String(message ?? ''));
 
-  return match?.[2] ?? null;
+  if (match?.[2]) {
+    return match[2];
+  }
+
+  const missing = MISSING_ACTION_ROUTE.exec(String(message ?? ''));
+
+  return missing?.[1] ?? null;
 }
 
 function failureKey(spec, route, failureKind) {

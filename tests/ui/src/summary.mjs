@@ -9,8 +9,9 @@ import {
   REGISTRY_SCHEMA_VERSION,
 } from './known-failures.mjs';
 import { sanitizeEvidencePath, sanitizeText } from './sanitize.mjs';
+import { TIER_A_SPECS, TIER_B_SPECS, TIER_SPECS } from './tiers.mjs';
 
-export const TIER_A_SPECS = ['login.spec.ts', 'shell.spec.ts'];
+export { TIER_A_SPECS, TIER_B_SPECS, TIER_SPECS };
 
 const FAILURE_CLASS_PATTERNS = [
   [/test timeout|timed out|timeout of \d+ms/i, 'timeout'],
@@ -54,7 +55,8 @@ function parseSpecList(specs) {
 
 /**
  * Resolve what the run was asked to execute and whether it can represent a
- * complete Tier A run.
+ * complete run of its selected tier. A Tier B selection is never eligible as
+ * Tier A evidence and a partial selection of either tier is never complete.
  *
  * @param {object} options
  * @param {string} [options.tier]
@@ -67,40 +69,48 @@ export function resolveSelection({
   tier = 'A',
   specs = '',
   grep = false,
-  availableSpecs = TIER_A_SPECS,
+  availableSpecs,
 } = {}) {
-  const normalizedTier = String(tier || 'A').toUpperCase();
+  const normalizedTier = String(tier ?? 'A').trim().toUpperCase() || 'A';
+  const knownTier = Object.hasOwn(TIER_SPECS, normalizedTier);
+  const expectedSpecs = knownTier ? TIER_SPECS[normalizedTier] : [];
   const explicitSpecs = parseSpecList(specs);
   const explicit = explicitSpecs.length > 0;
-  const selectedSpecs = explicit ? explicitSpecs : [...TIER_A_SPECS];
+  const selectedSpecs = explicit ? explicitSpecs : [...expectedSpecs];
   const reasons = [];
 
-  if (normalizedTier !== 'A') {
-    reasons.push(`tier ${normalizedTier} is not the complete Tier A selection`);
+  if (!knownTier) {
+    reasons.push(`tier ${normalizedTier} is not a known UI smoke tier`);
   }
 
   if (grep) {
-    reasons.push('a grep/filtered selection narrows the Tier A run');
+    reasons.push('a grep/filtered selection narrows the run');
   }
 
-  if (explicit) {
-    const missing = TIER_A_SPECS.filter((spec) => !selectedSpecs.includes(spec));
-    const unknown = selectedSpecs.filter((spec) => !TIER_A_SPECS.includes(spec));
+  if (explicit && knownTier) {
+    const missing = expectedSpecs.filter((spec) => !selectedSpecs.includes(spec));
+    const unknown = selectedSpecs.filter((spec) => !expectedSpecs.includes(spec));
 
     if (missing.length > 0) {
-      reasons.push(`explicit specs are a subset of Tier A; missing ${missing.join(', ')}`);
+      reasons.push(`explicit specs are a subset of Tier ${normalizedTier}; missing ${missing.join(', ')}`);
     }
 
     if (unknown.length > 0) {
-      reasons.push(`explicit specs are outside the Tier A set: ${unknown.join(', ')}`);
+      reasons.push(`explicit specs are outside the Tier ${normalizedTier} set: ${unknown.join(', ')}`);
     }
   }
 
-  const available = new Set((availableSpecs.length > 0 ? availableSpecs : TIER_A_SPECS).map(normalizeSpecName));
-  const notAvailable = TIER_A_SPECS.filter((spec) => !available.has(spec));
+  const available = new Set(
+    ((availableSpecs ?? expectedSpecs) || []).map(normalizeSpecName),
+  );
+  const notAvailable = expectedSpecs.filter((spec) => !available.has(spec));
 
   if (notAvailable.length > 0) {
-    reasons.push(`available specs are missing ${notAvailable.join(', ')}`);
+    reasons.push(`tier ${normalizedTier} available specs are missing ${notAvailable.join(', ')}`);
+  }
+
+  if (explicit && !knownTier) {
+    reasons.push(`explicit specs cannot complete an unknown tier ${normalizedTier}: ${selectedSpecs.join(', ')}`);
   }
 
   return {
@@ -344,11 +354,27 @@ export function buildRunSummary({
     annotations.unexecutedEntries.length === 0 &&
     knownFailureErrors.length === 0;
 
+  const completeTierB =
+    status === 'passed' &&
+    selection.tier === 'B' &&
+    !partialSelection &&
+    counts.selected > 0 &&
+    counts.skipped === 0 &&
+    counts.notRun === 0 &&
+    counts.completed === counts.selected &&
+    Object.keys(failureClasses).length === 0 &&
+    safeGlobalErrors.length === 0 &&
+    annotations.newFailures.length === 0 &&
+    annotations.staleEntries.length === 0 &&
+    annotations.unexecutedEntries.length === 0 &&
+    knownFailureErrors.length === 0;
+
   return {
     schemaVersion: 1,
     runId,
     status,
     completeTierA,
+    completeTierB,
     partialSelection,
     partialReasons: partialSelection ? selection.partialReasons : [],
     setupFailure,
@@ -430,7 +456,7 @@ function runLevelMessage(summary) {
         'setup failed before any test produced evidence'
       );
     case 'partial':
-      return summary.partialReasons.join('; ') || 'selection is not a complete Tier A run';
+      return summary.partialReasons.join('; ') || `selection is not a complete Tier ${summary.selection.tier} run`;
     case 'cancelled':
       return 'run was cancelled before completion';
     case 'failed':
@@ -464,6 +490,7 @@ export function renderJUnit(summary) {
     property('sp-ui.runId', summary.runId),
     property('sp-ui.status', summary.status),
     property('sp-ui.completeTierA', String(summary.completeTierA)),
+    property('sp-ui.completeTierB', String(summary.completeTierB ?? false)),
     property('sp-ui.partialSelection', String(summary.partialSelection)),
     property('sp-ui.setupFailure', String(summary.setupFailure)),
     property('sp-ui.cancelled', String(summary.cancelled)),

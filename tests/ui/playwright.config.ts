@@ -8,16 +8,21 @@ import {
   FIXED_USER_AGENT,
   getVerifiedBaseUrl,
 } from './src/env';
+import { specsForTier, normalizeTier } from './src/tiers.mjs';
 
 const outputDir = process.env.SP_UI_OUTPUT_DIR ?? path.join(import.meta.dirname, 'test-results');
 const chromiumExecutable = process.env.SP_UI_CHROMIUM_EXECUTABLE;
 const launchOptions = chromiumExecutable ? { executablePath: chromiumExecutable } : undefined;
 const syntheticRun = Boolean(process.env.SP_UI_RUN_ROOT && process.env.SP_UI_RUN_ID);
 const capture = resolveCapturePolicy(process.env, { syntheticRun });
-const selectedSpecs = (process.env.SP_UI_SPECS ?? '')
+const tier = normalizeTier(process.env.SP_UI_TIER ?? 'A');
+
+const explicitSpecs = (process.env.SP_UI_SPECS ?? '')
   .split(/[\s,]+/)
-  .filter(Boolean)
-  .map((spec) => `**/${spec}`);
+  .filter(Boolean);
+const selectedSpecs = (explicitSpecs.length > 0 ? explicitSpecs : specsForTier(tier)).map(
+  (spec) => `**/${spec}`,
+);
 
 process.env.DO_NOT_TRACK = TELEMETRY_ENVIRONMENT.DO_NOT_TRACK;
 process.env.PLAYWRIGHT_CLI_ANALYTICS = TELEMETRY_ENVIRONMENT.PLAYWRIGHT_CLI_ANALYTICS;

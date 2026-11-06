@@ -8,6 +8,7 @@ type BrowserCookies = Awaited<ReturnType<BrowserContext['cookies']>>;
 
 export interface SessionState {
   cookies: BrowserCookies;
+  authenticated: boolean;
 }
 
 interface IsolatedPage {
@@ -15,8 +16,12 @@ interface IsolatedPage {
   context: BrowserContext;
 }
 
+export interface SessionPage extends IsolatedPage {
+  session: SessionState;
+}
+
 interface SessionFixtures {
-  sessionPage: IsolatedPage;
+  sessionPage: SessionPage;
   isolatedPage: IsolatedPage;
 }
 
@@ -27,10 +32,12 @@ interface SessionWorkerFixtures {
 /**
  * Worker-scoped authenticated session for the seeded suite.
  *
- * The first seeded test logs in through the UI. Every following seeded test
- * receives the live cookie jar produced by the previous context, so SID
- * rotation and legitimate Set-Cookie updates are carried forward instead of
- * restoring an immutable storage-state snapshot or logging in again.
+ * The first seeded test logs in through the UI and marks the worker session as
+ * authenticated. Every following seeded test receives the live cookie jar
+ * produced by the previous context, so SID rotation and legitimate Set-Cookie
+ * updates are carried forward instead of restoring an immutable storage-state
+ * snapshot or logging in again. A session that is actually lost is never
+ * silently re-authenticated.
  *
  * Anonymous/login specs import the plain Playwright `test` and never receive
  * these cookies.
@@ -38,7 +45,7 @@ interface SessionWorkerFixtures {
 export const test = base.extend<SessionFixtures, SessionWorkerFixtures>({
   sharedSession: [
     async ({}, use) => {
-      await use({ cookies: [] });
+      await use({ cookies: [], authenticated: false });
     },
     { scope: 'worker' },
   ],
@@ -85,9 +92,10 @@ export const test = base.extend<SessionFixtures, SessionWorkerFixtures>({
 
     const page = await context.newPage();
     const evidence = new FailureEvidenceRecorder(page, context, testInfo);
+    const sessionPage: SessionPage = { page, context, session: sharedSession };
 
     try {
-      await use({ page, context });
+      await use(sessionPage);
     } finally {
       await evidence.finalize().catch((error: unknown) => {
         console.warn(`[ui-smoke evidence] ${error instanceof Error ? error.message : String(error)}`);

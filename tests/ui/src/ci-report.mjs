@@ -3,9 +3,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { sanitizeText } from './sanitize.mjs';
+import { normalizeTier, TIER_SPECS } from './tiers.mjs';
 
 export const TIER_A_BUDGET_MS = 300_000;
 export const TIER_A_SETUP_BUDGET_MS = 1_800_000;
+
+class UsageError extends Error {}
 
 const RECORDED_REGISTRY_FIELDS = [
   'knownFailures',
@@ -16,7 +19,10 @@ const RECORDED_REGISTRY_FIELDS = [
 ];
 
 /**
- * Find every retained run summary below a directory.
+ * Find retained run summaries for one tier root. Discovery is deliberately
+ * non-recursive: an accumulating root contains one directory per run, while a
+ * per-run directory contains its own run-summary.json. Walking deeper could
+ * make a Tier A report consume nested Tier B evidence.
  *
  * @param {string} root
  * @returns {string[]}
@@ -26,21 +32,33 @@ export function findRunSummaries(root) {
     return [];
   }
 
+  const rootStat = statSync(root);
+
+  if (!rootStat.isDirectory()) {
+    return [];
+  }
+
+  const directSummary = path.join(root, 'run-summary.json');
+
+  if (existsSync(directSummary) && statSync(directSummary).isFile()) {
+    return [directSummary];
+  }
+
   const summaries = [];
 
-  const walk = (directory) => {
-    for (const name of readdirSync(directory).sort()) {
-      const target = path.join(directory, name);
+  for (const name of readdirSync(root).sort()) {
+    const directory = path.join(root, name);
 
-      if (statSync(target).isDirectory()) {
-        walk(target);
-      } else if (name === 'run-summary.json') {
-        summaries.push(target);
-      }
+    if (!statSync(directory).isDirectory()) {
+      continue;
     }
-  };
 
-  walk(root);
+    const summary = path.join(directory, 'run-summary.json');
+
+    if (existsSync(summary) && statSync(summary).isFile()) {
+      summaries.push(summary);
+    }
+  }
 
   return summaries.sort();
 }
@@ -89,26 +107,37 @@ function recordedRegistryEvidence(summary) {
 }
 
 /**
- * Decide whether a retained summary is usable as a complete Tier A
- * qualification observation. A skipped, partial, setup-failed, failed or
- * over-budget run is never eligible. An admitted deterministic known failure
- * remains annotated but never makes the run eligible or suppresses its exit
- * status.
+ * Decide whether a retained summary is usable as a complete observation of the
+ * requested tier. A skipped, partial, setup-failed, failed or over-budget run
+ * is never eligible. An admitted deterministic known failure remains annotated
+ * but never makes the run eligible or suppresses its exit status.
+ *
+ * Tier A and Tier B are evaluated independently: a Tier B summary can never be
+ * complete Tier A evidence, and a Tier A summary can never qualify Tier B.
  *
  * @param {object | null | undefined} summary
- * @param {{budgetMs?: number}} [options]
+ * @param {{budgetMs?: number, tier?: string}} [options]
  * @returns {object}
  */
-export function evaluateRunSummary(summary, { budgetMs = TIER_A_BUDGET_MS } = {}) {
+export function evaluateRunSummary(summary, { budgetMs = TIER_A_BUDGET_MS, tier = 'A' } = {}) {
   const reasons = [];
+  const requestedTier = String(tier ?? 'A').trim().toUpperCase() || 'A';
+  const knownTier = Object.hasOwn(TIER_SPECS, requestedTier);
   const status = String(summary?.status ?? 'missing');
   const completeTierA = summary?.completeTierA === true;
+  const completeTierB = summary?.completeTierB === true;
+  const completeTier = requestedTier === 'A' ? completeTierA : requestedTier === 'B' ? completeTierB : false;
+  const summaryTier = String(summary?.selection?.tier ?? '').toUpperCase();
   const durationMs = Number(summary?.durationMs);
   const hasDuration = Number.isFinite(durationMs) && durationMs >= 0;
   const withinBudget = hasDuration && durationMs <= budgetMs;
   const evidence = recordedRegistryEvidence(summary);
   const counts = summary?.counts ?? {};
   const failedCount = Number(counts.failed ?? 0);
+
+  if (!knownTier) {
+    reasons.push(`tier ${requestedTier} is not a known UI smoke tier`);
+  }
 
   if (!summary || typeof summary !== 'object') {
     reasons.push('run summary is missing or invalid');
@@ -165,23 +194,31 @@ export function evaluateRunSummary(summary, { budgetMs = TIER_A_BUDGET_MS } = {}
       );
     }
 
-    if (!completeTierA) {
-      reasons.push('run is not a complete Tier A selection');
+    if (summaryTier !== '' && summaryTier !== requestedTier) {
+      reasons.push(
+        `run summary belongs to Tier ${summaryTier}, not the requested Tier ${requestedTier}`,
+      );
+    }
+
+    if (!completeTier) {
+      reasons.push(`run is not a complete Tier ${requestedTier} selection`);
     }
 
     if (!hasDuration) {
       reasons.push('run duration is missing');
     } else if (!withinBudget) {
       reasons.push(
-        `Tier A duration ${(durationMs / 1000).toFixed(1)}s exceeds the ${(budgetMs / 1000).toFixed(0)}s budget`,
+        `Tier ${requestedTier} duration ${(durationMs / 1000).toFixed(1)}s exceeds the ${(budgetMs / 1000).toFixed(0)}s budget`,
       );
     }
   }
 
   return {
     ok: reasons.length === 0,
+    tier: requestedTier,
     status,
     completeTierA,
+    completeTierB,
     durationMs: hasDuration ? durationMs : 0,
     budgetMs,
     withinBudget,
@@ -197,14 +234,17 @@ export function evaluateRunSummary(summary, { budgetMs = TIER_A_BUDGET_MS } = {}
 /**
  * @param {object | null} summary
  * @param {ReturnType<typeof evaluateRunSummary>} evaluation
- * @param {{setupDurationMs?: number, setupBudgetMs?: number}} [options]
+ * @param {{setupDurationMs?: number, setupBudgetMs?: number, tier?: string}} [options]
  * @returns {string}
  */
-export function renderMarkdown(summary, evaluation, { setupDurationMs, setupBudgetMs } = {}) {
-  const lines = ['## UI smoke Tier A observation', ''];
+export function renderMarkdown(summary, evaluation, { setupDurationMs, setupBudgetMs, tier = 'A' } = {}) {
+  const tierLabel = String(tier ?? 'A').trim().toUpperCase() || 'A';
+  const lines = [`## UI smoke Tier ${tierLabel} observation`, ''];
 
   if (!summary) {
-    lines.push('No retained run summary was found. This run is **not** a complete Tier A observation.');
+    lines.push(
+      `No retained run summary was found. This run is **not** a complete Tier ${tierLabel} observation.`,
+    );
     return `${lines.join('\n')}\n`;
   }
 
@@ -212,6 +252,12 @@ export function renderMarkdown(summary, evaluation, { setupDurationMs, setupBudg
   const counts = summary.counts ?? {};
   const specSeconds = (evaluation.durationMs / 1000).toFixed(1);
   const budgetSeconds = (evaluation.budgetMs / 1000).toFixed(0);
+  const completeSelected =
+    tierLabel === 'A'
+      ? evaluation.completeTierA
+      : tierLabel === 'B'
+        ? evaluation.completeTierB
+        : false;
 
   lines.push(
     '| Field | Value |',
@@ -219,11 +265,11 @@ export function renderMarkdown(summary, evaluation, { setupDurationMs, setupBudg
     `| Run | \`${summary.runId ?? ''}\` |`,
     `| Commit | \`${commit.sha ?? ''}\` (${commit.branch ?? ''}${commit.dirty ? ', dirty' : ''}) |`,
     `| Status | \`${evaluation.status}\` |`,
-    `| Complete Tier A | ${evaluation.completeTierA ? 'yes' : 'no'} |`,
+    `| Complete Tier ${tierLabel} | ${completeSelected ? 'yes' : 'no'} |`,
     `| Tests selected/completed/failed/skipped | ${counts.selected ?? 0}/${counts.completed ?? 0}/${counts.failed ?? 0}/${counts.skipped ?? 0} |`,
     `| First-attempt failed | ${summary.firstAttemptResults?.failed ?? 0} |`,
     `| Retries | ${counts.retries ?? 0} |`,
-    `| Tier A spec duration | ${specSeconds}s / ${budgetSeconds}s budget (${evaluation.withinBudget ? 'within' : 'exceeded'}) |`,
+    `| Tier ${tierLabel} spec duration | ${specSeconds}s / ${budgetSeconds}s budget (${evaluation.withinBudget ? 'within' : 'exceeded'}) |`,
   );
 
   if (typeof setupDurationMs === 'number' && Number.isFinite(setupDurationMs)) {
@@ -285,11 +331,16 @@ export function renderMarkdown(summary, evaluation, { setupDurationMs, setupBudg
   if ((evaluation.knownFailures ?? []).length > 0) {
     lines.push(
       '',
-      'Admitted known failures remain visible in the counts and failure evidence. This run cannot be counted as a Tier A observation and its failure is not suppressed.',
+      `Admitted known failures remain visible in the counts and failure evidence. This run cannot be counted as a Tier ${tierLabel} observation and its failure is not suppressed.`,
     );
   }
 
-  lines.push('', evaluation.ok ? 'This run may be counted as one Tier A observation.' : 'This run must not be counted as a Tier A observation.');
+  lines.push(
+    '',
+    evaluation.ok
+      ? `This run may be counted as one Tier ${tierLabel} observation.`
+      : `This run must not be counted as a Tier ${tierLabel} observation.`,
+  );
 
   return `${lines.join('\n')}\n`;
 }
@@ -385,6 +436,13 @@ function parseArguments(argv) {
       case '--registry':
         options.registryPath = argv[(index += 1)];
         break;
+      case '--tier':
+        try {
+          options.tier = normalizeTier(argv[(index += 1)]);
+        } catch (error) {
+          throw new UsageError(error instanceof Error ? error.message : String(error));
+        }
+        break;
       case '--setup-budget-seconds':
         options.setupBudgetMs = Number(argv[(index += 1)]) * 1000;
         break;
@@ -402,14 +460,69 @@ function parseArguments(argv) {
   return options;
 }
 
+/**
+ * Escape a value for a GitHub Actions workflow command annotation.
+ *
+ * @param {unknown} value
+ * @returns {string}
+ */
+function annotationValue(value) {
+  return sanitizeText(value, { maxLength: 500 })
+    .replaceAll('%', '%25')
+    .replaceAll('\r', '%0D')
+    .replaceAll('\n', '%0A')
+    .replaceAll(':', '%3A')
+    .replaceAll(',', '%2C');
+}
+
+/**
+ * Emit one warning annotation per failed detector problem for a Tier B run.
+ * It never changes the failed status, counts or exit code; Tier B is simply
+ * evaluated in its own selection so it cannot hide a Tier A result.
+ *
+ * @param {object | null} runSummary retained run summary (with its tests)
+ * @param {string} tier
+ */
+function annotateTierBFailures(runSummary, tier) {
+  if (tier !== 'B' || !runSummary || !Array.isArray(runSummary.tests)) {
+    return;
+  }
+
+  for (const test of runSummary.tests) {
+    for (const attempt of test.attempts ?? []) {
+      if (attempt.status === 'passed' || attempt.status === 'skipped') {
+        continue;
+      }
+
+      const problems =
+        Array.isArray(attempt.failureProblems) && attempt.failureProblems.length > 0
+          ? attempt.failureProblems
+          : [{ route: attempt.route ?? null, failureKind: attempt.failureClass ?? 'test-error' }];
+
+      for (const problem of problems) {
+        const file = annotationValue(test.file ?? '');
+        const route = annotationValue(problem.route ?? '<no route>');
+        const failureKind = annotationValue(problem.failureKind ?? 'test-error');
+        const spec = annotationValue(test.file ?? '<unknown spec>');
+
+        process.stderr.write(
+          `::warning file=${file},title=Tier B ${route} ${failureKind}::${spec}: ${route} failed as ${failureKind}\n`,
+        );
+      }
+    }
+  }
+}
+
 export function run({
   summariesDir,
   budgetMs = TIER_A_BUDGET_MS,
   setupBudgetMs = TIER_A_SETUP_BUDGET_MS,
   setupStartedMs,
   setupFinishedMs,
+  tier = 'A',
   stepSummary = process.env.GITHUB_STEP_SUMMARY,
 }) {
+  const tierLabel = normalizeTier(tier);
   const summaryFiles = findRunSummaries(summariesDir);
   let summary = null;
   const reasons = [];
@@ -428,7 +541,7 @@ export function run({
     }
   }
 
-  const evaluation = evaluateRunSummary(summary, { budgetMs });
+  const evaluation = evaluateRunSummary(summary, { budgetMs, tier: tierLabel });
   evaluation.reasons.unshift(...reasons);
 
   const setupWindow = resolveSetupWindow({ setupStartedMs, setupFinishedMs });
@@ -449,7 +562,11 @@ export function run({
   evaluation.setupBudgetMs = setupBudgetMs;
   evaluation.setupWithinBudget = setupWithinBudget;
 
-  const markdown = renderMarkdown(summary, evaluation, { setupDurationMs, setupBudgetMs });
+  const markdown = renderMarkdown(summary, evaluation, {
+    setupDurationMs,
+    setupBudgetMs,
+    tier: tierLabel,
+  });
 
   process.stdout.write(markdown);
 
@@ -458,7 +575,11 @@ export function run({
   }
 
   if (!evaluation.ok) {
-    process.stderr.write(`::error::UI smoke is not a complete Tier A observation: ${evaluation.reasons.join('; ')}\n`);
+    annotateTierBFailures(summary, tierLabel);
+
+    process.stderr.write(
+      `::error::UI smoke is not a complete Tier ${tierLabel} observation: ${evaluation.reasons.join('; ')}\n`,
+    );
   }
 
   return evaluation;
@@ -469,7 +590,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const options = parseArguments(process.argv.slice(2));
 
     if (!options.summariesDir) {
-      throw new Error('Usage: ci-report.mjs --summaries <dir> [--budget-seconds 300] [--setup-budget-seconds 1800] [--setup-started-ms <ms>] [--setup-finished-ms <ms>]');
+      throw new UsageError(
+        'Usage: ci-report.mjs --summaries <tier-root|run-dir> [--tier A|B] [--budget-seconds 300] [--setup-budget-seconds 1800] [--setup-started-ms <ms>] [--setup-finished-ms <ms>]',
+      );
     }
 
     const evaluation = run(options);
@@ -477,6 +600,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     process.exit(evaluation.ok ? 0 : 1);
   } catch (error) {
     process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
-    process.exit(1);
+    process.exit(error instanceof UsageError ? 2 : 1);
   }
 }

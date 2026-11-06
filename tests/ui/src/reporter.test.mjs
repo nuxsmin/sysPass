@@ -6,6 +6,9 @@ import test from 'node:test';
 
 import SanitizedArtifactReporter from './reporter.mjs';
 
+process.env.SP_UI_TIER = 'A';
+process.env.SP_UI_SPECS = '';
+
 function fakeTest(id, title, file = '/repo/tests/ui/specs/login.spec.ts') {
   return {
     id,

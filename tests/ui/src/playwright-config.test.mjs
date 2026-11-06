@@ -4,6 +4,8 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { TIER_A_SPECS, TIER_B_SPECS, specsForTier } from './tiers.mjs';
+
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const CONFIG = path.join(REPO_ROOT, 'tests', 'ui', 'playwright.config.ts');
 
@@ -36,4 +38,16 @@ test('the resolved capture policy controls retries and flaky rejection', () => {
     /failOnFlakyTests:\s*capture\.failOnFlakyTests/,
     'flaky rejection must come from the capture policy',
   );
+});
+
+test('the Playwright config runs exactly the selected tier and keeps Tier A the default', () => {
+  const contents = readFileSync(CONFIG, 'utf8');
+
+  assert.deepEqual(specsForTier('A'), TIER_A_SPECS);
+  assert.deepEqual(specsForTier('a'), TIER_A_SPECS);
+  assert.deepEqual(specsForTier('B'), TIER_B_SPECS);
+  assert.notDeepEqual(TIER_A_SPECS, TIER_B_SPECS);
+  assert.match(contents, /SP_UI_TIER \?\? 'A'/);
+  assert.match(contents, /specsForTier\(tier\)/);
+  assert.match(contents, /testMatch:\s*selectedSpecs/);
 });
