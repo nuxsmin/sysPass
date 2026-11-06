@@ -13,6 +13,7 @@ import {
   resolveSetupWindow,
   TIER_A_BUDGET_MS,
 } from './ci-report.mjs';
+import { annotateKnownFailures, parseRegistry } from './known-failures.mjs';
 
 const UI_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CLI = path.join(UI_DIR, 'src', 'ci-report.mjs');
@@ -24,10 +25,17 @@ function completeSummary(overrides = {}) {
     runId: 'sp-ui-smoke.test',
     status: 'passed',
     completeTierA: true,
+    partialSelection: false,
     commit: { sha: 'a'.repeat(40), short: 'aaaaaaaaa', dirty: false, branch: 'master' },
     durationMs: 120_000,
-    counts: { selected: 4, completed: 4, failed: 0, skipped: 0, retries: 0 },
+    counts: { selected: 4, completed: 4, failed: 0, skipped: 0, retries: 0, knownFailed: 0, newFailed: 0 },
     firstAttemptResults: { passed: 4, failed: 0, skipped: 0 },
+    globalErrors: [],
+    knownFailures: [],
+    newFailures: [],
+    staleKnownFailures: [],
+    unexecutedKnownFailures: [],
+    knownFailureErrors: [],
     ...overrides,
   };
 }
@@ -406,4 +414,389 @@ test('setup duration includes runner provisioning and the 30-minute setup budget
   assert.notEqual(over.status, 0, 'an over-budget setup window must fail the evaluation');
   assert.match(readFileSync(overStepSummary, 'utf8'), /exceeds the 1800s setup budget/);
   assert.match(over.stderr, /::error::/);
+});
+
+const REGISTRY_ADMISSION = {
+  who: 'maintainer',
+  date: '2026-11-06',
+  ref: '#2080',
+};
+
+function registryEntry(overrides = {}) {
+  return {
+    spec: 'shell.spec.ts',
+    route: 'account/index',
+    failureKind: 'http',
+    reason: 'account/index is deterministically broken',
+    defect: '#2000',
+    admission: { ...REGISTRY_ADMISSION },
+    ...overrides,
+  };
+}
+
+function registry(entries = []) {
+  return { schemaVersion: 1, entries };
+}
+
+function failingTest({
+  file = 'tests/ui/specs/shell.spec.ts',
+  route = 'account/index',
+  failureKind = 'http',
+  message = 'http [account/index]: action account/index returned HTTP 500',
+  failureProblems = [{ route, failureKind }],
+} = {}) {
+  return {
+    title: 'loads the shell',
+    file,
+    project: 'chromium',
+    skipped: false,
+    expectedStatus: 'passed',
+    firstAttemptStatus: 'failed',
+    finalStatus: 'failed',
+    retries: 0,
+    durationMs: 10,
+    attempts: [
+      {
+        attempt: 1,
+        retryIndex: 0,
+        firstAttempt: true,
+        status: 'failed',
+        durationMs: 10,
+        failureClass: failureKind,
+        route,
+        failureProblems,
+        errorMessage: message,
+        errorStack: '',
+      },
+    ],
+  };
+}
+
+function passingTest(overrides = {}) {
+  return {
+    ...failingTest(overrides),
+    firstAttemptStatus: 'passed',
+    finalStatus: 'passed',
+    attempts: [
+      {
+        attempt: 1,
+        retryIndex: 0,
+        firstAttempt: true,
+        status: 'passed',
+        durationMs: 10,
+        failureClass: null,
+        route: null,
+        failureProblems: [],
+        errorMessage: '',
+        errorStack: '',
+      },
+    ],
+  };
+}
+
+function recordedSummary(tests, entries = [], overrides = {}) {
+  const parsed = parseRegistry(registry(entries));
+  const annotations = annotateKnownFailures(tests, parsed.ok ? parsed.entries : []);
+  const failed = annotations.tests.filter(
+    (test) => test.finalStatus === 'failed' || test.finalStatus === 'timedOut',
+  ).length;
+  const status =
+    failed > 0 || !parsed.ok || annotations.staleEntries.length > 0 ? 'failed' : 'passed';
+
+  return completeSummary({
+    status,
+    completeTierA: false,
+    tests: annotations.tests,
+    knownFailures: annotations.knownFailures,
+    newFailures: annotations.newFailures,
+    staleKnownFailures: annotations.staleEntries,
+    unexecutedKnownFailures: annotations.unexecutedEntries,
+    knownFailureErrors: parsed.ok ? [] : parsed.errors,
+    counts: {
+      selected: 4,
+      completed: 4,
+      failed,
+      skipped: 0,
+      retries: 0,
+      knownFailed: annotations.knownFailures.length,
+      newFailed: annotations.newFailures.length,
+    },
+    ...overrides,
+  });
+}
+
+test('an admitted known failure is annotated but never eligible or exit-zero', () => {
+  const evaluation = evaluateRunSummary(recordedSummary([failingTest()], [registryEntry()]));
+
+  assert.equal(evaluation.ok, false);
+  assert.equal(evaluation.completeTierA, false);
+  assert.equal(evaluation.knownFailures.length, 1);
+  assert.equal(evaluation.newFailures.length, 0);
+  assert.equal(evaluation.staleKnownFailures.length, 0);
+  assert.equal(evaluation.status, 'failed');
+  assert.match(evaluation.reasons.join('\n'), /known failure/i);
+});
+
+test('an unlisted or same-spec unrelated failure still fails evaluation', () => {
+  const unlisted = evaluateRunSummary(
+    recordedSummary([failingTest()], [registryEntry({ route: 'account/view' })]),
+  );
+  const unrelated = evaluateRunSummary(
+    recordedSummary(
+      [
+        failingTest({
+          route: 'accountFile/list',
+          failureKind: 'missing-content',
+          message: 'missing-content [accountFile/list]: response is missing expected content "file"',
+        }),
+      ],
+      [registryEntry()],
+    ),
+  );
+
+  for (const evaluation of [unlisted, unrelated]) {
+    assert.equal(evaluation.ok, false);
+    assert.equal(evaluation.newFailures.length, 1);
+    assert.match(evaluation.reasons.join('\n'), /unadmitted|not admitted|new failure|missing or not matched/i);
+  }
+});
+
+test('an obsolete entry whose spec executed fails with removal instructions', () => {
+  const evaluation = evaluateRunSummary(
+    recordedSummary([passingTest()], [registryEntry()]),
+  );
+
+  assert.equal(evaluation.ok, false);
+  assert.equal(evaluation.staleKnownFailures.length, 1);
+  assert.match(evaluation.reasons.join('\n'), /remove the stale entry/i);
+});
+
+test('a filtered or unexecuted entry is surfaced and never produces an ok observation', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'sp-ui-ci-report-filtered-'));
+  const summaryDir = path.join(root, 'run-1');
+  const stepSummary = path.join(root, 'step-summary.md');
+  const setupStartedMs = 1_700_000_000_000;
+  const summary = recordedSummary([passingTest({ file: 'tests/ui/specs/login.spec.ts' })], [registryEntry()], {
+    status: 'partial',
+    completeTierA: false,
+    partialSelection: true,
+    partialReasons: ['explicit specs are a subset of Tier A; missing shell.spec.ts'],
+    counts: {
+      selected: 1,
+      completed: 1,
+      failed: 0,
+      skipped: 0,
+      retries: 0,
+      knownFailed: 0,
+      newFailed: 0,
+    },
+  });
+
+  mkdirSync(summaryDir, { recursive: true });
+  writeSummary(summaryDir, summary);
+  writeFileSync(stepSummary, '');
+
+  const evaluation = evaluateRunSummary(summary);
+
+  assert.equal(evaluation.staleKnownFailures.length, 0);
+  assert.equal(evaluation.unexecutedKnownFailures.length, 1);
+  assert.equal(evaluation.ok, false);
+  assert.match(evaluation.reasons.join('\n'), /not exercised/i);
+
+  const report = spawnSync(
+    process.execPath,
+    [
+      CLI,
+      '--summaries',
+      root,
+      '--budget-seconds',
+      '300',
+      '--setup-started-ms',
+      String(setupStartedMs),
+      '--setup-finished-ms',
+      String(setupStartedMs + 60_000),
+    ],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: stepSummary } },
+  );
+
+  assert.notEqual(report.status, 0, 'an unexercised entry must not exit zero');
+  const markdown = readFileSync(stepSummary, 'utf8');
+  assert.match(markdown, /not exercised by this selection/i);
+  assert.doesNotMatch(markdown, /may be counted as one Tier A observation/);
+});
+
+test('an invalid known-failure registry recorded in the summary fails closed', () => {
+  const evaluation = evaluateRunSummary(
+    recordedSummary([], [registryEntry({ failureKind: 'flaky' })]),
+  );
+
+  assert.equal(evaluation.ok, false);
+  assert.ok(evaluation.knownFailureErrors.length > 0);
+  assert.match(evaluation.reasons.join('\n'), /known failure registry|failure kind/i);
+});
+
+test('the recorded registry evaluation is authoritative over a supplied registry file', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'sp-ui-ci-report-authoritative-'));
+  const summaryDir = path.join(root, 'run-1');
+  const stepSummary = path.join(root, 'step-summary.md');
+  const registryPath = path.join(root, 'known-failures.json');
+  const setupStartedMs = 1_700_000_000_000;
+  const recorded = recordedSummary([failingTest()], [registryEntry()], {
+    knownFailureErrors: ['recorded registry evaluation failed closed'],
+  });
+
+  mkdirSync(summaryDir, { recursive: true });
+  writeSummary(summaryDir, recorded);
+  writeFileSync(registryPath, `${JSON.stringify(registry([registryEntry()]), null, 2)}\n`);
+  writeFileSync(stepSummary, '');
+
+  const report = spawnSync(
+    process.execPath,
+    [
+      CLI,
+      '--summaries',
+      root,
+      '--registry',
+      registryPath,
+      '--setup-started-ms',
+      String(setupStartedMs),
+      '--setup-finished-ms',
+      String(setupStartedMs + 60_000),
+    ],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: stepSummary } },
+  );
+
+  assert.notEqual(report.status, 0, 'recorded known-failure errors must not be re-admitted');
+  assert.match(report.stderr, /recorded registry evaluation failed closed/);
+  const markdown = readFileSync(stepSummary, 'utf8');
+  assert.match(markdown, /recorded registry evaluation failed closed/);
+  assert.doesNotMatch(markdown, /may be counted as one Tier A observation/);
+});
+
+test('registry reason and admission text are sanitized before the step summary', () => {
+  const summary = recordedSummary([failingTest()], [
+    registryEntry({
+      reason: 'password=CANARY_REGISTRY_REASON',
+      admission: { ...REGISTRY_ADMISSION, who: 'password=CANARY_ADMISSION' },
+    }),
+  ]);
+  const markdown = renderMarkdown(summary, evaluateRunSummary(summary), {});
+
+  assert.match(markdown, /Admitted known failures/);
+  assert.doesNotMatch(markdown, /CANARY_REGISTRY_REASON/);
+  assert.doesNotMatch(markdown, /CANARY_ADMISSION/);
+  assert.match(markdown, /\[REDACTED\]/);
+});
+
+test('a summary without recorded registry fields is incompatible rather than re-evaluated', () => {
+  const summary = completeSummary();
+
+  for (const field of [
+    'knownFailures',
+    'newFailures',
+    'staleKnownFailures',
+    'unexecutedKnownFailures',
+    'knownFailureErrors',
+  ]) {
+    delete summary[field];
+  }
+
+  const evaluation = evaluateRunSummary(summary, {
+    registry: registry([registryEntry()]),
+  });
+
+  assert.equal(evaluation.ok, false);
+  assert.match(evaluation.reasons.join('\n'), /incompatible|does not record/i);
+});
+
+test('a multi-problem attempt must have every problem admitted to fail closed', () => {
+  const multi = failingTest({
+    route: 'accountFile/list',
+    failureKind: 'missing-content',
+    message: [
+      'readiness failed',
+      'detector problems: missing-content [accountFile/list]: response is missing expected content "file"',
+      '| http [account/index]: action account/index returned HTTP 500',
+    ].join('; '),
+    failureProblems: [
+      { route: 'accountFile/list', failureKind: 'missing-content' },
+      { route: 'account/index', failureKind: 'http' },
+    ],
+  });
+  const partial = evaluateRunSummary(
+    recordedSummary([multi], [registryEntry({ route: 'accountFile/list', failureKind: 'missing-content' })]),
+  );
+  const all = evaluateRunSummary(
+    recordedSummary(
+      [multi],
+      [
+        registryEntry({ route: 'accountFile/list', failureKind: 'missing-content' }),
+        registryEntry(),
+      ],
+    ),
+  );
+
+  assert.equal(partial.ok, false);
+  assert.equal(partial.newFailures.length, 1);
+  assert.equal(partial.newFailures[0].route, 'account/index');
+  assert.equal(partial.newFailures[0].failureKind, 'http');
+
+  assert.equal(all.knownFailures.length, 2);
+  assert.equal(all.newFailures.length, 0);
+  assert.equal(all.ok, false, 'admitted known failures never make the run eligible');
+});
+
+test('the ci-report CLI exits non-zero for admitted known and for stale entries', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'sp-ui-ci-report-known-'));
+  const summaryDir = path.join(root, 'run-1');
+  const stepSummary = path.join(root, 'step-summary.md');
+  const setupStartedMs = 1_700_000_000_000;
+
+  mkdirSync(summaryDir, { recursive: true });
+  writeSummary(summaryDir, recordedSummary([failingTest()], [registryEntry()]));
+  writeFileSync(stepSummary, '');
+
+  const known = spawnSync(
+    process.execPath,
+    [
+      CLI,
+      '--summaries',
+      root,
+      '--setup-started-ms',
+      String(setupStartedMs),
+      '--setup-finished-ms',
+      String(setupStartedMs + 60_000),
+    ],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: stepSummary } },
+  );
+
+  assert.notEqual(known.status, 0);
+  const markdown = readFileSync(stepSummary, 'utf8');
+  assert.match(markdown, /Admitted known failures/);
+  assert.match(markdown, /Tests selected\/completed\/failed\/skipped \| 4\/4\/1\/0/);
+  assert.match(markdown, /cannot be counted as a Tier A observation/);
+  assert.doesNotMatch(markdown, /may be counted as one Tier A observation/);
+  assert.match(known.stderr, /::error::/);
+  assert.match(known.stderr, /admitted known failure/i);
+
+  writeSummary(summaryDir, recordedSummary([passingTest()], [registryEntry()]));
+  writeFileSync(stepSummary, '');
+
+  const stale = spawnSync(
+    process.execPath,
+    [
+      CLI,
+      '--summaries',
+      root,
+      '--setup-started-ms',
+      String(setupStartedMs),
+      '--setup-finished-ms',
+      String(setupStartedMs + 60_000),
+    ],
+    { encoding: 'utf8', env: { ...process.env, GITHUB_STEP_SUMMARY: stepSummary } },
+  );
+
+  assert.notEqual(stale.status, 0);
+  assert.match(readFileSync(stepSummary, 'utf8'), /remove the stale entry/i);
+  assert.match(stale.stderr, /::error::/);
 });

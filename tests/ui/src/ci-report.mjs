@@ -2,8 +2,18 @@ import { appendFileSync, existsSync, readFileSync, readdirSync, statSync } from 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { sanitizeText } from './sanitize.mjs';
+
 export const TIER_A_BUDGET_MS = 300_000;
 export const TIER_A_SETUP_BUDGET_MS = 1_800_000;
+
+const RECORDED_REGISTRY_FIELDS = [
+  'knownFailures',
+  'newFailures',
+  'staleKnownFailures',
+  'unexecutedKnownFailures',
+  'knownFailureErrors',
+];
 
 /**
  * Find every retained run summary below a directory.
@@ -36,13 +46,58 @@ export function findRunSummaries(root) {
 }
 
 /**
+ * Read the known-failure evaluation recorded by the reporter. The summary is
+ * the single authoritative evidence record: re-evaluating a stale registry at
+ * report time could re-admit a failure the producer already rejected.
+ *
+ * @param {object | null | undefined} summary
+ * @returns {object}
+ */
+function recordedRegistryEvidence(summary) {
+  if (!summary || typeof summary !== 'object') {
+    return {
+      incompatible: false,
+      errors: [],
+      knownFailures: [],
+      newFailures: [],
+      staleKnownFailures: [],
+      unexecutedKnownFailures: [],
+    };
+  }
+
+  const missing = RECORDED_REGISTRY_FIELDS.filter((field) => !Array.isArray(summary[field]));
+
+  if (missing.length > 0) {
+    return {
+      incompatible: true,
+      errors: [],
+      knownFailures: [],
+      newFailures: [],
+      staleKnownFailures: [],
+      unexecutedKnownFailures: [],
+    };
+  }
+
+  return {
+    incompatible: false,
+    errors: summary.knownFailureErrors,
+    knownFailures: summary.knownFailures,
+    newFailures: summary.newFailures,
+    staleKnownFailures: summary.staleKnownFailures,
+    unexecutedKnownFailures: summary.unexecutedKnownFailures,
+  };
+}
+
+/**
  * Decide whether a retained summary is usable as a complete Tier A
  * qualification observation. A skipped, partial, setup-failed, failed or
- * over-budget run is never eligible.
+ * over-budget run is never eligible. An admitted deterministic known failure
+ * remains annotated but never makes the run eligible or suppresses its exit
+ * status.
  *
  * @param {object | null | undefined} summary
  * @param {{budgetMs?: number}} [options]
- * @returns {{ok: boolean, status: string, completeTierA: boolean, durationMs: number, budgetMs: number, withinBudget: boolean, reasons: string[]}}
+ * @returns {object}
  */
 export function evaluateRunSummary(summary, { budgetMs = TIER_A_BUDGET_MS } = {}) {
   const reasons = [];
@@ -51,12 +106,63 @@ export function evaluateRunSummary(summary, { budgetMs = TIER_A_BUDGET_MS } = {}
   const durationMs = Number(summary?.durationMs);
   const hasDuration = Number.isFinite(durationMs) && durationMs >= 0;
   const withinBudget = hasDuration && durationMs <= budgetMs;
+  const evidence = recordedRegistryEvidence(summary);
+  const counts = summary?.counts ?? {};
+  const failedCount = Number(counts.failed ?? 0);
 
   if (!summary || typeof summary !== 'object') {
     reasons.push('run summary is missing or invalid');
   } else {
+    if (evidence.incompatible) {
+      reasons.push(
+        `run summary is incompatible: it does not record known-failure evaluation fields (${RECORDED_REGISTRY_FIELDS.join(', ')}); refusing to re-evaluate the registry`,
+      );
+    }
+
+    if (evidence.errors.length > 0) {
+      reasons.push(`known failure registry is invalid: ${evidence.errors.join('; ')}`);
+    }
+
+    if (evidence.staleKnownFailures.length > 0) {
+      reasons.push(evidence.staleKnownFailures.map((entry) => entry.removal).join('; '));
+    }
+
+    if (evidence.newFailures.length > 0) {
+      const failures = evidence.newFailures
+        .slice(0, 5)
+        .map(
+          (failure) =>
+            `${failure.spec ?? '<unknown spec>'}:${failure.route ?? '<no route>'}:${failure.failureKind}`,
+        )
+        .join(', ');
+      reasons.push(
+        `${evidence.newFailures.length} known-failure admission(s) missing or not matched for: ${failures}`,
+      );
+    }
+
+    if (evidence.unexecutedKnownFailures.length > 0) {
+      const entries = evidence.unexecutedKnownFailures
+        .slice(0, 5)
+        .map(
+          (failure) =>
+            `${failure.spec ?? '<unknown spec>'}:${failure.route ?? '<no route>'}:${failure.failureKind}`,
+        )
+        .join(', ');
+      reasons.push(
+        `${evidence.unexecutedKnownFailures.length} known-failure entr(ies) were not exercised by this selection and are not evidence of a fix: ${entries}`,
+      );
+    }
+
     if (status !== 'passed') {
-      reasons.push(`run status is "${status}", not "passed"`);
+      reasons.push(
+        evidence.knownFailures.length > 0 && evidence.newFailures.length === 0
+          ? `run failed with ${evidence.knownFailures.length} admitted known failure(s); known failures are annotated but never make the run eligible or suppress the non-zero exit`
+          : `run status is "${status}", not "passed"`,
+      );
+    } else if (failedCount > 0) {
+      reasons.push(
+        `run summary records ${failedCount} failed attempt(s) while claiming status "passed"`,
+      );
     }
 
     if (!completeTierA) {
@@ -80,6 +186,11 @@ export function evaluateRunSummary(summary, { budgetMs = TIER_A_BUDGET_MS } = {}
     budgetMs,
     withinBudget,
     reasons,
+    knownFailures: evidence.knownFailures,
+    newFailures: evidence.newFailures,
+    staleKnownFailures: evidence.staleKnownFailures,
+    unexecutedKnownFailures: evidence.unexecutedKnownFailures,
+    knownFailureErrors: evidence.errors,
   };
 }
 
@@ -137,6 +248,45 @@ export function renderMarkdown(summary, evaluation, { setupDurationMs, setupBudg
     for (const reason of evaluation.reasons) {
       lines.push(`- ${reason}`);
     }
+  }
+
+  if ((evaluation.knownFailures ?? []).length > 0) {
+    lines.push('', 'Admitted known failures (annotated, never suppressed):', '');
+
+    for (const failure of evaluation.knownFailures ?? []) {
+      const spec = sanitizeText(failure.spec, { maxLength: 200 });
+      const route = sanitizeText(failure.route, { maxLength: 200 });
+      const failureKind = sanitizeText(failure.failureKind, { maxLength: 100 });
+      const reason = sanitizeText(failure.reason, { maxLength: 2000 });
+      const defect = sanitizeText(failure.defect, { maxLength: 300 });
+      const who = sanitizeText(failure.admission?.who, { maxLength: 200 });
+      const date = sanitizeText(failure.admission?.date, { maxLength: 40 });
+      const ref = sanitizeText(failure.admission?.ref, { maxLength: 300 });
+
+      lines.push(
+        `- \`${spec}\` \`${route}\` \`${failureKind}\` — ${reason} (${defect}; admitted by ${who} on ${date}, ref ${ref})`,
+      );
+    }
+  }
+
+  if ((evaluation.unexecutedKnownFailures ?? []).length > 0) {
+    lines.push('', 'Known failure entries not exercised by this selection (not evidence of a fix):', '');
+
+    for (const failure of evaluation.unexecutedKnownFailures ?? []) {
+      const spec = sanitizeText(failure.spec, { maxLength: 200 });
+      const route = sanitizeText(failure.route, { maxLength: 200 });
+      const failureKind = sanitizeText(failure.failureKind, { maxLength: 100 });
+      const message = sanitizeText(failure.message, { maxLength: 2000 });
+
+      lines.push(`- \`${spec}\` \`${route}\` \`${failureKind}\` — ${message}`);
+    }
+  }
+
+  if ((evaluation.knownFailures ?? []).length > 0) {
+    lines.push(
+      '',
+      'Admitted known failures remain visible in the counts and failure evidence. This run cannot be counted as a Tier A observation and its failure is not suppressed.',
+    );
   }
 
   lines.push('', evaluation.ok ? 'This run may be counted as one Tier A observation.' : 'This run must not be counted as a Tier A observation.');
@@ -231,6 +381,9 @@ function parseArguments(argv) {
         break;
       case '--budget-seconds':
         options.budgetMs = Number(argv[(index += 1)]) * 1000;
+        break;
+      case '--registry':
+        options.registryPath = argv[(index += 1)];
         break;
       case '--setup-budget-seconds':
         options.setupBudgetMs = Number(argv[(index += 1)]) * 1000;
