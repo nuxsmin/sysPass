@@ -615,6 +615,19 @@ Unknown tiers fail closed before setup starts. Each caller has a workload job
 result to be `success`; a skipped workload therefore skips the mirror instead of
 reporting success.
 
+### Toolchain caches
+
+The shared runner reuses toolchain caches between CI runs without relaxing any
+build failure. The PHP 8.3 test image is built with Buildx and the GitHub Actions
+layer cache (`scope=php-testing-composer`) and is still loaded locally for the
+existing `docker run` verification. npm uses a single `actions/setup-node` cache
+keyed on both the root and `tests/ui` lockfiles, Playwright browser binaries are
+cached from `tests/ui/.browsers`, and Composer's cache directory is cached and
+mounted into the install container. A cache miss is a normal cold build or
+install, not a masked failure. MariaDB deliberately stays runner-owned and is
+pulled per job: a job `services:` block would break the run-owned database
+isolation and would not share an image cache across runs.
+
 ### Execution switch versus required check
 
 `TESTS_UI_ENABLED == 'true'` controls execution only:
