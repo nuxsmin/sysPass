@@ -10,12 +10,12 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 const WORKFLOW = path.join(REPO_ROOT, '.github', 'workflows', 'ui-smoke.yml');
 
 const EVIDENCE_PATHS = [
-  '${{ runner.temp }}/ui-summaries/*/run-summary.json',
-  '${{ runner.temp }}/ui-summaries/*/junit.xml',
-  '${{ runner.temp }}/ui-summaries/*/upload-manifest.json',
-  '${{ runner.temp }}/ui-summaries/*/failures/**/screenshot.png',
-  '${{ runner.temp }}/ui-summaries/*/failures/**/console.log',
-  '${{ runner.temp }}/ui-summaries/*/failures/**/failure.json',
+  '${{ runner.temp }}/ui-summaries/tier-A/*/run-summary.json',
+  '${{ runner.temp }}/ui-summaries/tier-A/*/junit.xml',
+  '${{ runner.temp }}/ui-summaries/tier-A/*/upload-manifest.json',
+  '${{ runner.temp }}/ui-summaries/tier-A/*/failures/**/screenshot.png',
+  '${{ runner.temp }}/ui-summaries/tier-A/*/failures/**/console.log',
+  '${{ runner.temp }}/ui-summaries/tier-A/*/failures/**/failure.json',
 ];
 
 function readWorkflow() {
@@ -62,7 +62,7 @@ test('the workflow checks out master for scheduled runs and keeps the switch at 
   assert.equal(job.env.TESTS_UI_ENABLED, '${{ vars.TESTS_UI_ENABLED }}');
 
   assert.ok(runner, 'the job must invoke the shared runner');
-  assert.equal(runner.env.SP_UI_SUMMARY_DIR, '${{ runner.temp }}/ui-summaries');
+  assert.equal(runner.env.SP_UI_SUMMARY_DIR, '${{ runner.temp }}/ui-summaries/tier-A');
   assert.match(
     runner.env.SP_UI_DIAGNOSTIC_RETRY,
     /inputs\.diagnostic_retry/,

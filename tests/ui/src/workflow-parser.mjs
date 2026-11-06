@@ -174,11 +174,12 @@ function parseSteps(lines, stepsIndex) {
   return blocks.map(parseStepBlock);
 }
 
-export function parseJob(raw) {
+export function parseJob(raw, jobId = 'ui') {
   const lines = raw.split(/\r?\n/);
-  const jobIndex = lines.findIndex((line) => /^ {2}ui:\s*$/.test(line));
+  const jobPattern = new RegExp(`^ {2}${jobId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}:\\s*$`);
+  const jobIndex = lines.findIndex((line) => jobPattern.test(line));
 
-  assert.notEqual(jobIndex, -1, 'the workflow must declare a ui job');
+  assert.notEqual(jobIndex, -1, `the workflow must declare a ${jobId} job`);
 
   let end = lines.length;
 

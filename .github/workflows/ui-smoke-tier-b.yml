@@ -1,0 +1,186 @@
+name: UI Smoke Tier B
+
+# Tier B has its own daily observation history. It is a separate workflow so a
+# Tier B failure (or a skipped Tier B history) can never replace, hide or gate
+# the Tier A check. It remains annotation-only until #2086 independently
+# qualifies Tier B and a maintainer explicitly promotes it.
+on:
+  workflow_dispatch:
+  schedule:
+    # Once a day against master, independent of the Tier A schedule.
+    - cron: '47 4 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  ui-tier-b:
+    name: UI Smoke (Tier B, annotation-only)
+    # TESTS_UI_TIER_B_ENABLED is an execution switch for this history only. It
+    # is not a merge gate and never controls Tier A. An unset or non-true value
+    # skips this workflow without producing Tier B evidence.
+    if: ${{ vars.TESTS_UI_TIER_B_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # A real Tier B failure must keep a failed job conclusion. ci-report emits
+    # route annotations but never turns the failed exit into a pass.
+    continue-on-error: false
+    env:
+      # The shared runner's execution switch is literal here; this workflow's
+      # own variable above is the only gate for starting the Tier B history.
+      TESTS_UI_ENABLED: 'true'
+      SP_UI_TIER: B
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/tests/ui/.browsers
+    steps:
+      - name: Checkout
+        timeout-minutes: 2
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'schedule' && 'master' || github.ref }}
+
+      - name: Record observed commit and setup start
+        timeout-minutes: 2
+        run: |
+          set -euo pipefail
+          commit="$(git rev-parse HEAD)"
+          branch="$(git rev-parse --abbrev-ref HEAD)"
+          echo "Tier B observed commit: $commit ($branch)"
+          {
+            echo "## UI smoke Tier B observed commit"
+            echo ""
+            echo "- Commit: \`$commit\`"
+            echo "- Branch: \`$branch\`"
+            echo "- Event: \`${{ github.event_name }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "UI_SMOKE_SETUP_STARTED_MS=$(date +%s%3N)" >> "$GITHUB_ENV"
+          echo "UI_SMOKE_SETUP_STARTED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+
+      - name: Setup Node.js
+        timeout-minutes: 5
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install root assets
+        timeout-minutes: 10
+        run: npm ci
+
+      - name: Build assets
+        timeout-minutes: 10
+        run: bash scripts/build-assets.sh
+
+      - name: Setup locale
+        timeout-minutes: 3
+        run: sudo locale-gen en_US.UTF-8
+
+      - name: Build and verify the PHP 8.3 test image
+        timeout-minutes: 25
+        run: |
+          set -euo pipefail
+          docker build \
+            --build-arg "COMPOSER_VERSION=2.7" \
+            --tag php-testing-composer:latest \
+            --file scripts/docker/Dockerfile.php-testing \
+            scripts/docker
+          docker run --rm --entrypoint php php-testing-composer:latest -r \
+            'exit(PHP_VERSION_ID >= 80300 && PHP_VERSION_ID < 80400 ? 0 : 1);'
+          docker run --rm --entrypoint php php-testing-composer:latest -v
+
+      - name: Pull disposable MariaDB 10.3
+        timeout-minutes: 10
+        run: docker pull mariadb:10.3
+
+      - name: Install Composer dependencies
+        timeout-minutes: 10
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/tmp \
+            -v "$PWD:$PWD" \
+            -w "$PWD" \
+            php-testing-composer:latest \
+            php /usr/bin/composer install \
+              --prefer-dist --no-interaction --no-plugins --no-scripts
+
+      - name: Install locked UI harness and pinned Chromium
+        timeout-minutes: 15
+        working-directory: tests/ui
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run typecheck
+          ./node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Run Tier B UI smoke
+        timeout-minutes: 20
+        env:
+          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-B
+          SP_UI_TIER: B
+        run: bash scripts/ui-smoke.sh
+
+      - name: Enforce setup budget
+        if: always()
+        timeout-minutes: 1
+        env:
+          UI_SMOKE_SETUP_BUDGET_SECONDS: '1800'
+        run: bash scripts/ci/check-setup-budget.sh
+
+      - name: Record pre-run setup-failure evidence
+        if: cancelled() || failure()
+        timeout-minutes: 3
+        env:
+          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-B
+          SP_UI_TIER: B
+          SP_UI_SETUP_ERROR: UI smoke Tier B workflow failed before the runner retained Playwright evidence.
+        run: |
+          set -euo pipefail
+          source scripts/lib/ui-smoke-report.sh
+          started_at="${UI_SMOKE_SETUP_STARTED_AT:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
+          run_id="ui-smoke.tier-b-ci-setup-${GITHUB_RUN_ID:-local}-${GITHUB_RUN_ATTEMPT:-0}"
+          ui_smoke_ci_setup_report "$SP_UI_SUMMARY_DIR" "$PWD/tests/ui" "$run_id" "$started_at"
+
+      # Annotation-only: failed Tier B routes produce warning annotations and a
+      # failing exit. The job and workflow conclusion stay failed, while the
+      # separate Tier A workflow is unaffected.
+      - name: Evaluate Tier B evidence and budget
+        if: always()
+        timeout-minutes: 3
+        env:
+          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-B
+          SP_UI_TIER: B
+        run: |
+          node tests/ui/src/ci-report.mjs \
+            --summaries "$SP_UI_SUMMARY_DIR" \
+            --tier B \
+            --budget-seconds 300 \
+            --setup-budget-seconds 1800 \
+            --setup-started-ms "${UI_SMOKE_SETUP_STARTED_MS:-}" \
+            --setup-finished-ms "${UI_SMOKE_SPECS_STARTED_MS:-}"
+
+      - name: Verify retained Tier B evidence set
+        id: verify_evidence
+        if: always()
+        timeout-minutes: 3
+        env:
+          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-B
+        run: |
+          set -euo pipefail
+          source scripts/lib/ui-smoke-report.sh
+          ui_smoke_verify_single_summary_root "$SP_UI_SUMMARY_DIR"
+
+      - name: Publish sanitized Tier B evidence
+        if: always() && steps.verify_evidence.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-smoke-tier-b-${{ github.sha }}-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/ui-summaries/tier-B/*/run-summary.json
+            ${{ runner.temp }}/ui-summaries/tier-B/*/junit.xml
+            ${{ runner.temp }}/ui-summaries/tier-B/*/upload-manifest.json
+            ${{ runner.temp }}/ui-summaries/tier-B/*/failures/**/screenshot.png
+            ${{ runner.temp }}/ui-summaries/tier-B/*/failures/**/console.log
+            ${{ runner.temp }}/ui-summaries/tier-B/*/failures/**/failure.json
+          if-no-files-found: error
+          retention-days: 90
