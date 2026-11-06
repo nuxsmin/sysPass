@@ -4,7 +4,9 @@ Starter guide for the isolated browser smoke harness. The full contributor, tria
 
 `scripts/ui-smoke.sh` is shared repository tooling for contributors, reviewers and CI. `.ai-cli/` is ONLY for AI agents; it is not the canonical home for this runner or any other human/CI entry point.
 
-Current scope: #2076 / #2077 / #2079 / #2081 / #2082 / plan U1, U2 and U4. The suite provisions a fresh synthetic instance with `sp:install`, loads the anonymous login page, and then exercises the seeded authenticated shell through positive readiness contracts. Tier A covers account view, create and edit in both in-shell navigation and direct full-page URL modes. Tier B covers the seven in-shell index navigations: `accessManager`, `itemManager`, `securityManager`, `configManager`, `notification`, `userSettingsManager` and `plugin`.
+Current scope: #2076 / #2077 / #2079 / #2081 / #2082 / #2083 / plan U1, U2 and U4. The suite provisions a fresh synthetic instance with `sp:install`, loads the anonymous login page, and then exercises the seeded authenticated shell through positive readiness contracts. Tier A covers account view, create and edit in both in-shell navigation and direct full-page URL modes. Tier B covers the seven in-shell index navigations: `accessManager`, `itemManager`, `securityManager`, `configManager`, `notification`, `userSettingsManager` and `plugin`.
+
+The installer is a third, explicitly stateful selection. It runs the normal browser installer on a second, completely separate application instance and then logs in as the newly created admin to assert the fresh shell's automatic actions. It is never part of Tier A/B and never sets `completeTierA`.
 
 ## Prerequisites
 
@@ -66,20 +68,26 @@ Use `--keep` only for debugging; it leaves the run root, network and containers 
 
 `SP_UI_TIER` selects the tier and defaults to `A` when unset. A default or
 explicit Tier A run executes only `login.spec.ts` and `shell.spec.ts`; it never
-picks up Tier B specs. Select Tier B explicitly:
+picks up Tier B specs or the installer. Select Tier B explicitly:
 
 ```sh
 TESTS_UI_ENABLED=true SP_UI_TIER=B ./scripts/ui-smoke.sh
 ```
 
+Select the installer explicitly with `SP_UI_TIER=INSTALL`, or add it to a seeded
+tier with `SP_UI_INSTALL=1` as described below.
+
 `SP_UI_SPECS` still narrows a run to an explicit subset, which is recorded as a
 partial selection for that tier. Tier A retains its evidence under
-`tests/ui/summaries/tier-A/` and Tier B under `tests/ui/summaries/tier-B/`.
+`tests/ui/summaries/tier-A/`, Tier B under `tests/ui/summaries/tier-B/` and the
+installer under `tests/ui/summaries/tier-install/`.
 The roots are siblings, not nested: discovery is non-recursive, so a Tier A
-report can never walk into Tier B history and vice versa. Set
-`SP_UI_SUMMARY_DIR` to override either root. The tier token is case-insensitive
-(`A`/`a`, `B`/`b`); any other token is rejected as a usage error instead of
-being reported as a "Tier Z" observation.
+report can never walk into Tier B or installer history and vice versa. Set
+`SP_UI_SUMMARY_DIR` to override a seeded root (or the install root when
+`SP_UI_TIER=INSTALL`), and `SP_UI_INSTALL_SUMMARY_DIR` to override the installer
+root in a combined run. The tier token is case-insensitive
+(`A`/`a`, `B`/`b`, `INSTALL`/`install`); any other token is rejected as a usage
+error instead of being reported as a "Tier Z" observation.
 
 Tier B is annotation-only until #2086 qualifies it: its run keeps a real,
 non-zero exit status when an index fails, `ci-report --tier B` emits warning
@@ -114,6 +122,77 @@ The removal of a Tier B entry or the promotion decision belongs to that
 qualification work, not to Tier A maintenance.
 
 CI and human contributors invoke `scripts/ui-smoke.sh` directly. AI sessions may source `.ai-cli/env.sh` for the approved wrappers, but `.ai-cli/` is not part of the shared CI or contributor invocation path.
+
+### Installer selection
+
+The installer has its own explicit selection and is never picked up by a
+default Tier A run:
+
+```sh
+TESTS_UI_ENABLED=true SP_UI_TIER=INSTALL ./scripts/ui-smoke.sh
+```
+
+`SP_UI_TIER=INSTALL` runs only `install.spec.ts`. A combined run uses the
+seeded tier plus the explicit installer switch:
+
+```sh
+TESTS_UI_ENABLED=true SP_UI_TIER=A SP_UI_INSTALL=1 ./scripts/ui-smoke.sh
+TESTS_UI_ENABLED=true SP_UI_TIER=B SP_UI_INSTALL=1 ./scripts/ui-smoke.sh
+```
+
+`SP_UI_INSTALL` accepts only `0` or `1`; any other value is a usage error.
+When both are selected, the runner runs the seeded specs first and the wizard
+afterwards. This ordering comes from the explicit run plan, not from Playwright
+filename order. Installer evidence is retained separately under
+`tests/ui/summaries/tier-install/` (override with
+`SP_UI_INSTALL_SUMMARY_DIR`), and `SP_UI_SUMMARY_DIR` still applies to the
+seeded tier.
+
+The installer selection is a deliberate exception to the page-load suite's
+no-user-business-mutation rule. It starts an uninstalled second instance and
+lets the normal browser wizard create its own unique nonexistent database and
+schema. The runner does not precreate that database, preload
+`schemas/dbstructure.sql`, or run `sp:install` for this instance.
+
+Hosting mode is an explicit exclusion for this selection, not an untested gap.
+The spec asserts that the `hostingmode` checkbox is present and unchecked, and
+the runner never selects it. Hosting mode requires a pre-created database and
+caller-supplied database credentials, which contradicts this ticket's unique
+nonexistent-database and isolated-instance criteria; using it would also make
+the database-creation assertion vacuous. A future hosting-mode check must be a
+separate explicit selection with its own pre-created database, credential
+policy and test before it can be reported.
+
+The second instance has its own origin/port, MariaDB container and network,
+configuration, DI cache, application cache (including the fixed
+`app/cache/config.cache` binding), upload temp, application temp, session
+namespace and output. `install-layout.mjs` resolves the same
+`<run root>/install` subtree the runner creates and rejects any overlap between
+the two instances' managed paths or a reused database name. Before the wizard
+runs, `install-guard.mjs` refuses an already installed instance, an existing
+configuration file, a precreated database, or populated wizard caches/sessions.
+The installer phase always uses `retries: 0`; a diagnostic retry is rejected
+because it would rerun the wizard against an installed instance.
+
+A manual rerun must recreate the whole wizard instance and database. The
+runner's `reset_install_instance` path removes only wizard-owned resources and
+starts a fresh uninstalled instance on every invocation; never reuse a
+`--keep` run for another attempt. `install-lifecycle.mjs` destroys and recreates
+the workspace and generates a new database/container/network identity for the
+rerun, and the runner refuses a database that already exists.
+
+After the seeded specs have produced their ordinary view/session/audit writes,
+the runner takes a seeded-state baseline. It then compares the seeded
+configuration, DI cache, upload temp, application temp, app cache, sessions and
+a `CHECKSUM TABLE` database digest immediately after the installer selection,
+and probes the seeded login page to prove the instance remains usable. A
+difference in any seeded path fails the run. The failure replaces the retained
+installer summary with a forced setup-failed result, so a passing wizard report
+cannot survive an isolation failure and the runner exits non-zero. The
+installer's own summary has `completeTierInstall` and `completeTierA: false`, so
+a passing wizard can never mask or replace a Tier A failure. Conversely, a Tier
+A failure keeps the combined run's non-zero exit even if the installer passes;
+both results remain separately visible.
 
 ## CI observation
 
@@ -200,8 +279,8 @@ root. Its daily/manual history is a separate annotation-only workflow
 and a failing Tier B run keeps a failed job and workflow conclusion instead of
 passing silently. #2086 promotes Tier B only after its own qualification
 history and records the responsible maintainer for each admission removal. The
-installer wizard remains a later addition and similarly must not hide a Tier A
-failure.
+installer selection is also optional and separately reported; it cannot hide a
+Tier A failure or satisfy Tier A evidence.
 
 The runner requires Docker permission and creates runner-owned containers, a network, a database and a run directory. It never pulls or builds images, never reuses a developer server or database, and refuses an externally supplied `E2E_BASE_URL`.
 
@@ -215,7 +294,7 @@ non-zero with `continue-on-error: false`, so the job/workflow conclusion remains
 failed and the failure cannot look like a silent pass. Required-check promotion
 is not implied and remains a separate maintainer operation after #2086.
 
-Selection is `SP_UI_TIER` (default `A`) plus optional `SP_UI_SPECS`. A subset or grep-filtered run is recorded as partial. Default retries are zero locally and in CI. An explicit `SP_UI_DIAGNOSTIC_RETRY=1`, or the `workflow_dispatch` `diagnostic_retry` input, enables one diagnostic retry with `failOnFlakyTests`; first-attempt evidence is preserved and a retry-success is reported flaky and rejected by `ci-report` as incomplete Tier A. CI never enables retries implicitly. `SP_UI_LOCAL_TRACE=1` is an opt-in trace for the synthetic runner instance only, is forced off in CI, and is never uploaded.
+Selection is `SP_UI_TIER` (default `A`) plus optional `SP_UI_SPECS`, and the optional explicit `SP_UI_INSTALL=1` phase. A subset or grep-filtered run is recorded as partial. Default retries are zero locally and in CI. An explicit `SP_UI_DIAGNOSTIC_RETRY=1`, or the `workflow_dispatch` `diagnostic_retry` input, enables one diagnostic retry with `failOnFlakyTests`; first-attempt evidence is preserved and a retry-success is reported flaky and rejected by `ci-report` as incomplete Tier A. CI never enables retries implicitly. The installer phase is always `retries: 0` and rejects a diagnostic retry; reruns recreate the wizard instance instead. `SP_UI_LOCAL_TRACE=1` is an opt-in trace for the synthetic runner instance only, is forced off in CI, and is never uploaded.
 
 ## Execution model
 
@@ -231,7 +310,8 @@ Selection is `SP_UI_TIER` (default `A`) plus optional `SP_UI_SPECS`. A subset or
 | Application temp | `<run root>/app-temp` bind-mounted over `<repo>/app/temp` | Per run, removed afterwards |
 | Sessions | `<run root>/sessions` via `session.save_path` | Per run, removed afterwards |
 | Output | `<run root>/output` (summary, JUnit, Playwright output) | Per run, removed afterwards |
-| Retained evidence | `tests/ui/summaries/tier-A/<run-id>/` and `tests/ui/summaries/tier-B/<run-id>/` (allowlisted summary/JUnit/manifest) | Kept through qualification |
+| Installer instance | `<run root>/install` subtree plus its own `<run root>/install`-scoped containers, network, database, origin, config, caches, sessions and `<run root>/output-install` | Per run, removed afterwards; only when the installer is selected |
+| Retained evidence | `tests/ui/summaries/tier-A/<run-id>/`, `tests/ui/summaries/tier-B/<run-id>/` and `tests/ui/summaries/tier-install/<run-id>/` (allowlisted summary/JUnit/manifest) | Kept through qualification |
 | Fixture credentials | `tests/ui/fixtures/e2e-fixture.json` | Committed; synthetic only |
 | Authentication state | Playwright worker memory and `<run root>/sessions` | Never written to artifacts; removed afterwards |
 
@@ -239,7 +319,7 @@ The web server listens only on a random `127.0.0.1` port and is reachable only f
 
 ## Evidence and artifacts
 
-Every run writes `run-summary.json`, `junit.xml` and `upload-manifest.json` through the harness reporter. They record the selected tier/specs, commit and safe environment identity, attempted/completed/skipped counts, first-attempt results, retry counts, durations and normalized failure classes. The summary exposes `completeTierA` and `completeTierB` independently; only the selected tier can be complete, and a Tier B run never sets `completeTierA`. A run that is partial, setup-failed, cancelled or flaky is never reported as a complete success for its tier.
+Every run writes `run-summary.json`, `junit.xml` and `upload-manifest.json` through the harness reporter. They record the selected tier/specs, commit and safe environment identity, attempted/completed/skipped counts, first-attempt results, retry counts, durations and normalized failure classes. The summary exposes `completeTierA`, `completeTierB` and `completeTierInstall` independently; only the selected tier can be complete, a Tier B run never sets `completeTierA`, and the installer selection never sets `completeTierA` or `completeTierB`. A run that is partial, setup-failed, cancelled or flaky is never reported as a complete success for its tier. A combined seeded+installer run retains the seeded summary under `tier-A`/`tier-B` and the installer summary under `tier-install`; each is evaluated separately with `ci-report --tier A|B|INSTALL`.
 
 A failed attempt writes only sanitized diagnostics under `failures/`: a masked screenshot, sanitized console/error output and normalized route/URL/status information. Absolute file paths are reduced to repository-relative paths. No request or response bodies, HAR, trace, video, authentication state, cookies, configuration snapshot, private key, DOM snapshot or temporary fixture dump is uploaded. Playwright's automatic page snapshot is disabled at source (`PLAYWRIGHT_NO_COPY_PROMPT`), and any `error-context.md` file is removed by the reporter, the runner cleanup and the retention step before the artifact set is kept. It is not part of the allowlist.
 
@@ -273,6 +353,8 @@ Before any container or database mutation, `tests/ui/src/preflight.mjs` rejects:
 
 The runner also verifies `CONFIG_PATH`, `CONFIG_FILE`, `CACHE_PATH`, `LOG_FILE`, `session.save_path` and the effective `Path::CACHE`/`Path::TMP` bindings inside PHP before installing. MariaDB is started without `MYSQL_DATABASE`; normal `sp:install` creates the unique database and schema. Developer `app/config`, `app/cache` and `app/temp` fingerprints must be unchanged when the run finishes.
 
+The installer instance repeats the same preflight/path verification with its own `<run root>/install` subtree, origin, network, database, config, caches, temp, sessions and output. Its database is proven absent before the browser wizard starts, and `install-guard.mjs` rejects a populated configuration/cache/session namespace or a nonzero retry count. Cleanup removes only the seeded and wizard resources owned by this run; the seeded instance is fingerprinted before/after the selection and must remain unchanged and usable.
+
 ## Synthetic fixtures
 
 `tests/ui/fixtures/e2e-fixture.json` is the committed source of truth for the isolated fixture. It contains only synthetic `E2E_*` credentials, stable logical IDs and fixture text. The runner reads the admin login, password and known Master Password from it and passes them to `sp:install` through the run-owned environment file; secrets are not passed on process arguments.
@@ -296,6 +378,23 @@ For a `--keep` debugging run, invoke `tests/ui/fixtures/seed.php` with the same 
 `tests/ui/specs/shell.spec.ts` uses a separate authenticated worker session. It logs in through the UI exactly once, then runs sequentially: the first test asserts the shell root, completed `bootstrap/getEnvironment`, `account/index` and `items/notifications` actions, meaningful account-list content, a hidden loading overlay, a 300 ms action-scoped quiet window within the 15 s readiness deadline, disabled update/notice flags and no pending or failed routes. Later tests wait through the real 120-second SID rotation and prove that the rotated cookie carries into a fresh sequential context without a second login. Missing or pending routes are reported together with the observed route set.
 
 The seven Tier B specs share the same live worker cookie jar. The first spec logs in through the UI and marks the worker session authenticated; the remaining specs reuse the live cookies and fail if the login route is observed again, so there is no per-spec login storm and no immutable snapshot restore. Anonymous/login tests keep their own clean Playwright contexts and never receive the seeded cookie jar. `bootstrap/getEnvironment` is the current boot contract; #2096 will replace it and must update these probes in the same change.
+
+`tests/ui/specs/install.spec.ts` drives the real installer form on a second
+instance. It first asserts the installer page contract, the current required
+fields (including the database user/password and the Master Password repeat),
+that hosting mode is unchecked, and that the Master Password repeat field is
+required by the browser. It then submits a deliberately short Master Password
+and requires the server to reject it, before filling synthetic admin/DB
+credentials and submitting `install/install`. Master Password matching remains a
+browser-side required field in this version: `install/install` receives only
+`masterpassword`, while the server enforces the non-blank and minimum-length
+rules that the short-password submission exercises. The installer must answer
+`status: OK` and redirect to the login page. The spec then authenticates as the
+newly created admin and requires the fresh shell contract: completed
+`bootstrap/getEnvironment`, `account/index` with the empty-state content and
+`items/notifications`, a visible shell/search content and no pending or failed
+routes. It never precreates the database, preloads the schema or logs in with
+the seeded fixture.
 
 The scratch-only Tier B fault canary is opt-in with
 `SP_UI_TIER_B_FAULT=accessManager/index`. It intercepts the real
