@@ -1161,7 +1161,7 @@ test('the runner normalizes lower-case tier tokens and rejects unknown tiers as 
   });
 
   assert.equal(invalid.status, 2, invalid.stderr);
-  assert.match(invalid.stderr, /SP_UI_TIER must be A or B; received 'Z'/);
+  assert.match(invalid.stderr, /SP_UI_TIER must be A, B or INSTALL; received 'Z'/);
 
   for (const token of ['a', 'b']) {
     const lowercase = spawnSync('bash', [RUNNER], {
@@ -1172,6 +1172,31 @@ test('the runner normalizes lower-case tier tokens and rejects unknown tiers as 
 
     assert.equal(lowercase.status, 0, lowercase.stderr);
     assert.match(lowercase.stdout, /UI smoke skipped: TESTS_UI_ENABLED is not 'true'/);
+  }
+});
+
+test('the runner rejects a truthy-looking SP_UI_INSTALL even with tier INSTALL', () => {
+  const baseEnv = { ...process.env };
+
+  delete baseEnv.SP_UI_TIER;
+  delete baseEnv.SP_UI_INSTALL;
+  delete baseEnv.TESTS_UI_ENABLED;
+  delete baseEnv.SP_UI_SPECS;
+
+  for (const tier of ['A', 'INSTALL']) {
+    const invalid = spawnSync('bash', [RUNNER], {
+      cwd: path.resolve(UI_DIR, '..', '..'),
+      encoding: 'utf8',
+      env: {
+        ...baseEnv,
+        SP_UI_TIER: tier,
+        SP_UI_INSTALL: 'yes',
+        TESTS_UI_ENABLED: 'false',
+      },
+    });
+
+    assert.equal(invalid.status, 2, invalid.stderr);
+    assert.match(invalid.stderr, /SP_UI_INSTALL must be 0 or 1/);
   }
 });
 
@@ -1196,4 +1221,42 @@ test('an over-budget Tier B observation is labelled Tier B, not Tier A', () => {
   assert.equal(evaluation.ok, false);
   assert.match(evaluation.reasons.join('\n'), /Tier B duration .* exceeds/);
   assert.doesNotMatch(evaluation.reasons.join('\n'), /Tier A duration/);
+});
+
+test('the installer has a separate completion flag and never completes Tier A', () => {
+  const installer = completeSummary({
+    completeTierA: false,
+    completeTierB: false,
+    completeTierInstall: true,
+    selection: {
+      tier: 'INSTALL',
+      selectedSpecs: ['install.spec.ts'],
+      explicit: false,
+      partialSelection: false,
+      partialReasons: [],
+    },
+    counts: { selected: 2, completed: 2, failed: 0, skipped: 0, retries: 0, knownFailed: 0, newFailed: 0 },
+    firstAttemptResults: { passed: 2, failed: 0, skipped: 0 },
+  });
+
+  const installerEvaluation = evaluateRunSummary(installer, { tier: 'INSTALL' });
+
+  assert.equal(installerEvaluation.ok, true, installerEvaluation.reasons.join('; '));
+  assert.equal(installerEvaluation.completeTierInstall, true);
+  assert.equal(installerEvaluation.completeTierA, false);
+
+  const asTierA = evaluateRunSummary(installer, { tier: 'A' });
+
+  assert.equal(asTierA.ok, false);
+  assert.match(asTierA.reasons.join('\n'), /belongs to Tier INSTALL, not the requested Tier A/);
+});
+
+test('a Tier A summary cannot be used as installer evidence', () => {
+  const evaluation = evaluateRunSummary(
+    completeSummary({ completeTierInstall: false }),
+    { tier: 'INSTALL' },
+  );
+
+  assert.equal(evaluation.ok, false);
+  assert.match(evaluation.reasons.join('\n'), /not a complete Tier INSTALL selection/);
 });

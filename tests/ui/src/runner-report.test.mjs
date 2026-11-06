@@ -500,3 +500,83 @@ test('the workflow verifier requires exactly one complete retained summary set',
   assert.notEqual(orphanedFailures.status, 0, 'failure diagnostics outside the single run directory must not be publishable');
   assert.match(orphanedFailures.stderr, /failure diagnostics outside/);
 });
+
+test('an installer isolation failure replaces a passing summary with a failed install result', () => {
+  const output = mkdtempSync(path.join(tmpdir(), 'sp-ui-install-isolation-output-'));
+  const summaries = mkdtempSync(path.join(tmpdir(), 'sp-ui-install-isolation-summaries-'));
+  const runId = 'run-install-isolation';
+  const runDir = path.join(summaries, runId);
+
+  writeArtifactSet(output);
+  mkdirSync(runDir, { recursive: true });
+
+  const passingInstall = {
+    ...completeRunSummary(runId),
+    completeTierA: false,
+    completeTierInstall: true,
+    selection: {
+      tier: 'INSTALL',
+      selectedSpecs: ['install.spec.ts'],
+      explicit: false,
+      partialSelection: false,
+      partialReasons: [],
+    },
+  };
+
+  writeFileSync(
+    path.join(runDir, 'run-summary.json'),
+    `${JSON.stringify(passingInstall, null, 2)}\n`,
+  );
+  writeArtifactSet(runDir);
+  writeFileSync(path.join(runDir, 'stale-artifact.txt'), 'must be replaced');
+
+  const result = runBash(
+    'source "$1"; SP_UI_TIER=INSTALL ui_smoke_install_failure_report 1 "$2" "$3" "$4" "$5" 2026-11-05T00:00:00Z "the installer selection changed the seeded instance"',
+    [output, summaries, UI_DIR, runId],
+  );
+
+  assert.notEqual(result.status, 0, 'an isolation failure report must not exit zero');
+
+  const summary = JSON.parse(
+    readFileSync(path.join(runDir, 'run-summary.json'), 'utf8'),
+  );
+  const junit = readFileSync(path.join(runDir, 'junit.xml'), 'utf8');
+
+  assert.equal(summary.status, 'setup-failed');
+  assert.equal(summary.setupFailure, true);
+  assert.equal(summary.completeTierA, false);
+  assert.equal(summary.completeTierInstall, false);
+  assert.equal(summary.selection.tier, 'INSTALL');
+  assert.match(JSON.stringify(summary), /changed the seeded instance/);
+  assert.doesNotMatch(junit, /sp-ui.completeTierInstall" value="true"/);
+  assert.equal(
+    existsSync(path.join(runDir, 'stale-artifact.txt')),
+    false,
+    'the forced failure report must replace the whole retained run directory',
+  );
+});
+
+test('the runner install-failure helper exits non-zero after replacing the summary', () => {
+  const output = mkdtempSync(path.join(tmpdir(), 'sp-ui-install-fail-output-'));
+  const summaries = mkdtempSync(path.join(tmpdir(), 'sp-ui-install-fail-summaries-'));
+  const runId = 'run-install-fail';
+
+  writeArtifactSet(output);
+  writeArtifactSet(path.join(summaries, runId));
+
+  const result = runBash(
+    'source "$1"; SP_UI_TIER=INSTALL ui_smoke_install_fail 1 "$2" "$3" "$4" "$5" 2026-11-05T00:00:00Z "the installer selection changed the seeded instance"',
+    [output, summaries, UI_DIR, runId],
+  );
+
+  assert.equal(result.status, 1, 'the installer failure path must exit non-zero');
+  assert.match(result.stderr, /changed the seeded instance/);
+
+  const summary = JSON.parse(
+    readFileSync(path.join(summaries, runId, 'run-summary.json'), 'utf8'),
+  );
+
+  assert.equal(summary.status, 'setup-failed');
+  assert.equal(summary.completeTierInstall, false);
+  assert.equal(summary.completeTierA, false);
+});

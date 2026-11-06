@@ -51,3 +51,7 @@ test('the Playwright config runs exactly the selected tier and keeps Tier A the 
   assert.match(contents, /specsForTier\(tier\)/);
   assert.match(contents, /testMatch:\s*selectedSpecs/);
 });
+
+test('the installer spec is its own explicit selection', () => {
+  assert.deepEqual(specsForTier('install'), ['install.spec.ts']);
+});
