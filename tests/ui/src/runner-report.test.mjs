@@ -556,21 +556,41 @@ test('an installer isolation failure replaces a passing summary with a failed in
   );
 });
 
-test('the runner install-failure helper exits non-zero after replacing the summary', () => {
+test('the finalizer replaces the installer summary for an accumulated post-provisioning failure', () => {
   const output = mkdtempSync(path.join(tmpdir(), 'sp-ui-install-fail-output-'));
   const summaries = mkdtempSync(path.join(tmpdir(), 'sp-ui-install-fail-summaries-'));
   const runId = 'run-install-fail';
+  const sameFingerprint = JSON.stringify({ root: '/repo/app/config', digest: 'same', count: 1 });
 
   writeArtifactSet(output);
   writeArtifactSet(path.join(summaries, runId));
 
   const result = runBash(
-    'source "$1"; SP_UI_TIER=INSTALL ui_smoke_install_fail 1 "$2" "$3" "$4" "$5" 2026-11-05T00:00:00Z "the installer selection changed the seeded instance"',
-    [output, summaries, UI_DIR, runId],
+    'source "$1"; shift; ui_smoke_finalize_run "$@"',
+    [
+      '0',
+      '1',
+      '1',
+      '',
+      output,
+      mkdtempSync(path.join(tmpdir(), 'sp-ui-install-fail-seeded-')),
+      summaries,
+      UI_DIR,
+      runId,
+      '2026-11-05T00:00:00Z',
+      sameFingerprint,
+      sameFingerprint,
+      sameFingerprint,
+      sameFingerprint,
+      sameFingerprint,
+      sameFingerprint,
+      '',
+      'the installer selection changed the seeded instance',
+    ],
   );
 
-  assert.equal(result.status, 1, 'the installer failure path must exit non-zero');
-  assert.match(result.stderr, /changed the seeded instance/);
+  assert.equal(result.status, 1, 'an accumulated installer failure must stay non-zero');
+  assert.match(result.stderr, /Installer UI smoke selection failed with status 1/);
 
   const summary = JSON.parse(
     readFileSync(path.join(summaries, runId, 'run-summary.json'), 'utf8'),
@@ -579,4 +599,5 @@ test('the runner install-failure helper exits non-zero after replacing the summa
   assert.equal(summary.status, 'setup-failed');
   assert.equal(summary.completeTierInstall, false);
   assert.equal(summary.completeTierA, false);
+  assert.match(JSON.stringify(summary), /changed the seeded instance/);
 });
