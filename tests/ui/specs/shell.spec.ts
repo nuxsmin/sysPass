@@ -7,20 +7,16 @@ import {
   accountEditContract,
   accountViewContract,
   loginContract,
-  shellContract,
   type AccountNavigationMode,
 } from '../src/contracts';
 import { loginThroughUi } from '../src/login';
 import { ActionTracker } from '../src/readiness';
+import {
+  SEEDED_SHELL_CONTRACT as SHELL_CONTRACT,
+  openSeededShellPage as openSeededShell,
+} from '../src/seeded-shell';
 
 const READINESS_TIMEOUT_MS = 15_000;
-
-const SHELL_CONTRACT = shellContract({
-  parentAccount: FIXTURE.names.parentAccount,
-  childAccount: FIXTURE.names.childAccount,
-  client: FIXTURE.names.client,
-  category: FIXTURE.names.category,
-});
 
 const ACCOUNT_PAGE_OPTIONS = {
   accountId: FIXTURE.ids.accounts.child,
@@ -51,14 +47,6 @@ interface NotificationsPayload {
   };
 }
 
-async function openSeededShell(page: Page, tracker: ActionTracker): Promise<void> {
-  tracker.setContract(SHELL_CONTRACT);
-  const since = Date.now();
-
-  await page.goto('/index.php?r=index', { waitUntil: 'domcontentloaded' });
-  await tracker.waitForReady(SHELL_CONTRACT, since);
-}
-
 async function openInShellAccountView(page: Page, tracker: ActionTracker): Promise<void> {
   const link = page
     .locator('#search-rows .account-label', { hasText: FIXTURE.names.childAccount })
@@ -79,12 +67,13 @@ async function openInShellAccountView(page: Page, tracker: ActionTracker): Promi
 
 test.describe.configure({ mode: 'serial' });
 
-test('authenticates once and loads the complete seeded shell', async ({ sessionPage: { page, context } }) => {
+test('authenticates once and loads the complete seeded shell', async ({ sessionPage: { page, context, session } }) => {
   const tracker = new ActionTracker(page, context, { sessionEstablished: false });
   tracker.setContract(SHELL_CONTRACT);
 
   try {
     const since = await loginThroughUi(page, ADMIN_CREDENTIALS);
+    session.authenticated = true;
     tracker.setSessionEstablished(true);
     await tracker.waitForReady(SHELL_CONTRACT, since);
 

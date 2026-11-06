@@ -283,3 +283,215 @@ export function shellContract({
     ],
   };
 }
+
+/**
+ * Shared Tier B in-shell contract helpers.
+ *
+ * Tier B indexes are loaded through the authenticated shell. The returned
+ * fragment replaces `#content`, so every contract requires the index's own
+ * root/content and proves that the previous account-search content is gone.
+ */
+function tierBStaleShellCondition(): Condition {
+  return {
+    kind: 'count',
+    selector: '#content #search-rows',
+    max: 0,
+    label: 'stale account shell content must be replaced by the index',
+  };
+}
+
+function tierBTriggerCondition(
+  selector: string,
+  name: string,
+  value: string,
+): Condition {
+  return { kind: 'attribute', selector, name, value, label: `${selector} dispatch ${name}=${value}` };
+}
+
+function tierBTabConditions(route: string, gridSelectors: string[]): Condition[] {
+  return [
+    { kind: 'visible', selector: '#content' },
+    tierBStaleShellCondition(),
+    { kind: 'count', selector: `#content [data-tab-route="${route}"]`, min: 1, label: `${route} tab root` },
+    { kind: 'count', selector: '#content #tabsHeader', min: 1, label: 'index tab headers' },
+    { kind: 'count', selector: '#content #tabs-0', min: 1, label: 'first index tab panel' },
+    ...gridSelectors.map(
+      (selector): Condition => ({
+        kind: 'count',
+        selector: `#content ${selector}`,
+        min: 1,
+        label: `${route} content ${selector}`,
+      }),
+    ),
+  ];
+}
+
+function tierBTabAction(route: string, content: string[]): ActionSpec {
+  return { route, format: 'html', content: [`data-tab-route="${route}"`, ...content] };
+}
+
+/**
+ * Access manager (`accessManager/index`): users, groups, profiles and API
+ * tokens are rendered as tabs. Require the users and profiles grids so a bare
+ * tab shell or stale account list cannot satisfy the contract.
+ */
+export function accessManagerContract(): PageContract {
+  const route = 'accessManager/index';
+
+  return {
+    name: route,
+    actions: [tierBTabAction(route, ['id="data-table-tblUsers"', 'id="data-table-tblProfiles"'])],
+    conditions: [
+      ...tierBTabConditions(route, ['#data-table-tblUsers', '#data-table-tblProfiles']),
+      tierBTriggerCondition('#btn-5002', 'data-route', route),
+      tierBTriggerCondition('#btn-5002', 'data-view', 'datatabs'),
+    ],
+  };
+}
+
+/**
+ * Item manager (`itemManager/index`): categories and clients are required
+ * action-produced grids inside the tab shell.
+ */
+export function itemManagerContract(): PageContract {
+  const route = 'itemManager/index';
+
+  return {
+    name: route,
+    actions: [tierBTabAction(route, ['id="data-table-tblCategories"', 'id="data-table-tblClients"'])],
+    conditions: [
+      ...tierBTabConditions(route, ['#data-table-tblCategories', '#data-table-tblClients']),
+      tierBTriggerCondition('#btn-5001', 'data-route', route),
+      tierBTriggerCondition('#btn-5001', 'data-view', 'datatabs'),
+    ],
+  };
+}
+
+/**
+ * Security manager (`securityManager/index`): event log and track grids are
+ * required action-produced content.
+ */
+export function securityManagerContract(): PageContract {
+  const route = 'securityManager/index';
+
+  return {
+    name: route,
+    actions: [tierBTabAction(route, ['id="data-table-tblEventLog"', 'id="data-table-tblTracks"'])],
+    conditions: [
+      ...tierBTabConditions(route, ['#data-table-tblEventLog', '#data-table-tblTracks']),
+      tierBTriggerCondition('#btn-5003', 'data-route', route),
+      tierBTriggerCondition('#btn-5003', 'data-view', 'datatabs'),
+    ],
+  };
+}
+
+/**
+ * Configuration manager (`configManager/index`): the general configuration
+ * form is required action-produced content.
+ */
+export function configManagerContract(): PageContract {
+  const route = 'configManager/index';
+
+  return {
+    name: route,
+    actions: [tierBTabAction(route, ['id="frmConfig"', 'data-action-route="configGeneral/save"'])],
+    conditions: [
+      ...tierBTabConditions(route, ['#frmConfig']),
+      tierBTriggerCondition('#btn-config', 'data-route', route),
+      tierBTriggerCondition('#btn-config', 'data-view', 'config'),
+    ],
+  };
+}
+
+/**
+ * Notification index (`notification/index`): its own header and notification
+ * grid are required.
+ */
+/**
+ * Notification and plugin indexes share the same header/grid shape. Keep one
+ * builder so their positive contracts cannot drift apart.
+ */
+function tierBGridContract({
+  route,
+  title,
+  gridId,
+  trigger,
+  attributes,
+}: {
+  route: string;
+  title: string;
+  gridId: string;
+  trigger: string;
+  attributes: Record<string, string>;
+}): PageContract {
+  return {
+    name: route,
+    actions: [
+      {
+        route,
+        format: 'html',
+        content: ['class="datagrid-header-title"', title, `id="${gridId}"`],
+      },
+    ],
+    conditions: [
+      { kind: 'visible', selector: '#content' },
+      tierBStaleShellCondition(),
+      { kind: 'visible', selector: '#content .datagrid-header-title' },
+      { kind: 'text', selector: '#content .datagrid-header-title', contains: title },
+      { kind: 'visible', selector: `#content #${gridId}` },
+      ...Object.entries(attributes).map(([name, value]) =>
+        tierBTriggerCondition(trigger, name, value),
+      ),
+    ],
+  };
+}
+
+export function notificationContract(): PageContract {
+  return tierBGridContract({
+    route: 'notification/index',
+    title: 'Notifications',
+    gridId: 'data-table-tblNotifications',
+    trigger: '#notifications',
+    attributes: {
+      'data-route': 'notification/index',
+      'data-view': 'notifications',
+    },
+  });
+}
+
+/**
+ * User settings (`userSettingsManager/index`): the preferences tab and form
+ * are required action-produced content.
+ */
+export function userSettingsManagerContract(): PageContract {
+  const route = 'userSettingsManager/index';
+
+  return {
+    name: route,
+    actions: [
+      tierBTabAction(route, ['id="frmPreferences"', 'id="sel-userlang"']),
+    ],
+    conditions: [
+      ...tierBTabConditions(route, ['#frmPreferences', '#sel-userlang']),
+      { kind: 'text', selector: '#content #title', contains: 'Site' },
+      tierBTriggerCondition('#btnPrefs', 'data-action-route', route),
+      tierBTriggerCondition('#btnPrefs', 'data-onclick', 'user/showSettings'),
+    ],
+  };
+}
+
+/**
+ * Plugin index (`plugin/index`): its own header and plugin grid are required.
+ */
+export function pluginContract(): PageContract {
+  return tierBGridContract({
+    route: 'plugin/index',
+    title: 'Plugins',
+    gridId: 'data-table-tblPlugins',
+    trigger: '#btn-1101',
+    attributes: {
+      'data-route': 'plugin/index',
+      'data-view': 'plugin',
+    },
+  });
+}
