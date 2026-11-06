@@ -43,6 +43,7 @@ use SP\Domain\Install\Services\Installer;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Services\User;
 use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Tests\UnitaryTestCase;
@@ -94,11 +95,21 @@ class InstallerTest extends UnitaryTestCase
         $this->databaseSetup->expects($this->once())->method('createDBStructure');
         $this->databaseSetup->expects($this->once())->method('checkConnection');
         $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
+        $this->userService->expects($this->once())
+                          ->method('updatePreferencesById')
+                          ->with(
+                              1,
+                              $this->callback(
+                                  static fn(UserPreferences $preferences): bool => $preferences->getLang() === 'es_ES'
+                              )
+                          )
+                          ->willReturn(1);
         $this->configService->expects($this->exactly(3))->method('create');
         $this->userGroupService->expects($this->once())->method('create');
         $this->userProfileService->expects($this->once())->method('create');
 
         $params = $this->getInstallData();
+        $params->setSiteLang('es_ES');
 
         $installer = $this->getDefaultInstaller();
 
@@ -117,6 +128,10 @@ class InstallerTest extends UnitaryTestCase
         $this->assertEquals(SELF_IP_ADDRESS, $params->getDbAuthHost());
         $this->assertNull($configData->getUpgradeKey());
         $this->assertNull($configData->getDbSocket());
+        // A fresh install must not inherit Basic Auth auto-login. The installer
+        // only writes the new configuration file; existing installed instances
+        // keep their stored configuration because no migration runs here.
+        $this->assertFalse($configData->isAuthBasicAutoLoginEnabled());
     }
 
     /**

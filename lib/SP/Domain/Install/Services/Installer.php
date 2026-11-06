@@ -44,6 +44,7 @@ use SP\Domain\Install\Ports\InstallerService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Models\UserProfile;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
@@ -266,7 +267,12 @@ final class Installer implements InstallerService
                                    ->setDbSocket($this->installData->getDbSocket())
                                    ->setDbPort($this->installData->getDbPort())
                                    ->setDbName($this->installData->getDbName())
-                                   ->setSiteLang($this->installData->getSiteLang());
+                                   ->setSiteLang($this->installData->getSiteLang())
+                                   // Security-sensitive default: a fresh install must not
+                                   // auto-login from the web server's Basic Auth identity.
+                                   // Only the installer writes this; existing installs keep
+                                   // their stored configuration because no migration runs here.
+                                   ->setAuthBasicAutoLoginEnabled(false);
 
         $this->config->save($configData, false);
 
@@ -369,6 +375,11 @@ final class Installer implements InstallerService
             if ($id === 0) {
                 throw new SPException(__u('Error while creating \'admin\' user'));
             }
+
+            $this->userService->updatePreferencesById(
+                $id,
+                new UserPreferences(['lang' => $this->installData->getSiteLang()])
+            );
         } catch (Exception $e) {
             $this->databaseSetup->rollback($this->config->getConfigData()->getDbUser());
 

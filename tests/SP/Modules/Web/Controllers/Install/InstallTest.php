@@ -29,7 +29,9 @@ namespace SP\Tests\Modules\Web\Controllers\Install;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerService;
 use SP\Tests\BodyChecker;
 use SP\Tests\IntegrationTestCase;
@@ -81,11 +83,77 @@ final class InstallTest extends IntegrationTestCase
         );
     }
 
+    /**
+     * The controller must use the request-built InstallData from the shared
+     * container instead of rebuilding a second object. The same values are what
+     * DatabaseSetupService receives when the real installer runs.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function installPassesTheSharedRequestValuesToTheInstaller(): void
+    {
+        $captured = null;
+        $installer = $this->createMock(InstallerService::class);
+        $installer->expects(self::once())
+                  ->method('run')
+                  ->willReturnCallback(
+                      static function (InstallData $installData) use (&$captured, $installer): InstallerService {
+                          $captured = $installData;
+
+                          return $installer;
+                      }
+                  );
+
+        $container = $this->runRoute(
+            'post',
+            'install/install',
+            [],
+            [
+                'sitelang' => 'es_ES',
+                'adminlogin' => 'install-admin',
+                'adminpass' => 'install-admin-pass',
+                'masterpassword' => 'install-master-password',
+                'dbuser' => 'install-db-user',
+                'dbpass' => 'install-db-pass',
+                'dbname' => 'install_db_name',
+                'dbhost' => 'install-db-host',
+                'hostingmode' => '1',
+            ],
+            [InstallerService::class => $installer]
+        );
+
+        self::assertInstanceOf(InstallData::class, $captured);
+        self::assertSame($container->get(InstallData::class), $captured);
+        self::assertSame('install-admin', $captured->getAdminLogin());
+        self::assertSame('install-admin-pass', $captured->getAdminPass());
+        self::assertSame('install-master-password', $captured->getMasterPassword());
+        self::assertSame('install-db-user', $captured->getDbAdminUser());
+        self::assertSame('install-db-pass', $captured->getDbAdminPass());
+        self::assertSame('install_db_name', $captured->getDbName());
+        self::assertSame('install-db-host', $captured->getDbHost());
+        self::assertSame('es_ES', $captured->getSiteLang());
+        self::assertTrue($captured->isHostingMode());
+    }
+
     private function outputCheckerIndex(string $output): void
     {
         $crawler = new Crawler($output);
 
         self::assertCount(1, $crawler->filterXPath('//form[@id="frmInstall"]'));
+
+        // The browser validates these patterns with the `v` flag. The hyphen
+        // and dot must stay escaped inside the character classes or the page
+        // emits a console error and the installer never becomes ready.
+        self::assertSame(
+            '[0-9a-zA-Z_$\-]+',
+            $crawler->filterXPath('//input[@name="dbname"]')->attr('pattern')
+        );
+        self::assertSame(
+            '([0-9a-zA-Z._\-]+|([0-9]{1,3}\.)+)(:[0-9]{1,5})?|unix:.*',
+            $crawler->filterXPath('//input[@name="dbhost"]')->attr('pattern')
+        );
     }
 
     private function outputCheckerInstall(string $output): void
@@ -107,12 +175,14 @@ final class InstallTest extends IntegrationTestCase
         array $paramsGet = [],
         array $paramsPost = [],
         array $definitions = []
-    ): void {
+    ): ContainerInterface {
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest($method, 'index.php', ['r' => $route] + $paramsGet, $paramsPost),
             $definitions
         );
 
         IntegrationTestCase::runApp($container);
+
+        return $container;
     }
 }

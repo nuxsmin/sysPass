@@ -30,7 +30,7 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Install\Adapters\InstallDataFactory;
+use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
@@ -46,7 +46,8 @@ final class InstallController extends ControllerBase
 {
     public function __construct(
         WebControllerHelper $webControllerHelper,
-        private readonly InstallerService $installer
+        private readonly InstallerService $installer,
+        private readonly InstallData $installData
     ) {
         parent::__construct($webControllerHelper);
     }
@@ -54,10 +55,8 @@ final class InstallController extends ControllerBase
     #[Action(ResponseType::JSON)]
     public function installAction(): ActionResponse
     {
-        $installData = InstallDataFactory::buildFromRequest($this->request);
-
         try {
-            $this->installer->run($installData);
+            $this->installer->run($this->installData);
 
             return ActionResponse::ok(__u('Installation finished'));
         } catch (Exception $e) {
