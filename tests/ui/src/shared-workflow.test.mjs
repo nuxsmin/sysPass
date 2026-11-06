@@ -171,7 +171,7 @@ test('the PHP image builds through buildx with a GHA layer cache', () => {
   assert.ok(buildxIndex < buildIndex, 'Buildx setup must precede the image build');
 
   assert.equal(build.with.context, 'scripts/docker');
-  assert.equal(build.with.file, 'Dockerfile.php-testing');
+  assert.equal(build.with.file, 'scripts/docker/Dockerfile.php-testing');
   assert.match(build.with['build-args'], /COMPOSER_VERSION=2\.7/);
   assert.equal(build.with.tags, 'php-testing-composer:latest');
   assert.equal(build.with.load, 'true');
