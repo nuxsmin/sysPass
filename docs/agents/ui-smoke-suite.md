@@ -4,7 +4,7 @@ Starter guide for the isolated browser smoke harness. The full contributor, tria
 
 `scripts/ui-smoke.sh` is shared repository tooling for contributors, reviewers and CI. `.ai-cli/` is ONLY for AI agents; it is not the canonical home for this runner or any other human/CI entry point.
 
-Current scope: #2076 / #2077 / #2079 / #2081 / plan U1, U2 and U4. The suite provisions a fresh synthetic instance with `sp:install`, loads the anonymous login page, and then exercises the seeded authenticated shell through positive readiness contracts. Account view, create and edit are covered in both in-shell navigation and direct full-page URL modes.
+Current scope: #2076 / #2077 / #2079 / #2081 / #2082 / plan U1, U2 and U4. The suite provisions a fresh synthetic instance with `sp:install`, loads the anonymous login page, and then exercises the seeded authenticated shell through positive readiness contracts. Tier A covers account view, create and edit in both in-shell navigation and direct full-page URL modes. Tier B covers the seven in-shell index navigations: `accessManager`, `itemManager`, `securityManager`, `configManager`, `notification`, `userSettingsManager` and `plugin`.
 
 ## Prerequisites
 
@@ -61,6 +61,57 @@ makes the runner exit before checking prerequisites or creating resources. A
 skipped run writes no summary and is never a complete Tier A observation.
 
 Use `--keep` only for debugging; it leaves the run root, network and containers in place for inspection. Do not reuse them for another run.
+
+### Tier selection
+
+`SP_UI_TIER` selects the tier and defaults to `A` when unset. A default or
+explicit Tier A run executes only `login.spec.ts` and `shell.spec.ts`; it never
+picks up Tier B specs. Select Tier B explicitly:
+
+```sh
+TESTS_UI_ENABLED=true SP_UI_TIER=B ./scripts/ui-smoke.sh
+```
+
+`SP_UI_SPECS` still narrows a run to an explicit subset, which is recorded as a
+partial selection for that tier. Tier A retains its evidence under
+`tests/ui/summaries/tier-A/` and Tier B under `tests/ui/summaries/tier-B/`.
+The roots are siblings, not nested: discovery is non-recursive, so a Tier A
+report can never walk into Tier B history and vice versa. Set
+`SP_UI_SUMMARY_DIR` to override either root. The tier token is case-insensitive
+(`A`/`a`, `B`/`b`); any other token is rejected as a usage error instead of
+being reported as a "Tier Z" observation.
+
+Tier B is annotation-only until #2086 qualifies it: its run keeps a real,
+non-zero exit status when an index fails, `ci-report --tier B` emits warning
+annotations for each named route and a failure error, and a Tier B summary can
+never satisfy `completeTierA`. Tier B authenticates once for the seeded suite
+and reuses the live worker cookies, so the seven specs share one login while
+still carrying legitimate SID rotation. The manual/CLI path is:
+
+```sh
+setup_started_ms=$(date +%s%3N)
+SP_UI_TIER=B TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh
+# The runner prints UI_SMOKE_SPECS_STARTED_MS after provisioning.
+node tests/ui/src/ci-report.mjs \
+  --summaries tests/ui/summaries/tier-B/<run-id> \
+  --tier B --budget-seconds 300 \
+  --setup-started-ms "$setup_started_ms" \
+  --setup-finished-ms <UI_SMOKE_SPECS_STARTED_MS value>
+```
+
+Use the printed per-run directory; the tier root accumulates history and is not
+a single-summary input. Passing the per-run directory keeps the "exactly one
+summary" rule meaningful as history grows. Omitting the setup stamps correctly
+fails closed rather than qualifying the run.
+
+That report is separate from the Tier A workflow result. The daily Tier B
+history lives in its own workflow (`.github/workflows/ui-smoke-tier-b.yml`), is
+gated by its own `TESTS_UI_TIER_B_ENABLED` variable, selects only Tier B, and
+cannot become a required replacement for the Tier A check. #2086 owns Tier B
+promotion only after its own complete qualification history; until then the
+workflow is annotation-only and a failure remains a failed job conclusion.
+The removal of a Tier B entry or the promotion decision belongs to that
+qualification work, not to Tier A maintenance.
 
 CI and human contributors invoke `scripts/ui-smoke.sh` directly. AI sessions may source `.ai-cli/env.sh` for the approved wrappers, but `.ai-cli/` is not part of the shared CI or contributor invocation path.
 
@@ -142,12 +193,27 @@ cancelled before or during setup, the workflow writes the same sanitized
 setup-failed summary, JUnit and manifest through the shared helpers instead of
 leaving the upload step empty.
 
-Tier B and the installer wizard are later additions. They must use their own
-independent selection/job or instance and annotate failures without making
-them required; this initial job has no dependency on them and no later result
-may hide a Tier A failure.
+Tier B uses its own `SP_UI_TIER=B` selection, spec set and sibling summary
+root. Its daily/manual history is a separate annotation-only workflow
+(`.github/workflows/ui-smoke-tier-b.yml`) gated by
+`TESTS_UI_TIER_B_ENABLED`; it is not merge-required, cannot gate or hide Tier A,
+and a failing Tier B run keeps a failed job and workflow conclusion instead of
+passing silently. #2086 promotes Tier B only after its own qualification
+history and records the responsible maintainer for each admission removal. The
+installer wizard remains a later addition and similarly must not hide a Tier A
+failure.
 
 The runner requires Docker permission and creates runner-owned containers, a network, a database and a run directory. It never pulls or builds images, never reuses a developer server or database, and refuses an externally supplied `E2E_BASE_URL`.
+
+The separate Tier B workflow runs daily and on manual dispatch, and is gated by
+the repository variable `TESTS_UI_TIER_B_ENABLED == 'true'`. Inside that
+workflow the shared runner's `TESTS_UI_ENABLED` switch is literal `true`; it is
+not a second gate and it never controls the Tier A workflow. Enabling the Tier B
+variable is a maintainer action and no GitHub setting is changed by this
+documentation or the repository files. A failed Tier B evaluation exits
+non-zero with `continue-on-error: false`, so the job/workflow conclusion remains
+failed and the failure cannot look like a silent pass. Required-check promotion
+is not implied and remains a separate maintainer operation after #2086.
 
 Selection is `SP_UI_TIER` (default `A`) plus optional `SP_UI_SPECS`. A subset or grep-filtered run is recorded as partial. Default retries are zero locally and in CI. An explicit `SP_UI_DIAGNOSTIC_RETRY=1`, or the `workflow_dispatch` `diagnostic_retry` input, enables one diagnostic retry with `failOnFlakyTests`; first-attempt evidence is preserved and a retry-success is reported flaky and rejected by `ci-report` as incomplete Tier A. CI never enables retries implicitly. `SP_UI_LOCAL_TRACE=1` is an opt-in trace for the synthetic runner instance only, is forced off in CI, and is never uploaded.
 
@@ -165,7 +231,7 @@ Selection is `SP_UI_TIER` (default `A`) plus optional `SP_UI_SPECS`. A subset or
 | Application temp | `<run root>/app-temp` bind-mounted over `<repo>/app/temp` | Per run, removed afterwards |
 | Sessions | `<run root>/sessions` via `session.save_path` | Per run, removed afterwards |
 | Output | `<run root>/output` (summary, JUnit, Playwright output) | Per run, removed afterwards |
-| Retained evidence | `tests/ui/summaries/<run-id>/` (allowlisted summary/JUnit/manifest) | Kept through qualification |
+| Retained evidence | `tests/ui/summaries/tier-A/<run-id>/` and `tests/ui/summaries/tier-B/<run-id>/` (allowlisted summary/JUnit/manifest) | Kept through qualification |
 | Fixture credentials | `tests/ui/fixtures/e2e-fixture.json` | Committed; synthetic only |
 | Authentication state | Playwright worker memory and `<run root>/sessions` | Never written to artifacts; removed afterwards |
 
@@ -173,11 +239,22 @@ The web server listens only on a random `127.0.0.1` port and is reachable only f
 
 ## Evidence and artifacts
 
-Every run writes `run-summary.json`, `junit.xml` and `upload-manifest.json` through the harness reporter. They record the selected tier/specs, commit and safe environment identity, attempted/completed/skipped counts, first-attempt results, retry counts, durations and normalized failure classes. A run that is partial, setup-failed, cancelled or flaky is never reported as a complete Tier A success.
+Every run writes `run-summary.json`, `junit.xml` and `upload-manifest.json` through the harness reporter. They record the selected tier/specs, commit and safe environment identity, attempted/completed/skipped counts, first-attempt results, retry counts, durations and normalized failure classes. The summary exposes `completeTierA` and `completeTierB` independently; only the selected tier can be complete, and a Tier B run never sets `completeTierA`. A run that is partial, setup-failed, cancelled or flaky is never reported as a complete success for its tier.
 
 A failed attempt writes only sanitized diagnostics under `failures/`: a masked screenshot, sanitized console/error output and normalized route/URL/status information. Absolute file paths are reduced to repository-relative paths. No request or response bodies, HAR, trace, video, authentication state, cookies, configuration snapshot, private key, DOM snapshot or temporary fixture dump is uploaded. Playwright's automatic page snapshot is disabled at source (`PLAYWRIGHT_NO_COPY_PROMPT`), and any `error-context.md` file is removed by the reporter, the runner cleanup and the retention step before the artifact set is kept. It is not part of the allowlist.
 
-`scripts/ui-smoke.sh` retains the allowlisted summary/JUnit/manifest under `tests/ui/summaries/<run-id>/` on every run, including failure, so qualification history does not depend on a failed run's temporary output. The upload manifest records the retained set, and CI publishes only an explicit allowlist: `run-summary.json`, `junit.xml`, `upload-manifest.json` and `failures/**/{screenshot.png,console.log,failure.json}`. Before upload, verification checks the manifest against that same allowlist and rejects unknown, duplicate, unsafe, missing or unlisted entries, so the workflow's hardcoded paths and the manifest cannot silently diverge. The workflow never uploads the summary directory as a whole, and it does not resolve upload paths from the manifest dynamically because GitHub Actions cannot consume a manifest-supplied path set safely. Verification runs before upload and upload is gated on its success: a genuine Tier A test failure still publishes its complete verified set, while an empty, duplicated or partial set fails before publishing and is never uploaded.
+`scripts/ui-smoke.sh` retains the allowlisted summary/JUnit/manifest under
+`tests/ui/summaries/tier-A/<run-id>/` for Tier A and
+`tests/ui/summaries/tier-B/<run-id>/` for Tier B on every run, including
+failure, so qualification history does not depend on a failed run's temporary
+output. The sibling roots and non-recursive discovery keep a Tier B summary
+from being consumed by a Tier A report, or the reverse. `SP_UI_SUMMARY_DIR`
+overrides the root for either tier. Report one retained run with
+`ci-report --tier B --summaries tests/ui/summaries/tier-B/<run-id>`; passing the
+accumulating tier root is intentionally rejected once it holds more than one
+summary. The upload manifest records the retained set, and CI publishes only an
+explicit allowlist: `run-summary.json`, `junit.xml`, `upload-manifest.json` and
+`failures/**/{screenshot.png,console.log,failure.json}`. Before upload, verification checks the manifest against that same allowlist and rejects unknown, duplicate, unsafe, missing or unlisted entries, so the workflow's hardcoded paths and the manifest cannot silently diverge. The workflow never uploads the summary directory as a whole, and it does not resolve upload paths from the manifest dynamically because GitHub Actions cannot consume a manifest-supplied path set safely. Verification runs before upload and upload is gated on its success: a genuine Tier A test failure still publishes its complete verified set, while an empty, duplicated or partial set fails before publishing and is never uploaded.
 
 If an `npm ci`, asset build, image build, Composer install or `tests/ui` install step fails before `scripts/ui-smoke.sh` runs, or the run is cancelled before or during setup, the workflow still writes a sanitized setup-failed summary, JUnit and manifest through `scripts/lib/ui-smoke-report.sh` and `setup-report.mjs`. When the runner already retained a complete set, the fallback leaves it untouched. A partial set that still has the authoritative `run-summary.json` is repaired through the normal retention path, which regenerates the missing derived JUnit/manifest artifacts. A partial set without a usable summary is replaced with a setup-failed set in the same directory, so `ci-report` sees exactly one summary and rejects it as incomplete Tier A evidence.
 
@@ -218,7 +295,15 @@ For a `--keep` debugging run, invoke `tests/ui/fixtures/seed.php` with the same 
 
 `tests/ui/specs/shell.spec.ts` uses a separate authenticated worker session. It logs in through the UI exactly once, then runs sequentially: the first test asserts the shell root, completed `bootstrap/getEnvironment`, `account/index` and `items/notifications` actions, meaningful account-list content, a hidden loading overlay, a 300 ms action-scoped quiet window within the 15 s readiness deadline, disabled update/notice flags and no pending or failed routes. Later tests wait through the real 120-second SID rotation and prove that the rotated cookie carries into a fresh sequential context without a second login. Missing or pending routes are reported together with the observed route set.
 
-Anonymous/login tests keep their own clean Playwright contexts and never receive the seeded cookie jar. `bootstrap/getEnvironment` is the current boot contract; #2096 will replace it and must update these probes in the same change.
+The seven Tier B specs share the same live worker cookie jar. The first spec logs in through the UI and marks the worker session authenticated; the remaining specs reuse the live cookies and fail if the login route is observed again, so there is no per-spec login storm and no immutable snapshot restore. Anonymous/login tests keep their own clean Playwright contexts and never receive the seeded cookie jar. `bootstrap/getEnvironment` is the current boot contract; #2096 will replace it and must update these probes in the same change.
+
+The scratch-only Tier B fault canary is opt-in with
+`SP_UI_TIER_B_FAULT=accessManager/index`. It intercepts the real
+`accessManager/index` response in that browser context, requires the actual
+spec navigation to fail with the spec file and route named, removes the route
+interception, and then proves the unmodified index loads again before rethrowing
+the named failure. It is never set in CI and does not alter either tier's normal
+selection.
 
 ## Known failure admissions
 
