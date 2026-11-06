@@ -9,13 +9,10 @@ import { parseJob, parsePermissions, parseTriggers } from './workflow-parser.mjs
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const TIER_A_WORKFLOW = path.join(REPO_ROOT, '.github', 'workflows', 'ui-smoke.yml');
 const TIER_B_WORKFLOW = path.join(REPO_ROOT, '.github', 'workflows', 'ui-smoke-tier-b.yml');
+const SHARED_RUNNER = './.github/workflows/ui-smoke-run.yml';
 
 function read(workflow) {
   return readFileSync(workflow, 'utf8');
-}
-
-function tierBJob(raw) {
-  return parseJob(raw, 'ui-tier-b');
 }
 
 test('Tier B history is a separate daily and manual workflow, never a pull-request gate', () => {
@@ -29,58 +26,57 @@ test('Tier B history is a separate daily and manual workflow, never a pull-reque
   assert.equal(triggers.push, undefined, 'Tier B must not run on pushes');
 });
 
-test('the Tier B job is gated by its own variable and selects only Tier B', () => {
+test('the Tier B workload calls the shared runner under its own switch', () => {
   const raw = read(TIER_B_WORKFLOW);
-  const job = tierBJob(raw);
-  const runner = job.steps.find((step) => /scripts\/ui-smoke\.sh/.test(step.run ?? ''));
+  const job = parseJob(raw, 'ui-tier-b-work');
 
-  assert.equal(job.name, 'UI Smoke (Tier B, annotation-only)');
+  assert.equal(job.name, 'UI Smoke (Tier B) workload');
+  assert.equal(job.uses, SHARED_RUNNER);
+  assert.equal(job['runs-on'], undefined, 'a calling job must not declare a runner');
+  assert.equal(job.with.tier, 'B');
+  assert.equal(job.with.diagnostic_retry, undefined, 'Tier B must not request a diagnostic retry');
+  assert.equal(job.permissions.contents, 'read');
+
+  // TESTS_UI_TIER_B_ENABLED is an execution switch for this history only. It
+  // is not a merge gate and never controls Tier A. An unset or non-true value
+  // skips this workflow without producing Tier B evidence.
   assert.match(job.if, /vars\.TESTS_UI_TIER_B_ENABLED == 'true'/);
   assert.doesNotMatch(job.if, /vars\.TESTS_UI_ENABLED/, 'Tier B must not depend on the Tier A switch');
-  assert.equal(job.env.TESTS_UI_ENABLED, 'true');
-  assert.equal(job.env.SP_UI_TIER, 'B');
-  assert.ok(runner, 'the job must invoke the shared runner with the Tier B selection');
-  assert.match(runner.env.SP_UI_SUMMARY_DIR, /ui-summaries\/tier-B$/);
-  assert.equal(job['continue-on-error'], 'false', 'a Tier B failure must remain a failed job');
 });
 
-test('the Tier B report is annotation-only, tier-scoped and cannot evaluate Tier A evidence', () => {
-  const raw = read(TIER_B_WORKFLOW);
-  const job = tierBJob(raw);
-  const evaluation = job.steps.find((step) => /ci-report\.mjs/.test(step.run ?? ''));
+test('the stable Tier B check mirrors the shared runner result', () => {
+  const job = parseJob(read(TIER_B_WORKFLOW), 'ui-tier-b');
+  const resultStep = job.steps[0];
 
-  assert.ok(evaluation, 'the job must evaluate its retained Tier B summary');
-  assert.equal(evaluation.if, 'always()');
-  assert.match(evaluation.run, /--tier B/);
-  assert.doesNotMatch(evaluation.run, /--tier A/);
-  assert.match(evaluation.run, /--summaries/);
-  assert.match(evaluation.env.SP_UI_SUMMARY_DIR, /tier-B$/);
-  assert.equal(evaluation.env.SP_UI_TIER, 'B');
+  assert.equal(job.name, 'UI Smoke (Tier B, annotation-only)');
+  assert.equal(job.needs, 'ui-tier-b-work');
+  assert.match(job.if, /always\(\)/);
+  assert.match(job.if, /vars\.TESTS_UI_TIER_B_ENABLED == 'true'/);
+  assert.equal(job['runs-on'], 'ubuntu-latest');
+  assert.equal(job['timeout-minutes'], '5');
+  assert.equal(job.steps.length, 1, 'the mirror job must only carry the result step');
+  assert.ok(resultStep, 'the mirror job must have a result step');
+  assert.match(JSON.stringify(resultStep.env), /needs\['ui-tier-b-work'\]\.result/);
+  assert.match(resultStep.run, /set -euo pipefail/);
+  assert.match(resultStep.run, /"\$WORK_RESULT" = "success"/);
 });
 
-test('Tier B evidence is uploaded separately from Tier A and never under the Tier A job artifact', () => {
+test('Tier A and Tier B callers stay independent and read-only', () => {
   const tierARaw = read(TIER_A_WORKFLOW);
   const tierBRaw = read(TIER_B_WORKFLOW);
-  const tierAJob = parseJob(tierARaw, 'ui');
-  const tierB = tierBJob(tierBRaw);
-  const upload = tierB.steps.find((step) => step.uses === 'actions/upload-artifact@v4');
 
-  assert.ok(upload, 'Tier B evidence must be publishable');
-  assert.match(upload.with.name, /ui-smoke-tier-b-/);
-  assert.doesNotMatch(upload.with.name, /ui-smoke-tier-a-/);
   assert.doesNotMatch(tierARaw, /TESTS_UI_TIER_B_ENABLED|ui-smoke-tier-b/, 'Tier A must not depend on Tier B');
   assert.doesNotMatch(tierBRaw, /TESTS_UI_ENABLED ==/, 'Tier B must not manipulate the Tier A execution switch');
-  assert.ok(parsePermissions(tierBRaw).contents === 'read');
   assert.equal(parsePermissions(tierARaw).contents, 'read');
-  assert.equal(tierAJob['continue-on-error'], 'false', 'the separate Tier B workflow must not change Tier A');
+  assert.equal(parsePermissions(tierBRaw).contents, 'read');
 });
 
-test('the Tier B workflow keeps its own setup-failure evidence in the Tier B root', () => {
-  const job = tierBJob(read(TIER_B_WORKFLOW));
-  const failureReport = job.steps.find((step) => /ui_smoke_ci_setup_report/.test(step.run ?? ''));
+test('the Tier B caller does not own the pipeline or its evidence', () => {
+  const raw = read(TIER_B_WORKFLOW);
 
-  assert.ok(failureReport, 'a pre-run failure must still retain Tier B evidence');
-  assert.match(failureReport.if, /failure\(\)/);
-  assert.match(failureReport.if, /cancelled\(\)/);
-  assert.match(failureReport.env.SP_UI_SUMMARY_DIR, /ui-summaries\/tier-B$/);
+  assert.doesNotMatch(raw, /scripts\/ui-smoke\.sh/);
+  assert.doesNotMatch(raw, /scripts\/lib\/ui-smoke-report\.sh/);
+  assert.doesNotMatch(raw, /docker build/);
+  assert.doesNotMatch(raw, /ci-report\.mjs/);
+  assert.doesNotMatch(raw, /upload-artifact/);
 });
