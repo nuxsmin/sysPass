@@ -45,6 +45,71 @@ export function loginContract(): PageContract {
   };
 }
 
+/**
+ * Normal browser installer page. It is rendered outside the authenticated
+ * shell, so it must not require `#content`. The current required fields and
+ * Master Password confirmation are asserted before the spec submits anything.
+ */
+export function installPageContract(): PageContract {
+  return {
+    name: 'installer page',
+    actions: [
+      { route: 'bootstrap/getEnvironment', format: 'json' },
+      {
+        route: 'install/index',
+        format: 'html',
+        content: ['id="frmInstall"', 'data-route="install/install"', 'id="masterpasswordR"'],
+      },
+    ],
+    conditions: [
+      { kind: 'visible', selector: '#frmInstall' },
+      { kind: 'attribute', selector: '#frmInstall', name: 'data-onsubmit', value: 'main/install' },
+      { kind: 'attribute', selector: '#frmInstall', name: 'data-route', value: 'install/install' },
+      { kind: 'visible', selector: 'input[name="adminlogin"]' },
+      { kind: 'count', selector: 'input[name="adminpass"]', min: 1 },
+      { kind: 'count', selector: 'input[name="masterpassword"]', min: 1 },
+      { kind: 'visible', selector: 'input[name="masterpasswordr"]' },
+      { kind: 'visible', selector: 'input[name="dbuser"]' },
+      { kind: 'visible', selector: 'input[name="dbpass"]' },
+      { kind: 'visible', selector: 'input[name="dbname"]' },
+      { kind: 'visible', selector: 'input[name="dbhost"]' },
+      { kind: 'count', selector: 'select[name="sitelang"]', min: 1 },
+      { kind: 'visible', selector: 'label[for="hostingmode"]' },
+      { kind: 'count', selector: 'input[name="hostingmode"]', min: 1 },
+      { kind: 'count', selector: '#hostingmode:checked', max: 0, label: 'hosting mode is not selected by this spec' },
+      { kind: 'hidden', selector: '#wrap-loading' },
+    ],
+  };
+}
+
+/**
+ * Authenticated shell on the freshly installed wizard instance. It has no
+ * seeded accounts yet, so the automatic `account/index` action must produce
+ * the empty-state content rather than the seeded fixture rows. The boot,
+ * notification action and shell roots are the same positive contract as the
+ * seeded suite.
+ */
+export function installShellContract(): PageContract {
+  return {
+    name: 'freshly installed shell',
+    actions: [
+      { route: 'bootstrap/getEnvironment', format: 'json' },
+      { route: 'account/index', format: 'html', content: ['No records found'] },
+      { route: 'items/notifications', format: 'json' },
+    ],
+    conditions: [
+      { kind: 'class', selector: 'body', name: 'main' },
+      { kind: 'visible', selector: '#wrap' },
+      { kind: 'visible', selector: '#content' },
+      { kind: 'attribute', selector: '#content', name: 'data-page' },
+      { kind: 'visible', selector: '#searchbox' },
+      { kind: 'visible', selector: '#res-content' },
+      { kind: 'text', selector: '#res-content', contains: 'No records found' },
+      { kind: 'hidden', selector: '#wrap-loading' },
+    ],
+  };
+}
+
 export interface ShellContractOptions {
   parentAccount: string;
   childAccount: string;

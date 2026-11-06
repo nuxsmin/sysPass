@@ -9,9 +9,9 @@ import {
   REGISTRY_SCHEMA_VERSION,
 } from './known-failures.mjs';
 import { sanitizeEvidencePath, sanitizeText } from './sanitize.mjs';
-import { TIER_A_SPECS, TIER_B_SPECS, TIER_SPECS } from './tiers.mjs';
+import { TIER_A_SPECS, TIER_B_SPECS, TIER_INSTALL_SPECS, TIER_SPECS } from './tiers.mjs';
 
-export { TIER_A_SPECS, TIER_B_SPECS, TIER_SPECS };
+export { TIER_A_SPECS, TIER_B_SPECS, TIER_INSTALL_SPECS, TIER_SPECS };
 
 const FAILURE_CLASS_PATTERNS = [
   [/test timeout|timed out|timeout of \d+ms/i, 'timeout'],
@@ -369,12 +369,34 @@ export function buildRunSummary({
     annotations.unexecutedEntries.length === 0 &&
     knownFailureErrors.length === 0;
 
+  /**
+   * The installer is a separate, explicitly stateful selection. Its own
+   * complete flag is independent of `completeTierA`/`completeTierB`, so a
+   * passing wizard result can never be read as Tier A evidence and a Tier A
+   * failure can never be hidden by the installer.
+   */
+  const completeTierInstall =
+    status === 'passed' &&
+    selection.tier === 'INSTALL' &&
+    !partialSelection &&
+    counts.selected > 0 &&
+    counts.skipped === 0 &&
+    counts.notRun === 0 &&
+    counts.completed === counts.selected &&
+    Object.keys(failureClasses).length === 0 &&
+    safeGlobalErrors.length === 0 &&
+    annotations.newFailures.length === 0 &&
+    annotations.staleEntries.length === 0 &&
+    annotations.unexecutedEntries.length === 0 &&
+    knownFailureErrors.length === 0;
+
   return {
     schemaVersion: 1,
     runId,
     status,
     completeTierA,
     completeTierB,
+    completeTierInstall,
     partialSelection,
     partialReasons: partialSelection ? selection.partialReasons : [],
     setupFailure,
@@ -491,6 +513,7 @@ export function renderJUnit(summary) {
     property('sp-ui.status', summary.status),
     property('sp-ui.completeTierA', String(summary.completeTierA)),
     property('sp-ui.completeTierB', String(summary.completeTierB ?? false)),
+    property('sp-ui.completeTierInstall', String(summary.completeTierInstall ?? false)),
     property('sp-ui.partialSelection', String(summary.partialSelection)),
     property('sp-ui.setupFailure', String(summary.setupFailure)),
     property('sp-ui.cancelled', String(summary.cancelled)),

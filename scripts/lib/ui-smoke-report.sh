@@ -250,12 +250,16 @@ ui_smoke_ci_setup_report() {
     "$(dirname "$summary_dir")" "$ui_dir" "$(basename "$summary_dir")" "$started_at"
 }
 
-# ui_smoke_setup_report STATUS OUTPUT_DIR RUN_ROOT SUMMARY_ROOT UI_DIR RUN_ID STARTED_AT
+# ui_smoke_setup_report STATUS OUTPUT_DIR RUN_ROOT SUMMARY_ROOT UI_DIR RUN_ID STARTED_AT [FORCE]
 #
 # Write and retain a setup-failure report when the runner did not reach or
 # finish Playwright. Returns non-zero when a required summary cannot be
 # produced or retained, and prints success only after the complete retained
 # artifact set exists.
+#
+# FORCE=1 replaces an existing complete (possibly passing) retained set with a
+# setup-failed set. It never reuses the Playwright output summary, so a later
+# isolation failure cannot leave a passing interviewer summary in place.
 ui_smoke_setup_report() {
   local status=$1
   local output_dir=$2
@@ -264,10 +268,14 @@ ui_smoke_setup_report() {
   local ui_dir=$5
   local run_id=$6
   local started_at=$7
+  local force=${8:-0}
   local temporary_output=0
+  local staging_dir=""
   local summary_dir
 
-  [ "$status" -eq 0 ] && return 0
+  if [ "$status" -eq 0 ] && [ "$force" -ne 1 ]; then
+    return 0
+  fi
 
   if [ -z "$run_root" ]; then
     output_dir="$(mktemp -d "${TMPDIR:-/tmp}/sp-ui-setup-report.XXXXXX")" || return 1
@@ -281,18 +289,26 @@ ui_smoke_setup_report() {
     fi
   }
 
+  remove_staging_output() {
+    if [ -n "$staging_dir" ] && [ -d "$staging_dir" ]; then
+      find "$staging_dir" -mindepth 1 -delete 2>/dev/null || true
+      rmdir "$staging_dir" 2>/dev/null || true
+    fi
+  }
+
   ui_smoke_remove_error_context "$output_dir"
 
   summary_dir="$summary_root/$run_id"
 
-  if [ -s "$summary_dir/run-summary.json" ] \
+  if [ "$force" -ne 1 ] \
+    && [ -s "$summary_dir/run-summary.json" ] \
     && [ -s "$summary_dir/junit.xml" ] \
     && [ -s "$summary_dir/upload-manifest.json" ]; then
     remove_temporary_output
     return 0
   fi
 
-  if [ -f "$output_dir/run-summary.json" ]; then
+  if [ "$force" -ne 1 ] && [ -f "$output_dir/run-summary.json" ]; then
     if ! ui_smoke_retain_artifacts "$output_dir" "$summary_dir" "$ui_dir" >/dev/null 2>&1; then
       ui_smoke_verify_retained "$summary_dir" || true
       echo "ERROR: failed to retain sanitized summary" >&2
@@ -305,7 +321,20 @@ ui_smoke_setup_report() {
     return 0
   fi
 
-  mkdir -p "$output_dir" || {
+  # A forced failure must not inherit the Playwright summary from the instance
+  # that just passed. Stage a fresh setup-failure report and replace the whole
+  # retained run directory.
+  if [ "$force" -eq 1 ]; then
+    staging_dir="$(mktemp -d "${TMPDIR:-/tmp}/sp-ui-forced-report.XXXXXX")" || {
+      remove_temporary_output
+      return 1
+    }
+  else
+    staging_dir="$output_dir"
+  fi
+
+  mkdir -p "$staging_dir" || {
+    remove_staging_output
     remove_temporary_output
     return 1
   }
@@ -315,28 +344,84 @@ ui_smoke_setup_report() {
     SP_UI_TIER="${SP_UI_TIER:-A}" \
     SP_UI_SPECS="${SP_UI_SPECS:-}" \
     node "$ui_dir/src/setup-report.mjs" \
-      --output "$output_dir" \
+      --output "$staging_dir" \
       --run-id "$run_id" \
       --started-at "$started_at" >/dev/null 2>&1; then
     echo "ERROR: failed to write sanitized setup-failure summary" >&2
+    remove_staging_output
     remove_temporary_output
     return 1
   fi
 
-  if [ ! -s "$output_dir/run-summary.json" ]; then
+  if [ ! -s "$staging_dir/run-summary.json" ]; then
     echo "ERROR: sanitized setup-failure summary was not written" >&2
+    remove_staging_output
     remove_temporary_output
     return 1
   fi
 
-  if ! ui_smoke_retain_artifacts "$output_dir" "$summary_dir" "$ui_dir" >/dev/null 2>&1; then
+  if [ "$force" -eq 1 ] && [ -d "$summary_dir" ]; then
+    find "$summary_dir" -mindepth 1 -delete 2>/dev/null || true
+  fi
+
+  if ! ui_smoke_retain_artifacts "$staging_dir" "$summary_dir" "$ui_dir" >/dev/null 2>&1; then
     ui_smoke_verify_retained "$summary_dir" || true
     echo "ERROR: failed to retain sanitized setup-failure summary" >&2
+    remove_staging_output
     remove_temporary_output
     return 1
   fi
 
   echo "Retained sanitized setup-failure summary: $summary_dir"
+  remove_staging_output
   remove_temporary_output
   return 0
+}
+
+# ui_smoke_install_failure_report STATUS OUTPUT_DIR SUMMARY_ROOT UI_DIR RUN_ID STARTED_AT MESSAGE
+#
+# Replace the installer evidence with a forced setup-failed summary and return
+# non-zero so the runner cannot finish successfully. The caller must not rely
+# on the previously retained Playwright summary, even when the wizard itself
+# passed but the seeded-instance isolation proof failed afterwards.
+ui_smoke_install_failure_report() {
+  local status=$1
+  local output_dir=$2
+  local summary_root=$3
+  local ui_dir=$4
+  local run_id=$5
+  local started_at=$6
+  local message=${7:-UI smoke installer selection failed}
+
+  if ! SP_UI_TIER=INSTALL SP_UI_SPECS= SP_UI_SETUP_ERROR="$message" \
+    ui_smoke_setup_report \
+      "$status" "$output_dir" "$output_dir" "$summary_root" "$ui_dir" "$run_id" "$started_at" 1; then
+    return 1
+  fi
+
+  [ "$status" -eq 0 ] && return 0
+
+  return 1
+}
+
+# ui_smoke_install_fail STATUS OUTPUT_DIR SUMMARY_ROOT UI_DIR RUN_ID STARTED_AT MESSAGE
+#
+# The runner's installer failure path. It writes the forced failure report and
+# exits non-zero, so an isolation or wizard failure can never finish the runner
+# successfully even when the Playwright summary was passing.
+ui_smoke_install_fail() {
+  local status=$1
+  local output_dir=$2
+  local summary_root=$3
+  local ui_dir=$4
+  local run_id=$5
+  local started_at=$6
+  local message=${7:-UI smoke installer selection failed}
+
+  echo "ERROR: $message" >&2
+
+  ui_smoke_install_failure_report \
+    "$status" "$output_dir" "$summary_root" "$ui_dir" "$run_id" "$started_at" "$message" || true
+
+  exit 1
 }

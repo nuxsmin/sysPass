@@ -8,6 +8,7 @@ import {
   FIXED_USER_AGENT,
   getVerifiedBaseUrl,
 } from './src/env';
+import { assertInstallerRetries } from './src/install-selection.mjs';
 import { specsForTier, normalizeTier } from './src/tiers.mjs';
 
 const outputDir = process.env.SP_UI_OUTPUT_DIR ?? path.join(import.meta.dirname, 'test-results');
@@ -31,6 +32,14 @@ process.env.PLAYWRIGHT_NO_COPY_PROMPT = '1';
 if (capture.traceError) {
   throw new Error(capture.traceError);
 }
+
+/**
+ * The installer is an explicitly stateful, non-retryable selection. A retry
+ * would run the browser wizard again against an already installed instance,
+ * which is forbidden; the runner must recreate the whole wizard instance
+ * instead.
+ */
+assertInstallerRetries(tier, capture.retries);
 
 export default defineConfig({
   testDir: './specs',

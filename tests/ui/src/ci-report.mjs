@@ -112,8 +112,9 @@ function recordedRegistryEvidence(summary) {
  * is never eligible. An admitted deterministic known failure remains annotated
  * but never makes the run eligible or suppresses its exit status.
  *
- * Tier A and Tier B are evaluated independently: a Tier B summary can never be
- * complete Tier A evidence, and a Tier A summary can never qualify Tier B.
+ * Tier A, Tier B and the installer are evaluated independently: a Tier B or
+ * installer summary can never be complete Tier A evidence, and a Tier A
+ * summary can never qualify another selection.
  *
  * @param {object | null | undefined} summary
  * @param {{budgetMs?: number, tier?: string}} [options]
@@ -126,7 +127,15 @@ export function evaluateRunSummary(summary, { budgetMs = TIER_A_BUDGET_MS, tier 
   const status = String(summary?.status ?? 'missing');
   const completeTierA = summary?.completeTierA === true;
   const completeTierB = summary?.completeTierB === true;
-  const completeTier = requestedTier === 'A' ? completeTierA : requestedTier === 'B' ? completeTierB : false;
+  const completeTierInstall = summary?.completeTierInstall === true;
+  const completeTier =
+    requestedTier === 'A'
+      ? completeTierA
+      : requestedTier === 'B'
+        ? completeTierB
+        : requestedTier === 'INSTALL'
+          ? completeTierInstall
+          : false;
   const summaryTier = String(summary?.selection?.tier ?? '').toUpperCase();
   const durationMs = Number(summary?.durationMs);
   const hasDuration = Number.isFinite(durationMs) && durationMs >= 0;
@@ -219,6 +228,7 @@ export function evaluateRunSummary(summary, { budgetMs = TIER_A_BUDGET_MS, tier 
     status,
     completeTierA,
     completeTierB,
+    completeTierInstall,
     durationMs: hasDuration ? durationMs : 0,
     budgetMs,
     withinBudget,
@@ -257,7 +267,9 @@ export function renderMarkdown(summary, evaluation, { setupDurationMs, setupBudg
       ? evaluation.completeTierA
       : tierLabel === 'B'
         ? evaluation.completeTierB
-        : false;
+        : tierLabel === 'INSTALL'
+          ? evaluation.completeTierInstall
+          : false;
 
   lines.push(
     '| Field | Value |',
