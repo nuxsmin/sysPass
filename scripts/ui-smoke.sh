@@ -81,6 +81,12 @@ INSTALL_ROOT=""
 INSTALL_NETWORK_NAME=""
 INSTALL_DB_CONTAINER=""
 INSTALL_WEB_CONTAINER=""
+SEEDED_STATUS=0
+INSTALL_STATUS=0
+SEEDED_SETUP_ERROR=""
+INSTALL_SETUP_ERROR=""
+PROVISIONING_STARTED=0
+FINALIZED=0
 
 usage() {
   sed -n '2,17p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
@@ -153,6 +159,13 @@ cleanup() {
   local status=$?
 
   trap - EXIT INT TERM
+
+  # Post-provisioning failures must still compare the developer fingerprints.
+  # The explicit flow calls finalize_run; this catches an unexpected command
+  # failure so only failures before provisioning may skip the comparison.
+  if [ "$PROVISIONING_STARTED" -eq 1 ] && [ "$FINALIZED" -ne 1 ]; then
+    finalize_run || status=$?
+  fi
 
   if [ -n "${RUN_ROOT:-}" ]; then
     ui_smoke_remove_error_context "$RUN_ROOT/output"
@@ -246,6 +259,34 @@ fingerprint() {
   else
     printf '{"root":"%s","digest":"missing","count":0}\n' "$1"
   fi
+}
+
+# The single finalization point for every post-provisioning outcome. It always
+# takes the after-fingerprints, compares them with the before-fingerprints and
+# asks the report library to force setup-failed evidence when they drift or when
+# a setup/isolation failure was accumulated without drift.
+finalize_run() {
+  local config_after
+  local cache_after
+  local temp_after
+  local status=0
+
+  config_after="$(fingerprint "$REPO_ROOT/app/config")" || config_after="unavailable"
+  cache_after="$(fingerprint "$REPO_ROOT/app/cache")" || cache_after="unavailable"
+  temp_after="$(fingerprint "$REPO_ROOT/app/temp")" || temp_after="unavailable"
+
+  ui_smoke_finalize_run \
+    "$SEEDED_STATUS" "$INSTALL_STATUS" "$INSTALL_SELECTED" "$SEEDED_TIER" \
+    "$RUN_ROOT" "$SUMMARY_ROOT" "$INSTALL_SUMMARY_ROOT" "$UI_DIR" \
+    "$RUN_ID" "$RUN_STARTED_AT" \
+    "$DEVELOPER_CONFIG_BEFORE" "$config_after" \
+    "$DEVELOPER_CACHE_BEFORE" "$cache_after" \
+    "$DEVELOPER_TEMP_BEFORE" "$temp_after" \
+    "$SEEDED_SETUP_ERROR" "$INSTALL_SETUP_ERROR" || status=$?
+
+  FINALIZED=1
+
+  return "$status"
 }
 
 DEVELOPER_CONFIG_BEFORE="$(fingerprint "$REPO_ROOT/app/config")"
@@ -356,6 +397,8 @@ echo "Run id:    $RUN_ID"
 echo "Origin:    $ORIGIN"
 echo "Database:  $DATABASE_NAME (not precreated)"
 echo "Run root:  $RUN_ROOT"
+
+PROVISIONING_STARTED=1
 
 "$DOCKER_BIN" network create "$NETWORK_NAME" >/dev/null
 
@@ -565,14 +608,27 @@ reset_install_instance() {
     "$DOCKER_BIN" network rm "$INSTALL_NETWORK_NAME" >/dev/null 2>&1 || true
   fi
   if [ -n "${INSTALL_ROOT:-}" ]; then
-    node "$UI_DIR/src/install-lifecycle.mjs" reset --root "$INSTALL_ROOT" >/dev/null \
-      || install_fail "failed to destroy the previous wizard workspace"
+    if ! node "$UI_DIR/src/install-lifecycle.mjs" reset --root "$INSTALL_ROOT" >/dev/null; then
+      install_fail "failed to destroy the previous wizard workspace"
+      return 0
+    fi
   fi
 }
 
+# Record an installer failure without exiting. The caller returns to the single
+# finalization point, which still takes and compares the after-fingerprints.
 install_fail() {
-  ui_smoke_install_fail \
-    1 "$RUN_ROOT/output-install" "$INSTALL_SUMMARY_ROOT" "$UI_DIR" "$RUN_ID" "$RUN_STARTED_AT" "$*"
+  local message="$*"
+
+  INSTALL_STATUS=1
+
+  if [ -n "$INSTALL_SETUP_ERROR" ]; then
+    INSTALL_SETUP_ERROR="$INSTALL_SETUP_ERROR; $message"
+  else
+    INSTALL_SETUP_ERROR="$message"
+  fi
+
+  echo "ERROR: $message" >&2
 }
 
 prepare_install_instance() {
@@ -581,6 +637,9 @@ prepare_install_instance() {
   # instance and never reuses a previous wizard run root.
   INSTALL_ROOT="$(node "$UI_DIR/src/install-layout.mjs" install-root --seeded-root "$RUN_ROOT")"
   reset_install_instance
+  if [ "$INSTALL_STATUS" -ne 0 ]; then
+    return 0
+  fi
 
   INSTALL_IDENTITY_JSON="$(node "$UI_DIR/src/install-lifecycle.mjs" identity)"
   INSTALL_DATABASE_NAME="$(node -e 'const p=JSON.parse(process.argv[1]);process.stdout.write(p.databaseName)' "$INSTALL_IDENTITY_JSON")"
@@ -592,12 +651,14 @@ prepare_install_instance() {
   INSTALL_ORIGIN="http://127.0.0.1:${INSTALL_PORT}"
   INSTALL_DB_HOST="db"
 
-  node "$UI_DIR/src/install-layout.mjs" verify \
+  if ! node "$UI_DIR/src/install-layout.mjs" verify \
     --seeded-root "$RUN_ROOT" \
     --install-root "$INSTALL_ROOT" \
     --seeded-database "$DATABASE_NAME" \
-    --install-database "$INSTALL_DATABASE_NAME" >/dev/null \
-    || install_fail "installer paths or database are not isolated from the seeded instance"
+    --install-database "$INSTALL_DATABASE_NAME" >/dev/null; then
+    install_fail "installer paths or database are not isolated from the seeded instance"
+    return 0
+  fi
 
   mkdir -p \
     "$INSTALL_ROOT/config" \
@@ -673,10 +734,14 @@ prepare_install_instance() {
     sleep 1
   done
 
-  [ "$INSTALL_DB_READY" -eq 1 ] || install_fail "installer MariaDB did not accept TCP connections"
+  if [ "$INSTALL_DB_READY" -ne 1 ]; then
+    install_fail "installer MariaDB did not accept TCP connections"
+    return 0
+  fi
 
   if database_exists "$INSTALL_DB_CONTAINER" "$INSTALL_DATABASE_NAME" "$INSTALL_DB_PASSWORD"; then
     install_fail "installer database already exists before installation: $INSTALL_DATABASE_NAME"
+    return 0
   fi
 
   INSTALL_PHP_ARGS=(
@@ -699,8 +764,10 @@ prepare_install_instance() {
   )
 
   echo "Verifying effective installer PHP paths..."
-  "$DOCKER_BIN" run "${INSTALL_PHP_ARGS[@]}" "$REPO_ROOT/tests/ui/server/verify-paths.php" \
-    || install_fail "installer paths are not isolated from the seeded instance"
+  if ! "$DOCKER_BIN" run "${INSTALL_PHP_ARGS[@]}" "$REPO_ROOT/tests/ui/server/verify-paths.php"; then
+    install_fail "installer paths are not isolated from the seeded instance"
+    return 0
+  fi
 
   CONFIG_EXISTS=0
   [ -e "$INSTALL_ROOT/config/config.xml" ] && CONFIG_EXISTS=1
@@ -712,14 +779,16 @@ prepare_install_instance() {
   fi
 
   echo "Verifying the wizard instance is fresh and uninstalled..."
-  node "$UI_DIR/src/install-guard.mjs" \
+  if ! node "$UI_DIR/src/install-guard.mjs" \
     --installed "$CONFIG_EXISTS" \
     --config-file "$CONFIG_EXISTS" \
     --database "$INSTALL_DATABASE_EXISTS" \
     --app-cache "$APP_CACHE_ENTRIES" \
     --sessions "$SESSION_ENTRIES" \
-    --retries "$INSTALL_RETRIES" \
-    || install_fail "the wizard instance is not fresh and must not be retried"
+    --retries "$INSTALL_RETRIES"; then
+    install_fail "the wizard instance is not fresh and must not be retried"
+    return 0
+  fi
 
   echo "Starting the run-owned installer web server..."
   "$DOCKER_BIN" run -d \
@@ -744,11 +813,13 @@ prepare_install_instance() {
     -t "$REPO_ROOT" \
     "$REPO_ROOT/tests/ui/server/router.php" >/dev/null
 
-  node "$UI_DIR/src/wait-for-http.mjs" \
+  if ! node "$UI_DIR/src/wait-for-http.mjs" \
     --url "http://127.0.0.1:${INSTALL_PORT}/index.php?r=install/index" \
     --marker 'id="frmInstall"' \
-    --timeout 120 \
-    || install_fail "installer page did not become ready"
+    --timeout 120; then
+    install_fail "installer page did not become ready"
+    return 0
+  fi
 }
 
 SEEDED_STATUS=0
@@ -759,7 +830,8 @@ if [ -n "$SEEDED_TIER" ]; then
 
   if ! ui_smoke_finalize_report "$RUN_ROOT/output" "$SUMMARY_ROOT" "$UI_DIR" "$RUN_ID"; then
     echo "ERROR: run artifacts were not retained and verified" >&2
-    exit 1
+    SEEDED_STATUS=1
+    SEEDED_SETUP_ERROR="run artifacts were not retained and verified"
   fi
 else
   echo "Installer-only selection: seeded specs are not run."
@@ -784,74 +856,71 @@ if [ "$INSTALL_SELECTED" -eq 1 ]; then
   echo "Preparing a separate, uninstalled wizard instance (database ${INSTALL_DATABASE_NAME:-<not yet created>})..."
   prepare_install_instance
 
-  if [ -z "$SEEDED_TIER" ]; then
-    SPECS_STARTED_MS="$(date +%s%3N)"
-    if [ -n "${GITHUB_ENV:-}" ]; then
-      printf 'UI_SMOKE_SPECS_STARTED_MS=%s\n' "$SPECS_STARTED_MS" >> "$GITHUB_ENV"
+  INSTALL_PLAYWRIGHT_RAN=0
+  if [ "$INSTALL_STATUS" -eq 0 ]; then
+    if [ -z "$SEEDED_TIER" ]; then
+      SPECS_STARTED_MS="$(date +%s%3N)"
+      if [ -n "${GITHUB_ENV:-}" ]; then
+        printf 'UI_SMOKE_SPECS_STARTED_MS=%s\n' "$SPECS_STARTED_MS" >> "$GITHUB_ENV"
+      fi
+      printf 'UI_SMOKE_SPECS_STARTED_MS=%s\n' "$SPECS_STARTED_MS"
     fi
-    printf 'UI_SMOKE_SPECS_STARTED_MS=%s\n' "$SPECS_STARTED_MS"
+
+    echo "Driving the normal browser installer on the separate instance..."
+    run_playwright "$RUN_ROOT/output-install" "INSTALL" "$INSTALL_ORIGIN" "$INSTALL_ROOT"
+    INSTALL_STATUS=$PLAYWRIGHT_STATUS
+    INSTALL_PLAYWRIGHT_RAN=1
+
+    if [ ! -s "$INSTALL_ROOT/config/config.xml" ]; then
+      install_fail "the browser installer did not create the run-owned configuration"
+    fi
+
+    if ! database_exists "$INSTALL_DB_CONTAINER" "$INSTALL_DATABASE_NAME" "$INSTALL_DB_PASSWORD"; then
+      install_fail "the browser installer did not create the run-owned database: $INSTALL_DATABASE_NAME"
+    fi
+
+    SEEDED_DATABASE_AFTER="$(seeded_database_digest "$RUN_ROOT/seeded-db-after.json")"
+    snapshot_seeded_state "$SEEDED_DATABASE_AFTER" "$RUN_ROOT/seeded-state-after.json"
+
+    echo "Proving the seeded instance is unchanged and still usable..."
+    if ! node "$UI_DIR/src/isolation.mjs" compare \
+      --before "$RUN_ROOT/seeded-state-before.json" \
+      --after "$RUN_ROOT/seeded-state-after.json"; then
+      install_fail "the installer selection changed the seeded instance"
+    fi
+
+    if ! node "$UI_DIR/src/wait-for-http.mjs" \
+      --url "http://127.0.0.1:${PORT}/index.php?r=login/index" \
+      --marker 'id="box-login"' \
+      --timeout 60; then
+      install_fail "the seeded instance is no longer usable after the installer selection"
+    fi
   fi
 
-  echo "Driving the normal browser installer on the separate instance..."
-  run_playwright "$RUN_ROOT/output-install" "INSTALL" "$INSTALL_ORIGIN" "$INSTALL_ROOT"
-  INSTALL_STATUS=$PLAYWRIGHT_STATUS
-
-  [ -s "$INSTALL_ROOT/config/config.xml" ] \
-    || install_fail "the browser installer did not create the run-owned configuration"
-
-  if ! database_exists "$INSTALL_DB_CONTAINER" "$INSTALL_DATABASE_NAME" "$INSTALL_DB_PASSWORD"; then
-    install_fail "the browser installer did not create the run-owned database: $INSTALL_DATABASE_NAME"
+  # Retain the Playwright evidence only when no post-provisioning setup or
+  # isolation failure must replace it. Finalization forces setup-failed evidence
+  # for an accumulated failure, even when the wizard itself passed.
+  if [ "$INSTALL_PLAYWRIGHT_RAN" -eq 1 ] && [ -z "$INSTALL_SETUP_ERROR" ]; then
+    if ! ui_smoke_finalize_report "$RUN_ROOT/output-install" "$INSTALL_SUMMARY_ROOT" "$UI_DIR" "$RUN_ID"; then
+      echo "ERROR: installer artifacts were not retained and verified" >&2
+      install_fail "installer artifacts were not retained and verified"
+    fi
   fi
 
-  SEEDED_DATABASE_AFTER="$(seeded_database_digest "$RUN_ROOT/seeded-db-after.json")"
-  snapshot_seeded_state "$SEEDED_DATABASE_AFTER" "$RUN_ROOT/seeded-state-after.json"
-
-  echo "Proving the seeded instance is unchanged and still usable..."
-  if ! node "$UI_DIR/src/isolation.mjs" compare \
-    --before "$RUN_ROOT/seeded-state-before.json" \
-    --after "$RUN_ROOT/seeded-state-after.json"; then
-    install_fail "the installer selection changed the seeded instance"
-  fi
-
-  node "$UI_DIR/src/wait-for-http.mjs" \
-    --url "http://127.0.0.1:${PORT}/index.php?r=login/index" \
-    --marker 'id="box-login"' \
-    --timeout 60 \
-    || install_fail "the seeded instance is no longer usable after the installer selection"
-
-  # Finalize only after the isolation proof. If finalization fails the run is
-  # already non-zero; a forced failure report above replaces any stale summary
-  # rather than leaving a passing installer result behind.
-  if ! ui_smoke_finalize_report "$RUN_ROOT/output-install" "$INSTALL_SUMMARY_ROOT" "$UI_DIR" "$RUN_ID"; then
-    echo "ERROR: installer artifacts were not retained and verified" >&2
-    exit 1
-  fi
-
-  echo "Installer database created by the wizard: $INSTALL_DATABASE_NAME"
-  echo "Installer run root: $INSTALL_ROOT"
-  echo "Installer origin: $INSTALL_ORIGIN"
+  echo "Installer database created by the wizard: ${INSTALL_DATABASE_NAME:-<not created>}"
+  echo "Installer run root: ${INSTALL_ROOT:-<not provisioned>}"
+  echo "Installer origin: ${INSTALL_ORIGIN:-<not provisioned>}"
 fi
 
-if [ "$SEEDED_STATUS" -ne 0 ]; then
-  echo "Seeded UI smoke selection failed with status $SEEDED_STATUS" >&2
-  exit "$SEEDED_STATUS"
+# The single finalization point: it always takes the after-fingerprints,
+# compares them and forces setup-failed evidence on drift or on an accumulated
+# post-provisioning failure.
+FINAL_STATUS=0
+finalize_run || FINAL_STATUS=$?
+
+if [ "$FINAL_STATUS" -ne 0 ]; then
+  exit "$FINAL_STATUS"
 fi
-
-if [ "$INSTALL_STATUS" -ne 0 ]; then
-  echo "Installer UI smoke selection failed with status $INSTALL_STATUS" >&2
-  exit "$INSTALL_STATUS"
-fi
-
-DEVELOPER_CONFIG_AFTER="$(fingerprint "$REPO_ROOT/app/config")"
-DEVELOPER_CACHE_AFTER="$(fingerprint "$REPO_ROOT/app/cache")"
-DEVELOPER_TEMP_AFTER="$(fingerprint "$REPO_ROOT/app/temp")"
-
-[ "$DEVELOPER_CONFIG_BEFORE" = "$DEVELOPER_CONFIG_AFTER" ] \
-  || fail "Developer app/config changed during the run"
-[ "$DEVELOPER_CACHE_BEFORE" = "$DEVELOPER_CACHE_AFTER" ] \
-  || fail "Developer app/cache changed during the run"
-[ "$DEVELOPER_TEMP_BEFORE" = "$DEVELOPER_TEMP_AFTER" ] \
-  || fail "Developer app/temp changed during the run"
 
 umask "$UMASK_PREVIOUS"
 

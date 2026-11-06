@@ -404,24 +404,130 @@ ui_smoke_install_failure_report() {
   return 1
 }
 
-# ui_smoke_install_fail STATUS OUTPUT_DIR SUMMARY_ROOT UI_DIR RUN_ID STARTED_AT MESSAGE
+# ui_smoke_compare_fingerprints BEFORE AFTER LABEL [BEFORE AFTER LABEL ...]
 #
-# The runner's installer failure path. It writes the forced failure report and
-# exits non-zero, so an isolation or wizard failure can never finish the runner
-# successfully even when the Playwright summary was passing.
-ui_smoke_install_fail() {
-  local status=$1
-  local output_dir=$2
-  local summary_root=$3
-  local ui_dir=$4
-  local run_id=$5
-  local started_at=$6
-  local message=${7:-UI smoke installer selection failed}
+# Compare before/after fingerprint pairs. Prints the label of every changed
+# directory and returns non-zero when any pair differs, so the runner can name
+# the paths that leaked instead of only reporting a generic digest mismatch.
+ui_smoke_compare_fingerprints() {
+  local before
+  local after
+  local label
+  local changed=0
 
-  echo "ERROR: $message" >&2
+  while [ "$#" -ge 3 ]; do
+    before=$1
+    after=$2
+    label=$3
+    shift 3
 
-  ui_smoke_install_failure_report \
-    "$status" "$output_dir" "$summary_root" "$ui_dir" "$run_id" "$started_at" "$message" || true
+    if [ "$before" != "$after" ]; then
+      printf '%s\n' "$label"
+      changed=1
+    fi
+  done
 
-  exit 1
+  return "$changed"
+}
+
+# ui_smoke_finalize_run SEEDED_STATUS INSTALL_STATUS INSTALL_SELECTED SEEDED_TIER \
+#   RUN_ROOT SUMMARY_ROOT INSTALL_SUMMARY_ROOT UI_DIR RUN_ID STARTED_AT \
+#   CONFIG_BEFORE CONFIG_AFTER CACHE_BEFORE CACHE_AFTER TEMP_BEFORE TEMP_AFTER \
+#   [SEEDED_SETUP_ERROR] [INSTALL_SETUP_ERROR]
+#
+# Always compare the developer app/config, app/cache and app/temp fingerprints
+# before honoring a failed seeded or installer status. A failed ordinary run
+# still has to prove it did not mutate the developer tree; only a run that could
+# not provision reaches its failure path without calling this gate.
+#
+# SEEDED_SETUP_ERROR and INSTALL_SETUP_ERROR are non-empty only when a failure
+# after provisioning (finalization, installer pre-check, installer finalize or
+# isolation proof) must replace the retained Playwright evidence. On drift the
+# changed paths override both messages.
+#
+# On drift it prints every changed path, forces setup-failed evidence for each
+# selected summary and returns non-zero. Otherwise it forces setup-failed
+# evidence for an accumulated post-provisioning failure, then returns the first
+# non-zero selection status so ordinary seeded/installer failures keep their
+# exit code.
+ui_smoke_finalize_run() {
+  local seeded_status=$1
+  local install_status=$2
+  local install_selected=$3
+  local seeded_tier=$4
+  local run_root=$5
+  local summary_root=$6
+  local install_summary_root=$7
+  local ui_dir=$8
+  local run_id=$9
+  local started_at=${10}
+  local config_before=${11}
+  local config_after=${12}
+  local cache_before=${13}
+  local cache_after=${14}
+  local temp_before=${15}
+  local temp_after=${16}
+  local seeded_setup_error=${17:-}
+  local install_setup_error=${18:-}
+  local changes=""
+  local changed_summary=""
+
+  if ! changes="$(ui_smoke_compare_fingerprints \
+    "$config_before" "$config_after" "app/config" \
+    "$cache_before" "$cache_after" "app/cache" \
+    "$temp_before" "$temp_after" "app/temp")"; then
+    changed_summary="${changes//$'\n'/, }"
+
+    echo "ERROR: developer paths changed during the run: $changed_summary" >&2
+
+    if [ -n "$seeded_tier" ]; then
+      SP_UI_TIER="$seeded_tier" \
+        SP_UI_SETUP_ERROR="developer paths changed during the run: $changed_summary" \
+        ui_smoke_setup_report \
+          1 "$run_root/output" "$run_root" "$summary_root" "$ui_dir" "$run_id" "$started_at" 1 \
+        || true
+
+      seeded_status=1
+    fi
+
+    if [ "$install_selected" -eq 1 ]; then
+      ui_smoke_install_failure_report \
+        1 "$run_root/output-install" "$install_summary_root" "$ui_dir" "$run_id" "$started_at" \
+        "developer paths changed during the run: $changed_summary" \
+        || true
+
+      install_status=1
+    fi
+  else
+    if [ "$seeded_status" -ne 0 ] && [ -n "$seeded_setup_error" ] && [ -n "$seeded_tier" ]; then
+      SP_UI_TIER="$seeded_tier" \
+        SP_UI_SETUP_ERROR="$seeded_setup_error" \
+        ui_smoke_setup_report \
+          1 "$run_root/output" "$run_root" "$summary_root" "$ui_dir" "$run_id" "$started_at" 1 \
+        || true
+
+      seeded_status=1
+    fi
+
+    if [ "$install_status" -ne 0 ] && [ -n "$install_setup_error" ] && [ "$install_selected" -eq 1 ]; then
+      ui_smoke_install_failure_report \
+        1 "$run_root/output-install" "$install_summary_root" "$ui_dir" "$run_id" "$started_at" \
+        "$install_setup_error" \
+        || true
+
+      install_status=1
+    fi
+  fi
+
+  if [ "$seeded_status" -ne 0 ]; then
+    echo "Seeded UI smoke selection failed with status $seeded_status" >&2
+    return "$seeded_status"
+  fi
+
+  if [ "$install_status" -ne 0 ]; then
+    echo "Installer UI smoke selection failed with status $install_status" >&2
+    return "$install_status"
+  fi
+
+  return 0
 }
