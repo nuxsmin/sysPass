@@ -130,6 +130,7 @@ fi
 while IFS= read -r workflow_file; do
   [ -n "$workflow_file" ] || continue
   [ "$workflow_file" = "ui-smoke.yml" ] && continue
+  [ "$workflow_file" = "ui-smoke-run.yml" ] && continue
 
   # Ask for the raw representation so no base64 flag is needed. This remains a
   # read-only GET request.

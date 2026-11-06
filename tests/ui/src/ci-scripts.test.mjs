@@ -20,6 +20,12 @@ test('check-ui-required.sh reads workflow content without GNU-specific base64 fl
     /application\/vnd\.github\.v3\.raw/,
     'the read-only check should request raw content directly from the GitHub API',
   );
+  assert.match(source, /\[ "\$workflow_file" = "ui-smoke\.yml" \] && continue/);
+  assert.match(
+    source,
+    /\[ "\$workflow_file" = "ui-smoke-run\.yml" \] && continue/,
+    'the shared runner is the pipeline, not an independent aggregate reference',
+  );
 });
 
 test('scripts/docker is the single shared image build entry point', () => {

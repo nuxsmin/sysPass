@@ -215,12 +215,12 @@ export function parseJob(raw, jobId = 'ui') {
     const key = match[1];
     let value = (match[2] ?? '').trim();
 
-    if (value === '' && (key === 'env' || key === 'steps')) {
+    if (value === '' && (key === 'env' || key === 'with' || key === 'permissions' || key === 'steps')) {
       const nested = childBlock(jobLines, index, 4);
 
       index += nested.length;
 
-      if (key === 'env') {
+      if (key !== 'steps') {
         value = parseNestedMapping(nested, 6);
       }
     }
@@ -232,6 +232,27 @@ export function parseJob(raw, jobId = 'ui') {
   job.steps = stepsIndex === -1 ? [] : parseSteps(jobLines, stepsIndex);
 
   return job;
+}
+
+function parseInputs(nested) {
+  const inputs = {};
+
+  for (let cursor = 0; cursor < nested.length; cursor += 1) {
+    const inputMatch = /^ {6}([A-Za-z0-9_-]+):\s*$/.exec(nested[cursor]);
+
+    if (inputMatch) {
+      inputs[inputMatch[1]] = {};
+    } else {
+      const fieldMatch = /^ {8}([A-Za-z0-9_-]+):\s*(.*)$/.exec(nested[cursor]);
+      const inputName = Object.keys(inputs).at(-1);
+
+      if (fieldMatch && inputName) {
+        inputs[inputName][fieldMatch[1]] = unquote(fieldMatch[2]);
+      }
+    }
+  }
+
+  return inputs;
 }
 
 export function parseTriggers(raw) {
@@ -280,25 +301,11 @@ export function parseTriggers(raw) {
       triggers[key] = nested
         .filter((entry) => /^ {4}- cron:/.test(entry))
         .map((entry) => ({ cron: unquote(entry.replace(/^ {4}- cron:\s*/, '')) }));
-    } else if (key === 'workflow_dispatch') {
-      const inputs = {};
+    } else if (key === 'workflow_dispatch' || key === 'workflow_call') {
+      const inputsLine = nested.findIndex((entry) => /^ {4}inputs:\s*$/.test(entry));
+      const inputsNested = inputsLine === -1 ? [] : childBlock(nested, inputsLine, 4);
 
-      for (let cursor = 0; cursor < nested.length; cursor += 1) {
-        const inputMatch = /^ {6}([A-Za-z0-9_-]+):\s*$/.exec(nested[cursor]);
-
-        if (inputMatch) {
-          inputs[inputMatch[1]] = {};
-        } else {
-          const fieldMatch = /^ {8}([A-Za-z0-9_-]+):\s*(.*)$/.exec(nested[cursor]);
-          const inputName = Object.keys(inputs).at(-1);
-
-          if (fieldMatch && inputName) {
-            inputs[inputName][fieldMatch[1]] = unquote(fieldMatch[2]);
-          }
-        }
-      }
-
-      triggers[key] = { inputs };
+      triggers[key] = { inputs: parseInputs(inputsNested) };
     } else {
       triggers[key] = {};
     }
@@ -330,11 +337,12 @@ export function parsePermissions(raw) {
  * mappings, block scalars and flow lists this workflow uses.
  *
  * @param {string} raw
+ * @param {string} [jobId]
  * @returns {{triggers: Record<string, unknown>, job: Record<string, unknown>}}
  */
-export function parseWorkflow(raw) {
+export function parseWorkflow(raw, jobId = 'ui') {
   return {
     triggers: parseTriggers(raw),
-    job: parseJob(raw),
+    job: parseJob(raw, jobId),
   };
 }
