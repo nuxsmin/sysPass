@@ -185,9 +185,6 @@ jobs:
         timeout-minutes: 20
         env:
           SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}
-          # Temporary diagnostic: capture the web server container state and log
-          # tail when startup or readiness fails.
-          SP_UI_DEBUG: '1'
           # Default CI retries stay at zero. A workflow_dispatch operator may
           # explicitly opt in to one diagnostic retry; failOnFlakyTests still
           # rejects a retry-success as complete Tier A evidence.
