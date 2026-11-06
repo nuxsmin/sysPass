@@ -1,16 +1,34 @@
 # UI Smoke Suite
 
-Starter guide for the isolated browser smoke harness. The full contributor, triage and qualification runbook arrives with #2085.
+This is the contributor, triage and qualification runbook for the isolated
+browser smoke harness. It documents the current implementation, not a target
+design. Optional work that has not landed is marked **not yet available**.
 
-`scripts/ui-smoke.sh` is shared repository tooling for contributors, reviewers and CI. `.ai-cli/` is ONLY for AI agents; it is not the canonical home for this runner or any other human/CI entry point.
+`scripts/ui-smoke.sh` is shared repository tooling for contributors, reviewers
+and CI. `.ai-cli/` is **only** AI-agent tooling; it is not the canonical home
+for this runner or any other human/CI entry point.
 
-Current scope: #2076 / #2077 / #2079 / #2081 / #2082 / #2083 / plan U1, U2 and U4. The suite provisions a fresh synthetic instance with `sp:install`, loads the anonymous login page, and then exercises the seeded authenticated shell through positive readiness contracts. Tier A covers account view, create and edit in both in-shell navigation and direct full-page URL modes. Tier B covers the seven in-shell index navigations: `accessManager`, `itemManager`, `securityManager`, `configManager`, `notification`, `userSettingsManager` and `plugin`.
+## Status at a glance
 
-The installer is a third, explicitly stateful selection. It runs the normal browser installer on a second, completely separate application instance and then logs in as the newly created admin to assert the fresh shell's automatic actions. It is never part of Tier A/B and never sets `completeTierA`.
+| Area | Current state |
+| --- | --- |
+| Tier A | Implemented and under observation. Runs anonymous login, the authenticated shell and account view/create/edit in both in-shell and direct full-page modes. |
+| Tier B | Implemented as an independently reported, annotation-only selection. Own daily/manual workflow, own summary root, not merge-required. |
+| Installer | Implemented as a separate, explicitly stateful selection on a second isolated instance. Never part of Tier A/B and never sets `completeTierA`. |
+| Known Failure registry | Implemented (`tests/ui/known-failures.json`) and initially empty. Admission and stale-entry removal are enforced. |
+| 30-day qualification | **Not complete.** Observation began 2026-11-06; no qualification period has elapsed. |
+| Required check | **Not enabled.** `TESTS_UI_ENABLED` controls execution only. Branch protection or a ruleset must separately require `UI Smoke (Tier A)`. |
+| Daily master schedule | **Not yet available before merge.** The schedules are present in `.github/workflows/ui-smoke.yml` and `.github/workflows/ui-smoke-tier-b.yml`, but only become active once those workflow files are on the default branch. Before merge there are no scheduled master observations. |
+| Hosting-mode installer | **Not implemented or tested.** Explicitly excluded. |
+| Clean URLs | **Not current behaviour.** The suite uses `index.php?r=<controller>/<action>`. Clean URLs are independent future work under ADR-0006 (#2064 / #2073). |
+| Attachment/binder choice | **Pending #2116.** Not assumed by this runbook. |
 
 ## Prerequisites
 
-Run these once from a clean checkout. They are deliberately not executed by the runner.
+Run these once from a clean checkout. The runner deliberately does not install
+prerequisites, build images, pull images or download Chromium.
+
+### Runtime and assets
 
 1. Build the application assets from the root lockfile:
 
@@ -19,7 +37,8 @@ Run these once from a clean checkout. They are deliberately not executed by the 
    bash scripts/build-assets.sh
    ```
 
-   Install the PHP dependencies inside the pinned container (never with host PHP):
+   Install the PHP dependencies inside the pinned container. Never use host PHP
+   and never invoke `vendor/bin/*` directly:
 
    ```sh
    source .ai-cli/env.sh
@@ -27,274 +46,130 @@ Run these once from a clean checkout. They are deliberately not executed by the 
      --prefer-dist --no-interaction --no-plugins --no-scripts
    ```
 
-2. Install the separate UI harness and its pinned Chromium:
+2. Install the separate UI harness, its lockfile and pinned Chromium:
 
    ```sh
-   cd tests/ui
-   npm ci
-   PLAYWRIGHT_BROWSERS_PATH="$PWD/.browsers" ./node_modules/.bin/playwright install chromium
+   ( cd tests/ui
+     npm ci
+     npm run typecheck
+     PLAYWRIGHT_BROWSERS_PATH="$PWD/.browsers" ./node_modules/.bin/playwright install chromium
+   )
    ```
 
-   The runner uses the same `tests/ui/.browsers` path so Chromium is pinned to the harness instead of a shared host cache.
+   The runner uses the same `tests/ui/.browsers` directory. Pinned Chromium is
+   required for CI qualification. On a host distribution that Playwright does
+   not support for downloading Chromium, an explicit local fallback may be
+   selected with `SP_UI_CHROMIUM_EXECUTABLE=/path/to/chromium`; it is not a
+   substitute for the pinned-Chromium run before CI qualification.
 
-   On a host distribution that Playwright does not support for downloading Chromium, an explicit local fallback may be selected with `SP_UI_CHROMIUM_EXECUTABLE=/path/to/chromium`. It is not a substitute for the pinned-Chromium run before CI qualification.
-
-3. Make the pinned container images available. Building and pulling images are Docker mutations and need explicit human approval:
+3. Make the pinned container images available. Building or pulling images are
+   Docker mutations and need explicit human approval:
 
    ```sh
    make -C scripts/docker build          # php-testing-composer:latest
    docker pull mariadb:10.3
    ```
 
-   `scripts/docker/` is the shared build path for contributors and CI; the
+   `scripts/docker/` is the shared build path for contributors and CI. The
    workflow builds the same Dockerfile with the same `scripts/docker` build
-   context.
+   context. PHP 8.3 is the supported floor (`composer.json`: `>=8.3 <8.6`);
+   the browser job uses PHP 8.3 and MariaDB 10.3.
 
-   PHP 8.3 is the supported floor (`composer.json`: `>=8.3 <8.6`).
+### Approvals and safe execution
 
-## Run
+- Read `AGENTS.md` and `.ai-cli/README.md` before running commands.
+- The runner creates and removes only runner-owned Docker containers, a
+  network, a database and a run directory. That is still a Docker mutation:
+  ask for approval before running it on a shared machine. The command is listed
+  in `.ai-cli/allowed-commands.txt` as a logged mutation, but that listing does
+  not replace explicit human approval.
+- The runner never builds or pulls images, never reuses a developer server or
+  database, and refuses an externally supplied `E2E_BASE_URL`.
+- Do not rebuild the PHP image, prune Docker, add dependencies or edit
+  `.idea/*` as part of a smoke run.
+- Keep secrets out of command arguments and logs. The runner passes synthetic
+  fixture credentials through run-owned environment files, not process
+  arguments.
+
+### Validate the harness without provisioning
+
+These checks need no Docker containers and are safe to run before a real
+observation:
+
+```sh
+bash -n scripts/ui-smoke.sh scripts/lib/ui-smoke-report.sh \
+  scripts/ci/check-setup-budget.sh scripts/ci/check-ui-required.sh
+( cd tests/ui && npm run typecheck && npm run test:unit )
+```
+
+The runner repeats `node --test src/*.test.mjs` before Playwright, so a harness
+regression stops the run before any container is created.
+
+## Execution switch, tiers and selection
+
+`TESTS_UI_ENABLED` must be exactly `true`. Any other value, including unset,
+makes the runner exit before checking prerequisites or creating resources. A
+skipped run writes no summary and is never a complete Tier A observation
+(`scripts/ui-smoke.sh:112-119`).
 
 ```sh
 TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh
 ```
 
-`TESTS_UI_ENABLED` must be exactly `true`. Any other value, including unset,
-makes the runner exit before checking prerequisites or creating resources. A
-skipped run writes no summary and is never a complete Tier A observation.
-
-Use `--keep` only for debugging; it leaves the run root, network and containers in place for inspection. Do not reuse them for another run.
-
 ### Tier selection
 
-`SP_UI_TIER` selects the tier and defaults to `A` when unset. A default or
-explicit Tier A run executes only `login.spec.ts` and `shell.spec.ts`; it never
-picks up Tier B specs or the installer. Select Tier B explicitly:
+`SP_UI_TIER` selects the tier and defaults to `A` when unset. `A`/`a`, `B`/`b`
+and `INSTALL`/`install` are accepted; any other token is a usage error (exit 2),
+not an unknown observation.
 
-```sh
-TESTS_UI_ENABLED=true SP_UI_TIER=B ./scripts/ui-smoke.sh
-```
+| Selection | Command | Specs |
+| --- | --- | --- |
+| Tier A (default) | `TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh` | `login.spec.ts`, `shell.spec.ts` |
+| Tier B | `TESTS_UI_ENABLED=true SP_UI_TIER=B ./scripts/ui-smoke.sh` | Seven in-shell index specs |
+| Installer only | `TESTS_UI_ENABLED=true SP_UI_TIER=INSTALL ./scripts/ui-smoke.sh` | `install.spec.ts` |
+| Tier A + installer | `TESTS_UI_ENABLED=true SP_UI_TIER=A SP_UI_INSTALL=1 ./scripts/ui-smoke.sh` | Seeded specs first, wizard last |
+| Tier B + installer | `TESTS_UI_ENABLED=true SP_UI_TIER=B SP_UI_INSTALL=1 ./scripts/ui-smoke.sh` | Seeded specs first, wizard last |
 
-Select the installer explicitly with `SP_UI_TIER=INSTALL`, or add it to a seeded
-tier with `SP_UI_INSTALL=1` as described below.
+`SP_UI_INSTALL` accepts only `0` or `1`; any other value is a usage error. A
+`SP_UI_TIER=INSTALL` run selects the installer even with `SP_UI_INSTALL=0`.
+A combined selection always runs the seeded tier first and the installer
+afterwards; this comes from the explicit run plan, not Playwright filename
+order (`tests/ui/src/install-selection.mjs:80-131`).
 
-`SP_UI_SPECS` still narrows a run to an explicit subset, which is recorded as a
-partial selection for that tier. Tier A retains its evidence under
-`tests/ui/summaries/tier-A/`, Tier B under `tests/ui/summaries/tier-B/` and the
-installer under `tests/ui/summaries/tier-install/`.
-The roots are siblings, not nested: discovery is non-recursive, so a Tier A
-report can never walk into Tier B or installer history and vice versa. Set
-`SP_UI_SUMMARY_DIR` to override a seeded root (or the install root when
-`SP_UI_TIER=INSTALL`), and `SP_UI_INSTALL_SUMMARY_DIR` to override the installer
-root in a combined run. The tier token is case-insensitive
-(`A`/`a`, `B`/`b`, `INSTALL`/`install`); any other token is rejected as a usage
-error instead of being reported as a "Tier Z" observation.
+`SP_UI_SPECS` narrows a run to an explicit subset. A subset, grep-filtered run
+or unknown spec is recorded as a partial selection and is never a complete
+observation.
 
-Tier B is annotation-only until #2086 qualifies it: its run keeps a real,
-non-zero exit status when an index fails, `ci-report --tier B` emits warning
-annotations for each named route and a failure error, and a Tier B summary can
-never satisfy `completeTierA`. Tier B authenticates once for the seeded suite
-and reuses the live worker cookies, so the seven specs share one login while
-still carrying legitimate SID rotation. The manual/CLI path is:
+### Evidence roots and overrides
 
-```sh
-setup_started_ms=$(date +%s%3N)
-SP_UI_TIER=B TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh
-# The runner prints UI_SMOKE_SPECS_STARTED_MS after provisioning.
-node tests/ui/src/ci-report.mjs \
-  --summaries tests/ui/summaries/tier-B/<run-id> \
-  --tier B --budget-seconds 300 \
-  --setup-started-ms "$setup_started_ms" \
-  --setup-finished-ms <UI_SMOKE_SPECS_STARTED_MS value>
-```
+| Selection | Default retained root |
+| --- | --- |
+| Tier A | `tests/ui/summaries/tier-A/<run-id>/` |
+| Tier B | `tests/ui/summaries/tier-B/<run-id>/` |
+| Installer | `tests/ui/summaries/tier-install/<run-id>/` |
 
-Use the printed per-run directory; the tier root accumulates history and is not
-a single-summary input. Passing the per-run directory keeps the "exactly one
-summary" rule meaningful as history grows. Omitting the setup stamps correctly
-fails closed rather than qualifying the run.
+The roots are siblings, not nested. Discovery is non-recursive, so a Tier A
+report can never consume Tier B or installer history and vice versa. Use the
+per-run directory, not the accumulating tier root, when running `ci-report`.
 
-That report is separate from the Tier A workflow result. The daily Tier B
-history lives in its own workflow (`.github/workflows/ui-smoke-tier-b.yml`), is
-gated by its own `TESTS_UI_TIER_B_ENABLED` variable, selects only Tier B, and
-cannot become a required replacement for the Tier A check. #2086 owns Tier B
-promotion only after its own complete qualification history; until then the
-workflow is annotation-only and a failure remains a failed job conclusion.
-The removal of a Tier B entry or the promotion decision belongs to that
-qualification work, not to Tier A maintenance.
+`SP_UI_SUMMARY_DIR` overrides the seeded tier root. For an installer-only
+selection it overrides the install root. `SP_UI_INSTALL_SUMMARY_DIR` overrides
+the installer root in a combined run. The two overrides stay independent.
 
-CI and human contributors invoke `scripts/ui-smoke.sh` directly. AI sessions may source `.ai-cli/env.sh` for the approved wrappers, but `.ai-cli/` is not part of the shared CI or contributor invocation path.
+### Other selection variables
 
-### Installer selection
+| Variable | Effect |
+| --- | --- |
+| `SP_UI_DIAGNOSTIC_RETRY=1` | Enables one retry with `failOnFlakyTests`. A retry-success is reported flaky and rejected as complete evidence. CI exposes this only through the `workflow_dispatch` `diagnostic_retry` input. |
+| `SP_UI_LOCAL_TRACE=1` | Enables a Playwright trace only for a local run against the runner-owned synthetic instance. Forced off in CI and never uploaded. |
+| `SP_UI_CHROMIUM_EXECUTABLE` | Local explicit Chromium executable fallback. Not the pinned-Chromium CI path. |
+| `SP_UI_KNOWN_FAILURES` | Local override for the Known Failure registry. CI uses the committed file. |
+| `SP_UI_TIER_B_FAULT=accessManager/index` | Scratch-only Tier B fault canary. Never set in CI. |
+| `SP_UI_INSTALL_FAULT=remove-master-password` | Scratch-only installer fault canary. Never set in CI. |
 
-The installer has its own explicit selection and is never picked up by a
-default Tier A run:
-
-```sh
-TESTS_UI_ENABLED=true SP_UI_TIER=INSTALL ./scripts/ui-smoke.sh
-```
-
-`SP_UI_TIER=INSTALL` runs only `install.spec.ts`. A combined run uses the
-seeded tier plus the explicit installer switch:
-
-```sh
-TESTS_UI_ENABLED=true SP_UI_TIER=A SP_UI_INSTALL=1 ./scripts/ui-smoke.sh
-TESTS_UI_ENABLED=true SP_UI_TIER=B SP_UI_INSTALL=1 ./scripts/ui-smoke.sh
-```
-
-`SP_UI_INSTALL` accepts only `0` or `1`; any other value is a usage error.
-When both are selected, the runner runs the seeded specs first and the wizard
-afterwards. This ordering comes from the explicit run plan, not from Playwright
-filename order. Installer evidence is retained separately under
-`tests/ui/summaries/tier-install/` (override with
-`SP_UI_INSTALL_SUMMARY_DIR`), and `SP_UI_SUMMARY_DIR` still applies to the
-seeded tier.
-
-The installer selection is a deliberate exception to the page-load suite's
-no-user-business-mutation rule. It starts an uninstalled second instance and
-lets the normal browser wizard create its own unique nonexistent database and
-schema. The runner does not precreate that database, preload
-`schemas/dbstructure.sql`, or run `sp:install` for this instance.
-
-Hosting mode is an explicit exclusion for this selection, not an untested gap.
-The spec asserts that the `hostingmode` checkbox is present and unchecked, and
-the runner never selects it. Hosting mode requires a pre-created database and
-caller-supplied database credentials, which contradicts this ticket's unique
-nonexistent-database and isolated-instance criteria; using it would also make
-the database-creation assertion vacuous. A future hosting-mode check must be a
-separate explicit selection with its own pre-created database, credential
-policy and test before it can be reported.
-
-The second instance has its own origin/port, MariaDB container and network,
-configuration, DI cache, application cache (including the fixed
-`app/cache/config.cache` binding), upload temp, application temp, session
-namespace and output. `install-layout.mjs` resolves the same
-`<run root>/install` subtree the runner creates and rejects any overlap between
-the two instances' managed paths or a reused database name. Before the wizard
-runs, `install-guard.mjs` refuses an already installed instance, an existing
-configuration file, a precreated database, or populated wizard caches/sessions.
-The installer phase always uses `retries: 0`; a diagnostic retry is rejected
-because it would rerun the wizard against an installed instance.
-
-A manual rerun must recreate the whole wizard instance and database. The
-runner's `reset_install_instance` path removes only wizard-owned resources and
-starts a fresh uninstalled instance on every invocation; never reuse a
-`--keep` run for another attempt. `install-lifecycle.mjs` destroys and recreates
-the workspace and generates a new database/container/network identity for the
-rerun, and the runner refuses a database that already exists.
-
-After the seeded specs have produced their ordinary view/session/audit writes,
-the runner takes a seeded-state baseline. It then compares the seeded
-configuration, DI cache, upload temp, application temp, app cache, sessions and
-a `CHECKSUM TABLE` database digest immediately after the installer selection,
-and probes the seeded login page to prove the instance remains usable. A
-difference in any seeded path fails the run. The failure replaces the retained
-installer summary with a forced setup-failed result, so a passing wizard report
-cannot survive an isolation failure and the runner exits non-zero. The
-installer's own summary has `completeTierInstall` and `completeTierA: false`, so
-a passing wizard can never mask or replace a Tier A failure. Conversely, a Tier
-A failure keeps the combined run's non-zero exit even if the installer passes;
-both results remain separately visible.
-
-## CI observation
-
-`.github/workflows/ui-smoke.yml` is an isolated workflow so its daily schedule
-can only start the UI job. It runs on pull requests targeting `master` or
-`feat/*`, pushes to `master`, manual dispatch and a daily schedule. Scheduled
-runs check out `master` explicitly and record the observed commit.
-
-`TESTS_UI_ENABLED` is a repository variable used as an execution switch. When
-it is not exactly `true`, the job is skipped; a skipped job is not Tier A
-evidence. The switch is not a merge gate. Tier A failures fail the UI check,
-but promoting it to a required check is a separate maintainer operation.
-
-### Required-check verification before observation (2026-11-05)
-
-The read-only check was executed against `nuxsmin/sysPass` on 2026-11-05 with
-an authenticated `gh` wrapper. The results were mixed and are recorded exactly
-as observed rather than as a "not required" verdict:
-
-- `GET /repos/nuxsmin/sysPass/branches/master/protection` succeeded and
-  returned `required_status_checks.contexts: []` and
-  `required_status_checks.checks: []`.
-- `GET /repos/nuxsmin/sysPass/rulesets` succeeded and returned `[]`.
-- The aggregate-workflow scan could not complete: `GET
-  /repos/nuxsmin/sysPass/contents/.github/workflows` returned HTTP 404 because
-  remote `master` (observed commit `23d8989156f2db685139a056c390da97bc3ac95d`)
-  has no `.github/workflows` directory. The script therefore exited 1 instead
-  of claiming the check was not required.
-- A separate read-only `GET /repos/nuxsmin/sysPass/actions/workflows` returned
-  one active workflow, `Feature Build & Test` (`.github/workflows/feature.yaml`);
-  its recent runs were on feature branches, not `master`. That does not
-  establish a required-check reference on `master`, but the missing
-  default-branch workflow directory remains an unresolved blocker for the full
-  aggregate scan.
-
-No branch protection, ruleset, variable or required-check setting was changed.
-Required-check promotion remains a maintainer operation after qualification.
-
-The same read-only verification is reproducible with:
-
-```sh
-source .ai-cli/env.sh
-GH_BIN="$GH_BIN" bash scripts/ci/check-ui-required.sh nuxsmin/sysPass
-```
-
-The script reads branch protection contexts/checks, ruleset required status
-checks and the other workflow definitions, prints what it found, and exits
-non-zero when the UI check already appears required, an aggregate reference
-needs review, or a required read cannot be completed. It only issues read-only
-GET requests; it is not run by CI and changes no settings. Workflow content is
-requested through the REST raw media type, so it needs no GNU-specific
-`base64 --decode` and works on BSD/macOS hosts. If `gh` is unavailable or
-unauthenticated it fails with exit 127; a failed API read exits 1 instead of
-being reported as "not required".
-
-The job builds the shared PHP 8.3 testing image from
-`scripts/docker/Dockerfile.php-testing`, pulls MariaDB 10.3 and lets the
-runner create its own disposable database container and network. It does not
-reuse the integration job's database, schema load or container, and it does
-not set `MYSQL_DATABASE`. The setup window is stamped at job start and again by
-the runner immediately before Playwright starts, after provisioning (database
-start, `sp:install`, fixture seeding and web readiness), so the recorded setup
-duration includes real setup and never includes spec execution. The bounds are
-distinct: page readiness uses its 15-second deadline, the Tier A spec run has a
-20-minute step timeout and a five-minute spec-duration budget, setup has
-explicit per-step timeouts plus a 30-minute aggregate guard, and the job has a
-45-minute timeout. The tested `scripts/ci/check-setup-budget.sh` guard runs after
-the runner and fails the job when either stamp is missing, empty, non-numeric,
-negative, zero or not ordered before the other, and when the observed setup
-window exceeds its budget; `ci-report` repeats the same validation on the
-retained evidence so an invalid or over-budget window is never a complete
-Tier A observation. The runner retains sanitized summaries on
-every run and the workflow uploads only the explicit allowlist with 90-day
-retention, and only after the retained-set verification succeeds, so partial or
-duplicate sets are never published. If any pre-run step fails, or the run is
-cancelled before or during setup, the workflow writes the same sanitized
-setup-failed summary, JUnit and manifest through the shared helpers instead of
-leaving the upload step empty.
-
-Tier B uses its own `SP_UI_TIER=B` selection, spec set and sibling summary
-root. Its daily/manual history is a separate annotation-only workflow
-(`.github/workflows/ui-smoke-tier-b.yml`) gated by
-`TESTS_UI_TIER_B_ENABLED`; it is not merge-required, cannot gate or hide Tier A,
-and a failing Tier B run keeps a failed job and workflow conclusion instead of
-passing silently. #2086 promotes Tier B only after its own qualification
-history and records the responsible maintainer for each admission removal. The
-installer selection is also optional and separately reported; it cannot hide a
-Tier A failure or satisfy Tier A evidence.
-
-The runner requires Docker permission and creates runner-owned containers, a network, a database and a run directory. It never pulls or builds images, never reuses a developer server or database, and refuses an externally supplied `E2E_BASE_URL`.
-
-The separate Tier B workflow runs daily and on manual dispatch, and is gated by
-the repository variable `TESTS_UI_TIER_B_ENABLED == 'true'`. Inside that
-workflow the shared runner's `TESTS_UI_ENABLED` switch is literal `true`; it is
-not a second gate and it never controls the Tier A workflow. Enabling the Tier B
-variable is a maintainer action and no GitHub setting is changed by this
-documentation or the repository files. A failed Tier B evaluation exits
-non-zero with `continue-on-error: false`, so the job/workflow conclusion remains
-failed and the failure cannot look like a silent pass. Required-check promotion
-is not implied and remains a separate maintainer operation after #2086.
-
-Selection is `SP_UI_TIER` (default `A`) plus optional `SP_UI_SPECS`, and the optional explicit `SP_UI_INSTALL=1` phase. A subset or grep-filtered run is recorded as partial. Default retries are zero locally and in CI. An explicit `SP_UI_DIAGNOSTIC_RETRY=1`, or the `workflow_dispatch` `diagnostic_retry` input, enables one diagnostic retry with `failOnFlakyTests`; first-attempt evidence is preserved and a retry-success is reported flaky and rejected by `ci-report` as incomplete Tier A. CI never enables retries implicitly. The installer phase is always `retries: 0` and rejects a diagnostic retry; reruns recreate the wizard instance instead. `SP_UI_LOCAL_TRACE=1` is an opt-in trace for the synthetic runner instance only, is forced off in CI, and is never uploaded.
+The installer phase always uses `retries: 0`. A diagnostic retry combined with
+the installer is rejected because it would run the wizard again against an
+already installed instance.
 
 ## Execution model
 
@@ -304,178 +179,817 @@ Selection is `SP_UI_TIER` (default `A`) plus optional `SP_UI_SPECS`, and the opt
 | MariaDB | `mariadb:10.3` container on a run-owned Docker network, no pre-created database | Per run, removed afterwards |
 | Node / Playwright | Host Node 20+, `tests/ui/node_modules` | Installed once |
 | Chromium | `tests/ui/.browsers` | Installed once |
+| Run root | `/tmp/sp-ui-smoke.XXXXXX` (or `$TMPDIR`) | Per run, removed afterwards |
 | Configuration | `<run root>/config` via `CONFIG_PATH` / `CONFIG_FILE` | Per run, removed afterwards |
 | DI cache | `<run root>/cache` via `CACHE_PATH` | Per run, removed afterwards |
 | Application cache | `<run root>/app-cache` bind-mounted over `<repo>/app/cache` (`Path::CACHE/config.cache`) | Per run, removed afterwards |
 | Application temp | `<run root>/app-temp` bind-mounted over `<repo>/app/temp` | Per run, removed afterwards |
+| Upload temp | `<run root>/temp` via `upload_tmp_dir` | Per run, removed afterwards |
 | Sessions | `<run root>/sessions` via `session.save_path` | Per run, removed afterwards |
 | Output | `<run root>/output` (summary, JUnit, Playwright output) | Per run, removed afterwards |
-| Installer instance | `<run root>/install` subtree plus its own `<run root>/install`-scoped containers, network, database, origin, config, caches, sessions and `<run root>/output-install` | Per run, removed afterwards; only when the installer is selected |
-| Retained evidence | `tests/ui/summaries/tier-A/<run-id>/`, `tests/ui/summaries/tier-B/<run-id>/` and `tests/ui/summaries/tier-install/<run-id>/` (allowlisted summary/JUnit/manifest) | Kept through qualification |
+| Installer instance | `<run root>/install` subtree plus its own containers, network, database, origin, config, caches, sessions and `<run root>/output-install` | Per run, removed afterwards; only when selected |
+| Retained evidence | `tests/ui/summaries/tier-A|tier-B|tier-install/<run-id>/` | Kept through qualification; `tests/ui/summaries/` is gitignored |
 | Fixture credentials | `tests/ui/fixtures/e2e-fixture.json` | Committed; synthetic only |
 | Authentication state | Playwright worker memory and `<run root>/sessions` | Never written to artifacts; removed afterwards |
 
-The web server listens only on a random `127.0.0.1` port and is reachable only for the run. The origin is passed to Playwright as `SP_UI_BASE_URL` after the runner has proved it belongs to this run. Browser locale is `en-US`; application locale is `en_US`; the User-Agent is fixed; there is one worker and zero retries by default. An explicit diagnostic retry requires `SP_UI_DIAGNOSTIC_RETRY=1` or the dispatch input and is always rejected as complete Tier A evidence when it only succeeds on retry.
+The web server listens only on a random `127.0.0.1` port and is reachable only
+for the run. The origin is passed to Playwright as `SP_UI_BASE_URL` after the
+runner has proved it belongs to this run. Browser locale is `en-US`;
+application locale is `en_US`; the User-Agent is fixed to
+`sysPass-ui-smoke/1.0 (+https://github.com/nuxsmin/sysPass)`; there is one
+worker and zero retries by default. Playwright runs `fullyParallel: false`,
+`workers: 1`, blocks service workers and forbids focused tests in CI.
 
-## Evidence and artifacts
+### Network, database and origin ownership
 
-Every run writes `run-summary.json`, `junit.xml` and `upload-manifest.json` through the harness reporter. They record the selected tier/specs, commit and safe environment identity, attempted/completed/skipped counts, first-attempt results, retry counts, durations and normalized failure classes. The summary exposes `completeTierA`, `completeTierB` and `completeTierInstall` independently; only the selected tier can be complete, a Tier B run never sets `completeTierA`, and the installer selection never sets `completeTierA` or `completeTierB`. A run that is partial, setup-failed, cancelled or flaky is never reported as a complete success for its tier. A combined seeded+installer run retains the seeded summary under `tier-A`/`tier-B` and the installer summary under `tier-install`; each is evaluated separately with `ci-report --tier A|B|INSTALL`.
+The runner generates:
 
-A failed attempt writes only sanitized diagnostics under `failures/`: a masked screenshot, sanitized console/error output and normalized route/URL/status information. Absolute file paths are reduced to repository-relative paths. No request or response bodies, HAR, trace, video, authentication state, cookies, configuration snapshot, private key, DOM snapshot or temporary fixture dump is uploaded. Playwright's automatic page snapshot is disabled at source (`PLAYWRIGHT_NO_COPY_PROMPT`), and any `error-context.md` file is removed by the reporter, the runner cleanup and the retention step before the artifact set is kept. It is not part of the allowlist.
+- a database name matching `sp_ui_<12 hex>`;
+- a random ephemeral loopback port and origin `http://127.0.0.1:<port>`;
+- a network `sp-ui-net-<hex>` and containers `sp-ui-web-<hex>` /
+  `sp-ui-db-<hex>`;
+- a run root under `${TMPDIR:-/tmp}` carrying `.sp-ui-owner` marker files that
+  contain the run id.
 
-`scripts/ui-smoke.sh` retains the allowlisted summary/JUnit/manifest under
-`tests/ui/summaries/tier-A/<run-id>/` for Tier A and
-`tests/ui/summaries/tier-B/<run-id>/` for Tier B on every run, including
-failure, so qualification history does not depend on a failed run's temporary
-output. The sibling roots and non-recursive discovery keep a Tier B summary
-from being consumed by a Tier A report, or the reverse. `SP_UI_SUMMARY_DIR`
-overrides the root for either tier. Report one retained run with
-`ci-report --tier B --summaries tests/ui/summaries/tier-B/<run-id>`; passing the
-accumulating tier root is intentionally rejected once it holds more than one
-summary. The upload manifest records the retained set, and CI publishes only an
-explicit allowlist: `run-summary.json`, `junit.xml`, `upload-manifest.json` and
-`failures/**/{screenshot.png,console.log,failure.json}`. Before upload, verification checks the manifest against that same allowlist and rejects unknown, duplicate, unsafe, missing or unlisted entries, so the workflow's hardcoded paths and the manifest cannot silently diverge. The workflow never uploads the summary directory as a whole, and it does not resolve upload paths from the manifest dynamically because GitHub Actions cannot consume a manifest-supplied path set safely. Verification runs before upload and upload is gated on its success: a genuine Tier A test failure still publishes its complete verified set, while an empty, duplicated or partial set fails before publishing and is never uploaded.
+MariaDB is started without `MYSQL_DATABASE`. The runner proves the database is
+absent before installation and present afterwards. Normal `sp:install` owns
+creation of the unique database and schema. The browser wizard likewise owns
+database/schema creation on its own instance; the runner never precreates that
+database, preloads `schemas/dbstructure.sql` or runs `sp:install` for it.
 
-If an `npm ci`, asset build, image build, Composer install or `tests/ui` install step fails before `scripts/ui-smoke.sh` runs, or the run is cancelled before or during setup, the workflow still writes a sanitized setup-failed summary, JUnit and manifest through `scripts/lib/ui-smoke-report.sh` and `setup-report.mjs`. When the runner already retained a complete set, the fallback leaves it untouched. A partial set that still has the authoritative `run-summary.json` is repaired through the normal retention path, which regenerates the missing derived JUnit/manifest artifacts. A partial set without a usable summary is replaced with a setup-failed set in the same directory, so `ci-report` sees exactly one summary and rejects it as incomplete Tier A evidence.
+### Effective PHP paths
 
-`tests/ui/src/*.test.mjs` includes a synthetic-canary end-to-end test that deliberately fails a Playwright spec and inspects the reporter/output/upload path for canary leakage in logs, URLs, DOM text and error output. `scripts/ui-smoke.sh` runs the whole Node test suite (`cd tests/ui && npm run test:unit`) before Playwright, and a harness failure stops the run before any container is created.
+Before any installation, `tests/ui/server/verify-paths.php` checks inside PHP
+that:
+
+- `CONFIG_PATH`, `CONFIG_FILE`, `CACHE_PATH`, `LOG_FILE` and
+  `session.save_path` resolve inside the run root;
+- the owned directories carry the run-id marker;
+- `Path::CACHE` and `Path::TMP` are the application cache/temp paths and carry
+  the marker through their bind mounts;
+- `Path::CONFIG`, `Path::CONFIG_FILE` and `Path::LOG_FILE` match the
+  environment values.
+
+`CACHE_PATH` only relocates DI compilation. It does **not** override the
+application cache binding: the fixed `app/cache/config.cache` path is isolated
+by binding `<run root>/app-cache` over `<repo>/app/cache`. The same applies to
+`app/temp` through `<run root>/app-temp`.
+
+The runner intentionally uses the pinned image through `$DOCKER_BIN` for these
+commands rather than the shared `$PHP_BIN` wrapper. The wrapper forwards
+neither `CONFIG_PATH` nor the installer variables and mounts only the
+repository (`scripts/ui-smoke.sh:415-420`).
+
+### Installer instance
+
+The installer lives in `<run root>/install`. It has its own origin, MariaDB
+container, network, database name, configuration, DI cache, application
+cache/temp, upload temp, session namespace and output. `install-layout.mjs`
+resolves the same subtree the runner creates and rejects overlap between the
+two instances' managed paths or a reused database name. `install-guard.mjs`
+refuses an already installed instance, an existing configuration file, a
+precreated database, populated wizard caches/sessions or a nonzero retry count
+(`tests/ui/src/install-guard.mjs:17-51`).
+
+Before the wizard runs, `verify-paths.php` is rerun against the installer
+instance. The spec asserts that hosting mode is present and unchecked; the
+runner never selects it.
+
+### Cleanup and interruption
+
+`scripts/ui-smoke.sh` installs an `EXIT INT TERM` trap. On any exit it:
+
+1. removes `error-context.md` files from both output trees;
+2. writes a sanitized setup-failure report when the run did not finish
+   successfully;
+3. removes installer and seeded containers, networks and the run root;
+4. removes the run root only when it matches `${TMPDIR:-/tmp}/sp-ui-smoke.*`;
+5. preserves resources when `--keep` is used.
+
+`--keep` is for debugging only. It leaves the run root, network and containers
+in place; do not reuse them for another run. The installer has an additional
+`reset_install_instance` path that destroys only wizard-owned resources and
+starts a fresh uninstalled instance on every invocation. `install-lifecycle.mjs`
+recreates the workspace and generates a new database/container/network identity;
+the runner refuses a database that already exists.
+
+If a process is killed with `SIGKILL`, the trap cannot run. Remove only the
+run-owned containers, network and `/tmp/sp-ui-smoke.*` directory after
+confirming their names; never remove developer images, volumes or unrelated
+containers.
+
+## Synthetic fixtures and crypto consistency
+
+`tests/ui/fixtures/e2e-fixture.json` is the committed source of truth. It
+contains only synthetic `E2E_*` credentials, stable logical IDs and fixture
+text. The runner reads the admin login, password and Master Password from it
+and passes them to `sp:install` through the run-owned environment file.
+
+After installation, `tests/ui/fixtures/seed.php`:
+
+- configures the isolated `config.xml` through `ConfigFileService` with
+  `filesEnabled=1`, update and notice checks disabled, `debug=false`, demo mode
+  disabled and HTTP Basic auto-login disabled;
+- pre-generates the run-owned PKI key pair with `CryptPKIHandler` so login
+  encryption is deterministic;
+- writes user preferences needed by the session;
+- creates the demo user, group and profile plus a synthetic client, category,
+  parent account, child account and child account file;
+- derives the login hash with `HashService`, the user vault with
+  `UserMasterPassService` and the account ciphertext with `AccountCryptService`;
+- verifies the login hash, Master Password metadata, both user vaults, both
+  account ciphertexts, user preferences, the file row and the application
+  configuration before the server starts.
+
+The runner applies `--reset`, then `--verify`, then repeats the reset and
+verification to prove reset stability. `--reset` deletes only the stable
+fixture rows and recreates them with the same logical IDs; it never touches
+`tests/SP` fixtures or shared datasets. Session files and cookie jars stay in
+the run root or worker memory and are excluded from artifacts.
+
+For a `--keep` debugging run, invoke `tests/ui/fixtures/seed.php` with the same
+run-owned environment file, network and repository/run-root mounts as the
+runner, using `--reset` or `--verify`. Do not point it at a developer database
+or configuration. Run PHP only through the pinned container, not host PHP.
 
 ## Isolation and refusal rules
 
-Before any container or database mutation, `tests/ui/src/preflight.mjs` rejects:
+Before any container or database mutation, `tests/ui/src/preflight.mjs`
+rejects:
 
-- a run root inside the repository, including `app/config`, `app/cache`, `app/temp`, `.git` and `vendor`;
+- a run root inside the repository, including `app/config`, `app/cache`,
+  `app/temp`, `.git` and `vendor`;
 - a symlinked run root or an owned path that resolves outside the run root;
 - a non-empty run configuration directory;
 - a database name that is not `sp_ui_<12 hex>` or is reserved;
 - an origin that is not `http://127.0.0.1:<port>`;
 - an externally supplied `E2E_BASE_URL`.
 
-The runner also verifies `CONFIG_PATH`, `CONFIG_FILE`, `CACHE_PATH`, `LOG_FILE`, `session.save_path` and the effective `Path::CACHE`/`Path::TMP` bindings inside PHP before installing. MariaDB is started without `MYSQL_DATABASE`; normal `sp:install` creates the unique database and schema. Developer `app/config`, `app/cache` and `app/temp` fingerprints must be unchanged when the run finishes.
+The runner also fingerprints the developer `app/config`, `app/cache` and
+`app/temp` directories before and after the run and fails if any changed. That
+comparison runs even when a seeded or installer selection already failed; only a
+run that fails before provisioning (selection validation, preflight or
+environment checks) skips it. Every post-provisioning failure—including seeded
+finalization, installer pre-checks, installer finalization and the isolation
+proof—accumulates its status and reaches the same finalization point, which
+always takes the after-fingerprints. A difference names the changed paths,
+forces setup-failed evidence for the selected summaries and exits non-zero. The
+installer instance repeats the same preflight/path verification with its own
+subtree.
 
-The installer instance repeats the same preflight/path verification with its own `<run root>/install` subtree, origin, network, database, config, caches, temp, sessions and output. Its database is proven absent before the browser wizard starts, and `install-guard.mjs` rejects a populated configuration/cache/session namespace or a nonzero retry count. Cleanup removes only the seeded and wizard resources owned by this run; the seeded instance is fingerprinted before/after the selection and must remain unchanged and usable.
+When both a seeded tier and the installer are selected, the runner takes the
+seeded-state baseline after the seeded specs have produced their ordinary
+view/session/audit writes. It compares the seeded configuration, DI cache,
+upload temp, application temp, app cache, sessions and a `CHECKSUM TABLE`
+database digest after the installer selection, and probes the seeded login page
+to prove the instance remains usable. Any difference replaces the retained
+installer summary with a forced setup-failed result and makes the runner exit
+non-zero. The installer's own summary has `completeTierInstall` and
+`completeTierA: false`; a passing wizard can never replace a Tier A result.
 
-## Synthetic fixtures
+## Readiness contracts
 
-`tests/ui/fixtures/e2e-fixture.json` is the committed source of truth for the isolated fixture. It contains only synthetic `E2E_*` credentials, stable logical IDs and fixture text. The runner reads the admin login, password and known Master Password from it and passes them to `sp:install` through the run-owned environment file; secrets are not passed on process arguments.
+The suite asserts positive per-page/mode contracts, not general layout. A page
+load is ready only when all of the following hold within one 15-second
+deadline (`tests/ui/src/readiness.ts:60`, `tests/ui/src/diagnostics.mjs`):
 
-After installation, `tests/ui/fixtures/seed.php` applies the fixture:
+- every expected Page-load Action for the page/mode completed;
+- the response body matches the expected format and meaningful content;
+- the page-specific DOM/content/binding conditions are present;
+- the loading overlay is hidden;
+- asynchronous body inspection has drained;
+- no detector problem is recorded;
+- a 300 ms action-scoped quiet window has elapsed with no in-flight Page-load
+  Action.
 
-- it configures the isolated `config.xml` through `ConfigFileService` with `filesEnabled=1`, update and notice checks disabled, `debug=false`, demo mode disabled and HTTP Basic auto-login disabled so the seeded form login uses database authentication;
-- it pre-generates the run-owned PKI key pair with `CryptPKIHandler` so login encryption is deterministic, and writes user preferences needed by the session;
-- it creates the demo user, group and profile plus a synthetic client, category, parent account, child account and child account file;
-- it derives the login hash with `HashService`, the user vault with `UserMasterPassService` and the account ciphertext with `AccountCryptService`;
-- it verifies the login hash, Master Password metadata, both user vaults, both account ciphertexts, user preferences, the file row and the application configuration before the server starts.
+Static headings, placeholder options and a non-empty shell are insufficient.
+Missing or pending actions are reported together with the observed route set.
 
-For a `--keep` debugging run, invoke `tests/ui/fixtures/seed.php` with the same run-owned environment file, network and repository/run-root mounts as the runner, using `--reset` or `--verify`. Do not point it at a developer database or configuration.
+### Tier A
 
-`--reset` deletes only the stable fixture rows and recreates them with the same logical IDs. The runner resets twice, verifies after each reset, and never touches `tests/SP` fixtures or `tests/res/datasets`. Session files and cookie jars stay in the run root or worker memory and are excluded from artifacts.
+| Page/mode | Required actions and meaningful content |
+| --- | --- |
+| Anonymous login | `login/index` HTML with `#box-login`, `#frmLogin`, login fields and dispatch attributes; `bootstrap/getEnvironment` JSON with `status: OK`, `loggedin: false`, `locale: en_US`, a null CSRF token and a public key. |
+| Authenticated shell | `bootstrap/getEnvironment`, `account/index` and `items/notifications`; shell root, visible content, seeded parent/child/client/category content and a hidden overlay. |
+| Account view, in-shell and direct URL | `account/view` with account details; `accountFile/list` with the seeded file; `items/accountsUser` with the seeded linked-account option; account form bindings. |
+| Account create, in-shell and direct URL | `account/create` with “New Account”; `items/accountsUser` with the seeded parent option; account form bindings and empty item id. |
+| Account edit, in-shell and direct URL | `account/edit` with account details and “Edit Account”; `accountFile/list`; `items/accountsUser`; account form bindings and item id. |
 
-## Current checks
+The login contract is checked in `tests/ui/specs/login.spec.ts`; the
+authenticated contracts are in `tests/ui/src/contracts.ts` and
+`tests/ui/specs/shell.spec.ts`.
 
-`tests/ui/specs/login.spec.ts` loads `index.php?r=login/index` and asserts the page-specific login form (`#box-login`, `#frmLogin`, field and button roots, dispatch attributes) plus the current `bootstrap/getEnvironment` boot contract (`status: OK`, `loggedIn: false`, `locale: en_US`, a null CSRF token for the anonymous session and a public key). It fails on uncaught page/console errors, unexpected failed requests and critical error markup.
+### Tier B
 
-`tests/ui/specs/shell.spec.ts` uses a separate authenticated worker session. It logs in through the UI exactly once, then runs sequentially: the first test asserts the shell root, completed `bootstrap/getEnvironment`, `account/index` and `items/notifications` actions, meaningful account-list content, a hidden loading overlay, a 300 ms action-scoped quiet window within the 15 s readiness deadline, disabled update/notice flags and no pending or failed routes. Later tests wait through the real 120-second SID rotation and prove that the rotated cookie carries into a fresh sequential context without a second login. Missing or pending routes are reported together with the observed route set.
+Tier B covers seven in-shell index navigations and asserts each index's own
+tabbed/grid/panel content and automatic actions:
 
-The seven Tier B specs share the same live worker cookie jar. The first spec logs in through the UI and marks the worker session authenticated; the remaining specs reuse the live cookies and fail if the login route is observed again, so there is no per-spec login storm and no immutable snapshot restore. Anonymous/login tests keep their own clean Playwright contexts and never receive the seeded cookie jar. `bootstrap/getEnvironment` is the current boot contract; #2096 will replace it and must update these probes in the same change.
+`accessManager`, `itemManager`, `securityManager`, `configManager`,
+`notification`, `userSettingsManager` and `plugin`.
 
-`tests/ui/specs/install.spec.ts` drives the real installer form on a second
-instance. It first asserts the installer page contract, the current required
-fields (including the database user/password and the Master Password repeat),
-that hosting mode is unchecked, and that the Master Password repeat field is
-required by the browser. It then submits a deliberately short Master Password
-and requires the server to reject it, before filling synthetic admin/DB
-credentials and submitting `install/install`. Master Password matching remains a
-browser-side required field in this version: `install/install` receives only
-`masterpassword`, while the server enforces the non-blank and minimum-length
-rules that the short-password submission exercises. The installer must answer
-`status: OK` and redirect to the login page. The spec then authenticates as the
-newly created admin and requires the fresh shell contract: completed
-`bootstrap/getEnvironment`, `account/index` with the empty-state content and
-`items/notifications`, a visible shell/search content and no pending or failed
-routes. It never precreates the database, preloads the schema or logs in with
-the seeded fixture.
+Tier B authenticates once for the seeded suite and reuses the live worker cookie
+jar. The seven specs share one login while still carrying legitimate SID
+rotation. A reused Tier B session fails if the login route is observed again,
+so there is no per-spec login storm and no immutable snapshot restore. Tier B
+failures are reported independently as annotations; they cannot hide a Tier A
+failure or falsely mark failed cases as passes.
 
-The scratch-only Tier B fault canary is opt-in with
-`SP_UI_TIER_B_FAULT=accessManager/index`. It intercepts the real
-`accessManager/index` response in that browser context, requires the actual
-spec navigation to fail with the spec file and route named, removes the route
-interception, and then proves the unmodified index loads again before rethrowing
-the named failure. It is never set in CI and does not alter either tier's normal
-selection.
+### Installer
 
-## Known failure admissions
+The installer spec first asserts the installer page contract and current
+required fields (including database user/password and the Master Password
+repeat), that hosting mode is unchecked, and that the Master Password repeat
+field is required by the browser. It then submits a deliberately short Master
+Password and requires the server to reject it, before filling synthetic
+admin/database credentials and submitting `install/install`.
 
-`tests/ui/known-failures.json` is the committed registry and starts empty. It is
-not a quarantine list and it never suppresses a failing exit status or changes
-a spec's assertions. An entry must match exactly one `(spec, route,
-failureKind)` failure:
+The installer must answer `status: OK` and redirect to the login page. The spec
+then authenticates as the newly created admin and requires the fresh shell
+contract: completed `bootstrap/getEnvironment`, `account/index` with the
+empty-state content and `items/notifications`, a visible shell/search content
+and no pending or failed routes. It never precreates the database, preloads the
+schema or logs in with the seeded fixture.
 
-```json
-{
-  "schemaVersion": 1,
-  "entries": [
-    {
-      "spec": "shell.spec.ts",
-      "route": "account/index",
-      "failureKind": "http",
-      "reason": "deterministic account-index failure",
-      "defect": "#2000",
-      "admission": {
-        "who": "maintainer",
-        "date": "2026-11-06",
-        "ref": "#2080"
-      }
-    }
-  ]
-}
+## Diagnostics, warnings and fault injection
+
+### Detector failure classes
+
+The event-driven detector records, at minimum:
+
+- uncaught page errors and web errors, with source/page URL;
+- unexpected console errors, with source/page URL;
+- unexpected request failures and HTTP responses `>= 400`;
+- malformed or unexpected JSON envelopes, missing `status`, and JSON
+  `status: ERROR`;
+- JSON `status: 10` as session loss after authentication, or as an invalid
+  response before authentication;
+- empty HTTP 200 bodies and missing expected fragment content;
+- critical server markup (`.msg-critical`), client error markup
+  (`.error.round`) and error toasts (`.toast-error`);
+- logout-script responses and unexpected login redirects/pages;
+- late body-inspection failures;
+- unmet DOM/content/binding conditions and a stuck loading overlay.
+
+Warnings are annotations, not failures. Server warning markup
+(`.msg-warning`), warning toasts (`.toast-warning`), JSON `status: WARNING` and
+informational entries in plural `errors` containers do not fail a page load.
+Critical markup and unexpected errors do fail. The detector does not require
+`#content` on login or install pages.
+
+Action failures are attributed to their route. Global JavaScript errors keep
+the available source/page URL and are not assigned an invented route.
+Readiness failures list the missing/pending routes and the observed route set.
+
+### Session lifecycle
+
+Anonymous/login tests never inherit authenticated state. The seeded suite
+authenticates once through the UI and carries live cookie/storage changes
+between sequential authenticated contexts. It does not restore an immutable
+snapshot and never silently re-authenticates after actual session loss. A
+silent re-login would hide the session-loss defect, invalidate the first-attempt
+evidence and make the SID-rotation proof meaningless.
+
+The suite verifies reuse across the legitimate 120-second SID regeneration:
+after the rotation window it proves the rotated cookie is present and different,
+and that a fresh sequential context uses the rotated cookies without a second
+login. Visiting the session-destroying login route in an authenticated test is a
+failure. Actual session loss is reported as `session-loss`; an unexpected
+login/logout response before authentication is `invalid-response`. Neither is a
+Known Failure kind.
+
+### Fault injection
+
+The detector and reporter have automated fault-injection unit tests covering
+suppressed dispatch, invalid responses, session variants, warnings, hanging
+actions and late body-inspection failures. These run in
+`tests/ui/src/*.test.mjs`.
+
+Two scratch-only browser canaries remain opt-in and are never set in CI:
+
+- `SP_UI_TIER_B_FAULT=accessManager/index` intercepts the real
+  `accessManager/index` response, requires the actual spec navigation to fail
+  with the spec file and route named, removes the interception, proves the
+  unmodified index loads again, then rethrows the named failure.
+- `SP_UI_INSTALL_FAULT=remove-master-password` removes a required installer
+  field in the browser and proves the missing field fails the installer
+  contract.
+
+## Evidence, redaction and capture policy
+
+### Every run
+
+The harness reporter writes three allowlisted artifacts on every run
+(`tests/ui/src/reporter.mjs`):
+
+- `run-summary.json`: run/commit/environment identity, selection/completion/
+  skips, first attempts, retry counts, durations, failure classes and
+  known-failure evaluation;
+- `junit.xml`: JUnit representation of the same evidence;
+- `upload-manifest.json`: SHA-256/size manifest of the retained allowlist.
+
+The summary exposes `completeTierA`, `completeTierB` and `completeTierInstall`
+independently. Only the selected tier can be complete. A partial,
+setup-failed, cancelled or flaky run is never a complete success. A combined
+seeded+installer run retains the seeded summary under its tier root and the
+installer summary under `tier-install`; each is evaluated separately with
+`ci-report --tier A|B|INSTALL`.
+
+### Failing-attempt evidence
+
+A failed attempt writes only sanitized diagnostics under `failures/`:
+
+- a masked screenshot;
+- sanitized console output;
+- normalized route/URL/status information in `failure.json`.
+
+Absolute file paths are reduced to repository-relative paths. The record
+deliberately excludes request/response bodies, DOM snapshots, authentication
+state, cookies, configuration snapshots, keys and fixture dumps. Screenshots
+mask form fields, contenteditable regions and explicitly sensitive regions. A
+login that does not redirect reports only its fixed route, HTTP status and a
+validated content-type. The harness never reads or embeds the login response
+body, so a body canary cannot reach the thrown error, `failure.json`, the summary
+or JUnit.
+
+### Upload allowlist and redaction
+
+CI publishes only this explicit allowlist:
+
+```text
+run-summary.json
+junit.xml
+upload-manifest.json
+failures/**/screenshot.png
+failures/**/console.log
+failures/**/failure.json
 ```
 
-The schema is strict. Unknown fields, missing reason/defect/admission metadata,
-invalid admission dates, duplicate keys, regular expressions or glob keys and
-unknown failure kinds are rejected. `defect` and `admission.ref` must be a
-linked issue (`#<number>` or a GitHub issue URL); arbitrary strings are
-rejected, and #2079 is explicitly refused because it is a fixed regression.
+Before upload, verification checks the manifest against the same allowlist and
+rejects unknown, duplicate, unsafe, missing or unlisted entries. The workflow
+never uploads the summary directory as a whole and never resolves upload paths
+dynamically from the manifest.
+
+The Playwright page-snapshot copy prompt is disabled
+(`PLAYWRIGHT_NO_COPY_PROMPT=1`), and any generated `error-context.md` file is
+removed by the reporter, the runner cleanup and the retention step. It is never
+part of the allowlist.
+
+### Capture policy and canary
+
+CI forces forbidden capture off regardless of local flags:
+
+- no Playwright trace;
+- no video;
+- no HAR;
+- no request/response bodies persisted or uploaded;
+- no authentication state, cookies, configuration snapshots or keys;
+- telemetry disabled (`DO_NOT_TRACK=1`,
+  `PLAYWRIGHT_CLI_ANALYTICS=0`).
+
+`SP_UI_LOCAL_TRACE=1` is a local-only opt-in against the runner-owned synthetic
+instance. It is forced off in CI and is never uploaded. A trace requested
+outside that synthetic context is rejected by the capture policy.
+
+`tests/ui/src/*.test.mjs` includes a synthetic-canary end-to-end test that
+deliberately fails a Playwright spec and inspects the reporter/output/upload
+path for canary leakage in logs, URLs, DOM text and error output. A harness
+failure stops the run before containers are created.
+
+## Tiers, independence and Known Failures
+
+Tier A is the browser prerequisite for ADR-0011's transport and boot changes
+only. It is not a general end-to-end replacement. Tier B is independently
+reported and remains annotation-only until its own qualification; it cannot
+gate or hide Tier A. The installer is a separate, explicitly stateful exception
+to the page-load suite's no-user-business-mutation rule.
+
+Known Failure admission has landed. `tests/ui/known-failures.json` is the
+committed registry and starts empty. It is not a quarantine list: it never
+suppresses a failing exit status or changes a spec's assertions. An entry must
+match exactly one `(spec, route, failureKind)` failure and include a reason,
+linked defect and explicit maintainer admission.
+
 Only route-bearing deterministic detector kinds qualify: `http`,
 `json-status`, `request-failed`, `body-inspection`, `missing-content` and
-`empty-body`. Kinds the pipeline cannot key by `(spec, route, failureKind)` —
-including `console`, `page-error`, `markup`, `assertion`, `timeout`,
-`json-malformed` and `json-envelope` — are not admissible. `flaky`, `setup`,
-setup/isolation, `session-loss`, `invalid-response`, `login-navigation`,
-`login-page` and the catch-all `test-error` are also not admissible. A
-first-attempt failure that passes on retry is always flaky and is never
-admitted.
+`empty-body`. Flaky, setup/isolation, session-loss, invalid-response,
+login-navigation, login-page, console, page-error, markup, assertion, timeout,
+malformed-JSON and generic test-error kinds are not admissible. #2079 is
+explicitly refused because it is a fixed regression.
 
 An attempt can emit several detector problems. Every problem is recorded as its
-own `(route, failureKind)` tuple and the attempt is admitted only when all of
-them have an entry; any unlisted problem remains a new failure and fails the
-run.
+own `(route, failureKind)` tuple; the attempt is admitted only when all of them
+have entries. An admitted failure remains visible in counts and evidence, the
+run still exits non-zero, and it never counts as a complete observation.
 
-Admission is an exceptional reviewed change, not a routine way to obtain a
-green baseline. A new entry requires a linked defect, a concrete reason and an
-explicit maintainer admission recorded in the registry commit. The registry is
-therefore not restricted to shrinking: reviewed admissions may add entries, and
-the maintainer who adds one owns its removal. Never add an entry for #2079 or
-another defect that is supposed to remain fixed.
+When an entry's spec actually executes without the admitted failure, the run
+fails with removal instructions. A filtered, skipped or unexecuted spec does not
+prove the defect is fixed and never marks an entry stale. New admissions are
+exceptional reviewed changes; the maintainer who adds one owns its removal.
+The registry can grow through reviewed admissions, but it is not a routine way
+to obtain a green baseline.
 
-The matching failure is annotated in `run-summary.json` and `junit.xml`, but
-the original failed count, first-attempt result, failure class and sanitized
-evidence stay visible. `status` remains `failed` and `completeTierA` remains
-`false`; an admitted failure run is never a clean pass, never exits zero and
-never counts as a complete Tier A observation. Unlisted failures, and other
-failures in the same spec, still fail the run.
+## CI observation and qualification
 
-The reporter records the complete known-failure evaluation in
-`run-summary.json`. `ci-report` consumes that recorded evaluation as the single
-authoritative source and never re-runs the registry against the retained tests,
-so a failure the reporter rejected cannot be re-admitted later. A summary that
-lacks the recorded fields is treated as incompatible and fails rather than
-being silently re-evaluated.
+### Workflows and scheduling
 
-When a registry entry's spec actually executes without the admitted failure,
-the run fails with removal instructions. A filtered, skipped or unexecuted spec
-does not prove the defect is fixed, never causes an entry to be treated as
-stale, and keeps the run ineligible. Existing obsolete entries must be removed
-rather than left in place. The registry used by the reporter can be overridden
-for local experiments with `SP_UI_KNOWN_FAILURES`, but CI always uses the
-committed file unless the workflow is changed.
+`.github/workflows/ui-smoke.yml` is an isolated workflow so its daily schedule
+can only start the UI job. It runs on pull requests targeting `master` or
+`feat/*`, pushes to `master`, manual dispatch and a daily schedule
+(`17 4 * * *`). Scheduled runs check out `master` explicitly and record the
+observed commit. Before the workflow is merged to the default branch, no
+scheduled master observation exists.
+
+`.github/workflows/ui-smoke-tier-b.yml` is a separate workflow for Tier B. It
+runs on manual dispatch and a daily schedule (`47 4 * * *`), selects only
+Tier B, and keeps its own summary root and artifact name. It cannot replace,
+hide or gate Tier A.
+
+### Execution switch versus required check
+
+`TESTS_UI_ENABLED == 'true'` controls execution only:
+
+- When it is not exactly `true`, the job is skipped and produces no evidence.
+- When it is `true`, Tier A failures fail the UI check with
+  `continue-on-error: false`.
+- Neither the switch nor `continue-on-error: false` establishes a merge gate.
+
+A required check is established separately by branch protection or a
+repository ruleset. The stable check name is `UI Smoke (Tier A)`.
+`scripts/ci/check-ui-required.sh` is a read-only pre-observation check for an
+existing requirement; it never changes settings. A skipped job publishes no
+successful check run and therefore cannot satisfy a required check.
+
+Tier B uses its own variable `TESTS_UI_TIER_B_ENABLED == 'true'` inside its own
+workflow. The shared runner's `TESTS_UI_ENABLED` is literal `true` there; it is
+not a second gate. A failed Tier B evaluation exits non-zero with
+`continue-on-error: false`, so the job/workflow conclusion remains failed. It is
+not merge-required and cannot become a required replacement for Tier A.
+
+### Required-check verification before observation
+
+The read-only check was run against `nuxsmin/sysPass` on 2026-11-05:
+
+- `GET /repos/nuxsmin/sysPass/branches/master/protection` returned empty
+  `required_status_checks.contexts` and `required_status_checks.checks`.
+- `GET /repos/nuxsmin/sysPass/rulesets` returned `[]`.
+- The aggregate-workflow scan could not complete because remote `master` had no
+  `.github/workflows` directory at the observed commit; the script exited 1
+  instead of claiming the check was not required.
+- A separate read-only workflow list showed one active workflow on feature
+  branches, not a required-check reference on `master`.
+
+No branch protection, ruleset, variable or required-check setting was changed.
+Required-check promotion remains a maintainer operation after qualification.
+
+Reproduce the read-only check with:
+
+```sh
+source .ai-cli/env.sh
+GH_BIN="$GH_BIN" bash scripts/ci/check-ui-required.sh nuxsmin/sysPass
+```
+
+The script prints branch-protection contexts/checks, ruleset required status
+checks and other workflow references. It exits non-zero when the UI check
+already appears required, an aggregate reference needs review, or a required
+read cannot be completed. If `gh` is unavailable or unauthenticated it exits
+127; a failed API read exits 1 rather than being reported as “not required.”
+
+### Budgets and timeouts
+
+| Bound | Value |
+| --- | --- |
+| Page readiness/diagnostics | 15 seconds per page load |
+| Tier A spec-duration budget | 5 minutes (300 seconds), enforced by `ci-report` |
+| Tier A UI step timeout | 20 minutes |
+| Setup budget | 30 minutes (1800 seconds), enforced by `check-setup-budget.sh` and `ci-report` |
+| Job timeout | 45 minutes |
+| Playwright test timeout | 30 seconds default; specific session/installer tests raise it |
+| Playwright action/navigation timeout | 10 / 20 seconds |
+
+The setup window starts at job start and ends when the runner stamps
+`UI_SMOKE_SPECS_STARTED_MS` after provisioning and immediately before
+Playwright. The guard fails closed for missing, empty, non-numeric, negative,
+zero, reversed or over-budget stamps. `ci-report` repeats the same validation on
+the retained evidence.
+
+### Every-run evidence in CI
+
+The workflow retains sanitized summaries on every run and uploads only the
+explicit allowlist after retained-set verification succeeds. If any pre-run
+step fails, or the run is cancelled before or during setup, the workflow writes
+a sanitized setup-failed summary, JUnit and manifest through
+`scripts/lib/ui-smoke-report.sh` and `setup-report.mjs` instead of leaving the
+upload step empty. A complete runner-retained set is left untouched; a partial
+set with the authoritative summary is repaired; an unrepairable set is replaced
+with a setup-failed set so `ci-report` sees exactly one summary.
+
+CI artifacts use 90-day retention. Local retained summaries stay in
+`tests/ui/summaries/` through qualification; the directory is gitignored.
+
+### Qualification (as of 2026-11-06)
+
+Observation start date: **2026-11-06**.
+
+Completed Tier A observation runs recorded for this runbook:
+
+- PR run **42231785260**;
+- `workflow_dispatch` run **42231791666**.
+
+No 30-day qualification period has elapsed. Those two runs are not a stability
+history, and the UI check is not yet eligible for required-check promotion.
+
+Qualification requires, in #2086:
+
+- at least **30 consecutive days**;
+- at least one **complete master Tier A run per day**;
+- at least **30 complete runs**;
+- no skips, cancellations, setup failures, missing daily results or partial
+  selections counted as complete;
+- first-attempt/retry counts, durations and every failure's cause/resolution;
+- environment and commit identity for each run;
+- no unexplained first-attempt failures or unresolved flakes;
+- a restart of the affected tier's window after material contract or harness
+  changes.
+
+Tier B needs its own complete qualification history before promotion. Tier B,
+the installer and Known Failure machinery are optional for early Tier A
+observation and do not delay it.
+
+### Promotion and rollback
+
+Promotion is a maintainer operation after qualification:
+
+1. confirm `check-ui-required.sh` shows the check is not already required;
+2. configure branch protection or a ruleset to require `UI Smoke (Tier A)`;
+3. prove a failing ordinary PR cannot merge;
+4. document bypass, disabled and skipped behaviour;
+5. record the date, commit and responsible maintainer.
+
+Rollback is also a maintainer operation. Removing the execution variable alone
+does not remove a required check and leaves the check unsatisfied. To roll back,
+remove or disable the required check deliberately, then document the reason and
+the restored observation window. Tier B promotion, if any, is separate and must
+not replace Tier A.
+
+## Boot and transport contract
+
+The current transport is `index.php?r=<controller>/<action>`. The current boot
+path is the `bootstrap/getEnvironment` JSON request issued before views bind.
+The suite asserts:
+
+- `bootstrap/getEnvironment` is completed on login, install, shell and Tier B
+  pages;
+- its payload contains `status: OK` and the expected `loggedin`, `locale`,
+  `check_updates`, `check_notices`, `debug`, `csrf`, `session_timeout` and
+  `pki_key` fields;
+- the shell automatically loads `account/index` and `items/notifications`;
+- account pages load `accountFile/list` and `items/accountsUser` where
+  applicable.
+
+Future transport changes must update the suite in the same change:
+
+- **#2096** removes `bootstrap/getEnvironment` and folds it into the shell
+  render. It must update boot probes, expected actions, payload assertions,
+  login/install contracts and the negative proof that missing initialization
+  fails. It also owns additional logout/install browser compatibility checks.
+- **#2097/#2098** split page and fragment routes. They must update response
+  predicates, expected action routes and both in-shell/direct navigation-mode
+  contracts.
+
+Do not keep an obsolete matcher or assert both old and future contracts as a
+compatibility scheme. Clean URLs (ADR-0006; tracker #2064 / #2073) are
+independent, and the future attachment/binder choice remains pending **#2116**.
+This runbook does not claim either as implemented.
+
+## Coverage boundaries and non-goals
+
+Disabled update/notice coverage is explicit:
+
+- the fixture disables update and notice checks (`checkUpdates=false`,
+  `checkNotices=false`);
+- `bootstrap/getEnvironment` returns those values and the shell/install boot
+  probes assert `check_updates: false` and `check_notices: false`;
+- the shell only calls `getUpdates`/`getNotices` when the corresponding flag is
+  true, so it does not dispatch `status/checkRelease` or `status/checkNotices`
+  under this configuration;
+- `status/checkRelease` has no matching controller: the status controller serves
+  `status/status`, and `status/checkNotices` is a separate controller. The
+  missing-controller defect is therefore not exercised, is not detected by the
+  15-second readiness deadline under the fixture, and is not a Known Failure
+  admitted by this suite.
+
+The suite does not exercise any status route. It only observes that update and
+notice checks are reported as disabled.
+
+The suite is not:
+
+- a general end-to-end or business-workflow suite;
+- a test of save/delete/copy/export/upload/dialog workflows;
+- a layout, geometry or visual-snapshot suite;
+- a replacement for authorization, escaping or cryptographic compatibility
+  tests;
+- a replacement for HTTP Integration Tests;
+- a JSON-RPC API test (Page-load Actions are not the `api.php` API);
+- an auto-filing issue system;
+- a hosting-mode installer test.
+
+HTTP Integration Tests remain required for template migrations. Tier A gates
+transport/boot changes only; it does not gate the whole rendering rewrite.
+
+## Troubleshooting
+
+### Docker is unavailable or permission is denied
+
+The runner fails before creating anything if the Docker command or an image is
+missing. Check:
+
+```sh
+docker version
+docker image inspect php-testing-composer:latest
+docker image inspect mariadb:10.3
+```
+
+Do not work around this by using host PHP. Build or pull the images only with
+explicit human approval. If the runner reports a Docker wrapper error, source
+`.ai-cli/env.sh` for AI sessions or use the host `docker` command for
+contributor runs.
+
+### Disk is full (`ENOSPC`)
+
+Docker layers, MariaDB data, Chromium and run roots all consume disk. Check
+`docker system df` and free space. Remove only run-owned containers, networks
+and `/tmp/sp-ui-smoke.*` directories, or rely on the runner's cleanup. Do not
+run `docker system prune` or remove unrelated volumes without approval.
+
+### Missing Chromium
+
+The runner requires `tests/ui/.browsers` or an explicit
+`SP_UI_CHROMIUM_EXECUTABLE`. Reinstall the pinned browser:
+
+```sh
+( cd tests/ui
+  PLAYWRIGHT_BROWSERS_PATH="$PWD/.browsers" ./node_modules/.bin/playwright install chromium
+)
+```
+
+Use the explicit executable fallback only for local diagnosis; it is not the
+pinned-Chromium CI path.
+
+### Database initialization or readiness fails
+
+The runner waits up to 120 seconds for MariaDB to accept TCP connections from
+the application network. Common causes:
+
+- a stale run-owned container or network from a killed run;
+- the database already exists because a previous run reused a name;
+- Docker networking or MariaDB startup failure;
+- a precreated database or `MYSQL_DATABASE` supplied by hand.
+
+The runner refuses a preexisting database and never precreates one. Remove only
+stale run-owned resources, then rerun. Do not load `schemas/dbstructure.sql`
+for the seeded instance or the browser wizard.
+
+### Session loss or unexpected login redirects
+
+Do not add a re-login workaround. Inspect the retained failure evidence and the
+route that reported `session-loss`, `invalid-response` or `login-navigation`.
+Check that the test did not visit the login route, that the fixed User-Agent and
+single-worker CSRF context were preserved, and that the 120-second SID rotation
+test still passes. Actual session loss is a defect to fix, not a Known Failure.
+
+### A page load times out at 15 seconds
+
+The 15-second deadline covers expected actions, DOM conditions, the quiet window
+and drained diagnostics. Inspect the reported missing/pending routes and the
+observed route set. A hanging action, a missing controller for an action the
+suite actually dispatches, a stuck overlay or a late body-inspection failure
+will surface here. The `status/checkRelease` defect does not surface because the
+fixture disables update checks and the shell never dispatches that request.
+Increase timeouts only when the contract genuinely needs more time; do not mask a
+missing action.
+
+### Evidence upload is skipped or rejected
+
+The workflow verifies the retained set before upload. Check that the per-run
+directory contains exactly one `run-summary.json`, `junit.xml` and
+`upload-manifest.json`, and that failure files stay under
+`failures/**/{screenshot.png,console.log,failure.json}`. `error-context.md`,
+HAR, traces, video, authentication state and configuration snapshots are
+forbidden. Re-run verification with:
+
+```sh
+node tests/ui/src/verify-manifest.mjs \
+  --manifest <run-dir>/upload-manifest.json --directory <run-dir>
+```
+
+A partial or duplicate set is never published.
+
+### Setup budget exceeded
+
+`check-setup-budget.sh` and `ci-report` both fail when the setup window is
+missing or over 1800 seconds. Check that the workflow stamped
+`UI_SMOKE_SETUP_STARTED_MS` and that the runner emitted
+`UI_SMOKE_SPECS_STARTED_MS` after provisioning. Reduce image/build wait time,
+MariaDB startup time or fixture setup; do not count spec execution as setup.
+For a local manual evaluation, pass both stamps explicitly:
+
+```sh
+node tests/ui/src/ci-report.mjs \
+  --summaries tests/ui/summaries/tier-A/<run-id> \
+  --tier A --budget-seconds 300 --setup-budget-seconds 1800 \
+  --setup-started-ms <start-ms> --setup-finished-ms <finish-ms>
+```
+
+### Installer rerun or isolation failure
+
+Never retry the wizard against an installed instance and never reuse a
+`--keep` run. Rerun with a clean instance:
+
+```sh
+TESTS_UI_ENABLED=true SP_UI_TIER=INSTALL ./scripts/ui-smoke.sh
+```
+
+`reset_install_instance` destroys only wizard-owned resources and creates a new
+database/container/network identity. If the seeded-state isolation proof fails,
+the installer summary is replaced with a forced setup-failed result and the
+runner exits non-zero. Treat this as a real isolation defect.
+
+### `--keep` inspection
+
+`--keep` leaves the run root, network and containers for inspection. Do not
+reuse them for another run. After inspection, remove the printed run-owned
+resources and run root. Use `--keep` only for debugging, never for
+qualification.
+
+## Reference commands
+
+```sh
+# One-time prerequisites
+npm ci
+bash scripts/build-assets.sh
+source .ai-cli/env.sh
+.ai-cli/bin/ai-run --timeout 600 -- "$PHP_BIN" /usr/bin/composer install \
+  --prefer-dist --no-interaction --no-plugins --no-scripts
+( cd tests/ui
+  npm ci
+  npm run typecheck
+  PLAYWRIGHT_BROWSERS_PATH="$PWD/.browsers" ./node_modules/.bin/playwright install chromium
+)
+
+# Harness checks without provisioning
+bash -n scripts/ui-smoke.sh scripts/lib/ui-smoke-report.sh \
+  scripts/ci/check-setup-budget.sh scripts/ci/check-ui-required.sh
+( cd tests/ui && npm run typecheck && npm run test:unit )
+
+# Disabled path
+TESTS_UI_ENABLED=false ./scripts/ui-smoke.sh
+
+# Real runs
+TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh
+TESTS_UI_ENABLED=true SP_UI_TIER=B ./scripts/ui-smoke.sh
+TESTS_UI_ENABLED=true SP_UI_TIER=INSTALL ./scripts/ui-smoke.sh
+TESTS_UI_ENABLED=true SP_UI_TIER=A SP_UI_INSTALL=1 ./scripts/ui-smoke.sh
+
+# Diagnose one retained run
+node tests/ui/src/ci-report.mjs \
+  --summaries tests/ui/summaries/tier-A/<run-id> \
+  --tier A --budget-seconds 300 --setup-budget-seconds 1800 \
+  --setup-started-ms <start-ms> --setup-finished-ms <finish-ms>
+node tests/ui/src/ci-report.mjs \
+  --summaries tests/ui/summaries/tier-B/<run-id> \
+  --tier B --budget-seconds 300 --setup-budget-seconds 1800 \
+  --setup-started-ms <start-ms> --setup-finished-ms <finish-ms>
+node tests/ui/src/ci-report.mjs \
+  --summaries tests/ui/summaries/tier-install/<run-id> \
+  --tier INSTALL --budget-seconds 300 --setup-budget-seconds 1800 \
+  --setup-started-ms <start-ms> --setup-finished-ms <finish-ms>
+```
+
+## File map
+
+| Path | Purpose |
+| --- | --- |
+| `scripts/ui-smoke.sh` | Shared runner: prerequisites, isolation, provisioning, Playwright, retention, cleanup. |
+| `scripts/lib/ui-smoke-report.sh` | Setup-failure reports, retention verification, single-summary checks. |
+| `scripts/ci/check-setup-budget.sh` | Fail-closed setup-window guard. |
+| `scripts/ci/check-ui-required.sh` | Read-only required-check verification. |
+| `.github/workflows/ui-smoke.yml` | Tier A PR/master/dispatch/daily observation. |
+| `.github/workflows/ui-smoke-tier-b.yml` | Independent Tier B daily/manual observation. |
+| `tests/ui/src/tiers.mjs` | Tier-to-spec mapping. |
+| `tests/ui/src/install-selection.mjs` | Combined-run ordering, retry policy and summary roots. |
+| `tests/ui/src/preflight.mjs` | Run-root, database, origin and ownership refusals. |
+| `tests/ui/src/install-layout.mjs` | Seeded/installer namespace overlap checks. |
+| `tests/ui/src/install-lifecycle.mjs` | Wizard workspace reset and new identity. |
+| `tests/ui/src/install-guard.mjs` | Refuse installed, precreated or populated wizard instances. |
+| `tests/ui/src/verify-manifest.mjs` | Upload-manifest/allowlist verification. |
+| `tests/ui/src/uploads.mjs` | Artifact allowlist, sanitized retention and manifest generation. |
+| `tests/ui/src/sanitize.mjs` | URL/text/path redaction and screenshot masks. |
+| `tests/ui/src/readiness.ts` | ActionTracker, 15-second deadline and quiet window. |
+| `tests/ui/src/diagnostics.mjs` | Route/response/session/markup detector. |
+| `tests/ui/src/session.ts` | Live worker cookie jar; no snapshot restore. |
+| `tests/ui/src/contracts.ts` | Page/mode contracts and dispatch attributes. |
+| `tests/ui/src/tier-b.ts` | Tier B index cases, shared session and fault canary. |
+| `tests/ui/specs/` | Login, shell, Tier B and installer specs. |
+| `tests/ui/fixtures/` | Committed synthetic fixture, seeder and fault fixtures. |
+| `tests/ui/known-failures.json` | Known Failure registry (initially empty). |
+| `tests/ui/summaries/` | Local retained evidence, gitignored. |

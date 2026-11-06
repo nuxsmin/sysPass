@@ -1,6 +1,6 @@
 # 0009 - Browser smoke suite for page-load actions
 
-Status: Accepted (2026-11-01); amended by ADR-0011 (2026-11-02) and the quality-review plan revision (2026-11-04). The suite and CI job remain unimplemented and unqualified.
+Status: Accepted (2026-11-01); amended by ADR-0011 (2026-11-02) and the quality-review plan revision (2026-11-04). Implemented by #2076-#2085 and under observation since 2026-11-06; unqualified (no 30-day history).
 Related: ADR-0004 (#2041), ADR-0011 (#2089), suite #2075 and #2076-#2086, transport/boot #2096-#2098, attachment decision #2116, tracking #1976.
 
 ## Context
@@ -9,7 +9,7 @@ ADR-0004 left browser end-to-end testing out because in-process HTTP Integration
 
 The current browser boot calls `bootstrap/getEnvironment` before binding views. The shell automatically loads `account/index` and `items/notifications`; account pages load files and parent-account items. Missing requests, failed responses or initialization errors can leave an empty area, static panel, stuck overlay or swallowed exception despite a valid initial HTML response.
 
-The motivating defect is the shell's `status/checkRelease` request with no matching controller. PHP-level response assertions alone do not prove the browser dispatched the right action. This particular request is disabled in the deterministic suite, so the suite does not claim to detect that defect under its configured environment.
+The motivating defect is the shell's `status/checkRelease` request with no matching controller. The status controller serves `status/status`; `status/checkNotices` is a separate controller, and there is no `status/checkRelease` controller. PHP-level response assertions alone do not prove the browser dispatched the right action. This particular request is gated off because the deterministic fixture disables update checks, so the suite does not claim to detect that defect under its configured environment.
 
 Page-load Actions are Web actions used by the browser, currently under `index.php?r=<controller>/<action>`, returning HTML or an Action Response. They are not the token-authenticated `api.php` JSON-RPC API. The vocabulary is defined in `CONTEXT.md`.
 
@@ -95,7 +95,7 @@ The current `bootstrap/getEnvironment` request is the baseline. #2096 removes it
 
 #2096 owns additional logout/install browser compatibility checks for its boot change, outside the initial Tier A. Logout uses a disposable session; installation reuses #2083's separate instance when available or an isolated check owned by #2096. These checks do not delay initial Tier A observation.
 
-Follow the latest #2089 decisions: clean URLs are independent, the future attachment choice is pending #2116, and HTTP Integration Tests gate template migrations. ADR-0011's stale details are corrected through #2112, not treated as shipped behavior.
+Clean URLs remain independent future work under ADR-0006 (#2064 / #2073); the future attachment choice is pending #2116, and HTTP Integration Tests gate template migrations. ADR-0011's stale details are corrected through #2112, not treated as shipped behavior.
 
 ## Considered options
 
@@ -117,10 +117,11 @@ Follow the latest #2089 decisions: clean URLs are independent, the future attach
 - **2026-11-01:** original acceptance of the browser page-load smoke layer.
 - **2026-11-02:** ADR-0011 limited its prerequisite role to transport/boot changes and identified the forthcoming boot-contract change.
 - **2026-11-04:** quality review revised provisioning/isolation, positive contracts, session lifecycle, diagnostics, artifact safety, retry policy, early observation and evidence-based promotion; corrected the Panther rationale and kept implementation/qualification explicitly pending.
+- **2026-11-06:** implementation landed through #2076-#2085; Tier A observation began with runs 42231785260 and 42231791666. Qualification and required-check promotion remain pending.
 
 ## References
 
-- ADR-0004 (test strategy), ADR-0002 (error assertions), ADR-0006 (independent clean URLs), ADR-0011 (SSR).
+- ADR-0004 (test strategy), ADR-0002 (error assertions), ADR-0006 (independent clean URLs, #2064 / #2073), ADR-0011 (SSR).
 - `ControllerBase::upgradeView()`, `public/js/app-triggers.js`, `public/js/app-actions.js`, `public/js/app-requests.js`, `ControllerTrait::sessionLogout()`, `GetEnvironmentController`, `Login/IndexController`, `SessionLifecycleHandler`, `lib/SP/Core/Crypt/Session.php`.
 - `composer.json`, `scripts/build-assets.sh`, `.ai-cli/bin/php`, `lib/Base.php`, `CoreDefinitions`, `InstallCommand`, `MysqlSetup`, `.github/workflows/feature.yaml`, shared fixtures under `tests/res/`.
 - Implementation plan: `.kilo/plans/ui-smoke-suite.md`; authoritative issues: #2075 and its children.
