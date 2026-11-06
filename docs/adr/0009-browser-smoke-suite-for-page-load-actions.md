@@ -118,6 +118,7 @@ Clean URLs remain independent future work under ADR-0006 (#2064 / #2073); the fu
 - **2026-11-02:** ADR-0011 limited its prerequisite role to transport/boot changes and identified the forthcoming boot-contract change.
 - **2026-11-04:** quality review revised provisioning/isolation, positive contracts, session lifecycle, diagnostics, artifact safety, retry policy, early observation and evidence-based promotion; corrected the Panther rationale and kept implementation/qualification explicitly pending.
 - **2026-11-06:** implementation landed through #2076-#2085; Tier A observation began with runs 42231785260 and 42231791666. Qualification and required-check promotion remain pending.
+- **2026-11-06:** implementation now uses a shared reusable workflow (`.github/workflows/ui-smoke-run.yml`) with separate Tier A and Tier B callers and one-step mirror jobs carrying the stable check names, preserving the Tier separation above; no qualification is claimed.
 
 ## References
 

@@ -604,6 +604,17 @@ runs on manual dispatch and a daily schedule (`47 4 * * *`), selects only
 Tier B, and keeps its own summary root and artifact name. It cannot replace,
 hide or gate Tier A.
 
+Both callers keep their own triggers, execution switches and stable check
+names, and delegate the pipeline to `.github/workflows/ui-smoke-run.yml`
+(`workflow_call`, `tier`/`diagnostic_retry`/`retention_days` inputs). The shared
+module owns checkout, setup, provisioning, the Playwright run, budgets, the
+tier-scoped summary root and artifact name, and the sanitized evidence upload.
+Unknown tiers fail closed before setup starts. Each caller has a workload job
+(`ui-work`, `ui-tier-b-work`) that calls the module plus a one-step mirror job
+(`ui`, `ui-tier-b`) that carries the stable check name and requires the workload
+result to be `success`; a skipped workload therefore skips the mirror instead of
+reporting success.
+
 ### Execution switch versus required check
 
 `TESTS_UI_ENABLED == 'true'` controls execution only:
@@ -973,8 +984,9 @@ node tests/ui/src/ci-report.mjs \
 | `scripts/lib/ui-smoke-report.sh` | Setup-failure reports, retention verification, single-summary checks. |
 | `scripts/ci/check-setup-budget.sh` | Fail-closed setup-window guard. |
 | `scripts/ci/check-ui-required.sh` | Read-only required-check verification. |
-| `.github/workflows/ui-smoke.yml` | Tier A PR/master/dispatch/daily observation. |
-| `.github/workflows/ui-smoke-tier-b.yml` | Independent Tier B daily/manual observation. |
+| `.github/workflows/ui-smoke.yml` | Tier A PR/master/dispatch/daily caller: gate, stable check mirror. |
+| `.github/workflows/ui-smoke-tier-b.yml` | Independent Tier B daily/manual caller: gate, stable check mirror. |
+| `.github/workflows/ui-smoke-run.yml` | Shared reusable runner: setup, provisioning, Playwright, budgets, evidence upload. |
 | `tests/ui/src/tiers.mjs` | Tier-to-spec mapping. |
 | `tests/ui/src/install-selection.mjs` | Combined-run ordering, retry policy and summary roots. |
 | `tests/ui/src/preflight.mjs` | Run-root, database, origin and ownership refusals. |
