@@ -79,4 +79,26 @@ class EventTest extends TestCase
 
         $this->assertEquals($eventMessage, $event->getEventMessage());
     }
+
+    #[Test]
+    public function testClosureEventMessageKeepsItsBoundObject()
+    {
+        $eventMessage = EventMessage::build()->addDescription('test');
+        $source = new class ($eventMessage) {
+            public function __construct(private readonly EventMessage $eventMessage)
+            {
+            }
+
+            public function message(): \Closure
+            {
+                return function (): EventMessage {
+                    return $this->eventMessage;
+                };
+            }
+        };
+
+        $event = new Event($this, $source->message());
+
+        $this->assertSame($eventMessage, $event->getEventMessage());
+    }
 }

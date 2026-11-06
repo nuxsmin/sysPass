@@ -109,7 +109,7 @@ class UserGroupTest extends UnitaryTestCase
     #[Test]
     public function testGetUsage()
     {
-        $queryResult = new QueryResult([new UserGroupModel()]);
+        $queryResult = new QueryResult([(object)['id' => 1, 'ref' => 'account']]);
 
         $this->userGroupRepository
             ->expects($this->once())
@@ -129,7 +129,7 @@ class UserGroupTest extends UnitaryTestCase
     #[Test]
     public function testGetUsageByUsers()
     {
-        $queryResult = new QueryResult([new UserGroupModel()]);
+        $queryResult = new QueryResult([(object)['id' => 1, 'ref' => 'user', 'name' => 'test']]);
 
         $this->userGroupRepository
             ->expects($this->once())
@@ -400,6 +400,4 @@ class UserGroupTest extends UnitaryTestCase
             $this->userToUserGroupService
         );
     }
-
-
 }

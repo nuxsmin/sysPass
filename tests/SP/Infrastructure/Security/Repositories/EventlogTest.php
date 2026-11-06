@@ -122,8 +122,9 @@ class EventlogTest extends UnitaryTestCase
                 $params = $query->getBindValues();
                 $searchStringLike = '%' . $item->getSeachString() . '%';
 
-                return count($params) === 3
+                return count($params) === 4
                        && $params['action'] === $searchStringLike
+                       && $params['login'] === $searchStringLike
                        && $params['ipAddress'] === $searchStringLike
                        && $params['description'] === $searchStringLike
                        && $arg->getMapClassName() === EventlogModel::class

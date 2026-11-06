@@ -33,10 +33,10 @@ namespace SP\Domain\ItemPreset\Models;
 readonly class AccountPermission
 {
     public function __construct(
-        private array $usersView,
-        private array $usersEdit,
-        private array $userGroupsView,
-        private array $userGroupsEdit
+        private array $usersView = [],
+        private array $usersEdit = [],
+        private array $userGroupsView = [],
+        private array $userGroupsEdit = []
     ) {
     }
 

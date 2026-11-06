@@ -117,4 +117,15 @@ class ItemPreset extends Model implements HydratableModel
     {
         return $this->userGroupName;
     }
+
+    public function getHash(): string
+    {
+        return sha1(
+            $this->type
+            . (int)$this->userId
+            . (int)$this->userGroupId
+            . (int)$this->userProfileId
+            . (int)$this->priority
+        );
+    }
 }

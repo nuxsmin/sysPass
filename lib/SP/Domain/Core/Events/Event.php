@@ -66,7 +66,7 @@ readonly class Event
     public function getEventMessage(): ?EventMessage
     {
         if ($this->eventMessage instanceof Closure) {
-            return $this->eventMessage->call($this);
+            return ($this->eventMessage)();
         }
 
         return $this->eventMessage;

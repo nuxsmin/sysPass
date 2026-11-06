@@ -592,7 +592,11 @@ sysPass.Util = function (log) {
     const getUrl = function (base, parts) {
         return base + "?" + Object.keys(parts).map(function (key) {
             if (Array.isArray(parts[key])) {
-                return key + "=" + parts[key].join("/");
+                const values = parts[key].filter(function (value) {
+                    return value !== null && value !== undefined && value !== "";
+                });
+
+                return key + "=" + values.join("/");
             }
 
             return key + "=" + parts[key];

@@ -148,7 +148,8 @@ class ItemPresetTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 7
+                return count($params) === 8
+                       && $params['hash'] === $itemPreset->getHash()
                        && $params['type'] === $itemPreset->getType()
                        && $params['userId'] === $itemPreset->getUserId()
                        && $params['userProfileId'] === $itemPreset->getUserProfileId()
@@ -184,7 +185,8 @@ class ItemPresetTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 8
+                return count($params) === 9
+                       && $params['hash'] === $itemPreset->getHash()
                        && $params['id'] === $itemPreset->getId()
                        && $params['type'] === $itemPreset->getType()
                        && $params['userId'] === $itemPreset->getUserId()

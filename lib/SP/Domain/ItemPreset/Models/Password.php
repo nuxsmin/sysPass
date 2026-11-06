@@ -40,15 +40,15 @@ readonly class Password implements PresetInterface
     private int|float $expireTime;
 
     public function __construct(
-        private int     $length,
-        private bool    $useNumbers,
-        private bool    $useLetters,
-        private bool    $useSymbols,
-        private bool    $useUpper,
-        private bool    $useLower,
-        private bool    $useImage,
-        int             $expireTime,
-        private int     $score,
+        private int     $length = 0,
+        private bool    $useNumbers = false,
+        private bool    $useLetters = false,
+        private bool    $useSymbols = false,
+        private bool    $useUpper = false,
+        private bool    $useLower = false,
+        private bool    $useImage = false,
+        int             $expireTime = 0,
+        private int     $score = 0,
         private ?string $regex = null
     ) {
         $this->expireTime = $expireTime * self::EXPIRE_TIME_MULTIPLIER;

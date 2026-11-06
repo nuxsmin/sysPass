@@ -86,7 +86,7 @@ trait AccountUseCases
         $account->pass = $accountUpdateDto->pass;
         $account->key = $accountUpdateDto->key;
         $account->passDate = time();
-        $account->userEditId = $accountUpdateDto->userEditId;
+        $account->userEditId = $accountUpdateDto->userEditId ?? $accountUpdateDto->userId;
         $account->passDateChange = $accountUpdateDto->passDateChange;
 
         return $account;

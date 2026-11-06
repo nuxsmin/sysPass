@@ -67,7 +67,6 @@ final class ItemPresetHelper extends HelperBase
         UserService       $userService,
         UserGroupService  $userGroupService,
         UserProfileService $userProfileService
-
     ) {
         parent::__construct($config, $context, $eventDispatcher, $template, $request);
 

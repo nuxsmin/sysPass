@@ -116,11 +116,12 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      */
     private function makePermissionPreset(): AccountPermission
     {
-        $accountPermission = new AccountPermission();
-        $accountPermission->setUsersView($this->request->analyzeArray('users_view', null, []));
-        $accountPermission->setUsersEdit($this->request->analyzeArray('users_edit', null, []));
-        $accountPermission->setUserGroupsView($this->request->analyzeArray('user_groups_view', null, []));
-        $accountPermission->setUserGroupsEdit($this->request->analyzeArray('user_groups_edit', null, []));
+        $accountPermission = new AccountPermission(
+            $this->request->analyzeArray('users_view', null, []),
+            $this->request->analyzeArray('users_edit', null, []),
+            $this->request->analyzeArray('user_groups_view', null, []),
+            $this->request->analyzeArray('user_groups_edit', null, [])
+        );
 
         if (!$accountPermission->hasItems()) {
             throw new ValidationException(__u('There aren\'t any defined permissions'));

@@ -37,7 +37,7 @@ final class CustomFieldItem extends Dto implements JsonSerializable
     public function __construct(
         public readonly bool   $required,
         public readonly bool   $showInList,
-        public readonly string $help,
+        public readonly ?string $help,
         public readonly int    $definitionId,
         public readonly string $definitionName,
         public readonly int    $typeId,

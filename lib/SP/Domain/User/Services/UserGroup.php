@@ -192,7 +192,7 @@ final class UserGroup extends Service implements UserGroupService
      */
     public function getUsage(int $id): array
     {
-        return $this->userGroupRepository->getUsage($id)->getDataAsArray(UserGroupModel::class);
+        return $this->userGroupRepository->getUsage($id)->getDataAsArray();
     }
 
     /**
@@ -204,6 +204,6 @@ final class UserGroup extends Service implements UserGroupService
      */
     public function getUsageByUsers(int $id): array
     {
-        return $this->userGroupRepository->getUsageByUsers($id)->getDataAsArray(UserGroupModel::class);
+        return $this->userGroupRepository->getUsageByUsers($id)->getDataAsArray();
     }
 }
