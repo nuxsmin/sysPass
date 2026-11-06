@@ -219,3 +219,79 @@ For a `--keep` debugging run, invoke `tests/ui/fixtures/seed.php` with the same 
 `tests/ui/specs/shell.spec.ts` uses a separate authenticated worker session. It logs in through the UI exactly once, then runs sequentially: the first test asserts the shell root, completed `bootstrap/getEnvironment`, `account/index` and `items/notifications` actions, meaningful account-list content, a hidden loading overlay, a 300 ms action-scoped quiet window within the 15 s readiness deadline, disabled update/notice flags and no pending or failed routes. Later tests wait through the real 120-second SID rotation and prove that the rotated cookie carries into a fresh sequential context without a second login. Missing or pending routes are reported together with the observed route set.
 
 Anonymous/login tests keep their own clean Playwright contexts and never receive the seeded cookie jar. `bootstrap/getEnvironment` is the current boot contract; #2096 will replace it and must update these probes in the same change.
+
+## Known failure admissions
+
+`tests/ui/known-failures.json` is the committed registry and starts empty. It is
+not a quarantine list and it never suppresses a failing exit status or changes
+a spec's assertions. An entry must match exactly one `(spec, route,
+failureKind)` failure:
+
+```json
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "spec": "shell.spec.ts",
+      "route": "account/index",
+      "failureKind": "http",
+      "reason": "deterministic account-index failure",
+      "defect": "#2000",
+      "admission": {
+        "who": "maintainer",
+        "date": "2026-11-06",
+        "ref": "#2080"
+      }
+    }
+  ]
+}
+```
+
+The schema is strict. Unknown fields, missing reason/defect/admission metadata,
+invalid admission dates, duplicate keys, regular expressions or glob keys and
+unknown failure kinds are rejected. `defect` and `admission.ref` must be a
+linked issue (`#<number>` or a GitHub issue URL); arbitrary strings are
+rejected, and #2079 is explicitly refused because it is a fixed regression.
+Only route-bearing deterministic detector kinds qualify: `http`,
+`json-status`, `request-failed`, `body-inspection`, `missing-content` and
+`empty-body`. Kinds the pipeline cannot key by `(spec, route, failureKind)` —
+including `console`, `page-error`, `markup`, `assertion`, `timeout`,
+`json-malformed` and `json-envelope` — are not admissible. `flaky`, `setup`,
+setup/isolation, `session-loss`, `invalid-response`, `login-navigation`,
+`login-page` and the catch-all `test-error` are also not admissible. A
+first-attempt failure that passes on retry is always flaky and is never
+admitted.
+
+An attempt can emit several detector problems. Every problem is recorded as its
+own `(route, failureKind)` tuple and the attempt is admitted only when all of
+them have an entry; any unlisted problem remains a new failure and fails the
+run.
+
+Admission is an exceptional reviewed change, not a routine way to obtain a
+green baseline. A new entry requires a linked defect, a concrete reason and an
+explicit maintainer admission recorded in the registry commit. The registry is
+therefore not restricted to shrinking: reviewed admissions may add entries, and
+the maintainer who adds one owns its removal. Never add an entry for #2079 or
+another defect that is supposed to remain fixed.
+
+The matching failure is annotated in `run-summary.json` and `junit.xml`, but
+the original failed count, first-attempt result, failure class and sanitized
+evidence stay visible. `status` remains `failed` and `completeTierA` remains
+`false`; an admitted failure run is never a clean pass, never exits zero and
+never counts as a complete Tier A observation. Unlisted failures, and other
+failures in the same spec, still fail the run.
+
+The reporter records the complete known-failure evaluation in
+`run-summary.json`. `ci-report` consumes that recorded evaluation as the single
+authoritative source and never re-runs the registry against the retained tests,
+so a failure the reporter rejected cannot be re-admitted later. A summary that
+lacks the recorded fields is treated as incompatible and fails rather than
+being silently re-evaluated.
+
+When a registry entry's spec actually executes without the admitted failure,
+the run fails with removal instructions. A filtered, skipped or unexecuted spec
+does not prove the defect is fixed, never causes an entry to be treated as
+stale, and keeps the run ineligible. Existing obsolete entries must be removed
+rather than left in place. The registry used by the reporter can be overridden
+for local experiments with `SP_UI_KNOWN_FAILURES`, but CI always uses the
+committed file unless the workflow is changed.
