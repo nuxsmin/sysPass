@@ -980,7 +980,7 @@ export class PageDiagnostics {
       return;
     }
 
-    throw new Error(this.problemList.map((problem) => problem.message).join('\n'));
+    throw new Error(this.problemList.map((problem) => this.formatProblem(problem)).join('\n'));
   }
 
   result() {

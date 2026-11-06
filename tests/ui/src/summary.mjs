@@ -1,3 +1,13 @@
+import {
+  annotateKnownFailures,
+  extractFailureProblems,
+  extractFailureRoute,
+  isFailingAttempt,
+  isFlakyTest,
+  normalizeSpecName,
+  parseRegistry,
+  REGISTRY_SCHEMA_VERSION,
+} from './known-failures.mjs';
 import { sanitizeEvidencePath, sanitizeText } from './sanitize.mjs';
 
 export const TIER_A_SPECS = ['login.spec.ts', 'shell.spec.ts'];
@@ -33,14 +43,6 @@ export function classifyFailure(message) {
   }
 
   return 'test-error';
-}
-
-function normalizeSpecName(value) {
-  return String(value ?? '')
-    .trim()
-    .replaceAll('\\', '/')
-    .split('/')
-    .at(-1);
 }
 
 function parseSpecList(specs) {
@@ -136,6 +138,19 @@ export function summarizeTest({
     const stack = sanitizeText(attempt.error?.stack ?? attempt.errorStack ?? '', {
       maxLength: 6000,
     });
+    const rawMessage = attempt.error?.message ?? attempt.errorMessage ?? '';
+    const route = attempt.route ?? extractFailureRoute(rawMessage);
+    const failing = status !== 'passed' && status !== 'skipped' && status !== 'unknown';
+    const failureClass = failing ? classifyFailure(message) : null;
+    const failureProblems = failing
+      ? extractFailureProblems(rawMessage)
+      : [];
+    const normalizedProblems =
+      failureProblems.length > 0
+        ? failureProblems
+        : failing
+          ? [{ route: route ?? null, failureKind: failureClass }]
+          : [];
 
     return {
       attempt: index + 1,
@@ -143,10 +158,9 @@ export function summarizeTest({
       firstAttempt: index === 0,
       status,
       durationMs: Number(attempt.durationMs ?? 0),
-      failureClass:
-        status === 'passed' || status === 'skipped' || status === 'unknown'
-          ? null
-          : classifyFailure(message),
+      failureClass,
+      route,
+      failureProblems: normalizedProblems,
       errorMessage: message,
       errorStack: stack,
     };
@@ -154,9 +168,7 @@ export function summarizeTest({
 
   const firstAttemptStatus = summarizedAttempts[0]?.status ?? (skipped ? 'skipped' : 'not-run');
   const finalStatus = summarizedAttempts.at(-1)?.status ?? (skipped ? 'skipped' : 'not-run');
-  const failedAttempts = summarizedAttempts.filter(
-    (attempt) => attempt.status !== 'passed' && attempt.status !== 'skipped' && attempt.status !== 'unknown',
-  );
+  const failedAttempts = summarizedAttempts.filter(isFailingAttempt);
 
   return {
     title: sanitizeText(title, { maxLength: 500 }),
@@ -257,16 +269,33 @@ export function buildRunSummary({
   setupFailure = false,
   globalErrors = [],
   artifacts = {},
+  knownFailureRegistry = { schemaVersion: REGISTRY_SCHEMA_VERSION, entries: [] },
+  knownFailureRegistryErrors = [],
 }) {
   const summarizedTests = tests.map((test) =>
     test.attempts && test.firstAttemptStatus !== undefined ? test : summarizeTest(test),
   );
-  const counts = createCounts(summarizedTests);
-  const failureClasses = countByFailureClass(summarizedTests);
+  const parsedRegistry = parseRegistry(knownFailureRegistry);
+  const annotations = annotateKnownFailures(
+    summarizedTests,
+    parsedRegistry.ok ? parsedRegistry.entries : [],
+  );
+  const annotatedTests = annotations.tests;
+  const knownFailureErrors = [
+    ...knownFailureRegistryErrors,
+    ...(parsedRegistry.ok ? [] : parsedRegistry.errors),
+  ];
+  const counts = {
+    ...createCounts(annotatedTests),
+    knownFailed: annotations.knownFailures.length,
+    newFailed: annotations.newFailures.length,
+  };
+  const failureClasses = countByFailureClass(annotatedTests);
   const safeGlobalErrors = sanitizeGlobalErrors(globalErrors);
   const isCancelled = cancelled || resultStatus === 'interrupted';
   const hasGlobalFailure = safeGlobalErrors.length > 0;
   const partialSelection = selection.partialSelection;
+  const hasStaleKnownFailure = annotations.staleEntries.length > 0;
 
   let status = 'passed';
 
@@ -296,6 +325,10 @@ export function buildRunSummary({
     status = 'failed';
   }
 
+  if ((knownFailureErrors.length > 0 || hasStaleKnownFailure) && status === 'passed') {
+    status = 'failed';
+  }
+
   const completeTierA =
     status === 'passed' &&
     selection.tier === 'A' &&
@@ -305,7 +338,11 @@ export function buildRunSummary({
     counts.notRun === 0 &&
     counts.completed === counts.selected &&
     Object.keys(failureClasses).length === 0 &&
-    safeGlobalErrors.length === 0;
+    safeGlobalErrors.length === 0 &&
+    annotations.newFailures.length === 0 &&
+    annotations.staleEntries.length === 0 &&
+    annotations.unexecutedEntries.length === 0 &&
+    knownFailureErrors.length === 0;
 
   return {
     schemaVersion: 1,
@@ -338,11 +375,16 @@ export function buildRunSummary({
     firstAttemptResults: {
       passed: counts.firstAttemptPassed,
       failed: counts.firstAttemptFailed,
-      skipped: summarizedTests.filter((test) => test.firstAttemptStatus === 'skipped').length,
+      skipped: annotatedTests.filter((test) => test.firstAttemptStatus === 'skipped').length,
     },
     failureClasses,
     globalErrors: safeGlobalErrors,
-    tests: summarizedTests,
+    tests: annotatedTests,
+    knownFailures: annotations.knownFailures,
+    newFailures: annotations.newFailures,
+    staleKnownFailures: annotations.staleEntries,
+    unexecutedKnownFailures: annotations.unexecutedEntries,
+    knownFailureErrors,
     artifacts: {
       junit: 'junit.xml',
       summary: 'run-summary.json',
@@ -372,11 +414,15 @@ function renderFailureClasses(failureClasses) {
   return entries.map(([name, count]) => `${name}:${count}`).join(',');
 }
 
-function isFlakyTest(test) {
-  return test.attempts.length > 1 && test.firstAttemptStatus !== 'passed' && test.finalStatus === 'passed';
-}
-
 function runLevelMessage(summary) {
+  if (summary.staleKnownFailures?.length > 0) {
+    return summary.staleKnownFailures.map((entry) => entry.removal).join('; ');
+  }
+
+  if (summary.knownFailureErrors?.length > 0) {
+    return `known failure registry is invalid: ${summary.knownFailureErrors.join('; ')}`;
+  }
+
   switch (summary.status) {
     case 'setup-failed':
       return (
@@ -436,6 +482,12 @@ export function renderJUnit(summary) {
     property('sp-ui.counts.firstAttemptPassed', summary.counts.firstAttemptPassed),
     property('sp-ui.counts.firstAttemptFailed', summary.counts.firstAttemptFailed),
     property('sp-ui.counts.flaky', summary.counts.flaky),
+    property('sp-ui.counts.knownFailed', summary.counts.knownFailed ?? 0),
+    property('sp-ui.counts.newFailed', summary.counts.newFailed ?? 0),
+    property('sp-ui.knownFailures', summary.knownFailures?.length ?? 0),
+    property('sp-ui.newFailures', summary.newFailures?.length ?? 0),
+    property('sp-ui.staleKnownFailures', summary.staleKnownFailures?.length ?? 0),
+    property('sp-ui.unexecutedKnownFailures', summary.unexecutedKnownFailures?.length ?? 0),
     property('sp-ui.failureClasses', renderFailureClasses(summary.failureClasses)),
     '    </properties>',
   ];
@@ -450,6 +502,7 @@ export function renderJUnit(summary) {
       `retries="${test.retries}"`,
       `firstAttempt="${escapeXml(test.firstAttemptStatus)}"`,
       `attempts="${test.attempts.length}"`,
+      `knownFailure="${test.knownFailure ? 'true' : 'false'}"`,
     ].join(' ');
 
     if (test.skipped) {
@@ -511,11 +564,17 @@ export function renderJUnit(summary) {
 
   if (runLevelProblem) {
     const message = runLevelMessage(summary);
+    const type =
+      summary.staleKnownFailures?.length > 0
+        ? 'known-failure-stale'
+        : summary.knownFailureErrors?.length > 0
+          ? 'known-failure-registry'
+          : summary.status;
     lines.push(
       `    <testcase name="run status: ${escapeXml(summary.status)}" classname="sysPass UI smoke :: run" time="0.000" status="${escapeXml(summary.status)}">`,
     );
     lines.push(
-      `      <error type="${escapeXml(summary.status)}" message="${escapeXml(message)}">${escapeXml(message)}</error>`,
+      `      <error type="${escapeXml(type)}" message="${escapeXml(message)}">${escapeXml(message)}</error>`,
     );
     lines.push('    </testcase>');
   }

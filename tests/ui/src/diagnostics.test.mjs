@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import { classifyMarkup, PageDiagnostics, parseActionRoute } from './diagnostics.mjs';
+import { summarizeTest } from './summary.mjs';
 
 const CONTRACT = {
   name: 'test-shell',
@@ -621,4 +622,32 @@ test('a JSON content type wins over an HTML fragment expectation so status 10 is
   assert.equal(detector.result().sessionLost, true);
   assert.equal(detector.problems()[0].kind, 'session-loss');
   assert.equal(detector.problems()[0].route, 'account/index');
+});
+
+test('a bare assertNoProblems throw keeps the detector kind and route', () => {
+  const detector = makeDetector();
+
+  complete(detector, '1', 'account/index', { status: 500, body: '{}' });
+
+  let thrown;
+  try {
+    detector.assertNoProblems();
+  } catch (error) {
+    thrown = error;
+  }
+
+  assert.ok(thrown instanceof Error);
+  assert.match(thrown.message, /^http \[account\/index\]:/);
+
+  const summary = summarizeTest({
+    title: 'loads the shell',
+    file: 'shell.spec.ts',
+    attempts: [{ status: 'failed', durationMs: 10, error: { message: thrown.message } }],
+  });
+
+  assert.equal(summary.attempts[0].route, 'account/index');
+  assert.equal(summary.attempts[0].failureClass, 'http');
+  assert.deepEqual(summary.attempts[0].failureProblems, [
+    { route: 'account/index', failureKind: 'http' },
+  ]);
 });

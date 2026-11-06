@@ -3,6 +3,11 @@ import { createRequire } from 'node:module';
 import { mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
+import {
+  loadKnownFailureRegistry,
+  REGISTRY_FILENAME,
+  REGISTRY_SCHEMA_VERSION,
+} from './known-failures.mjs';
 import { buildUploadManifest, listArtifacts } from './uploads.mjs';
 import {
   buildRunSummary,
@@ -88,6 +93,12 @@ function removeForbiddenAttachments(root, relative = '') {
   }
 }
 
+export const DEFAULT_KNOWN_FAILURE_REGISTRY = path.join(
+  import.meta.dirname,
+  '..',
+  REGISTRY_FILENAME,
+);
+
 function failureDirectories(outputDir) {
   try {
     return [
@@ -115,6 +126,11 @@ export default class SanitizedArtifactReporter {
     this.began = false;
     this.tests = new Map();
     this.globalErrors = [];
+    this.knownFailureRegistryPath =
+      options.knownFailureRegistryPath ??
+      process.env.SP_UI_KNOWN_FAILURES ??
+      DEFAULT_KNOWN_FAILURE_REGISTRY;
+    this.knownFailureRegistry = loadKnownFailureRegistry(this.knownFailureRegistryPath);
     this.selection = resolveSelection({
       tier: process.env.SP_UI_TIER ?? 'A',
       specs: process.env.SP_UI_SPECS ?? '',
@@ -223,6 +239,13 @@ export default class SanitizedArtifactReporter {
       cancelled: result.status === 'interrupted',
       setupFailure,
       globalErrors: this.globalErrors,
+      knownFailureRegistry: {
+        schemaVersion: REGISTRY_SCHEMA_VERSION,
+        entries: this.knownFailureRegistry.ok ? this.knownFailureRegistry.entries : [],
+      },
+      knownFailureRegistryErrors: this.knownFailureRegistry.ok
+        ? []
+        : this.knownFailureRegistry.errors,
       artifacts: { failureDirectories: failureDirs },
     });
 

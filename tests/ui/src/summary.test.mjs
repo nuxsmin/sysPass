@@ -192,6 +192,75 @@ test('classifyFailure maps detector and runner failures to stable classes', () =
   assert.equal(classifyFailure('something else'), 'test-error');
 });
 
+test('a multi-problem detector message records every route and kind without losing the classifier', () => {
+  const summary = summarizeTest({
+    title: 'loads the shell',
+    file: '/repo/tests/ui/specs/shell.spec.ts',
+    attempts: [
+      {
+        status: 'failed',
+        durationMs: 10,
+        error: {
+          message: [
+            'readiness failed',
+            'detector problems: missing-content [accountFile/list]: response is missing expected content "file"',
+            '| http [account/index]: action account/index returned HTTP 500',
+          ].join('; '),
+        },
+      },
+    ],
+  });
+
+  assert.equal(summary.attempts[0].failureClass, 'http');
+  assert.equal(summary.attempts[0].route, 'accountFile/list');
+  assert.deepEqual(
+    summary.attempts[0].failureProblems.map((problem) => [problem.route, problem.failureKind]),
+    [
+      ['accountFile/list', 'missing-content'],
+      ['account/index', 'http'],
+    ],
+  );
+  assert.equal(summary.attempts[0].firstAttempt, true);
+});
+
+test('a partially admitted multi-problem attempt keeps one known and one new failure', () => {
+  const summary = build(
+    [
+      summarizeTest({
+        title: 'loads the shell',
+        file: 'login.spec.ts',
+        attempts: [
+          {
+            status: 'failed',
+            durationMs: 10,
+            error: {
+              message: [
+                'readiness failed',
+                'detector problems: missing-content [accountFile/list]: response is missing expected content "file"',
+                '| http [account/index]: action account/index returned HTTP 500',
+              ].join('; '),
+            },
+          },
+        ],
+      }),
+    ],
+    {
+      knownFailureRegistry: knownRegistry([
+        knownEntry({ route: 'accountFile/list', failureKind: 'missing-content' }),
+      ]),
+    },
+  );
+
+  assert.equal(summary.knownFailures.length, 1);
+  assert.equal(summary.newFailures.length, 1);
+  assert.equal(summary.newFailures[0].route, 'account/index');
+  assert.equal(summary.newFailures[0].failureKind, 'http');
+  assert.equal(summary.counts.knownFailed, 1);
+  assert.equal(summary.counts.newFailed, 1);
+  assert.equal(summary.status, 'failed');
+  assert.equal(summary.completeTierA, false);
+});
+
 test('JUnit contains selected tier, counts, first attempts, retries, durations and failure classes', () => {
   const summary = build([
     testRun({ title: 'login & shell', statuses: ['failed', 'passed'] }),
@@ -328,4 +397,161 @@ test('JUnit marks setup failures and partial selections with a suite-level error
   assert.match(partialXml, /<testsuites[^>]*failures="0"[^>]*errors="1"/);
   assert.match(partialXml, /<error type="partial"/);
   assert.match(partialXml, /sp-ui.partialSelection" value="true"/);
+});
+
+function knownEntry(overrides = {}) {
+  return {
+    spec: 'login.spec.ts',
+    route: 'account/index',
+    failureKind: 'http',
+    reason: 'account/index is deterministically broken',
+    defect: '#2000',
+    admission: { who: 'maintainer', date: '2026-11-06', ref: '#2080' },
+    ...overrides,
+  };
+}
+
+function knownRegistry(entries = []) {
+  return { schemaVersion: 1, entries };
+}
+
+test('an empty known-failure registry leaves a complete passing run unchanged', () => {
+  const summary = build(
+    [
+      testRun({ title: 'login', statuses: ['passed'] }),
+      testRun({ title: 'shell', file: 'shell.spec.ts', statuses: ['passed'] }),
+    ],
+    { knownFailureRegistry: knownRegistry() },
+  );
+
+  assert.equal(summary.status, 'passed');
+  assert.equal(summary.completeTierA, true);
+  assert.deepEqual(summary.knownFailures, []);
+  assert.deepEqual(summary.newFailures, []);
+  assert.deepEqual(summary.staleKnownFailures, []);
+});
+
+test('an admitted deterministic failure is annotated without hiding counts or first-attempt evidence', () => {
+  const summary = build(
+    [
+      testRun({
+        title: 'login',
+        statuses: ['failed'],
+        errorMessage: 'http [account/index]: action account/index returned HTTP 500',
+      }),
+      testRun({ title: 'shell', file: 'shell.spec.ts', statuses: ['passed'] }),
+    ],
+    { knownFailureRegistry: knownRegistry([knownEntry()]) },
+  );
+
+  assert.equal(summary.status, 'failed');
+  assert.equal(summary.completeTierA, false);
+  assert.equal(summary.counts.failed, 1);
+  assert.equal(summary.counts.firstAttemptFailed, 1);
+  assert.equal(summary.counts.knownFailed, 1);
+  assert.equal(summary.counts.newFailed, 0);
+  assert.equal(summary.knownFailures.length, 1);
+  assert.equal(summary.knownFailures[0].route, 'account/index');
+  assert.equal(summary.knownFailures[0].firstAttempt, true);
+  assert.equal(summary.tests[0].attempts[0].firstAttempt, true);
+  assert.equal(summary.tests[0].attempts[0].knownFailure.reason, knownEntry().reason);
+  assert.equal(summary.tests[0].knownFailure.defect, '#2000');
+  assert.equal(summary.failureClasses.http, 1);
+});
+
+test('an unlisted or same-spec unrelated failure remains a new failure', () => {
+  const summary = build(
+    [
+      testRun({
+        title: 'login',
+        statuses: ['failed'],
+        errorMessage: 'http [account/index]: action account/index returned HTTP 500',
+      }),
+      testRun({
+        title: 'shell',
+        file: 'shell.spec.ts',
+        statuses: ['failed'],
+        errorMessage: 'missing-content [accountFile/list]: response is missing expected content "file"',
+      }),
+    ],
+    { knownFailureRegistry: knownRegistry([knownEntry()]) },
+  );
+
+  assert.equal(summary.knownFailures.length, 1);
+  assert.equal(summary.newFailures.length, 1);
+  assert.equal(summary.newFailures[0].spec, 'shell.spec.ts');
+  assert.equal(summary.newFailures[0].route, 'accountFile/list');
+  assert.equal(summary.counts.knownFailed, 1);
+  assert.equal(summary.counts.newFailed, 1);
+  assert.equal(summary.status, 'failed');
+});
+
+test('an obsolete entry fails with removal instructions when its spec executes without it', () => {
+  const summary = build(
+    [
+      testRun({ title: 'login', statuses: ['passed'] }),
+      testRun({ title: 'shell', file: 'shell.spec.ts', statuses: ['passed'] }),
+    ],
+    { knownFailureRegistry: knownRegistry([knownEntry()]) },
+  );
+
+  assert.equal(summary.staleKnownFailures.length, 1);
+  assert.match(summary.staleKnownFailures[0].removal, /remove/i);
+  assert.equal(summary.status, 'failed');
+  assert.equal(summary.completeTierA, false);
+});
+
+test('skipped and filtered selections do not mark an unexercised entry as fixed', () => {
+  for (const [tests, entries] of [
+    [
+      [
+        testRun({ title: 'login', statuses: ['passed'] }),
+        testRun({ title: 'shell', file: 'shell.spec.ts', statuses: ['skipped'] }),
+      ],
+      [knownEntry({ spec: 'shell.spec.ts' })],
+    ],
+    [
+      [testRun({ title: 'login', statuses: ['passed'] })],
+      [knownEntry({ spec: 'shell.spec.ts' })],
+    ],
+  ]) {
+    const summary = build(tests, { knownFailureRegistry: knownRegistry(entries) });
+
+    assert.equal(summary.staleKnownFailures.length, 0);
+    assert.equal(summary.unexecutedKnownFailures.length, 1);
+    assert.match(summary.unexecutedKnownFailures[0].message, /not treated as fixed/i);
+  }
+});
+
+test('JUnit exposes known, new and stale registry evidence without suppressing failures', () => {
+  const known = build(
+    [
+      testRun({
+        title: 'login',
+        statuses: ['failed'],
+        errorMessage: 'http [account/index]: action account/index returned HTTP 500',
+      }),
+    ],
+    { knownFailureRegistry: knownRegistry([knownEntry()]) },
+  );
+  const xml = renderJUnit(known);
+
+  assert.match(xml, /sp-ui.knownFailures" value="1"/);
+  assert.match(xml, /sp-ui.newFailures" value="0"/);
+  assert.match(xml, /sp-ui.counts.failed" value="1"/);
+  assert.match(xml, /<failure type="http"/);
+  assert.match(xml, /firstAttempt="failed"/);
+
+  const stale = build(
+    [
+      testRun({ title: 'login', statuses: ['passed'] }),
+      testRun({ title: 'shell', file: 'shell.spec.ts', statuses: ['passed'] }),
+    ],
+    { knownFailureRegistry: knownRegistry([knownEntry()]) },
+  );
+  const staleXml = renderJUnit(stale);
+
+  assert.match(staleXml, /sp-ui.staleKnownFailures" value="1"/);
+  assert.match(staleXml, /<error type="known-failure-stale"/);
+  assert.match(staleXml, /remove the stale entry/i);
 });

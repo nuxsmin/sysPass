@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, readdirSync } from 'node:fs';
+import { mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
@@ -138,4 +138,100 @@ test('an empty Playwright grep does not mark a complete Tier A run as partial', 
   assert.equal(summary.partialSelection, false);
   assert.equal(summary.completeTierA, true);
   assert.equal(summary.environment.playwright, '1.63.0');
+});
+
+function knownFailureRegistry(entries) {
+  return JSON.stringify({ schemaVersion: 1, entries }, null, 2);
+}
+
+test('the reporter annotates an admitted known failure without writing a clean pass', () => {
+  const outputDir = mkdtempSync(path.join(tmpdir(), 'sp-ui-reporter-known-'));
+  const registryPath = path.join(outputDir, 'known-failures.json');
+  const login = fakeTest('login', 'logs in');
+
+  writeFileSync(
+    registryPath,
+    knownFailureRegistry([
+      {
+        spec: 'login.spec.ts',
+        route: 'account/index',
+        failureKind: 'http',
+        reason: 'known account/index HTTP 500',
+        defect: '#2000',
+        admission: { who: 'maintainer', date: '2026-11-06', ref: '#2080' },
+      },
+    ]),
+  );
+
+  const reporter = new SanitizedArtifactReporter({
+    outputDir,
+    runId: 'run-known',
+    knownFailureRegistryPath: registryPath,
+  });
+
+  reporter.onBegin({ rootDir: '/repo', grep: null }, fakeSuite([login]));
+  reporter.onTestEnd(
+    login,
+    result('failed', { error: 'http [account/index]: action account/index returned HTTP 500' }),
+  );
+  reporter.onEnd({ status: 'failed', duration: 10 });
+
+  const summary = JSON.parse(readOutput(outputDir, 'run-summary.json'));
+  const junit = readOutput(outputDir, 'junit.xml');
+
+  assert.equal(summary.status, 'failed');
+  assert.equal(summary.completeTierA, false);
+  assert.equal(summary.counts.failed, 1);
+  assert.equal(summary.counts.knownFailed, 1);
+  assert.equal(summary.knownFailures.length, 1);
+  assert.equal(summary.knownFailures[0].route, 'account/index');
+  assert.match(junit, /sp-ui.knownFailures" value="1"/);
+  assert.match(junit, /knownFailure="true"/);
+  assert.match(junit, /<failure type="http"/);
+});
+
+test('the reporter fails closed on an invalid or missing known-failure registry', () => {
+  for (const contents of ['{ not json', JSON.stringify({ schemaVersion: 1, entries: [{ spec: 'x.spec.ts' }] })]) {
+    const outputDir = mkdtempSync(path.join(tmpdir(), 'sp-ui-reporter-bad-registry-'));
+    const registryPath = path.join(outputDir, 'known-failures.json');
+    const login = fakeTest('login', 'logs in');
+
+    writeFileSync(registryPath, contents);
+
+    const reporter = new SanitizedArtifactReporter({
+      outputDir,
+      runId: 'run-bad-registry',
+      knownFailureRegistryPath: registryPath,
+    });
+
+    reporter.onBegin({ rootDir: '/repo', grep: null }, fakeSuite([login]));
+    reporter.onTestEnd(login, result('passed'));
+    reporter.onEnd({ status: 'passed', duration: 10 });
+
+    const summary = JSON.parse(readOutput(outputDir, 'run-summary.json'));
+
+    assert.notEqual(summary.status, 'passed', contents);
+    assert.equal(summary.completeTierA, false);
+    assert.ok(summary.knownFailureErrors.length > 0, contents);
+  }
+});
+
+test('the reporter fails closed when the known-failure registry is missing', () => {
+  const outputDir = mkdtempSync(path.join(tmpdir(), 'sp-ui-reporter-missing-registry-'));
+  const login = fakeTest('login', 'logs in');
+  const reporter = new SanitizedArtifactReporter({
+    outputDir,
+    runId: 'run-missing-registry',
+    knownFailureRegistryPath: path.join(outputDir, 'does-not-exist.json'),
+  });
+
+  reporter.onBegin({ rootDir: '/repo', grep: null }, fakeSuite([login]));
+  reporter.onTestEnd(login, result('passed'));
+  reporter.onEnd({ status: 'passed', duration: 10 });
+
+  const summary = JSON.parse(readOutput(outputDir, 'run-summary.json'));
+
+  assert.notEqual(summary.status, 'passed');
+  assert.equal(summary.completeTierA, false);
+  assert.match(summary.knownFailureErrors.join('\n'), /missing/i);
 });
