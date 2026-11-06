@@ -25,6 +25,7 @@
 namespace SP\Modules\Web\Presenters\Helpers\Grid;
 
 
+use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
@@ -116,7 +117,13 @@ final class EventlogGrid extends GridBase
         $gridData = new DataGridData();
         $gridData->setDataRowSourceId('id');
         $gridData->addDataRowSource('id');
-        $gridData->addDataRowSource('date');
+        $gridData->addDataRowSource(
+            'date',
+            false,
+            static function ($value) {
+                return Date::getDateFromUnix($value, 'Y-m-d H:i:s');
+            }
+        );
         $gridData->addDataRowSource('level');
         $gridData->addDataRowSource('action', null, null, false);
         $gridData->addDataRowSource('login');

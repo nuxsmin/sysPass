@@ -77,8 +77,7 @@ final class Eventlog extends BaseRepository implements EventlogRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(EventlogModel::getCols(['date']))
-            ->cols(['FROM_UNIXTIME(date)' => 'date'])
+            ->cols(EventlogModel::getCols())
             ->orderBy(['id DESC'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
