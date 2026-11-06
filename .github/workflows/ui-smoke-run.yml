@@ -90,6 +90,9 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            tests/ui/package-lock.json
 
       - name: Install root assets
         timeout-minutes: 10
@@ -103,35 +106,68 @@ jobs:
         timeout-minutes: 3
         run: sudo locale-gen en_US.UTF-8
 
-      - name: Build and verify the PHP 8.3 test image
+      - name: Set up Docker Buildx
+        timeout-minutes: 5
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build the PHP 8.3 test image
         timeout-minutes: 25
+        uses: docker/build-push-action@v6
+        with:
+          context: scripts/docker
+          file: Dockerfile.php-testing
+          build-args: COMPOSER_VERSION=2.7
+          tags: php-testing-composer:latest
+          load: true
+          cache-from: type=gha,scope=php-testing-composer
+          cache-to: type=gha,mode=max,scope=php-testing-composer
+
+      - name: Verify the PHP 8.3 test image
+        timeout-minutes: 5
         run: |
           set -euo pipefail
-          docker build \
-            --build-arg "COMPOSER_VERSION=2.7" \
-            --tag php-testing-composer:latest \
-            --file scripts/docker/Dockerfile.php-testing \
-            scripts/docker
           docker run --rm --entrypoint php php-testing-composer:latest -r \
             'exit(PHP_VERSION_ID >= 80300 && PHP_VERSION_ID < 80400 ? 0 : 1);'
           docker run --rm --entrypoint php php-testing-composer:latest -v
 
+      # MariaDB is pulled per job on purpose. A job `services:` block would
+      # break the run-owned database isolation and would not share an image
+      # cache across runs, so the runner keeps owning this container.
       - name: Pull disposable MariaDB 10.3
         timeout-minutes: 10
         run: docker pull mariadb:10.3
+
+      - name: Restore Composer cache
+        timeout-minutes: 5
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/composer-cache
+          key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
 
       - name: Install Composer dependencies
         timeout-minutes: 10
         run: |
           set -euo pipefail
+          mkdir -p "${{ runner.temp }}/composer-cache"
           docker run --rm \
             --user "$(id -u):$(id -g)" \
             -e HOME=/tmp \
+            -e COMPOSER_CACHE_DIR=/tmp/composer-cache \
             -v "$PWD:$PWD" \
+            -v "${{ runner.temp }}/composer-cache:/tmp/composer-cache" \
             -w "$PWD" \
             php-testing-composer:latest \
             php /usr/bin/composer install \
               --prefer-dist --no-interaction --no-plugins --no-scripts
+
+      - name: Restore Playwright browsers
+        timeout-minutes: 5
+        uses: actions/cache@v4
+        with:
+          path: tests/ui/.browsers
+          key: playwright-${{ runner.os }}-${{ hashFiles('tests/ui/package-lock.json') }}
+          restore-keys: playwright-${{ runner.os }}-
 
       - name: Install locked UI harness and pinned Chromium
         timeout-minutes: 15
