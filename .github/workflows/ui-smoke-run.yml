@@ -115,7 +115,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: scripts/docker
-          file: Dockerfile.php-testing
+          file: scripts/docker/Dockerfile.php-testing
           build-args: COMPOSER_VERSION=2.7
           tags: php-testing-composer:latest
           load: true
