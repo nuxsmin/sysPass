@@ -7,9 +7,15 @@ for (let index = 2; index < process.argv.length; index += 2) {
 const url = argumentsMap.get('--url');
 const marker = argumentsMap.get('--marker');
 const timeoutSeconds = Number.parseInt(argumentsMap.get('--timeout') ?? '120', 10);
+const requestTimeoutMs = Number.parseInt(argumentsMap.get('--request-timeout-ms') ?? '5000', 10);
 
 if (!url || !marker) {
-  process.stderr.write('Usage: wait-for-http.mjs --url <url> --marker <text> [--timeout <seconds>]\n');
+  process.stderr.write('Usage: wait-for-http.mjs --url <url> --marker <text> [--timeout <seconds>] [--request-timeout-ms <milliseconds>]\n');
+  process.exit(2);
+}
+
+if (!Number.isFinite(requestTimeoutMs) || requestTimeoutMs <= 0) {
+  process.stderr.write('--request-timeout-ms must be a positive integer\n');
   process.exit(2);
 }
 
@@ -17,10 +23,16 @@ const deadline = Date.now() + timeoutSeconds * 1000;
 let lastError = 'no response';
 
 while (Date.now() < deadline) {
+  // A ref'd timer keeps the process alive while the connect/response is pending.
+  // AbortSignal.timeout() uses an unref'd timer, which lets Node exit 13 when the
+  // first request races the container's listener before an attempt can abort.
+  const controller = new AbortController();
+  const requestTimer = setTimeout(() => controller.abort(), requestTimeoutMs);
+
   try {
     const response = await fetch(url, {
       redirect: 'error',
-      signal: AbortSignal.timeout(5000),
+      signal: controller.signal,
       headers: {
         'User-Agent': 'sysPass-ui-smoke/1.0 (+https://github.com/nuxsmin/sysPass)',
       },
@@ -35,6 +47,8 @@ while (Date.now() < deadline) {
     lastError = `status ${response.status}, marker ${body.includes(marker) ? 'present' : 'missing'}`;
   } catch (error) {
     lastError = error instanceof Error ? error.message : String(error);
+  } finally {
+    clearTimeout(requestTimer);
   }
 
   await new Promise((resolve) => setTimeout(resolve, 500));
