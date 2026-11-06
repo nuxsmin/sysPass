@@ -481,7 +481,21 @@ echo "Re-applying the synthetic E2E fixture to prove reset is stable..."
 "$DOCKER_BIN" run "${PHP_ARGS[@]}" tests/ui/fixtures/seed.php --reset
 "$DOCKER_BIN" run "${PHP_ARGS[@]}" tests/ui/fixtures/seed.php --verify
 
+web_server_failure_report() {
+  [ -n "${WEB_CONTAINER:-}" ] || return 0
+
+  "$DOCKER_BIN" inspect \
+    --format 'web container: status={{.State.Status}} exit={{.State.ExitCode}} error={{.State.Error}}' \
+    "$WEB_CONTAINER" >&2 2>&1 || true
+
+  if [ "${SP_UI_DEBUG:-0}" = "1" ]; then
+    "$DOCKER_BIN" logs --tail 80 "$WEB_CONTAINER" 2>&1 \
+      | sed -e "s|${DB_PASSWORD}|<redacted>|g" -e "s|${MASTER_PASSWORD}|<redacted>|g" >&2 || true
+  fi
+}
+
 echo "Starting the run-owned web server..."
+set +e
 "$DOCKER_BIN" run -d \
   --name "$WEB_CONTAINER" \
   --network "$NETWORK_NAME" \
@@ -503,11 +517,27 @@ echo "Starting the run-owned web server..."
   -S "0.0.0.0:8080" \
   -t "$REPO_ROOT" \
   "$REPO_ROOT/tests/ui/server/router.php" >/dev/null
+WEB_START_STATUS=$?
+set -e
+if [ "$WEB_START_STATUS" -ne 0 ]; then
+  echo "Web server container failed to start with status $WEB_START_STATUS" >&2
+  web_server_failure_report
+  exit "$WEB_START_STATUS"
+fi
 
+echo "Waiting for the run-owned web server..."
+set +e
 node "$UI_DIR/src/wait-for-http.mjs" \
   --url "http://127.0.0.1:${PORT}/index.php?r=login/index" \
   --marker 'id="box-login"' \
   --timeout 120
+WEB_READY_STATUS=$?
+set -e
+if [ "$WEB_READY_STATUS" -ne 0 ]; then
+  echo "Web server readiness failed with status $WEB_READY_STATUS" >&2
+  web_server_failure_report
+  exit "$WEB_READY_STATUS"
+fi
 
 echo "Running the UI smoke suite..."
 # The setup window for CI ends here, after seeded provisioning and before any
