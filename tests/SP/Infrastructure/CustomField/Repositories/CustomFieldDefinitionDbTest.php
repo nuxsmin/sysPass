@@ -29,6 +29,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
+use SP\Domain\CustomField\Services\CustomFieldItem;
 use SP\Infrastructure\CustomField\Repositories\CustomFieldDefinition;
 use SP\Tests\DatabaseRepositoryTestCase;
 
@@ -74,5 +75,34 @@ final class CustomFieldDefinitionDbTest extends DatabaseRepositoryTestCase
     public function searchReturnsEveryDefinitionWithoutAFilter(): void
     {
         self::assertSame(3, $this->customFieldDefinition->search(new ItemSearchDto())->getTotalNumRows());
+    }
+
+    #[Test]
+    public function getByIdReturnsANullHelpThatCanBuildACustomFieldItem(): void
+    {
+        $definition = $this->customFieldDefinition->getById(2)->getData(CustomFieldDefinitionModel::class);
+
+        self::assertSame(2, $definition->getId());
+        self::assertNull($definition->getHelp());
+
+        $item = new CustomFieldItem(
+            required: (bool)$definition->getRequired(),
+            showInList: (bool)$definition->getShowInList(),
+            help: $definition->getHelp(),
+            definitionId: (int)$definition->getId(),
+            definitionName: (string)$definition->getName(),
+            typeId: (int)$definition->getTypeId(),
+            typeName: 'password',
+            typeText: 'Clave',
+            moduleId: (int)$definition->getModuleId(),
+            formId: 'cf_rsa',
+            value: null,
+            isEncrypted: (bool)$definition->getIsEncrypted(),
+            isValueEncrypted: false
+        );
+
+        self::assertNull($item->help);
+        self::assertSame(2, $item->definitionId);
+        self::assertSame('RSA', $item->definitionName);
     }
 }

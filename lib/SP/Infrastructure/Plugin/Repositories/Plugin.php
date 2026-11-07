@@ -85,7 +85,7 @@ final class Plugin extends BaseRepository implements PluginRepository
             ->newUpdate()
             ->table(self::TABLE)
             ->cols($plugin->toArray(null, ['id']))
-            ->where('name = :name OR id = :id', ['name' => $plugin->getName(), 'id' => $plugin->getId()])
+            ->where('name = :whereName OR id = :id', ['whereName' => $plugin->getName(), 'id' => $plugin->getId()])
             ->limit(1);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the plugin'));
@@ -166,6 +166,13 @@ final class Plugin extends BaseRepository implements PluginRepository
      */
     public function getByIdBatch(array $pluginsId): QueryResult
     {
+        if (count($pluginsId) === 0) {
+            /** @var QueryResult<T> $empty */
+            $empty = new QueryResult();
+
+            return $empty;
+        }
+
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
@@ -197,7 +204,7 @@ final class Plugin extends BaseRepository implements PluginRepository
         $query = $this->queryFactory
             ->newDelete()
             ->from(self::TABLE)
-            ->where('id IN (:ids) AND sticky = 0', ['ids' => $pluginsId]);
+            ->where('id IN (:ids)', ['ids' => $pluginsId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the plugins'));
 

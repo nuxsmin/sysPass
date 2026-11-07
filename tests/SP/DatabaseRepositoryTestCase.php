@@ -68,6 +68,11 @@ abstract class DatabaseRepositoryTestCase extends DatabaseTestCase
         getDbHandler()->getConnection()->exec($sql);
     }
 
+    protected function fetchValue(string $sql): mixed
+    {
+        return getDbHandler()->getConnection()->query($sql)->fetchColumn();
+    }
+
     protected function countRowsForAccount(string $table, int $accountId): int
     {
         $query = $this->queryFactory

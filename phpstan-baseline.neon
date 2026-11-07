@@ -6261,7 +6261,7 @@ parameters:
 		-
 			message: '#^Call to an undefined method Aura\\SqlQuery\\Common\\DeleteInterface\:\:limit\(\)\.$#'
 			identifier: method.notFound
-			count: 2
+			count: 1
 			path: lib/SP/Infrastructure/Plugin/Repositories/PluginData.php
 
 		-
