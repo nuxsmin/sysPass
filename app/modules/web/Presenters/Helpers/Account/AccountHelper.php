@@ -187,7 +187,7 @@ final class AccountHelper extends AccountHelperBase
             )
                              ->getItemsFromArray()
         );
-        $this->view->assign('isModified', strtotime($accountData->getDateEdit()) !== false);
+        $this->view->assign('isModified', strtotime($accountData->getDateEdit() ?? '') !== false);
         $this->view->assign('maxFileSize', round($this->configData->getFilesAllowedSize() / 1024, 1));
         $this->view->assign('filesAllowedExts', implode(',', $this->configData->getFilesAllowedExts()));
 

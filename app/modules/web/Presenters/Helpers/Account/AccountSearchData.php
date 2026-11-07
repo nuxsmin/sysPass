@@ -147,7 +147,7 @@ final class AccountSearchData
             ): AccountSearchItem {
                 $cache = $this->accountCacheService->getCacheForAccount(
                     $accountSearchView->getId(),
-                    strtotime($accountSearchView->getDateEdit())
+                    (int)(strtotime($accountSearchView->getDateEdit() ?? '') ?: 0)
                 );
 
                 // Obtener la ACL de la cuenta

@@ -100,7 +100,7 @@ final class AccountSearchItem
 
     public function getShortUrl(): string
     {
-        return Html::truncate($this->accountSearchView->getUrl(), $this->textMaxLength);
+        return Html::truncate($this->accountSearchView->getUrl() ?? '', $this->textMaxLength);
     }
 
     public function getSafeUrl(): string
@@ -110,12 +110,12 @@ final class AccountSearchItem
 
     public function isUrlIslink(): bool
     {
-        return preg_match('#^\w+://#', $this->accountSearchView->getUrl()) === 1;
+        return preg_match('#^\w+://#', $this->accountSearchView->getUrl() ?? '') === 1;
     }
 
     public function getShortLogin(): string
     {
-        return Html::truncate($this->accountSearchView->getLogin(), $this->textMaxLength);
+        return Html::truncate($this->accountSearchView->getLogin() ?? '', $this->textMaxLength);
     }
 
     public function getShortClientName(): string

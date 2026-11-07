@@ -31,6 +31,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Tests\DatabaseIntegrationTestCase;
@@ -160,6 +162,77 @@ final class AccountDbIntegrationTest extends DatabaseIntegrationTestCase
         self::assertGreaterThan(0, $itemId);
         self::assertSame(1, (int)$this->fetchValue('SELECT userId FROM Account WHERE id = ' . $itemId));
         self::assertSame(1, (int)$this->fetchValue('SELECT userGroupId FROM Account WHERE id = ' . $itemId));
+    }
+
+    /**
+     * A freshly created account has no edit date or URL. Searching for it must
+     * not pass those null values to string-only helpers.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[InjectCrypt]
+    public function searchAfterCreateHandlesAccountWithoutDateEdit(): void
+    {
+        $name = 'Account Without Edit Date';
+
+        $create = $this->dispatch(
+            'post',
+            'account/saveCreate',
+            [],
+            [
+                'name' => $name,
+                'login' => 'no-date-edit',
+                'client_id' => '1',
+                'category_id' => '1',
+                'password' => 'secret',
+                'password_repeat' => 'secret',
+                'owner_id' => '',
+                'main_usergroup_id' => '',
+            ]
+        );
+
+        $json = $this->assertJsonOk($create, 'Account created');
+        $itemId = (int)($json['data']['itemId'] ?? 0);
+
+        self::assertGreaterThan(0, $itemId);
+        self::assertNull($this->fetchValue('SELECT dateEdit FROM Account WHERE id = ' . $itemId));
+        self::assertNull($this->fetchValue('SELECT url FROM Account WHERE id = ' . $itemId));
+
+        $edit = $this->dispatch('get', 'account/edit/' . $itemId);
+
+        self::assertLessThan(500, $edit['code'], $edit['body']);
+        self::assertStringNotContainsString('must be of type', $edit['body']);
+        self::assertStringContainsString($name, $edit['body']);
+
+        $accountAcl = self::createStub(AccountAclService::class);
+        $accountAcl->method('getAcl')->willReturnCallback(
+            static fn(int $actionId): AccountPermission => (new AccountPermission($actionId))
+                ->setResultView(true)
+                ->setShowView(true)
+        );
+
+        $result = $this->dispatch(
+            'post',
+            'account/search',
+            [],
+            [
+                'search' => $name,
+                'isAjax' => '1',
+                'start' => '0',
+                'skey' => '0',
+                'sorder' => '0',
+                'searchfav' => '',
+            ],
+            [AccountAclService::class => $accountAcl]
+        );
+
+        self::assertLessThan(500, $result['code'], $result['body']);
+        self::assertStringNotContainsString('must be of type', $result['body']);
+        self::assertStringContainsString($name, $result['body']);
+        self::assertStringContainsString('btn-favorite-' . $itemId, $result['body']);
     }
 
     /**
