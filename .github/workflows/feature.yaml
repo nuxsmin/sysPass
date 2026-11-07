@@ -112,6 +112,73 @@ jobs:
             ./tests/_output/deprecation-events-core.txt
           if-no-files-found: ignore
 
+  static-analysis:
+    name: Static Analysis (PHPStan & PHPCS) ${{ matrix.php }}/${{ matrix.platform }}
+    strategy:
+      matrix:
+        platform: [ 'ubuntu-latest' ]
+        php: [ '8.3', '8.4', '8.5' ]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP with tools
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, intl, gd, ldap, gettext, pdo_mysql
+          coverage: none
+          ini-values: zend.assertions=1
+        env:
+          fail-fast: true
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: |
+          composer install \
+            --prefer-dist \
+            --no-interaction \
+            --no-plugins \
+            --no-scripts \
+            --prefer-dist
+
+      - name: PHPStan (level 6, lib)
+        run: vendor/bin/phpstan analyse --no-progress
+
+      - name: Resolve changed-files base
+        id: changed-files
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          base=''
+          if [ "$EVENT_NAME" = 'pull_request' ] && [ -n "$PR_BASE_SHA" ]; then
+            base="$(git merge-base "$PR_BASE_SHA" HEAD)"
+          elif [ -n "$PUSH_BEFORE_SHA" ] && [[ ! "$PUSH_BEFORE_SHA" =~ ^0+$ ]]; then
+            base="$PUSH_BEFORE_SHA"
+          elif git rev-parse --verify --quiet origin/master >/dev/null 2>&1; then
+            base="$(git merge-base origin/master HEAD)"
+          fi
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+
+      - name: PHPCS (PSR2, changed lib files, errors only)
+        run: bash scripts/ci/check-phpcs-changed.sh "${{ steps.changed-files.outputs.base }}"
+
   integration:
     name: Build & Test (IT) ${{ matrix.php }}/${{ matrix.platform }}
     if: ${{ vars.TESTS_INTEGRATION_ENABLED  == 'true' }}
