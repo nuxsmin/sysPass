@@ -53,8 +53,7 @@ final class EventlogDbIntegrationTest extends DatabaseIntegrationTestCase
     {
         $result = $this->dispatch('get', 'eventlog/index');
 
-        self::assertLessThan(500, $result['code'], $result['body']);
-        self::assertStringNotContainsString('Invalid route', $result['body']);
+        $this->assertResponseWasDispatched($result);
         self::assertStringContainsString('Event Log', $result['body']);
         self::assertStringContainsString('tblEventLog', $result['body']);
         self::assertStringContainsString('login.session.load', $result['body']);
@@ -95,8 +94,7 @@ final class EventlogDbIntegrationTest extends DatabaseIntegrationTestCase
             [AclInterface::class => $this->denyAclFor(AclActionsInterface::EVENTLOG)]
         );
 
-        self::assertLessThan(500, $result['code'], $result['body']);
-        self::assertStringNotContainsString('Invalid route', $result['body']);
+        $this->assertResponseWasDispatched($result);
         self::assertStringContainsString(self::DENIED_MESSAGE, $result['body']);
     }
 

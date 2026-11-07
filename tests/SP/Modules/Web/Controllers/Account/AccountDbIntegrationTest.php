@@ -60,8 +60,7 @@ final class AccountDbIntegrationTest extends DatabaseIntegrationTestCase
     {
         $result = $this->dispatch('get', 'account/view/1');
 
-        self::assertLessThan(500, $result['code'], $result['body']);
-        self::assertStringNotContainsString('Invalid route', $result['body']);
+        $this->assertResponseWasDispatched($result);
         self::assertStringContainsString('Google', $result['body']);
         self::assertStringContainsString('google.com', $result['body']);
         self::assertStringContainsString('Prueba', $result['body']);
@@ -79,8 +78,7 @@ final class AccountDbIntegrationTest extends DatabaseIntegrationTestCase
     {
         $result = $this->dispatch('get', 'account/edit/1');
 
-        self::assertLessThan(500, $result['code'], $result['body']);
-        self::assertStringNotContainsString('Invalid route', $result['body']);
+        $this->assertResponseWasDispatched($result);
         self::assertStringContainsString('Google', $result['body']);
         self::assertStringContainsString('account/saveEdit', $result['body']);
         self::assertStringContainsString('Prueba', $result['body']);
@@ -203,7 +201,7 @@ final class AccountDbIntegrationTest extends DatabaseIntegrationTestCase
 
         $edit = $this->dispatch('get', 'account/edit/' . $itemId);
 
-        self::assertLessThan(500, $edit['code'], $edit['body']);
+        $this->assertResponseWasDispatched($edit);
         self::assertStringNotContainsString('must be of type', $edit['body']);
         self::assertStringContainsString($name, $edit['body']);
 
@@ -229,7 +227,7 @@ final class AccountDbIntegrationTest extends DatabaseIntegrationTestCase
             [AccountAclService::class => $accountAcl]
         );
 
-        self::assertLessThan(500, $result['code'], $result['body']);
+        $this->assertResponseWasDispatched($result);
         self::assertStringNotContainsString('must be of type', $result['body']);
         self::assertStringContainsString($name, $result['body']);
         self::assertStringContainsString('btn-favorite-' . $itemId, $result['body']);

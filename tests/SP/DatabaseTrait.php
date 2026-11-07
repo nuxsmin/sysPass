@@ -47,6 +47,15 @@ trait DatabaseTrait
         return (int)self::$conn->query($sql)->fetchColumn();
     }
 
+    protected static function fetchValue(string $sql): mixed
+    {
+        if (!self::$conn) {
+            self::setConnection();
+        }
+
+        return self::$conn->query($sql)->fetchColumn();
+    }
+
     protected static function setConnection(): void
     {
         if (!self::$conn) {

@@ -33,6 +33,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Category\Repositories\Category;
 use SP\Tests\DatabaseRepositoryTestCase;
+use SP\Tests\Generators\CategoryGenerator;
 
 /**
  * DB-backed tests for the Category repository queries.
@@ -57,10 +58,7 @@ final class CategoryDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function createPersistsTheCategoryAndItsNormalisedHash(): void
     {
-        $this->category->create(new CategoryModel([
-            'name' => 'Storage',
-            'description' => 'Storage services',
-        ]));
+        $this->category->create($this->categoryModel('Storage', null, 'Storage services'));
 
         $category = $this->category->getByName('Storage')->getData(CategoryModel::class);
 
@@ -74,17 +72,13 @@ final class CategoryDbTest extends DatabaseRepositoryTestCase
     {
         $this->expectException(DuplicatedItemException::class);
 
-        $this->category->create(new CategoryModel(['name' => 'Web']));
+        $this->category->create($this->categoryModel('Web'));
     }
 
     #[Test]
     public function updateRenamesTheCategoryAndRecomputesTheHash(): void
     {
-        $affected = $this->category->update(new CategoryModel([
-            'id' => 3,
-            'name' => 'Remote',
-            'description' => 'Remote access',
-        ]));
+        $affected = $this->category->update($this->categoryModel('Remote', 3, 'Remote access'));
 
         self::assertSame(1, $affected);
 
@@ -100,7 +94,7 @@ final class CategoryDbTest extends DatabaseRepositoryTestCase
     {
         $this->expectException(DuplicatedItemException::class);
 
-        $this->category->update(new CategoryModel(['id' => 3, 'name' => 'Web']));
+        $this->category->update($this->categoryModel('Web', 3));
     }
 
     #[Test]
@@ -134,8 +128,8 @@ final class CategoryDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function deleteByIdBatchRemovesOnlyTheSelectedCategories(): void
     {
-        $this->category->create(new CategoryModel(['name' => 'Temporary A']));
-        $this->category->create(new CategoryModel(['name' => 'Temporary B']));
+        $this->category->create($this->categoryModel('Temporary A'));
+        $this->category->create($this->categoryModel('Temporary B'));
 
         $ids = [
             $this->category->getByName('Temporary A')->getData(CategoryModel::class)->getId(),
@@ -159,7 +153,7 @@ final class CategoryDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function deleteRemovesASingleCategory(): void
     {
-        $this->category->create(new CategoryModel(['name' => 'Temporary']));
+        $this->category->create($this->categoryModel('Temporary'));
 
         $id = $this->category->getByName('Temporary')->getData(CategoryModel::class)->getId();
 
@@ -205,5 +199,15 @@ final class CategoryDbTest extends DatabaseRepositoryTestCase
                 $page->getDataAsArray(CategoryModel::class)
             )
         );
+    }
+
+    private function categoryModel(string $name, ?int $id = null, ?string $description = null): CategoryModel
+    {
+        return CategoryGenerator::factory()->buildCategory()->mutate([
+            'id' => $id,
+            'name' => $name,
+            'description' => $description,
+            'hash' => null,
+        ]);
     }
 }

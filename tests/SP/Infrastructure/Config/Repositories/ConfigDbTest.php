@@ -30,6 +30,7 @@ use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Config\Models\Config as ConfigModel;
 use SP\Infrastructure\Config\Repositories\Config;
 use SP\Tests\DatabaseRepositoryTestCase;
+use SP\Tests\Generators\ConfigGenerator;
 
 /**
  * DB-backed tests for the Config repository queries.
@@ -49,10 +50,7 @@ final class ConfigDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function createPersistsTheParameter(): void
     {
-        $this->config->create(new ConfigModel([
-            'parameter' => 'test_param',
-            'value' => 'test_value',
-        ]));
+        $this->config->create($this->configModel('test_param', 'test_value'));
 
         self::assertTrue($this->config->has('test_param'));
 
@@ -65,10 +63,7 @@ final class ConfigDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function updateChangesTheValueOfAnExistingParameter(): void
     {
-        $this->config->update(new ConfigModel([
-            'parameter' => 'version',
-            'value' => '4.0.0',
-        ]));
+        $this->config->update($this->configModel('version', '4.0.0'));
 
         self::assertSame(
             '4.0.0',
@@ -91,5 +86,13 @@ final class ConfigDbTest extends DatabaseRepositoryTestCase
     {
         self::assertTrue($this->config->has('version'));
         self::assertFalse($this->config->has('missing'));
+    }
+
+    private function configModel(string $parameter, string $value): ConfigModel
+    {
+        return ConfigGenerator::factory()->buildConfig()->mutate([
+            'parameter' => $parameter,
+            'value' => $value,
+        ]);
     }
 }

@@ -32,6 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Infrastructure\ItemPreset\Repositories\ItemPreset;
 use SP\Tests\DatabaseRepositoryTestCase;
+use SP\Tests\Generators\ItemPresetDataGenerator;
 
 /**
  * DB-backed tests for the ItemPreset repository queries.
@@ -74,12 +75,7 @@ final class ItemPresetDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function createPersistsThePresetWithItsHash(): void
     {
-        $preset = new ItemPresetModel([
-            'type' => 'permission',
-            'userId' => 3,
-            'fixed' => 0,
-            'priority' => 7,
-        ]);
+        $preset = $this->itemPresetModel('permission', 3, 7);
 
         $result = $this->itemPreset->create($preset);
 
@@ -101,24 +97,13 @@ final class ItemPresetDbTest extends DatabaseRepositoryTestCase
     {
         $this->expectException(ConstraintException::class);
 
-        $this->itemPreset->create(new ItemPresetModel([
-            'type' => 'permission',
-            'userId' => 1,
-            'fixed' => 0,
-            'priority' => 0,
-        ]));
+        $this->itemPreset->create($this->itemPresetModel('permission', 1, 0));
     }
 
     #[Test]
     public function updateChangesThePresetAndRecomputesTheHash(): void
     {
-        $preset = new ItemPresetModel([
-            'id' => 1,
-            'type' => 'permission',
-            'userId' => 1,
-            'fixed' => 0,
-            'priority' => 7,
-        ]);
+        $preset = $this->itemPresetModel('permission', 1, 7, 1);
 
         self::assertSame(1, $this->itemPreset->update($preset));
 
@@ -129,5 +114,23 @@ final class ItemPresetDbTest extends DatabaseRepositoryTestCase
             $preset->getHash(),
             $this->fetchValue('SELECT hash FROM ItemPreset WHERE id = 1')
         );
+    }
+
+    private function itemPresetModel(
+        string $type,
+        int    $userId,
+        int    $priority,
+        ?int   $id = null
+    ): ItemPresetModel {
+        return ItemPresetDataGenerator::factory()->buildItemPreset()->mutate([
+            'id' => $id,
+            'type' => $type,
+            'userId' => $userId,
+            'userGroupId' => null,
+            'userProfileId' => null,
+            'fixed' => 0,
+            'priority' => $priority,
+            'data' => null,
+        ]);
     }
 }

@@ -38,15 +38,26 @@ final class ItemPresetDataGenerator extends DataGenerator
 {
     public function buildItemPresetData(object $data): ItemPreset
     {
-        return (new ItemPreset([
-                                   'id' => $this->faker->randomNumber(3),
-                                   'type' => $this->faker->colorName(),
-                                   'userId' => $this->faker->randomNumber(3),
-                                   'userGroupId' => $this->faker->randomNumber(3),
-                                   'userProfileId' => $this->faker->randomNumber(3),
-                                   'fixed' => (int)$this->faker->boolean(),
-                                   'priority' => $this->faker->randomNumber(3)
-                               ]))->dehydrate($data);
+        return $this->buildItemPreset()->dehydrate($data);
+    }
+
+    public function buildItemPreset(): ItemPreset
+    {
+        return new ItemPreset($this->itemPresetProperties());
+    }
+
+    private function itemPresetProperties(): array
+    {
+        return [
+            'id' => $this->faker->randomNumber(3),
+            'type' => $this->faker->colorName(),
+            'userId' => $this->faker->randomNumber(3),
+            'userGroupId' => $this->faker->randomNumber(3),
+            'userProfileId' => $this->faker->randomNumber(3),
+            'fixed' => (int)$this->faker->boolean(),
+            'priority' => $this->faker->randomNumber(3),
+            'data' => null,
+        ];
     }
 
     public function buildPassword(): Password

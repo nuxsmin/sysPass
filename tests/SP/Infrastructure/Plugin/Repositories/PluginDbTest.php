@@ -31,6 +31,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Infrastructure\Plugin\Repositories\Plugin;
 use SP\Tests\DatabaseRepositoryTestCase;
+use SP\Tests\Generators\PluginGenerator;
 
 /**
  * DB-backed tests for the Plugin repository queries.
@@ -50,8 +51,10 @@ final class PluginDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function createPersistsThePlugin(): void
     {
-        $result = $this->plugin->create(new PluginModel([
+        $result = $this->plugin->create($this->pluginModel([
+            'id' => null,
             'name' => 'New Plugin',
+            'data' => null,
             'enabled' => true,
             'versionLevel' => '1.0',
         ]));
@@ -69,7 +72,7 @@ final class PluginDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function updateChangesThePluginMatchedById(): void
     {
-        $affected = $this->plugin->update(new PluginModel([
+        $affected = $this->plugin->update($this->pluginModel([
             'id' => 3,
             'name' => 'DokuWiki 2',
             'data' => 'new data',
@@ -237,5 +240,13 @@ final class PluginDbTest extends DatabaseRepositoryTestCase
         self::assertSame(1, $this->plugin->resetById(2));
 
         self::assertNull($this->plugin->getById(2)->getData(PluginModel::class)->getData());
+    }
+
+    /**
+     * @param array<string, mixed> $properties
+     */
+    private function pluginModel(array $properties): PluginModel
+    {
+        return PluginGenerator::factory()->buildPlugin()->mutate($properties);
     }
 }

@@ -36,6 +36,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Client\Repositories\Client;
 use SP\Tests\DatabaseRepositoryTestCase;
+use SP\Tests\Generators\ClientGenerator;
 
 /**
  * DB-backed tests for the Client repository queries.
@@ -55,10 +56,7 @@ final class ClientDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function createPersistsTheClientAndItsNormalisedHash(): void
     {
-        $this->client->create(new ClientModel([
-            'name' => 'Acme Corp.',
-            'description' => 'Acme services',
-        ]));
+        $this->client->create($this->clientModel('Acme Corp.', null, 'Acme services'));
 
         $client = $this->client->getByName('Acme Corp.')->getData(ClientModel::class);
 
@@ -73,18 +71,13 @@ final class ClientDbTest extends DatabaseRepositoryTestCase
     {
         $this->expectException(DuplicatedItemException::class);
 
-        $this->client->create(new ClientModel(['name' => 'Google']));
+        $this->client->create($this->clientModel('Google'));
     }
 
     #[Test]
     public function updateChangesTheClientAndRecomputesTheHash(): void
     {
-        $affected = $this->client->update(new ClientModel([
-            'id' => 4,
-            'name' => 'AWS',
-            'description' => 'Amazon Web Services',
-            'isGlobal' => 1,
-        ]));
+        $affected = $this->client->update($this->clientModel('AWS', 4, 'Amazon Web Services', 1));
 
         self::assertSame(1, $affected);
 
@@ -101,7 +94,7 @@ final class ClientDbTest extends DatabaseRepositoryTestCase
     {
         $this->expectException(DuplicatedItemException::class);
 
-        $this->client->update(new ClientModel(['id' => 4, 'name' => 'Google']));
+        $this->client->update($this->clientModel('Google', 4));
     }
 
     #[Test]
@@ -148,8 +141,8 @@ final class ClientDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function deleteByIdBatchRemovesOnlyTheSelectedClients(): void
     {
-        $this->client->create(new ClientModel(['name' => 'Temporary A']));
-        $this->client->create(new ClientModel(['name' => 'Temporary B']));
+        $this->client->create($this->clientModel('Temporary A'));
+        $this->client->create($this->clientModel('Temporary B'));
 
         $ids = [
             $this->client->getByName('Temporary A')->getData(ClientModel::class)->getId(),
@@ -207,6 +200,21 @@ final class ClientDbTest extends DatabaseRepositoryTestCase
                 $page->getDataAsArray(ClientModel::class)
             )
         );
+    }
+
+    private function clientModel(
+        string  $name,
+        ?int    $id = null,
+        ?string $description = null,
+        int     $isGlobal = 0
+    ): ClientModel {
+        return ClientGenerator::factory()->buildClient()->mutate([
+            'id' => $id,
+            'name' => $name,
+            'description' => $description,
+            'isGlobal' => $isGlobal,
+            'hash' => null,
+        ]);
     }
 
     private function buildAccountFilter(): AccountFilterBuilder

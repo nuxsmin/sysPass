@@ -45,6 +45,7 @@ use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\ItemPreset\Repositories\ItemPreset as ItemPresetRepository;
+use SP\Tests\Generators\ItemPresetDataGenerator;
 use SP\Tests\Generators\UserDataGenerator;
 
 /**
@@ -169,7 +170,7 @@ abstract class DatabaseIntegrationTestCase extends IntegrationTestCase
      * @param array<string, mixed> $paramsGet
      * @param array<string, mixed> $paramsPost
      * @param array<class-string, mixed> $definitionsOverride
-     * @return array{body: string, code: int, container: ContainerInterface}
+     * @return array{body: string, code: int}
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -205,7 +206,6 @@ abstract class DatabaseIntegrationTestCase extends IntegrationTestCase
         return [
             'body' => $body !== '' ? $body : $echoed,
             'code' => (int)$response->code(),
-            'container' => $container,
         ];
     }
 
@@ -268,25 +268,22 @@ abstract class DatabaseIntegrationTestCase extends IntegrationTestCase
         object $presetData,
         int    $fixed = 0
     ): int {
-        $preset = new ItemPresetModel(
+        $preset = ItemPresetDataGenerator::factory()->buildItemPreset()->mutate(
             [
+                'id' => null,
                 'type' => $type,
                 'userId' => $userId,
                 'userGroupId' => $userGroupId,
                 'userProfileId' => $userProfileId,
                 'fixed' => $fixed,
                 'priority' => $priority,
+                'data' => null,
             ]
         );
 
         return $this->itemPresetRepository()
                     ->create($preset->dehydrate($presetData))
                     ->getLastId();
-    }
-
-    protected function fetchValue(string $sql): mixed
-    {
-        return getDbHandler()->getConnection()->query($sql)->fetchColumn();
     }
 
     /**
@@ -302,15 +299,25 @@ abstract class DatabaseIntegrationTestCase extends IntegrationTestCase
     }
 
     /**
+     * Asserts that a response reached an action rather than the error path.
+     *
+     * @param array{body: string, code: int} $result
+     */
+    protected function assertResponseWasDispatched(array $result): void
+    {
+        self::assertLessThan(500, $result['code'], $result['body']);
+        self::assertStringNotContainsString('Invalid route', $result['body']);
+    }
+
+    /**
      * Asserts a successful JSON response and returns the decoded payload.
      *
-     * @param array{body: string, code: int, container: ContainerInterface} $result
+     * @param array{body: string, code: int} $result
      * @return array<string, mixed>
      */
     protected function assertJsonOk(array $result, ?string $description = null): array
     {
-        self::assertLessThan(500, $result['code'], $result['body']);
-        self::assertStringNotContainsString('Invalid route', $result['body']);
+        $this->assertResponseWasDispatched($result);
 
         $json = $this->decodeJson($result['body']);
 
@@ -326,13 +333,12 @@ abstract class DatabaseIntegrationTestCase extends IntegrationTestCase
     /**
      * Asserts a denied JSON response (authorization is reported as an error payload).
      *
-     * @param array{body: string, code: int, container: ContainerInterface} $result
+     * @param array{body: string, code: int} $result
      * @return array<string, mixed>
      */
     protected function assertJsonDenied(array $result, string $description): array
     {
-        self::assertLessThan(500, $result['code'], $result['body']);
-        self::assertStringNotContainsString('Invalid route', $result['body']);
+        $this->assertResponseWasDispatched($result);
 
         $json = $this->decodeJson($result['body']);
 

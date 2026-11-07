@@ -11,31 +11,11 @@ use PHPUnit\Framework\Attributes\Test;
 use ReflectionClass;
 use ReflectionProperty;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
-use SP\Domain\Account\Models\Account as AccountModel;
-use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
-use SP\Domain\Account\Models\File as FileModel;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Services\Builders\AccountFilter;
-use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
-use SP\Domain\Category\Models\Category as CategoryModel;
-use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Common\Models\Model;
 use SP\Domain\Common\Models\Simple;
-use SP\Domain\Config\Models\Config as ConfigModel;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
-use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
-use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
-use SP\Domain\Notification\Models\Notification as NotificationModel;
-use SP\Domain\Plugin\Models\Plugin as PluginModel;
-use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
-use SP\Domain\Security\Models\Eventlog as EventlogModel;
-use SP\Domain\Security\Models\Track as TrackModel;
-use SP\Domain\Tag\Models\Tag as TagModel;
-use SP\Domain\User\Models\User as UserModel;
-use SP\Domain\User\Models\UserGroup as UserGroupModel;
-use SP\Domain\User\Models\UserPassRecover as UserPassRecoverModel;
-use SP\Domain\User\Models\UserProfile as UserProfileModel;
 use SP\Infrastructure\Account\Repositories\Account as AccountRepository;
 use SP\Infrastructure\Account\Repositories\AccountFile as AccountFileRepository;
 use SP\Infrastructure\Account\Repositories\AccountHistory as AccountHistoryRepository;
@@ -63,6 +43,25 @@ use SP\Infrastructure\User\Repositories\UserPassRecover as UserPassRecoverReposi
 use SP\Infrastructure\User\Repositories\UserProfile as UserProfileRepository;
 use SP\Infrastructure\User\Repositories\UserToUserGroup as UserToUserGroupRepository;
 use SP\Tests\DatabaseRepositoryTestCase;
+use SP\Tests\Generators\AccountDataGenerator;
+use SP\Tests\Generators\AuthTokenGenerator;
+use SP\Tests\Generators\CategoryGenerator;
+use SP\Tests\Generators\ClientGenerator;
+use SP\Tests\Generators\ConfigGenerator;
+use SP\Tests\Generators\CustomFieldDataGenerator;
+use SP\Tests\Generators\CustomFieldDefinitionGenerator;
+use SP\Tests\Generators\EventlogGenerator;
+use SP\Tests\Generators\FileDataGenerator;
+use SP\Tests\Generators\ItemPresetDataGenerator;
+use SP\Tests\Generators\NotificationDataGenerator;
+use SP\Tests\Generators\PluginDataGenerator;
+use SP\Tests\Generators\PluginGenerator;
+use SP\Tests\Generators\PublicLinkDataGenerator;
+use SP\Tests\Generators\TagGenerator;
+use SP\Tests\Generators\TrackGenerator;
+use SP\Tests\Generators\UserDataGenerator;
+use SP\Tests\Generators\UserGroupGenerator;
+use SP\Tests\Generators\UserProfileDataGenerator;
 use SP\Infrastructure\Database\QueryData;
 
 use function SP\Tests\getDbHandler;
@@ -260,6 +259,8 @@ final class SchemaContractTest extends DatabaseRepositoryTestCase
 
     private ?PDO $schemaConnection = null;
 
+    private ?string $originalSqlMode = null;
+
     /**
      * @var array<string, array{TABLE_NAME: string, TABLE_TYPE: string}>|null
      */
@@ -269,6 +270,37 @@ final class SchemaContractTest extends DatabaseRepositoryTestCase
      * @var array<string, array<string, array{COLUMN_NAME: string, IS_NULLABLE: string, COLUMN_DEFAULT: mixed, EXTRA: string}>>
      */
     private array $schemaColumns = [];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->originalSqlMode = (string)$this->fetchValue('SELECT @@SESSION.sql_mode');
+
+        if (!self::isStrictSqlMode($this->originalSqlMode)) {
+            $this->executeSql("SET SESSION sql_mode = CONCAT_WS(',', @@SESSION.sql_mode, 'STRICT_ALL_TABLES')");
+        }
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->originalSqlMode !== null && !self::isStrictSqlMode($this->originalSqlMode)) {
+            $this->executeSql(
+                sprintf('SET SESSION sql_mode = %s', $this->schemaConnection()->quote($this->originalSqlMode))
+            );
+        }
+
+        parent::tearDown();
+    }
+
+    #[Test]
+    public function schemaContractRunsWithStrictSqlMode(): void
+    {
+        self::assertTrue(
+            self::isStrictSqlMode((string)$this->fetchValue('SELECT @@SESSION.sql_mode')),
+            'The schema contract must run with strict SQL mode so an omitted required column cannot use an implicit default.'
+        );
+    }
 
     #[Test]
     public function everyModelFileIsExplicitlyMappedOrExcluded(): void
@@ -652,11 +684,23 @@ final class SchemaContractTest extends DatabaseRepositoryTestCase
         $method = self::INSERT_JOURNEYS[$identity];
         $table = self::MODEL_TABLES[$identity] ?? $identity;
         $before = $this->tableRowCount($table);
+        $requiredColumns = $this->requiredInsertColumns($table);
 
         $this->db->beginTransaction();
 
         try {
-            $this->{$method}();
+            try {
+                $this->{$method}();
+            } catch (\Throwable $e) {
+                self::fail(
+                    sprintf(
+                        'The insert journey for %s failed. Required columns without a default: %s. %s',
+                        $identity,
+                        implode(', ', array_keys($requiredColumns)),
+                        $e->getMessage()
+                    )
+                );
+            }
 
             self::assertSame(
                 $before + 1,
@@ -720,37 +764,43 @@ final class SchemaContractTest extends DatabaseRepositoryTestCase
             $accountFilter
         );
 
-        $accountRepository->create(new AccountModel([
-            'userGroupId' => 1,
-            'userId' => 1,
-            'userEditId' => 1,
-            'clientId' => 1,
-            'name' => 'Schema Contract Account',
-            'categoryId' => 1,
-            'login' => 'schema-contract-login',
-            'url' => 'https://example.test',
-            'pass' => 'schema-contract-pass',
-            'key' => 'schema-contract-key',
-            'notes' => 'schema-contract-notes',
-        ]));
+        $accountRepository->create(
+            AccountDataGenerator::factory()->buildAccount()->mutate([
+                'id' => null,
+                'userGroupId' => 1,
+                'userId' => 1,
+                'userEditId' => 1,
+                'clientId' => 1,
+                'name' => 'Schema Contract Account',
+                'categoryId' => 1,
+                'login' => 'schema-contract-login',
+                'url' => 'https://example.test',
+                'pass' => 'schema-contract-pass',
+                'key' => 'schema-contract-key',
+                'notes' => 'schema-contract-notes',
+            ])
+        );
     }
 
     private function insertAccountFile(): void
     {
-        $this->repository(AccountFileRepository::class)->create(new FileModel([
-            'accountId' => 1,
-            'name' => 'schema-contract.txt',
-            'type' => 'text/plain',
-            'size' => 16,
-            'content' => 'schema-contract-content',
-            'extension' => 'txt',
-            'thumb' => null,
-        ]));
+        $this->repository(AccountFileRepository::class)->create(
+            FileDataGenerator::factory()->buildFile()->mutate([
+                'id' => null,
+                'accountId' => 1,
+                'name' => 'schema-contract.txt',
+                'type' => 'text/plain',
+                'size' => 16,
+                'content' => 'schema-contract-content',
+                'extension' => 'txt',
+                'thumb' => null,
+            ])
+        );
     }
 
     private function insertAccountHistory(): void
     {
-        $account = new AccountModel([
+        $account = AccountDataGenerator::factory()->buildAccount()->mutate([
             'id' => 1,
             'clientId' => 1,
             'categoryId' => 1,
@@ -803,70 +853,89 @@ final class SchemaContractTest extends DatabaseRepositoryTestCase
 
     private function insertPublicLink(): void
     {
-        $this->repository(PublicLinkRepository::class)->create(new PublicLinkModel([
-            'itemId' => 3,
-            'hash' => 'schema-contract-public-hash',
-            'data' => null,
-            'userId' => 1,
-            'typeId' => 1,
-            'notify' => false,
-            'dateExpire' => time() + 3600,
-            'maxCountViews' => 0,
-        ]));
+        $this->repository(PublicLinkRepository::class)->create(
+            PublicLinkDataGenerator::factory()->buildPublicLink()->mutate([
+                'id' => null,
+                'itemId' => 3,
+                'hash' => 'schema-contract-public-hash',
+                'data' => null,
+                'userId' => 1,
+                'typeId' => 1,
+                'notify' => false,
+                'dateExpire' => time() + 3600,
+                'maxCountViews' => 0,
+            ])
+        );
     }
 
     private function insertAuthToken(): void
     {
-        $this->repository(AuthTokenRepository::class)->create(new AuthTokenModel([
-            'userId' => 3,
-            'token' => 'schema-contract-token',
-            'actionId' => 2,
-            'createdBy' => 1,
-            'hash' => null,
-            'vault' => null,
-        ]));
+        $this->repository(AuthTokenRepository::class)->create(
+            AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+                'id' => null,
+                'userId' => 3,
+                'token' => 'schema-contract-token',
+                'actionId' => 2,
+                'createdBy' => 1,
+                'hash' => null,
+                'vault' => null,
+            ])
+        );
     }
 
     private function insertCategory(): void
     {
-        $this->repository(CategoryRepository::class)->create(new CategoryModel([
-            'name' => 'Schema Contract Category',
-            'description' => 'schema-contract-description',
-        ]));
+        $this->repository(CategoryRepository::class)->create(
+            CategoryGenerator::factory()->buildCategory()->mutate([
+                'id' => null,
+                'name' => 'Schema Contract Category',
+                'description' => 'schema-contract-description',
+                'hash' => null,
+            ])
+        );
     }
 
     private function insertClient(): void
     {
-        $this->repository(ClientRepository::class)->create(new ClientModel([
-            'name' => 'Schema Contract Client',
-            'description' => 'schema-contract-description',
-            'isGlobal' => 0,
-        ]));
+        $this->repository(ClientRepository::class)->create(
+            ClientGenerator::factory()->buildClient()->mutate([
+                'id' => null,
+                'name' => 'Schema Contract Client',
+                'description' => 'schema-contract-description',
+                'isGlobal' => 0,
+                'hash' => null,
+            ])
+        );
     }
 
     private function insertConfig(): void
     {
-        $this->repository(ConfigRepository::class)->create(new ConfigModel([
-            'parameter' => 'schema_contract_parameter',
-            'value' => 'schema-contract-value',
-        ]));
+        $this->repository(ConfigRepository::class)->create(
+            ConfigGenerator::factory()->buildConfig()->mutate([
+                'parameter' => 'schema_contract_parameter',
+                'value' => 'schema-contract-value',
+            ])
+        );
     }
 
     private function insertCustomFieldData(): void
     {
-        $this->repository(CustomFieldDataRepository::class)->create(new CustomFieldDataModel([
-            'moduleId' => 1,
-            'itemId' => 3,
-            'definitionId' => 1,
-            'data' => 'schema-contract-data',
-            'key' => 'schema-contract-key',
-        ]));
+        $this->repository(CustomFieldDataRepository::class)->create(
+            CustomFieldDataGenerator::factory()->buildCustomFieldData()->mutate([
+                'moduleId' => 1,
+                'itemId' => 3,
+                'definitionId' => 1,
+                'data' => 'schema-contract-data',
+                'key' => 'schema-contract-key',
+            ])
+        );
     }
 
     private function insertCustomFieldDefinition(): void
     {
         $this->repository(CustomFieldDefinitionRepository::class)->create(
-            new CustomFieldDefinitionModel([
+            CustomFieldDefinitionGenerator::factory()->buildCustomFieldDefinition()->mutate([
+                'id' => null,
                 'name' => 'Schema Contract Field',
                 'moduleId' => 1,
                 'required' => 0,
@@ -880,95 +949,124 @@ final class SchemaContractTest extends DatabaseRepositoryTestCase
 
     private function insertItemPreset(): void
     {
-        $this->repository(ItemPresetRepository::class)->create(new ItemPresetModel([
-            'type' => 'schema_contract',
-            'userId' => 3,
-            'fixed' => 0,
-            'priority' => 0,
-            'data' => null,
-        ]));
+        $this->repository(ItemPresetRepository::class)->create(
+            ItemPresetDataGenerator::factory()->buildItemPreset()->mutate([
+                'id' => null,
+                'type' => 'schema_contract',
+                'userId' => 3,
+                'userGroupId' => null,
+                'userProfileId' => null,
+                'fixed' => 0,
+                'priority' => 0,
+                'data' => null,
+            ])
+        );
     }
 
     private function insertNotification(): void
     {
-        $this->repository(NotificationRepository::class)->create(new NotificationModel([
-            'type' => 'schema',
-            'component' => 'SchemaContract',
-            'description' => 'schema-contract-description',
-            'checked' => false,
-            'userId' => 1,
-            'sticky' => false,
-            'onlyAdmin' => false,
-        ]));
+        $this->repository(NotificationRepository::class)->create(
+            NotificationDataGenerator::factory()->buildNotification()->mutate([
+                'id' => null,
+                'type' => 'schema',
+                'component' => 'SchemaContract',
+                'description' => 'schema-contract-description',
+                'checked' => false,
+                'userId' => 1,
+                'sticky' => false,
+                'onlyAdmin' => false,
+            ])
+        );
     }
 
     private function insertPlugin(): void
     {
-        $this->repository(PluginRepository::class)->create(new PluginModel([
-            'name' => 'Schema Contract Plugin',
-            'data' => null,
-            'enabled' => false,
-            'versionLevel' => '1.0',
-        ]));
+        $this->repository(PluginRepository::class)->create(
+            PluginGenerator::factory()->buildPlugin()->mutate([
+                'id' => null,
+                'name' => 'Schema Contract Plugin',
+                'data' => null,
+                'enabled' => false,
+                'versionLevel' => '1.0',
+            ])
+        );
     }
 
     private function insertPluginData(): void
     {
-        $this->repository(PluginDataRepository::class)->create(new PluginDataModel([
-            'name' => 'Authenticator',
-            'itemId' => 5,
-            'data' => 'schema-contract-data',
-            'key' => 'schema-contract-key',
-        ]));
+        $this->repository(PluginDataRepository::class)->create(
+            PluginDataGenerator::factory()->buildPluginData()->mutate([
+                'name' => 'Authenticator',
+                'itemId' => 5,
+                'data' => 'schema-contract-data',
+                'key' => 'schema-contract-key',
+            ])
+        );
     }
 
     private function insertEventlog(): void
     {
-        $this->repository(EventlogRepository::class)->create(new EventlogModel([
-            'login' => 'schema-contract',
-            'userId' => 1,
-            'ipAddress' => '127.0.0.1',
-            'action' => 'schema.contract',
-            'description' => 'schema-contract-description',
-            'level' => 'INFO',
-        ]));
+        $this->repository(EventlogRepository::class)->create(
+            EventlogGenerator::factory()->buildEventlog()->mutate([
+                'id' => null,
+                'login' => 'schema-contract',
+                'userId' => 1,
+                'ipAddress' => '127.0.0.1',
+                'action' => 'schema.contract',
+                'description' => 'schema-contract-description',
+                'level' => 'INFO',
+            ])
+        );
     }
 
     private function insertTrack(): void
     {
-        $this->repository(TrackRepository::class)->add(new TrackModel([
-            'userId' => 1,
-            'source' => 'schema_contract',
-            'timeUnlock' => null,
-            'ipv4' => null,
-            'ipv6' => null,
-        ]));
+        $this->repository(TrackRepository::class)->add(
+            TrackGenerator::factory()->buildTrack()->mutate([
+                'id' => null,
+                'userId' => 1,
+                'source' => 'schema_contract',
+                'timeUnlock' => null,
+                'ipv4' => null,
+                'ipv6' => null,
+            ])
+        );
     }
 
     private function insertTag(): void
     {
-        $this->repository(TagRepository::class)->create(new TagModel([
-            'name' => 'schema-contract-tag',
-        ]));
+        $this->repository(TagRepository::class)->create(
+            TagGenerator::factory()->buildTag()->mutate([
+                'id' => null,
+                'name' => 'schema-contract-tag',
+                'hash' => null,
+            ])
+        );
     }
 
     private function insertUser(): void
     {
-        $this->repository(UserRepository::class)->create(new UserModel([
-            'name' => 'Schema Contract User',
-            'userGroupId' => 2,
-            'login' => 'schema_contract_user',
-            'pass' => 'schema-contract-pass',
-            'userProfileId' => 2,
-        ]));
+        $this->repository(UserRepository::class)->create(
+            UserDataGenerator::factory()->buildUserData()->mutate([
+                'id' => null,
+                'name' => 'Schema Contract User',
+                'userGroupId' => 2,
+                'login' => 'schema_contract_user',
+                'pass' => 'schema-contract-pass',
+                'userProfileId' => 2,
+            ])
+        );
     }
 
     private function insertUserGroup(): void
     {
-        $this->repository(UserGroupRepository::class)->create(new UserGroupModel([
-            'name' => 'Schema Contract Group',
-            'description' => 'schema-contract-description',
-        ]));
+        $this->repository(UserGroupRepository::class)->create(
+            UserGroupGenerator::factory()->buildUserGroupData()->mutate([
+                'id' => null,
+                'name' => 'Schema Contract Group',
+                'description' => 'schema-contract-description',
+            ])
+        );
     }
 
     private function insertUserPassRecover(): void
@@ -978,10 +1076,13 @@ final class SchemaContractTest extends DatabaseRepositoryTestCase
 
     private function insertUserProfile(): void
     {
-        $this->repository(UserProfileRepository::class)->create(new UserProfileModel([
-            'name' => 'Schema Contract Profile',
-            'profile' => 'schema-contract-profile-payload',
-        ]));
+        $this->repository(UserProfileRepository::class)->create(
+            UserProfileDataGenerator::factory()->buildUserProfileData()->mutate([
+                'id' => null,
+                'name' => 'Schema Contract Profile',
+                'profile' => 'schema-contract-profile-payload',
+            ])
+        );
     }
 
     private function insertUserToUserGroup(): void
@@ -1062,6 +1163,31 @@ final class SchemaContractTest extends DatabaseRepositoryTestCase
     private function schemaConnection(): PDO
     {
         return $this->schemaConnection ??= getDbHandler()->getConnection();
+    }
+
+    /**
+     * Columns a repository insert must supply when strict SQL mode is enabled.
+     *
+     * @return array<string, array{COLUMN_NAME: string, IS_NULLABLE: string, COLUMN_DEFAULT: mixed, EXTRA: string}>
+     */
+    private function requiredInsertColumns(string $table): array
+    {
+        return array_filter(
+            $this->schemaColumns($table),
+            static function (array $column): bool {
+                $extra = strtolower($column['EXTRA']);
+
+                return $column['IS_NULLABLE'] !== 'YES'
+                       && $column['COLUMN_DEFAULT'] === null
+                       && !str_contains($extra, 'auto_increment')
+                       && !str_contains($extra, 'default_generated');
+            }
+        );
+    }
+
+    private static function isStrictSqlMode(string $sqlMode): bool
+    {
+        return preg_match('/(^|,)(STRICT_TRANS_TABLES|STRICT_ALL_TABLES)(,|$)/', $sqlMode) === 1;
     }
 
     /**

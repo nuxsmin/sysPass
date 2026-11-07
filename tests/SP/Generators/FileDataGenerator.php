@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Generators;
 
+use SP\Domain\Account\Models\File;
 use SP\Domain\Common\Models\Simple;
 
 /**
@@ -36,7 +37,7 @@ final class FileDataGenerator extends DataGenerator
     {
         return new Simple(
             array_merge(
-                $this->buildFileData()->toArray(null, null, true),
+                $this->fileProperties(),
                 ['clientName' => $this->faker->name(), 'accountName' => $this->faker->name()]
             )
         );
@@ -44,15 +45,25 @@ final class FileDataGenerator extends DataGenerator
 
     public function buildFileData(): Simple
     {
-        return new Simple([
-                              'id' => $this->faker->randomNumber(3),
-                              'accountId' => $this->faker->randomNumber(3),
-                              'name' => $this->faker->colorName(),
-                              'type' => 'image/jpeg',
-                              'content' => $this->faker->imageUrl(32, 32),
-                              'extension' => $this->faker->fileExtension(),
-                              'thumb' => $this->faker->imageUrl(32, 32),
-                              'size' => $this->faker->randomNumber(3),
-                          ]);
+        return new Simple($this->fileProperties());
+    }
+
+    public function buildFile(): File
+    {
+        return new File($this->fileProperties());
+    }
+
+    private function fileProperties(): array
+    {
+        return [
+            'id' => $this->faker->randomNumber(3),
+            'accountId' => $this->faker->randomNumber(3),
+            'name' => $this->faker->colorName(),
+            'type' => 'image/jpeg',
+            'content' => $this->faker->imageUrl(32, 32),
+            'extension' => $this->faker->fileExtension(),
+            'thumb' => $this->faker->imageUrl(32, 32),
+            'size' => $this->faker->randomNumber(3),
+        ];
     }
 }

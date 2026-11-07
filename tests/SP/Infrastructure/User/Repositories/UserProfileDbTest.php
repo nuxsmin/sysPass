@@ -33,6 +33,7 @@ use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\User\Models\UserProfile as UserProfileModel;
 use SP\Infrastructure\User\Repositories\UserProfile;
 use SP\Tests\DatabaseRepositoryTestCase;
+use SP\Tests\Generators\UserProfileDataGenerator;
 
 /**
  * DB-backed tests for the UserProfile repository queries.
@@ -83,10 +84,7 @@ final class UserProfileDbTest extends DatabaseRepositoryTestCase
     {
         $serialized = serialize(['custom' => true]);
 
-        $result = $this->userProfile->create(new UserProfileModel([
-            'name' => 'Custom',
-            'profile' => $serialized,
-        ]));
+        $result = $this->userProfile->create($this->profileModel('Custom', $serialized));
 
         $profile = $this->userProfile->getById($result->getLastId())->getData(UserProfileModel::class);
 
@@ -99,10 +97,7 @@ final class UserProfileDbTest extends DatabaseRepositoryTestCase
     {
         $this->expectException(DuplicatedItemException::class);
 
-        $this->userProfile->create(new UserProfileModel([
-            'name' => 'admin',
-            'profile' => serialize([]),
-        ]));
+        $this->userProfile->create($this->profileModel('admin', serialize([])));
     }
 
     #[Test]
@@ -110,11 +105,7 @@ final class UserProfileDbTest extends DatabaseRepositoryTestCase
     {
         $serialized = serialize(['updated' => true]);
 
-        $affected = $this->userProfile->update(new UserProfileModel([
-            'id' => 3,
-            'name' => 'Usuarios 2',
-            'profile' => $serialized,
-        ]));
+        $affected = $this->userProfile->update($this->profileModel('Usuarios 2', $serialized, 3));
 
         self::assertSame(1, $affected);
 
@@ -129,11 +120,7 @@ final class UserProfileDbTest extends DatabaseRepositoryTestCase
     {
         $this->expectException(DuplicatedItemException::class);
 
-        $this->userProfile->update(new UserProfileModel([
-            'id' => 3,
-            'name' => 'admin',
-            'profile' => serialize([]),
-        ]));
+        $this->userProfile->update($this->profileModel('admin', serialize([]), 3));
     }
 
     #[Test]
@@ -169,14 +156,8 @@ final class UserProfileDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function deleteByIdBatchRemovesOnlyTheSelectedProfiles(): void
     {
-        $first = $this->userProfile->create(new UserProfileModel([
-            'name' => 'Temporary A',
-            'profile' => serialize([]),
-        ]));
-        $second = $this->userProfile->create(new UserProfileModel([
-            'name' => 'Temporary B',
-            'profile' => serialize([]),
-        ]));
+        $first = $this->userProfile->create($this->profileModel('Temporary A', serialize([])));
+        $second = $this->userProfile->create($this->profileModel('Temporary B', serialize([])));
 
         $this->userProfile->deleteByIdBatch([$first->getLastId(), $second->getLastId()]);
 
@@ -206,5 +187,14 @@ final class UserProfileDbTest extends DatabaseRepositoryTestCase
         $this->expectException(ConstraintException::class);
 
         $this->userProfile->delete(1);
+    }
+
+    private function profileModel(string $name, string $profile, ?int $id = null): UserProfileModel
+    {
+        return UserProfileDataGenerator::factory()->buildUserProfileData()->mutate([
+            'id' => $id,
+            'name' => $name,
+            'profile' => $profile,
+        ]);
     }
 }

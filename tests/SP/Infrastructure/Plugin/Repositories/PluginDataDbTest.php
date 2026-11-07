@@ -30,6 +30,7 @@ use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
 use SP\Infrastructure\Plugin\Repositories\PluginData;
 use SP\Tests\DatabaseRepositoryTestCase;
+use SP\Tests\Generators\PluginDataGenerator;
 
 /**
  * DB-backed tests for the PluginData repository queries.
@@ -54,12 +55,14 @@ final class PluginDataDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function createPersistsThePluginData(): void
     {
-        $this->pluginData->create(new PluginDataModel([
-            'name' => 'Authenticator',
-            'itemId' => 4,
-            'data' => 'encrypted-data',
-            'key' => 'encryption-key',
-        ]));
+        $this->pluginData->create(
+            PluginDataGenerator::factory()->buildPluginData()->mutate([
+                'name' => 'Authenticator',
+                'itemId' => 4,
+                'data' => 'encrypted-data',
+                'key' => 'encryption-key',
+            ])
+        );
 
         $pluginData = $this->pluginData->getByItemId('Authenticator', 4)->getData(PluginDataModel::class);
 
@@ -70,12 +73,14 @@ final class PluginDataDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function updateChangesTheDataMatchedByNameAndItemId(): void
     {
-        $affected = $this->pluginData->update(new PluginDataModel([
-            'name' => 'Authenticator',
-            'itemId' => 1,
-            'data' => 'updated-data',
-            'key' => 'updated-key',
-        ]));
+        $affected = $this->pluginData->update(
+            PluginDataGenerator::factory()->buildPluginData()->mutate([
+                'name' => 'Authenticator',
+                'itemId' => 1,
+                'data' => 'updated-data',
+                'key' => 'updated-key',
+            ])
+        );
 
         self::assertSame(1, $affected);
 
