@@ -26,8 +26,6 @@ declare(strict_types=1);
 namespace SP\Domain\Common\Adapters;
 
 use League\Fractal\TransformerAbstract;
-use SP\Domain\Common\Dtos\Dto;
-use SP\Domain\Common\Models\Model;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 
 /**
@@ -40,6 +38,4 @@ abstract class Adapter extends TransformerAbstract
         protected readonly string              $baseUrl
     ) {
     }
-
-    abstract public function transform(Model&Dto $data);
 }

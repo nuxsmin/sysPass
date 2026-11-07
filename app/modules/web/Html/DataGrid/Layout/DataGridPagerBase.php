@@ -290,7 +290,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     {
         return (($this->totalRows % $this->limitCount) === 0)
             ? $this->totalRows - $this->limitCount
-            : floor($this->totalRows / $this->limitCount) * $this->limitCount;
+            : (int)(floor($this->totalRows / $this->limitCount) * $this->limitCount);
     }
 
     /**

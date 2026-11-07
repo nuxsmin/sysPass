@@ -135,8 +135,9 @@ class PluginTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 5
+                return count($params) === 6
                        && $params['id'] === $plugin->getId()
+                       && $params['whereName'] === $plugin->getName()
                        && $params['name'] === $plugin->getName()
                        && $params['data'] === $plugin->getData()
                        && $params['enabled'] === $plugin->getEnabled()

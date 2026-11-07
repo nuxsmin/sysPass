@@ -54,8 +54,7 @@ final class AuthProvider extends Provider implements AuthProviderService
         ConfigFileService $config,
         EventDispatcherInterface $eventDispatcher,
         Context $context
-    )
-    {
+    ) {
         parent::__construct($config, $eventDispatcher, $context);
 
         $this->auths = new SplObjectStorage();

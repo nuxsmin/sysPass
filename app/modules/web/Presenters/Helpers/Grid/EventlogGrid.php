@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Presenters\Helpers\Grid;
 
-
 use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -138,6 +137,8 @@ final class EventlogGrid extends GridBase
             'description',
             false,
             function ($value) use ($isDemoMode) {
+                $value = (string)($value ?? '');
+
                 if ($isDemoMode) {
                     $value = preg_replace(
                         '/\d+\.\d+\.\d+\.\d+/',
@@ -147,12 +148,13 @@ final class EventlogGrid extends GridBase
                 }
 
                 if (preg_match('/^SQL.*/m', $value)) {
-                    $value = preg_replace([
-                                              '/([a-zA-Z_]+),/m',
-                                              '/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m'
-                                          ],
-                                          ['\\1,<br>', '<br>\\1'],
-                                          $value
+                    $value = preg_replace(
+                        [
+                            '/([a-zA-Z_]+),/m',
+                            '/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m'
+                        ],
+                        ['\\1,<br>', '<br>\\1'],
+                        $value
                     );
                 }
 

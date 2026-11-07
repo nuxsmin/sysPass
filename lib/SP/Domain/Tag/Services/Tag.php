@@ -51,8 +51,7 @@ final class Tag extends Service implements TagService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly TagRepository $tagRepository
-    )
-    {
+    ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
 

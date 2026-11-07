@@ -217,7 +217,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
                        'dateExpire' => $publicLinkData->getDateExpire(),
                        'maxCountViews' => $publicLinkData->getMaxCountViews(),
                    ])
-            ->col('dateAdd = UNIX_TIMESTAMP()');
+            ->set('dateAdd', 'UNIX_TIMESTAMP()');
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the link'));
 

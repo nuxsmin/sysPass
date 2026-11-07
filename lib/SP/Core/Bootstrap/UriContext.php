@@ -76,5 +76,4 @@ final readonly class UriContext implements UriContextInterface
     {
         return $this->subUri;
     }
-
 }

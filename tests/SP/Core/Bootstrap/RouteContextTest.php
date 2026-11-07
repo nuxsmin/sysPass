@@ -42,8 +42,12 @@ class RouteContextTest extends TestCase
     public static function wrongRouteProvider(): array
     {
         return [
+            [''],
+            ['/'],
+            ['//'],
             ['testController_1'],
-            ['testController/action_1']
+            ['testController/action_1'],
+            ['testController//testAction']
         ];
     }
 
@@ -85,6 +89,47 @@ class RouteContextTest extends TestCase
         $this->assertEquals('testAction', $out->actionName);
         $this->assertEquals('testActionAction', $out->methodName);
         $this->assertCount(0, $out->methodParams);
+    }
+
+    #[Test]
+    public function testGetRouteContextDataWithTrailingSlashOnAction()
+    {
+        $route = 'testController/testAction/';
+
+        $out = RouteContext::getRouteContextData($route);
+
+        $this->assertEquals('testController', $out->controller);
+        $this->assertEquals('testAction', $out->actionName);
+        $this->assertEquals('testActionAction', $out->methodName);
+        $this->assertCount(0, $out->methodParams);
+    }
+
+    #[Test]
+    public function testGetRouteContextDataWithTrailingSlashOnParam()
+    {
+        $route = 'testController/testAction/param1/';
+
+        $out = RouteContext::getRouteContextData($route);
+
+        $this->assertEquals('testController', $out->controller);
+        $this->assertEquals('testAction', $out->actionName);
+        $this->assertEquals('testActionAction', $out->methodName);
+        $this->assertEquals('param1', $out->methodParams[0]);
+        $this->assertCount(1, $out->methodParams);
+    }
+
+    #[Test]
+    public function testGetRouteContextDataWithMultipleTrailingSlashes()
+    {
+        $route = 'testController/testAction/param1/param2//';
+
+        $out = RouteContext::getRouteContextData($route);
+
+        $this->assertEquals('testController', $out->controller);
+        $this->assertEquals('testAction', $out->actionName);
+        $this->assertEquals('param1', $out->methodParams[0]);
+        $this->assertEquals('param2', $out->methodParams[1]);
+        $this->assertCount(2, $out->methodParams);
     }
 
     #[DataProvider('wrongRouteProvider')]

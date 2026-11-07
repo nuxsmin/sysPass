@@ -53,8 +53,7 @@ final class Config extends Service implements ConfigService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly ConfigRepository $configRepository
-    )
-    {
+    ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
 

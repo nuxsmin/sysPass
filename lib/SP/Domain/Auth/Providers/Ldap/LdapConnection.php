@@ -25,6 +25,7 @@ declare(strict_types=1);
  */
 
 namespace SP\Domain\Auth\Providers\Ldap;
+
 use SP\Domain\Auth\Dtos\LdapParams;
 use SP\Domain\Auth\Exceptions\LdapException;
 

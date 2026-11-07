@@ -54,8 +54,7 @@ final class UserProfile extends Service implements UserProfileService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly UserProfileRepository $userProfileRepository
-    )
-    {
+    ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
 

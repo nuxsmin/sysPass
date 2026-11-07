@@ -182,12 +182,12 @@ final readonly class Acl implements AclActionsInterface, AclInterface
                 return $userProfile->isMgmPublicLinks();
             case self::PUBLICLINK_CREATE:
             case self::PUBLICLINK_REFRESH:
-            return $userProfile->isMgmPublicLinks() || $userProfile->isAccPublicLinks();
+                return $userProfile->isMgmPublicLinks() || $userProfile->isAccPublicLinks();
             case self::ACCOUNTMGR:
             case self::ACCOUNTMGR_SEARCH:
             case self::ACCOUNTMGR_HISTORY:
             case self::ACCOUNTMGR_HISTORY_SEARCH:
-            return $userDto->isAdminAcc || $userProfile->isMgmAccounts();
+                return $userDto->isAdminAcc || $userProfile->isMgmAccounts();
             case self::FILE:
             case self::FILE_SEARCH:
             case self::FILE_DELETE:

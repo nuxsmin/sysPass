@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "bash scripts/build-assets.sh"
+    "build": "bash scripts/build-assets.sh",
+    "test:js": "node --test tests/js/*.test.mjs"
   },
   "devDependencies": {
     "esbuild": "0.23.0",

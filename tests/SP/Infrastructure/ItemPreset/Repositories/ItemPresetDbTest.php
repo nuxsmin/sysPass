@@ -28,6 +28,7 @@ namespace SP\Tests\Infrastructure\ItemPreset\Repositories;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Infrastructure\ItemPreset\Repositories\ItemPreset;
 use SP\Tests\DatabaseRepositoryTestCase;
@@ -68,5 +69,65 @@ final class ItemPresetDbTest extends DatabaseRepositoryTestCase
         self::assertSame(1, $page->getNumRows());
         self::assertSame(1, $page->getTotalNumRows());
         self::assertSame(4, $page->getDataAsArray(ItemPresetModel::class)[0]->getId());
+    }
+
+    #[Test]
+    public function createPersistsThePresetWithItsHash(): void
+    {
+        $preset = new ItemPresetModel([
+            'type' => 'permission',
+            'userId' => 3,
+            'fixed' => 0,
+            'priority' => 7,
+        ]);
+
+        $result = $this->itemPreset->create($preset);
+
+        self::assertGreaterThan(0, $result->getLastId());
+
+        $stored = $this->itemPreset->getById($result->getLastId())->getData(ItemPresetModel::class);
+
+        self::assertSame('permission', $stored->getType());
+        self::assertSame(3, $stored->getUserId());
+        self::assertSame(7, $stored->getPriority());
+        self::assertSame(
+            $stored->getHash(),
+            $this->fetchValue(sprintf('SELECT hash FROM ItemPreset WHERE id = %d', $result->getLastId()))
+        );
+    }
+
+    #[Test]
+    public function createRejectsADuplicatedHash(): void
+    {
+        $this->expectException(ConstraintException::class);
+
+        $this->itemPreset->create(new ItemPresetModel([
+            'type' => 'permission',
+            'userId' => 1,
+            'fixed' => 0,
+            'priority' => 0,
+        ]));
+    }
+
+    #[Test]
+    public function updateChangesThePresetAndRecomputesTheHash(): void
+    {
+        $preset = new ItemPresetModel([
+            'id' => 1,
+            'type' => 'permission',
+            'userId' => 1,
+            'fixed' => 0,
+            'priority' => 7,
+        ]);
+
+        self::assertSame(1, $this->itemPreset->update($preset));
+
+        $stored = $this->itemPreset->getById(1)->getData(ItemPresetModel::class);
+
+        self::assertSame(7, $stored->getPriority());
+        self::assertSame(
+            $preset->getHash(),
+            $this->fetchValue('SELECT hash FROM ItemPreset WHERE id = 1')
+        );
     }
 }

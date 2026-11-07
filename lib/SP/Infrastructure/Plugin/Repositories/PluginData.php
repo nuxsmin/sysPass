@@ -108,8 +108,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
         $query = $this->queryFactory
             ->newDelete()
             ->from(self::TABLE)
-            ->where('name = :name', ['name' => $name])
-            ->limit(1);
+            ->where('name = :name', ['name' => $name]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting plugin\'s data'));
 

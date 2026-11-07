@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Core;
 
-
 /**
  * Interface AppInfoInterface
  *

@@ -50,5 +50,4 @@ final class UpdatedMasterPassException extends SPException
             $previous
         );
     }
-
 }

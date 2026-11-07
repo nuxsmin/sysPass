@@ -90,7 +90,7 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the account\'s tags'));
 
-        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
+        return $this->db->runQuery($queryData)->getAffectedNumRows() > 0;
     }
 
     /**
