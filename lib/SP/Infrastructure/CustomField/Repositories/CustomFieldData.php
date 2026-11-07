@@ -117,14 +117,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
         $query = $this->queryFactory
             ->newInsert()
             ->into(CustomFieldDataModel::TABLE)
-            ->cols(CustomFieldDataModel::getCols())
-            ->bindValues([
-                             'itemId' => $customFieldData->getItemId(),
-                             'moduleId' => $customFieldData->getModuleId(),
-                             'definitionId' => $customFieldData->getDefinitionId(),
-                             'data' => $customFieldData->getData(),
-                             'key' => $customFieldData->getKey(),
-                         ]);
+            ->cols($customFieldData->toArray(null, ['id']));
 
         return $this->db->runQuery(QueryData::build($query));
     }
