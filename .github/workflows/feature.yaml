@@ -31,6 +31,9 @@ jobs:
       - name: Build assets
         run: bash scripts/build-assets.sh
 
+      - name: JavaScript unit tests
+        run: npm run test:js
+
       - name: Setup locales
         run: |
           sudo locale-gen es_ES.UTF-8 en_US.UTF-8 && sudo update-locale

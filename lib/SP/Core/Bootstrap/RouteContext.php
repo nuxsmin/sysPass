@@ -42,6 +42,8 @@ final class RouteContext
 
     public static function getRouteContextData(string $route): RouteContextData
     {
+        $route = rtrim($route, '/');
+
         if (!preg_match_all(self::ROUTE_REGEX, $route, $matches)) {
             throw new RuntimeException(__u('Invalid route'));
         }
