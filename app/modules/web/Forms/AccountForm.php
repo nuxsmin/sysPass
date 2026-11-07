@@ -112,20 +112,24 @@ final class AccountForm extends FormBase implements FormInterface
      */
     private function analyzeRequestData(): AccountCreateDto|AccountUpdateDto
     {
+        $userData = $this->context->getUserData();
+        $defaultUserId = $this->itemId === null ? $userData->id : null;
+        $defaultUserGroupId = $this->itemId === null ? $userData->userGroupId : null;
+
         $properties = [
             'name' => $this->request->analyzeString('name'),
             'login' => $this->request->analyzeString('login'),
             'clientId' => $this->request->analyzeInt('client_id'),
             'categoryId' => $this->request->analyzeInt('category_id'),
             'pass' => $this->request->analyzeEncrypted('password'),
-            'userId' => $this->request->analyzeInt('owner_id', $this->context->getUserData()->id),
+            'userId' => $this->request->analyzeInt('owner_id') ?? $defaultUserId,
             'url' => $this->request->analyzeString('url'),
             'notes' => $this->request->analyzeUnsafeString('notes'),
             'private' => (int)$this->request->analyzeBool('private_enabled', false),
             'privateGroup' => (int)$this->request->analyzeBool('private_group_enabled', false),
             'passDateChange' => $this->request->analyzeInt('password_date_expire_unix'),
             'parentId' => $this->request->analyzeInt('parent_account_id'),
-            'userGroupId' => $this->request->analyzeInt('main_usergroup_id'),
+            'userGroupId' => $this->request->analyzeInt('main_usergroup_id') ?? $defaultUserGroupId,
         ];
 
         return $this->itemId === null ? AccountCreateDto::fromArray($properties) : AccountUpdateDto::fromArray(

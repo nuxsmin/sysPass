@@ -127,6 +127,42 @@ final class AccountDbIntegrationTest extends DatabaseIntegrationTestCase
     }
 
     /**
+     * An admin may leave the Owner/Main Group selects on their empty default.
+     * Creation must then fall back to the current user and group.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[InjectCrypt]
+    public function saveCreateDefaultsOwnerAndGroupToCurrentUserWhenNotSelected(): void
+    {
+        $result = $this->dispatch(
+            'post',
+            'account/saveCreate',
+            [],
+            [
+                'name' => 'Account Without Owner',
+                'login' => 'no-owner',
+                'client_id' => '1',
+                'category_id' => '1',
+                'password' => 'secret',
+                'password_repeat' => 'secret',
+                'owner_id' => '',
+                'main_usergroup_id' => '',
+            ]
+        );
+
+        $json = $this->assertJsonOk($result, 'Account created');
+        $itemId = (int)($json['data']['itemId'] ?? 0);
+
+        self::assertGreaterThan(0, $itemId);
+        self::assertSame(1, (int)$this->fetchValue('SELECT userId FROM Account WHERE id = ' . $itemId));
+        self::assertSame(1, (int)$this->fetchValue('SELECT userGroupId FROM Account WHERE id = ' . $itemId));
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
