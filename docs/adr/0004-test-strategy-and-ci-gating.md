@@ -1,6 +1,6 @@
 # 0004 - Test strategy and CI gating
 
-Status: Accepted (2026-10-31); amended by ADR-0009 (2026-11-01) and by ADR-0011 (2026-11-02, which assigns template-migration gating to HTTP Integration Tests and browser coverage to page loading only); CI gating amended 2026-11-07 (issue #2121)
+Status: Accepted (2026-10-31); amended by ADR-0009 (2026-11-01) and by ADR-0011 (2026-11-02, which assigns template-migration gating to HTTP Integration Tests and browser coverage to page loading only); CI gating amended 2026-11-07 (issue #2121); DB-backed HTTP integration variant added 2026-11-07 (issue #2124)
 Issue: #2041 (plan P11-4, decisions D4 and P10-6, tracking #1976)
 
 ## Context
@@ -17,7 +17,7 @@ The pre-migration suite mixed these levels. Domain tests imported Infrastructure
 |---|---|---|---|---|
 | **Unit** | Domain rules, use case orchestration, DTO/contract shape, static architecture rules | `tests/SP/Domain`, `tests/SP/Core`, `tests/SP/Infrastructure` (mocked SQL), `tests/SP/Mvc`, `tests/SP/Util`, `tests/SP/Architecture`; plain `TestCase` or `SP\Tests\UnitaryTestCase` | `unitary` | No database, no module bootstrap |
 | **DB-backed Infrastructure** | Repository queries execute and return correct rows on the real engine | `tests/SP/Infrastructure/*/Repositories/*DbTest.php`; base `SP\Tests\DatabaseRepositoryTestCase` (`tests/SP/DatabaseRepositoryTestCase.php:40`) | `integration` | Real MariaDB with fixtures |
-| **HTTP-level web integration** | A request reaches the right action and produces the expected response body through the module bootstrap | `tests/SP/Modules/Web/Controllers/<Area>/`; base `SP\Tests\IntegrationTestCase` (`tests/SP/IntegrationTestCase.php:84`) | `integration` | In-process web bootstrap with stubbed container dependencies |
+| **HTTP-level web integration** | A request reaches the right action and produces the expected response body through the module bootstrap | `tests/SP/Modules/Web/Controllers/<Area>/`; base `SP\Tests\IntegrationTestCase` (`tests/SP/IntegrationTestCase.php:84`) for stubbed requests, or `SP\Tests\DatabaseIntegrationTestCase` (`tests/SP/DatabaseIntegrationTestCase.php`) for DB-backed requests | `integration` | In-process web bootstrap; stubbed container dependencies for characterisation tests, or the real `Database` adapter over fixtures for DB-backed flows |
 | **API and CLI adapter integration** | JSON-RPC envelopes and console commands keep their observable contract | `tests/SP/Modules/Api` and `tests/SP/Modules/Cli`; base `ApiTestCase` / `CliTestCase` | `integration` | Module bootstrap with stubbed dependencies where the test does not need a database |
 
 The pyramid is deliberately narrow at the top. There is no browser or network end-to-end suite: the web integration tests build a container, dispatch an in-process `Klein\Request` through `Bootstrap::run()` and assert the rendered body, which covers the routing, controller, use case and view path without a second process.
@@ -42,6 +42,20 @@ The pyramid is deliberately narrow at the top. There is no browser or network en
 - The class is written before the controller is migrated and must be green on the current code. It then acts as the regression net for the migration.
 - `IntegrationTestCase::buildContainer()` merges the real module definitions with stubbed dependencies (config, database, ACL, mail, theme) and `runApp()` executes the request. `#[BodyChecker]` attributes assert the rendered response.
 - The test names the user-visible behaviour, not the implementation. It must not depend on the internal call sequence of a controller.
+
+### DB-backed HTTP integration is a second web variant
+
+The stubbed characterisation tests above remain the per-action regression net for controller migration. A second variant covers flows whose correctness depends on real SQL, hydration and persistence while still traversing the full web boundary:
+
+- `SP\Tests\DatabaseIntegrationTestCase` extends `IntegrationTestCase` and adds `DatabaseTrait` fixture loading; it binds the real `Database` adapter into `buildContainer()` instead of the stubbed `DatabaseInterface`.
+- Rows are seeded through the production repositories (for example the `ItemPreset` repository), never through `addDatabaseMapperResolver()` or model objects keyed by class name. That keeps the seed path on the same SQL and hydration code as the application.
+- The base overrides `getConfigData()`, `getUserDataDto()`, `getContext()` and `getUserProfile()` so the request runs as fixture user 1, group 1 and profile 1 with a realistic `lastUpdateMPass`. `Context` CSRF stays `null` so `Csrf::check()` short-circuits.
+- A `dispatch()` helper captures both the rendered body and the HTTP status code, because the `#[BodyChecker]` path cannot expose the code.
+- Each test reloads the fixtures. Tests are not wrapped in an outer transaction because `BaseRepository::transactionAware()` would commit it.
+- These classes cover group and category view/edit/save, account password and permission preset create/edit, event log index/search and account view/edit/save, including a success and a denied-access case per flow. Denied account view/edit must return a 4xx (`403`) with a non-empty body; authorization itself is still enforced.
+- The class-level `#[InjectVault]` attribute and method-level `#[InjectCrypt]` attribute provide the encrypted-data fixtures required by account tests.
+
+The client-side `getUrl()` regression (empty route segments producing a trailing slash) is **not** covered by this variant: it is a JavaScript defect that a PHP HTTP response cannot observe. It is deferred to #2125 with a browser/JS test; #2124 intentionally leaves it out.
 
 ### Test conventions
 
@@ -102,6 +116,6 @@ The workflow runs on pushes to `master`, pull requests targeting `master` or `fe
 - ADR-0002: translation and error policy (assertions at each boundary).
 - ADR-0003: use case and Command/Result convention.
 - Plan: `.kilo/plans/hexagonal-migration.md` phase 10, decision D4 and section 9.
-- Decisions: #2018 (P10-2), #2019 (P10-3), #2035 (P10-1), #2039 (P10-4), #2020 (P10-5), #1958 (P0-2, D4). This ADR: #2041. CI gating amendment: #2120, #2121. Tracking: #1976.
-- Code and configuration: `tests/phpunit.xml:42`, `tests/phpunit.xml:52`, `tests/SP/DatabaseRepositoryTestCase.php:40`, `tests/SP/IntegrationTestCase.php:84`, `tests/coverage-thresholds.php`, `scripts/coverage-gate.php`, `phpstan.neon`, `phpstan-baseline.neon`, `scripts/ci/check-phpcs-changed.sh`, `.github/workflows/feature.yaml:78`, `.github/workflows/feature.yaml:115`, `.github/workflows/feature.yaml:279`, `.github/workflows/feature.yaml:386`.
+- Decisions: #2018 (P10-2), #2019 (P10-3), #2035 (P10-1), #2039 (P10-4), #2020 (P10-5), #1958 (P0-2, D4). This ADR: #2041. CI gating amendment: #2120, #2121. DB-backed HTTP integration variant: #2124; deferred client-side `getUrl()` coverage: #2125. Tracking: #1976.
+- Code and configuration: `tests/phpunit.xml:42`, `tests/phpunit.xml:52`, `tests/SP/DatabaseRepositoryTestCase.php:40`, `tests/SP/DatabaseIntegrationTestCase.php`, `tests/SP/IntegrationTestCase.php:84`, `tests/coverage-thresholds.php`, `scripts/coverage-gate.php`, `phpstan.neon`, `phpstan-baseline.neon`, `scripts/ci/check-phpcs-changed.sh`, `.github/workflows/feature.yaml:78`, `.github/workflows/feature.yaml:115`, `.github/workflows/feature.yaml:279`, `.github/workflows/feature.yaml:386`.
 - Metrics: `scripts/architecture-metrics.sh` (M14, M16).

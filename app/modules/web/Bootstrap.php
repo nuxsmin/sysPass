@@ -34,6 +34,9 @@ use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
 use SP\Core\Bootstrap\BootstrapBase;
+use SP\Domain\Core\Acl\AccountPermissionException;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -126,7 +129,7 @@ final class Bootstrap extends BootstrapBase
                     )
                 );
 
-                /** @var ActionResponse $response */
+                /** @var ActionResponse $actionResponse */
                 $actionResponse = $method->invokeArgs(
                     $this->buildInstanceFor($controllerClass),
                     Util::mapScalarParameters(
@@ -139,6 +142,14 @@ final class Bootstrap extends BootstrapBase
                 $this->buildResponse($method, $actionResponse, $response);
             } catch (SessionTimeout) {
                 logger('Session timeout');
+            } catch (UnauthorizedPageException|UnauthorizedActionException|AccountPermissionException $e) {
+                $this->buildResponse(
+                    $method,
+                    ActionResponse::error($e->getMessage(), $e->getHint()),
+                    $response
+                );
+
+                $response->code(Code::FORBIDDEN->value);
             } catch (Exception $e) {
                 processException($e);
 
