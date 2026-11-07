@@ -1,0 +1,14 @@
+<component name="CopyrightManager">
+  <settings default="sysPass">
+    <module2copyright>
+      <element module="PHP" copyright="sysPass" />
+    </module2copyright>
+    <LanguageOptions name="SQL">
+      <option name="fileTypeOverride" value="1" />
+    </LanguageOptions>
+    <LanguageOptions name="__TEMPLATE__">
+      <option name="separateBefore" value="true" />
+      <option name="lenBefore" value="1" />
+    </LanguageOptions>
+  </settings>
+</component>

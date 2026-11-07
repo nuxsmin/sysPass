@@ -1,0 +1,61 @@
+name: UI Smoke
+
+# This workflow is intentionally isolated so the daily schedule can only run
+# the UI observation job. It must not be merged into feature.yaml, whose other
+# jobs already have their own triggers and database provisioning.
+#
+# The pipeline, budgets and evidence upload live in the shared reusable
+# runner (.github/workflows/ui-smoke-run.yml). This caller only keeps the
+# triggers, the execution switch and the stable check name.
+on:
+  pull_request:
+    branches: [ master, 'feat/*' ]
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      diagnostic_retry:
+        description: 'Allow one diagnostic retry; a retry-success run is flaky and cannot be complete Tier A'
+        type: boolean
+        default: false
+  schedule:
+    # Once a day against master. The shared runner pins the scheduled ref
+    # explicitly instead of relying on the runner's default branch.
+    - cron: '17 4 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  ui-work:
+    name: UI Smoke (Tier A) workload
+    # TESTS_UI_ENABLED is an execution switch only. It is not a merge gate.
+    # An unset or non-true value skips the job without producing Tier A
+    # evidence, so a skip must never be read as a qualified observation.
+    if: ${{ vars.TESTS_UI_ENABLED == 'true' }}
+    uses: ./.github/workflows/ui-smoke-run.yml
+    permissions:
+      contents: read
+    with:
+      tier: A
+      # Default CI retries stay at zero. A workflow_dispatch operator may
+      # explicitly opt in to one diagnostic retry.
+      diagnostic_retry: ${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic_retry }}
+
+  # The stable required-check name stays on this one-step mirror job. A skipped
+  # workload therefore skips the mirror rather than reporting success, and a
+  # failed workload fails the mirror. Required-check promotion is a separate
+  # maintainer operation and is not implied by this workflow.
+  ui:
+    name: UI Smoke (Tier A)
+    needs: ui-work
+    if: ${{ always() && vars.TESTS_UI_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require the shared runner to succeed
+        env:
+          WORK_RESULT: ${{ needs['ui-work'].result }}
+        run: |
+          set -euo pipefail
+          test "$WORK_RESULT" = "success"

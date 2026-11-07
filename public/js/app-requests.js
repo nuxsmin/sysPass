@@ -3,7 +3,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,6 +25,8 @@ sysPass.Requests = function (sysPassApp) {
     "use strict";
 
     const log = sysPassApp.log;
+
+    const RESPONSE_STATUS_CODES = {OK: 0, ERROR: 1, WARNING: 2};
 
     /**
      * Historial de consultas AJAX
@@ -126,6 +128,15 @@ sysPass.Requests = function (sysPassApp) {
     const getActionCall = function (opts, callbackOk, callbackError) {
         log.info("getActionCall");
 
+        let headers = {};
+        let method = opts.method.toUpperCase();
+
+        if ((method === "POST" || method === "GET")
+            && sysPassApp.config.CSRF
+        ) {
+            headers = {"X-CSRF": sysPassApp.config.CSRF};
+        }
+
         return $.ajax({
             dataType: opts.type,
             url: getUrl(opts.url),
@@ -136,6 +147,7 @@ sysPass.Requests = function (sysPassApp) {
             processData: opts.processData,
             contentType: opts.contentType,
             timeout: opts.timeout,
+            headers: headers,
             beforeSend: function () {
                 if (opts.useLoading === true) {
                     sysPassApp.theme.loading.show(opts.useFullLoading);
@@ -146,17 +158,14 @@ sysPass.Requests = function (sysPassApp) {
                     return true;
                 }
 
+                if (response && typeof response.status === "string") {
+                    response.status = RESPONSE_STATUS_CODES[response.status] ?? response.status;
+                }
+
                 // Añadir entrada al historial
                 if (opts.addHistory === true) {
                     opts.callback = callbackOk;
                     history.add(opts);
-                }
-
-                if (opts.type === "json"
-                    && response['csrf'] !== undefined
-                    && response.csrf !== ""
-                ) {
-                    sysPassApp.sk.set(response.csrf);
                 }
 
                 callbackOk(response);

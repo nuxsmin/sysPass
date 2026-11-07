@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" preserveTimestamps="false" traceLevel="BRIEF" confirmBeforeDeletion="false">
+    <option name="confirmBeforeDeletion" value="false" />
+    <serverData>
+      <paths name="Docker Local DEV">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="app/modules/web/plugins/Authenticator" local="$PROJECT_DIR$/../sysPass-Authenticator" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/build" />
+            <excludedPath local="true" path="$PROJECT_DIR$/doc" />
+            <excludedPath local="true" path="$PROJECT_DIR$/app/config" />
+            <excludedPath local="true" path="$PROJECT_DIR$/tests/_output" />
+            <excludedPath local="true" path="$PROJECT_DIR$/tests/tmp" />
+            <excludedPath local="true" path="$PROJECT_DIR$/app/modules/web/plugins" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+      <paths name="Docker Local Master">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/sysPass" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="FTP sysPass DEV">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/_lib" local="$PROJECT_DIR$/lib" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/vendor" />
+            <excludedPath local="true" path="$PROJECT_DIR$/tools" />
+            <excludedPath local="true" path="$PROJECT_DIR$/res" />
+            <excludedPath local="true" path="$PROJECT_DIR$/build" />
+            <excludedPath local="true" path="$PROJECT_DIR$/app/config" />
+            <excludedPath local="true" path="$PROJECT_DIR$/doc" />
+            <excludedPath local="true" path="$PROJECT_DIR$/tests" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

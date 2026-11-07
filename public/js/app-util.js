@@ -3,7 +3,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -359,7 +359,7 @@ sysPass.Util = function (log) {
                 numlength: 12
             },
             charset: {
-                special: "!\"\\·@|#$~%&/()=?'¿¡^*[]·;,_-{}<>",
+                special: "!\"#$%&\'*+,.\/:;=?@\\^`|~[]{}()<>",
                 number: "1234567890",
                 char: "abcdefghijklmnopqrstuvwxyz"
             }
@@ -584,15 +584,79 @@ sysPass.Util = function (log) {
     };
 
     /**
+     * Builds a route from its segments
+     *
+     * Empty trailing segments are omitted. An empty segment followed by a real
+     * segment is rejected as a malformed route.
+     *
+     * @param segments
+     * @returns {string}
+     */
+    const buildRoute = function (segments) {
+        const values = Array.isArray(segments) ? segments : [segments];
+        const route = [];
+        let absent = false;
+
+        values.forEach(function (segment) {
+            if (segment === null || segment === undefined || segment === "") {
+                absent = true;
+                return;
+            }
+
+            if (absent) {
+                throw new Error("Malformed route: empty segment in the middle");
+            }
+
+            if (typeof segment === "number") {
+                if (!Number.isFinite(segment)) {
+                    throw new Error("Malformed route: invalid segment");
+                }
+
+                route.push(String(segment));
+                return;
+            }
+
+            if (typeof segment !== "string"
+                || !/^[a-zA-Z0-9._/-]+$/.test(segment)
+                || segment.startsWith("/")
+                || segment.endsWith("/")
+                || segment.includes("//")
+            ) {
+                throw new Error("Malformed route: invalid segment");
+            }
+
+            route.push(segment);
+        });
+
+        if (route.length === 0) {
+            throw new Error("Malformed route: empty route");
+        }
+
+        return route.join("/");
+    };
+
+    /**
      * Returns a serialized URL for a GET request
      * @param base
      * @param parts
      * @returns {string}
      */
     const getUrl = function (base, parts) {
+        if (parts === null || parts === undefined) {
+            return base;
+        }
+
         return base + "?" + Object.keys(parts).map(function (key) {
             if (Array.isArray(parts[key])) {
-                return key + "=" + parts[key].join("/");
+                const values = parts[key].filter(function (value) {
+                    return value !== null && value !== undefined && value !== "";
+                });
+
+                return key + "=" + values.join("/");
+            }
+
+            if (key === "r" && typeof parts[key] === "string") {
+                return key + "=" + parts[key].replace(/\/+$/, "");
             }
 
             return key + "=" + parts[key];
@@ -617,6 +681,7 @@ sysPass.Util = function (log) {
         setContentSize: setContentSize,
         redirect: redirect,
         uniqueId: uniqueId,
+        buildRoute: buildRoute,
         getUrl: getUrl,
         focus: focus,
         sendNotification: notifications.send,

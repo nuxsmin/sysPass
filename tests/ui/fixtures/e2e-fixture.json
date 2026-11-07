@@ -1,0 +1,55 @@
+{
+  "credentials": {
+    "admin": {
+      "login": "E2E_Admin",
+      "password": "E2E_Admin_Password_2026",
+      "masterPassword": "E2E_Master_Password_2026"
+    },
+    "demo": {
+      "login": "E2E_Demo",
+      "password": "E2E_Demo_Password_2026",
+      "masterPassword": "E2E_Master_Password_2026"
+    }
+  },
+  "ids": {
+    "groups": {
+      "demo": 2
+    },
+    "profiles": {
+      "demo": 2
+    },
+    "users": {
+      "admin": 1,
+      "demo": 2
+    },
+    "clients": {
+      "primary": 1
+    },
+    "categories": {
+      "primary": 1
+    },
+    "accounts": {
+      "parent": 1001,
+      "child": 1002
+    },
+    "files": {
+      "childDocument": 1
+    }
+  },
+  "names": {
+    "demoGroup": "E2E_Users",
+    "demoProfile": "E2E Demo",
+    "client": "E2E_Client",
+    "category": "E2E_Category",
+    "parentAccount": "E2E_Parent_Account",
+    "childAccount": "E2E_Child_Account",
+    "childFile": "E2E_notes.txt"
+  },
+  "content": {
+    "parentLogin": "E2E_parent_user",
+    "childLogin": "E2E_child_user",
+    "parentPassword": "E2E_Parent_Secret_2026",
+    "childPassword": "E2E_Child_Secret_2026",
+    "childFileText": "Synthetic E2E attachment content for the isolated UI smoke instance.\n"
+  }
+}

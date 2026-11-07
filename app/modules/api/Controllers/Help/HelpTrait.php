@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,7 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api\Controllers\Help;
@@ -32,19 +32,19 @@ namespace SP\Modules\Api\Controllers\Help;
 trait HelpTrait
 {
     /**
-     * @param string $action
+     * @param  string  $action
      *
      * @return array
      */
     public static function getHelpFor(string $action): array
     {
-        if (strpos($action, '/') !== false) {
-            list(, $action) = explode('/', $action);
+        if (str_contains($action, '/')) {
+            [, $action] = explode('/', $action);
         }
 
         if (method_exists(static::class, $action)) {
             return [
-                'help' => static::$action()
+                'help' => static::$action(),
             ];
         }
 
@@ -52,14 +52,19 @@ trait HelpTrait
     }
 
     /**
-     * @param string $name
-     * @param string $description
-     * @param bool   $required
+     * @param  string  $name
+     * @param  string  $description
+     * @param  bool  $required
      *
      * @return array
      */
-    private static function getItem(string $name, string $description, bool $required = false): array
-    {
-        return [$name => ['description' => $description, 'required' => $required]];
+    private static function getItem(
+        string $name,
+        string $description,
+        bool $required = false
+    ): array {
+        return [
+            $name => ['description' => $description, 'required' => $required],
+        ];
     }
 }

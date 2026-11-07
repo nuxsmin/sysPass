@@ -1,0 +1,14 @@
+{
+  "name": "syspass-assets",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "bash scripts/build-assets.sh",
+    "test:js": "node --test tests/js/*.test.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.23.0",
+    "sass": "1.77.8",
+    "terser": "5.31.3"
+  }
+}
