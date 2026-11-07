@@ -54,8 +54,7 @@ final class PluginManager extends Service implements PluginManagerService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly PluginRepository $pluginRepository
-    )
-    {
+    ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
 

@@ -75,5 +75,4 @@ final readonly class MailParams
     {
         return $this->mailAuthenabled;
     }
-
 }

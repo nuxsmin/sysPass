@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Core;
 
-
 /**
  * Class Language para el manejo del lenguaje utilizado por la aplicación
  *

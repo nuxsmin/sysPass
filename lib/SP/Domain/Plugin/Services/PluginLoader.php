@@ -50,8 +50,7 @@ final class PluginLoader extends Service implements PluginLoaderService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly PluginManagerService $pluginManagerService
-    )
-    {
+    ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
 

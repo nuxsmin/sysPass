@@ -197,5 +197,4 @@ interface PluginRepository extends Repository
      * @return QueryResult<T>
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult;
-
 }

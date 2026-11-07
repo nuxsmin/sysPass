@@ -51,8 +51,7 @@ final class PluginRegister extends Service implements PluginRegisterService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly PluginManagerService $pluginManagerService
-    )
-    {
+    ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
 

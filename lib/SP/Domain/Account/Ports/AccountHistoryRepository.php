@@ -122,5 +122,4 @@ interface AccountHistoryRepository extends Repository
      * @return QueryResult
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult;
-
 }

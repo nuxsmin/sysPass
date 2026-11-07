@@ -55,8 +55,7 @@ final class ItemPreset extends Service implements ItemPresetService
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly ItemPresetRepository $itemPresetRepository
-    )
-    {
+    ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
 
