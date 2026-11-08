@@ -3,8 +3,20 @@ name: Feature Build & Test
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - '.idea/**'
+      - '.kilo/**'
+      - '.ai-cli/**'
   pull_request:
     branches: [ master, 'feat/*' ]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - '.idea/**'
+      - '.kilo/**'
+      - '.ai-cli/**'
   workflow_dispatch:
 
 jobs:

@@ -10,8 +10,20 @@ name: UI Smoke
 on:
   pull_request:
     branches: [ master, 'feat/*' ]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - '.idea/**'
+      - '.kilo/**'
+      - '.ai-cli/**'
   push:
     branches: [ master ]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - '.idea/**'
+      - '.kilo/**'
+      - '.ai-cli/**'
   workflow_dispatch:
     inputs:
       diagnostic_retry:
