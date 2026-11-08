@@ -1,10 +1,11 @@
 <?php
-/**
+declare(strict_types=1);
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,24 +20,28 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Tests\Mvc\Controller\Validators;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use SP\Mvc\Controller\Validators\Validator;
+use SP\Modules\Web\Mvc\Controller\Validators\Validator;
 
 /**
  * Class ValidatorTest
  *
  * @package SP\Tests\Mvc\Controller\Validators
  */
+#[Group('unitary')]
 class ValidatorTest extends TestCase
 {
-    const VALID_STRING = 'abcDE123_!';
-    const VALID_REGEX = '^[a-zA-Z\d_!]+$';
+    public const VALID_STRING = 'abcDE123_!';
+    public const VALID_REGEX  = '^[a-zA-Z\d_!]+$';
 
+    #[Test]
     public function testMatchRegex()
     {
         $this->assertTrue(Validator::matchRegex(self::VALID_STRING, self::VALID_REGEX));
@@ -46,6 +51,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse(Validator::matchRegex(self::VALID_STRING, $regex));
     }
 
+    #[Test]
     public function testHasLetters()
     {
         $this->assertTrue(Validator::hasLetters(self::VALID_STRING));
@@ -55,6 +61,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse(Validator::hasLetters($string));
     }
 
+    #[Test]
     public function testHasUpper()
     {
         $this->assertTrue(Validator::hasUpper(self::VALID_STRING));
@@ -64,6 +71,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse(Validator::hasUpper($string));
     }
 
+    #[Test]
     public function testHasSymbols()
     {
         $this->assertTrue(Validator::hasSymbols(self::VALID_STRING));
@@ -73,6 +81,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse(Validator::hasSymbols($string));
     }
 
+    #[Test]
     public function testHasNumbers()
     {
         $this->assertTrue(Validator::hasNumbers(self::VALID_STRING));
@@ -82,6 +91,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse(Validator::hasNumbers($string));
     }
 
+    #[Test]
     public function testHasLower()
     {
         $this->assertTrue(Validator::hasLower(self::VALID_STRING));
@@ -91,6 +101,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse(Validator::hasLower($string));
     }
 
+    #[Test]
     public function testIsRegex()
     {
         $this->assertNotFalse(Validator::isRegex(self::VALID_REGEX));

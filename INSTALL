@@ -21,6 +21,9 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+Requirements: PHP 8.3, 8.4 or 8.5 (`>=8.3 <8.6`), with the mbstring, intl, gd, ldap,
+gettext and pdo_mysql extensions, and MySQL or MariaDB.
+
 Instalación y preguntas frecuentes en https://doc.syspass.org
 
 ---

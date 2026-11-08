@@ -1,0 +1,277 @@
+<?php
+
+declare(strict_types=1);
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Tests\Core\UI;
+
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
+use SP\Domain\Core\Context\ContextException;
+use SP\Core\UI\Theme;
+use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\UI\ThemeContextInterface;
+use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\File\Ports\PhpFileLoaderInterface;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\UserPreferences;
+use SP\Tests\Generators\UserDataGenerator;
+use SP\Tests\UnitaryTestCase;
+
+/**
+ * Class ThemeTest
+ *
+ */
+#[Group('unitary')]
+class ThemeTest extends UnitaryTestCase
+{
+
+    private ThemeContextInterface|MockObject $themeContext;
+    private ThemeIconsInterface|MockObject   $themeIcons;
+    private PhpFileLoaderInterface|MockObject $fileLoader;
+    private Theme $theme;
+
+    #[Test]
+    public function testGetIcons()
+    {
+        $expected = spl_object_id($this->themeIcons);
+        $current = spl_object_id($this->theme->getIcons());
+
+        $this->assertNotEquals($expected, $current);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Test]
+    public function testGetThemeNameUnathenticated()
+    {
+        $context = $this->createMock(SessionContext::class);
+        $context->expects(self::once())
+                ->method('isLoggedIn')
+                ->willReturn(false);
+
+        $context->expects(self::never())
+                ->method('getUserData');
+
+        $configData = $this->config->getConfigData();
+        $configData->setSiteTheme(self::$faker->colorName);
+
+        $current = Theme::getThemeName($this->config->getConfigData(), $context);
+
+        $this->assertEquals($configData->getSiteTheme(), $current);
+    }
+
+    /**
+     * @throws Exception
+     * @throws SPException
+     */
+    #[Test]
+    public function testGetThemeNameAuthenticated()
+    {
+        $context = $this->createMock(SessionContext::class);
+        $context->expects(self::once())
+                ->method('isLoggedIn')
+                ->willReturn(true);
+
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
+
+        $context->expects(self::once())
+                ->method('getUserData')
+            ->willReturn($userDto);
+
+        $configData = $this->config->getConfigData();
+        $configData->setSiteTheme(self::$faker->colorName);
+
+        $current = Theme::getThemeName($this->config->getConfigData(), $context);
+
+        $this->assertEquals($userDto->preferences->getTheme(), $current);
+    }
+
+    /**
+     * @throws Exception
+     * @throws SPException
+     */
+    #[Test]
+    public function testGetThemeNameAuthenticatedWithBlankThemeFallsBackToSiteTheme(): void
+    {
+        $context = $this->createMock(SessionContext::class);
+        $context->expects(self::once())
+                ->method('isLoggedIn')
+                ->willReturn(true);
+
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData())
+                          ->mutate(['preferences' => new UserPreferences(['theme' => ''])]);
+
+        $context->expects(self::once())
+                ->method('getUserData')
+            ->willReturn($userDto);
+
+        $configData = $this->config->getConfigData();
+        $configData->setSiteTheme(self::$faker->colorName);
+
+        $current = Theme::getThemeName($this->config->getConfigData(), $context);
+
+        $this->assertSame($configData->getSiteTheme(), $current);
+    }
+
+    #[Test]
+    public function testGetViewsPath()
+    {
+        $path = self::$faker->filePath();
+        $this->themeContext
+            ->expects(self::once())
+            ->method('getViewsPath')
+            ->willReturn($path);
+
+        $this->assertEquals($path, $this->theme->getViewsPath());
+    }
+
+    #[Test]
+    public function testGetInfo()
+    {
+        $this->themeContext
+            ->expects(self::once())
+            ->method('getFullPath')
+            ->willReturn(self::$faker->filePath());
+
+        $this->assertEquals([], $this->theme->getInfo());
+    }
+
+    #[Test]
+    public function testGetUri()
+    {
+        $url = self::$faker->url();
+        $this->themeContext
+            ->expects(self::once())
+            ->method('getUri')
+            ->willReturn($url);
+
+        $this->assertEquals($url, $this->theme->getUri());
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Test]
+    public function testGetAvailable()
+    {
+        $originalCwd = getcwd();
+        $tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'syspass_theme_' . bin2hex(random_bytes(8));
+        $themes = ['theme-a' => 'Theme A', 'theme-b' => 'Theme B'];
+
+        try {
+            self::assertNotFalse($originalCwd);
+            self::assertTrue(mkdir($tempDir));
+
+            foreach ($themes as $themeDir => $themeName) {
+                self::assertTrue(mkdir($tempDir . DIRECTORY_SEPARATOR . $themeDir));
+                file_put_contents(
+                    $tempDir . DIRECTORY_SEPARATOR . $themeDir . DIRECTORY_SEPARATOR . 'index.php',
+                    '<?php return [];'
+                );
+            }
+
+            self::assertTrue(chdir($tempDir));
+
+            $directory = dir($tempDir);
+            self::assertNotFalse($directory);
+
+            $this->themeContext
+                ->expects(self::once())
+                ->method('getViewsDirectory')
+                ->willReturn($directory);
+
+            $this->themeContext
+                ->method('getViewsPath')
+                ->willReturn($tempDir);
+
+            $this->fileLoader
+                ->method('load')
+                ->willReturnCallback(
+                    static function (string $file) use ($tempDir, $themes): array {
+                        foreach ($themes as $themeDir => $themeName) {
+                            $themeIndex = implode(
+                                DIRECTORY_SEPARATOR,
+                                [$tempDir, $themeDir, 'index.php']
+                            );
+
+                            if ($file === $themeIndex) {
+                                return ['name' => $themeName];
+                            }
+                        }
+
+                        self::fail('Unexpected theme file: ' . $file);
+                    }
+                );
+
+            $available = $this->theme->getAvailable();
+            ksort($available);
+            ksort($themes);
+
+            $this->assertSame($themes, $available);
+        } finally {
+            if ($originalCwd !== false) {
+                chdir($originalCwd);
+            }
+
+            foreach (array_keys($themes) as $themeDir) {
+                @unlink($tempDir . DIRECTORY_SEPARATOR . $themeDir . DIRECTORY_SEPARATOR . 'index.php');
+                @rmdir($tempDir . DIRECTORY_SEPARATOR . $themeDir);
+            }
+
+            @rmdir($tempDir);
+        }
+    }
+
+    #[Test]
+    public function testGetPath()
+    {
+        $path = self::$faker->filePath();
+        $this->themeContext
+            ->expects(self::once())
+            ->method('getPath')
+            ->willReturn($path);
+
+        $this->assertEquals($path, $this->theme->getPath());
+    }
+
+    /**
+     * @throws ContextException
+     * @throws Exception
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->themeContext = $this->createMock(ThemeContextInterface::class);
+        $this->themeIcons = $this->createMock(ThemeIconsInterface::class);
+        $this->fileLoader = $this->createMock(PhpFileLoaderInterface::class);
+
+        $this->theme = new Theme($this->themeContext, $this->themeIcons, $this->fileLoader);
+    }
+}

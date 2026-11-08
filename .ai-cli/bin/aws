@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# aws — pinned entry point for the AI kit ($AWS_BIN in ../env.sh points here).
+# Inside the Flatpak sandbox: exec host aws via host-spawn.
+# Outside: exec /usr/bin/aws directly, falling back to PATH.
+set -euo pipefail
+
+if [ "${FLATPAK_IDE_ENV:-}" = "1" ] && [ -x /app/bin/host-spawn ]; then
+  exec /app/bin/host-spawn aws "$@"
+fi
+
+if [ -x /usr/bin/aws ]; then
+  exec /usr/bin/aws "$@"
+fi
+exec aws "$@"

@@ -3,7 +3,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -198,14 +198,12 @@ sysPass.Actions = function (log) {
                         const opts = sysPassApp.requests.getRequestOpts();
                         opts.url = ajaxUrl.entrypoint;
                         opts.data = {
-                            r: "account/saveDelete/" + $obj.data("item-id"),
+                            r: sysPassApp.util.buildRoute(["account/saveDelete", $obj.data("item-id")]),
                             sk: sysPassApp.sk.get()
                         };
 
                         sysPassApp.requests.getActionCall(opts, function (json) {
                             sysPassApp.msg.out(json);
-
-                            sysPassApp.sk.set(json.csrf);
 
                             account.search($obj);
                         });
@@ -297,7 +295,7 @@ sysPass.Actions = function (log) {
             const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.data = {
-                r: actionRoute + "/" + $obj.data("item-id"),
+                r: sysPassApp.util.buildRoute([actionRoute, $obj.data("item-id")]),
                 sk: sysPassApp.sk.get(),
                 isAjax: 1
             };
@@ -318,7 +316,9 @@ sysPass.Actions = function (log) {
             log.info("account:request");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + $obj.data("item-id");
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {
+                r: sysPassApp.util.buildRoute([$obj.data("action-route"), $obj.data("item-id")])
+            });
             opts.data = $obj.serialize() + "&sk=" + sysPassApp.sk.get();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
@@ -327,8 +327,6 @@ sysPass.Actions = function (log) {
                 if (json.status === 0
                     && json.data['nextAction'] !== undefined
                 ) {
-                    sysPassApp.sk.set(json.csrf);
-
                     getContent({r: json.data.nextAction}, "account");
                 }
             });
@@ -365,7 +363,7 @@ sysPass.Actions = function (log) {
             const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.data = {
-                r: $obj.data("action-route") + "/" + $obj.data("history-id") + "/" + $obj.data("item-id"),
+                r: sysPassApp.util.buildRoute([$obj.data("action-route"), $obj.data("history-id"), $obj.data("item-id")]),
                 sk: sysPassApp.sk.get()
             };
 
@@ -426,7 +424,9 @@ sysPass.Actions = function (log) {
             log.info("account:save");
 
             const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + $obj.data("item-id");
+            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {
+                r: sysPassApp.util.buildRoute([$obj.data("action-route"), $obj.data("item-id")])
+            });
             opts.data = $obj.serialize();
 
             // Sets which "select" elements should be updated
@@ -1616,8 +1616,6 @@ sysPass.Actions = function (log) {
                 } else {
                     $target.html(sysPassApp.msg.html.error(json.description));
                 }
-
-                sysPassApp.sk.set(json.csrf);
             });
         },
         nav: function ($obj, callback) {

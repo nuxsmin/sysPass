@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# terraform — pinned entry point for the AI kit ($TERRAFORM_BIN in ../env.sh points here).
+# Inside the Flatpak sandbox: exec host terraform via host-spawn.
+# Outside: exec /usr/bin/terraform directly, falling back to PATH.
+set -euo pipefail
+
+if [ "${FLATPAK_IDE_ENV:-}" = "1" ] && [ -x /app/bin/host-spawn ]; then
+  exec /app/bin/host-spawn terraform "$@"
+fi
+
+if [ -x /usr/bin/terraform ]; then
+  exec /usr/bin/terraform "$@"
+fi
+exec terraform "$@"

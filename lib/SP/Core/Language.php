@@ -1,10 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,54 +21,47 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
 
-use SP\Config\Config;
-use SP\Config\ConfigData;
-use SP\Core\Context\ContextInterface;
-use SP\Core\Context\SessionContext;
-use SP\Http\Request;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Http\Ports\RequestService;
 
-defined('APP_ROOT') || die();
+use function SP\logger;
 
 /**
  * Class Language para el manejo del lenguaje utilizado por la aplicación
  *
  * @package SP
  */
-final class Language
+final class Language implements LanguageInterface
 {
     /**
      * Lenguaje del usuario
-     *
-     * @var string
      */
-    public static $userLang = '';
+    public static string $userLang = '';
     /**
      * Lenguaje global de la Aplicación
-     *
-     * @var string
      */
-    public static $globalLang = '';
+    public static string $globalLang = '';
     /**
      * Estado de la localización. false si no existe
      *
      * @var string|false
      */
-    public static $localeStatus;
+    public static string|false $localeStatus;
     /**
      * Si se ha establecido a las de la App
-     *
-     * @var bool
      */
-    protected static $appSet = false;
+    protected static bool $appSet = false;
     /**
-     * @var array Available languages
+     *  Available languages
      */
-    private static $langs = [
+    private static array $langs = [
         'es_ES' => 'Español',
         'ca_ES' => 'Catalá',
         'en_US' => 'English',
@@ -82,41 +77,20 @@ final class Language
         'fo' => 'Føroyskt mál',
         'ja_JP' => '日本語',
     ];
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
-    /**
-     * @var  SessionContext
-     */
-    protected $context;
-    /**
-     * @var Request
-     */
-    private $request;
 
-    /**
-     * Language constructor.
-     *
-     * @param ContextInterface $session
-     * @param Config           $config
-     * @param Request          $request
-     */
-    public function __construct(ContextInterface $session, Config $config, Request $request)
-    {
-        $this->context = $session;
-        $this->configData = $config->getConfigData();
-        $this->request = $request;
-
+    public function __construct(
+        private readonly Context        $context,
+        private readonly ConfigDataInterface $configData,
+        private readonly RequestService $request,
+        private readonly string         $localesPath
+    ) {
         ksort(self::$langs);
     }
 
     /**
      * Devolver los lenguajes disponibles
-     *
-     * @return array
      */
-    public static function getAvailableLanguages()
+    public static function getAvailableLanguages(): array
     {
         return self::$langs;
     }
@@ -126,7 +100,7 @@ final class Language
      *
      * @param bool $force Forzar la detección del lenguaje para los inicios de sesión
      */
-    public function setLanguage($force = false)
+    public function setLanguage(bool $force = false): void
     {
         $lang = $this->context->getLocale();
 
@@ -139,48 +113,46 @@ final class Language
             $this->context->setLocale($lang);
         }
 
-        self::setLocales($lang);
+        $this->setLocales($lang);
     }
 
     /**
      * Devuelve el lenguaje del usuario
-     *
-     * @return string
      */
-    private function getUserLang()
+    private function getUserLang(): string
     {
-        $userData = $this->context->getUserData();
+        $userDto = $this->context->getUserData();
 
-        return ($userData->getId() > 0) ? $userData->getPreferences()->getLang() : '';
+        return ($userDto->id > 0)
+            ? $userDto->preferences->getLang()
+            : '';
     }
 
     /**
      * Establece el lenguaje de la aplicación.
      * Esta función establece el lenguaje según esté definido en la configuración o en el navegador.
      */
-    private function getGlobalLang()
+    private function getGlobalLang(): string
     {
         return $this->configData->getSiteLang() ?: $this->getBrowserLang();
     }
 
     /**
      * Devolver el lenguaje que acepta el navegador
-     *
-     * @return string
      */
-    private function getBrowserLang()
+    private function getBrowserLang(): string
     {
         $lang = $this->request->getHeader('Accept-Language');
 
-        return $lang !== '' ? str_replace('-', '_', substr($lang, 0, 5)) : 'en_US';
+        return $lang !== ''
+            ? str_replace('-', '_', substr($lang, 0, 5))
+            : 'en_US';
     }
 
     /**
      * Establecer las locales de gettext
-     *
-     * @param string $lang El lenguaje a utilizar
      */
-    public static function setLocales($lang)
+    public function setLocales(string $lang): void
     {
         $lang .= '.utf8';
 
@@ -193,12 +165,12 @@ final class Language
 
         if ($locale === false) {
             logger('Could not set locale to ' . $lang, 'ERROR');
-            logger('Domain path: ' . LOCALES_PATH);
+            logger('Domain path: ' . $this->localesPath);
         } else {
             logger('Locale set to: ' . $locale);
         }
 
-        bindtextdomain('messages', LOCALES_PATH);
+        bindtextdomain('messages', $this->localesPath);
         textdomain('messages');
         bind_textdomain_codeset('messages', 'UTF-8');
     }
@@ -206,10 +178,14 @@ final class Language
     /**
      * Establecer el lenguaje global para las traducciones
      */
-    public function setAppLocales()
+    public function setAppLocales(): void
     {
+        if (!$this->context->isInitialized()) {
+            return;
+        }
+
         if ($this->configData->getSiteLang() !== $this->context->getLocale()) {
-            self::setLocales($this->configData->getSiteLang());
+            $this->setLocales($this->configData->getSiteLang());
 
             self::$appSet = true;
         }
@@ -218,24 +194,12 @@ final class Language
     /**
      * Restablecer el lenguaje global para las traducciones
      */
-    public function unsetAppLocales()
+    public function unsetAppLocales(): void
     {
         if (self::$appSet === true) {
-            self::setLocales($this->context->getLocale());
+            $this->setLocales($this->context->getLocale());
 
             self::$appSet = false;
         }
-    }
-
-    /**
-     * Comprobar si el archivo de lenguaje existe
-     *
-     * @param string $lang El lenguaje a comprobar
-     *
-     * @return bool
-     */
-    private function checkLangFile($lang)
-    {
-        return file_exists(LOCALES_PATH . DIRECTORY_SEPARATOR . $lang);
     }
 }

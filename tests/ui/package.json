@@ -1,0 +1,18 @@
+{
+  "name": "syspass-ui-smoke",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Isolated Playwright UI smoke harness for sysPass page loads",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "playwright test",
+    "test:unit": "node --test src/*.test.mjs",
+    "test:preflight": "node --test src/preflight.test.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "20.19.43",
+    "typescript": "5.9.3"
+  }
+}

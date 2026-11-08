@@ -1,0 +1,282 @@
+name: UI Smoke (shared runner)
+
+# Shared pipeline for the Tier A and Tier B UI smoke callers. It owns setup,
+# provisioning, the Playwright run, budgets and the sanitized evidence upload;
+# the caller workflows keep their own triggers, execution switches and stable
+# check names. Scheduled callers pin master, so this runner keeps its own
+# schedule-aware checkout.
+on:
+  workflow_call:
+    inputs:
+      tier:
+        description: 'UI smoke tier to run; must be A or B'
+        type: string
+        required: true
+      diagnostic_retry:
+        description: 'Allow one diagnostic retry; a retry-success run is flaky and cannot be complete Tier A'
+        type: boolean
+        default: false
+      retention_days:
+        description: 'Artifact retention for the sanitized evidence set'
+        type: number
+        default: 90
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    name: Run Tier ${{ inputs.tier }} UI smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      # The shared runner's own switch. Callers gate execution before calling.
+      TESTS_UI_ENABLED: 'true'
+      SP_UI_TIER: ${{ inputs.tier }}
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/tests/ui/.browsers
+    steps:
+      - name: Checkout
+        timeout-minutes: 2
+        uses: actions/checkout@v4
+        with:
+          # Scheduled runs always observe master, even if the default branch
+          # changes. Other events keep their own ref (merge ref for PRs).
+          ref: ${{ github.event_name == 'schedule' && 'master' || github.ref }}
+
+      # Evidence roots, artifact names and setup-failure run IDs are
+      # tier-scoped. Unknown tiers fail before any setup or retention occurs
+      # instead of publishing an unscoped or misleading evidence set.
+      - name: Validate requested tier
+        timeout-minutes: 1
+        env:
+          REQUESTED_TIER: ${{ inputs.tier }}
+        run: |
+          set -euo pipefail
+          case "$REQUESTED_TIER" in
+            A|B) ;;
+            *)
+              echo "::error::Unsupported UI smoke tier '$REQUESTED_TIER'; expected exactly A or B."
+              exit 1
+              ;;
+          esac
+          slug="$(printf '%s' "$REQUESTED_TIER" | tr '[:upper:]' '[:lower:]')"
+          echo "UI_SMOKE_TIER_SLUG=$slug" >> "$GITHUB_ENV"
+
+      - name: Record observed commit and setup start
+        timeout-minutes: 2
+        env:
+          # Tier-specific headings are preserved so existing observation
+          # history and summaries keep their identity.
+          OBSERVED_COMMIT_LABEL: ${{ inputs.tier == 'B' && 'Tier B observed commit' || 'UI smoke observed commit' }}
+          OBSERVED_COMMIT_HEADING: ${{ inputs.tier == 'B' && 'UI smoke Tier B observed commit' || 'UI smoke observed commit' }}
+        run: |
+          set -euo pipefail
+          commit="$(git rev-parse HEAD)"
+          branch="$(git rev-parse --abbrev-ref HEAD)"
+          echo "$OBSERVED_COMMIT_LABEL: $commit ($branch)"
+          {
+            echo "## $OBSERVED_COMMIT_HEADING"
+            echo ""
+            echo "- Commit: \`$commit\`"
+            echo "- Branch: \`$branch\`"
+            echo "- Event: \`${{ github.event_name }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "UI_SMOKE_SETUP_STARTED_MS=$(date +%s%3N)" >> "$GITHUB_ENV"
+          echo "UI_SMOKE_SETUP_STARTED_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+
+      - name: Setup Node.js
+        timeout-minutes: 5
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            tests/ui/package-lock.json
+
+      - name: Install root assets
+        timeout-minutes: 10
+        run: npm ci
+
+      - name: Build assets
+        timeout-minutes: 10
+        run: bash scripts/build-assets.sh
+
+      - name: Setup locale
+        timeout-minutes: 3
+        run: sudo locale-gen en_US.UTF-8
+
+      - name: Set up Docker Buildx
+        timeout-minutes: 5
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build the PHP 8.3 test image
+        timeout-minutes: 25
+        uses: docker/build-push-action@v6
+        with:
+          context: scripts/docker
+          file: scripts/docker/Dockerfile.php-testing
+          build-args: COMPOSER_VERSION=2.7
+          tags: php-testing-composer:latest
+          load: true
+          cache-from: type=gha,scope=php-testing-composer
+          cache-to: type=gha,mode=max,scope=php-testing-composer
+
+      - name: Verify the PHP 8.3 test image
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+          docker run --rm --entrypoint php php-testing-composer:latest -r \
+            'exit(PHP_VERSION_ID >= 80300 && PHP_VERSION_ID < 80400 ? 0 : 1);'
+          docker run --rm --entrypoint php php-testing-composer:latest -v
+
+      # MariaDB is pulled per job on purpose. A job `services:` block would
+      # break the run-owned database isolation and would not share an image
+      # cache across runs, so the runner keeps owning this container.
+      - name: Pull disposable MariaDB 10.3
+        timeout-minutes: 10
+        run: docker pull mariadb:10.3
+
+      - name: Restore Composer cache
+        timeout-minutes: 5
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/composer-cache
+          key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      - name: Install Composer dependencies
+        timeout-minutes: 10
+        run: |
+          set -euo pipefail
+          mkdir -p "${{ runner.temp }}/composer-cache"
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            -e HOME=/tmp \
+            -e COMPOSER_CACHE_DIR=/tmp/composer-cache \
+            -v "$PWD:$PWD" \
+            -v "${{ runner.temp }}/composer-cache:/tmp/composer-cache" \
+            -w "$PWD" \
+            php-testing-composer:latest \
+            php /usr/bin/composer install \
+              --prefer-dist --no-interaction --no-plugins --no-scripts
+
+      - name: Restore Playwright browsers
+        timeout-minutes: 5
+        uses: actions/cache@v4
+        with:
+          path: tests/ui/.browsers
+          key: playwright-${{ runner.os }}-${{ hashFiles('tests/ui/package-lock.json') }}
+          restore-keys: playwright-${{ runner.os }}-
+
+      - name: Install locked UI harness and pinned Chromium
+        timeout-minutes: 15
+        working-directory: tests/ui
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run typecheck
+          ./node_modules/.bin/playwright install --with-deps chromium
+
+      # The runner owns an independent MariaDB 10.3 container on a run-owned
+      # network. It never reuses the integration job's service or schema, and
+      # sp:install creates the unique database. No MYSQL_DATABASE is set.
+      - name: Run Tier ${{ inputs.tier }} UI smoke
+        timeout-minutes: 20
+        env:
+          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}
+          # Default CI retries stay at zero. A workflow_dispatch operator may
+          # explicitly opt in to one diagnostic retry; failOnFlakyTests still
+          # rejects a retry-success as complete Tier A evidence.
+          SP_UI_DIAGNOSTIC_RETRY: ${{ inputs.diagnostic_retry && '1' || '0' }}
+        run: bash scripts/ui-smoke.sh
+
+      # AC6 bounds setup separately from the spec budget and the job deadline.
+      # The runner writes UI_SMOKE_SPECS_STARTED_MS after provisioning (DB start,
+      # sp:install, seeding and web readiness) and immediately before Playwright,
+      # so this guard measures the real setup window. The shared script fails
+      # closed for missing, empty, non-numeric, negative, zero or reversed
+      # stamps and for an over-budget window. ci-report repeats the same
+      # validation on the retained evidence, so the budget failure is also a
+      # non-pass observation.
+      - name: Enforce setup budget
+        if: always()
+        timeout-minutes: 1
+        env:
+          UI_SMOKE_SETUP_BUDGET_SECONDS: '1800'
+        run: bash scripts/ci/check-setup-budget.sh
+
+      # A failure or cancellation in any pre-run step (npm ci, assets, image
+      # build, Composer, UI harness, or the runner itself) must still leave
+      # sanitized evidence. The helper leaves a complete runner-retained set
+      # untouched, repairs a partial set that still has its authoritative
+      # summary, and otherwise fails closed with a setup-failed set so
+      # ci-report sees one summary. Run IDs and messages stay tier-specific so
+      # existing Tier A and Tier B history keeps its identity.
+      - name: Record pre-run setup-failure evidence
+        if: cancelled() || failure()
+        timeout-minutes: 3
+        env:
+          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}
+          SP_UI_SETUP_ERROR: ${{ inputs.tier == 'B' && 'UI smoke Tier B workflow failed before the runner retained Playwright evidence.' || 'UI smoke workflow failed before the runner retained Playwright evidence.' }}
+          SP_UI_SETUP_RUN_ID: ${{ inputs.tier == 'B' && format('ui-smoke.tier-b-ci-setup-{0}-{1}', github.run_id, github.run_attempt) || format('ui-smoke.ci-setup-{0}-{1}', github.run_id, github.run_attempt) }}
+        run: |
+          set -euo pipefail
+          source scripts/lib/ui-smoke-report.sh
+          started_at="${UI_SMOKE_SETUP_STARTED_AT:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
+          run_id="${SP_UI_SETUP_RUN_ID:-ui-smoke.ci-setup-${GITHUB_RUN_ID:-local}-${GITHUB_RUN_ATTEMPT:-0}}"
+          ui_smoke_ci_setup_report "$SP_UI_SUMMARY_DIR" "$PWD/tests/ui" "$run_id" "$started_at"
+
+      # Tier B is annotation-only: failed routes produce warning annotations
+      # and a failing exit. The job conclusion stays failed and the separate
+      # Tier A workflow is unaffected.
+      - name: Evaluate Tier ${{ inputs.tier }} evidence and budget
+        if: always()
+        timeout-minutes: 3
+        env:
+          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}
+        run: |
+          node tests/ui/src/ci-report.mjs \
+            --summaries "$SP_UI_SUMMARY_DIR" \
+            --tier "${{ inputs.tier }}" \
+            --budget-seconds 300 \
+            --setup-budget-seconds 1800 \
+            --setup-started-ms "${UI_SMOKE_SETUP_STARTED_MS:-}" \
+            --setup-finished-ms "${UI_SMOKE_SPECS_STARTED_MS:-}"
+
+      # Fail before publishing when the retained set is empty, duplicated or
+      # partial, or when upload-manifest.json lists an entry outside the
+      # explicit allowlist. The upload below is an explicit allowlist, never
+      # the directory.
+      - name: Verify retained evidence set
+        id: verify_evidence
+        if: always()
+        timeout-minutes: 3
+        env:
+          SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}
+        run: |
+          set -euo pipefail
+          source scripts/lib/ui-smoke-report.sh
+          ui_smoke_verify_single_summary_root "$SP_UI_SUMMARY_DIR"
+
+      # Only the runner's retained allowlist is published: run-summary.json,
+      # junit.xml, upload-manifest.json and allowlisted failed-attempt evidence
+      # from #2081. Verification also checks the manifest against this same
+      # allowlist. A missing set fails instead of silently publishing nothing.
+      # Upload is gated on verification success, not on the earlier steps: a
+      # genuine Tier test failure still has a complete verified set and is
+      # published, while a duplicate or partial set is never published.
+      - name: Publish sanitized Tier ${{ inputs.tier }} evidence
+        if: always() && steps.verify_evidence.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-smoke-tier-${{ env.UI_SMOKE_TIER_SLUG }}-${{ github.sha }}-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}/*/run-summary.json
+            ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}/*/junit.xml
+            ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}/*/upload-manifest.json
+            ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}/*/failures/**/screenshot.png
+            ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}/*/failures/**/console.log
+            ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}/*/failures/**/failure.json
+          if-no-files-found: error
+          retention-days: ${{ inputs.retention_days }}

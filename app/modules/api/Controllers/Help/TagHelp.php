@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,10 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Api\Controllers\Help;
+
+use function SP\__;
 
 /**
  * Class TagHelp
@@ -36,7 +38,7 @@ final class TagHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function view()
+    public static function view(): array
     {
         return
             [
@@ -47,7 +49,7 @@ final class TagHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function create()
+    public static function create(): array
     {
         return
             [
@@ -58,7 +60,7 @@ final class TagHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function edit()
+    public static function edit(): array
     {
         return
             [
@@ -70,7 +72,7 @@ final class TagHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function search()
+    public static function search(): array
     {
         return
             [
@@ -82,7 +84,7 @@ final class TagHelp implements HelpInterface
     /**
      * @return array
      */
-    public static function delete()
+    public static function delete(): array
     {
         return
             [

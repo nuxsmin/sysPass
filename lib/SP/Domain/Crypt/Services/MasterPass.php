@@ -1,0 +1,126 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Domain\Crypt\Services;
+
+use Exception;
+use SP\Domain\Crypt\Services\Hash;
+use SP\Domain\Account\Ports\AccountMasterPasswordService;
+use SP\Domain\Common\Ports\Repository;
+use SP\Domain\Common\Services\Service;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
+use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
+use SP\Domain\Crypt\Ports\MasterPassService;
+use SP\Domain\CustomField\Ports\CustomFieldCryptService;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+
+/**
+ * Class MasterPass
+ */
+final class MasterPass extends Service implements MasterPassService
+{
+    public const PARAM_MASTER_PASS_TIME = 'lastupdatempass';
+    public const PARAM_MASTER_PASS_HASH = 'masterPwd';
+
+    public function __construct(
+        ConfigFileService $config,
+        EventDispatcherInterface $eventDispatcher,
+        Context $context,
+        private readonly ConfigService                $configService,
+        private readonly AccountMasterPasswordService $accountMasterPasswordService,
+        private readonly CustomFieldCryptService      $customFieldCryptService,
+        private readonly Repository                   $repository,
+        private readonly LoggerInterface              $logger = new NullLogger()
+    ) {
+        parent::__construct($config, $eventDispatcher, $context);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkUserUpdateMPass(int $userMPassTime): bool
+    {
+        try {
+            return $userMPassTime >= (int)$this->configService->getByParam(self::PARAM_MASTER_PASS_TIME, '0');
+        } catch (ServiceException|NoSuchItemException $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkMasterPassword(string $masterPassword): bool
+    {
+        try {
+            return Hash::checkHashKey(
+                $masterPassword,
+                $this->configService->getByParam(self::PARAM_MASTER_PASS_HASH)
+            );
+        } catch (ServiceException|NoSuchItemException $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function changeMasterPassword(UpdateMasterPassRequest $request): void
+    {
+        $this->repository->transactionAware(
+            function () use ($request) {
+                $this->accountMasterPasswordService->updateMasterPassword($request);
+                $this->accountMasterPasswordService->updateHistoryMasterPassword($request);
+                $this->customFieldCryptService->updateMasterPassword($request);
+            },
+            $this
+        );
+
+        $this->updateConfig($request->getHash());
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function updateConfig($hash): void
+    {
+        $this->configService->save(self::PARAM_MASTER_PASS_HASH, $hash);
+        $this->configService->save(self::PARAM_MASTER_PASS_TIME, (string)time());
+    }
+}

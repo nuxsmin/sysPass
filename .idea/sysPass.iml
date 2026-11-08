@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/lib/SP" isTestSource="false" packagePrefix="SP" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SP" isTestSource="true" packagePrefix="SP/Tests" />
+      <sourceFolder url="file://$MODULE_DIR$/app/modules/api" isTestSource="false" packagePrefix="SP\Modules\Api" />
+      <sourceFolder url="file://$MODULE_DIR$/app/modules/cli" isTestSource="false" packagePrefix="SP\Modules\Cli" />
+      <sourceFolder url="file://$MODULE_DIR$/app/modules/web" isTestSource="false" packagePrefix="SP\Modules\Web" />
+      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SPT/Core" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SPT/Domain" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SPT/Html" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SPT/Http" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SPT/Infrastructure" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SPT/Modules/Api" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SPT/Modules/Cli" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SPT/Mvc" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SPT/Providers" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SPT/Util" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SP/Core" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SP/Domain" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SP/Infrastructure" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SP/Modules/Api" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SP/Modules/Cli" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SP/Modules/Web" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SP/Mvc" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/SP/Util" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/app/backup" />
+      <excludeFolder url="file://$MODULE_DIR$/app/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/app/temp" />
+      <excludeFolder url="file://$MODULE_DIR$/app/config" />
+      <excludeFolder url="file://$MODULE_DIR$/app/locales" />
+      <excludeFolder url="file://$MODULE_DIR$/res" />
+      <excludeFolder url="file://$MODULE_DIR$/tools" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/yaml" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/masterminds/html5" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/dom-crawler" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/error-handler" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/var-dumper" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="jQuery-2.0.0" level="application" />
+    <orderEntry type="library" name="jQuery UI-1.10.2" level="application" />
+    <orderEntry type="library" name="alertify-DefinitelyTyped" level="application" />
+    <orderEntry type="library" name="MDL" level="project" />
+  </component>
+</module>

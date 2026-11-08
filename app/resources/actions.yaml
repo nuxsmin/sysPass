@@ -1,0 +1,606 @@
+actions:
+  - id: 2
+    name: ACCOUNT_SEARCH
+    text: Search for Accounts
+    route: account/search
+  - id: 1
+    name: ACCOUNT
+    text: Accounts
+    route: account/index
+  - id: 20
+    name: ACCOUNT_FILE
+    text: Files
+    route: account/listFile
+  - id: 12
+    name: ACCOUNT_REQUEST
+    text: Requests
+    route: account/requestAccess
+  - id: 30
+    name: ACCOUNT_FAVORITE
+    text: Favorites
+    route: favorite/index
+  - id: 1201
+    name: WIKI
+    text: Wiki
+    route: wiki/index
+  - id: 5001
+    name: ITEMS_MANAGE
+    text: Items and Customizations
+    route: itemManager/index
+  - id: 101
+    name: CATEGORY
+    text: Categories Management
+    route: category/index
+  - id: 301
+    name: CLIENT
+    text: Customers Management
+    route: client/index
+  - id: 1001
+    name: AUTHTOKEN
+    text: API Authorizations Management
+    route: authToken/index
+  - id: 401
+    name: CUSTOMFIELD
+    text: Custom Fields Management
+    route: customField/index
+  - id: 501
+    name: PUBLICLINK
+    text: Public Links
+    route: publicLink/index
+  - id: 601
+    name: FILE
+    text: Files Management
+    route: file/index
+  - id: 1301
+    name: ACCOUNTMGR
+    text: Accounts Management
+    route: accountManager/index
+  - id: 201
+    name: TAG
+    text: Tags Management
+    route: tag/index
+  - id: 1101
+    name: PLUGIN
+    text: Plugins Management
+    route: plugin/index
+  - id: 5002
+    name: ACCESS_MANAGE
+    text: Users and Accesses
+    route: accessManager/index
+  - id: 5003
+    name: SECURITY_MANAGE
+    text: Security and Audit
+    route: securityManager/index
+  - id: 701
+    name: USER
+    text: Users Management
+    route: user/index
+  - id: 801
+    name: GROUP
+    text: Groups Management
+    route: group/index
+  - id: 901
+    name: PROFILE
+    text: Profiles Management
+    route: profile/index
+  - id: 1701
+    name: EVENTLOG
+    text: Event Log
+    route: eventlog/index
+  - id: 1702
+    name: EVENTLOG_SEARCH
+    text: Search for Events
+    route: eventlog/search
+  - id: 1703
+    name: EVENTLOG_CLEAR
+    text: Clear Events
+    route: eventlog/clear
+  - id: 3
+    name: ACCOUNT_VIEW
+    text: View Account
+    route: account/view
+  - id: 4
+    name: ACCOUNT_CREATE
+    text: New Account
+    route: account/create
+  - id: 5
+    name: ACCOUNT_EDIT
+    text: Edit Account
+    route: account/edit
+  - id: 6
+    name: ACCOUNT_DELETE
+    text: Remove Account
+    route: account/delete
+  - id: 7
+    name: ACCOUNT_VIEW_PASS
+    text: View password
+    route: account/viewPass
+  - id: 8
+    name: ACCOUNT_EDIT_PASS
+    text: Edit Account Password
+    route: account/editPass
+  - id: 9
+    name: ACCOUNT_EDIT_RESTORE
+    text: Account Restore
+    route: account/restore
+  - id: 10
+    name: ACCOUNT_COPY
+    text: Copy Account
+    route: account/copy
+  - id: 11
+    name: ACCOUNT_COPY_PASS
+    text: Copy Password
+    route: account/copyPass
+  - id: 21
+    name: ACCOUNT_FILE_VIEW
+    text: View File
+    route: accountFile/view
+  - id: 22
+    name: ACCOUNT_FILE_UPLOAD
+    text: Upload File
+    route: accountFile/upload
+  - id: 23
+    name: ACCOUNT_FILE_DOWNLOAD
+    text: Download File
+    route: accountFile/download
+  - id: 24
+    name: ACCOUNT_FILE_DELETE
+    text: Delete File
+    route: accountFile/delete
+  - id: 25
+    name: ACCOUNT_FILE_SEARCH
+    text: Search for Files
+    route: accountFile/search
+  - id: 26
+    name: ACCOUNT_FILE_LIST
+    text: List Files
+    route: accountFile/list
+  - id: 31
+    name: ACCOUNT_FAVORITE_VIEW
+    text: Show Favorites
+    route: favorite/view
+  - id: 32
+    name: ACCOUNT_FAVORITE_ADD
+    text: Mark as Favorite
+    route: accountFavorite/mark
+  - id: 33
+    name: ACCOUNT_FAVORITE_DELETE
+    text: Delete Favorite
+    route: accountFavorite/unmark
+  - id: 40
+    name: ACCOUNT_HISTORY_VIEW
+    text: View History
+    route: account/viewHistory
+  - id: 41
+    name: ACCOUNT_HISTORY_VIEW_PASS
+    text: View password
+    route: account/viewPassHistory
+  - id: 42
+    name: ACCOUNT_HISTORY_COPY_PASS
+    text: Copy Password
+    route: account/copyPassHistory
+  - id: 1203
+    name: WIKI_VIEW
+    text: View Wiki
+    route: wiki/view
+  - id: 1204
+    name: WIKI_CREATE
+    text: Add Wiki
+    route: wiki/create
+  - id: 1205
+    name: WIKI_EDIT
+    text: Edit Wiki
+    route: wiki/edit
+  - id: 1206
+    name: WIKI_DELETE
+    text: Delete Wiki
+    route: wiki/delete
+  - id: 103
+    name: CATEGORY_VIEW
+    text: View Category
+    route: category/view
+  - id: 104
+    name: CATEGORY_CREATE
+    text: New Category
+    route: category/create
+  - id: 105
+    name: CATEGORY_EDIT
+    text: Edit Category
+    route: category/edit
+  - id: 106
+    name: CATEGORY_DELETE
+    text: Delete Category
+    route: category/delete
+  - id: 102
+    name: CATEGORY_SEARCH
+    text: Search for Category
+    route: category/search
+  - id: 303
+    name: CLIENT_VIEW
+    text: View Client
+    route: client/view
+  - id: 304
+    name: CLIENT_CREATE
+    text: New Client
+    route: client/create
+  - id: 305
+    name: CLIENT_EDIT
+    text: Edit Client
+    route: client/edit
+  - id: 306
+    name: CLIENT_DELETE
+    text: Delete Client
+    route: client/delete
+  - id: 302
+    name: CLIENT_SEARCH
+    text: Search for Client
+    route: client/search
+  - id: 1004
+    name: AUTHTOKEN_CREATE
+    text: New API Token
+    route: authToken/create
+  - id: 1003
+    name: AUTHTOKEN_VIEW
+    text: View API Token
+    route: authToken/view
+  - id: 1005
+    name: AUTHTOKEN_EDIT
+    text: Edit API Token
+    route: authToken/edit
+  - id: 1006
+    name: AUTHTOKEN_DELETE
+    text: Delete API Token
+    route: authToken/delete
+  - id: 1002
+    name: AUTHTOKEN_SEARCH
+    text: Search for API Token
+    route: authToken/search
+  - id: 404
+    name: CUSTOMFIELD_CREATE
+    text: New Custom Field
+    route: customField/create
+  - id: 403
+    name: CUSTOMFIELD_VIEW
+    text: Show Custom Field
+    route: customField/view
+  - id: 405
+    name: CUSTOMFIELD_EDIT
+    text: Edit Custom Field
+    route: customField/edit
+  - id: 406
+    name: CUSTOMFIELD_DELETE
+    text: Delete Custom Field
+    route: customField/delete
+  - id: 402
+    name: CUSTOMFIELD_SEARCH
+    text: Search for Custom Field
+    route: customField/search
+  - id: 504
+    name: PUBLICLINK_CREATE
+    text: Create Public Link
+    route: publicLink/create
+  - id: 503
+    name: PUBLICLINK_VIEW
+    text: Show Public Link
+    route: publicLink/view
+  - id: 506
+    name: PUBLICLINK_DELETE
+    text: Delete Public Link
+    route: publicLink/delete
+  - id: 507
+    name: PUBLICLINK_REFRESH
+    text: Update Public Link
+    route: publicLink/refresh
+  - id: 502
+    name: PUBLICLINK_SEARCH
+    text: Search for Public Link
+    route: publicLink/search
+  - id: 603
+    name: FILE_VIEW
+    text: View File
+    route: file/view
+  - id: 605
+    name: FILE_DOWNLOAD
+    text: Download File
+    route: file/download
+  - id: 606
+    name: FILE_DELETE
+    text: Delete File
+    route: file/delete
+  - id: 604
+    name: FILE_UPLOAD
+    text: Upload File
+    route: file/upload
+  - id: 602
+    name: FILE_SEARCH
+    text: Search for File
+    route: file/search
+  - id: 1303
+    name: ACCOUNTMGR_VIEW
+    text: View Account
+    route: accountManager/view
+  - id: 1304
+    name: ACCOUNTMGR_DELETE
+    text: Remove Account
+    route: accountManager/delete
+  - id: 1305
+    name: ACCOUNTMGR_BULK_EDIT
+    text: Bulk Update
+    route: accountManager/bulkEdit
+  - id: 1302
+    name: ACCOUNTMGR_SEARCH
+    text: Search for Account
+    route: accountManager/search
+  - id: 204
+    name: TAG_CREATE
+    text: New Tag
+    route: tag/create
+  - id: 203
+    name: TAG_VIEW
+    text: View Tag
+    route: tag/view
+  - id: 205
+    name: TAG_EDIT
+    text: Edit Tag
+    route: tag/edit
+  - id: 206
+    name: TAG_DELETE
+    text: Delete Tag
+    route: tag/delete
+  - id: 202
+    name: TAG_SEARCH
+    text: Search for Tag
+    route: tag/search
+  - id: 1104
+    name: PLUGIN_CREATE
+    text: New Plugin
+    route: plugin/create
+  - id: 1103
+    name: PLUGIN_VIEW
+    text: View Plugin
+    route: plugin/view
+  - id: 1102
+    name: PLUGIN_SEARCH
+    text: Search for Plugin
+    route: plugin/search
+  - id: 1105
+    name: PLUGIN_ENABLE
+    text: Enable Plugin
+    route: plugin/enable
+  - id: 1106
+    name: PLUGIN_DISABLE
+    text: Disable Plugin
+    route: plugin/disable
+  - id: 1107
+    name: PLUGIN_RESET
+    text: Reset Plugin
+    route: plugin/reset
+  - id: 1108
+    name: PLUGIN_DELETE
+    text: Delete Plugin
+    route: plugin/delete
+  - id: 703
+    name: USER_VIEW
+    text: View User
+    route: user/view
+  - id: 704
+    name: USER_CREATE
+    text: New User
+    route: user/create
+  - id: 705
+    name: USER_EDIT
+    text: Edit User
+    route: user/edit
+  - id: 706
+    name: USER_DELETE
+    text: Delete User
+    route: user/delete
+  - id: 707
+    name: USER_EDIT_PASS
+    text: Edit User Password
+    route: user/editPass
+  - id: 702
+    name: USER_SEARCH
+    text: Search for User
+    route: user/search
+  - id: 803
+    name: GROUP_VIEW
+    text: View Group
+    route: userGroup/view
+  - id: 804
+    name: GROUP_CREATE
+    text: New Group
+    route: userGroup/create
+  - id: 805
+    name: GROUP_EDIT
+    text: Edit Group
+    route: userGroup/edit
+  - id: 806
+    name: GROUP_DELETE
+    text: Delete Group
+    route: userGroup/delete
+  - id: 802
+    name: GROUP_SEARCH
+    text: Search for Group
+    route: userGroup/search
+  - id: 903
+    name: PROFILE_VIEW
+    text: View Profile
+    route: userProfile/view
+  - id: 904
+    name: PROFILE_CREATE
+    text: New Profile
+    route: userProfile/create
+  - id: 905
+    name: PROFILE_EDIT
+    text: Edit Profile
+    route: userProfile/edit
+  - id: 906
+    name: PROFILE_DELETE
+    text: Delete Profile
+    route: userProfile/delete
+  - id: 902
+    name: PROFILE_SEARCH
+    text: Search for Profile
+    route: userProfile/search
+  - id: 5010
+    name: USERSETTINGS
+    text: User Configuration
+    route: userSettingsManager/index
+  - id: 5011
+    name: USERSETTINGS_GENERAL
+    text: General Preferences
+    route: userSettings/general
+  - id: 1401
+    name: NOTIFICATION
+    text: Notifications
+    route: notification/index
+  - id: 1501
+    name: CONFIG
+    text: Configuration
+    route: configManager/index
+  - id: 1502
+    name: CONFIG_GENERAL
+    text: General Configuration
+    route: configManager/general
+  - id: 1510
+    name: CONFIG_ACCOUNT
+    text: Accounts Configuration
+    route: account/config
+  - id: 1520
+    name: CONFIG_WIKI
+    text: Wiki Configuration
+    route: wiki/config
+  - id: 1530
+    name: CONFIG_CRYPT
+    text: Encryption Configuration
+    route: encryption/config
+  - id: 1531
+    name: CONFIG_CRYPT_REFRESH
+    text: Update Hash
+    route: encryption/updateHash
+  - id: 1532
+    name: CONFIG_CRYPT_TEMPPASS
+    text: Temporary Master Password
+    route: encryption/createTempPass
+  - id: 1540
+    name: CONFIG_BACKUP
+    text: Backup Configuration
+    route: backup/config
+  - id: 1541
+    name: CONFIG_BACKUP_RUN
+    text: Backup
+    route: backup/backup
+  - id: 1550
+    name: CONFIG_IMPORT
+    text: Import Configuration
+    route: import/config
+  - id: 1551
+    name: CONFIG_IMPORT_CSV
+    text: CSV Import
+    route: import/csv
+  - id: 1552
+    name: CONFIG_IMPORT_XML
+    text: XML Import
+    route: import/xml
+  - id: 1560
+    name: CONFIG_EXPORT
+    text: Export Configuration
+    route: export/config
+  - id: 1561
+    name: CONFIG_EXPORT_RUN
+    text: Export
+    route: export/export
+  - id: 1570
+    name: CONFIG_MAIL
+    text: Email Configuration
+    route: mail/config
+  - id: 1580
+    name: CONFIG_LDAP
+    text: LDAP Configuration
+    route: ldap/config
+  - id: 1581
+    name: CONFIG_LDAP_SYNC
+    text: LDAP synchronization
+    route: ldap/sync
+  - id: 1311
+    name: ACCOUNTMGR_HISTORY
+    text: Account Management (H)
+    route: accountHistoryManager/index
+  - id: 1314
+    name: ACCOUNTMGR_HISTORY_DELETE
+    text: Remove Account
+    route: accountHistoryManager/delete
+  - id: 1312
+    name: ACCOUNTMGR_HISTORY_SEARCH
+    text: Search for Account
+    route: accountHistoryManager/search
+  - id: 1315
+    name: ACCOUNTMGR_HISTORY_RESTORE
+    text: Account Restore
+    route: accountHistoryManager/restore
+  - id: 1403
+    name: NOTIFICATION_VIEW
+    text: View Notification
+    route: notification/view
+  - id: 1404
+    name: NOTIFICATION_CREATE
+    text: Create Notification
+    route: notification/create
+  - id: 1405
+    name: NOTIFICATION_EDIT
+    text: Edit Notification
+    route: notification/edit
+  - id: 1406
+    name: NOTIFICATION_DELETE
+    text: Delete Notification
+    route: notification/delete
+  - id: 1407
+    name: NOTIFICATION_CHECK
+    text: Checkout Notification
+    route: notification/check
+  - id: 1402
+    name: NOTIFICATION_SEARCH
+    text: Search for Notification
+    route: notification/search
+  - id: 1801
+    name: ITEMPRESET
+    text: Preset Values Management
+    route: itemPreset/index
+  - id: 1802
+    name: ITEMPRESET_SEARCH
+    text: Search for Value
+    route: itemPreset/search
+  - id: 1803
+    name: ITEMPRESET_VIEW
+    text: Display Value
+    route: itemPreset/view
+  - id: 1804
+    name: ITEMPRESET_CREATE
+    text: New Value
+    route: itemPreset/create
+  - id: 1805
+    name: ITEMPRESET_EDIT
+    text: Edit Value
+    route: itemPreset/edit
+  - id: 1806
+    name: ITEMPRESET_DELETE
+    text: Delete Value
+    route: itemPreset/delete
+  - id: 1901
+    name: TRACK
+    text: Tracks Management
+    route: track/index
+  - id: 1902
+    name: TRACK_SEARCH
+    text: Search for track
+    route: track/search
+  - id: 1903
+    name: TRACK_UNLOCK
+    text: Unlock track
+    route: track/unlock
+  - id: 1904
+    name: TRACK_CLEAR
+    text: Clear the tracks out
+    route: track/clear
+

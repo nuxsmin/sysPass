@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="305a176f-e992-4a96-9128-478436323b8a" name="Docker Local DEV" url="http://127.0.0.1:11080">
+        <fileTransfer mountedRoot="$PROJECT_DIR$/../../../../almacen/DOCKER-DATA/syspass/dev/web/3.0" accessType="MOUNT" port="0" />
+      </webServer>
+      <webServer id="7a8e098b-1ffc-45da-ab38-1a3b4fad23a3" name="Docker Local Master" url="http://172.17.0.4">
+        <fileTransfer mountedRoot="$PROJECT_DIR$/../../../../almacen/DOCKER-DATA/syspass/web" accessType="MOUNT" port="0" />
+      </webServer>
+      <webServer id="40d8c395-9ccd-44ba-8192-59f15f4e3249" name="FTP sysPass DEV" url="http://demo.syspass.org/">
+        <fileTransfer accessType="FTPS" host="ftp.cygnux.org" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

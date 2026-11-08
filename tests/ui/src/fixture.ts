@@ -1,0 +1,50 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+export interface FixtureCredential {
+  login: string;
+  password: string;
+  masterPassword: string;
+}
+
+export interface UiFixture {
+  credentials: {
+    admin: FixtureCredential;
+    demo: FixtureCredential;
+  };
+  ids: {
+    groups: { demo: number };
+    profiles: { demo: number };
+    users: { admin: number; demo: number };
+    clients: { primary: number };
+    categories: { primary: number };
+    accounts: { parent: number; child: number };
+    files: { childDocument: number };
+  };
+  names: {
+    demoGroup: string;
+    demoProfile: string;
+    client: string;
+    category: string;
+    parentAccount: string;
+    childAccount: string;
+    childFile: string;
+  };
+  content: {
+    parentLogin: string;
+    childLogin: string;
+    parentPassword: string;
+    childPassword: string;
+    childFileText: string;
+  };
+}
+
+const moduleDirectory = path.dirname(fileURLToPath(import.meta.url));
+
+export const FIXTURE = JSON.parse(
+  readFileSync(path.join(moduleDirectory, '..', 'fixtures', 'e2e-fixture.json'), 'utf8'),
+) as UiFixture;
+
+export const ADMIN_CREDENTIALS = FIXTURE.credentials.admin;
+export const DEMO_CREDENTIALS = FIXTURE.credentials.demo;

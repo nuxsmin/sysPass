@@ -5,7 +5,7 @@
     <Version>300.18082201</Version>
     <Time>1535358184</Time>
     <User id="1">admin</User>
-    <Group id="1"/>
+    <Group id="1">admin</Group>
     <Hash sign="0048f19eb00ce4e171ea5cefb2b558841b3cc3f0aabe485c4ba76514652efd93">77eac126d14f717b60bee5de7d78fb53ee512433</Hash>
   </Meta>
   <Encrypted hash="$2y$10$DGzqRzi3BhmraKhG.lXiSuyRA58h36SMpBF8lLYl9OsmCDDL3Pc/i">
