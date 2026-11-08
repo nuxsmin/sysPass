@@ -3,6 +3,8 @@
 Status: Accepted (2026-10-31); amended by ADR-0009 (2026-11-01) and by ADR-0011 (2026-11-02, which assigns template-migration gating to HTTP Integration Tests and browser coverage to page loading only); CI gating amended 2026-11-07 (issue #2121); DB-backed HTTP integration variant added 2026-11-07 (issue #2124)
 Issue: #2041 (plan P11-4, decisions D4 and P10-6, tracking #1976)
 
+Proposed follow-up: ADR-0012 revisits the restriction on browser workflow tests. It does not change this accepted strategy until adopted.
+
 ## Context
 
 The hexagonal migration moved business behaviour into use cases, made the modules driving adapters and turned `lib/` into the core. That split only holds if each layer is tested at the boundary where its behaviour is observable: use cases without Infrastructure, repositories against real SQL, and web areas through the full bootstrap and rendering path.

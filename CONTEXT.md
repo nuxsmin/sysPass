@@ -252,6 +252,18 @@ _Avoid_: browser test, Selenium test
 An automated browser test that loads a page and fails on broken Page-load Actions, JavaScript errors, error markup, session loss or a stuck loading overlay. It asserts the Render Contract only, never layout, and performs no user-initiated business writes.
 _Avoid_: end-to-end test, E2E test, browser test
 
+**UI Interaction**:
+A user-initiated operation in a particular interface context, such as selecting a navigation control or submitting a form. An interaction is distinct from an HTTP Action and can have several scenarios with different expected outcomes.
+_Avoid_: Action (when meaning the user interaction), DOM element
+
+**Interaction Inventory**:
+A record of UI Interactions and their relevant scenarios, expected outcomes and test coverage. It explicitly identifies undefined outcomes and untested scenarios.
+_Avoid_: route list, test count
+
+**UI Workflow Test**:
+An automated browser test of a user-initiated interaction and its observable outcome, potentially including a state-changing operation. It is distinct from a UI Smoke Test, which checks Page loading.
+_Avoid_: UI Smoke Test, Page-load test
+
 **Page-load Action**:
 A Web action the browser requests as part of loading a page, returning a Page, a Fragment or an Action Response carrying Rendered Markup. It is not the JSON-RPC API, which the browser never calls.
 _Avoid_: API request, API call

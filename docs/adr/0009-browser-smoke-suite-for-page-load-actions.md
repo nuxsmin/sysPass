@@ -3,6 +3,8 @@
 Status: Accepted (2026-11-01); amended by ADR-0011 (2026-11-02) and the quality-review plan revision (2026-11-04). Implemented by #2076-#2085 and under observation since 2026-11-06; unqualified (no 30-day history).
 Related: ADR-0004 (#2041), ADR-0011 (#2089), suite #2075 and #2076-#2086, transport/boot #2096-#2098, attachment decision #2116, tracking #1976.
 
+Proposed follow-up: ADR-0012 considers browser workflow tests separately from this Page-load smoke suite. This ADR's smoke-suite scope remains unchanged until any follow-up is adopted.
+
 ## Context
 
 ADR-0004 left browser end-to-end testing out because in-process HTTP Integration Tests cover routing, controller, use case and view. Those tests remain the right safety net for server-rendered content, but do not observe subsequent JavaScript initialization, request dispatch or fragment insertion.
