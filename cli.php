@@ -25,7 +25,6 @@
 use Psr\Container\ContainerInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Infrastructure\File\FileSystem;
-
 use function SP\logger;
 use function SP\processException;
 
@@ -44,4 +43,6 @@ try {
     $cli->initialize('');
 } catch (Throwable $e) {
     processException($e);
+    fwrite(STDERR, "CLI execution failed; see the application log for details.\n");
+    exit(1);
 }
