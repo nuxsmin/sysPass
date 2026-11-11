@@ -51,6 +51,7 @@ use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Dtos\BackupType;
 use SP\Domain\Log\Providers\LogInterface;
 use SP\Domain\Notification\Ports\MailService;
+use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
@@ -83,7 +84,8 @@ final readonly class ConfigManagerPresenter
         private AccountService           $accountService,
         private BackupFiles              $backupFiles,
         private PathsContext             $pathsContext,
-        private FileHandlerFactoryInterface $fileHandlerFactory
+        private FileHandlerFactoryInterface $fileHandlerFactory,
+        private PluginManagerService        $pluginManagerService
     ) {
     }
 
@@ -398,6 +400,7 @@ final readonly class ConfigManagerPresenter
         $userDto = clone $this->context->getUserData();
 
         $template->assign('dbInfo', $this->databaseUtil->getDBinfo());
+        $template->assign('plugins', $this->pluginManagerService->getEnabled());
         $template->assign('dbName', $this->configData->getDbName() . '@' . $this->configData->getDbHost());
         $template->assign(
             'configBackupDate',
