@@ -371,6 +371,100 @@ class AccountTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[InjectCrypt]
+    public function accountCreateWithoutActionIsRejected(): void
+    {
+        $password = self::$faker->password();
+
+        $acl = $this->createMock(AclInterface::class);
+        $acl->method('checkUserAccess')
+            ->willReturnCallback(
+                static fn(int $actionId) => $actionId !== AclActionsInterface::ACCOUNT_CREATE
+            );
+
+        $accountService = $this->createMock(AccountService::class);
+        $accountService->expects(self::never())->method('create');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'account/saveCreate'],
+                [
+                    'name' => 'Denied Create Attempt',
+                    'login' => 'denied-create',
+                    'client_id' => 1,
+                    'category_id' => 1,
+                    'password' => $password,
+                    'password_repeat' => $password,
+                ]
+            ),
+            [
+                AclInterface::class => $acl,
+                AccountService::class => $accountService,
+            ]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
+        );
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[InjectCrypt]
+    public function accountCopyWithoutActionIsRejected(): void
+    {
+        $password = self::$faker->password();
+
+        $acl = $this->createMock(AclInterface::class);
+        $acl->method('checkUserAccess')
+            ->willReturnCallback(
+                static fn(int $actionId) => $actionId !== AclActionsInterface::ACCOUNT_CREATE
+            );
+
+        $accountService = $this->createMock(AccountService::class);
+        $accountService->expects(self::never())->method('create');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'account/saveCopy'],
+                [
+                    'name' => 'Denied Copy Attempt',
+                    'login' => 'denied-copy',
+                    'client_id' => 1,
+                    'category_id' => 1,
+                    'password' => $password,
+                    'password_repeat' => $password,
+                ]
+            ),
+            [
+                AclInterface::class => $acl,
+                AccountService::class => $accountService,
+            ]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
+        );
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
     #[DataProvider('accountMutationRepositoryMethodsProvider')]
     public function accountMutationWithoutVisibilityIsRejected(string $route, string $repositoryMethod): void
     {
