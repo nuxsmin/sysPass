@@ -293,6 +293,10 @@ export class ActionTracker {
     return this.detector.getAction(route, since) as ActionRecordView | undefined;
   }
 
+  actionCount(route: string, since = 0): number {
+    return this.detector.countActions(route, since);
+  }
+
   getJson(route: string, since = 0): unknown {
     return this.detector.getJson(route, since);
   }

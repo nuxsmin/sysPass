@@ -743,6 +743,12 @@ export class PageDiagnostics {
     return this.completedActions(route, since).at(-1);
   }
 
+  countActions(route, since = 0) {
+    return this.records.filter(
+      (record) => record.route === route && record.startedAt >= since,
+    ).length;
+  }
+
   /**
    * @param {string} route
    * @param {number} [since]

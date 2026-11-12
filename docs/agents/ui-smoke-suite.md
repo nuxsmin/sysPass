@@ -118,14 +118,15 @@ TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh
 
 ### Tier selection
 
-`SP_UI_TIER` selects the tier and defaults to `A` when unset. `A`/`a`, `B`/`b`
-and `INSTALL`/`install` are accepted; any other token is a usage error (exit 2),
-not an unknown observation.
+`SP_UI_TIER` selects the tier and defaults to `A` when unset. `A`/`a`, `B`/`b`,
+`INSTALL`/`install` and `WIRING`/`wiring` are accepted; any other token is a
+usage error (exit 2), not an unknown observation.
 
 | Selection | Command | Specs |
 | --- | --- | --- |
 | Tier A (default) | `TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh` | `login.spec.ts`, `shell.spec.ts` |
 | Tier B | `TESTS_UI_ENABLED=true SP_UI_TIER=B ./scripts/ui-smoke.sh` | Seven in-shell index specs |
+| Navigation wiring (reporting only) | `TESTS_UI_ENABLED=true SP_UI_TIER=WIRING ./scripts/ui-smoke.sh` | `adminNavigation.wiring.spec.ts` |
 | Installer only | `TESTS_UI_ENABLED=true SP_UI_TIER=INSTALL ./scripts/ui-smoke.sh` | `install.spec.ts` |
 | Tier A + installer | `TESTS_UI_ENABLED=true SP_UI_TIER=A SP_UI_INSTALL=1 ./scripts/ui-smoke.sh` | Seeded specs first, wizard last |
 | Tier B + installer | `TESTS_UI_ENABLED=true SP_UI_TIER=B SP_UI_INSTALL=1 ./scripts/ui-smoke.sh` | Seeded specs first, wizard last |
@@ -146,6 +147,7 @@ observation.
 | --- | --- |
 | Tier A | `tests/ui/summaries/tier-A/<run-id>/` |
 | Tier B | `tests/ui/summaries/tier-B/<run-id>/` |
+| Navigation wiring | `tests/ui/summaries/tier-wiring/<run-id>/` |
 | Installer | `tests/ui/summaries/tier-install/<run-id>/` |
 
 The roots are siblings, not nested. Discovery is non-recursive, so a Tier A
@@ -820,7 +822,9 @@ The suite is not:
 JS-to-backend wiring contract tests (ADR-0012) are a separate layer. They verify
 that a JavaScript-bound control sends the expected Action request and renders
 the backend response; they are not part of this page-load suite and do not
-change its Tier A or Tier B contracts.
+change its Tier A or Tier B contracts. Administrator navigation commands,
+coverage limits and results are documented in
+[tests/ui/README.md](../../tests/ui/README.md#administrator-navigation-wiring-reporting-only).
 
 HTTP Integration Tests remain required for template migrations. Tier A gates
 transport/boot changes only; it does not gate the whole rendering rewrite.
@@ -1019,7 +1023,8 @@ node tests/ui/src/ci-report.mjs \
 | `tests/ui/src/session.ts` | Live worker cookie jar; no snapshot restore. |
 | `tests/ui/src/contracts.ts` | Page/mode contracts and dispatch attributes. |
 | `tests/ui/src/tier-b.ts` | Tier B index cases, shared session and fault canary. |
-| `tests/ui/specs/` | Login, shell, Tier B and installer specs. |
+| `tests/ui/src/admin-navigation.mjs`, `tests/ui/src/admin-navigation.ts` | Administrator navigation inventory and wiring contract builder. |
+| `tests/ui/specs/` | Login, shell, Tier B, navigation wiring and installer specs. |
 | `tests/ui/fixtures/` | Committed synthetic fixture, seeder and fault fixtures. |
 | `tests/ui/known-failures.json` | Known Failure registry (initially empty). |
 | `tests/ui/summaries/` | Local retained evidence, gitignored. |

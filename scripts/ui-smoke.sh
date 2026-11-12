@@ -4,13 +4,16 @@
 # Usage:
 #   TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh [--keep]
 #   TESTS_UI_ENABLED=true SP_UI_TIER=B ./scripts/ui-smoke.sh
+#   TESTS_UI_ENABLED=true SP_UI_TIER=WIRING ./scripts/ui-smoke.sh
 #   TESTS_UI_ENABLED=true SP_UI_TIER=INSTALL ./scripts/ui-smoke.sh
 #   TESTS_UI_ENABLED=true SP_UI_TIER=A SP_UI_INSTALL=1 ./scripts/ui-smoke.sh
 #
 # TESTS_UI_ENABLED must be the exact value "true"; otherwise the runner exits
 # without provisioning anything and without producing Tier A evidence.
 #
-# SP_UI_TIER defaults to A. SP_UI_INSTALL=1 explicitly adds the installer
+# SP_UI_TIER defaults to A. WIRING is a separate reporting-only selection for
+# JS-to-backend navigation wiring and never completes Tier A or Tier B.
+# SP_UI_INSTALL=1 explicitly adds the installer
 # phase; a combined selection runs the seeded specs first and the wizard last.
 # The installer uses a separate run-owned instance and always retries: 0. A
 # rerun recreates the entire wizard instance/database instead of retrying an
@@ -41,12 +44,17 @@ case "$SELECTED_TIER" in
     # never accidentally consume, replace or hide it.
     DEFAULT_SUMMARY_ROOT="$UI_DIR/summaries/tier-B"
     ;;
+  WIRING)
+    # Navigation wiring is a separate reporting-only selection. It never
+    # completes Tier A or Tier B and keeps its own evidence root.
+    DEFAULT_SUMMARY_ROOT="$UI_DIR/summaries/tier-wiring"
+    ;;
   INSTALL)
     # The installer is a separate stateful selection with its own evidence root.
     DEFAULT_SUMMARY_ROOT="$UI_DIR/summaries/tier-install"
     ;;
   *)
-    echo "ERROR: SP_UI_TIER must be A, B or INSTALL; received '${SP_UI_TIER:-}'" >&2
+    echo "ERROR: SP_UI_TIER must be A, B, INSTALL or WIRING; received '${SP_UI_TIER:-}'" >&2
     exit 2
     ;;
 esac
@@ -89,7 +97,7 @@ PROVISIONING_STARTED=0
 FINALIZED=0
 
 usage() {
-  sed -n '2,17p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,20p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [ "$#" -gt 0 ]; do
