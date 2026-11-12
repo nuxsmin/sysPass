@@ -817,6 +817,11 @@ The suite is not:
 - an auto-filing issue system;
 - a hosting-mode installer test.
 
+JS-to-backend wiring contract tests (ADR-0012) are a separate layer. They verify
+that a JavaScript-bound control sends the expected Action request and renders
+the backend response; they are not part of this page-load suite and do not
+change its Tier A or Tier B contracts.
+
 HTTP Integration Tests remain required for template migrations. Tier A gates
 transport/boot changes only; it does not gate the whole rendering rewrite.
 

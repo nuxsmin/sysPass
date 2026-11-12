@@ -261,8 +261,8 @@ A record of UI Interactions and their relevant scenarios, expected outcomes and 
 _Avoid_: route list, test count
 
 **UI Workflow Test**:
-An automated browser test of a user-initiated interaction and its observable outcome, potentially including a state-changing operation. It is distinct from a UI Smoke Test, which checks Page loading.
-_Avoid_: UI Smoke Test, Page-load test
+A browser wiring-contract test of a JavaScript-bound control: it asserts that the control sends the expected Action request and that the UI renders the backend's success or error response, including state-changing operations verified by an independent read. It excludes layout, usability, visibility and authorization, which are covered by HTTP and DB-backed tests. It is distinct from a UI Smoke Test, which checks Page loading.
+_Avoid_: UI Smoke Test, Page-load test, layout test, usability test
 
 **Page-load Action**:
 A Web action the browser requests as part of loading a page, returning a Page, a Fragment or an Action Response carrying Rendered Markup. It is not the JSON-RPC API, which the browser never calls.
@@ -297,7 +297,7 @@ An Integration Test written against existing behaviour before a migration, so it
 _Avoid_: regression test, snapshot test
 
 **Test Pyramid**:
-The deliberate split into many Unit Tests, fewer DB-backed and HTTP Integration Tests, a small UI Smoke Test for page loading, and no browser suite for workflows or layout.
+The deliberate split into many Unit Tests, fewer DB-backed and HTTP Integration Tests, a small UI Smoke Test for page loading, and UI Workflow Tests limited to JavaScript-to-backend wiring contracts (no layout or usability checks).
 _Avoid_: test suite, test plan
 
 **Fake**:
