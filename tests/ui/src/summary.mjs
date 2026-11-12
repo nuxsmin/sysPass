@@ -9,9 +9,23 @@ import {
   REGISTRY_SCHEMA_VERSION,
 } from './known-failures.mjs';
 import { sanitizeEvidencePath, sanitizeText } from './sanitize.mjs';
-import { TIER_A_SPECS, TIER_B_SPECS, TIER_INSTALL_SPECS, TIER_SPECS } from './tiers.mjs';
+import {
+  TIER_A_SPECS,
+  TIER_B_SPECS,
+  TIER_INSTALL_SPECS,
+  TIER_SPECS,
+  TIER_WIRING_SPECS,
+  TIER_WRITE_SPECS,
+} from './tiers.mjs';
 
-export { TIER_A_SPECS, TIER_B_SPECS, TIER_INSTALL_SPECS, TIER_SPECS };
+export {
+  TIER_A_SPECS,
+  TIER_B_SPECS,
+  TIER_INSTALL_SPECS,
+  TIER_SPECS,
+  TIER_WIRING_SPECS,
+  TIER_WRITE_SPECS,
+};
 
 const FAILURE_CLASS_PATTERNS = [
   [/test timeout|timed out|timeout of \d+ms/i, 'timeout'],
@@ -390,6 +404,36 @@ export function buildRunSummary({
     annotations.unexecutedEntries.length === 0 &&
     knownFailureErrors.length === 0;
 
+  const completeTierWiring =
+    status === 'passed' &&
+    selection.tier === 'WIRING' &&
+    !partialSelection &&
+    counts.selected > 0 &&
+    counts.skipped === 0 &&
+    counts.notRun === 0 &&
+    counts.completed === counts.selected &&
+    Object.keys(failureClasses).length === 0 &&
+    safeGlobalErrors.length === 0 &&
+    annotations.newFailures.length === 0 &&
+    annotations.staleEntries.length === 0 &&
+    annotations.unexecutedEntries.length === 0 &&
+    knownFailureErrors.length === 0;
+
+  const completeTierWrite =
+    status === 'passed' &&
+    selection.tier === 'WRITE' &&
+    !partialSelection &&
+    counts.selected > 0 &&
+    counts.skipped === 0 &&
+    counts.notRun === 0 &&
+    counts.completed === counts.selected &&
+    Object.keys(failureClasses).length === 0 &&
+    safeGlobalErrors.length === 0 &&
+    annotations.newFailures.length === 0 &&
+    annotations.staleEntries.length === 0 &&
+    annotations.unexecutedEntries.length === 0 &&
+    knownFailureErrors.length === 0;
+
   return {
     schemaVersion: 1,
     runId,
@@ -397,6 +441,8 @@ export function buildRunSummary({
     completeTierA,
     completeTierB,
     completeTierInstall,
+    completeTierWiring,
+    completeTierWrite,
     partialSelection,
     partialReasons: partialSelection ? selection.partialReasons : [],
     setupFailure,
@@ -514,6 +560,8 @@ export function renderJUnit(summary) {
     property('sp-ui.completeTierA', String(summary.completeTierA)),
     property('sp-ui.completeTierB', String(summary.completeTierB ?? false)),
     property('sp-ui.completeTierInstall', String(summary.completeTierInstall ?? false)),
+    property('sp-ui.completeTierWiring', String(summary.completeTierWiring ?? false)),
+    property('sp-ui.completeTierWrite', String(summary.completeTierWrite ?? false)),
     property('sp-ui.partialSelection', String(summary.partialSelection)),
     property('sp-ui.setupFailure', String(summary.setupFailure)),
     property('sp-ui.cancelled', String(summary.cancelled)),

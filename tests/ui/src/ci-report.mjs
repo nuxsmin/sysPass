@@ -128,6 +128,8 @@ export function evaluateRunSummary(summary, { budgetMs = TIER_A_BUDGET_MS, tier 
   const completeTierA = summary?.completeTierA === true;
   const completeTierB = summary?.completeTierB === true;
   const completeTierInstall = summary?.completeTierInstall === true;
+  const completeTierWiring = summary?.completeTierWiring === true;
+  const completeTierWrite = summary?.completeTierWrite === true;
   const completeTier =
     requestedTier === 'A'
       ? completeTierA
@@ -135,7 +137,11 @@ export function evaluateRunSummary(summary, { budgetMs = TIER_A_BUDGET_MS, tier 
         ? completeTierB
         : requestedTier === 'INSTALL'
           ? completeTierInstall
-          : false;
+          : requestedTier === 'WIRING'
+            ? completeTierWiring
+            : requestedTier === 'WRITE'
+              ? completeTierWrite
+              : false;
   const summaryTier = String(summary?.selection?.tier ?? '').toUpperCase();
   const durationMs = Number(summary?.durationMs);
   const hasDuration = Number.isFinite(durationMs) && durationMs >= 0;
@@ -229,6 +235,8 @@ export function evaluateRunSummary(summary, { budgetMs = TIER_A_BUDGET_MS, tier 
     completeTierA,
     completeTierB,
     completeTierInstall,
+    completeTierWiring,
+    completeTierWrite,
     durationMs: hasDuration ? durationMs : 0,
     budgetMs,
     withinBudget,
@@ -269,7 +277,11 @@ export function renderMarkdown(summary, evaluation, { setupDurationMs, setupBudg
         ? evaluation.completeTierB
         : tierLabel === 'INSTALL'
           ? evaluation.completeTierInstall
-          : false;
+          : tierLabel === 'WIRING'
+            ? evaluation.completeTierWiring
+            : tierLabel === 'WRITE'
+              ? evaluation.completeTierWrite
+              : false;
 
   lines.push(
     '| Field | Value |',
@@ -603,7 +615,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
     if (!options.summariesDir) {
       throw new UsageError(
-        'Usage: ci-report.mjs --summaries <tier-root|run-dir> [--tier A|B] [--budget-seconds 300] [--setup-budget-seconds 1800] [--setup-started-ms <ms>] [--setup-finished-ms <ms>]',
+        'Usage: ci-report.mjs --summaries <tier-root|run-dir> [--tier A|B|INSTALL|WIRING|WRITE] [--budget-seconds 300] [--setup-budget-seconds 1800] [--setup-started-ms <ms>] [--setup-finished-ms <ms>]',
       );
     }
 

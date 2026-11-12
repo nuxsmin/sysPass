@@ -1,6 +1,8 @@
 # UI smoke harness
 
 See `docs/agents/ui-smoke-suite.md` for prerequisites and the execution model.
+See `docs/agents/ui-workflow-tests.md` for the WIRING/WRITE CI observation,
+qualification criteria, check names and durable run table.
 
 ```sh
 npm ci

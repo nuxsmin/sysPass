@@ -1,0 +1,67 @@
+name: UI Workflow Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      diagnostic_retry:
+        description: 'Allow one diagnostic retry; a retry-success run is flaky and cannot be a complete observation'
+        type: boolean
+        default: false
+  schedule:
+    - cron: '27 5 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ui-workflow-tests-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ui-workflow-wiring-work:
+    name: UI Workflow (navigation wiring) workload
+    if: ${{ vars.TESTS_UI_WORKFLOW_ENABLED == 'true' }}
+    uses: ./.github/workflows/ui-smoke-run.yml
+    permissions:
+      contents: read
+    with:
+      tier: WIRING
+      diagnostic_retry: ${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic_retry }}
+
+  ui-workflow-write-work:
+    name: UI Workflow (account creation) workload
+    if: ${{ vars.TESTS_UI_WORKFLOW_ENABLED == 'true' }}
+    uses: ./.github/workflows/ui-smoke-run.yml
+    permissions:
+      contents: read
+    with:
+      tier: WRITE
+      diagnostic_retry: ${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic_retry }}
+
+  ui-workflow-wiring:
+    name: UI Workflow (navigation wiring, reporting-only)
+    needs: ui-workflow-wiring-work
+    if: ${{ always() && vars.TESTS_UI_WORKFLOW_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require the shared runner to succeed
+        env:
+          WORK_RESULT: ${{ needs['ui-workflow-wiring-work'].result }}
+        run: |
+          set -euo pipefail
+          test "$WORK_RESULT" = "success"
+
+  ui-workflow-write:
+    name: UI Workflow (account creation, reporting-only)
+    needs: ui-workflow-write-work
+    if: ${{ always() && vars.TESTS_UI_WORKFLOW_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require the shared runner to succeed
+        env:
+          WORK_RESULT: ${{ needs['ui-workflow-write-work'].result }}
+        run: |
+          set -euo pipefail
+          test "$WORK_RESULT" = "success"

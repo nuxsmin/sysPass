@@ -265,13 +265,8 @@ test('a pre-run failure produces tier-scoped sanitized evidence through the shar
   assert.match(failureReport.if, /failure\(\)/, 'pre-run failures must retain setup-failed evidence');
   assert.match(failureReport.run, /scripts\/lib\/ui-smoke-report\.sh/);
   assert.equal(failureReport.env.SP_UI_SUMMARY_DIR, SUMMARY);
-  assert.match(failureReport.env.SP_UI_SETUP_ERROR, /UI smoke workflow failed before the runner retained Playwright evidence\./);
-  assert.match(
-    failureReport.env.SP_UI_SETUP_ERROR,
-    /UI smoke Tier B workflow failed before the runner retained Playwright evidence\./,
-  );
-  assert.match(failureReport.env.SP_UI_SETUP_RUN_ID, /ui-smoke\.ci-setup-/);
-  assert.match(failureReport.env.SP_UI_SETUP_RUN_ID, /ui-smoke\.tier-b-ci-setup-/);
+  assert.match(failureReport.env.SP_UI_SETUP_ERROR, /env\.UI_SMOKE_SETUP_ERROR/);
+  assert.match(failureReport.env.SP_UI_SETUP_RUN_ID, /env\.UI_SMOKE_SETUP_RUN_ID_PREFIX/);
   assert.match(failureReport.env.SP_UI_SETUP_RUN_ID, /github\.run_id/);
   assert.match(failureReport.env.SP_UI_SETUP_RUN_ID, /github\.run_attempt/);
   assert.match(failureReport.run, /run_id="\$\{SP_UI_SETUP_RUN_ID/, 'the tier run-ID prefix must be used');
@@ -318,7 +313,7 @@ test('the upload is gated on verification and publishes only the tier allowlist'
   assert.doesNotMatch(upload.if, /failure\(\)/, 'upload must depend on verification, not earlier outcomes');
   assert.equal(
     upload.with.name,
-    'ui-smoke-tier-${{ env.UI_SMOKE_TIER_SLUG }}-${{ github.sha }}-${{ github.run_id }}',
+    '${{ env.UI_SMOKE_ARTIFACT_FAMILY }}-tier-${{ env.UI_SMOKE_TIER_SLUG }}-${{ github.sha }}-${{ github.run_id }}',
   );
   assert.equal(upload.with['retention-days'], '${{ inputs.retention_days }}');
   assert.equal(upload.with['if-no-files-found'], 'error');
@@ -333,4 +328,59 @@ test('the upload is gated on verification and publishes only the tier allowlist'
     uploadedPaths.every((uploaded) => !uploaded.endsWith('/')),
     'the upload must not publish a whole directory',
   );
+});
+
+test('the shared runner accepts WIRING and WRITE in addition to A and B case-insensitively', () => {
+  const job = parseJob(read(), 'run');
+  const validation = job.steps[stepIndex(job, (step) => /UI_SMOKE_TIER_SLUG/.test(step.run ?? ''))];
+
+  assert.match(validation.run, /A\|B\|WIRING\|WRITE/);
+  assert.match(validation.run, /tr '\[:lower:\]' '\[:upper:\]'/);
+  assert.match(validation.run, /UI_SMOKE_TIER=/);
+  assert.match(validation.run, /exit 1/);
+});
+
+test('workflow tiers keep distinct evidence labels, setup-failure identity and artifact family', () => {
+  const raw = read();
+  const job = parseJob(raw, 'run');
+  const validation = job.steps[stepIndex(job, (step) => /UI_SMOKE_TIER_SLUG/.test(step.run ?? ''))];
+  const observed = findStep(job, isSetupStamp);
+  const failureReport = findStep(job, (step) => /ui_smoke_ci_setup_report/.test(step.run ?? ''));
+  const upload = findStep(job, (step) => step.uses === 'actions/upload-artifact@v4');
+
+  assert.match(validation.run, /UI Workflow \(navigation wiring\) observed commit/);
+  assert.match(validation.run, /UI Workflow \(account creation\) observed commit/);
+  assert.match(validation.run, /UI Workflow \(navigation wiring\) failed before the runner retained Playwright evidence\./);
+  assert.match(validation.run, /UI Workflow \(account creation\) failed before the runner retained Playwright evidence\./);
+  assert.match(validation.run, /ui-workflow\.wiring-ci-setup/);
+  assert.match(validation.run, /ui-workflow\.write-ci-setup/);
+  assert.match(validation.run, /family="ui-workflow"/);
+  assert.match(validation.run, /family="ui-smoke"/);
+  assert.match(validation.run, /UI_SMOKE_ARTIFACT_FAMILY=\$family/);
+
+  assert.equal(observed.env.OBSERVED_COMMIT_LABEL, '${{ env.UI_SMOKE_OBSERVED_COMMIT_LABEL }}');
+  assert.equal(observed.env.OBSERVED_COMMIT_HEADING, '${{ env.UI_SMOKE_OBSERVED_COMMIT_HEADING }}');
+  assert.match(upload.with.name, /env\.UI_SMOKE_ARTIFACT_FAMILY/);
+  assert.match(upload.with.name, /env\.UI_SMOKE_TIER_SLUG/);
+});
+
+test('Tier A and Tier B labels, run IDs and evidence paths remain unchanged', () => {
+  const raw = read();
+
+  assert.match(raw, /Tier B observed commit/);
+  assert.match(raw, /UI smoke Tier B observed commit/);
+  assert.match(raw, /UI smoke observed commit/);
+  assert.match(raw, /UI smoke Tier B workflow failed before the runner retained Playwright evidence\./);
+  assert.match(raw, /UI smoke workflow failed before the runner retained Playwright evidence\./);
+  assert.match(raw, /ui-smoke\.tier-b-ci-setup/);
+  assert.match(raw, /ui-smoke\.ci-setup/);
+
+  const job = parseJob(raw, 'run');
+  const upload = findStep(job, (step) => step.uses === 'actions/upload-artifact@v4');
+  const uploadedPaths = String(upload.with.path)
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  assert.deepEqual(uploadedPaths, EVIDENCE_PATHS);
 });
