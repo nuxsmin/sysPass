@@ -46,6 +46,10 @@ final class SaveCopyController extends AccountSaveBase
     #[Action(ResponseType::JSON)]
     public function saveCopyAction(): ActionResponse
     {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_CREATE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
         $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_CREATE);
 
         $accountId = $this->accountService->create($this->accountForm->getItemData());

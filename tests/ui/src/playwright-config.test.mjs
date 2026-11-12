@@ -55,3 +55,15 @@ test('the Playwright config runs exactly the selected tier and keeps Tier A the 
 test('the installer spec is its own explicit selection', () => {
   assert.deepEqual(specsForTier('install'), ['install.spec.ts']);
 });
+
+test('admin navigation wiring is its own reporting-only selection', () => {
+  assert.deepEqual(specsForTier('wiring'), ['adminNavigation.wiring.spec.ts']);
+  assert.equal(TIER_A_SPECS.includes('adminNavigation.wiring.spec.ts'), false);
+  assert.equal(TIER_B_SPECS.includes('adminNavigation.wiring.spec.ts'), false);
+});
+
+test('account create write wiring is its own reporting-only selection', () => {
+  assert.deepEqual(specsForTier('write'), ['accountCreate.write.spec.ts']);
+  assert.equal(TIER_A_SPECS.includes('accountCreate.write.spec.ts'), false);
+  assert.equal(TIER_B_SPECS.includes('accountCreate.write.spec.ts'), false);
+});

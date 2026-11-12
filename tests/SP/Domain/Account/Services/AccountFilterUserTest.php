@@ -36,6 +36,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Services\Builders\AccountFilter;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\ProfileData;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -48,14 +49,14 @@ class AccountFilterUserTest extends UnitaryTestCase
 {
     private const WHERE_HASHES = [
         'Account' => [
-            'withoutGlobalSearch' => 'c14bbb066e19a0a9072fc047617779580f6bd104',
-            'withoutGlobalSearchAndFullGroupAccess' => '0d7be1abdfae8c3f5d99dd169142d734a0219820',
+            'withoutGlobalSearch' => 'd126ac4f84c296e18b9b125e6fa22504bb34691c',
+            'withoutGlobalSearchAndFullGroupAccess' => '2024419d245628ea23e142540c3d97943075e111',
             'withGlobalSearchPrivate' => '0213f7fd63d743b480dea2760bd0f952e1f022af',
             'withGlobalSearchPrivateGroup' => '4a87f998abe0e0bd423496fb61a0a8abc1ac1be6',
         ],
         'AccountHistory' => [
-            'withoutGlobalSearch' => 'f175e5a053e2db8013193669d8f6144f8067fa69',
-            'withoutGlobalSearchAndFullGroupAccess' => '231a8527427568438079bcda1a6bf29a2b50a025',
+            'withoutGlobalSearch' => 'f18b1d964528675a82c2f5c72ee7d096162ddac0',
+            'withoutGlobalSearchAndFullGroupAccess' => '08c76c4ca85b2949d4c5408edc5361c823f8cc4f',
             'withGlobalSearchPrivate' => '1579e1c2fb88f57c5fe8613870043e3f19bdea8a',
             'withGlobalSearchPrivateGroup' => 'd3214ff2771ddd85aba2108bfc48da20b1c0064d',
         ],
@@ -179,6 +180,47 @@ class AccountFilterUserTest extends UnitaryTestCase
                ->with($this->buildBindValues());
 
         $this->accountFilter->buildFilter(false, $select);
+    }
+
+    #[Test]
+    public function testBuildFilterKeepsAccountIdSubqueryIntactForNonAdminUser(): void
+    {
+        $this->setNonAdminContext();
+
+        $statement = $this->buildRealFilter()->buildFilter()->cols(['Account.id'])->getStatement();
+
+        self::assertStringContainsString('SELECT accountId FROM AccountToUser WHERE', $statement);
+        self::assertStringContainsString('SELECT accountId FROM AccountToUserGroup WHERE', $statement);
+        self::assertStringNotContainsString('AS `accountId FROM', $statement);
+    }
+
+    #[Test]
+    public function testBuildFilterHistoryKeepsAccountIdSubqueryIntactForNonAdminUser(): void
+    {
+        $this->setNonAdminContext();
+
+        $statement = $this->buildRealFilter()->buildFilterHistory()->cols(['AccountHistory.id'])->getStatement();
+
+        self::assertStringContainsString('SELECT accountId FROM AccountToUser WHERE', $statement);
+        self::assertStringContainsString('SELECT accountId FROM AccountToUserGroup WHERE', $statement);
+        self::assertStringNotContainsString('AS `accountId FROM', $statement);
+    }
+
+    private function setNonAdminContext(): void
+    {
+        $this->context->setUserData(
+            new UserDto(id: 7, userGroupId: 9, isAdminApp: false, isAdminAcc: false)
+        );
+        $this->context->setUserProfile(new ProfileData());
+    }
+
+    private function buildRealFilter(): AccountFilter
+    {
+        return new AccountFilter(
+            $this->context,
+            $this->config->getConfigData(),
+            new QueryFactory('mysql')
+        );
     }
 
     /**

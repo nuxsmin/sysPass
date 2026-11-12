@@ -354,6 +354,74 @@ final class AccountDbIntegrationTest extends DatabaseIntegrationTestCase
      */
     #[Test]
     #[InjectCrypt]
+    public function saveCreateIsDeniedWithoutAccountCreateAccessAndDoesNotCreateAccount(): void
+    {
+        $result = $this->dispatch(
+            'post',
+            'account/saveCreate',
+            [],
+            [
+                'name' => 'Denied Create Attempt',
+                'login' => 'denied-create',
+                'client_id' => '1',
+                'category_id' => '1',
+                'password' => 'secret',
+                'password_repeat' => 'secret',
+                'owner_id' => '',
+                'main_usergroup_id' => '',
+            ],
+            [AclInterface::class => $this->denyAclFor(AclActionsInterface::ACCOUNT_CREATE)]
+        );
+
+        $this->assertJsonDenied($result, self::DENIED_OP);
+
+        self::assertSame(
+            0,
+            (int)$this->fetchValue("SELECT COUNT(*) FROM Account WHERE name = 'Denied Create Attempt'")
+        );
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[InjectCrypt]
+    public function saveCopyIsDeniedWithoutAccountCreateAccessAndDoesNotCreateAccount(): void
+    {
+        $result = $this->dispatch(
+            'post',
+            'account/saveCopy',
+            [],
+            [
+                'name' => 'Denied Copy Attempt',
+                'login' => 'denied-copy',
+                'client_id' => '1',
+                'category_id' => '1',
+                'password' => 'secret',
+                'password_repeat' => 'secret',
+                'owner_id' => '',
+                'main_usergroup_id' => '',
+            ],
+            [AclInterface::class => $this->denyAclFor(AclActionsInterface::ACCOUNT_CREATE)]
+        );
+
+        $this->assertJsonDenied($result, self::DENIED_OP);
+
+        self::assertSame(
+            0,
+            (int)$this->fetchValue("SELECT COUNT(*) FROM Account WHERE name = 'Denied Copy Attempt'")
+        );
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[InjectCrypt]
     public function saveEditPassIsDeniedWithoutAccountEditPassAccessAndDoesNotMutateData(): void
     {
         $pass = $this->fetchValue('SELECT pass FROM Account WHERE id = 1');
