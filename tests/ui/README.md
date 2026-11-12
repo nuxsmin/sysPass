@@ -29,6 +29,8 @@ Tier A currently covers:
 | Account view, create and edit, opened in-shell and by direct URL | `specs/shell.spec.ts`, contracts in `src/contracts.ts` |
 | Session SID rotation and reuse | `specs/shell.spec.ts` |
 
+The authoritative JS-to-backend wiring inventory is [docs/agents/ui-interaction-inventory.md](../../docs/agents/ui-interaction-inventory.md).
+
 Detailed readiness contracts, isolation rules and artifact handling are in `docs/agents/ui-smoke-suite.md`.
 
 ## Administrator navigation wiring (reporting only)
@@ -120,3 +122,29 @@ JS-to-backend wiring only. A restricted-user/denied write is not asserted in the
 browser; server-side authorization and denied writes remain covered by
 HTTP/DB-backed tests. Layout, visibility, active state, viewport, styling and
 translated-text checks are out of scope.
+
+## Inventory discovery (manual, working-tree only)
+
+`SP_UI_TIER=DISCOVERY` selects only `specs/discovery.spec.ts`. It is a manual
+inventory browsing mechanism, not a qualification run, not CI evidence, and it
+sets no `completeTierA`, `completeTierB`, `completeTierInstall`,
+`completeTierWiring` or `completeTierWrite` flag. It cannot run the installer.
+
+```sh
+TESTS_UI_ENABLED=true SP_UI_TIER=DISCOVERY ./scripts/ui-smoke.sh
+```
+
+The run provisions the same isolated, runner-owned seeded instance, logs in as
+the synthetic administrator and the synthetic restricted user, and browses the
+fixed page set in `src/discovery.mjs`. It records only page route/status and
+structural control metadata: `data-onclick`, `data-onsubmit`,
+`data-action-route`, `data-route`, `data-view`, `data-onchange`, element
+`id`/`name` and form name. It does not record passwords, form values,
+credentials, cookies, response bodies or account field values.
+
+Output is retained under `summaries/inventory-discovery/<run-id>/` as
+`inventory.json` plus `run-metadata.json`. `summaries/` is gitignored, so this is
+working-tree evidence only and is never committed. Because it is not CI
+evidence, the discovery selection skips the standard `run-summary.json` /
+`junit.xml` / `upload-manifest.json` retention set; the runner still owns and
+removes the isolated containers.

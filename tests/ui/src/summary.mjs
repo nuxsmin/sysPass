@@ -12,6 +12,7 @@ import { sanitizeEvidencePath, sanitizeText } from './sanitize.mjs';
 import {
   TIER_A_SPECS,
   TIER_B_SPECS,
+  TIER_DISCOVERY_SPECS,
   TIER_INSTALL_SPECS,
   TIER_SPECS,
   TIER_WIRING_SPECS,
@@ -21,6 +22,7 @@ import {
 export {
   TIER_A_SPECS,
   TIER_B_SPECS,
+  TIER_DISCOVERY_SPECS,
   TIER_INSTALL_SPECS,
   TIER_SPECS,
   TIER_WIRING_SPECS,

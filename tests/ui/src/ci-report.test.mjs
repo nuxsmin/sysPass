@@ -1182,9 +1182,12 @@ test('the runner normalizes lower-case tier tokens and rejects unknown tiers as 
   });
 
   assert.equal(invalid.status, 2, invalid.stderr);
-  assert.match(invalid.stderr, /SP_UI_TIER must be A, B, INSTALL, WIRING or WRITE; received 'Z'/);
+  assert.match(
+    invalid.stderr,
+    /SP_UI_TIER must be A, B, INSTALL, WIRING, WRITE or DISCOVERY; received 'Z'/,
+  );
 
-  for (const token of ['a', 'b', 'wiring']) {
+  for (const token of ['a', 'b', 'wiring', 'discovery']) {
     const lowercase = spawnSync('bash', [RUNNER], {
       cwd: path.resolve(UI_DIR, '..', '..'),
       encoding: 'utf8',

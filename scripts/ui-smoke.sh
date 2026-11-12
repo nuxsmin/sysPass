@@ -6,6 +6,7 @@
 #   TESTS_UI_ENABLED=true SP_UI_TIER=B ./scripts/ui-smoke.sh
 #   TESTS_UI_ENABLED=true SP_UI_TIER=WIRING ./scripts/ui-smoke.sh
 #   TESTS_UI_ENABLED=true SP_UI_TIER=WRITE ./scripts/ui-smoke.sh
+#   TESTS_UI_ENABLED=true SP_UI_TIER=DISCOVERY ./scripts/ui-smoke.sh
 #   TESTS_UI_ENABLED=true SP_UI_TIER=INSTALL ./scripts/ui-smoke.sh
 #   TESTS_UI_ENABLED=true SP_UI_TIER=A SP_UI_INSTALL=1 ./scripts/ui-smoke.sh
 #
@@ -15,7 +16,9 @@
 # SP_UI_TIER defaults to A. WIRING is a separate reporting-only selection for
 # JS-to-backend navigation wiring and never completes Tier A or Tier B. WRITE is
 # a separate reporting-only selection for Account create write wiring and never
-# completes Tier A, Tier B or the installer.
+# completes Tier A, Tier B or the installer. DISCOVERY is a manual, working-tree
+# inventory browsing selection; it is not CI evidence and cannot run the
+# installer.
 # SP_UI_INSTALL=1 explicitly adds the installer
 # phase; a combined selection runs the seeded specs first and the wizard last.
 # The installer uses a separate run-owned instance and always retries: 0. A
@@ -55,12 +58,15 @@ case "$SELECTED_TIER" in
   WRITE)
     DEFAULT_SUMMARY_ROOT="$UI_DIR/summaries/tier-write"
     ;;
+  DISCOVERY)
+    DEFAULT_SUMMARY_ROOT="$UI_DIR/summaries/inventory-discovery"
+    ;;
   INSTALL)
     # The installer is a separate stateful selection with its own evidence root.
     DEFAULT_SUMMARY_ROOT="$UI_DIR/summaries/tier-install"
     ;;
   *)
-    echo "ERROR: SP_UI_TIER must be A, B, INSTALL, WIRING or WRITE; received '${SP_UI_TIER:-}'" >&2
+    echo "ERROR: SP_UI_TIER must be A, B, INSTALL, WIRING, WRITE or DISCOVERY; received '${SP_UI_TIER:-}'" >&2
     exit 2
     ;;
 esac
@@ -103,7 +109,7 @@ PROVISIONING_STARTED=0
 FINALIZED=0
 
 usage() {
-  sed -n '2,24p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,35p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [ "$#" -gt 0 ]; do
@@ -578,6 +584,7 @@ run_playwright() {
     export SP_UI_RUN_ROOT="$run_root"
     export SP_UI_RUN_ID="$RUN_ID"
     export SP_UI_OUTPUT_DIR="$output_dir"
+    export SP_UI_DISCOVERY_OUTPUT_DIR="${SP_UI_DISCOVERY_OUTPUT_DIR:-$output_dir/discovery}"
     export SP_UI_REPO_ROOT="$REPO_ROOT"
     export SP_UI_CHROMIUM_EXECUTABLE="$CHROMIUM_EXECUTABLE"
     export SP_UI_TIER="$tier"
@@ -872,7 +879,21 @@ if [ -n "$SEEDED_TIER" ]; then
   run_playwright "$RUN_ROOT/output" "$SEEDED_TIER" "$ORIGIN" "$RUN_ROOT"
   SEEDED_STATUS=$PLAYWRIGHT_STATUS
 
-  if ! ui_smoke_finalize_report "$RUN_ROOT/output" "$SUMMARY_ROOT" "$UI_DIR" "$RUN_ID"; then
+  if [ "$SEEDED_TIER" = "DISCOVERY" ]; then
+    DISCOVERY_RETAINED="$SUMMARY_ROOT/$RUN_ID"
+
+    if [ -f "$RUN_ROOT/output/discovery/inventory.json" ] \
+      && [ -f "$RUN_ROOT/output/discovery/run-metadata.json" ]; then
+      mkdir -p "$DISCOVERY_RETAINED"
+      cp "$RUN_ROOT/output/discovery/inventory.json" "$DISCOVERY_RETAINED/inventory.json"
+      cp "$RUN_ROOT/output/discovery/run-metadata.json" "$DISCOVERY_RETAINED/run-metadata.json"
+      echo "Retained inventory discovery evidence: $DISCOVERY_RETAINED"
+    else
+      echo "ERROR: inventory discovery evidence was not produced" >&2
+      SEEDED_STATUS=1
+      SEEDED_SETUP_ERROR="inventory discovery evidence was not produced"
+    fi
+  elif ! ui_smoke_finalize_report "$RUN_ROOT/output" "$SUMMARY_ROOT" "$UI_DIR" "$RUN_ID"; then
     echo "ERROR: run artifacts were not retained and verified" >&2
     SEEDED_STATUS=1
     SEEDED_SETUP_ERROR="run artifacts were not retained and verified"

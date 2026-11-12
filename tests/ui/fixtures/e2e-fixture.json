@@ -9,18 +9,26 @@
       "login": "E2E_Demo",
       "password": "E2E_Demo_Password_2026",
       "masterPassword": "E2E_Master_Password_2026"
+    },
+    "restricted": {
+      "login": "E2E_Restricted",
+      "password": "E2E_Restricted_Password_2026",
+      "masterPassword": "E2E_Master_Password_2026"
     }
   },
   "ids": {
     "groups": {
-      "demo": 2
+      "demo": 2,
+      "restricted": 3
     },
     "profiles": {
-      "demo": 2
+      "demo": 2,
+      "restricted": 3
     },
     "users": {
       "admin": 1,
-      "demo": 2
+      "demo": 2,
+      "restricted": 3
     },
     "clients": {
       "primary": 1
@@ -39,6 +47,8 @@
   "names": {
     "demoGroup": "E2E_Users",
     "demoProfile": "E2E Demo",
+    "restrictedGroup": "E2E_Restricted_Users",
+    "restrictedProfile": "E2E Restricted",
     "client": "E2E_Client",
     "category": "E2E_Category",
     "parentAccount": "E2E_Parent_Account",
