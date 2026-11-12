@@ -5,6 +5,7 @@
 #   TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh [--keep]
 #   TESTS_UI_ENABLED=true SP_UI_TIER=B ./scripts/ui-smoke.sh
 #   TESTS_UI_ENABLED=true SP_UI_TIER=WIRING ./scripts/ui-smoke.sh
+#   TESTS_UI_ENABLED=true SP_UI_TIER=WRITE ./scripts/ui-smoke.sh
 #   TESTS_UI_ENABLED=true SP_UI_TIER=INSTALL ./scripts/ui-smoke.sh
 #   TESTS_UI_ENABLED=true SP_UI_TIER=A SP_UI_INSTALL=1 ./scripts/ui-smoke.sh
 #
@@ -12,7 +13,9 @@
 # without provisioning anything and without producing Tier A evidence.
 #
 # SP_UI_TIER defaults to A. WIRING is a separate reporting-only selection for
-# JS-to-backend navigation wiring and never completes Tier A or Tier B.
+# JS-to-backend navigation wiring and never completes Tier A or Tier B. WRITE is
+# a separate reporting-only selection for Account create write wiring and never
+# completes Tier A, Tier B or the installer.
 # SP_UI_INSTALL=1 explicitly adds the installer
 # phase; a combined selection runs the seeded specs first and the wizard last.
 # The installer uses a separate run-owned instance and always retries: 0. A
@@ -49,12 +52,15 @@ case "$SELECTED_TIER" in
     # completes Tier A or Tier B and keeps its own evidence root.
     DEFAULT_SUMMARY_ROOT="$UI_DIR/summaries/tier-wiring"
     ;;
+  WRITE)
+    DEFAULT_SUMMARY_ROOT="$UI_DIR/summaries/tier-write"
+    ;;
   INSTALL)
     # The installer is a separate stateful selection with its own evidence root.
     DEFAULT_SUMMARY_ROOT="$UI_DIR/summaries/tier-install"
     ;;
   *)
-    echo "ERROR: SP_UI_TIER must be A, B, INSTALL or WIRING; received '${SP_UI_TIER:-}'" >&2
+    echo "ERROR: SP_UI_TIER must be A, B, INSTALL, WIRING or WRITE; received '${SP_UI_TIER:-}'" >&2
     exit 2
     ;;
 esac
@@ -97,7 +103,7 @@ PROVISIONING_STARTED=0
 FINALIZED=0
 
 usage() {
-  sed -n '2,20p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,24p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [ "$#" -gt 0 ]; do

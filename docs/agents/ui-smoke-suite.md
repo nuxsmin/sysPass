@@ -119,14 +119,15 @@ TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh
 ### Tier selection
 
 `SP_UI_TIER` selects the tier and defaults to `A` when unset. `A`/`a`, `B`/`b`,
-`INSTALL`/`install` and `WIRING`/`wiring` are accepted; any other token is a
-usage error (exit 2), not an unknown observation.
+`INSTALL`/`install`, `WIRING`/`wiring` and `WRITE`/`write` are accepted; any
+other token is a usage error (exit 2), not an unknown observation.
 
 | Selection | Command | Specs |
 | --- | --- | --- |
 | Tier A (default) | `TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh` | `login.spec.ts`, `shell.spec.ts` |
 | Tier B | `TESTS_UI_ENABLED=true SP_UI_TIER=B ./scripts/ui-smoke.sh` | Seven in-shell index specs |
 | Navigation wiring (reporting only) | `TESTS_UI_ENABLED=true SP_UI_TIER=WIRING ./scripts/ui-smoke.sh` | `adminNavigation.wiring.spec.ts` |
+| Account create write (reporting only) | `TESTS_UI_ENABLED=true SP_UI_TIER=WRITE ./scripts/ui-smoke.sh` | `accountCreate.write.spec.ts` |
 | Installer only | `TESTS_UI_ENABLED=true SP_UI_TIER=INSTALL ./scripts/ui-smoke.sh` | `install.spec.ts` |
 | Tier A + installer | `TESTS_UI_ENABLED=true SP_UI_TIER=A SP_UI_INSTALL=1 ./scripts/ui-smoke.sh` | Seeded specs first, wizard last |
 | Tier B + installer | `TESTS_UI_ENABLED=true SP_UI_TIER=B SP_UI_INSTALL=1 ./scripts/ui-smoke.sh` | Seeded specs first, wizard last |
@@ -148,6 +149,7 @@ observation.
 | Tier A | `tests/ui/summaries/tier-A/<run-id>/` |
 | Tier B | `tests/ui/summaries/tier-B/<run-id>/` |
 | Navigation wiring | `tests/ui/summaries/tier-wiring/<run-id>/` |
+| Account create write | `tests/ui/summaries/tier-write/<run-id>/` |
 | Installer | `tests/ui/summaries/tier-install/<run-id>/` |
 
 The roots are siblings, not nested. Discovery is non-recursive, so a Tier A
@@ -190,7 +192,7 @@ already installed instance.
 | Sessions | `<run root>/sessions` via `session.save_path` | Per run, removed afterwards |
 | Output | `<run root>/output` (summary, JUnit, Playwright output) | Per run, removed afterwards |
 | Installer instance | `<run root>/install` subtree plus its own containers, network, database, origin, config, caches, sessions and `<run root>/output-install` | Per run, removed afterwards; only when selected |
-| Retained evidence | `tests/ui/summaries/tier-A|tier-B|tier-install/<run-id>/` | Kept through qualification; `tests/ui/summaries/` is gitignored |
+| Retained evidence | `tests/ui/summaries/tier-A|tier-B|tier-wiring|tier-write|tier-install/<run-id>/` | Kept through qualification; `tests/ui/summaries/` is gitignored |
 | Fixture credentials | `tests/ui/fixtures/e2e-fixture.json` | Committed; synthetic only |
 | Authentication state | Playwright worker memory and `<run root>/sessions` | Never written to artifacts; removed afterwards |
 
@@ -825,6 +827,10 @@ the backend response; they are not part of this page-load suite and do not
 change its Tier A or Tier B contracts. Administrator navigation commands,
 coverage limits and results are documented in
 [tests/ui/README.md](../../tests/ui/README.md#administrator-navigation-wiring-reporting-only).
+The `SP_UI_TIER=WRITE` selection covers authorized Account creation only, keeps
+its evidence under `tests/ui/summaries/tier-write/<run-id>/`, and is documented
+in
+[tests/ui/README.md](../../tests/ui/README.md#account-create-write-wiring-reporting-only).
 
 HTTP Integration Tests remain required for template migrations. Tier A gates
 transport/boot changes only; it does not gate the whole rendering rewrite.

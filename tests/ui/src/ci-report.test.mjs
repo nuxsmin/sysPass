@@ -1161,7 +1161,7 @@ test('the runner normalizes lower-case tier tokens and rejects unknown tiers as 
   });
 
   assert.equal(invalid.status, 2, invalid.stderr);
-  assert.match(invalid.stderr, /SP_UI_TIER must be A, B, INSTALL or WIRING; received 'Z'/);
+  assert.match(invalid.stderr, /SP_UI_TIER must be A, B, INSTALL, WIRING or WRITE; received 'Z'/);
 
   for (const token of ['a', 'b', 'wiring']) {
     const lowercase = spawnSync('bash', [RUNNER], {
@@ -1205,6 +1205,7 @@ test('the runner keeps sibling Tier A and Tier B summary roots', () => {
 
   assert.match(source, /summaries\/tier-A/, 'Tier A must retain a dedicated summary root');
   assert.match(source, /summaries\/tier-B/, 'Tier B must retain a dedicated summary root');
+  assert.match(source, /summaries\/tier-write/, 'Tier WRITE must retain a dedicated summary root');
   assert.doesNotMatch(
     source,
     /DEFAULT_SUMMARY_ROOT="\$UI_DIR\/summaries"$/m,

@@ -72,3 +72,49 @@ version/screenshot canaries are unavailable. `npm --prefix tests/ui run
 typecheck` was not run because `tsc` is not installed. The live browser wiring
 run was not executed: it requires an approved isolated provisioning run
 (`scripts/ui-smoke.sh`), which this task must not start.
+
+## Account create write wiring (reporting only)
+
+`SP_UI_TIER=WRITE` selects only `specs/accountCreate.write.spec.ts`. It is a
+separate reporting-only selection, never part of Tier A or Tier B, and it sets
+no `completeTierA`, `completeTierB` or `completeTierInstall` flag.
+
+```sh
+TESTS_UI_ENABLED=true SP_UI_TIER=WRITE ./scripts/ui-smoke.sh
+```
+
+The runner provisions the same isolated, runner-owned seeded instance used by
+the seeded tiers and retains evidence under `summaries/tier-write/`.
+
+The spec creates exactly one synthetic Account per run. It fills a unique
+name/login derived from the run timestamp, selects the fixture client and
+category, types a synthetic password and repeat, and submits through the real
+`.form-action` pipeline rather than calling the Action URL directly. It
+asserts:
+
+- exactly one form-urlencoded POST Action for `account/saveCreate`, containing
+  the entered name/login/client/category and `isAjax=1`, with both password
+  fields present but not equal to the typed plaintext;
+- the `ActionResponse::ok` envelope from
+  `SaveCreateController::saveCreateAction()`: `status: "OK"`, an integer
+  `data.itemId > 0`, and a non-empty `data.nextAction` equal to the account edit
+  route rendered by the application. Translated text and `description` are not
+  asserted;
+- persistence through an independent authorized GET to
+  `account/view/<itemId>` in the same authenticated session, checking the
+  unique name and login. The toast is never treated as persistence proof.
+
+The dispatch, envelope and persistence checks live in
+`src/account-create-contract.mjs`; `src/account-create-contract.test.mjs`
+injects omitted dispatch, false-success and missing-persistence faults through
+`npm run test:unit`.
+
+The run instance must be disposable. Fixture reset removes only the stable
+fixture rows and does not delete arbitrary Accounts created by this or earlier
+runs, so never point the runner at a developer or production database.
+
+Coverage limits: this selection verifies the authorized Account-create
+JS-to-backend wiring only. A restricted-user/denied write is not asserted in the
+browser; server-side authorization and denied writes remain covered by
+HTTP/DB-backed tests. Layout, visibility, active state, viewport, styling and
+translated-text checks are out of scope.
