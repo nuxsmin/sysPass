@@ -257,7 +257,7 @@ A user-initiated operation in a particular interface context, such as selecting 
 _Avoid_: Action (when meaning the user interaction), DOM element
 
 **Interaction Inventory**:
-A record of UI Interactions and their relevant scenarios, expected outcomes and test coverage. It explicitly identifies undefined outcomes and untested scenarios.
+A record of UI Interactions and their relevant scenarios, expected outcomes and test coverage. It explicitly identifies undefined outcomes and untested scenarios. The maintained inventory is [docs/agents/ui-interaction-inventory.md](docs/agents/ui-interaction-inventory.md).
 _Avoid_: route list, test count
 
 **UI Workflow Test**:

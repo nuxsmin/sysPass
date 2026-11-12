@@ -9,7 +9,7 @@ HTTP Integration Tests and Page-load UI Smoke Tests cannot by themselves prove t
 ## Proposed decision
 
 - UI Workflow Tests verify wiring between JavaScript-driven controls and backend Actions only: each JS-bound control sends the expected Action request (route/action, method, payload shape; password fields encrypted, never plaintext), and the UI renders the backend's success or error response.
-- Maintain an Interaction Inventory limited to JS-bound actions, discovered from client-side bindings and Routes. Record success and error scenarios per action; record undefined outcomes and untested scenarios explicitly and do not count them as covered until tested.
+- Maintain an Interaction Inventory limited to JS-bound actions, discovered from client-side bindings and Routes. Record success and error scenarios per action; record undefined outcomes and untested scenarios explicitly and do not count them as covered until tested. The maintained inventory is [UI interaction inventory](../agents/ui-interaction-inventory.md).
 - Out of scope for UI Workflow Tests: layout, composition, visibility, usability, viewport/mobile checks, active-state checks and pixel/visual checks.
 - Authorization and denied-access checks are enforced and tested at the HTTP/backend layer (HTTP Integration Tests and DB-backed Tests), not in the browser suite. Hiding a control is not proof of server-side authorization.
 - Assert state changes through HTTP status and persisted state read back by an independent authorized read, not only visible text. Prefer network-level request assertions and stable hooks (existing Render Contract dispatch attributes) over translated or locale-dependent text.

@@ -16,6 +16,8 @@ DB-backed tests. They do not assert layout, visibility-only behaviour, active
 state, translated text, restricted-user denial or arbitrary workflow
 combinations.
 
+The authoritative JS-to-backend wiring inventory is [ui-interaction-inventory.md](ui-interaction-inventory.md).
+
 ## Selection commands
 
 ```sh
