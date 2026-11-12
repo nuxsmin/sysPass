@@ -68,7 +68,7 @@ final readonly class AccountFilter implements AccountFilterBuilder
             $where = [
                 'AccountHistory.userId = :userIdOwner',
                 'AccountHistory.userGroupId = :userGroupIdOwner',
-                'AccountHistory.accountId IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = AccountHistory.accountId AND userId = :userIdAccountUser UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = AccountHistory.accountId AND userGroupId = :userGroupIdAccountGroup)',
+                'AccountHistory.accountId IN (SELECT accountId FROM AccountToUser WHERE accountId = AccountHistory.accountId AND userId = :userIdAccountUser UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = AccountHistory.accountId AND userGroupId = :userGroupIdAccountGroup)',
                 'AccountHistory.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = AccountHistory.userGroupId AND userId = :userIdGroupMembership)',
             ];
 
@@ -140,7 +140,7 @@ final readonly class AccountFilter implements AccountFilterBuilder
             $where = [
                 'Account.userId = :userIdOwner',
                 'Account.userGroupId = :userGroupIdOwner',
-                'Account.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = Account.id AND userId = :userIdAccountUser UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = Account.id AND userGroupId = :userGroupIdAccountGroup)',
+                'Account.id IN (SELECT accountId FROM AccountToUser WHERE accountId = Account.id AND userId = :userIdAccountUser UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = Account.id AND userGroupId = :userGroupIdAccountGroup)',
                 'Account.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = :userIdGroupMembership)',
             ];
 
