@@ -370,6 +370,10 @@ sysPass.Actions = function (log) {
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);
 
+                if (json.status !== 0 || json.data === null || typeof json.data !== "object") {
+                    return;
+                }
+
                 if (json.data.itemId !== undefined
                     && json.data.nextAction !== undefined
                 ) {
@@ -413,8 +417,9 @@ sysPass.Actions = function (log) {
             opts.data = $frmSearch.serialize();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                if (json.status === 10) {
+                if (json.status !== 0 || json.data === null || typeof json.data !== "object") {
                     sysPassApp.msg.out(json);
+                    return;
                 }
 
                 $("#res-content").empty().html(json.data.html);
@@ -436,6 +441,10 @@ sysPass.Actions = function (log) {
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);
+
+                if (json.status !== 0 || json.data === null || typeof json.data !== "object") {
+                    return;
+                }
 
                 if (json.data.itemId !== undefined
                     && json.data.nextAction !== undefined
@@ -1563,6 +1572,11 @@ sysPass.Actions = function (log) {
                 });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
+                if (json.status !== 0 || json.data === null || typeof json.data !== "object") {
+                    sysPassApp.msg.out(json);
+                    return;
+                }
+
                 const $badge = $(".notifications-badge");
                 const $tooltip = $(".notifications-tooltip");
 
