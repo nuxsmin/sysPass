@@ -21,6 +21,27 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+const getActionResponseData = function (json, requiredKey) {
+    if (typeof json !== "object"
+        || json === null
+        || Array.isArray(json)
+        || (json.status !== 0 && json.status !== "OK")
+        || typeof json.data !== "object"
+        || json.data === null
+        || Array.isArray(json.data)
+    ) {
+        return undefined;
+    }
+
+    if (requiredKey !== undefined
+        && typeof json.data[requiredKey] !== "string"
+    ) {
+        return undefined;
+    }
+
+    return json.data;
+};
+
 sysPass.Main = function () {
     "use strict";
 
@@ -128,17 +149,26 @@ sysPass.Main = function () {
         }
 
         $("body").on("click", ".clip-pass-button", function () {
-            const json = oPublic.actions.account.copyPass($(this)).done(function (json) {
-                if (json.status !== 0) {
-                    msg.out(json);
+            oPublic.actions.account.copyPass($(this)).done(function (json) {
+                const data = getActionResponseData(json, "accpass");
 
-                    return false;
+                if (data === undefined) {
+                    if (typeof json === "object"
+                        && json !== null
+                        && !Array.isArray(json)
+                        && json.status !== 0
+                        && json.status !== "OK"
+                    ) {
+                        msg.out(json);
+                    } else {
+                        msg.error(oPublic.config.LANG[46]);
+                    }
+
+                    return;
                 }
-            });
 
-            if (json !== false) {
                 clipboard
-                    .copy(json.responseJSON.data.accpass)
+                    .copy(data.accpass)
                     .then(
                         function () {
                             msg.ok(oPublic.config.LANG[45]);
@@ -147,7 +177,7 @@ sysPass.Main = function () {
                             msg.error(oPublic.config.LANG[46]);
                         }
                     );
-            }
+            });
         }).on("click", ".dialog-clip-button", function () {
             const $target = $(this.dataset.clipboardTarget);
 
@@ -433,30 +463,45 @@ sysPass.Main = function () {
         opts.data = {isAjax: 1};
 
         return oPublic.requests.getActionCall(opts, function (json) {
-            if (json.data !== undefined) {
-                configHandler.setLang(json.data.lang);
-                configHandler.setSessionTimeout(json.data.session_timeout);
-                configHandler.setPkiKey(json.data.pki_key);
-                configHandler.setPkiSize(json.data.pki_max_size);
-                configHandler.setCheckUpdates(json.data.check_updates);
-                configHandler.setCheckNotices(json.data.check_notices);
-                configHandler.setCheckNotifications(json.data.check_notifications);
-                configHandler.setTimezone(json.data.timezone);
-                configHandler.setLocale(json.data.locale);
-                configHandler.setDebugEnabled(json.data.debug);
-                configHandler.setFileMaxSize(json.data.max_file_size);
-                configHandler.setFileAccountAllowedMime(json.data.files_allowed_mime);
-                configHandler.setFileImportAllowedMime(json.data.import_allowed_mime);
-                configHandler.setCookiesEnabled(json.data.cookies_enabled);
-                configHandler.setPlugins(json.data.plugins);
-                configHandler.setLoggedIn(json.data.loggedin);
-                configHandler.setAuthBasicAutologinEnabled(json.data.authbasic_autologin);
-                configHandler.setCSRF(json.data.csrf);
+            const data = getActionResponseData(json);
 
-                configHandler.initialize();
+            if (data === undefined) {
+                if (typeof json === "object"
+                    && json !== null
+                    && !Array.isArray(json)
+                    && json.status !== 0
+                    && json.status !== "OK"
+                ) {
+                    msg.out(json);
+                } else {
+                    msg.error("Error while getting sysPass config<br/>Please try again or check web server logs");
+                }
 
-                oPublic.config = configHandler.getConfig();
+                return;
             }
+
+            configHandler.setLang(data.lang);
+            configHandler.setSessionTimeout(data.session_timeout);
+            configHandler.setPkiKey(data.pki_key);
+            configHandler.setPkiSize(data.pki_max_size);
+            configHandler.setCheckUpdates(data.check_updates);
+            configHandler.setCheckNotices(data.check_notices);
+            configHandler.setCheckNotifications(data.check_notifications);
+            configHandler.setTimezone(data.timezone);
+            configHandler.setLocale(data.locale);
+            configHandler.setDebugEnabled(data.debug);
+            configHandler.setFileMaxSize(data.max_file_size);
+            configHandler.setFileAccountAllowedMime(data.files_allowed_mime);
+            configHandler.setFileImportAllowedMime(data.import_allowed_mime);
+            configHandler.setCookiesEnabled(data.cookies_enabled);
+            configHandler.setPlugins(data.plugins);
+            configHandler.setLoggedIn(data.loggedin);
+            configHandler.setAuthBasicAutologinEnabled(data.authbasic_autologin);
+            configHandler.setCSRF(data.csrf);
+
+            configHandler.initialize();
+
+            oPublic.config = configHandler.getConfig();
         }).fail(function () {
             msg.error("Error while getting sysPass config<br/>Please try again or check web server logs");
         });
@@ -489,7 +534,11 @@ sysPass.Main = function () {
         // Late init
         oPublic.requests = sysPass.Requests(oPublic);
 
-        getEnvironment().then(function () {
+        getEnvironment().then(function (json) {
+            if (getActionResponseData(json) === undefined) {
+                return;
+            }
+
             if (!checkLogout()) {
                 if (oPublic.config.PKI.AVAILABLE) {
                     bindPassEncrypt();
@@ -535,3 +584,5 @@ sysPass.Main = function () {
 
     return init();
 };
+
+sysPass.Main.getActionResponseData = getActionResponseData;
