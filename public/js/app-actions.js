@@ -198,7 +198,7 @@ sysPass.Actions = function (log) {
                         const opts = sysPassApp.requests.getRequestOpts();
                         opts.url = ajaxUrl.entrypoint;
                         opts.data = {
-                            r: sysPassApp.util.buildRoute(["account/saveDelete", $obj.data("item-id")]),
+                            r: sysPassApp.util.buildRoute([$obj.data("action-route"), $obj.data("item-id")]),
                             sk: sysPassApp.sk.get()
                         };
 
