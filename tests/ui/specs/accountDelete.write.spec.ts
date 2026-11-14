@@ -248,6 +248,7 @@ test('account delete opens the dialog and dispatches the advertised form-body ro
     expect(refreshResponse.status()).toBe(200);
     expect(refreshRequests).toHaveLength(1);
     await tracker.waitForQuiet(deleteSince);
+    tracker.assertNoProblems();
 
     const origin = new URL(page.url()).origin;
     const absenceResponse = await page.request.get(

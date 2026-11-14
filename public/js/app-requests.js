@@ -198,11 +198,16 @@ sysPass.Requests = function (sysPassApp) {
                     sysPassApp.theme.loading.hide();
                 }
 
+                const responseJSON = response.responseJSON;
+                const data = (responseJSON !== undefined && responseJSON !== null)
+                    ? responseJSON.data
+                    : undefined;
+
                 if (sysPassApp.theme !== undefined
                     && (opts.type === "html"
-                        || (response.responseJSON !== undefined
-                            && response.responseJSON.data !== undefined
-                            && response.responseJSON.data.html !== undefined))
+                        || (data !== null
+                            && typeof data === "object"
+                            && data.html !== undefined))
                 ) {
                     sysPassApp.theme.ajax.complete();
                 }
