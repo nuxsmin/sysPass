@@ -61,12 +61,17 @@ export function validateDeleteDispatch({ requests, itemId }) {
 
   const headers = requestHeaders(request);
   const contentType = headers['content-type'] ?? headers['Content-Type'] ?? '';
+  const csrf = headers['x-csrf'] ?? headers['X-CSRF'] ?? headers['X-Csrf'] ?? '';
 
   if (!String(contentType).toLowerCase().includes('application/x-www-form-urlencoded')) {
     return failure(
       'dispatch.content-type',
       `${ACCOUNT_SAVE_DELETE_ROUTE} request was not form-urlencoded`,
     );
+  }
+
+  if (typeof csrf !== 'string' || csrf.length === 0) {
+    return failure('dispatch.csrf', `${ACCOUNT_SAVE_DELETE_ROUTE} request did not carry a CSRF token`);
   }
 
   const form = new URLSearchParams(requestBody(request));
@@ -111,12 +116,6 @@ export function validateDeleteDispatch({ requests, itemId }) {
     }
 
     return failure('dispatch.route', `form body did not target ${ACCOUNT_SAVE_DELETE_ROUTE}/<id>`);
-  }
-
-  const sk = form.get('sk');
-
-  if (sk === null || sk.length === 0) {
-    return failure('dispatch.sk', `${ACCOUNT_SAVE_DELETE_ROUTE} request did not carry a session key`);
   }
 
   return { ok: true };

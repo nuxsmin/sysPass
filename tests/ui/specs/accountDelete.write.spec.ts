@@ -110,6 +110,7 @@ test('account delete opens the dialog and dispatches the advertised form-body ro
   const tracker = new ActionTracker(page, context, { sessionEstablished: false });
   const deleteRequests: PlaywrightRequest[] = [];
   const legacyRequests: PlaywrightRequest[] = [];
+  const refreshRequests: PlaywrightRequest[] = [];
   const onRequest = (request: PlaywrightRequest): void => {
     let url: URL;
 
@@ -130,6 +131,10 @@ test('account delete opens the dialog and dispatches the advertised form-body ro
       }
     }
 
+    if (request.method() === 'GET' && urlRoute === 'account/search') {
+      refreshRequests.push(request);
+    }
+
     if (request.method() === 'POST' && url.pathname.endsWith('/index.php')) {
       deleteRequests.push(request);
     }
@@ -140,10 +145,7 @@ test('account delete opens the dialog and dispatches the advertised form-body ro
 
     const { itemId, name } = await createDisposableAccount(page, tracker);
 
-    const indexSince = Date.now();
-    await page.goto('/index.php?r=account/index', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('#wrap-loading')).toBeHidden();
-    await tracker.waitForQuiet(indexSince, Date.now() + 15_000);
+    await openSeededShell(page, tracker, session);
     await expect(page.locator('#frmSearch')).toHaveAttribute('data-action-route', 'account/search');
     await expect(page.locator('#search')).toBeVisible();
 
@@ -160,10 +162,22 @@ test('account delete opens the dialog and dispatches the advertised form-body ro
     const searchResponse = await searchResponsePromise;
     expect(searchResponse.status()).toBe(200);
 
-    const deleteControl = page.locator(`#search-rows [data-onclick="${DELETE_HANDLER}"]`);
+    const accountRow = page.locator('#search-rows .account-label').filter({ hasText: name });
+    await expect(accountRow).toHaveCount(1);
+
+    const deleteControl = accountRow.locator(`[data-onclick="${DELETE_HANDLER}"]`);
     await expect(deleteControl).toHaveCount(1);
     await expect(deleteControl).toHaveAttribute('data-action-route', SAVE_DELETE_ROUTE);
     await expect(deleteControl).toHaveAttribute('data-item-id', String(itemId));
+
+    const actionsMenu = accountRow.locator('.account-actions button.mdl-button');
+    await expect(actionsMenu).toHaveCount(1);
+    await expect(accountRow.locator('.account-actions ul.mdl-menu')).toHaveAttribute(
+      'data-upgraded',
+      /MaterialMenu/,
+    );
+    await actionsMenu.click();
+    await expect(deleteControl).toBeVisible();
 
     page.on('request', onRequest);
 
@@ -194,6 +208,13 @@ test('account delete opens the dialog and dispatches the advertised form-body ro
     await expect(dialog).toBeVisible();
     await expect(page.locator('#orrsDiag #alert-text')).toBeVisible();
 
+    const refreshResponsePromise = page.waitForResponse(
+      (response) =>
+        response.request().method() === 'GET' &&
+        parseActionRoute(response.url()) === 'account/search',
+      { timeout: 15_000 },
+    );
+
     await page.locator('#orrsDiag #positive').click();
     const deleteResponse = await deleteResponsePromise;
 
@@ -223,7 +244,9 @@ test('account delete opens the dialog and dispatches the advertised form-body ro
       throw new Error(envelope.message);
     }
 
-    await tracker.waitForActions(['account/search'], deleteSince, Date.now() + 15_000);
+    const refreshResponse = await refreshResponsePromise;
+    expect(refreshResponse.status()).toBe(200);
+    expect(refreshRequests).toHaveLength(1);
     await tracker.waitForQuiet(deleteSince);
 
     const origin = new URL(page.url()).origin;

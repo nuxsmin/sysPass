@@ -9,8 +9,8 @@ import {
 
 const ITEM_ID = 42;
 const NAME = 'E2E UI DELETE fixture';
-const SK = 'sk-fixture-secret-token';
-const SECRETS = [NAME, SK];
+const CSRF_TOKEN = 'csrf-fixture-secret-token';
+const SECRETS = [NAME, CSRF_TOKEN];
 
 const VALID_HTML = '<div id="search-rows"><div class="noRes round">No records found</div></div>';
 
@@ -18,10 +18,12 @@ function dispatchRequest(overrides = {}) {
   return {
     method: 'POST',
     url: 'http://ui-smoke.invalid/index.php',
-    headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      'x-csrf': CSRF_TOKEN,
+    },
     body: new URLSearchParams({
       r: `account/saveDelete/${ITEM_ID}`,
-      sk: SK,
     }).toString(),
     ...overrides,
   };
@@ -91,7 +93,6 @@ test('dispatch rejects the legacy account/delete/<id> route', () => {
       dispatchRequest({
         body: new URLSearchParams({
           r: `account/delete/${ITEM_ID}`,
-          sk: SK,
         }).toString(),
       }),
     ],
@@ -106,7 +107,7 @@ test('dispatch rejects a route supplied only in the URL instead of the form body
     requests: [
       dispatchRequest({
         url: `http://ui-smoke.invalid/index.php?r=account/saveDelete/${ITEM_ID}`,
-        body: new URLSearchParams({ sk: SK }).toString(),
+        body: new URLSearchParams({}).toString(),
       }),
     ],
     itemId: ITEM_ID,
@@ -117,13 +118,13 @@ test('dispatch rejects a route supplied only in the URL instead of the form body
 
 test('dispatch fails when the form-body route is missing, wrong or for another item', () => {
   const missingRoute = validateDeleteDispatch({
-    requests: [dispatchRequest({ body: new URLSearchParams({ sk: SK }).toString() })],
+    requests: [dispatchRequest({ body: new URLSearchParams({}).toString() })],
     itemId: ITEM_ID,
   });
   const wrongRoute = validateDeleteDispatch({
     requests: [
       dispatchRequest({
-        body: new URLSearchParams({ r: `account/saveEdit/${ITEM_ID}`, sk: SK }).toString(),
+        body: new URLSearchParams({ r: `account/saveEdit/${ITEM_ID}` }).toString(),
       }),
     ],
     itemId: ITEM_ID,
@@ -131,7 +132,7 @@ test('dispatch fails when the form-body route is missing, wrong or for another i
   const wrongItem = validateDeleteDispatch({
     requests: [
       dispatchRequest({
-        body: new URLSearchParams({ r: 'account/saveDelete/99', sk: SK }).toString(),
+        body: new URLSearchParams({ r: 'account/saveDelete/99' }).toString(),
       }),
     ],
     itemId: ITEM_ID,
@@ -142,18 +143,29 @@ test('dispatch fails when the form-body route is missing, wrong or for another i
   assertFailure(wrongItem, 'dispatch.item-id');
 });
 
-test('dispatch fails when the session key is missing or empty', () => {
-  for (const body of [
-    new URLSearchParams({ r: `account/saveDelete/${ITEM_ID}` }).toString(),
-    new URLSearchParams({ r: `account/saveDelete/${ITEM_ID}`, sk: '' }).toString(),
-  ]) {
-    const result = validateDeleteDispatch({
-      requests: [dispatchRequest({ body })],
-      itemId: ITEM_ID,
-    });
+test('dispatch fails when the CSRF token header is missing or empty', () => {
+  const missing = validateDeleteDispatch({
+    requests: [
+      dispatchRequest({
+        headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+      }),
+    ],
+    itemId: ITEM_ID,
+  });
+  const empty = validateDeleteDispatch({
+    requests: [
+      dispatchRequest({
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'x-csrf': '',
+        },
+      }),
+    ],
+    itemId: ITEM_ID,
+  });
 
-    assertFailure(result, 'dispatch.sk');
-  }
+  assertFailure(missing, 'dispatch.csrf');
+  assertFailure(empty, 'dispatch.csrf');
 });
 
 test('envelope accepts only an OK status with null data', () => {
