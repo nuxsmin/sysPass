@@ -18,7 +18,7 @@ GH_BIN="${GH_BIN:-gh}"
 API_BASE="repos/$REPO"
 CHECK_NAMES=(
   "${UI_WORKFLOW_WIRING_CHECK_NAME:-UI Workflow (navigation wiring, reporting-only)}"
-  "${UI_WORKFLOW_WRITE_CHECK_NAME:-UI Workflow (account creation, reporting-only)}"
+  "${UI_WORKFLOW_WRITE_CHECK_NAME:-UI Workflow (account creation and delete, reporting-only)}"
 )
 
 if ! command -v "$GH_BIN" >/dev/null 2>&1; then

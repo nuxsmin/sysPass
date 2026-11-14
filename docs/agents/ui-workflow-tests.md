@@ -8,7 +8,7 @@ JavaScript-to-backend wiring contracts accepted by ADR-0012:
 | Selection | Check name | Contract |
 | --- | --- | --- |
 | WIRING | `UI Workflow (navigation wiring, reporting-only)` | Five ACL-gated administrator menu controls dispatch their expected `getContent` Action and render route-specific content. |
-| WRITE | `UI Workflow (account creation, reporting-only)` | The Account create form dispatches one `account/saveCreate` POST, receives the success envelope and persists the account through an independent authorized read. |
+| WRITE | `UI Workflow (account creation and delete, reporting-only)` | The Account create and delete flows dispatch their expected writes: create posts `account/saveCreate` and persists the account through an independent authorized read; delete confirms through the dialog, posts the form-body route `account/saveDelete/<id>`, receives the `OK`/`data: null` envelope and disappears from an independent authorized search read. |
 
 Non-goals: these checks are not merge-required, not Tier A or Tier B evidence,
 not installer evidence and not a replacement for unit, HTTP integration or
@@ -26,10 +26,10 @@ TESTS_UI_ENABLED=true SP_UI_TIER=WRITE ./scripts/ui-smoke.sh
 ```
 
 The selections are independent. `WIRING` runs only
-`specs/adminNavigation.wiring.spec.ts`; `WRITE` runs only
-`specs/accountCreate.write.spec.ts`. Lower-case tier tokens are accepted and
-normalized by the shared runner. A partial, filtered or explicit-subset run is
-never a complete observation.
+`specs/adminNavigation.wiring.spec.ts`; `WRITE` runs
+`specs/accountCreate.write.spec.ts` and `specs/accountDelete.write.spec.ts`.
+Lower-case tier tokens are accepted and normalized by the shared runner. A
+partial, filtered or explicit-subset run is never a complete observation.
 
 ## Dedicated switch
 
@@ -55,7 +55,7 @@ from Tier A (`17 4 * * *`) and Tier B (`47 4 * * *`).
 The stable check names are carried by one-step mirror jobs:
 
 - `UI Workflow (navigation wiring, reporting-only)`
-- `UI Workflow (account creation, reporting-only)`
+- `UI Workflow (account creation and delete, reporting-only)`
 
 Each mirror requires its corresponding workload result to be `success`. Mirrors
 do not use `continue-on-error`, and a skipped workload skips its mirror. Neither
@@ -70,9 +70,10 @@ cancellation or interruption. It never reuses a developer instance, an external
 `E2E_BASE_URL` or a production database.
 
 Fixture reset removes only the stable fixture rows. The WRITE selection creates
-exactly one synthetic Account per run and does not delete arbitrary Accounts
-created by earlier runs, so the target instance must be disposable. Never point
-either selection at developer or production data.
+one synthetic Account per spec and the delete spec removes only the Account it
+created; neither spec deletes arbitrary Accounts created by earlier runs, so the
+target instance must be disposable. Never point either selection at developer
+or production data.
 
 Prerequisites are the same as the shared UI harness:
 
@@ -152,7 +153,7 @@ for the new names.
 | Artifact name looks like `ui-smoke` | Confirm the caller tier is `WIRING` or `WRITE`; those selections must use the `ui-workflow` artifact family. |
 | `ci-report` reports no summary or several summaries | Pass the single per-run directory or the selection's single retained root. Do not point a report at a parent that contains other selections. |
 | A WIRING or WRITE report is requested as Tier A or Tier B | Expected: selection completeness is independent. Re-run `ci-report` with the matching `--tier WIRING` or `--tier WRITE`. |
-| WRITE leaves an extra account | The run instance must be disposable. Reset removes fixture rows only; do not reuse developer or production databases. |
+| WRITE leaves an extra account | The create spec leaves its synthetic Account by design; the delete spec removes only the Account it created. The run instance must be disposable. Reset removes fixture rows only; do not reuse developer or production databases. |
 
 ## Qualification criteria
 
@@ -185,6 +186,11 @@ by merging this workflow or by an execution switch.
 Baseline as of 2026-11-12: **0 complete runs** for each selection. Observation is
 **not started**, both checks are **not qualified** and both are
 **reporting-only**.
+
+The WRITE selection now also includes `specs/accountDelete.write.spec.ts`
+(#2150). That spec has not executed in a scheduled or manual run, so the WRITE
+observation count remains 0; the account delete interaction is reporting-only
+with a live run pending and is not marked Covered in the interaction inventory.
 
 | Date | Selection | Run ID | Commit | Complete | First attempts/retries | Failures/skips | Duration | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |

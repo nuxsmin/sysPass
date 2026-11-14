@@ -15,10 +15,10 @@
 #
 # SP_UI_TIER defaults to A. WIRING is a separate reporting-only selection for
 # JS-to-backend navigation wiring and never completes Tier A or Tier B. WRITE is
-# a separate reporting-only selection for Account create write wiring and never
-# completes Tier A, Tier B or the installer. DISCOVERY is a manual, working-tree
-# inventory browsing selection; it is not CI evidence and cannot run the
-# installer.
+# a separate reporting-only selection for Account create and delete write wiring
+# and never completes Tier A, Tier B or the installer. DISCOVERY is a manual,
+# working-tree inventory browsing selection; it is not CI evidence and cannot
+# run the installer.
 # SP_UI_INSTALL=1 explicitly adds the installer
 # phase; a combined selection runs the seeded specs first and the wizard last.
 # The installer uses a separate run-owned instance and always retries: 0. A

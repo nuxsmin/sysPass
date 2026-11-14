@@ -13,7 +13,7 @@ const SWITCH = /vars\.TESTS_UI_WORKFLOW_ENABLED == 'true'/;
 
 const CHECK_NAMES = {
   'ui-workflow-wiring': 'UI Workflow (navigation wiring, reporting-only)',
-  'ui-workflow-write': 'UI Workflow (account creation, reporting-only)',
+  'ui-workflow-write': 'UI Workflow (account creation and delete, reporting-only)',
 };
 
 function read() {

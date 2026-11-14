@@ -22,7 +22,7 @@ export const TIER_INSTALL_SPECS = ['install.spec.ts'];
 
 export const TIER_WIRING_SPECS = ['adminNavigation.wiring.spec.ts'];
 
-export const TIER_WRITE_SPECS = ['accountCreate.write.spec.ts'];
+export const TIER_WRITE_SPECS = ['accountCreate.write.spec.ts', 'accountDelete.write.spec.ts'];
 
 export const TIER_DISCOVERY_SPECS = ['discovery.spec.ts'];
 

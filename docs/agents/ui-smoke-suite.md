@@ -127,7 +127,7 @@ other token is a usage error (exit 2), not an unknown observation.
 | Tier A (default) | `TESTS_UI_ENABLED=true ./scripts/ui-smoke.sh` | `login.spec.ts`, `shell.spec.ts` |
 | Tier B | `TESTS_UI_ENABLED=true SP_UI_TIER=B ./scripts/ui-smoke.sh` | Seven in-shell index specs |
 | Navigation wiring (reporting only) | `TESTS_UI_ENABLED=true SP_UI_TIER=WIRING ./scripts/ui-smoke.sh` | `adminNavigation.wiring.spec.ts` |
-| Account create write (reporting only) | `TESTS_UI_ENABLED=true SP_UI_TIER=WRITE ./scripts/ui-smoke.sh` | `accountCreate.write.spec.ts` |
+| Account create and delete write (reporting only) | `TESTS_UI_ENABLED=true SP_UI_TIER=WRITE ./scripts/ui-smoke.sh` | `accountCreate.write.spec.ts`, `accountDelete.write.spec.ts` |
 | Installer only | `TESTS_UI_ENABLED=true SP_UI_TIER=INSTALL ./scripts/ui-smoke.sh` | `install.spec.ts` |
 | Tier A + installer | `TESTS_UI_ENABLED=true SP_UI_TIER=A SP_UI_INSTALL=1 ./scripts/ui-smoke.sh` | Seeded specs first, wizard last |
 | Tier B + installer | `TESTS_UI_ENABLED=true SP_UI_TIER=B SP_UI_INSTALL=1 ./scripts/ui-smoke.sh` | Seeded specs first, wizard last |
@@ -149,7 +149,7 @@ observation.
 | Tier A | `tests/ui/summaries/tier-A/<run-id>/` |
 | Tier B | `tests/ui/summaries/tier-B/<run-id>/` |
 | Navigation wiring | `tests/ui/summaries/tier-wiring/<run-id>/` |
-| Account create write | `tests/ui/summaries/tier-write/<run-id>/` |
+| Account create and delete write | `tests/ui/summaries/tier-write/<run-id>/` |
 | Installer | `tests/ui/summaries/tier-install/<run-id>/` |
 
 The roots are siblings, not nested. Discovery is non-recursive, so a Tier A
@@ -827,10 +827,10 @@ the backend response; they are not part of this page-load suite and do not
 change its Tier A or Tier B contracts. Administrator navigation commands,
 coverage limits and results are documented in
 [tests/ui/README.md](../../tests/ui/README.md#administrator-navigation-wiring-reporting-only).
-The `SP_UI_TIER=WRITE` selection covers authorized Account creation only, keeps
-its evidence under `tests/ui/summaries/tier-write/<run-id>/`, and is documented
-in
-[tests/ui/README.md](../../tests/ui/README.md#account-create-write-wiring-reporting-only).
+The `SP_UI_TIER=WRITE` selection covers authorized Account creation and delete
+only, keeps its evidence under `tests/ui/summaries/tier-write/<run-id>/`, and is
+documented in
+[tests/ui/README.md](../../tests/ui/README.md#account-write-wiring-reporting-only).
 
 HTTP Integration Tests remain required for template migrations. Tier A gates
 transport/boot changes only; it does not gate the whole rendering rewrite.

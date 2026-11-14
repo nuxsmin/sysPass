@@ -29,7 +29,7 @@ jobs:
       diagnostic_retry: ${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic_retry }}
 
   ui-workflow-write-work:
-    name: UI Workflow (account creation) workload
+    name: UI Workflow (account creation and delete) workload
     if: ${{ vars.TESTS_UI_WORKFLOW_ENABLED == 'true' }}
     uses: ./.github/workflows/ui-smoke-run.yml
     permissions:
@@ -53,7 +53,7 @@ jobs:
           test "$WORK_RESULT" = "success"
 
   ui-workflow-write:
-    name: UI Workflow (account creation, reporting-only)
+    name: UI Workflow (account creation and delete, reporting-only)
     needs: ui-workflow-write-work
     if: ${{ always() && vars.TESTS_UI_WORKFLOW_ENABLED == 'true' }}
     runs-on: ubuntu-latest

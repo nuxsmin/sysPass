@@ -77,11 +77,12 @@ typecheck` was not run because `tsc` is not installed. The live browser wiring
 run was not executed: it requires an approved isolated provisioning run
 (`scripts/ui-smoke.sh`), which this task must not start.
 
-## Account create write wiring (reporting only)
+## Account write wiring (reporting only)
 
-`SP_UI_TIER=WRITE` selects only `specs/accountCreate.write.spec.ts`. It is a
-separate reporting-only selection, never part of Tier A or Tier B, and it sets
-no `completeTierA`, `completeTierB` or `completeTierInstall` flag.
+`SP_UI_TIER=WRITE` selects `specs/accountCreate.write.spec.ts` and
+`specs/accountDelete.write.spec.ts`. It is a separate reporting-only selection,
+never part of Tier A or Tier B, and it sets no `completeTierA`, `completeTierB`
+or `completeTierInstall` flag.
 
 ```sh
 TESTS_UI_ENABLED=true SP_UI_TIER=WRITE ./scripts/ui-smoke.sh
@@ -90,7 +91,7 @@ TESTS_UI_ENABLED=true SP_UI_TIER=WRITE ./scripts/ui-smoke.sh
 The runner provisions the same isolated, runner-owned seeded instance used by
 the seeded tiers and retains evidence under `summaries/tier-write/`.
 
-The spec creates exactly one synthetic Account per run. It fills a unique
+The create spec creates exactly one synthetic Account per run. It fills a unique
 name/login derived from the run timestamp, selects the fixture client and
 category, types a synthetic password and repeat, and submits through the real
 `.form-action` pipeline rather than calling the Action URL directly. It
@@ -122,6 +123,51 @@ JS-to-backend wiring only. A restricted-user/denied write is not asserted in the
 browser; server-side authorization and denied writes remain covered by
 HTTP/DB-backed tests. Layout, visibility, active state, viewport, styling and
 translated-text checks are out of scope.
+
+### Account delete
+
+`specs/accountDelete.write.spec.ts` creates its own uniquely named disposable
+Account through the same create form, then deletes it through the search-row
+control and the JavaScript confirmation dialog. It does not delete fixture rows
+or Accounts created by earlier runs, so the run instance must be disposable.
+
+The spec asserts:
+
+- `#search-rows` exposes exactly one row action with
+  `data-onclick="account/delete"`, `data-action-route="account/saveDelete"` and
+  the created `data-item-id`;
+- clicking the row action opens `#orrsDiag`, and `#orrsDiag #alert-text` is
+  visible; the positive confirm button is `#orrsDiag #positive` and is matched
+  by id, not translated text;
+- the positive button sends exactly one form-urlencoded
+  `POST /index.php` whose body route is `account/saveDelete/<id>` and whose `sk`
+  is non-empty; no `account/delete/<id>` request is sent;
+- the response is HTTP 200 with the JSON envelope `status: "OK"` and
+  `data: null`; the create-response fields `itemId` and `nextAction` are not
+  expected;
+- the D7 `account/search` refresh runs after the delete regardless of the
+  envelope; and
+- an independent authenticated `GET /index.php?r=account/search&search=<name>`
+  returns `status: "OK"` and its `data.html` contains neither the unique name
+  nor `data-item-id="<id>"`.
+
+The dispatch, envelope and absence checks live in
+`src/account-delete-contract.mjs`; `src/account-delete-contract.test.mjs`
+injects omitted dispatch, legacy and URL-only routing, false-success and
+still-present rows through `npm run test:unit`. The delete route is asserted
+from the POST form body; `ActionTracker` and `parseActionRoute` cannot observe
+that route because it is not in the request URL.
+
+Denied deletes are not asserted in the browser. The existing HTTP integration
+coverage in
+`tests/SP/Modules/Web/Controllers/Account/AccountTest.php`
+(`unauthenticatedAccountMutationsAreRejected`,
+`accountMutationWithoutActionIsRejected` and
+`accountMutationWithoutVisibilityIsRejected`) remains the authorization
+evidence.
+
+Status: reporting-only, live browser run pending. The delete interaction is not
+marked Covered in the inventory until a live run has executed.
 
 ## Inventory discovery (manual, working-tree only)
 
