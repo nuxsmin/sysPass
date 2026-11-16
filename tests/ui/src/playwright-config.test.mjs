@@ -67,6 +67,7 @@ test('account create and delete write wiring is its own reporting-only selection
     'accountCreate.write.spec.ts',
     'accountDelete.write.spec.ts',
     'tagDelete.write.spec.ts',
+    'notificationDelete.write.spec.ts',
   ]);
   assert.equal(TIER_A_SPECS.includes('accountCreate.write.spec.ts'), false);
   assert.equal(TIER_B_SPECS.includes('accountCreate.write.spec.ts'), false);
