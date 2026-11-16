@@ -8,7 +8,7 @@ import { runTierBIndex, TIER_B_INDEX_CASES } from '../src/tier-b';
 for (const outcome of ['OK', 'ERROR', 'WARNING', 'transport'] as const) {
   test(`notification delete reconciles a received ${outcome} outcome`, async ({ sessionPage: { page, context, session } }) => {
     const tracker = new ActionTracker(page, context, { sessionEstablished: false });
-    const name = `E2E NOTIFICATION ${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const name = `E2E-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const message = `Synthetic notification ${outcome}`;
     const requests: string[] = [];
     const onRequest = (request: PlaywrightRequest) => {
@@ -24,7 +24,7 @@ for (const outcome of ['OK', 'ERROR', 'WARNING', 'transport'] as const) {
       });
       const created = await page.request.post('/index.php?r=notification/saveCreate', {
         headers: { 'X-CSRF': security.csrf },
-        form: { notification_type: 'notice', notification_component: 'test', notification_description: name, notification_user: '1', sk: security.sk, isAjax: '1' },
+        form: { notification_type: 'notice', notification_component: 'test', notification_description: name, notification_user: '1', notification_checkout: '1', sk: security.sk, isAjax: '1' },
       });
       expect(created.status()).toBe(200);
       expect((await created.json()).status).toBe('OK');
@@ -38,6 +38,10 @@ for (const outcome of ['OK', 'ERROR', 'WARNING', 'transport'] as const) {
       await expect(control).toHaveAttribute('data-action-route', 'notification/delete');
       await expect(control).toHaveAttribute('data-action-next', 'notification/index');
       await expect(control).toHaveAttribute('data-item-id', id!);
+      const badgeLocator = page.locator('.notifications-badge');
+      await expect(badgeLocator.first()).toBeAttached();
+      await grid.evaluate((element) => element.setAttribute('data-test-stale-list', 'true'));
+      await badgeLocator.evaluateAll((elements) => elements.forEach((element) => element.setAttribute('data-badge', 'stale')));
 
       await page.route('**/index.php?**', async (route) => {
         const request = route.request();
@@ -56,7 +60,14 @@ for (const outcome of ['OK', 'ERROR', 'WARNING', 'transport'] as const) {
       const request = await dispatch;
       expect(new URL(request.url()).searchParams.get('isAjax')).toBe('1');
       if (badge) {
-        expect((await badge).status()).toBe(200);
+        const badgeResponse = await badge;
+        expect(badgeResponse.status()).toBe(200);
+        const badgeData = await badgeResponse.json();
+        expect(badgeData.status).toBe('OK');
+        await expect(grid).not.toHaveAttribute('data-test-stale-list', 'true');
+        await expect(grid.locator('tr').filter({ hasText: name })).toHaveCount(1);
+        await expect.poll(() => badgeLocator.evaluateAll((elements) => elements.map((element) => element.getAttribute('data-badge'))))
+          .toEqual(Array(await badgeLocator.count()).fill(String(badgeData.data.count)));
         expect(requests).toEqual(['notification/index', 'items/notifications']);
         const toast = outcome === 'OK' ? '.toast-success' : outcome === 'ERROR' ? '.toast-error' : '.toast-warning';
         await expect(page.locator(toast).filter({ hasText: message })).toBeVisible();
