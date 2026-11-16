@@ -270,3 +270,61 @@ test('account delete opens the dialog and dispatches the advertised form-body ro
     tracker.dispose();
   }
 });
+
+test('account delete displays an error and reconciles search without reporting success', async ({
+  sessionPage: { page, context, session },
+}) => {
+  const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+  const errorText = 'Synthetic delete failure';
+
+  try {
+    await openSeededShell(page, tracker, session);
+    const { itemId, name } = await createDisposableAccount(page, tracker);
+    await openSeededShell(page, tracker, session);
+    await page.locator('#search').fill(name);
+    await page.locator('#search').press('Enter');
+    const row = page.locator('#search-rows .account-label').filter({ hasText: name });
+    await expect(row).toHaveCount(1);
+    const control = row.locator(`[data-onclick="${DELETE_HANDLER}"]`);
+    await expect(control).toHaveAttribute('data-action-route', SAVE_DELETE_ROUTE);
+    await expect(control).toHaveAttribute('data-item-id', String(itemId));
+    await row.locator('.account-actions button.mdl-button').click();
+
+    // Intercept only this synthetic account's delete; the server must retain it.
+    await page.route('**/index.php', async (route) => {
+      const request = route.request();
+      const action = new URLSearchParams(request.postData() ?? '').get('r');
+      if (request.method() === 'POST' && action === `${SAVE_DELETE_ROUTE}/${itemId}`) {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: 'ERROR', description: errorText, messages: [], data: null }) });
+      } else {
+        await route.continue();
+      }
+    });
+
+    await page.locator('#toast-container').evaluateAll((nodes) => nodes.forEach((node) => node.remove()));
+    await control.click();
+    const responsePromise = page.waitForResponse((response) => response.request().method() === 'POST' && new URLSearchParams(response.request().postData() ?? '').get('r') === `${SAVE_DELETE_ROUTE}/${itemId}`);
+    const refreshPromise = page.waitForResponse((response) => response.request().method() === 'GET' && parseActionRoute(response.url()) === 'account/search');
+    await page.locator('#orrsDiag #positive').click();
+    const response = await responsePromise;
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toEqual({ status: 'ERROR', description: errorText, messages: [], data: null });
+    const dispatch = validateDeleteDispatch({ requests: [{ method: response.request().method(), url: response.request().url(), headers: response.request().headers(), body: response.request().postData() ?? '' }], itemId });
+    expect(dispatch).toEqual({ ok: true });
+    expect((await refreshPromise).status()).toBe(200);
+    await expect(page.locator('.toast-error').filter({ hasText: errorText })).toBeVisible();
+    await expect(page.locator('.toast-success')).toHaveCount(0);
+    await expect(page.locator('#search-rows .account-label').filter({ hasText: name })).toHaveCount(1);
+
+    const origin = new URL(page.url()).origin;
+    const independent = await page.request.get(`${origin}/index.php?r=account/search&search=${encodeURIComponent(name)}`);
+    expect(independent.status()).toBe(200);
+    const result = await independent.json();
+    expect(result.status).toBe('OK');
+    expect(result.data.html).toContain(name);
+    expect(result.data.html).toContain(`data-item-id="${itemId}"`);
+  } finally {
+    await page.unroute('**/index.php');
+    tracker.dispose();
+  }
+});
