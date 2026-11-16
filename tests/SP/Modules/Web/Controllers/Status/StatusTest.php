@@ -41,6 +41,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use SP\Domain\Common\Enums\ResponseStatus;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Tests\IntegrationTestCase;
 use Throwable;
@@ -51,6 +52,78 @@ use Throwable;
 #[Group('integration')]
 final class StatusTest extends IntegrationTestCase
 {
+    private bool $isAdminApp = true;
+
+    #[Test]
+    public function checkReleaseRouteReturnsAnUpdateEnvelope(): void
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
+            $this->definitions(
+                [
+                    'tag_name' => 'v5.2.10.23010101',
+                    'html_url' => 'https://github.com/nuxsmin/sysPass/releases/tag/v5.2.10.23010101',
+                    'name' => 'Release',
+                    'body' => 'Release body',
+                    'published_at' => '2023-01-01',
+                ]
+            )
+        );
+
+        ob_start();
+        IntegrationTestCase::runApp($container);
+        $output = ob_get_clean();
+        $response = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertSame(ResponseStatus::OK->name, $response['status']);
+        self::assertSame('v5.2.10.23010101', $response['data']['version']);
+        self::assertSame(
+            'https://github.com/nuxsmin/sysPass/releases/tag/v5.2.10.23010101',
+            $response['data']['url']
+        );
+    }
+
+    #[Test]
+    public function checkReleaseRejectsNonAdminUsers(): void
+    {
+        $this->isAdminApp = false;
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
+            $this->definitions(
+                [
+                    'tag_name' => 'v5.2.10.23010101',
+                    'html_url' => 'https://github.com/nuxsmin/sysPass/releases/tag/latest',
+                ]
+            )
+        );
+
+        $response = $container->get(CheckReleaseController::class)->checkReleaseAction();
+
+        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertNull($response->extra);
+    }
+
+    #[Test]
+    public function checkReleaseRejectsNonGitHubReleaseUrls(): void
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
+            $this->definitions(
+                [
+                    'tag_name' => 'v5.2.10.23010101',
+                    'html_url' => 'https://example.com/release',
+                    'name' => 'Release',
+                    'body' => 'Release body',
+                ]
+            )
+        );
+
+        $response = $container->get(CheckReleaseController::class)->checkReleaseAction();
+
+        self::assertSame(ResponseStatus::WARNING, $response->status);
+        self::assertNull($response->extra);
+    }
+
     #[Test]
     public function checkRelease(): void
     {
@@ -99,7 +172,7 @@ final class StatusTest extends IntegrationTestCase
     public function checkReleaseHandlesConnectionError(): void
     {
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/status']),
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
             $this->definitionsFor(
                 new ConnectException(
                     'Connection refused',
@@ -108,16 +181,17 @@ final class StatusTest extends IntegrationTestCase
             )
         );
 
-        $response = $container->get(StatusController::class)->statusAction();
+        $response = $container->get(CheckReleaseController::class)->checkReleaseAction();
 
-        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertSame(ResponseStatus::WARNING, $response->status);
+        self::assertNull($response->extra);
     }
 
     #[Test]
     public function checkReleaseHandlesHttpError(): void
     {
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/status']),
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
             $this->definitionsFor(
                 new ClientException(
                     'Not Found',
@@ -127,24 +201,26 @@ final class StatusTest extends IntegrationTestCase
             )
         );
 
-        $response = $container->get(StatusController::class)->statusAction();
+        $response = $container->get(CheckReleaseController::class)->checkReleaseAction();
 
-        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertSame(ResponseStatus::WARNING, $response->status);
+        self::assertNull($response->extra);
     }
 
     #[Test]
     public function checkReleaseHandlesNonJsonResponse(): void
     {
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/status']),
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
             $this->definitionsFor(
                 new GuzzleResponse(200, ['content-type' => 'text/html'], '<html></html>')
             )
         );
 
-        $response = $container->get(StatusController::class)->statusAction();
+        $response = $container->get(CheckReleaseController::class)->checkReleaseAction();
 
-        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertSame(ResponseStatus::WARNING, $response->status);
+        self::assertNull($response->extra);
     }
 
     #[Test]
@@ -275,5 +351,10 @@ final class StatusTest extends IntegrationTestCase
             ClientInterface::class => $client,
             PhpExtensionCheckerService::class => $extensionChecker,
         ];
+    }
+
+    protected function getUserDataDto(): UserDto
+    {
+        return parent::getUserDataDto()->mutate(['isAdminApp' => $this->isAdminApp]);
     }
 }

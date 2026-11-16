@@ -716,30 +716,53 @@ sysPass.Actions = function (log) {
 
             const $updates = $("#updates");
 
+            const renderStatus = function (message) {
+                const icon = document.createElement("div");
+                icon.id = "updates-info";
+                icon.className = "icon material-icons mdl-color-text--amber-200";
+                icon.textContent = "warning";
+
+                const tooltip = document.createElement("span");
+                tooltip.setAttribute("for", "updates-info");
+                tooltip.className = "mdl-tooltip mdl-tooltip--top mdl-tooltip--large";
+                tooltip.textContent = message;
+
+                $updates.empty().append(icon, tooltip);
+            };
+
             sysPassApp.requests.getActionCall(opts, function (json) {
-                if (json.status === 0) {
-                    if (json.data.length > 0) {
-                        $updates.html(
-                            `<a id="link-updates" href="${json.data.url}" target="_blank">${json.data.title}
-                            <div id="help-hasupdates" class="icon material-icons mdl-color-text--indigo-200">cloud_download</div>
-                            </a>
-                            <span for="link-updates" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">${json.data.description}</span>`);
+                if (json.status === 0 || json.status === "OK") {
+                    if (json.data && json.data.version) {
+                        const link = document.createElement("a");
+                        link.id = "link-updates";
+                        link.setAttribute("href", json.data.url);
+                        link.setAttribute("target", "_blank");
+                        link.setAttribute("rel", "noopener noreferrer");
+                        link.textContent = json.data.title;
+
+                        const icon = document.createElement("div");
+                        icon.id = "help-hasupdates";
+                        icon.className = "icon material-icons mdl-color-text--indigo-200";
+                        icon.textContent = "cloud_download";
+                        link.appendChild(icon);
+
+                        const tooltip = document.createElement("span");
+                        tooltip.setAttribute("for", "link-updates");
+                        tooltip.className = "mdl-tooltip mdl-tooltip--top mdl-tooltip--large";
+                        tooltip.textContent = json.data.description;
+
+                        $updates.empty().append(link, tooltip);
                     } else {
-                        $updates.html(
-                            `<div id="updates-info" class="icon material-icons mdl-color-text--teal-200">check_circle</div>
-                            <span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">${sysPassApp.config.LANG[68]}</span>`);
+                        renderStatus(sysPassApp.config.LANG[68]);
                     }
                 } else {
-                    $updates.html(
-                        `<div id="updates-info" class="icon material-icons mdl-color-text--amber-200">warning</div>
-                        <span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">${sysPassApp.config.LANG[69]}</span>`);
+                    renderStatus(sysPassApp.config.LANG[69]);
                 }
 
                 sysPassApp.theme.update();
             }, function () {
-                $updates.html(
-                    `<div id="updates-info" class="icon material-icons mdl-color-text--amber-200">warning</div>
-                    <span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">${sysPassApp.config.LANG[69]}</span>`);
+                renderStatus(sysPassApp.config.LANG[69]);
+                sysPassApp.theme.update();
             });
         },
         getNotices: function () {
