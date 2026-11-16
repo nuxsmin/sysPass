@@ -276,11 +276,6 @@ sysPass.Actions = function (log) {
 
             return sysPassApp.requests.getActionCall(opts);
         },
-        copyPassHistory: function ($obj) {
-            log.info("account:copyPassHistory");
-
-            account.copyPassHistory($obj);
-        },
         copy: function ($obj) {
             log.info("account:copy");
 

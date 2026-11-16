@@ -197,6 +197,18 @@ function makeForm(dataMap) {
     return element;
 }
 
+test("history password copy uses the shared copy action without a recursive handler", function () {
+    const context = setup();
+    const control = makeElement({"action-route": "account/copyPassHistory", "parent-id": 0, "item-id": 5});
+
+    assert.equal(context.actions.account.copyPassHistory, undefined);
+    context.actions.account.copyPass(control);
+    assert.equal(context.record.calls.length, 1);
+    assert.equal(context.record.calls[0].opts.url, "/index.php?r=account/copyPassHistory/5");
+    assert.equal(context.record.calls[0].opts.method, "get");
+    assert.equal(context.record.calls[0].opts.async, false);
+});
+
 test("account.search reports an error envelope with null data once", function () {
     const context = setup();
 
