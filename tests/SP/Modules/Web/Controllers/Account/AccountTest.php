@@ -39,6 +39,8 @@ use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
 use SP\Domain\Account\Dtos\PublicLinkKey;
 use SP\Domain\Account\Ports\AccountRepository;
 use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Account\Ports\AccountAclService;
+use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Models\AccountHistory;
@@ -76,6 +78,18 @@ use Symfony\Component\DomCrawler\Crawler;
 #[InjectVault]
 class AccountTest extends IntegrationTestCase
 {
+    private ?bool $legacyWikiEnabled = null;
+
+    protected function getConfigData(): array
+    {
+        return $this->legacyWikiEnabled === null ? parent::getConfigData() : array_merge(parent::getConfigData(), [
+            'isWikiEnabled' => true,
+            'isDokuwikiEnabled' => $this->legacyWikiEnabled,
+            'getWikiFilter' => ['Wiki'],
+            'getWikiPageurl' => 'https://wiki.example.test/page/',
+        ]);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -764,6 +778,45 @@ class AccountTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    public static function wikiSearchCases(): array
+    {
+        return [
+            'legacy enabled' => [true, 'Wiki Account', true],
+            'legacy disabled' => [false, 'Wiki Account', true],
+            'nonmatching' => [true, 'Other Account', false],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('wikiSearchCases')]
+    public function searchWikiLinkDoesNotOfferEmbeddedView(bool $legacyEnabled, string $name, bool $matches): void
+    {
+        $this->legacyWikiEnabled = $legacyEnabled;
+        $generated = AccountDataGenerator::factory()->buildAccountSearchView();
+        $account = new AccountSearchView(array_merge($generated->toArray(null, null, true), ['name' => $name]));
+        $this->addDatabaseMapperResolver(AccountSearchView::class, QueryResult::withTotalNumRows([$account], 1));
+        $permission = new AccountPermission(AclActionsInterface::ACCOUNT_SEARCH);
+        $permission->setResultView(true);
+        $permission->setShowView(true);
+        $acl = self::createStub(AccountAclService::class);
+        $acl->method('getAcl')->willReturn($permission);
+        $container = $this->buildContainer(
+            self::buildRequest('post', 'index.php', ['r' => 'account/search']),
+            [AccountAclService::class => $acl]
+        );
+
+        ob_start();
+        self::runApp($container);
+        $output = json_decode(ob_get_clean(), true, flags: JSON_THROW_ON_ERROR)['data']['html'];
+
+        self::assertStringNotContainsString('data-onclick="wiki/show"', $output);
+        if ($matches) {
+            self::assertStringContainsString('https://wiki.example.test/page/Wiki+Account', $output);
+        } else {
+            self::assertStringNotContainsString('https://wiki.example.test/page/', $output);
+        }
     }
 
     /**

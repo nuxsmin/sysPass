@@ -395,41 +395,13 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         if ($wikiFilter
                             && $accountSearchItem->isWikiMatch($wikiFilter)
                         ): ?>
-                            <?php
-                            if (AccountSearchItem::$dokuWikiEnabled): ?>
-                                <a href="<?php
-                                echo $_getvar('wikiPageUrl'), urlencode(
-                                    $accountSearchData->getName()
-                                ); ?>"
-                                   target="_blank">
-                                    <i class="material-icons"
-                                       title="<?php
-                                       echo __('Link to Wiki'); ?>">library_books</i>
-                                </a>
-                                <i class="btn-action material-icons fg-green100"
+                            <a href="<?php
+                            echo $_getvar('wikiPageUrl'), urlencode($accountSearchData->getName()); ?>"
+                               target="_blank">
+                                <i class="material-icons"
                                    title="<?php
-                                   echo __('View at Wiki'); ?>"
-                                   data-action-route="<?php
-                                   echo AclActionsInterface::WIKI_VIEW; ?>"
-                                   data-pagename="<?php
-                                   echo htmlspecialchars($accountSearchData->getName(), ENT_QUOTES); ?>"
-                                   data-pagename="<?php
-                                   echo htmlspecialchars(
-                                       $accountSearchData->getName(),
-                                       ENT_QUOTES
-                                   ); ?>"
-                                   data-onclick="wiki/show">library_books</i>
-                            <?php
-                            else: ?>
-                                <a href="<?php
-                                echo $_getvar('wikiPageUrl'), urlencode($accountSearchData->getName()); ?>"
-                                   target="_blank">
-                                    <i class="material-icons"
-                                       title="<?php
-                                       echo __('Link to Wiki'); ?>">library_books</i>
-                                </a>
-                            <?php
-                            endif; ?>
+                                   echo __('Link to Wiki'); ?>">library_books</i>
+                            </a>
                         <?php
                         endif; ?>
                     <?php

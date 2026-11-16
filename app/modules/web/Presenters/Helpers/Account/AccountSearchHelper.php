@@ -217,7 +217,6 @@ final class AccountSearchHelper extends HelperBase
         AccountSearchItem::$topNavbar = $userPreferences->isTopNavbar();
         AccountSearchItem::$optionalActions = $userPreferences->isOptionalActions();
         AccountSearchItem::$wikiEnabled = $this->configData->isWikiEnabled();
-        AccountSearchItem::$dokuWikiEnabled = $this->configData->isDokuwikiEnabled();
         AccountSearchItem::$publicLinkEnabled = $this->configData->isPublinksEnabled();
         AccountSearchItem::$isDemoMode = $this->configData->isDemoEnabled();
         AccountSearchItem::$showTags = $userPreferences->isShowAccountSearchFilters();

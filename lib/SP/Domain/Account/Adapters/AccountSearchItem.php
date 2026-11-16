@@ -47,7 +47,6 @@ final class AccountSearchItem
     public static bool $showTags          = false;
     public static bool $requestEnabled    = true;
     public static bool $wikiEnabled       = false;
-    public static bool $dokuWikiEnabled   = false;
     public static bool $publicLinkEnabled = false;
     public static bool $isDemoMode        = false;
 

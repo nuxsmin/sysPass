@@ -779,32 +779,6 @@ sysPass.Actions = function (log) {
     };
 
     /**
-     * Objeto con las acciones de comprobación
-     *
-     * @type {{ldap: checks.ldap, wiki: checks.wiki}}
-     */
-    const checks = {
-        wiki: function ($obj) {
-            log.info("checks:wiki");
-
-            const $form = $($obj.data("src"));
-            $form.find("[name='sk']").val(sysPassApp.sk.get());
-
-            const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
-            opts.data = $form.serialize();
-
-            sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
-
-                if (json.status === 0) {
-                    $("#dokuWikiResCheck").html(json.data);
-                }
-            });
-        }
-    };
-
-    /**
      * Objeto con las acciones de configuración
      *
      * @type {{save: config.save, backup: config.backup, export: config.export, import: config.import}}
@@ -1350,36 +1324,6 @@ sysPass.Actions = function (log) {
     };
 
     /**
-     * Objeto con acciones sobre la wiki
-     *
-     * @type {{view: wiki.view}}
-     */
-    const wiki = {
-        show: function ($obj) {
-            log.info("wiki:show");
-
-            const opts = sysPassApp.requests.getRequestOpts();
-            opts.method = "get";
-            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
-                {
-                    r: $obj.data("action-route"),
-                    pageName: $obj.data("pagename"),
-                    actionId: $obj.data("action-id"),
-                    sk: sysPassApp.sk.get(),
-                    isAjax: 1
-                });
-
-            sysPassApp.requests.getActionCall(opts, function (json) {
-                if (json.status !== 0) {
-                    sysPassApp.msg.out(json);
-                } else {
-                    showFloatingBox(json.data.html);
-                }
-            });
-        }
-    };
-
-    /**
      * Objeto para las acciones de los plugins
      */
     const plugin = {
@@ -1887,7 +1831,6 @@ sysPass.Actions = function (log) {
         account: account,
         accountManager: accountManager,
         file: file,
-        checks: checks,
         config: configManager,
         main: main,
         user: user,
@@ -1896,7 +1839,6 @@ sysPass.Actions = function (log) {
         ajaxUrl: ajaxUrl,
         plugin: plugin,
         notification: notification,
-        wiki: wiki,
         items: items,
         ldap: ldap,
         track: track
