@@ -347,7 +347,7 @@ A free-form label attached to accounts for filtering and search.
 _Avoid_: label, keyword
 
 **Category**:
-A hierarchical grouping of accounts.
+A flat grouping of accounts, without parent or child Categories.
 _Avoid_: folder, group
 
 **Client**:
