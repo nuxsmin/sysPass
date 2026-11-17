@@ -609,6 +609,99 @@ class AccountTest extends IntegrationTestCase
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
+    public static function unavailablePublicLinks(): array
+    {
+        return [
+            'expired' => [-60, 0, 3],
+            'exhausted' => [60, 3, 3],
+        ];
+    }
+
+    #[Test]
+    public function unreadableVaultAfterParsingRecordsViewBeforeFailure(): void
+    {
+        $correctKey = new PublicLinkKey($this->passwordSalt);
+        $wrongKey = new PublicLinkKey($this->passwordSalt);
+        $payload = serialize(new Simple(['name' => 'synthetic-account-marker']));
+        $vault = Vault::factory(new Crypt())->saveData($payload, $wrongKey->getKey());
+        $link = $this->buildPublicLinkWithPayload($vault->getSerialized())->mutate(['hash' => $correctKey->getHash()]);
+        $service = $this->createMock(PublicLinkService::class);
+        $service->method('getByHash')->willReturn($link);
+        $service->method('getPublicLinkKey')->willReturn($correctKey);
+        $service->expects(self::once())->method('addLinkView');
+        $accounts = $this->createMock(AccountService::class);
+        $accounts->expects(self::once())->method('incrementViewCounter');
+        $accounts->expects(self::once())->method('incrementDecryptCounter');
+        $container = $this->buildContainer(
+            self::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . $correctKey->getHash()]),
+            [PublicLinkService::class => $service, AccountService::class => $accounts,
+                DatabaseUtilInterface::class => $this->databaseUtilStub(), Context::class => $this->getUnauthenticatedContext()]
+        );
+
+        ob_start();
+        try {
+            self::runApp($container);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+        self::assertStringNotContainsString('synthetic-account-marker', $output);
+        self::assertSame(500, $container->get(\Klein\Response::class)->code());
+    }
+
+    #[Test]
+    public function generatedPublicLinkForAnonymousVisitorDoesNotReachHashLookup(): void
+    {
+        $hash = str_repeat('a', 64);
+        $url = \SP\Domain\Account\Services\PublicLink::getLinkForHash('http://localhost', $hash);
+        parse_str((string) parse_url($url, PHP_URL_QUERY), $params);
+        $service = $this->createMock(PublicLinkService::class);
+        $service->expects(self::never())->method('getByHash');
+        $container = $this->buildContainer(
+            self::buildRequest('get', 'index.php', $params),
+            [PublicLinkService::class => $service, Context::class => $this->getUnauthenticatedContext(),
+                DatabaseUtilInterface::class => $this->databaseUtilStub()]
+        );
+
+        ob_start();
+        try {
+            self::runApp($container);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+        self::assertSame(200, $container->get(\Klein\Response::class)->code());
+        self::assertSame('', $output);
+        self::assertSame('', $container->get(\Klein\Response::class)->body());
+    }
+
+    #[Test]
+    #[DataProvider('unavailablePublicLinks')]
+    public function unavailablePublicLinkDoesNotRecordAView(int $expiryOffset, int $views, int $maximum): void
+    {
+        $link = $this->buildPublicLinkWithPayload('synthetic-unavailable-payload')->mutate([
+            'dateExpire' => time() + $expiryOffset,
+            'countViews' => $views,
+            'maxCountViews' => $maximum,
+        ]);
+        $service = $this->createMock(PublicLinkService::class);
+        $service->method('getByHash')->willReturn($link);
+        $service->expects(self::never())->method('addLinkView');
+        $accounts = $this->createMock(AccountService::class);
+        $accounts->expects(self::never())->method('incrementViewCounter');
+        $accounts->expects(self::never())->method('incrementDecryptCounter');
+        $container = $this->buildContainer(
+            self::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()]),
+            [PublicLinkService::class => $service, AccountService::class => $accounts,
+                DatabaseUtilInterface::class => $this->databaseUtilStub(), Context::class => $this->getUnauthenticatedContext()]
+        );
+
+        ob_start();
+        self::runApp($container);
+        $output = ob_get_clean();
+
+        self::assertStringContainsString('permission to access this page', $output);
+        self::assertStringNotContainsString('synthetic-unavailable-payload', $output);
+    }
+
     #[Test]
     #[BodyChecker('outputCheckerViewLinkError')]
     public function viewLinkUnreadablePayload()

@@ -28,11 +28,14 @@ namespace SP\Modules\Web\Controllers\Resource;
 
 use Closure;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Providers\Uri;
 use SP\Tests\IntegrationTestCase;
+use Klein\Response;
 
 /**
  * Integration tests for the resources area.
@@ -41,6 +44,56 @@ use SP\Tests\IntegrationTestCase;
 final class ResourceTest extends IntegrationTestCase
 {
     private const BASE_PATH = '/tmp/kilo/resources';
+
+    public static function invalidSignatures(): array
+    {
+        return ['missing' => [null], 'altered' => ['invalid-signature']];
+    }
+
+    #[Test]
+    public function signedDefaultCssIsDeliveredThroughDispatch(): void
+    {
+        $uri = new Uri('http://localhost/index.php');
+        $uri->addParam('r', 'resource/css');
+        $query = (string) parse_url($uri->getUriSigned($this->passwordSalt), PHP_URL_QUERY);
+        parse_str($query, $params);
+        $container = $this->buildContainer(self::buildRequest(
+            'get', 'index.php', $params, [], [], ['QUERY_STRING' => $query]
+        ));
+
+        ob_start();
+        try {
+            self::runApp($container);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+
+        self::assertSame(200, $container->get(Response::class)->code());
+        self::assertStringContainsString('html,body,div,span,object,iframe', $output);
+    }
+
+    #[Test]
+    #[DataProvider('invalidSignatures')]
+    public function unsignedOrAlteredResourceRequestIsRejectedThroughDispatch(?string $signature): void
+    {
+        $params = ['r' => 'resource/css'];
+        if ($signature !== null) {
+            $params['h'] = $signature;
+        }
+        $container = $this->buildContainer(self::buildRequest(
+            'get', 'index.php', $params, [], [], ['QUERY_STRING' => http_build_query($params)]
+        ));
+
+        ob_start();
+        try {
+            self::runApp($container);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+
+        self::assertSame(500, $container->get(Response::class)->code());
+        self::assertStringNotContainsString('body{}', $output);
+    }
 
     protected function setUp(): void
     {

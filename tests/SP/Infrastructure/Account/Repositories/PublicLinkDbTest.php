@@ -30,6 +30,7 @@ use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Infrastructure\Account\Repositories\PublicLink;
 use SP\Tests\DatabaseRepositoryTestCase;
+use function SP\Tests\getDbHandler;
 
 #[Group('integration')]
 final class PublicLinkDbTest extends DatabaseRepositoryTestCase
@@ -54,4 +55,21 @@ final class PublicLinkDbTest extends DatabaseRepositoryTestCase
         self::assertSame('Google', $links[0]->getAccountName());
         self::assertSame('Apple', $links[1]->getAccountName());
     }
+
+    #[Test]
+    public function staleReadsCanBothIncrementTheSameLink(): void
+    {
+        $link = $this->publicLink->getAll()->getDataAsArray(PublicLinkModel::class)[0];
+        $first = $this->publicLink->getByHash($link->getHash())->getData(PublicLinkModel::class);
+        $second = $this->publicLink->getByHash($link->getHash())->getData(PublicLinkModel::class);
+        $initial = $first->getCountViews();
+
+        self::assertTrue($this->publicLink->addLinkView($first));
+        self::assertTrue($this->publicLink->addLinkView($second));
+
+        $query = getDbHandler()->getConnection()->prepare('SELECT countViews FROM PublicLink WHERE hash = ?');
+        $query->execute([$link->getHash()]);
+        self::assertSame($initial + 2, (int) $query->fetchColumn());
+    }
+
 }
