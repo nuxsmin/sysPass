@@ -377,7 +377,7 @@ CSV import requires UTF-8, accepts an optional UTF-8 byte-order mark and an expl
 
 **Upgrade backup attestation:** The operator explicitly attests that a recent backup has succeeded and been verified; the backup may be external and need not be created or located by sysPass. The applicable recovery instructions must still account for ADR-0005's pre-upgrade database backup requirement.
 
-**Installation failure target:** Report completed steps and safe recovery instructions; do not mark the instance installed until initialization succeeds and do not silently delete pre-existing database or configuration data. Installation is not claimed to be fully rollback-atomic.
+**Installation failure target:** Report completed steps and safe recovery instructions; do not mark the instance installed until initialization succeeds and do not silently delete pre-existing database or configuration data. Installation is not claimed to be fully rollback-atomic. **Current source gap:** Failure cleanup invokes database rollback; in hosting mode it drops sysPass-named tables, and otherwise can drop the database and user. Whether pre-existing data can be affected under particular installation conditions requires runtime verification (`lib/SP/Domain/Install/Services/MysqlSetup.php`; `lib/SP/Domain/Install/Services/Installer.php`). Reinstallation safeguards remain deferred below; security and persisted-data compatibility review are required.
 
 | ID | Intent | Actor / boundary | Current implementation evidence | BDD focus |
 |---|---|---|---|---|
