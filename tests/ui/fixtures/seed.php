@@ -227,6 +227,9 @@ function resetFixture(
     $pdo->beginTransaction();
 
     try {
+        $pdo->exec("INSERT INTO CustomFieldType (name, text)
+                    SELECT 'text', 'Texto' FROM DUAL
+                    WHERE NOT EXISTS (SELECT 1 FROM CustomFieldType WHERE name = 'text')");
         $pdo->prepare('DELETE FROM AccountFile WHERE id = :fileId OR accountId IN (:fileParentId, :fileChildId)')
             ->execute(['fileId' => $fileId, 'fileParentId' => $parentId, 'fileChildId' => $childId]);
         $pdo->prepare('DELETE FROM AccountHistory WHERE accountId IN (:historyParentId, :historyChildId)')
@@ -657,6 +660,9 @@ function verifyFixture(
         $check($file['name'] === fixtureName($fixture, 'childFile'), 'synthetic account file name is unexpected');
         $check($file['content'] === fixtureContent($fixture, 'childFileText'), 'synthetic account file content is unexpected');
     }
+
+    $typeId = $pdo->query("SELECT id FROM CustomFieldType WHERE name = 'text'")->fetchColumn();
+    $check($typeId !== false && (int)$typeId > 0, 'synthetic custom field type is missing');
 
     $clientExists = $pdo->prepare('SELECT COUNT(*) FROM Client WHERE id = :id AND name = :name');
     $clientExists->execute([
