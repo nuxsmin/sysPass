@@ -62,9 +62,10 @@ test('admin navigation wiring is its own reporting-only selection', () => {
   assert.equal(TIER_B_SPECS.includes('adminNavigation.wiring.spec.ts'), false);
 });
 
-test('account create and delete write wiring is its own reporting-only selection', () => {
+test('write wiring is its own reporting-only selection', () => {
   assert.deepEqual(specsForTier('write'), [
     'accountCreate.write.spec.ts',
+    'accountEdit.write.spec.ts',
     'accountDelete.write.spec.ts',
     'tagDelete.write.spec.ts',
     'notificationDelete.write.spec.ts',
