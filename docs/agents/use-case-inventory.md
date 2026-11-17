@@ -293,6 +293,8 @@ Both contexts provide CRUD/search through Web and API. Current implementation is
 
 **Target:** Categories are flat, without parent/child relationships. A Category referenced by an Account cannot be deleted until its Accounts are reassigned. Account history references also block deletion; they must not be changed automatically, although an authorized user may explicitly delete the history first. A batch containing any blocked Category is rejected in full. The current model and schema are flat; verify deletion behavior at the relevant boundaries.
 
+**Client deletion target:** Reject deletion while an Account or Account history entry references the Client; Accounts must first be reassigned and an authorized User may explicitly delete referencing history. Do not automatically change history. Web and API deletion atomically remove related Client custom-field data; a cleanup failure leaves the Client and its data unchanged. For batch deletion, reject empty selections, deduplicate IDs and reject the entire batch without changes if any Client is missing, unauthorized or referenced. **Current source gaps:** The checked-in schema references Clients from Accounts and Account history without cascade; deployed constraints and runtime behavior require verification. The Web deletion path removes custom fields after deletion, while the API path does not visibly do so; batch service checks only whether any rows were affected. Atomic cleanup and batch behavior are not established (`schemas/dbstructure.sql`; `lib/SP/Domain/Client/Services/Client.php`; `lib/SP/Infrastructure/Client/Repositories/Client.php`; `app/modules/web/Controllers/Client/DeleteController.php`; `app/modules/api/Controllers/Client/DeleteController.php`). Persisted-data compatibility review is required.
+
 | ID | Intent | Actor / boundary | BDD focus |
 |---|---|---|---|
 | APP-CATEGORY-CREATE | Create a Category | Admin; W + API (`category/create`) | Required/duplicate name and associated Account behavior |
@@ -305,8 +307,8 @@ Both contexts provide CRUD/search through Web and API. Current implementation is
 | APP-CLIENT-UPDATE | Update a Client | Admin; W + API (`client/edit`) | Existing vs missing Client and associated Accounts |
 | APP-CLIENT-GET | View a Client | Admin; W + API (`client/view`) | Existing vs missing Client and associated Accounts |
 | APP-CLIENT-SEARCH | Search Clients | Admin; W + API (`client/search`) | Filters, ordering/paging, empty result |
-| APP-CLIENT-DELETE | Delete a Client | Admin; W + API (`client/delete`) | Account references, reject/reassign/cascade policy, missing Client |
-| APP-CLIENT-DELETE-BATCH | Delete selected Clients | Admin; W | Selection, Account references, missing/mixed Clients and partial failure; `Client/DeleteController.php` |
+| APP-CLIENT-DELETE | Delete a Client | Admin; W + API (`client/delete`) | Apply the Client deletion target; cover references, denied access, missing Client and atomic custom-field cleanup. |
+| APP-CLIENT-DELETE-BATCH | Delete selected Clients | Admin; W | Apply the Client deletion target; cover empty and duplicate selections, missing, unauthorized and referenced Clients, and atomic cleanup; `Client/DeleteController.php` |
 
 ### User preferences
 
