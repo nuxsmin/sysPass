@@ -3,7 +3,7 @@ import { accountCreateContract } from '../src/contracts';
 import { FIXTURE } from '../src/fixture';
 import { ActionTracker, parseActionRoute } from '../src/readiness';
 import { expect, test } from '../src/session';
-import { openSeededShell } from '../src/tier-b';
+import { openSeededShell, runTierBIndex, TIER_B_INDEX_CASES } from '../src/tier-b';
 
 async function createAccount(page: Page, tracker: ActionTracker, session: Parameters<typeof openSeededShell>[2]): Promise<number> {
   await openSeededShell(page, tracker, session);
@@ -97,6 +97,75 @@ test('account edit dispatches and persists the changed name', async ({ sessionPa
     expect(read.status()).toBe(200);
     expect(await read.text()).toContain(name);
   } finally {
+    tracker.dispose();
+  }
+});
+
+test('single account history delete displays a synthetic ERROR and reloads the active tab', async ({ sessionPage: { page, context, session } }) => {
+  const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+  const message = 'Synthetic account history delete error';
+  const envelope = { status: 'ERROR', description: message, messages: [], data: null };
+  try {
+    const accountId = await createAccount(page, tracker, session);
+    await page.goto(`/index.php?r=account/edit/${accountId}`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#frmAccount')).toHaveAttribute('data-item-id', String(accountId));
+    const historyName = await page.locator('#name').inputValue();
+    await page.locator('#name').fill(`Edited ${historyName}`);
+    const savePromise = page.waitForResponse((response) => response.request().method() === 'POST' && matchesSave(response.url(), accountId));
+    await page.locator('.item-actions button[type="submit"][form="frmAccount"]').first().click();
+    expect((await (await savePromise).json()).status).toBe('OK');
+
+    await runTierBIndex(page, tracker, session, TIER_B_INDEX_CASES.itemManager);
+    const grid = page.locator('#data-table-tblAccountsHistory');
+    const panel = grid.locator('xpath=ancestor::*[starts-with(@id,"tabs-")][1]');
+    const panelId = await panel.getAttribute('id');
+    const tabIndex = await panel.getAttribute('data-tab-index');
+    await page.locator(`#tabsHeader a[href="#${panelId}"]`).click();
+    const form = page.locator('#frmSearchAccountHistory');
+    await form.locator('label[for^="search-"]').first().click();
+    await form.locator('input[name="search"]').fill(historyName);
+    const searchPromise = page.waitForResponse((response) => response.request().method() === 'GET' && parseActionRoute(response.url()) === 'accountHistoryManager/search');
+    await form.locator('input[name="search"]').press('Enter');
+    expect((await searchPromise).status()).toBe(200);
+    const row = grid.locator('tr').filter({ hasText: historyName });
+    await expect(row).toHaveCount(1);
+    const historyId = await row.getAttribute('data-item-id');
+    expect(historyId).toMatch(/^\d+$/);
+    const control = row.locator('[data-onclick="appMgmt/delete"]');
+    await expect(control).toHaveAttribute('data-action-route', 'accountHistoryManager/delete');
+    await expect(control).toHaveAttribute('data-item-id', historyId!);
+    const deleteRoute = `accountHistoryManager/delete/${historyId}`;
+    await page.route('**/index.php?**', async (route) => {
+      const request = route.request();
+      if (request.method() === 'GET' && new URL(request.url()).searchParams.get('r') === deleteRoute) {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(envelope) });
+      } else await route.continue();
+    });
+    await page.locator('#toast-container').evaluateAll((nodes) => nodes.forEach((node) => node.remove()));
+    await control.click();
+    await expect(page.locator('#orrsDiag #alert-text')).toBeVisible();
+    const responsePromise = page.waitForResponse((response) => response.request().method() === 'GET' && new URL(response.url()).searchParams.get('r') === deleteRoute);
+    const refreshPromise = page.waitForResponse((response) => response.request().method() === 'GET' && parseActionRoute(response.url()) === 'itemManager/index');
+    await page.locator('#orrsDiag #positive').click();
+    const response = await responsePromise;
+    expect(response.status()).toBe(200);
+    expect(new URL(response.url()).searchParams.get('isAjax')).toBe('1');
+    expect(await response.json()).toEqual(envelope);
+    // This records current browser behaviour, not a real server rollback guarantee.
+    const refresh = await refreshPromise;
+    expect(refresh.status()).toBe(200);
+    expect(new URL(refresh.url()).searchParams.get('tabIndex')).toBe(tabIndex);
+    await expect(page.locator('.toast-error').filter({ hasText: message })).toBeVisible();
+    await expect(page.locator('.toast-success')).toHaveCount(0);
+    const sk = await page.evaluate(() => (0, eval)('sysPassApp').sk.get());
+    const read = await page.request.get(`/index.php?r=accountHistoryManager/search&search=${encodeURIComponent(historyName)}&sk=${encodeURIComponent(sk)}&isAjax=1`);
+    expect(read.status()).toBe(200);
+    const result = await read.json();
+    expect(result.status).toBe('OK');
+    expect(result.data.html).toContain(historyName);
+    expect(result.data.html).toContain(`data-item-id="${historyId}"`);
+  } finally {
+    await page.unroute('**/index.php?**');
     tracker.dispose();
   }
 });
