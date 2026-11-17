@@ -276,7 +276,7 @@ For a deleted Account, reject deletion of its deletion snapshot unless all remai
 | APP-ACCOUNT-FILE-VIEW | Preview an Account file | User; W | `AccountFile/ViewController.php` | Authorization, content type/disposition, non-disclosure on failure |
 | APP-ACCOUNT-FILE-DOWNLOAD | Download an Account file | User; W | `AccountFile/DownloadController.php` | Authorization, exact file bytes, encryption/decryption and safe filename |
 | APP-ACCOUNT-FILE-DELETE | Delete an Account file | User; W | `AccountFile/DeleteController.php` | Authorization, physical and metadata cleanup, repeated delete |
-| APP-ACCOUNT-FILE-DELETE-BATCH | Delete selected Account files | Admin/User; W | `app/modules/web/Controllers/AccountFile/DeleteController.php` | Selection, permissions and ownership, missing/mixed files, cleanup and partial failure |
+| APP-ACCOUNT-FILE-DELETE-BATCH | Delete selected Account files | Admin/User; W | `app/modules/web/Controllers/AccountFile/DeleteController.php` | Selection, permissions and ownership, missing/mixed files, cleanup and all-or-none deletion when a file is missing or unauthorized; verify current atomicity |
 | APP-LINK-CREDENTIAL-COPY | Copy a credential from a Public Link | Visitor; Public W | `app/modules/web/themes/material-blue/views/account/account-link.inc`; `public/js/app-main.js` | Valid link and allowed displayed content, clipboard success/failure and no unrelated secret disclosure |
 | APP-ACCOUNT-WIKI-LINK | Open a related external wiki page | User; W | `app/modules/web/themes/material-blue/views/account/search-rows.inc` | Configured wiki/filter, Account-name URL encoding, destination and visibility |
 
