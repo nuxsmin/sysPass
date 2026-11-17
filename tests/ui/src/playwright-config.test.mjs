@@ -71,6 +71,7 @@ test('write wiring is its own reporting-only selection', () => {
     'notificationDelete.write.spec.ts',
     'userGroupDelete.write.spec.ts',
     'userDelete.write.spec.ts',
+    'userProfileDelete.write.spec.ts',
   ]);
   assert.equal(TIER_A_SPECS.includes('accountCreate.write.spec.ts'), false);
   assert.equal(TIER_B_SPECS.includes('accountCreate.write.spec.ts'), false);
