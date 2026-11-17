@@ -41,6 +41,54 @@ function matchesSave(url: string, id: number): boolean {
   return new URL(url).searchParams.get('r') === `account/saveEdit/${id}`;
 }
 
+test('account edit displays a synthetic warning without navigating or persisting', async ({ sessionPage: { page, context, session } }) => {
+  const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+  const message = 'Synthetic edit warning';
+  let saves = 0;
+  let navigations = 0;
+  try {
+    const id = await createAccount(page, tracker, session);
+    const envelope = { status: 'WARNING', description: message, messages: [], data: { itemId: id, nextAction: 'account/view' } };
+    await page.goto(`/index.php?r=account/edit/${id}`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#frmAccount')).toHaveAttribute('data-item-id', String(id));
+    const oldName = await page.locator('#name').inputValue();
+    const newName = `Synthetic warning edit ${Date.now()}`;
+    await page.locator('#name').fill(newName);
+    await page.locator('#toast-container').evaluateAll((nodes) => nodes.forEach((node) => node.remove()));
+    page.on('request', (request) => {
+      if (request.method() === 'POST' && matchesSave(request.url(), id)) saves++;
+      if (request.method() === 'GET' && new URL(request.url()).searchParams.get('r') === `account/view/${id}`) navigations++;
+    });
+    await page.route('**/index.php?**', async (route) => {
+      if (route.request().method() === 'POST' && matchesSave(route.request().url(), id)) {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(envelope) });
+      } else await route.continue();
+    });
+    const since = Date.now();
+    const responsePromise = page.waitForResponse((response) => response.request().method() === 'POST' && matchesSave(response.url(), id));
+    await page.locator('.item-actions button[type="submit"][form="frmAccount"]').first().click();
+    const response = await responsePromise;
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toEqual(envelope);
+    expect(new URLSearchParams(response.request().postData() ?? '').get('name')).toBe(newName);
+    await expect(page.locator('.toast-warning').filter({ hasText: message })).toBeVisible();
+    await expect(page.locator('.toast-success')).toHaveCount(0);
+    await tracker.waitForQuiet(since);
+    expect(saves).toBe(1);
+    expect(navigations).toBe(0);
+    await expect(page.locator('#frmAccount')).toHaveAttribute('data-action-route', 'account/saveEdit');
+    await expect(page.locator('#name')).toHaveValue(newName);
+    const read = await page.request.get(`/index.php?r=account/view/${id}`);
+    expect(read.status()).toBe(200);
+    const markup = await read.text();
+    expect(markup).toContain(oldName);
+    expect(markup).not.toContain(newName);
+  } finally {
+    await page.unroute('**/index.php?**');
+    tracker.dispose();
+  }
+});
+
 test('account edit displays a synthetic error without navigating or persisting', async ({ sessionPage: { page, context, session } }) => {
   const tracker = new ActionTracker(page, context, { sessionEstablished: false });
   try {
