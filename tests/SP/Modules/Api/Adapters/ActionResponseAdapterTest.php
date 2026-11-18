@@ -107,4 +107,34 @@ class ActionResponseAdapterTest extends UnitaryTestCase
         self::assertSame($exception->getCode(), $out['error']['code']);
         self::assertSame(['Missing name'], $out['error']['data']['help']);
     }
+
+    #[Test]
+    public function toJsonRpcAndErrorPreserveZeroIntIdWhenPassedDirectly(): void
+    {
+        $response = ActionResponse::ok('Ok', ['x' => 1]);
+        $adapter = new ActionResponseAdapter();
+
+        $ok = json_decode($adapter->toJsonRpc($response, 0), true, 512, JSON_THROW_ON_ERROR);
+        $err = json_decode($adapter->toJsonRpcError('Err', -32600, 0), true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertSame(0, $ok['id']);
+        self::assertSame(0, $err['id']);
+    }
+
+    #[Test]
+    public function toJsonRpcRejectsStringAndNullIdsDueToStrictIntSignature(): void
+    {
+        $adapter = new ActionResponseAdapter();
+        $response = ActionResponse::ok('Ok', []);
+
+        try {
+            $adapter->toJsonRpc($response, 'abc');
+            self::fail('Expected TypeError for string id');
+        } catch (\TypeError $e) {
+            self::assertStringContainsString('must be of type int', $e->getMessage());
+        }
+
+        $this->expectException(\TypeError::class);
+        $adapter->toJsonRpcError('Err', -32600, null);
+    }
 }

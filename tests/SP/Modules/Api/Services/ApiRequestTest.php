@@ -192,6 +192,70 @@ class ApiRequestTest extends UnitaryTestCase
         $this->assertEquals($jsonRpcRequest['method'], $out->getMethod());
     }
 
+    #[Test]
+    public function testMethodStripsNonAlphaSlashCharacters(): void
+    {
+        $stream = $this->getTempnam();
+
+        $jsonRpcRequest = self::buildJsonRpcRequest();
+        $jsonRpcRequest['method'] = 'account/view2_?';
+        file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
+
+        $out = ApiRequestAdapter::buildFromRequest($stream);
+
+        $this->assertSame('account/view', $out->getMethod());
+    }
+
+    /**
+     * Characterization of current ApiRequestAdapter::buildFromJson() ID parsing:
+     * filter_var($data['id'], FILTER_VALIDATE_INT) ?: 1 coerces zero, non-numeric strings, and floats to 1,
+     * while coercing numeric strings to integers and preserving non-zero integers.
+     *
+     * @param int|string|float $inputId
+     */
+    #[DataProvider('getCoercedOrPreservedIds')]
+    #[Test]
+    public function testBuildFromRequestCurrentIdHandling(int|string|float $inputId, int $expectedId): void
+    {
+        $stream = $this->getTempnam();
+
+        $jsonRpcRequest = self::buildJsonRpcRequest();
+        $jsonRpcRequest['id'] = $inputId;
+        file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
+
+        $out = ApiRequestAdapter::buildFromRequest($stream);
+
+        $this->assertSame($expectedId, $out->getId());
+    }
+
+    #[Test]
+    public function testBuildFromRequestNullIdThrowsInvalidRequest(): void
+    {
+        $stream = $this->getTempnam();
+
+        $jsonRpcRequest = self::buildJsonRpcRequest();
+        $jsonRpcRequest['id'] = null;
+        file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
+
+        $this->expectException(ApiRequestException::class);
+        $this->expectExceptionMessage('Invalid format');
+
+        ApiRequestAdapter::buildFromRequest($stream);
+    }
+
+    public static function getCoercedOrPreservedIds(): array
+    {
+        return [
+            'zero coerced to 1' => [0, 1],
+            'negative int preserved' => [-7, -7],
+            'large int preserved' => [9007199254740991, 9007199254740991],
+            'numeric string coerced to int' => ['42', 42],
+            'string zero coerced to 1' => ['0', 1],
+            'non-numeric string coerced to 1' => ['req-abc', 1],
+            'float coerced to 1' => [1.5, 1],
+        ];
+    }
+
     public static function getJsonRpcProperty(): array
     {
         return [

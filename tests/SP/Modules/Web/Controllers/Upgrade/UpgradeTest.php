@@ -155,4 +155,111 @@ final class UpgradeTest extends IntegrationTestCase
 
         IntegrationTestCase::runApp($container);
     }
+
+    #[Test]
+    public function omittedKeyWhenConfiguredKeyIsSetFailsWrongSecurityCode(): void
+    {
+        $upgradeService = $this->createMock(UpgradeService::class);
+        $upgradeService->expects(self::never())->method('upgrade');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'upgrade/upgrade', 'chkConfirm' => 1]),
+            [UpgradeService::class => $upgradeService]
+        );
+
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($container);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+
+        $json = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('ERROR', $json['status']);
+        self::assertSame('Wrong security code', $json['description']);
+    }
+
+    /**
+     * Characterization of UpgradeController::checkEnvironment():
+     * Request::analyzeString('key') returns null when omitted, which strictly equals
+     * ConfigData::getUpgradeKey() when null (no upgradeKey configured).
+     */
+    #[Test]
+    public function omittedKeyWhenConfiguredUpgradeKeyIsNullPassesCheckAndClearsKeyAfterUpgrade(): void
+    {
+        $configData = new \SP\Domain\Config\Adapters\ConfigData();
+        $configData->setInstalled(true);
+        $configData->setAppVersion('3.2');
+        $configData->setUpgradeKey(null);
+        $configData->setPasswordSalt($this->passwordSalt);
+
+        $configService = $this->createMock(\SP\Domain\Config\Ports\ConfigFileService::class);
+        $configService->method('getConfigData')->willReturn($configData);
+        $configService->expects(self::once())->method('save')->with($configData);
+
+        $upgradeService = $this->createMock(UpgradeService::class);
+        $upgradeService->expects(self::once())->method('upgrade')->with('3.2', $configData);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'upgrade/upgrade', 'chkConfirm' => 1]),
+            [
+                \SP\Domain\Config\Ports\ConfigFileService::class => $configService,
+                \SP\Domain\Config\Ports\ConfigDataInterface::class => $configData,
+                UpgradeService::class => $upgradeService,
+            ]
+        );
+
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($container);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+
+        $json = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('OK', $json['status']);
+        self::assertNull($configData->getUpgradeKey());
+    }
+
+    #[Test]
+    public function upgradeLockContentionReturnsErrorWithoutClearingUpgradeKey(): void
+    {
+        $configData = new \SP\Domain\Config\Adapters\ConfigData();
+        $configData->setInstalled(true);
+        $configData->setAppVersion('3.2');
+        $configData->setUpgradeKey('upgrade-key');
+        $configData->setPasswordSalt($this->passwordSalt);
+
+        $configService = $this->createMock(\SP\Domain\Config\Ports\ConfigFileService::class);
+        $configService->method('getConfigData')->willReturn($configData);
+        $configService->expects(self::never())->method('save');
+
+        $appLock = $this->createStub(\SP\Domain\Core\Ports\AppLockHandler::class);
+        $appLock->method('tryLock')->willReturn(false);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'upgrade/upgrade', 'chkConfirm' => 1, 'key' => 'upgrade-key']
+            ),
+            [
+                \SP\Domain\Config\Ports\ConfigFileService::class => $configService,
+                \SP\Domain\Config\Ports\ConfigDataInterface::class => $configData,
+                \SP\Domain\Core\Ports\AppLockHandler::class => $appLock,
+            ]
+        );
+
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($container);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+
+        $json = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('ERROR', $json['status']);
+        self::assertSame('Another operation is in progress', $json['description']);
+        self::assertSame('upgrade-key', $configData->getUpgradeKey());
+    }
 }

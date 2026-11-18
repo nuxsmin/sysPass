@@ -357,4 +357,189 @@ final class StatusTest extends IntegrationTestCase
     {
         return parent::getUserDataDto()->mutate(['isAdminApp' => $this->isAdminApp]);
     }
+
+    #[Test]
+    public function dispatchedAnonymousAndNonAdminCanTriggerOutboundStatusAndCheckNotices(): void
+    {
+        $anonCtx = $this->createStub(\SP\Domain\Core\Context\SessionContext::class);
+        $anonCtx->method('isLoggedIn')->willReturn(false);
+        $anonCtx->method('getAuthCompleted')->willReturn(false);
+        $anonCtx->method('getUserData')->willReturn(new UserDto());
+
+        $this->isAdminApp = false;
+
+        foreach (['anonymous' => [\SP\Domain\Core\Context\Context::class => $anonCtx], 'non-admin' => []] as $actorOverrides) {
+            // status/checkNotices performs outbound HTTP request without auth/admin gate
+            $noticesClient = $this->createMock(ClientInterface::class);
+            $noticesClient->expects(self::once())
+                ->method('request')
+                ->willReturn(
+                    new GuzzleResponse(
+                        200,
+                        ['content-type' => 'application/json'],
+                        json_encode([['title' => 'Synthetic Notice', 'created_at' => '2026-01-01', 'body' => 'Info']], JSON_THROW_ON_ERROR)
+                    )
+                );
+
+            $cNotices = $this->buildContainer(
+                IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkNotices']),
+                $this->definitionsWithClient($noticesClient) + $actorOverrides
+            );
+            ob_start();
+            try {
+                IntegrationTestCase::runApp($cNotices);
+            } finally {
+                $noticesOut = (string) ob_get_clean();
+            }
+            $decodedNotices = json_decode($noticesOut, true, 512, JSON_THROW_ON_ERROR);
+            self::assertSame(ResponseStatus::OK->name, $decodedNotices['status']);
+            self::assertSame('Synthetic Notice', $decodedNotices['data'][0]['title']);
+
+            // legacy status/status performs outbound HTTP request without auth/admin gate
+            $statusClient = $this->createMock(ClientInterface::class);
+            $statusClient->expects(self::once())
+                ->method('request')
+                ->willReturn(
+                    new GuzzleResponse(
+                        200,
+                        ['content-type' => 'application/json'],
+                        json_encode([
+                            'tag_name' => 'v5.2.10.23010101',
+                            'html_url' => 'https://github.com/nuxsmin/sysPass/releases/tag/v5.2.10.23010101',
+                            'name' => 'Release',
+                            'body' => 'Synthetic release body',
+                            'published_at' => '2026-01-01',
+                        ], JSON_THROW_ON_ERROR)
+                    )
+                );
+
+            $cStatus = $this->buildContainer(
+                IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/status']),
+                $this->definitionsWithClient($statusClient) + $actorOverrides
+            );
+            ob_start();
+            try {
+                IntegrationTestCase::runApp($cStatus);
+            } finally {
+                $statusOut = (string) ob_get_clean();
+            }
+            $decodedStatus = json_decode($statusOut, true, 512, JSON_THROW_ON_ERROR);
+            self::assertSame(ResponseStatus::OK->name, $decodedStatus['status']);
+            self::assertSame('v5.2.10.23010101', $decodedStatus['data']['version']);
+
+            // status/checkRelease blocks before making any outbound HTTP request.
+            // Without an Accept header, anonymous checks() -> Request::isJson() throws PHP 8.3 TypeError (500);
+            // with HTTP_ACCEPT=*/* anonymous gets SessionTimeout; with HTTP_ACCEPT=application/json gets status=10.
+            $releaseClient = $this->createMock(ClientInterface::class);
+            $releaseClient->expects(self::never())->method('request');
+
+            $isAnon = isset($actorOverrides[\SP\Domain\Core\Context\Context::class]);
+            $cReleaseNoAccept = $this->buildContainer(
+                IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
+                $this->definitionsWithClient($releaseClient) + $actorOverrides
+            );
+            if ($isAnon) {
+                ob_start();
+                try {
+                    IntegrationTestCase::runApp($cReleaseNoAccept);
+                    self::fail('Expected uncaught TypeError in Request::isJson() when Accept header is absent');
+                } catch (\TypeError $e) {
+                    self::assertStringContainsString('str_contains()', $e->getMessage());
+                } finally {
+                    ob_end_clean();
+                }
+
+                // With Accept: */*, checks() sends nothing and throws SessionTimeout (empty 200)
+                $releaseClientStar = $this->createMock(ClientInterface::class);
+                $releaseClientStar->expects(self::never())->method('request');
+                $cReleaseStar = $this->buildContainer(
+                    IntegrationTestCase::buildRequest(
+                        'get',
+                        'index.php',
+                        ['r' => 'status/checkRelease'],
+                        [],
+                        [],
+                        ['HTTP_ACCEPT' => '*/*']
+                    ),
+                    $this->definitionsWithClient($releaseClientStar) + $actorOverrides
+                );
+                ob_start();
+                try {
+                    IntegrationTestCase::runApp($cReleaseStar);
+                } finally {
+                    $starOut = (string) ob_get_clean();
+                }
+                self::assertSame('', $starOut);
+
+                // With Accept: application/json, checks() emits status 10 before throwing SessionTimeout
+                $releaseClientJson = $this->createMock(ClientInterface::class);
+                $releaseClientJson->expects(self::never())->method('request');
+                $cReleaseJson = $this->buildContainer(
+                    IntegrationTestCase::buildRequest(
+                        'get',
+                        'index.php',
+                        ['r' => 'status/checkRelease'],
+                        [],
+                        [],
+                        ['HTTP_ACCEPT' => 'application/json']
+                    ),
+                    $this->definitionsWithClient($releaseClientJson) + $actorOverrides
+                );
+                ob_start();
+                try {
+                    IntegrationTestCase::runApp($cReleaseJson);
+                } finally {
+                    $jsonOut = (string) ob_get_clean();
+                }
+                $responseBody = (string) $cReleaseJson->get(\Klein\Response::class)->body();
+                $jsonDecoded = json_decode($responseBody, true, 512, JSON_THROW_ON_ERROR);
+                self::assertSame(10, $jsonDecoded['status']);
+                self::assertSame($responseBody . $responseBody, $jsonOut);
+            } else {
+                ob_start();
+                try {
+                    IntegrationTestCase::runApp($cReleaseNoAccept);
+                } finally {
+                    $releaseOut = (string) ob_get_clean();
+                }
+                $decodedRelease = json_decode($releaseOut, true, 512, JSON_THROW_ON_ERROR);
+                self::assertSame(ResponseStatus::ERROR->name, $decodedRelease['status']);
+                self::assertNull($decodedRelease['data']);
+            }
+        }
+    }
+
+    #[Test]
+    public function dispatchedCheckReleaseAndNoticesReturnSafeEnvelopesOnMalformedResponses(): void
+    {
+        $this->isAdminApp = true;
+
+        $malformedRelease = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
+            $this->definitions(['unexpected' => 'fields'])
+        );
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($malformedRelease);
+        } finally {
+            $relOut = (string) ob_get_clean();
+        }
+        $relDecoded = json_decode($relOut, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame(ResponseStatus::WARNING->name, $relDecoded['status']);
+        self::assertNull($relDecoded['data']);
+
+        $malformedNotices = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkNotices']),
+            $this->definitionsFor(new GuzzleResponse(200, ['content-type' => 'text/html'], '<html>oops</html>'))
+        );
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($malformedNotices);
+        } finally {
+            $notOut = (string) ob_get_clean();
+        }
+        $notDecoded = json_decode($notOut, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame(ResponseStatus::ERROR->name, $notDecoded['status']);
+        self::assertNull($notDecoded['data']);
+    }
 }
