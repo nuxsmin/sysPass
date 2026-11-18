@@ -41,6 +41,61 @@ function matchesSave(url: string, id: number): boolean {
   return new URL(url).searchParams.get('r') === `account/saveEdit/${id}`;
 }
 
+test('account password edit displays a synthetic error without navigating', async ({ sessionPage: { page, context, session } }) => {
+  const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+  const message = 'Synthetic account password edit error';
+  const password = `Changed-${Date.now()}-fixture!`;
+  let saves = 0;
+  let navigations = 0;
+  try {
+    const id = await createAccount(page, tracker, session);
+    await page.goto(`/index.php?r=account/view/${id}`, { waitUntil: 'domcontentloaded' });
+    const control = page.locator('.item-actions [data-onclick="account/editPass"]').first();
+    await expect(control).toHaveAttribute('data-action-route', 'account/editPass');
+    const formResponse = page.waitForResponse((response) => response.request().method() === 'GET' && new URL(response.url()).searchParams.get('r') === `account/editPass/${id}`);
+    await control.click();
+    expect((await formResponse).status()).toBe(200);
+    const form = page.locator('#frmEditPass');
+    await expect(form).toHaveAttribute('data-action-route', 'account/saveEditPass');
+    await expect(form).toHaveAttribute('data-item-id', String(id));
+    await form.locator('input[name="password"]').fill(password);
+    await form.locator('input[name="password_repeat"]').fill(password);
+    await page.locator('#toast-container').evaluateAll((nodes) => nodes.forEach((node) => node.remove()));
+    const saveRoute = `account/saveEditPass/${id}`;
+    const envelope = { status: 'ERROR', description: message, messages: [], data: null };
+    page.on('request', (request) => {
+      const route = new URL(request.url()).searchParams.get('r');
+      if (request.method() === 'POST' && route === saveRoute) saves++;
+      if (request.method() === 'GET' && route === `account/view/${id}`) navigations++;
+    });
+    await page.route('**/index.php?**', async (route) => {
+      if (route.request().method() === 'POST' && new URL(route.request().url()).searchParams.get('r') === saveRoute) {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(envelope) });
+      } else await route.continue();
+    });
+    const since = Date.now();
+    const responsePromise = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).searchParams.get('r') === saveRoute);
+    await page.locator('button[type="submit"][form="frmEditPass"]').click();
+    const response = await responsePromise;
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toEqual(envelope);
+    const fields = new URLSearchParams(response.request().postData() ?? '');
+    for (const field of ['password', 'password_repeat']) {
+      expect(Boolean(fields.get(field))).toBe(true);
+      expect(fields.get(field) === password).toBe(false);
+    }
+    await expect(page.locator('.toast-error').filter({ hasText: message })).toBeVisible();
+    await expect(page.locator('.toast-success')).toHaveCount(0);
+    await tracker.waitForQuiet(since);
+    expect(saves).toBe(1);
+    expect(navigations).toBe(0);
+    await expect(form).toHaveAttribute('data-item-id', String(id));
+  } finally {
+    await page.unroute('**/index.php?**');
+    tracker.dispose();
+  }
+});
+
 test('account edit displays a synthetic warning without navigating or persisting', async ({ sessionPage: { page, context, session } }) => {
   const tracker = new ActionTracker(page, context, { sessionEstablished: false });
   const message = 'Synthetic edit warning';
