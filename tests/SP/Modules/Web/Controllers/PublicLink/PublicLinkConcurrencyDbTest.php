@@ -362,7 +362,9 @@ final class PublicLinkConcurrencyDbTest extends DatabaseIntegrationTestCase
         self::assertSame(500, $authResult['code']);
         $decoded = $this->decodeJson($authResult['body']);
         self::assertSame('ERROR', $decoded['status']);
-        self::assertSame('Wrong object type', $decoded['description']);
+        self::assertSame('Internal error', $decoded['description']);
+        self::assertArrayHasKey('data', $decoded);
+        self::assertNull($decoded['data']);
     }
 
     private function getUnauthenticatedContext(): SessionContext

@@ -109,22 +109,24 @@ final class UserPassRecoverDbIntegrationTest extends DatabaseIntegrationTestCase
         $pdo->prepare('INSERT INTO UserPassRecover (userId, hash, date, used) VALUES (:uid, :hash, UNIX_TIMESTAMP(), 0)')
             ->execute(['uid' => $userId, 'hash' => $hash]);
 
-        try {
-            $this->dispatch(
-                'post',
-                'userPassReset/saveReset',
-                [],
-                [
-                    'hash' => $hash,
-                    'password' => 'never-applied-2026',
-                    'password_repeat' => 'never-applied-2026',
-                ],
-                [Context::class => $this->getUnauthenticatedContext()]
-            );
-            self::fail('Expected uncaught Error from Aura\\SqlQuery\\Common\\Update::limit()');
-        } catch (Error $e) {
-            self::assertStringContainsString('Call to undefined method Aura\\SqlQuery\\Common\\Update::limit()', $e->getMessage());
-        }
+        $resetRes = $this->dispatch(
+            'post',
+            'userPassReset/saveReset',
+            [],
+            [
+                'hash' => $hash,
+                'password' => 'never-applied-2026',
+                'password_repeat' => 'never-applied-2026',
+            ],
+            [Context::class => $this->getUnauthenticatedContext()]
+        );
+        self::assertSame(500, $resetRes['code']);
+        $resetJson = json_decode($resetRes['body'], true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('ERROR', $resetJson['status'] ?? null);
+        self::assertSame('Internal error', $resetJson['description'] ?? null);
+        self::assertArrayHasKey('data', $resetJson);
+        self::assertNull($resetJson['data']);
+        self::assertStringNotContainsString('Aura\\SqlQuery', $resetRes['body']);
 
         $usedStmt = $pdo->prepare('SELECT used FROM UserPassRecover WHERE hash = :hash');
         $usedStmt->execute(['hash' => $hash]);

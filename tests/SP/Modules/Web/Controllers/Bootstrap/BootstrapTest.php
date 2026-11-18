@@ -222,4 +222,141 @@ class BootstrapTest extends IntegrationTestCase
 
         return $decoded['data'];
     }
+
+    #[Test]
+    public function exceptionEnvelopesRedactTracesAndMapClientVsInternalErrors(): void
+    {
+        $user = $this->getUserDataDto()->mutate(['login' => 'alice', 'isAdminApp' => true]);
+        $context = $this->createStub(\SP\Domain\Core\Context\SessionContext::class);
+        $context->method('isLoggedIn')->willReturn(true);
+        $context->method('getAuthCompleted')->willReturn(true);
+        $context->method('getUserData')->willReturn($user);
+        $context->method('getUserProfile')->willReturn($this->getUserProfile());
+
+        $cases = [
+            'validation' => [
+                'exception' => \SP\Domain\Core\Exceptions\ValidationException::error(
+                    'Invalid input field',
+                    'sensitive-hint-should-not-leak'
+                ),
+                'expectedCode' => 400,
+                'expectedDescription' => 'Invalid input field',
+                'expectExceptionEvent' => false,
+                'forbiddenSubstrings' => ['sensitive-hint-should-not-leak', 'BootstrapTest', 'getByFilter'],
+            ],
+            'duplicated' => [
+                'exception' => \SP\Domain\Core\Exceptions\DuplicatedItemException::error(
+                    'Duplicate item',
+                    'sensitive-dup-hint'
+                ),
+                'expectedCode' => 400,
+                'expectedDescription' => 'Duplicate item',
+                'expectExceptionEvent' => false,
+                'forbiddenSubstrings' => ['sensitive-dup-hint', 'BootstrapTest', 'getByFilter'],
+            ],
+            'auth' => [
+                'exception' => new \SP\Domain\Auth\Services\AuthException('Authentication rejected'),
+                'expectedCode' => 400,
+                'expectedDescription' => 'Authentication rejected',
+                'expectExceptionEvent' => false,
+                'forbiddenSubstrings' => ['BootstrapTest', 'getByFilter'],
+            ],
+            'query' => [
+                'exception' => \SP\Domain\Core\Exceptions\QueryException::critical(
+                    'SQLSTATE[42000]: secret_table_leak',
+                    '42000'
+                ),
+                'expectedCode' => 500,
+                'expectedDescription' => 'Internal error',
+                'expectExceptionEvent' => true,
+                'forbiddenSubstrings' => ['SQLSTATE', 'secret_table_leak', 'BootstrapTest'],
+            ],
+            'sp_exception' => [
+                'exception' => \SP\Domain\Core\Exceptions\NoSuchItemException::info('Item missing'),
+                'expectedCode' => 500,
+                'expectedDescription' => 'Item missing',
+                'expectExceptionEvent' => true,
+                'forbiddenSubstrings' => ['BootstrapTest', 'getByFilter'],
+            ],
+            'runtime_exception' => [
+                'exception' => new \RuntimeException('db-password-secret-value'),
+                'expectedCode' => 500,
+                'expectedDescription' => 'Internal error',
+                'expectExceptionEvent' => true,
+                'forbiddenSubstrings' => ['db-password-secret-value', 'BootstrapTest', 'getByFilter'],
+            ],
+            'php_type_error' => [
+                'exception' => new \TypeError('internal-type-mismatch-secret'),
+                'expectedCode' => 500,
+                'expectedDescription' => 'Internal error',
+                'expectExceptionEvent' => true,
+                'forbiddenSubstrings' => ['internal-type-mismatch-secret', 'BootstrapTest', 'getByFilter'],
+            ],
+        ];
+
+        foreach ($cases as $label => $case) {
+            $searchService = $this->createStub(\SP\Domain\Account\Ports\AccountSearchService::class);
+            $throwFromInnerCall = static function (string $syntheticSecret) use ($case): never {
+                throw $case['exception'];
+            };
+            $searchService->method('getByFilter')->willReturnCallback(
+                static fn() => $throwFromInnerCall('trace-arg-secret-marker')
+            );
+
+            $events = [];
+            $dispatcher = new \SP\Core\Events\EventDispatcher();
+            $dispatcher->attach(new class($events) implements \SP\Domain\Core\Events\EventReceiver {
+                /** @param array<int, string> $events */
+                public function __construct(private array &$events) {}
+
+                public function update(string $eventType, \SP\Domain\Core\Events\Event $event): void
+                {
+                    $this->events[] = $eventType;
+                }
+
+                public function getEvents(): ?string
+                {
+                    return '*';
+                }
+            });
+
+            $container = $this->buildContainer(
+                IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/search']),
+                [
+                    \SP\Domain\Core\Context\Context::class => $context,
+                    \SP\Domain\Account\Ports\AccountSearchService::class => $searchService,
+                    \SP\Core\Events\EventDispatcher::class => $dispatcher,
+                    \SP\Domain\Core\Events\EventDispatcherInterface::class => $dispatcher,
+                ]
+            );
+
+            ob_start();
+            try {
+                IntegrationTestCase::runApp($container);
+            } finally {
+                $body = (string) ob_get_clean();
+            }
+
+            /** @var \Klein\Response $response */
+            $response = $container->get(\Klein\Response::class);
+            self::assertSame($case['expectedCode'], (int) $response->code(), $label . ': ' . $body);
+
+            $decoded = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+            self::assertSame('ERROR', $decoded['status'] ?? null, $label);
+            self::assertSame($case['expectedDescription'], $decoded['description'] ?? null, $label);
+            self::assertArrayHasKey('data', $decoded, $label);
+            self::assertNull($decoded['data'], $label);
+            self::assertStringNotContainsString('trace-arg-secret-marker', $body, $label);
+
+            foreach ($case['forbiddenSubstrings'] as $forbidden) {
+                self::assertStringNotContainsString($forbidden, $body, $label);
+            }
+
+            if ($case['expectExceptionEvent']) {
+                self::assertContains('exception', $events, $label);
+            } else {
+                self::assertNotContains('exception', $events, $label);
+            }
+        }
+    }
 }

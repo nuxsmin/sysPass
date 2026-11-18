@@ -273,7 +273,7 @@ class Request implements RequestService
      */
     public function isJson(): bool
     {
-        return str_contains($this->headers->get(Header::ACCEPT->value), Header::ACCEPT_JSON->value);
+        return str_contains((string)$this->headers->get(Header::ACCEPT->value), Header::ACCEPT_JSON->value);
     }
 
     /**

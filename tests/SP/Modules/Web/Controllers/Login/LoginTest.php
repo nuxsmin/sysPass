@@ -368,7 +368,7 @@ final class LoginTest extends IntegrationTestCase
     }
 
     #[Test]
-    public function browserAuthMismatchReturns500WhileAbsentServerHeaderBypassesCheck(): void
+    public function browserAuthMismatchOrAbsentServerHeaderFailsClosedAndInvalidatesSession(): void
     {
         $configData = self::createConfiguredStub(ConfigDataInterface::class, array_merge(
             $this->getConfigData(),
@@ -386,13 +386,30 @@ final class LoginTest extends IntegrationTestCase
             'isAdminApp' => true,
         ]);
 
-        $context = self::createStub(SessionContext::class);
-        $context->method('isLoggedIn')->willReturn(true);
-        $context->method('getAuthCompleted')->willReturn(true);
-        $context->method('getUserData')->willReturn($userDto);
-        $context->method('getUserProfile')->willReturn($this->getUserProfile());
+        $buildExpectedInvalidatedContext = function () use ($userDto): SessionContext {
+            $context = $this->createMock(SessionContext::class);
+            $context->method('isLoggedIn')->willReturn(true);
+            $context->method('getAuthCompleted')->willReturn(true);
+            $context->method('getUserData')->willReturn($userDto);
+            $context->method('getUserProfile')->willReturn($this->getUserProfile());
+            $context->expects(self::once())->method('setUserData')->with(null);
+            $context->expects(self::once())->method('setAuthCompleted')->with(false);
+            $context->expects(self::once())->method('resetAppStatus');
+            $context->expects(self::once())->method('resetAccountAcl');
 
-        // Mismatched PHP_AUTH_USER throws AuthException('Invalid browser auth') -> HTTP 500 with trace
+            return $context;
+        };
+
+        $assertRejectedJson = static function (array $result, string $label): void {
+            self::assertNotSame(500, $result['code'], $label . ': ' . $result['body']);
+            $json = json_decode($result['body'], true, 512, JSON_THROW_ON_ERROR);
+            self::assertSame(10, $json['status'] ?? null, $label);
+            self::assertSame('Session not started or timed out', $json['description'] ?? null, $label);
+        };
+
+        // 1. Mismatched PHP_AUTH_USER invalidates session and requires re-auth (never 500 or 200 OK)
+        $aclMismatch = $this->createMock(AclInterface::class);
+        $aclMismatch->expects(self::never())->method('checkUserAccess');
         $mismatchResult = $this->dispatchRoute(
             'get',
             'account/search',
@@ -400,33 +417,85 @@ final class LoginTest extends IntegrationTestCase
             [],
             [
                 ConfigFileService::class => $configFile,
-                Context::class => $context,
+                Context::class => $buildExpectedInvalidatedContext(),
+                AclInterface::class => $aclMismatch,
             ],
-            ['PHP_AUTH_USER' => 'bob']
+            ['PHP_AUTH_USER' => 'bob', 'HTTP_ACCEPT' => 'application/json']
         );
+        $assertRejectedJson($mismatchResult, 'mismatch');
 
-        self::assertSame(500, $mismatchResult['code']);
-        $json = json_decode($mismatchResult['body'], true, 512, JSON_THROW_ON_ERROR);
-        self::assertSame('ERROR', $json['status']);
-        self::assertSame('Invalid browser auth', $json['description']);
-        self::assertIsArray($json['data']);
-
-        // Characterization: when PHP_AUTH_USER and REMOTE_USER are absent, checkServerAuthUser()
-        // returns null (!== false), so the browser-auth check is bypassed even with isAuthBasicEnabled=true.
-        $absentResult = $this->dispatchRoute(
+        // 2. Absent PHP_AUTH_USER and REMOTE_USER (JSON request) fails closed, invalidates session, requires re-auth
+        $aclAbsentJson = $this->createMock(AclInterface::class);
+        $aclAbsentJson->expects(self::never())->method('checkUserAccess');
+        $absentJsonResult = $this->dispatchRoute(
             'get',
             'account/search',
             [],
             [],
             [
                 ConfigFileService::class => $configFile,
-                Context::class => $context,
+                Context::class => $buildExpectedInvalidatedContext(),
+                AclInterface::class => $aclAbsentJson,
+            ],
+            ['HTTP_ACCEPT' => 'application/json']
+        );
+        $assertRejectedJson($absentJsonResult, 'absent-json');
+
+        // 3. Absent PHP_AUTH_USER and REMOTE_USER (non-JSON browser GET) redirects to login (302) without crashing
+        $aclAbsentHtml = $this->createMock(AclInterface::class);
+        $aclAbsentHtml->expects(self::never())->method('checkUserAccess');
+        $absentHtmlResult = $this->dispatchRoute(
+            'get',
+            'account/search',
+            [],
+            [],
+            [
+                ConfigFileService::class => $configFile,
+                Context::class => $buildExpectedInvalidatedContext(),
+                AclInterface::class => $aclAbsentHtml,
             ]
         );
+        self::assertSame(302, $absentHtmlResult['code']);
+        self::assertStringContainsString('r=login', (string)($absentHtmlResult['headers']['location'] ?? $absentHtmlResult['headers']['Location'] ?? ''));
 
-        self::assertSame(200, $absentResult['code']);
-        $absentJson = json_decode($absentResult['body'], true, 512, JSON_THROW_ON_ERROR);
-        self::assertSame('OK', $absentJson['status']);
+        // 4. SimpleControllerBase route (status/checkRelease) also fails closed when server auth header is absent
+        $aclSimple = $this->createMock(AclInterface::class);
+        $aclSimple->expects(self::never())->method('checkUserAccess');
+        $simpleAbsentResult = $this->dispatchRoute(
+            'get',
+            'status/checkRelease',
+            [],
+            [],
+            [
+                ConfigFileService::class => $configFile,
+                Context::class => $buildExpectedInvalidatedContext(),
+                AclInterface::class => $aclSimple,
+            ],
+            ['HTTP_ACCEPT' => 'application/json']
+        );
+        $assertRejectedJson($simpleAbsentResult, 'simple-absent');
+
+        // 5. Matching REMOTE_USER against ssoLogin succeeds on protected routes
+        $validContext = self::createStub(SessionContext::class);
+        $validContext->method('isLoggedIn')->willReturn(true);
+        $validContext->method('getAuthCompleted')->willReturn(true);
+        $validContext->method('getUserData')->willReturn($userDto);
+        $validContext->method('getUserProfile')->willReturn($this->getUserProfile());
+
+        $validResult = $this->dispatchRoute(
+            'get',
+            'account/search',
+            [],
+            [],
+            [
+                ConfigFileService::class => $configFile,
+                Context::class => $validContext,
+            ],
+            ['REMOTE_USER' => 'alice_sso', 'HTTP_ACCEPT' => 'application/json']
+        );
+        self::assertSame(200, $validResult['code']);
+        $validJson = json_decode($validResult['body'], true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('OK', $validJson['status']);
     }
 
     private function outputCheckerIndex(string $output): void
@@ -480,8 +549,59 @@ final class LoginTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
     }
 
+    #[Test]
+    public function realSessionIsInvalidatedSafelyWhenBrowserAuthFails(): void
+    {
+        $configData = self::createConfiguredStub(ConfigDataInterface::class, array_merge(
+            $this->getConfigData(),
+            [
+                'isAuthBasicEnabled' => true,
+                'getAuthBasicDomain' => '',
+            ]
+        ));
+        $configFile = $this->createStub(ConfigFileService::class);
+        $configFile->method('getConfigData')->willReturn($configData);
+
+        $session = new class extends \SP\Core\Context\Session {
+            public function initialize(): void
+            {
+                if (!$this->isInitialized()) {
+                    $this->setContext(new \SP\Core\Context\ContextCollection());
+                }
+            }
+        };
+        $session->initialize();
+        $session->setUserData($this->getUserDataDto()->mutate(['login' => 'alice', 'isAdminApp' => true]));
+        $session->setUserProfile($this->getUserProfile());
+        $session->setAuthCompleted(true);
+        $session->setAppStatus('active');
+        $session->setLastActivity(time());
+        $session->setVault(\SP\Domain\Core\Crypt\Vault::factory(new \SP\Domain\Core\Crypt\Crypt())->saveData('secret-mk', 'seed'));
+
+        $result = $this->dispatchRoute(
+            'get',
+            'account/search',
+            [],
+            [],
+            [
+                ConfigFileService::class => $configFile,
+                Context::class => $session,
+            ],
+            ['HTTP_ACCEPT' => 'application/json']
+        );
+
+        self::assertNotSame(500, $result['code'], $result['body']);
+        $json = json_decode($result['body'], true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame(10, $json['status'] ?? null);
+        self::assertFalse($session->isLoggedIn());
+        self::assertFalse($session->getAuthCompleted());
+        self::assertNull($session->getAppStatus());
+        self::assertNull($session->getVault());
+        self::assertSame(0, $session->getLastActivity());
+    }
+
     /**
-     * @return array{body: string, echoed: string, code: int}
+     * @return array{body: string, echoed: string, code: int, headers: array<string, mixed>}
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -520,6 +640,7 @@ final class LoginTest extends IntegrationTestCase
             'body' => $body !== '' ? $body : $echoed,
             'echoed' => $echoed,
             'code' => (int)$response->code(),
+            'headers' => $response->headers()->all(),
         ];
     }
 }

@@ -198,13 +198,13 @@ final class ApiBoundaryTest extends TestCase
     }
 
     /**
-     * Characterization of secured-action vault & Track behavior:
+     * Secured-action vault & Track behavior:
      * 1. Wrong tokenPass returns "Unauthorized access", adds Track, and leaves Account.countView unchanged.
-     * 2. Empty/null vault returns "Internal error" with data.help = ["Invalid data"].
-     * 3. Corrupt serialized vault exposes the caught deserialization message in error.data.help.
+     * 2. Empty/null vault returns "Internal error" with error.data redacted (null).
+     * 3. Corrupt serialized vault returns "Internal error" without exposing deserialization internals in error.data.
      */
     #[Test]
-    public function wrongTokenPassTracksAndVaultFailuresExposeHintWithoutSideEffects(): void
+    public function wrongTokenPassTracksAndVaultFailuresRedactHintsWithoutSideEffects(): void
     {
         $pdo = getDbHandler()->getConnection();
         $token = $this->seedTokenForUser(1, AclActionsInterface::ACCOUNT_VIEW_PASS);
@@ -224,12 +224,13 @@ final class ApiBoundaryTest extends TestCase
         ]);
         self::assertSame(200, $wrongPassRes['code']);
         self::assertSame('Unauthorized access', $wrongPassRes['json']['error']['message'] ?? null);
+        self::assertNull($wrongPassRes['json']['error']['data'] ?? null);
         self::assertSame(1, $this->countApiTracks($pdo));
 
         // Account.countView unchanged
         self::assertSame($countBefore, (int)$pdo->query('SELECT countView FROM Account WHERE id = 1')->fetchColumn());
 
-        // 2. Empty vault with matching tokenPass hash -> error.data.help = ["Invalid data"]
+        // 2. Empty vault with matching tokenPass hash -> error.data omitted
         $pdo->prepare('UPDATE AuthToken SET vault = NULL WHERE id = :id')->execute(['id' => $token->getId()]);
 
         $emptyVaultRes = $this->dispatchJsonRpc([
@@ -243,10 +244,10 @@ final class ApiBoundaryTest extends TestCase
             'id' => 32,
         ]);
         self::assertSame('Internal error', $emptyVaultRes['json']['error']['message'] ?? null);
-        self::assertSame(['Invalid data'], $emptyVaultRes['json']['error']['data']['help'] ?? null);
+        self::assertNull($emptyVaultRes['json']['error']['data'] ?? null);
         self::assertSame(1, $this->countApiTracks($pdo));
 
-        // 3. Corrupt serialized vault -> exposes exception detail in error.data.help
+        // 3. Corrupt serialized vault -> error.data omitted (no deserialization detail leaked)
         $pdo->prepare('UPDATE AuthToken SET vault = :vault WHERE id = :id')->execute([
             'vault' => 'not-a-valid-serialized-vault',
             'id' => $token->getId(),
@@ -263,13 +264,8 @@ final class ApiBoundaryTest extends TestCase
             'id' => 33,
         ]);
         self::assertSame('Internal error', $corruptVaultRes['json']['error']['message'] ?? null);
-        $help = $corruptVaultRes['json']['error']['data']['help'] ?? [];
-        self::assertIsArray($help);
-        self::assertNotEmpty($help);
-        self::assertSame(
-            ["Couldn't rewrite the serialized payload: Malformed serialized payload at offset 0"],
-            $help
-        );
+        self::assertNull($corruptVaultRes['json']['error']['data'] ?? null);
+        self::assertStringNotContainsString('serialized payload', $corruptVaultRes['body']);
         self::assertSame(1, $this->countApiTracks($pdo));
     }
 
@@ -339,16 +335,17 @@ final class ApiBoundaryTest extends TestCase
     }
 
     /**
-     * Characterization of JSON-RPC null ID, notifications (omitted ID), malformed JSON,
-     * empty body, and unknown method behavior through Api\Bootstrap.
+     * Target JSON-RPC error HTTP status codes & redaction through Api\Bootstrap:
+     * client parse/format errors return HTTP 400 (never 500) with error.data omitted,
+     * and unknown/non-action methods keep HTTP 404.
      */
     #[Test]
-    public function invalidJsonNullIdNotificationAndUnknownMethodReturnCurrentErrorEnvelopes(): void
+    public function invalidJsonNullIdNotificationAndUnknownMethodReturnSafeClientHttpStatuses(): void
     {
         $pdo = getDbHandler()->getConnection();
         $token = $this->seedTokenForUser(1, AclActionsInterface::TAG_CREATE);
 
-        // 1. Notification (omitted id) returns HTTP 500 JSON-RPC INVALID_REQUEST with id=0 (not silent)
+        // 1. Notification (omitted id) returns HTTP 400 JSON-RPC INVALID_REQUEST with id=0 and no error.data
         // and does NOT execute tag/create
         $notificationRes = $this->dispatchRawBody(json_encode([
             'jsonrpc' => '2.0',
@@ -359,41 +356,45 @@ final class ApiBoundaryTest extends TestCase
             ],
         ], JSON_THROW_ON_ERROR));
 
-        self::assertSame(500, $notificationRes['code']);
+        self::assertSame(400, $notificationRes['code']);
         self::assertSame(0, $notificationRes['json']['id'] ?? null);
         self::assertSame(JsonRpcErrorCode::INVALID_REQUEST, $notificationRes['json']['error']['code'] ?? null);
         self::assertSame('Invalid format', $notificationRes['json']['error']['message'] ?? null);
+        self::assertNull($notificationRes['json']['error']['data'] ?? null);
         self::assertSame(
             0,
             (int)$pdo->query("SELECT COUNT(*) FROM Tag WHERE name = 'notification-tag-should-not-exist'")->fetchColumn()
         );
 
-        // 2. Null ID returns HTTP 500 INVALID_REQUEST with id=0
+        // 2. Null ID returns HTTP 400 INVALID_REQUEST with id=0
         $nullIdRes = $this->dispatchJsonRpc([
             'jsonrpc' => '2.0',
             'method' => 'tag/search',
             'params' => ['authToken' => $token->getToken()],
             'id' => null,
         ]);
-        self::assertSame(500, $nullIdRes['code']);
+        self::assertSame(400, $nullIdRes['code']);
         self::assertSame(0, $nullIdRes['json']['id'] ?? null);
         self::assertSame(JsonRpcErrorCode::INVALID_REQUEST, $nullIdRes['json']['error']['code'] ?? null);
         self::assertSame('Invalid format', $nullIdRes['json']['error']['message'] ?? null);
+        self::assertNull($nullIdRes['json']['error']['data'] ?? null);
 
-        // 3. Malformed JSON returns HTTP 500 PARSE_ERROR with id=0 and exposes JsonException message in data.help
+        // 3. Malformed JSON returns HTTP 400 PARSE_ERROR with id=0 and redacts JsonException message from error.data
         $malformedRes = $this->dispatchRawBody('{invalid-json');
-        self::assertSame(500, $malformedRes['code']);
+        self::assertSame(400, $malformedRes['code']);
         self::assertSame(0, $malformedRes['json']['id'] ?? null);
         self::assertSame(JsonRpcErrorCode::PARSE_ERROR, $malformedRes['json']['error']['code'] ?? null);
         self::assertSame('Invalid data', $malformedRes['json']['error']['message'] ?? null);
-        self::assertSame(['Syntax error'], $malformedRes['json']['error']['data']['help'] ?? null);
+        self::assertNull($malformedRes['json']['error']['data'] ?? null);
+        self::assertStringNotContainsString('Syntax error', $malformedRes['body']);
 
-        // 4. Empty body returns HTTP 500 PARSE_ERROR with id=0
+        // 4. Empty body returns HTTP 400 PARSE_ERROR with id=0
         $emptyRes = $this->dispatchRawBody('');
-        self::assertSame(500, $emptyRes['code']);
+        self::assertSame(400, $emptyRes['code']);
         self::assertSame(0, $emptyRes['json']['id'] ?? null);
         self::assertSame(JsonRpcErrorCode::PARSE_ERROR, $emptyRes['json']['error']['code'] ?? null);
         self::assertSame('Invalid data', $emptyRes['json']['error']['message'] ?? null);
+        self::assertNull($emptyRes['json']['error']['data'] ?? null);
 
         // 5. Unknown method returns HTTP 404 METHOD_NOT_FOUND with request ID preserved
         $unknownMethodRes = $this->dispatchJsonRpc([
@@ -409,6 +410,7 @@ final class ApiBoundaryTest extends TestCase
             'Oops, it looks like this content does not exist...',
             $unknownMethodRes['json']['error']['message'] ?? null
         );
+        self::assertNull($unknownMethodRes['json']['error']['data'] ?? null);
 
         // 6. Existing public non-Action method on a real controller returns HTTP 404 METHOD_NOT_FOUND
         $nonActionMethodRes = $this->dispatchJsonRpc([
@@ -420,6 +422,7 @@ final class ApiBoundaryTest extends TestCase
         self::assertSame(404, $nonActionMethodRes['code']);
         self::assertSame(56, $nonActionMethodRes['json']['id'] ?? null);
         self::assertSame(JsonRpcErrorCode::METHOD_NOT_FOUND, $nonActionMethodRes['json']['error']['code'] ?? null);
+        self::assertNull($nonActionMethodRes['json']['error']['data'] ?? null);
     }
 
     /**

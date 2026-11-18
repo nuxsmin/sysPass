@@ -28,6 +28,7 @@ namespace SP\Modules\Web\Mvc\Controller;
 
 use Klein\Klein;
 use SP\Core\PhpExtensionChecker;
+use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\RouteContextData;
@@ -55,7 +56,8 @@ final readonly class SimpleControllerHelper
         private PhpExtensionChecker      $extensionChecker,
         private UriContextInterface      $uriContext,
         private RouteContextData         $routeContextData,
-        private HashService              $hashService
+        private HashService              $hashService,
+        private BrowserAuthService       $browser
     ) {
     }
 
@@ -112,5 +114,10 @@ final readonly class SimpleControllerHelper
     public function getHashService(): HashService
     {
         return $this->hashService;
+    }
+
+    public function getBrowser(): BrowserAuthService
+    {
+        return $this->browser;
     }
 }

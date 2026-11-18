@@ -72,7 +72,9 @@ final class ActionResponseAdapter
 
     public function toJsonRpcException(Exception $e, int $id): string
     {
-        $data = ($e instanceof SPException && $e->getHint() !== null)
+        $data = ($e instanceof SPException
+            && $e->getCode() === self::INVALID_PARAMS
+            && $e->getHint() !== null)
             ? ['help' => explode(PHP_EOL, $e->getHint())]
             : null;
 

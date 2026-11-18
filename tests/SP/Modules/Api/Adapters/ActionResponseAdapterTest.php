@@ -90,9 +90,9 @@ class ActionResponseAdapterTest extends UnitaryTestCase
     }
 
     #[Test]
-    public function toJsonRpcExceptionIncludesTheHintAsData(): void
+    public function toJsonRpcExceptionIncludesTheHintAsDataForInvalidParams(): void
     {
-        $exception = SPException::error('Wrong parameters', 'Missing name');
+        $exception = SPException::error('Wrong parameters', 'Missing name', ActionResponseAdapter::INVALID_PARAMS);
 
         $out = json_decode(
             (new ActionResponseAdapter())->toJsonRpcException($exception, 3),
@@ -104,8 +104,30 @@ class ActionResponseAdapterTest extends UnitaryTestCase
         self::assertSame('2.0', $out['jsonrpc']);
         self::assertSame(3, $out['id']);
         self::assertSame('Wrong parameters', $out['error']['message']);
-        self::assertSame($exception->getCode(), $out['error']['code']);
+        self::assertSame(ActionResponseAdapter::INVALID_PARAMS, $out['error']['code']);
         self::assertSame(['Missing name'], $out['error']['data']['help']);
+    }
+
+    #[Test]
+    public function toJsonRpcExceptionOmitsHintDataOutsideInvalidParams(): void
+    {
+        $adapter = new ActionResponseAdapter();
+
+        foreach ([
+            ActionResponseAdapter::PARSE_ERROR,
+            ActionResponseAdapter::INVALID_REQUEST,
+            ActionResponseAdapter::METHOD_NOT_FOUND,
+            ActionResponseAdapter::INTERNAL_ERROR,
+            ActionResponseAdapter::SERVER_ERROR,
+            0,
+        ] as $code) {
+            $exception = SPException::error('Internal failure', 'Sensitive internal detail', $code);
+            $out = json_decode($adapter->toJsonRpcException($exception, 4), true, 512, JSON_THROW_ON_ERROR);
+
+            self::assertSame('Internal failure', $out['error']['message']);
+            self::assertSame($code, $out['error']['code']);
+            self::assertNull($out['error']['data']);
+        }
     }
 
     #[Test]

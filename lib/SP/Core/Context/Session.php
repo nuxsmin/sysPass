@@ -68,6 +68,30 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
+     * Invalidates all session context entries and destroys any active PHP session.
+     */
+    public function invalidate(): void
+    {
+        if ($this->isInitialized()) {
+            $this->setContextKey('vault', null);
+            $this->setContextKey('tempmasterpass', null);
+            $this->setContextKey('user', null);
+            $this->setContextKey('userProfile', null);
+            $this->setContextKey('authCompleted', false);
+            $this->setContextKey('status', null);
+            $this->setContextKey('accountAcl', null);
+            $this->setContextKey('lastActivity', 0);
+            $this->setContextKey('sidStartTime', 0);
+            $this->setContextKey('startActivity', 0);
+            $this->setContextKey('accountsCache', null);
+            $this->setContextKey('pubkey', null);
+            $this->setContextKey('csrf', null);
+        }
+
+        SessionLifecycleHandler::destroyIfActive();
+    }
+
+    /**
      * Devuelve el tema visual utilizado en sysPass
      */
     public function getTheme(): string
@@ -188,7 +212,7 @@ class Session extends ContextBase implements SessionContext
      */
     public function getUserData(): UserDto
     {
-        return $this->getContextKey('user', new UserDto());
+        return $this->getContextKey('user') ?? new UserDto();
     }
 
     /**

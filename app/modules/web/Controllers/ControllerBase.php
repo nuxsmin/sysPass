@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers;
 use Exception;
 use SebastianBergmann\RecursionContext\Context;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
-use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclInterface;
@@ -168,7 +167,7 @@ abstract class ControllerBase
      * @param bool $requireAuthCompleted
      *
      * @throws SessionTimeout
-     * @throws AuthException
+     * @throws SPException
      */
     protected function checkLoggedIn(bool $requireAuthCompleted = true): void
     {
@@ -177,14 +176,11 @@ abstract class ControllerBase
             throw new SessionTimeout();
         }
 
-        // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-        if ($this->session->isLoggedIn()
-            && $this->session->getAuthCompleted() === $requireAuthCompleted
-            && $this->configData->isAuthBasicEnabled()
-            && $this->browser->checkServerAuthUser($this->userDto->login) === false
-            && $this->browser->checkServerAuthUser($this->userDto->ssoLogin) === false
-        ) {
-            throw new AuthException('Invalid browser auth');
+        if (!$this->isBrowserAuthValid($this->browser)) {
+            $this->invalidateSession();
+            $this->handleSessionTimeout();
+
+            throw new SessionTimeout();
         }
     }
 

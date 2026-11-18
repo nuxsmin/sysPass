@@ -114,6 +114,13 @@ final class SessionLifecycleHandler
         return array_merge(self::options(), ['use_strict_mode' => '0']);
     }
 
+    public static function destroyIfActive(): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            self::destroy();
+        }
+    }
+
     /**
      * @return void
      */
@@ -121,16 +128,18 @@ final class SessionLifecycleHandler
     {
         $_SESSION = [];
 
-        $params = session_get_cookie_params();
-        setcookie(
-            session_name(),
-            '',
-            time() - 42000,
-            $params["path"],
-            $params["domain"],
-            $params["secure"],
-            $params["httponly"]
-        );
+        if (!headers_sent()) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
 
         session_destroy();
     }

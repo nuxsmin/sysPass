@@ -428,7 +428,7 @@ final class StatusTest extends IntegrationTestCase
             self::assertSame('v5.2.10.23010101', $decodedStatus['data']['version']);
 
             // status/checkRelease blocks before making any outbound HTTP request.
-            // Without an Accept header, anonymous checks() -> Request::isJson() throws PHP 8.3 TypeError (500);
+            // Without an Accept header, anonymous checks() -> Request::isJson() safely returns false and redirects (302) to r=login;
             // with HTTP_ACCEPT=*/* anonymous gets SessionTimeout; with HTTP_ACCEPT=application/json gets status=10.
             $releaseClient = $this->createMock(ClientInterface::class);
             $releaseClient->expects(self::never())->method('request');
@@ -442,12 +442,17 @@ final class StatusTest extends IntegrationTestCase
                 ob_start();
                 try {
                     IntegrationTestCase::runApp($cReleaseNoAccept);
-                    self::fail('Expected uncaught TypeError in Request::isJson() when Accept header is absent');
-                } catch (\TypeError $e) {
-                    self::assertStringContainsString('str_contains()', $e->getMessage());
                 } finally {
                     ob_end_clean();
                 }
+                /** @var \Klein\Response $releaseNoAcceptResp */
+                $releaseNoAcceptResp = $cReleaseNoAccept->get(\Klein\Response::class);
+                $releaseHeaders = $releaseNoAcceptResp->headers()->all();
+                self::assertSame(302, $releaseNoAcceptResp->code());
+                self::assertStringContainsString(
+                    'r=login',
+                    (string) ($releaseHeaders['location'] ?? $releaseHeaders['Location'] ?? '')
+                );
 
                 // With Accept: */*, checks() sends nothing and throws SessionTimeout (empty 200)
                 $releaseClientStar = $this->createMock(ClientInterface::class);

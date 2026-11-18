@@ -34,15 +34,18 @@ use ReflectionAttribute;
 use ReflectionMethod;
 use ReflectionNamedType;
 use SP\Core\Bootstrap\BootstrapBase;
+use SP\Domain\Api\Exceptions\ApiRequestException;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Api\Adapters\ActionResponseAdapter;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Http\Code;
+use Throwable;
 
 use function SP\logger;
 use function SP\processException;
@@ -145,19 +148,43 @@ final class Bootstrap extends BootstrapBase
                     return $response->body(
                         $actionResponseAdapter->toJsonRpc($actionResponse, $apiRequest->getId())
                     );
-                } catch (Exception $e) {
+                } catch (SPException $e) {
                     processException($e);
 
                     return $response->body(
                         $actionResponseAdapter->toJsonRpcException($e, $apiRequest->getId())
                     );
+                } catch (Throwable $e) {
+                    processException($e);
+
+                    $response->code(Code::INTERNAL_SERVER_ERROR->value);
+
+                    return $response->body(
+                        $actionResponseAdapter->toJsonRpcError(
+                            'Internal error',
+                            ActionResponseAdapter::INTERNAL_ERROR,
+                            $apiRequest->getId()
+                        )
+                    );
                 }
-            } catch (Exception $e) {
+            } catch (ApiRequestException $e) {
+                processException($e);
+
+                $response->code(Code::BAD_REQUEST->value);
+
+                return $response->body($actionResponseAdapter->toJsonRpcException($e, 0));
+            } catch (Throwable $e) {
                 processException($e);
 
                 $response->code(Code::INTERNAL_SERVER_ERROR->value);
 
-                return $response->body($actionResponseAdapter->toJsonRpcException($e, 0));
+                return $response->body(
+                    $actionResponseAdapter->toJsonRpcError(
+                        'Internal error',
+                        ActionResponseAdapter::INTERNAL_ERROR,
+                        0
+                    )
+                );
             }
         };
     }

@@ -174,20 +174,28 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
                 ->setMgmPublicLinks(true)
         );
 
-        try {
-            $this->dispatch('get', 'publicLink/search', [], [], $otherManagerOverrides);
-            self::fail('Expected PHP 8.3 dynamic property Error on PublicLink::clientName hydration');
-        } catch (Error $e) {
-            self::assertSame('Dynamic properties not allowed', $e->getMessage());
-        }
+        $searchRes = $this->dispatch('get', 'publicLink/search', [], [], $otherManagerOverrides);
+        self::assertSame(500, $searchRes['code']);
+        $searchJson = $this->decodeJson($searchRes['body']);
+        self::assertSame('ERROR', $searchJson['status'] ?? null);
+        self::assertSame('Internal error', $searchJson['description'] ?? null);
+        self::assertArrayHasKey('data', $searchJson);
+        self::assertNull($searchJson['data']);
+        self::assertStringNotContainsString('Dynamic properties not allowed', $searchRes['body']);
 
         $viewRes = $this->dispatch('get', 'publicLink/view/' . $linkId, [], [], $otherManagerOverrides);
         self::assertSame(500, $viewRes['code']);
-        self::assertSame('Wrong object type', $this->decodeJson($viewRes['body'])['description'] ?? null);
+        $viewJson = $this->decodeJson($viewRes['body']);
+        self::assertSame('Internal error', $viewJson['description'] ?? null);
+        self::assertArrayHasKey('data', $viewJson);
+        self::assertNull($viewJson['data']);
 
         $editRes = $this->dispatch('get', 'publicLink/edit/' . $linkId, [], [], $otherManagerOverrides);
         self::assertSame(500, $editRes['code']);
-        self::assertSame('Wrong object type', $this->decodeJson($editRes['body'])['description'] ?? null);
+        $editJson = $this->decodeJson($editRes['body']);
+        self::assertSame('Internal error', $editJson['description'] ?? null);
+        self::assertArrayHasKey('data', $editJson);
+        self::assertNull($editJson['data']);
 
         $this->assertJsonOk(
             $this->dispatch('get', 'publicLink/refresh/' . $linkId, [], [], $otherManagerOverrides),
@@ -208,16 +216,21 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
         [$link2Id, $link2Hash] = $this->seedRealPublicLinkRow(2, 3, self::ACCOUNT_SECRET . '-2');
 
         $adminOverrides = $this->realActorOverrides(1, null);
-        try {
-            $this->dispatch('get', 'publicLink/search', [], [], $adminOverrides);
-            self::fail('Expected PHP 8.3 dynamic property Error on PublicLink::clientName hydration');
-        } catch (Error $e) {
-            self::assertSame('Dynamic properties not allowed', $e->getMessage());
-        }
+        $adminSearchRes = $this->dispatch('get', 'publicLink/search', [], [], $adminOverrides);
+        self::assertSame(500, $adminSearchRes['code']);
+        $adminSearchJson = $this->decodeJson($adminSearchRes['body']);
+        self::assertSame('ERROR', $adminSearchJson['status'] ?? null);
+        self::assertSame('Internal error', $adminSearchJson['description'] ?? null);
+        self::assertArrayHasKey('data', $adminSearchJson);
+        self::assertNull($adminSearchJson['data']);
+        self::assertStringNotContainsString('Dynamic properties not allowed', $adminSearchRes['body']);
 
         $adminView = $this->dispatch('get', 'publicLink/view/' . $link2Id, [], [], $adminOverrides);
         self::assertSame(500, $adminView['code']);
-        self::assertSame('Wrong object type', $this->decodeJson($adminView['body'])['description'] ?? null);
+        $adminViewJson = $this->decodeJson($adminView['body']);
+        self::assertSame('Internal error', $adminViewJson['description'] ?? null);
+        self::assertArrayHasKey('data', $adminViewJson);
+        self::assertNull($adminViewJson['data']);
 
         $this->assertJsonOk(
             $this->dispatch('get', 'publicLink/refresh/' . $link2Id, [], [], $adminOverrides),
@@ -274,7 +287,10 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
         // Management view & delete check only Acl::PUBLICLINK_*, not Account visibility
         $viewResult = $this->dispatch('get', 'publicLink/view/' . $linkId, [], [], $creatorOverrides);
         self::assertSame(500, $viewResult['code']);
-        self::assertSame('Wrong object type', $this->decodeJson($viewResult['body'])['description'] ?? null);
+        $viewResultJson = $this->decodeJson($viewResult['body']);
+        self::assertSame('Internal error', $viewResultJson['description'] ?? null);
+        self::assertArrayHasKey('data', $viewResultJson);
+        self::assertNull($viewResultJson['data']);
 
         $this->assertJsonOk($this->dispatch('get', 'publicLink/delete/' . $linkId, [], [], $creatorOverrides), 'Link deleted');
         self::assertSame(0, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE id = ' . $linkId));
@@ -309,10 +325,10 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
 
     /**
      * End-to-end check of the generated URL vs the public visitor route against MariaDB:
-     * - publicLink/view/<id> fails HTTP 500 ("Wrong object type") in SelectItemAdapter,
+     * - publicLink/view/<id> fails HTTP 500 ("Internal error", data=null) when SelectItemAdapter throws RuntimeException,
      * - PublicLink::getLinkForHash('https://example.test/subpath', $hash) points to
      *   index.php?r=publicLink/view/<hash>, which returns empty 200 to anonymous visitors
-     *   and HTTP 500 ("Wrong object type") to authenticated managers,
+     *   and HTTP 500 ("Internal error", data=null) to authenticated managers,
      * - account/viewLink/<hash> discloses the decrypted synthetic secret to an anonymous visitor
      *   and increments countViews in MariaDB.
      */
@@ -333,7 +349,10 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
 
         $viewRes = $this->dispatch('get', 'publicLink/view/' . $linkId, [], [], $adminOverrides);
         self::assertSame(500, $viewRes['code']);
-        self::assertSame('Wrong object type', $this->decodeJson($viewRes['body'])['description'] ?? null);
+        $viewResJson = $this->decodeJson($viewRes['body']);
+        self::assertSame('Internal error', $viewResJson['description'] ?? null);
+        self::assertArrayHasKey('data', $viewResJson);
+        self::assertNull($viewResJson['data']);
 
         $generatedUrl = PublicLinkServiceImpl::getLinkForHash('https://example.test/subpath', $hash);
         self::assertSame('https://example.test/subpath/index.php?r=publicLink/view/' . $hash, $generatedUrl);
@@ -351,10 +370,13 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
         self::assertSame(200, $anonResult['code']);
         self::assertSame('', $anonResult['body']);
 
-        // Authenticated dispatch to generated URL with leading hex letter casts to int 0 -> new PublicLinkList() -> HTTP 500 Wrong object type
+        // Authenticated dispatch to generated URL with leading hex letter casts to int 0 -> new PublicLinkList() -> HTTP 500 Internal error
         $authGeneratedResult = $this->dispatch('get', $params['r'], [], [], $adminOverrides);
         self::assertSame(500, $authGeneratedResult['code']);
-        self::assertSame('Wrong object type', $this->decodeJson($authGeneratedResult['body'])['description'] ?? null);
+        $authGenJson = $this->decodeJson($authGeneratedResult['body']);
+        self::assertSame('Internal error', $authGenJson['description'] ?? null);
+        self::assertArrayHasKey('data', $authGenJson);
+        self::assertNull($authGenJson['data']);
 
         // Authenticated dispatch with leading digits (e.g. "99...") casts to non-existent int ID -> HTTP 500 Link not found
         $digitGeneratedResult = $this->dispatch(

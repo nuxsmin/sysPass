@@ -49,6 +49,7 @@ use SP\Tests\IntegrationTestCase;
 final class UserPassResetTest extends IntegrationTestCase
 {
     private bool $applicationUrlConfigured = true;
+    private bool $mailEnabled = true;
 
     #[Test]
     #[BodyChecker('checkIndex')]
@@ -178,6 +179,7 @@ final class UserPassResetTest extends IntegrationTestCase
     #[Test]
     public function disabledMailShowsUnavailableOnGetPagesButSaveRequestStillAttemptsSend(): void
     {
+        $this->mailEnabled = false;
         $user = $this->buildUser();
 
         $indexResult = $this->dispatchRoute('get', 'userPassReset/index');
@@ -419,6 +421,7 @@ final class UserPassResetTest extends IntegrationTestCase
     protected function getConfigData(): array
     {
         $configData = parent::getConfigData();
+        $configData['isMailEnabled'] = $this->mailEnabled;
 
         if ($this->applicationUrlConfigured) {
             $configData['getApplicationUrl'] = 'https://syspass.example.com';

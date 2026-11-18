@@ -94,8 +94,9 @@ final class ApiRequestAdapter implements ApiRequestService
             throw new ApiRequestException(
                 __u('Invalid data'),
                 SPException::ERROR,
-                $e->getMessage(),
-                JsonRpcErrorCode::PARSE_ERROR
+                null,
+                JsonRpcErrorCode::PARSE_ERROR,
+                $e
             );
         }
 

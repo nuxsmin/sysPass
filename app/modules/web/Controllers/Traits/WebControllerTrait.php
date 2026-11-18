@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Traits;
 
+use SP\Core\Context\Session;
+use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Ports\RequestService;
@@ -63,6 +65,37 @@ trait WebControllerTrait
         }
 
         return $from;
+    }
+
+    protected function isBrowserAuthValid(BrowserAuthService $browser): bool
+    {
+        if (!$this->configData->isAuthBasicEnabled()) {
+            return true;
+        }
+
+        $userData = $this->session->getUserData();
+
+        if (!empty($userData->login) && $browser->checkServerAuthUser($userData->login) === true) {
+            return true;
+        }
+
+        return !empty($userData->ssoLogin)
+            && $browser->checkServerAuthUser($userData->ssoLogin) === true;
+    }
+
+    protected function invalidateSession(): void
+    {
+        if ($this->session instanceof Session) {
+            $this->session->invalidate();
+
+            return;
+        }
+
+        $this->session->setUserData(null);
+        $this->session->setAuthCompleted(false);
+        $this->session->resetAppStatus();
+        $this->session->resetAccountAcl();
+        $this->session->setLastActivity(0);
     }
 
     /**

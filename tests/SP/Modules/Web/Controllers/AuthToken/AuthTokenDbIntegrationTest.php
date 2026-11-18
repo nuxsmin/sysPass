@@ -123,8 +123,8 @@ final class AuthTokenDbIntegrationTest extends DatabaseIntegrationTestCase
         self::assertStringContainsString('authToken/saveEdit/' . $tokenB1Id, $editJson['data']['html'] ?? '');
         self::assertStringNotContainsString($bearerB1, $editJson['data']['html'] ?? '');
 
-        // 4a. Non-admin saveCreate / saveEdit specifying users=userB throws uncaught ValidationException;
-        // Web\Bootstrap returns HTTP 500 with ERROR description.
+        // 4a. Non-admin saveCreate / saveEdit specifying users=userB throws ValidationException;
+        // Web\Bootstrap returns HTTP 400 with ERROR description and null data (no trace).
         $saveCreateOther = $this->dispatch(
             'post',
             'authToken/saveCreate',
@@ -136,10 +136,12 @@ final class AuthTokenDbIntegrationTest extends DatabaseIntegrationTestCase
             ],
             $overrides
         );
-        self::assertSame(500, $saveCreateOther['code']);
+        self::assertSame(400, $saveCreateOther['code']);
         $createOtherJson = $this->decodeJson($saveCreateOther['body']);
         self::assertSame('ERROR', $createOtherJson['status'] ?? null);
         self::assertSame("You don't have permission to do this operation", $createOtherJson['description'] ?? null);
+        self::assertArrayHasKey('data', $createOtherJson);
+        self::assertNull($createOtherJson['data']);
 
         $saveEditOther = $this->dispatch(
             'post',
@@ -152,10 +154,12 @@ final class AuthTokenDbIntegrationTest extends DatabaseIntegrationTestCase
             ],
             $overrides
         );
-        self::assertSame(500, $saveEditOther['code']);
+        self::assertSame(400, $saveEditOther['code']);
         $editOtherJson = $this->decodeJson($saveEditOther['body']);
         self::assertSame('ERROR', $editOtherJson['status'] ?? null);
         self::assertSame("You don't have permission to do this operation", $editOtherJson['description'] ?? null);
+        self::assertArrayHasKey('data', $editOtherJson);
+        self::assertNull($editOtherJson['data']);
 
         // 4b. Submitting users=userA on user B's token ID passes AuthTokenForm and overwrites user B's row in MariaDB
         $saveEditSelfUser = $this->dispatch(
@@ -237,20 +241,21 @@ final class AuthTokenDbIntegrationTest extends DatabaseIntegrationTestCase
             ],
             $overridesA
         );
-        // Second token for user A on a DIFFERENT actionId (TAG_SEARCH) throws uncaught DuplicatedItemException;
-        // Web\Bootstrap returns HTTP 500 with an exception stack trace whose args expose user A's reused bearer token.
-        self::assertSame(500, $second['code']);
+        // Second token for user A on a DIFFERENT actionId (TAG_SEARCH) throws DuplicatedItemException;
+        // Web\Bootstrap returns HTTP 400 with null data (no stack trace or leaked bearer token).
+        self::assertSame(400, $second['code']);
         $secondJson = $this->decodeJson($second['body']);
         self::assertSame('ERROR', $secondJson['status'] ?? null);
         self::assertSame('Authorization already exist', $secondJson['description'] ?? null);
-        self::assertIsArray($secondJson['data'] ?? null);
+        self::assertArrayHasKey('data', $secondJson);
+        self::assertNull($secondJson['data']);
 
-        // Independent DB check: user A still has only 1 row, and its token leaked into the trace args
+        // Independent DB check: user A still has only 1 row, and its token did NOT leak into the response body
         $tokStmt = $pdo->prepare('SELECT token FROM AuthToken WHERE userId = :uid');
         $tokStmt->execute(['uid' => $userA->id]);
         $existingTokens = $tokStmt->fetchAll(PDO::FETCH_COLUMN);
         self::assertCount(1, $existingTokens);
-        self::assertStringContainsString((string)$existingTokens[0], $second['body']);
+        self::assertStringNotContainsString((string)$existingTokens[0], $second['body']);
 
         // User B can still create TAG_SEARCH without conflicting with user A
         $overridesB = [
