@@ -125,7 +125,7 @@ final class AccountHistoryHelper extends AccountHelperBase
         );
         $this->view->assign(
             'isModified',
-            strtotime($accountHistoryViewDto->dateEdit) !== false
+            $accountHistoryViewDto->dateEdit !== null && strtotime($accountHistoryViewDto->dateEdit) !== false
         );
 
         $accountActionsDto = new AccountActionsDto($this->accountId, $accountHistoryViewDto->id, 0);
@@ -148,13 +148,27 @@ final class AccountHistoryHelper extends AccountHelperBase
      */
     protected function checkAccess(AccountHistoryViewDto $accountHistoryViewDto): void
     {
+        $dateEdit = $accountHistoryViewDto->dateEdit;
+        $editTime = null;
+        if ($dateEdit !== null) {
+            try {
+                $parsed = DateTime::createFromFormat('Y-m-d H:i:s', $dateEdit);
+            } catch (\ValueError) {
+                throw new AccountPermissionException(SPException::INFO);
+            }
+            if ($parsed === false || $parsed->format('Y-m-d H:i:s') !== $dateEdit) {
+                throw new AccountPermissionException(SPException::INFO);
+            }
+            $editTime = $parsed->getTimestamp();
+        }
+
         $acccountAclDto = new AccountAclDto(
             $this->accountId,
             $accountHistoryViewDto->userId,
             $this->accountToUserService->getUsersByAccountId($this->accountId),
             $accountHistoryViewDto->userGroupId,
             $this->accountToUserGroupService->getUserGroupsByAccountId($this->accountId),
-            DateTime::createFromFormat('Y-m-d H:i:s', $accountHistoryViewDto->dateEdit)->getTimestamp()
+            $editTime
         );
 
         $this->accountPermission = $this->accountAclService->getAcl($this->actionId, $acccountAclDto, true);

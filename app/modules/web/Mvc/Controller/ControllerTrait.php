@@ -66,8 +66,7 @@ trait ControllerTrait
                     'description' => __u('Session not started or timed out'),
                     'data' => [],
                     'messages' => [],
-                ], JSON_THROW_ON_ERROR))
-                ->send(true);
+                ], JSON_THROW_ON_ERROR));
         } elseif ($request->isAjax()) {
             self::logout();
         } else {

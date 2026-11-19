@@ -37,6 +37,7 @@ use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
 use SP\Domain\Account\Dtos\PublicLinkKey;
+use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Ports\AccountRepository;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\AccountAclService;
@@ -770,6 +771,84 @@ class AccountTest extends IntegrationTestCase
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
+    #[Test]
+    #[BodyChecker('outputCheckerViewHistory')]
+    public function viewHistoryWithNoEditDate(): void
+    {
+        $history = AccountDataGenerator::factory()->buildAccountHistoryData()->mutate([
+            'dateEdit' => null,
+            'userName' => self::$faker->userName(),
+            'userGroupName' => self::$faker->userName(),
+            'userEditName' => self::$faker->userName(),
+            'userEditLogin' => self::$faker->userName(),
+        ]);
+        $this->addDatabaseMapperResolver(AccountHistory::class, new QueryResult([$history]));
+        $this->addDatabaseMapperResolver(Item::class, new QueryResult([
+            new Item(['id' => self::$faker->randomNumber(3), 'name' => self::$faker->colorName()]),
+        ]));
+        $container = $this->buildContainer(IntegrationTestCase::buildRequest(
+            'get', 'index.php', ['r' => 'account/viewHistory/id/' . self::$faker->randomNumber(3)]
+        ));
+        IntegrationTestCase::runApp($container);
+    }
+
+    #[Test]
+    #[BodyChecker('outputCheckerViewHistory')]
+    public function viewHistoryPassesValidEditDateToAcl(): void
+    {
+        $date = '2024-02-10 12:34:56';
+        $history = AccountDataGenerator::factory()->buildAccountHistoryData()->mutate([
+            'dateEdit' => $date,
+            'userName' => self::$faker->userName(),
+            'userGroupName' => self::$faker->userName(),
+            'userEditName' => self::$faker->userName(),
+            'userEditLogin' => self::$faker->userName(),
+        ]);
+        $this->addDatabaseMapperResolver(AccountHistory::class, new QueryResult([$history]));
+        $this->addDatabaseMapperResolver(Item::class, new QueryResult([
+            new Item(['id' => 1, 'name' => 'Synthetic item']),
+        ]));
+        $permission = new AccountPermission(AclActionsInterface::ACCOUNT_HISTORY_VIEW, true);
+        $permission->setCompiledAccountAccess(true)->setResultView(true);
+        $acl = $this->createMock(AccountAclService::class);
+        $acl->expects(self::once())->method('getAcl')->with(
+            AclActionsInterface::ACCOUNT_HISTORY_VIEW,
+            self::callback(static fn(AccountAclDto $dto) => $dto->getDateEdit() === strtotime($date)),
+            true
+        )->willReturn($permission);
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewHistory/id/1']),
+            [AccountAclService::class => $acl]
+        );
+        IntegrationTestCase::runApp($container);
+    }
+
+    public static function malformedHistoryEditDates(): array
+    {
+        return [['not-a-date'], ["2024-02-10 12:34:56\0"]];
+    }
+
+    #[Test]
+    #[DataProvider('malformedHistoryEditDates')]
+    public function viewHistoryRejectsMalformedEditDateBeforeAcl(string $date): void
+    {
+        $history = AccountDataGenerator::factory()->buildAccountHistoryData()->mutate(['dateEdit' => $date]);
+        $this->addDatabaseMapperResolver(AccountHistory::class, new QueryResult([$history]));
+        $acl = $this->createMock(AccountAclService::class);
+        $acl->expects(self::never())->method('getAcl');
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewHistory/id/1']),
+            [AccountAclService::class => $acl]
+        );
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($container);
+        } finally {
+            ob_end_clean();
+        }
+        self::assertSame(403, $container->get(\Klein\Response::class)->code());
+    }
+
     #[Test]
     #[BodyChecker('outputCheckerViewHistory')]
     public function viewHistory()

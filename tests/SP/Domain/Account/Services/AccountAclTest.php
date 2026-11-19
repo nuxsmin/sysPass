@@ -693,6 +693,46 @@ class AccountAclTest extends UnitaryTestCase
      * @throws SPException
      */
     #[Test]
+    public function historyWithUnknownEditTimeDoesNotReuseOrOverwriteCachedAcl(): void
+    {
+        $dto = new AccountAclDto(42, 999, [], 999, [], null);
+        $groups = $this->createStub(UserToUserGroupService::class);
+        $groups->method('getGroupsForUser')->willReturn([]);
+        $cache = $this->createMock(FileCacheService::class);
+        $staleGrant = new AccountPermission(AclActionsInterface::ACCOUNT_HISTORY_VIEW, true);
+        $staleGrant->setCompiledAccountAccess(true)->setResultView(true)->setTime(time());
+        $cache->expects(self::never())->method('load')->willReturn($staleGrant);
+        $cache->expects(self::never())->method('save');
+        $actions = $this->createStub(ActionsInterface::class);
+        $service = new AccountAcl(
+            $this->config, $this->eventDispatcherStub, $this->context,
+            new Acl($this->context, $this->eventDispatcherStub, $actions),
+            $groups, $this->appPaths, $this->fileSystem, $cache
+        );
+        $result = $service->getAcl(AclActionsInterface::ACCOUNT_HISTORY_VIEW, $dto, true);
+        self::assertFalse($result->checkAccountAccess(AclActionsInterface::ACCOUNT_HISTORY_VIEW));
+    }
+
+    #[Test]
+    public function historyWithKnownEditTimeRetainsCacheBehavior(): void
+    {
+        $dto = new AccountAclDto(42, 999, [], 999, [], time() - 60);
+        $groups = $this->createStub(UserToUserGroupService::class);
+        $cache = $this->createMock(FileCacheService::class);
+        $cached = new AccountPermission(AclActionsInterface::ACCOUNT_HISTORY_VIEW, true);
+        $cached->setTime(time() + 3600);
+        $cache->expects(self::once())->method('load')->willReturn($cached);
+        $cache->expects(self::never())->method('save');
+        $actions = $this->createStub(ActionsInterface::class);
+        $service = new AccountAcl(
+            $this->config, $this->eventDispatcherStub, $this->context,
+            new Acl($this->context, $this->eventDispatcherStub, $actions),
+            $groups, $this->appPaths, $this->fileSystem, $cache
+        );
+        self::assertSame($cached, $service->getAcl(AclActionsInterface::ACCOUNT_HISTORY_VIEW, $dto, true));
+    }
+
+    #[Test]
     public function testCacheIsUsedWithHit(): void
     {
         $dto = new AccountAclDto(

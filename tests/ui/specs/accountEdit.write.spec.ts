@@ -3,7 +3,7 @@ import { accountCreateContract } from '../src/contracts';
 import { FIXTURE } from '../src/fixture';
 import { ActionTracker, parseActionRoute } from '../src/readiness';
 import { expect, test } from '../src/session';
-import { openSeededShell, runTierBIndex, TIER_B_INDEX_CASES } from '../src/tier-b';
+import { navigateTierBIndex, openSeededShell, TIER_B_INDEX_CASES } from '../src/tier-b';
 
 async function createAccount(page: Page, tracker: ActionTracker, session: Parameters<typeof openSeededShell>[2]): Promise<number> {
   await openSeededShell(page, tracker, session);
@@ -40,6 +40,95 @@ async function createAccount(page: Page, tracker: ActionTracker, session: Parame
 function matchesSave(url: string, id: number): boolean {
   return new URL(url).searchParams.get('r') === `account/saveEdit/${id}`;
 }
+
+test('account history restore displays a synthetic error without navigating or changing the account', async ({ sessionPage: { page, context, session } }) => {
+  test.setTimeout(90_000);
+  const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+  const message = 'Synthetic account restore error';
+  let saves = 0;
+  let navigations = 0;
+  let failure: unknown;
+  try {
+    const id = await test.step('create the disposable account', () => createAccount(page, tracker, session), { timeout: 20_000 });
+    await page.goto(`/index.php?r=account/edit/${id}`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#frmAccount')).toHaveAttribute('data-item-id', String(id));
+    const historicalName = await page.locator('#name').inputValue();
+    const currentName = `Restorable fixture ${Date.now()}`;
+    await page.locator('#name').fill(currentName);
+    const sinceSave = Date.now();
+    const save = page.waitForResponse((response) => response.request().method() === 'POST' && matchesSave(response.url(), id));
+    await page.locator('.item-actions button[type="submit"][form="frmAccount"]').first().click();
+    expect((await (await test.step('save the changed account', () => save, { timeout: 15_000 })).json()).status).toBe('OK');
+    await test.step('wait for save navigation', async () => {
+      await tracker.waitForActions(['account/view'], sinceSave, Date.now() + 15_000);
+      await tracker.waitForQuiet(sinceSave);
+    }, { timeout: 20_000 });
+    // Find the generated history row via the manager; this bypasses the account-view history selector.
+    await test.step('reopen the authenticated shell', () => openSeededShell(page, tracker, session), { timeout: 20_000 });
+    await test.step('open the account history manager', () => navigateTierBIndex(page, tracker, TIER_B_INDEX_CASES.itemManager), { timeout: 20_000 });
+    const grid = page.locator('#data-table-tblAccountsHistory');
+    const panel = grid.locator('xpath=ancestor::*[starts-with(@id,"tabs-")][1]');
+    const panelId = await panel.getAttribute('id');
+    await page.locator(`#tabsHeader a[href="#${panelId}"]`).click();
+    const searchForm = page.locator('#frmSearchAccountHistory');
+    await searchForm.locator('label[for^="search-"]').first().click();
+    await searchForm.locator('input[name="search"]').fill(historicalName);
+    const searchResponse = page.waitForResponse((response) => response.request().method() === 'GET' && parseActionRoute(response.url()) === 'accountHistoryManager/search');
+    await searchForm.locator('input[name="search"]').press('Enter');
+    expect((await test.step('search account history', () => searchResponse, { timeout: 15_000 })).status()).toBe(200);
+    const row = grid.locator('tr').filter({ hasText: historicalName });
+    await expect(row).toHaveCount(1);
+    const historyId = await row.getAttribute('data-item-id');
+    expect(historyId).toMatch(/^\d+$/);
+    const historyResponse = await page.goto(`/index.php?r=account/viewHistory/${historyId}`, { waitUntil: 'domcontentloaded' });
+    expect(historyResponse?.status()).toBe(200);
+    const control = page.locator('.item-actions [data-onclick="account/saveEditRestore"]');
+    await expect(control).toHaveAttribute('data-action-route', 'account/saveEditRestore');
+    await expect(control).toHaveAttribute('data-history-id', historyId!);
+    await expect(control).toHaveAttribute('data-item-id', String(id));
+    const restoreRoute = `account/saveEditRestore/${historyId}/${id}`;
+    const matchesRestore = (method: string, body: string | null) => method === 'POST' && new URLSearchParams(body ?? '').get('r') === restoreRoute;
+    const envelope = { status: 'ERROR', description: message, messages: [], data: { itemId: id, nextAction: 'account/view' } };
+    await page.locator('#toast-container').evaluateAll((nodes) => nodes.forEach((node) => node.remove()));
+    page.on('request', (request) => {
+      if (matchesRestore(request.method(), request.postData())) saves++;
+      if (request.method() === 'GET' && new URL(request.url()).searchParams.get('r') === `account/view/${id}`) navigations++;
+    });
+    await page.route('**/index.php', async (route) => {
+      const request = route.request();
+      if (matchesRestore(request.method(), request.postData())) {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(envelope) });
+      } else await route.continue();
+    });
+    const since = Date.now();
+    const restoreResponse = page.waitForResponse((response) => matchesRestore(response.request().method(), response.request().postData()));
+    await control.click();
+    const response = await test.step('receive the intercepted restore response', () => restoreResponse, { timeout: 15_000 });
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toEqual(envelope);
+    await expect(page.locator('.toast-error').filter({ hasText: message })).toBeVisible();
+    await expect(page.locator('.toast-success')).toHaveCount(0);
+    await tracker.waitForQuiet(since);
+    expect(saves).toBe(1);
+    expect(navigations).toBe(0);
+    await expect(control).toBeVisible();
+    const read = await page.request.get(`/index.php?r=account/view/${id}`);
+    expect(read.status()).toBe(200);
+    const markup = await read.text();
+    expect(markup).toContain(currentName);
+    expect(markup).not.toContain(historicalName);
+  } catch (error) {
+    failure = error;
+    throw error;
+  } finally {
+    try {
+      await page.unroute('**/index.php');
+    } catch (error) {
+      if (failure === undefined) throw error;
+    }
+    tracker.dispose();
+  }
+});
 
 test('account password edit displays a synthetic error without navigating', async ({ sessionPage: { page, context, session } }) => {
   const tracker = new ActionTracker(page, context, { sessionEstablished: false });
@@ -205,20 +294,28 @@ test('account edit dispatches and persists the changed name', async ({ sessionPa
 });
 
 test('single account history delete displays a synthetic ERROR and reloads the active tab', async ({ sessionPage: { page, context, session } }) => {
+  test.setTimeout(90_000);
   const tracker = new ActionTracker(page, context, { sessionEstablished: false });
   const message = 'Synthetic account history delete error';
   const envelope = { status: 'ERROR', description: message, messages: [], data: null };
+  let failure: unknown;
   try {
     const accountId = await createAccount(page, tracker, session);
     await page.goto(`/index.php?r=account/edit/${accountId}`, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#frmAccount')).toHaveAttribute('data-item-id', String(accountId));
     const historyName = await page.locator('#name').inputValue();
     await page.locator('#name').fill(`Edited ${historyName}`);
+    const sinceSave = Date.now();
     const savePromise = page.waitForResponse((response) => response.request().method() === 'POST' && matchesSave(response.url(), accountId));
     await page.locator('.item-actions button[type="submit"][form="frmAccount"]').first().click();
     expect((await (await savePromise).json()).status).toBe('OK');
+    await test.step('wait for save navigation', async () => {
+      await tracker.waitForActions(['account/view'], sinceSave, Date.now() + 15_000);
+      await tracker.waitForQuiet(sinceSave);
+    }, { timeout: 20_000 });
 
-    await runTierBIndex(page, tracker, session, TIER_B_INDEX_CASES.itemManager);
+    await test.step('reopen the authenticated shell', () => openSeededShell(page, tracker, session), { timeout: 20_000 });
+    await test.step('open the account history manager', () => navigateTierBIndex(page, tracker, TIER_B_INDEX_CASES.itemManager), { timeout: 20_000 });
     const grid = page.locator('#data-table-tblAccountsHistory');
     const panel = grid.locator('xpath=ancestor::*[starts-with(@id,"tabs-")][1]');
     const panelId = await panel.getAttribute('id');
@@ -267,8 +364,15 @@ test('single account history delete displays a synthetic ERROR and reloads the a
     expect(result.status).toBe('OK');
     expect(result.data.html).toContain(historyName);
     expect(result.data.html).toContain(`data-item-id="${historyId}"`);
+  } catch (error) {
+    failure = error;
+    throw error;
   } finally {
-    await page.unroute('**/index.php?**');
+    try {
+      await page.unroute('**/index.php?**');
+    } catch (error) {
+      if (failure === undefined) throw error;
+    }
     tracker.dispose();
   }
 });

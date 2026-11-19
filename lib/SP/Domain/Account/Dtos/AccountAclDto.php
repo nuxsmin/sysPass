@@ -43,7 +43,7 @@ final class AccountAclDto
         private array        $usersId,
         private readonly int $userGroupId,
         private array        $userGroupsId,
-        private readonly int $dateEdit
+        private readonly ?int $dateEdit
     ) {
         $this->usersId = self::buildFromItemData($usersId);
         $this->userGroupsId = self::buildFromItemData($userGroupsId);
@@ -76,7 +76,7 @@ final class AccountAclDto
         return $this->userGroupId;
     }
 
-    public function getDateEdit(): int
+    public function getDateEdit(): ?int
     {
         return $this->dateEdit;
     }

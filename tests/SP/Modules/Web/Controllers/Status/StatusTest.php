@@ -476,7 +476,7 @@ final class StatusTest extends IntegrationTestCase
                 }
                 self::assertSame('', $starOut);
 
-                // With Accept: application/json, checks() emits status 10 before throwing SessionTimeout
+                // With Accept: application/json, the timeout response is sent once.
                 $releaseClientJson = $this->createMock(ClientInterface::class);
                 $releaseClientJson->expects(self::never())->method('request');
                 $cReleaseJson = $this->buildContainer(
@@ -499,7 +499,7 @@ final class StatusTest extends IntegrationTestCase
                 $responseBody = (string) $cReleaseJson->get(\Klein\Response::class)->body();
                 $jsonDecoded = json_decode($responseBody, true, 512, JSON_THROW_ON_ERROR);
                 self::assertSame(10, $jsonDecoded['status']);
-                self::assertSame($responseBody . $responseBody, $jsonOut);
+                self::assertSame($responseBody, $jsonOut);
             } else {
                 ob_start();
                 try {

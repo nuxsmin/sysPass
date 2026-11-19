@@ -180,6 +180,7 @@ function configureApplication(ConfigFileService $configFileService): void
         ->setCheckNotices(false)
         ->setDebug(false)
         ->setDemoEnabled(false)
+        ->setAuthBasicEnabled(false)
         ->setAuthBasicAutoLoginEnabled(false);
 
     $configFileService->save($config);
@@ -536,6 +537,7 @@ function verifyFixture(
     $check(!$config->isCheckUpdates(), 'checkUpdates is not disabled in application configuration');
     $check(!$config->isCheckNotices(), 'checkNotices is not disabled in application configuration');
     $check(!$config->isDebug(), 'debug is not disabled in application configuration');
+    $check(!$config->isAuthBasicEnabled(), 'authBasicEnabled is not disabled in application configuration');
     $check(
         !$config->isAuthBasicAutoLoginEnabled(),
         'authBasicAutoLoginEnabled is not disabled in application configuration'
@@ -547,7 +549,7 @@ function verifyFixture(
     if (!$document->load($configFile)) {
         $errors[] = 'application configuration file is not readable';
     } else {
-        foreach (['filesEnabled', 'checkUpdates', 'checkNotices', 'debug', 'authBasicAutoLoginEnabled'] as $name) {
+        foreach (['filesEnabled', 'checkUpdates', 'checkNotices', 'debug', 'authBasicEnabled', 'authBasicAutoLoginEnabled'] as $name) {
             $node = $document->getElementsByTagName($name)->item(0);
             $actual = $node?->textContent;
             $valid = $name === 'filesEnabled'

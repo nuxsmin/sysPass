@@ -106,7 +106,7 @@ trait WebControllerTrait
         $this->sessionLogout(
             $this->request,
             $this->configData,
-            fn($redirect) => $this->router->response()->redirect($redirect)->send(true)
+            fn($redirect) => $this->router->response()->redirect($redirect)
         );
     }
 }

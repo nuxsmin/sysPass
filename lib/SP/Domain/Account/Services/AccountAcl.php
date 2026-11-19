@@ -94,7 +94,9 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountAclDto = $accountAclDto;
 
-        if (null !== $this->fileCache) {
+        $bypassCache = $isHistory && $accountAclDto->getDateEdit() === null;
+
+        if (null !== $this->fileCache && !$bypassCache) {
             $accountAcl = $this->getAclFromCache($accountAclDto->getAccountId(), $actionId);
 
             if (null !== $accountAcl) {
@@ -121,7 +123,7 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountPermission->setAccountId($accountAclDto->getAccountId());
 
-        return $this->buildAcl();
+        return $this->buildAcl(!$bypassCache);
     }
 
     /**
@@ -188,7 +190,7 @@ final class AccountAcl extends Service implements AccountAclService
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function buildAcl(): AccountPermission
+    private function buildAcl(bool $cacheResult): AccountPermission
     {
         $this->compileAccountAccess();
         $this->accountPermission->setCompiledAccountAccess(true);
@@ -198,7 +200,9 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountPermission->setTime(time());
 
-        $this->saveAclInCache($this->accountPermission);
+        if ($cacheResult) {
+            $this->saveAclInCache($this->accountPermission);
+        }
 
         return $this->accountPermission;
     }

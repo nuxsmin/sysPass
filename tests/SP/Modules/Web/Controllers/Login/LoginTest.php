@@ -344,8 +344,7 @@ final class LoginTest extends IntegrationTestCase
             self::assertSame('', $result['body'], $route);
         }
 
-        // Contrast with SimpleControllerBase::checks(), which calls sessionLogout() (JSON status 10)
-        // and throws SessionTimeout while Bootstrap still calls $response->send(true) a second time.
+        // SimpleControllerBase returns one JSON timeout envelope for an incomplete session.
         $statusResult = $this->dispatchRoute(
             'get',
             'status/checkRelease',
@@ -364,7 +363,7 @@ final class LoginTest extends IntegrationTestCase
             'data' => [],
             'messages' => [],
         ], JSON_THROW_ON_ERROR);
-        self::assertSame($expectedChunk . $expectedChunk, $statusResult['echoed']);
+        self::assertSame($expectedChunk, $statusResult['echoed']);
     }
 
     #[Test]
@@ -405,6 +404,7 @@ final class LoginTest extends IntegrationTestCase
             $json = json_decode($result['body'], true, 512, JSON_THROW_ON_ERROR);
             self::assertSame(10, $json['status'] ?? null, $label);
             self::assertSame('Session not started or timed out', $json['description'] ?? null, $label);
+            self::assertSame($result['body'], $result['echoed'], $label . ': response must be sent once');
         };
 
         // 1. Mismatched PHP_AUTH_USER invalidates session and requires re-auth (never 500 or 200 OK)
