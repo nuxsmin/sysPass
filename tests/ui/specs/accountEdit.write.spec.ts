@@ -41,6 +41,72 @@ function matchesSave(url: string, id: number): boolean {
   return new URL(url).searchParams.get('r') === `account/saveEdit/${id}`;
 }
 
+test('account copy displays a synthetic error without navigating or creating a copy', async ({ sessionPage: { page, context, session } }) => {
+  const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+  const sourceId = FIXTURE.ids.accounts.parent;
+  const name = `Copy error fixture ${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const message = 'Synthetic account copy error';
+  const password = `Copy-${Date.now()}-fixture!`;
+  const envelope = { status: 'ERROR', description: message, messages: [], data: { itemId: sourceId, nextAction: 'account/view' } };
+  let saves = 0;
+  let navigations = 0;
+  try {
+    await openSeededShell(page, tracker, session);
+    await page.goto(`/index.php?r=account/view/${sourceId}`, { waitUntil: 'domcontentloaded' });
+    await page.locator('#actions-menu-account').click();
+    const control = page.locator('.item-actions [data-onclick="account/copy"]');
+    await expect(control).toHaveAttribute('data-action-route', 'account/copy');
+    await expect(control).toHaveAttribute('data-item-id', String(sourceId));
+    const copyResponse = page.waitForResponse((response) => response.request().method() === 'GET' && new URL(response.url()).searchParams.get('r') === `account/copy/${sourceId}`);
+    await control.click();
+    expect((await copyResponse).status()).toBe(200);
+    const form = page.locator('#frmAccount');
+    await expect(form).toHaveAttribute('data-action-route', 'account/saveCopy');
+    await form.locator('#name').fill(name);
+    await form.locator('input[name="password"]').fill(password);
+    await form.locator('input[name="password_repeat"]').fill(password);
+    await page.locator('#toast-container').evaluateAll((nodes) => nodes.forEach((node) => node.remove()));
+    page.on('request', (request) => {
+      if (request.method() === 'POST' && parseActionRoute(request.url()) === 'account/saveCopy') saves++;
+      if (request.method() === 'GET' && parseActionRoute(request.url()) === 'account/view') navigations++;
+    });
+    await page.route('**/index.php?**', async (route) => {
+      if (route.request().method() === 'POST' && parseActionRoute(route.request().url()) === 'account/saveCopy') {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(envelope) });
+      } else await route.continue();
+    });
+    const since = Date.now();
+    const responsePromise = page.waitForResponse((response) => response.request().method() === 'POST' && parseActionRoute(response.url()) === 'account/saveCopy');
+    await page.locator('.item-actions button[type="submit"][form="frmAccount"]').first().click();
+    const response = await responsePromise;
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toEqual(envelope);
+    expect(new URL(response.url()).searchParams.get('r')).toBe(`account/saveCopy/${sourceId}`);
+    const fields = new URLSearchParams(response.request().postData() ?? '');
+    expect(fields.get('name')).toBe(name);
+    for (const field of ['password', 'password_repeat']) {
+      expect(Boolean(fields.get(field))).toBe(true);
+      expect(fields.get(field) === password).toBe(false);
+    }
+    await expect(page.locator('.toast-error').filter({ hasText: message })).toBeVisible();
+    await expect(page.locator('.toast-success')).toHaveCount(0);
+    await tracker.waitForQuiet(since);
+    expect(saves).toBe(1);
+    expect(navigations).toBe(0);
+    await expect(form).toHaveAttribute('data-action-route', 'account/saveCopy');
+    await expect(form.locator('#name')).toHaveValue(name);
+    const read = await page.request.get(`/index.php?r=account/search&search=${encodeURIComponent(name)}`);
+    expect(read.status()).toBe(200);
+    const result = await read.json();
+    expect(result.status).toBe('OK');
+    expect(typeof result.data.html).toBe('string');
+    expect(result.data.html).not.toContain(name);
+  } finally {
+    await page.unroute('**/index.php?**');
+    tracker.dispose();
+  }
+});
+
 test('account history restore displays a synthetic error without navigating or changing the account', async ({ sessionPage: { page, context, session } }) => {
   test.setTimeout(90_000);
   const tracker = new ActionTracker(page, context, { sessionEstablished: false });
