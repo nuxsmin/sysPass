@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test';
 import { accountCreateContract } from '../src/contracts';
-import { FIXTURE } from '../src/fixture';
+import { FIXTURE, RESTRICTED_CREDENTIALS } from '../src/fixture';
+import { loginThroughUi } from '../src/login';
 import { ActionTracker, parseActionRoute } from '../src/readiness';
 import { expect, test } from '../src/session';
 import { navigateTierBIndex, openSeededShell, TIER_B_INDEX_CASES } from '../src/tier-b';
@@ -40,6 +41,76 @@ async function createAccount(page: Page, tracker: ActionTracker, session: Parame
 function matchesSave(url: string, id: number): boolean {
   return new URL(url).searchParams.get('r') === `account/saveEdit/${id}`;
 }
+
+test('account modification request displays a synthetic error without navigation', async ({ sessionPage: admin, isolatedPage: restricted }) => {
+  const tracker = new ActionTracker(restricted.page, restricted.context, { sessionEstablished: false });
+  const adminTracker = new ActionTracker(admin.page, admin.context, { sessionEstablished: false });
+  const accountId = FIXTURE.ids.accounts.parent;
+  const description = `RequestProbe${Date.now()}${Math.random().toString(36).slice(2, 8)}`;
+  const message = 'Synthetic account request error';
+  const envelope = { status: 'ERROR', description: message, messages: [], data: { itemId: accountId, nextAction: 'account/index' } };
+  let saves = 0;
+  let navigations = 0;
+  try {
+    await openSeededShell(admin.page, adminTracker, admin.session);
+    const sk = await admin.page.evaluate(() => (0, eval)('sysPassApp').sk.get());
+    const readNotifications = async () => {
+      const response = await admin.page.request.get(`/index.php?r=notification/search&count=1000&sk=${encodeURIComponent(sk)}&isAjax=1`);
+      expect(response.status()).toBe(200);
+      const data = await response.json();
+      expect(data.status).toBe('OK');
+      expect(typeof data.data.html).toBe('string');
+      const count = await admin.page.evaluate((html) => new DOMParser().parseFromString(html, 'text/html').querySelectorAll('tr[data-item-id]').length, data.data.html);
+      expect(count).toBeLessThan(1000);
+      expect(data.data.html).not.toContain(description);
+    };
+    await readNotifications();
+    await loginThroughUi(restricted.page, RESTRICTED_CREDENTIALS);
+    await restricted.page.goto(`/index.php?r=account/view/${accountId}`, { waitUntil: 'domcontentloaded' });
+    const control = restricted.page.locator('.item-actions [data-action-route="account/requestAccess"]');
+    await expect(control).toHaveAttribute('data-onclick', 'account/view');
+    await expect(control).toHaveAttribute('type', 'button');
+    await expect(control).toHaveAttribute('data-item-id', String(accountId));
+    const requestForm = restricted.page.waitForResponse((response) => response.request().method() === 'GET' && new URL(response.url()).searchParams.get('r') === `account/requestAccess/${accountId}`);
+    await control.click();
+    expect((await requestForm).status()).toBe(200);
+    const form = restricted.page.locator('#frmRequestModify');
+    await expect(form).toHaveAttribute('data-onsubmit', 'account/request');
+    await expect(form).toHaveAttribute('data-action-route', 'account/saveRequest');
+    await expect(form).toHaveAttribute('data-item-id', String(accountId));
+    await form.locator('[name="description"]').fill(description);
+    await restricted.page.locator('#toast-container').evaluateAll((nodes) => nodes.forEach((node) => node.remove()));
+    const saveRoute = `account/saveRequest/${accountId}`;
+    restricted.page.on('request', (request) => {
+      const route = new URL(request.url()).searchParams.get('r');
+      if (request.method() === 'POST' && route === saveRoute) saves++;
+      if (request.method() === 'GET' && route === 'account/index') navigations++;
+    });
+    await restricted.page.route('**/index.php?**', async (route) => {
+      if (route.request().method() === 'POST' && new URL(route.request().url()).searchParams.get('r') === saveRoute) {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(envelope) });
+      } else await route.continue();
+    });
+    const since = Date.now();
+    const saveResponse = restricted.page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).searchParams.get('r') === saveRoute);
+    await restricted.page.locator('button[form="frmRequestModify"]').click();
+    const response = await saveResponse;
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toEqual(envelope);
+    expect(new URLSearchParams(response.request().postData() ?? '').get('description')).toBe(description);
+    await expect(restricted.page.locator('.toast-error').filter({ hasText: message })).toBeVisible();
+    await expect(restricted.page.locator('.toast-success')).toHaveCount(0);
+    await tracker.waitForQuiet(since);
+    expect(saves).toBe(1);
+    expect(navigations).toBe(0);
+    await expect(form.locator('[name="description"]')).toHaveValue(description);
+    await readNotifications();
+  } finally {
+    await restricted.page.unroute('**/index.php?**');
+    tracker.dispose();
+    adminTracker.dispose();
+  }
+});
 
 test('account copy displays a synthetic error without navigating or creating a copy', async ({ sessionPage: { page, context, session } }) => {
   const tracker = new ActionTracker(page, context, { sessionEstablished: false });

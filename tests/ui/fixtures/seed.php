@@ -180,6 +180,8 @@ function configureApplication(ConfigFileService $configFileService): void
         ->setCheckNotices(false)
         ->setDebug(false)
         ->setDemoEnabled(false)
+        ->setMailEnabled(false)
+        ->setMailRequestsEnabled(true)
         ->setAuthBasicEnabled(false)
         ->setAuthBasicAutoLoginEnabled(false);
 
@@ -537,6 +539,8 @@ function verifyFixture(
     $check(!$config->isCheckUpdates(), 'checkUpdates is not disabled in application configuration');
     $check(!$config->isCheckNotices(), 'checkNotices is not disabled in application configuration');
     $check(!$config->isDebug(), 'debug is not disabled in application configuration');
+    $check(!$config->isMailEnabled(), 'mailEnabled is not disabled in application configuration');
+    $check($config->isMailRequestsEnabled(), 'mailRequestsEnabled is not enabled in application configuration');
     $check(!$config->isAuthBasicEnabled(), 'authBasicEnabled is not disabled in application configuration');
     $check(
         !$config->isAuthBasicAutoLoginEnabled(),
@@ -549,10 +553,10 @@ function verifyFixture(
     if (!$document->load($configFile)) {
         $errors[] = 'application configuration file is not readable';
     } else {
-        foreach (['filesEnabled', 'checkUpdates', 'checkNotices', 'debug', 'authBasicEnabled', 'authBasicAutoLoginEnabled'] as $name) {
+        foreach (['filesEnabled', 'checkUpdates', 'checkNotices', 'debug', 'mailEnabled', 'mailRequestsEnabled', 'authBasicEnabled', 'authBasicAutoLoginEnabled'] as $name) {
             $node = $document->getElementsByTagName($name)->item(0);
             $actual = $node?->textContent;
-            $valid = $name === 'filesEnabled'
+            $valid = in_array($name, ['filesEnabled', 'mailRequestsEnabled'], true)
                 ? $actual === '1'
                 : $actual === '0' || $actual === '';
 

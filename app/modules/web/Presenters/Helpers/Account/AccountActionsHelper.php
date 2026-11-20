@@ -206,7 +206,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowRequest');
         $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_REQUEST));
         $action->addData('onclick', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
-        $action->addAttribute('type', 'submit');
+        $action->addAttribute('type', 'button');
 
         return $action;
     }

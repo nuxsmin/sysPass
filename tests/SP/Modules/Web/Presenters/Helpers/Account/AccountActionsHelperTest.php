@@ -76,6 +76,29 @@ class AccountActionsHelperTest extends UnitaryTestCase
         self::assertSame('account/delete', $data['onclick']);
     }
 
+    #[Test]
+    public function requestActionUsesAButtonBoundToTheRequestFormRoute(): void
+    {
+        $this->acl->expects(self::exactly(2))->method('getRouteFor')->willReturnMap([
+            [AclActionsInterface::ACCOUNT_REQUEST, 'account/requestAccess'],
+            [AclActionsInterface::ACCOUNT_VIEW, 'account/view'],
+        ]);
+        $helper = new AccountActionsHelper(
+            $this->config,
+            $this->context,
+            $this->eventDispatcherStub,
+            $this->createStub(TemplateInterface::class),
+            $this->createStub(RequestService::class),
+            new ThemeIcons(),
+            $this->acl
+        );
+
+        $action = $helper->getRequestAction();
+        self::assertSame('button', $action->getAttributes()['type']);
+        self::assertSame('account/requestAccess', $action->getData()['action-route']);
+        self::assertSame('account/view', $action->getData()['onclick']);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
