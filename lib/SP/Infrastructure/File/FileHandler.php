@@ -210,17 +210,27 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      */
     public function open(string $mode = 'rb', ?bool $lock = false): FileHandlerInterface
     {
+        return self::openForPath($this->file, $mode, $lock);
+    }
+
+    /**
+     * Opens the specified file path with the given mode and optional lock.
+     *
+     * @throws FileException
+     */
+    public static function openForPath(string $file, string $mode = 'rb', ?bool $lock = false): self
+    {
         try {
-            $file = new self($mode);
+            $handler = new self($file, $mode);
 
             if ($lock) {
-                $file->lock();
+                $handler->lock();
             }
         } catch (RuntimeException) {
-            throw FileException::error(sprintf(__('Unable to open the file (%s)'), $this->file));
+            throw FileException::error(sprintf(__('Unable to open the file (%s)'), $file));
         }
 
-        return $file;
+        return $handler;
     }
 
     /**

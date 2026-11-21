@@ -270,17 +270,17 @@ final class ApiBoundaryTest extends TestCase
     }
 
     /**
-     * Characterization of TrackRepository LIMIT 1 defect on the API boundary:
-     * 12 consecutive denied requests persist 12 rows in MariaDB `Track` (source=Api::class),
-     * yet the 11th and 12th requests still return "Unauthorized access" rather than "Attempts exceeded".
+     * Target contract for API rate-limit tracking without TrackRepository LIMIT 1:
+     * 10 consecutive denied requests persist 10 rows in MariaDB `Track` (source=Api::class),
+     * and the 11th request triggers tracking delay + "Attempts exceeded" (11 Track rows total).
      */
     #[Test]
-    public function repeatedApiAccessDenialsPersistOverTenTracksWithoutTriggeringThrottle(): void
+    public function repeatedApiAccessDenialsTriggerThrottleAfterTenAttempts(): void
     {
         $pdo = getDbHandler()->getConnection();
         $token = $this->seedTokenForUser(1, AclActionsInterface::ACCOUNT_VIEW_PASS);
 
-        for ($i = 1; $i <= 12; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             $res = $this->dispatchJsonRpc([
                 'jsonrpc' => '2.0',
                 'method' => 'account/viewPass',
@@ -295,19 +295,33 @@ final class ApiBoundaryTest extends TestCase
             self::assertSame('Unauthorized access', $res['json']['error']['message'] ?? null);
         }
 
-        self::assertSame(12, $this->countApiTracks($pdo));
+        $throttledRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/viewPass',
+            'params' => [
+                'authToken' => $token->getToken(),
+                'tokenPass' => 'wrong-pass-11',
+                'id' => 1,
+            ],
+            'id' => 11,
+        ]);
+
+        self::assertSame('Attempts exceeded', $throttledRes['json']['error']['message'] ?? null);
+        self::assertSame(11, $this->countApiTracks($pdo));
     }
 
     /**
-     * Characterization of JSON-RPC ID coercion at the full API dispatch boundary
-     * (`ApiRequestAdapter` casts via `filter_var($id, FILTER_VALIDATE_INT) ?: 1`).
+     * Target JSON-RPC ID preservation at the full API dispatch boundary.
      *
-     * @param int|string|float $sentId
+     * @param int|float|string|null $sentId
+     * @param int|float|string|null $expectedId
      */
     #[DataProvider('provideSuccessRequestIds')]
     #[Test]
-    public function validApiRequestsCoerceZeroStringAndFloatIdsToOne(int|string|float $sentId, int $expectedId): void
-    {
+    public function validApiRequestsPreserveExactIdsIncludingZeroStringFloatAndNull(
+        int|float|string|null $sentId,
+        int|float|string|null $expectedId
+    ): void {
         $token = $this->seedTokenForUser(1, AclActionsInterface::TAG_SEARCH);
 
         $res = $this->dispatchJsonRpc([
@@ -319,25 +333,26 @@ final class ApiBoundaryTest extends TestCase
 
         self::assertSame(200, $res['code']);
         self::assertSame(0, $res['json']['result']['resultCode'] ?? null);
-        self::assertSame($expectedId, $res['json']['id'] ?? null);
+        self::assertArrayHasKey('id', $res['json']);
+        self::assertSame($expectedId, $res['json']['id']);
     }
 
     public static function provideSuccessRequestIds(): array
     {
         return [
-            'zero coerced to 1' => [0, 1],
+            'zero preserved' => [0, 0],
             'negative int preserved' => [-5, -5],
             'large int preserved' => [9007199254740991, 9007199254740991],
-            'string id coerced to 1' => ['req-xyz', 1],
-            'numeric string coerced to int' => ['77', 77],
-            'float coerced to 1' => [2.5, 1],
+            'string id preserved' => ['req-xyz', 'req-xyz'],
+            'numeric string preserved' => ['77', '77'],
+            'float preserved' => [2.5, 2.5],
+            'null preserved' => [null, null],
         ];
     }
 
     /**
-     * Target JSON-RPC error HTTP status codes & redaction through Api\Bootstrap:
-     * client parse/format errors return HTTP 400 (never 500) with error.data omitted,
-     * and unknown/non-action methods keep HTTP 404.
+     * Target JSON-RPC notification, parse/invalid-request error HTTP status codes,
+     * request-ID correlation, and redaction through Api\Bootstrap.
      */
     #[Test]
     public function invalidJsonNullIdNotificationAndUnknownMethodReturnSafeClientHttpStatuses(): void
@@ -345,53 +360,71 @@ final class ApiBoundaryTest extends TestCase
         $pdo = getDbHandler()->getConnection();
         $token = $this->seedTokenForUser(1, AclActionsInterface::TAG_CREATE);
 
-        // 1. Notification (omitted id) returns HTTP 400 JSON-RPC INVALID_REQUEST with id=0 and no error.data
-        // and does NOT execute tag/create
-        $notificationRes = $this->dispatchRawBody(json_encode([
+        // 1a. Unauthorized notification (omitted id) returns HTTP 204 empty body and creates 0 tags
+        $deniedNotificationRes = $this->dispatchRawBody(json_encode([
             'jsonrpc' => '2.0',
             'method' => 'tag/create',
             'params' => [
-                'authToken' => $token->getToken(),
+                'authToken' => 'invalid-notification-token',
                 'name' => 'notification-tag-should-not-exist',
             ],
         ], JSON_THROW_ON_ERROR));
 
-        self::assertSame(400, $notificationRes['code']);
-        self::assertSame(0, $notificationRes['json']['id'] ?? null);
-        self::assertSame(JsonRpcErrorCode::INVALID_REQUEST, $notificationRes['json']['error']['code'] ?? null);
-        self::assertSame('Invalid format', $notificationRes['json']['error']['message'] ?? null);
-        self::assertNull($notificationRes['json']['error']['data'] ?? null);
+        self::assertSame(204, $deniedNotificationRes['code']);
+        self::assertSame('', $deniedNotificationRes['body']);
+        self::assertNull($deniedNotificationRes['json']);
         self::assertSame(
             0,
             (int)$pdo->query("SELECT COUNT(*) FROM Tag WHERE name = 'notification-tag-should-not-exist'")->fetchColumn()
         );
 
-        // 2. Null ID returns HTTP 400 INVALID_REQUEST with id=0
+        // 1b. Authorized notification (omitted id) executes silently with HTTP 204 and empty body
+        $okNotificationRes = $this->dispatchRawBody(json_encode([
+            'jsonrpc' => '2.0',
+            'method' => 'tag/create',
+            'params' => [
+                'authToken' => $token->getToken(),
+                'name' => 'notification-tag-created',
+            ],
+        ], JSON_THROW_ON_ERROR));
+
+        self::assertSame(204, $okNotificationRes['code']);
+        self::assertSame('', $okNotificationRes['body']);
+        self::assertNull($okNotificationRes['json']);
+        self::assertSame(
+            1,
+            (int)$pdo->query("SELECT COUNT(*) FROM Tag WHERE name = 'notification-tag-created'")->fetchColumn()
+        );
+
+        // 2. Null ID on invalid request (missing authToken) returns HTTP 400 INVALID_REQUEST with id=null
         $nullIdRes = $this->dispatchJsonRpc([
             'jsonrpc' => '2.0',
             'method' => 'tag/search',
-            'params' => ['authToken' => $token->getToken()],
+            'params' => [],
             'id' => null,
         ]);
         self::assertSame(400, $nullIdRes['code']);
-        self::assertSame(0, $nullIdRes['json']['id'] ?? null);
+        self::assertArrayHasKey('id', $nullIdRes['json']);
+        self::assertNull($nullIdRes['json']['id']);
         self::assertSame(JsonRpcErrorCode::INVALID_REQUEST, $nullIdRes['json']['error']['code'] ?? null);
         self::assertSame('Invalid format', $nullIdRes['json']['error']['message'] ?? null);
         self::assertNull($nullIdRes['json']['error']['data'] ?? null);
 
-        // 3. Malformed JSON returns HTTP 400 PARSE_ERROR with id=0 and redacts JsonException message from error.data
+        // 3. Malformed JSON returns HTTP 400 PARSE_ERROR with id=null and redacts JsonException message from error.data
         $malformedRes = $this->dispatchRawBody('{invalid-json');
         self::assertSame(400, $malformedRes['code']);
-        self::assertSame(0, $malformedRes['json']['id'] ?? null);
+        self::assertArrayHasKey('id', $malformedRes['json']);
+        self::assertNull($malformedRes['json']['id']);
         self::assertSame(JsonRpcErrorCode::PARSE_ERROR, $malformedRes['json']['error']['code'] ?? null);
         self::assertSame('Invalid data', $malformedRes['json']['error']['message'] ?? null);
         self::assertNull($malformedRes['json']['error']['data'] ?? null);
         self::assertStringNotContainsString('Syntax error', $malformedRes['body']);
 
-        // 4. Empty body returns HTTP 400 PARSE_ERROR with id=0
+        // 4. Empty body returns HTTP 400 PARSE_ERROR with id=null
         $emptyRes = $this->dispatchRawBody('');
         self::assertSame(400, $emptyRes['code']);
-        self::assertSame(0, $emptyRes['json']['id'] ?? null);
+        self::assertArrayHasKey('id', $emptyRes['json']);
+        self::assertNull($emptyRes['json']['id']);
         self::assertSame(JsonRpcErrorCode::PARSE_ERROR, $emptyRes['json']['error']['code'] ?? null);
         self::assertSame('Invalid data', $emptyRes['json']['error']['message'] ?? null);
         self::assertNull($emptyRes['json']['error']['data'] ?? null);
@@ -451,6 +484,72 @@ final class ApiBoundaryTest extends TestCase
         self::assertSame($countBefore, (int)$pdo->query('SELECT countView FROM Account WHERE id = 1')->fetchColumn());
     }
 
+    /**
+     * Token expiration enforcement at the API dispatch boundary:
+     * - Expired (time()-10), exact boundary (time()), and invalid (0) expireDate fail closed
+     *   with "Internal error" (-32603) and 0 Track rows.
+     * - Future expireDate and explicit admin no-expiry (NULL) succeed.
+     */
+    #[Test]
+    public function expiredAndInvalidTokensFailClosedWhileFutureAndNoExpiryTokensSucceed(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $expiredToken = $this->seedTokenForUser(1, AclActionsInterface::TAG_SEARCH);
+        $boundaryToken = $this->seedTokenForUser(1, AclActionsInterface::ACCOUNT_SEARCH);
+        $zeroToken = $this->seedTokenForUser(1, AclActionsInterface::CLIENT_SEARCH);
+        $futureToken = $this->seedTokenForUser(1, AclActionsInterface::CATEGORY_SEARCH);
+        $nullToken = $this->seedTokenForUser(1, AclActionsInterface::TAG_CREATE);
+
+        $pdo->prepare('UPDATE AuthToken SET expireDate = :exp WHERE id = :id')
+            ->execute(['exp' => time() - 10, 'id' => $expiredToken->getId()]);
+        $pdo->prepare('UPDATE AuthToken SET expireDate = :exp WHERE id = :id')
+            ->execute(['exp' => time(), 'id' => $boundaryToken->getId()]);
+        $pdo->prepare('UPDATE AuthToken SET expireDate = 0 WHERE id = :id')
+            ->execute(['id' => $zeroToken->getId()]);
+        $pdo->prepare('UPDATE AuthToken SET expireDate = NULL WHERE id = :id')
+            ->execute(['id' => $nullToken->getId()]);
+
+        foreach ([
+            ['tag/search', $expiredToken->getToken(), 71],
+            ['account/search', $boundaryToken->getToken(), 72],
+            ['client/search', $zeroToken->getToken(), 73],
+        ] as [$method, $bearer, $id]) {
+            $res = $this->dispatchJsonRpc([
+                'jsonrpc' => '2.0',
+                'method' => $method,
+                'params' => ['authToken' => $bearer],
+                'id' => $id,
+            ]);
+
+            self::assertSame(200, $res['code']);
+            self::assertSame($id, $res['json']['id'] ?? null);
+            self::assertSame(JsonRpcErrorCode::INTERNAL_ERROR, $res['json']['error']['code'] ?? null);
+            self::assertSame('Internal error', $res['json']['error']['message'] ?? null);
+            self::assertNull($res['json']['error']['data'] ?? null);
+        }
+
+        // 0 Track rows for rejected expired/invalid tokens (indistinguishable from unknown token)
+        self::assertSame(0, $this->countApiTracks($pdo));
+
+        $futureRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'category/search',
+            'params' => ['authToken' => $futureToken->getToken()],
+            'id' => 74,
+        ]);
+        self::assertSame(200, $futureRes['code']);
+        self::assertSame(0, $futureRes['json']['result']['resultCode'] ?? null);
+
+        $nullRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'tag/create',
+            'params' => ['authToken' => $nullToken->getToken(), 'name' => 'api-no-expiry-tag'],
+            'id' => 75,
+        ]);
+        self::assertSame(200, $nullRes['code']);
+        self::assertSame(0, $nullRes['json']['result']['resultCode'] ?? null);
+    }
+
     private function seedTokenForUser(int $userId, int $actionId): AuthTokenModel
     {
         $databaseConnectionData = DatabaseConnectionData::getFromEnvironment();
@@ -482,6 +581,7 @@ final class ApiBoundaryTest extends TestCase
         $context->setUserData(new UserDto(
             id: 1,
             login: 'admin',
+            isAdminApp: true,
             preferences: new UserPreferences(['lang' => 'en_US'])
         ));
         $context->setTrasientKey('_masterpass', self::MASTER_PASS);
@@ -527,7 +627,7 @@ final class ApiBoundaryTest extends TestCase
 
     /**
      * @param array<string, mixed> $payload
-     * @return array{code: int, body: string, json: array<string, mixed>}
+     * @return array{code: int, body: string, json: ?array<string, mixed>}
      */
     private function dispatchJsonRpc(array $payload): array
     {
@@ -535,7 +635,7 @@ final class ApiBoundaryTest extends TestCase
     }
 
     /**
-     * @return array{code: int, body: string, json: array<string, mixed>}
+     * @return array{code: int, body: string, json: ?array<string, mixed>}
      */
     private function dispatchRawBody(string $rawBody): array
     {
@@ -603,7 +703,7 @@ final class ApiBoundaryTest extends TestCase
             return [
                 'code' => (int)$response->code(),
                 'body' => $effectiveBody,
-                'json' => json_decode($effectiveBody, true, 512, JSON_THROW_ON_ERROR),
+                'json' => $effectiveBody === '' ? null : json_decode($effectiveBody, true, 512, JSON_THROW_ON_ERROR),
             ];
         } finally {
             @unlink($requestFile);

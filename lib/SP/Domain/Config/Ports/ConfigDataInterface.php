@@ -129,6 +129,8 @@ interface ConfigDataInterface extends JsonSerializable
     public const LDAP_FILTER_USER_ATTRIBUTES   = 'ldapFilterUserAttributes';
     public const LDAP_FILTER_GROUP_ATTRIBUTES  = 'ldapFilterGroupAttributes';
     public const LDAP_DATABASE_ENABLED         = 'ldapDatabaseEnabled';
+    public const AUTH_TOKEN_DEFAULT_TIME       = 'authTokenDefaultTime';
+    public const AUTH_TOKEN_MAX_TIME           = 'authTokenMaxTime';
 
     public function getAttributes(): array;
 
@@ -517,4 +519,12 @@ interface ConfigDataInterface extends JsonSerializable
     public function isLdapDatabaseEnabled(): bool;
 
     public function setLdapDatabaseEnabled(?bool $ldapDatabaseEnabled): ConfigDataInterface;
+
+    public function getAuthTokenDefaultTime(): int;
+
+    public function setAuthTokenDefaultTime(?int $authTokenDefaultTime): ConfigDataInterface;
+
+    public function getAuthTokenMaxTime(): int;
+
+    public function setAuthTokenMaxTime(?int $authTokenMaxTime): ConfigDataInterface;
 }

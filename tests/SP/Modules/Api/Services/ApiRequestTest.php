@@ -206,16 +206,9 @@ class ApiRequestTest extends UnitaryTestCase
         $this->assertSame('account/view', $out->getMethod());
     }
 
-    /**
-     * Characterization of current ApiRequestAdapter::buildFromJson() ID parsing:
-     * filter_var($data['id'], FILTER_VALIDATE_INT) ?: 1 coerces zero, non-numeric strings, and floats to 1,
-     * while coercing numeric strings to integers and preserving non-zero integers.
-     *
-     * @param int|string|float $inputId
-     */
-    #[DataProvider('getCoercedOrPreservedIds')]
+    #[DataProvider('getPreservedIds')]
     #[Test]
-    public function testBuildFromRequestCurrentIdHandling(int|string|float $inputId, int $expectedId): void
+    public function testBuildFromRequestPreservesValidIdsExactly(int|string|float|null $inputId): void
     {
         $stream = $this->getTempnam();
 
@@ -225,16 +218,33 @@ class ApiRequestTest extends UnitaryTestCase
 
         $out = ApiRequestAdapter::buildFromRequest($stream);
 
-        $this->assertSame($expectedId, $out->getId());
+        $this->assertFalse($out->isNotification());
+        $this->assertSame($inputId, $out->getId());
     }
 
     #[Test]
-    public function testBuildFromRequestNullIdThrowsInvalidRequest(): void
+    public function testBuildFromRequestWithoutIdBuildsNotification(): void
     {
         $stream = $this->getTempnam();
 
         $jsonRpcRequest = self::buildJsonRpcRequest();
-        $jsonRpcRequest['id'] = null;
+        unset($jsonRpcRequest['id']);
+        file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
+
+        $out = ApiRequestAdapter::buildFromRequest($stream);
+
+        $this->assertTrue($out->isNotification());
+        $this->assertNull($out->getId());
+    }
+
+    #[DataProvider('getInvalidIdTypes')]
+    #[Test]
+    public function testBuildFromRequestRejectsInvalidIdTypes(mixed $invalidId): void
+    {
+        $stream = $this->getTempnam();
+
+        $jsonRpcRequest = self::buildJsonRpcRequest();
+        $jsonRpcRequest['id'] = $invalidId;
         file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
 
         $this->expectException(ApiRequestException::class);
@@ -243,16 +253,74 @@ class ApiRequestTest extends UnitaryTestCase
         ApiRequestAdapter::buildFromRequest($stream);
     }
 
-    public static function getCoercedOrPreservedIds(): array
+    #[Test]
+    public function testBuildFromRequestNotificationFailingValidationMarksExceptionAsNotification(): void
+    {
+        $payloads = [
+            ['jsonrpc' => '2.0', 'method' => 'tag/search'],
+            ['jsonrpc' => '2.0', 'method' => 'tag/search', 'params' => []],
+            ['jsonrpc' => '2.0', 'method' => 'tag/search', 'params' => 'not-an-array'],
+        ];
+
+        foreach ($payloads as $payload) {
+            $stream = $this->getTempnam();
+            file_put_contents($stream, json_encode($payload, JSON_THROW_ON_ERROR));
+
+            try {
+                ApiRequestAdapter::buildFromRequest($stream);
+                $this->fail('Expected ApiRequestException for invalid notification payload');
+            } catch (ApiRequestException $e) {
+                $this->assertTrue($e->isNotification());
+                $this->assertNull($e->getRequestId());
+            } finally {
+                @unlink($stream);
+            }
+        }
+    }
+
+    #[Test]
+    public function testBuildFromRequestMalformedPayloadWithoutJsonRpcEnvelopeIsNotMarkedNotification(): void
+    {
+        $payloads = [
+            ['test' => 'test'],
+            ['jsonrpc' => '2.0', 'method' => 'tag/search', 'params' => [], 'id' => true],
+        ];
+
+        foreach ($payloads as $payload) {
+            $stream = $this->getTempnam();
+            file_put_contents($stream, json_encode($payload, JSON_THROW_ON_ERROR));
+
+            try {
+                ApiRequestAdapter::buildFromRequest($stream);
+                $this->fail('Expected ApiRequestException for malformed payload');
+            } catch (ApiRequestException $e) {
+                $this->assertFalse($e->isNotification());
+            } finally {
+                @unlink($stream);
+            }
+        }
+    }
+
+    public static function getPreservedIds(): array
     {
         return [
-            'zero coerced to 1' => [0, 1],
-            'negative int preserved' => [-7, -7],
-            'large int preserved' => [9007199254740991, 9007199254740991],
-            'numeric string coerced to int' => ['42', 42],
-            'string zero coerced to 1' => ['0', 1],
-            'non-numeric string coerced to 1' => ['req-abc', 1],
-            'float coerced to 1' => [1.5, 1],
+            'zero int' => [0],
+            'negative int' => [-7],
+            'large int' => [9007199254740991],
+            'numeric string' => ['42'],
+            'string zero' => ['0'],
+            'non-numeric string' => ['req-abc'],
+            'float' => [1.5],
+            'null' => [null],
+        ];
+    }
+
+    public static function getInvalidIdTypes(): array
+    {
+        return [
+            'boolean true' => [true],
+            'boolean false' => [false],
+            'array' => [['nested']],
         ];
     }
 
@@ -262,7 +330,6 @@ class ApiRequestTest extends UnitaryTestCase
             ['jsonrpc'],
             ['method'],
             ['params'],
-            ['id'],
         ];
     }
 

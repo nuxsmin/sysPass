@@ -150,7 +150,7 @@ class LoginUserTest extends UnitaryTestCase
         $this->trackService
             ->expects($this->atLeast(1))
             ->method('buildTrackRequest')
-            ->with(LoginUser::class)
+            ->with(\SP\Domain\Auth\Services\Login::class)
             ->willReturn(
                 new TrackRequest(
                     self::$faker->unixTime(),

@@ -162,9 +162,9 @@ final class SchemaContractTest extends DatabaseRepositoryTestCase
      */
     private const NON_COLUMN_PROPERTIES = [
         'SP\Domain\Account\Models\File' => ['accountName', 'clientName'],
-        'SP\Domain\Auth\Models\AuthToken' => ['name', 'login'],
+        'SP\Domain\Auth\Models\AuthToken' => ['name', 'login', 'noExpiry'],
         'SP\Domain\ItemPreset\Models\ItemPreset' => ['score', 'userName', 'userProfileName', 'userGroupName'],
-        'SP\Domain\Account\Models\PublicLink' => ['userName', 'userLogin', 'accountName'],
+        'SP\Domain\Account\Models\PublicLink' => ['userName', 'userLogin', 'accountName', 'clientName'],
         'SP\Domain\Security\Models\Track' => ['dateTime', 'dateTimeUnlock', 'tracked'],
         'SP\Domain\User\Models\User' => ['userGroupName', 'userProfileName'],
         'SP\Domain\User\Models\UserGroup' => ['users'],

@@ -37,7 +37,7 @@ final class RepositoryDbTestCoverageTest extends TestCase
     /**
      * Monotonic limit for the method allowlist. It may only be lowered.
      */
-    private const UNCOVERED_METHOD_ALLOWLIST_LIMIT = 125;
+    private const UNCOVERED_METHOD_ALLOWLIST_LIMIT = 121;
 
     /**
      * Public methods of repositories that already have a *DbTest class but are not
@@ -112,15 +112,11 @@ final class RepositoryDbTestCoverageTest extends TestCase
             'getUserGroupsByUserGroupId',
         ],
         'AuthToken' => [
-            'create',
             'delete',
             'deleteByIdBatch',
             'getAll',
             'getById',
             'getTokenByToken',
-            'getTokenByUserId',
-            'refreshTokenByUserId',
-            'refreshVaultByUserId',
             'update',
         ],
         'CustomFieldData' => [

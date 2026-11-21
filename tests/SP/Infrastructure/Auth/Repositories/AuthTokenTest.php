@@ -65,6 +65,7 @@ class AuthTokenTest extends UnitaryTestCase
     #[Test]
     public function testSearch()
     {
+        $this->context->setUserData($this->context->getUserData()->mutate(['isAdminApp' => true]));
         $item = new ItemSearchDto(self::$faker->name);
 
         $callback = new Callback(
@@ -72,13 +73,55 @@ class AuthTokenTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
                 $searchStringLike = '%' . $item->getSeachString() . '%';
+                $statement = $query->getStatement();
 
                 return count($params) === 2
                        && $params['userLogin'] === $searchStringLike
                        && $params['userName'] === $searchStringLike
+                       && str_contains($statement, '(`User`.`login` LIKE :userLogin OR `User`.`name` LIKE :userName)')
+                       && str_contains($statement, '`AuthToken`.`expireDate`')
+                       && !str_contains($statement, '`AuthToken`.`token`')
+                       && !str_contains($statement, 'userId = :userId')
                        && $arg->getMapClassName() === AuthTokenModel::class
-                       && is_a($query, SelectInterface::class)
-                       && !empty($query->getStatement());
+                       && is_a($query, SelectInterface::class);
+            }
+        );
+
+        $this->database
+            ->expects(self::once())
+            ->method('runQuery')
+            ->with($callback, true);
+
+        $this->authToken->search($item);
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    #[Test]
+    public function testSearchForNonAdminScopesByUserIdAndParenthesizesOr(): void
+    {
+        $userData = $this->context->getUserData()->mutate(['id' => 42, 'isAdminApp' => false]);
+        $this->context->setUserData($userData);
+        $item = new ItemSearchDto('demo');
+
+        $callback = new Callback(
+            static function (QueryData $arg) {
+                $query = $arg->getQuery();
+                $params = $query->getBindValues();
+                $statement = $query->getStatement();
+
+                return count($params) === 3
+                       && $params['userId'] === 42
+                       && $params['userLogin'] === '%demo%'
+                       && $params['userName'] === '%demo%'
+                       && str_contains($statement, '`AuthToken`.`userId` = :userId')
+                       && str_contains($statement, '(`User`.`login` LIKE :userLogin OR `User`.`name` LIKE :userName)')
+                       && str_contains($statement, '`AuthToken`.`expireDate`')
+                       && !str_contains($statement, '`AuthToken`.`token`')
+                       && $arg->getMapClassName() === AuthTokenModel::class
+                       && is_a($query, SelectInterface::class);
             }
         );
 
@@ -97,10 +140,13 @@ class AuthTokenTest extends UnitaryTestCase
     #[Test]
     public function testSearchWithoutString(): void
     {
+        $this->context->setUserData($this->context->getUserData()->mutate(['isAdminApp' => true]));
+
         $callback = new Callback(
             static function (QueryData $arg) {
                 $query = $arg->getQuery();
                 return count($query->getBindValues()) === 0
+                       && !str_contains($query->getStatement(), '`AuthToken`.`token`')
                        && $arg->getMapClassName() === AuthTokenModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
@@ -162,32 +208,6 @@ class AuthTokenTest extends UnitaryTestCase
     }
 
     #[Test]
-    public function testGetTokenByUserId()
-    {
-        $id = self::$faker->randomNumber();
-
-        $callback = new Callback(
-            static function (QueryData $arg) use ($id) {
-                $query = $arg->getQuery();
-                $params = $query->getBindValues();
-
-                return count($params) === 1
-                       && $params['userId'] === $id
-                       && $arg->getMapClassName() === AuthTokenModel::class
-                       && is_a($query, SelectInterface::class)
-                       && !empty($query->getStatement());
-            }
-        );
-
-        $this->database
-            ->expects(self::once())
-            ->method('runQuery')
-            ->with($callback);
-
-        $this->authToken->getTokenByUserId($id);
-    }
-
-    #[Test]
     public function testGetById()
     {
         $id = self::$faker->randomNumber();
@@ -243,11 +263,12 @@ class AuthTokenTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 7
+                return count($params) === 8
                        && $params['id'] === $authToken->getId()
                        && $params['userId'] === $authToken->getUserId()
                        && $params['token'] === $authToken->getToken()
                        && $params['createdBy'] === $authToken->getCreatedBy()
+                       && $params['expireDate'] === $authToken->getExpireDate()
                        && $params['actionId'] === $authToken->getActionId()
                        && $params['hash'] === $authToken->getHash()
                        && $params['vault'] === $authToken->getVault()
@@ -307,43 +328,6 @@ class AuthTokenTest extends UnitaryTestCase
      * @throws QueryException
      */
     #[Test]
-    public function testRefreshVaultByUserId()
-    {
-        $userId = self::$faker->randomNumber();
-        $vault = self::$faker->sha1();
-        $hash = self::$faker->sha1();
-
-        $callback = new Callback(
-            static function (QueryData $arg) use ($userId, $vault, $hash) {
-                $query = $arg->getQuery();
-                $params = $query->getBindValues();
-
-                return count($params) === 3
-                       && $params['userId'] === $userId
-                       && $params['vault'] === $vault
-                       && $params['hash'] === $hash
-                       && $arg->getOnErrorMessage() === 'Internal error'
-                       && is_a($query, UpdateInterface::class)
-                       && !empty($query->getStatement());
-            }
-        );
-
-        $this->database
-            ->expects(self::once())
-            ->method('runQuery')
-            ->with($callback)
-            ->willReturn(new QueryResult(null, 10));
-
-        $out = $this->authToken->refreshVaultByUserId($userId, $vault, $hash);
-
-        self::assertEquals(10, $out);
-    }
-
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    #[Test]
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
@@ -381,39 +365,6 @@ class AuthTokenTest extends UnitaryTestCase
             ->with($callback);
 
         $this->authToken->getAll();
-    }
-
-    /**
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    #[Test]
-    public function testRefreshTokenByUserId()
-    {
-        $userId = self::$faker->randomNumber();
-        $token = self::$faker->sha1();
-
-        $callback = new Callback(
-            static function (QueryData $arg) use ($userId, $token) {
-                $query = $arg->getQuery();
-                $params = $query->getBindValues();
-
-                return count($params) === 2
-                       && $params['userId'] === $userId
-                       && $params['token'] === $token
-                       && $arg->getOnErrorMessage() === 'Internal error'
-                       && is_a($query, UpdateInterface::class)
-                       && !empty($query->getStatement());
-            }
-        );
-
-        $this->database
-            ->expects(self::once())
-            ->method('runQuery')
-            ->with($callback)
-            ->willReturn(new QueryResult([1]));
-
-        $this->authToken->refreshTokenByUserId($userId, $token);
     }
 
     #[Test]
@@ -458,13 +409,15 @@ class AuthTokenTest extends UnitaryTestCase
             static function (QueryData $arg) use ($authToken) {
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
+                $statement = $query->getStatement();
 
                 return count($params) === 3
                        && $params['userId'] === $authToken->getUserId()
                        && $params['token'] === $authToken->getToken()
                        && $params['actionId'] === $authToken->getActionId()
-                       && is_a($query, SelectInterface::class)
-                       && !empty($query->getStatement());
+                       && str_contains($statement, '(userId = :userId OR token = :token)')
+                       && str_contains($statement, 'AND actionId = :actionId')
+                       && is_a($query, SelectInterface::class);
             }
         );
 
@@ -473,10 +426,11 @@ class AuthTokenTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 6
+                return count($params) === 7
                        && $params['userId'] === $authToken->getUserId()
                        && $params['token'] === $authToken->getToken()
                        && $params['createdBy'] === $authToken->getCreatedBy()
+                       && $params['expireDate'] === $authToken->getExpireDate()
                        && $params['actionId'] === $authToken->getActionId()
                        && $params['hash'] === $authToken->getHash()
                        && $params['vault'] === $authToken->getVault()

@@ -1183,9 +1183,9 @@ sysPass.Actions = function (log) {
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);
 
-                if (json.status === 0) {
+                if (json.status === 0 || json.status === "OK") {
                     if (typeof onSuccess === "function") {
-                        onSuccess();
+                        onSuccess(json);
                     }
 
                     if ($obj.data("reload") !== undefined) {
@@ -1288,11 +1288,62 @@ sysPass.Actions = function (log) {
                 });
             });
         },
+        showGeneratedTokenDialog: function (token) {
+            const container = document.createElement("div");
+            container.setAttribute("id", "box-popup");
+            container.setAttribute("class", "box-password-view");
+
+            const notice = document.createElement("p");
+            notice.setAttribute("class", "dialog-token-notice");
+            notice.textContent = sysPassApp.config.LANG[74] || "Copy and store this token now. It will not be shown again.";
+            container.appendChild(notice);
+
+            const row = document.createElement("div");
+            row.setAttribute("class", "dialog-token-row");
+
+            const tokenBox = document.createElement("div");
+            tokenBox.setAttribute("class", "dialog-text dialog-token-text");
+            tokenBox.textContent = token;
+            row.appendChild(tokenBox);
+
+            const copyButton = document.createElement("button");
+            copyButton.setAttribute("type", "button");
+            copyButton.setAttribute("class", "dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect");
+            copyButton.setAttribute("data-clipboard-target", ".dialog-token-text");
+            copyButton.setAttribute("title", sysPassApp.config.LANG[75] || "Copy Token");
+            copyButton.textContent = sysPassApp.config.LANG[75] || "Copy Token";
+
+            const clipIcon = document.createElement("i");
+            clipIcon.setAttribute("class", "material-icons");
+            clipIcon.textContent = "content_copy";
+            copyButton.appendChild(clipIcon);
+
+            row.appendChild(copyButton);
+            container.appendChild(row);
+
+            mdlDialog().show({
+                title: sysPassApp.config.LANG[73] || "API Token",
+                text: container,
+                cancelable: false,
+                positive: {
+                    title: sysPassApp.config.LANG[43] || "Accept"
+                }
+            });
+        },
         save: function ($obj) {
             log.info("appMgmt:save");
 
-            tabs.save($obj, function () {
+            tabs.save($obj, function (json) {
                 closeFloatingBox();
+
+                if (json
+                    && json.data
+                    && typeof json.data.token === "string"
+                    && json.data.token.length > 0
+                    && typeof mdlDialog === "function"
+                ) {
+                    appMgmt.showGeneratedTokenDialog(json.data.token);
+                }
             });
         },
         search: function ($obj) {

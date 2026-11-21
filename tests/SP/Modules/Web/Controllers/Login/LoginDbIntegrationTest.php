@@ -70,15 +70,14 @@ final class LoginDbIntegrationTest extends DatabaseIntegrationTestCase
     }
 
     /**
-     * Characterization of TrackRepository::getTracksForClientFromTime() LIMIT 1 bug and
-     * LoginBase static::class source-bucket splitting:
-     * 1. 11 blank-credential login attempts persist 11 rows under source=Login::class, yet
-     *    getTracksForClientFromTime() caps results with LIMIT 1, so checkTracking() returns false.
-     * 2. Wrong-password attempts persist rows under source=LoginAuthHandler::class (not Login::class),
-     *    meaning wrong passwords never accumulate in the bucket checked by Login::checkTracking().
+     * Target contract for TrackRepository::getTracksForClientFromTime() and LoginBase track bucket:
+     * 1. Blank-credential failures (Login) and wrong-password failures (LoginAuthHandler) share the
+     *    same Track source bucket (Login::class).
+     * 2. After 10 failed login attempts within TIME_TRACKING, the 11th attempt triggers tracking
+     *    throttling ("Attempts exceeded") and persists all rows without LIMIT 1 truncation.
      */
     #[Test]
-    public function repeatedFailedLoginsPersistTracksInDbWithoutTriggeringLimitOneThrottle(): void
+    public function repeatedFailedLoginsShareBucketAndTriggerThrottleAfterTenAttempts(): void
     {
         $pdo = getDbHandler()->getConnection();
         $pdo->exec('TRUNCATE TABLE Track');
@@ -87,12 +86,12 @@ final class LoginDbIntegrationTest extends DatabaseIntegrationTestCase
         $stmt = $pdo->prepare('UPDATE User SET pass = :pass, isDisabled = 0, isChangePass = 0, isMigrate = 0 WHERE id = 1');
         $stmt->execute(['pass' => $validHash]);
 
-        for ($i = 0; $i < 11; $i++) {
+        for ($i = 0; $i < 4; $i++) {
             $result = $this->dispatch('post', 'login/login', [], ['user' => '', 'pass' => '']);
             $this->assertJsonDenied($result, 'Wrong login');
         }
 
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 6; $i++) {
             $result = $this->dispatch('post', 'login/login', [], [
                 'user' => 'admin',
                 'pass' => 'synthetic-wrong-pass-' . $i,
@@ -100,13 +99,20 @@ final class LoginDbIntegrationTest extends DatabaseIntegrationTestCase
             $this->assertJsonDenied($result, 'Wrong login');
         }
 
+        // 11th attempt hits checkTracking() >= 10, adds a track row, and fails with "Attempts exceeded"
+        $throttled = $this->dispatch('post', 'login/login', [], [
+            'user' => 'admin',
+            'pass' => 'synthetic-wrong-pass-10',
+        ]);
+        $this->assertJsonDenied($throttled, 'Attempts exceeded');
+
         $countStmt = $pdo->prepare('SELECT COUNT(*) FROM Track WHERE source = :source');
 
         $countStmt->execute(['source' => RealLoginService::class]);
         self::assertSame(11, (int)$countStmt->fetchColumn());
 
         $countStmt->execute(['source' => LoginAuthHandler::class]);
-        self::assertSame(3, (int)$countStmt->fetchColumn());
+        self::assertSame(0, (int)$countStmt->fetchColumn());
 
         $trackRepo = new TrackRepository(
             $this->db,
@@ -121,8 +127,7 @@ final class LoginDbIntegrationTest extends DatabaseIntegrationTestCase
             'time' => time() - 600,
         ]);
 
-        // LIMIT 1 in TrackRepository::getTracksForClientFromTime() caps numRows at 1 instead of 11
-        self::assertSame(1, $trackRepo->getTracksForClientFromTime($trackRow)->getNumRows());
+        self::assertSame(11, $trackRepo->getTracksForClientFromTime($trackRow)->getNumRows());
     }
 
     /**

@@ -76,6 +76,9 @@ final class SaveCreateController extends AuthTokenSaveBase
 
         $this->eventDispatcher->notify('create.authToken', new Event($this));
 
-        return ActionResponse::ok(__u('Authorization added'));
+        $token = $this->authTokenService->getLastGeneratedToken();
+        $extra = $token !== null ? ['token' => $token] : null;
+
+        return ActionResponse::ok(__u('Authorization added'), $extra, $id);
     }
 }

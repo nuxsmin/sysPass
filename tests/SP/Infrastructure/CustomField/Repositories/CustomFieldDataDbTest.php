@@ -27,6 +27,7 @@ namespace SP\Tests\Infrastructure\CustomField\Repositories;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\CustomField\Repositories\CustomFieldData;
 use SP\Tests\DatabaseRepositoryTestCase;
 
@@ -89,5 +90,37 @@ final class CustomFieldDataDbTest extends DatabaseRepositoryTestCase
     public function getForModuleAndItemIdReturnsNoRowsForAnUnknownModule(): void
     {
         self::assertSame(0, $this->customFieldData->getForModuleAndItemId(99, 1)->getNumRows());
+    }
+
+    #[Test]
+    public function deleteByItemDeletesOnlyTargetedModuleAndItem(): void
+    {
+        $authTokenModule = AclActionsInterface::AUTHTOKEN;
+
+        $this->executeSql(
+            "INSERT INTO CustomFieldData (itemId, moduleId, definitionId, data, `key`) VALUES
+             (10, {$authTokenModule}, 1, 'target', NULL),
+             (11, {$authTokenModule}, 1, 'other-item', NULL),
+             (10, 1, 1, 'other-module', NULL)"
+        );
+
+        $deleted = $this->customFieldData->deleteByItem(10, $authTokenModule)->getAffectedNumRows();
+
+        self::assertSame(1, $deleted);
+
+        $remaining = \SP\Tests\getDbHandler()->getConnection()->query(
+            "SELECT itemId, moduleId FROM CustomFieldData WHERE (itemId = 10 OR itemId = 11) AND data IN ('target', 'other-item', 'other-module') ORDER BY moduleId ASC, itemId ASC"
+        )->fetchAll(\PDO::FETCH_ASSOC);
+
+        self::assertSame(
+            [
+                ['itemId' => '10', 'moduleId' => '1'],
+                ['itemId' => '11', 'moduleId' => (string)$authTokenModule],
+            ],
+            array_map(static fn(array $r): array => [
+                'itemId' => (string)$r['itemId'],
+                'moduleId' => (string)$r['moduleId'],
+            ], $remaining)
+        );
     }
 }

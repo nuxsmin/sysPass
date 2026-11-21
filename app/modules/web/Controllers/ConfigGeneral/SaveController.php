@@ -32,6 +32,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Dtos\ConfigInput;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
@@ -187,6 +188,10 @@ final class SaveController extends ConfigSaveControllerBase
         }
     }
 
+    /**
+     * @throws UnauthorizedActionException
+     * @throws ValidationException
+     */
     private function handleAuthConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
     {
         $authBasicEnabled = $this->request->analyzeBool('authbasic_enabled', false);
@@ -210,6 +215,50 @@ final class SaveController extends ConfigSaveControllerBase
             $configData->setAuthBasicAutoLoginEnabled(false);
 
             $eventMessage->addDescription(__u('Auth Basic disabled'));
+        }
+
+        $rawDefaultDays = $this->request->analyzeString('auth_token_default_time');
+        $rawMaxDays = $this->request->analyzeString('auth_token_max_time');
+
+        if ($rawDefaultDays !== null || $rawMaxDays !== null) {
+            $currentDefault = $configData->getAuthTokenDefaultTime();
+            $currentMax = $configData->getAuthTokenMaxTime();
+            $newMax = $currentMax;
+            $newDefault = $currentDefault;
+
+            if ($rawMaxDays !== null) {
+                if (preg_match('/^\d+$/', $rawMaxDays) !== 1 || (int)$rawMaxDays <= 0) {
+                    throw new ValidationException(__u('Invalid maximum token lifetime'));
+                }
+
+                $parsedMax = (int)$rawMaxDays * 86400;
+
+                if (!$this->session->getUserData()->isAdminApp && $parsedMax !== $currentMax) {
+                    throw new UnauthorizedActionException();
+                }
+
+                $newMax = $parsedMax;
+            }
+
+            if ($rawDefaultDays !== null) {
+                if (preg_match('/^\d+$/', $rawDefaultDays) !== 1 || (int)$rawDefaultDays <= 0) {
+                    throw new ValidationException(__u('Invalid default token lifetime'));
+                }
+
+                $newDefault = (int)$rawDefaultDays * 86400;
+            }
+
+            if ($newDefault > $newMax) {
+                throw new ValidationException(__u('Default token lifetime cannot exceed the maximum lifetime'));
+            }
+
+            if ($rawMaxDays !== null && $this->session->getUserData()->isAdminApp) {
+                $configData->setAuthTokenMaxTime($newMax);
+            }
+
+            if ($rawDefaultDays !== null) {
+                $configData->setAuthTokenDefaultTime($newDefault);
+            }
         }
     }
 

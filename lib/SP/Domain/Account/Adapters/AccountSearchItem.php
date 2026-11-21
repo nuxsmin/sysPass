@@ -134,8 +134,7 @@ final class AccountSearchItem
         if (self::$publicLinkEnabled
             && $this->accountSearchView->getPublicLinkHash() !== null
         ) {
-            $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
-                       $this->uriContext->getSubUri();
+            $baseUrl = rtrim($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri(), '/');
 
             return PublicLink::getLinkForHash($baseUrl, $this->accountSearchView->getPublicLinkHash());
         }

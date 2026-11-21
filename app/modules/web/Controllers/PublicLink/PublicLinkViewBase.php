@@ -24,12 +24,12 @@
 
 namespace SP\Modules\Web\Controllers\PublicLink;
 
-use SP\Core\Bootstrap\BootstrapWeb;
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\UseCases\Dtos\GetPublicLinkCommand;
 use SP\Domain\Account\UseCases\GetPublicLinkUseCase;
+use SP\Domain\Common\Models\ItemWithIdAndNameModel;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
@@ -64,16 +64,53 @@ abstract class PublicLinkViewBase extends ControllerBase
             'usageInfo',
             unserialize($publicLink->getUseInfo() ?? '', ['allowed_classes' => false])
         );
+
+        $accounts = array_map(
+            static function (object $account): ItemWithIdAndNameModel {
+                if ($account instanceof ItemWithIdAndNameModel) {
+                    return $account;
+                }
+
+                $id = $account->id ?? ($account['id'] ?? null);
+                $name = $account->name ?? ($account['name'] ?? null);
+                $clientName = $account->clientName ?? ($account['clientName'] ?? '');
+
+                return new readonly class(
+                    $id !== null ? (int)$id : null,
+                    $name !== null ? (string)$name : null,
+                    (string)$clientName
+                ) implements ItemWithIdAndNameModel {
+                    public function __construct(
+                        private ?int $id,
+                        private ?string $name,
+                        public string $clientName
+                    ) {
+                    }
+
+                    public function getId(): ?int
+                    {
+                        return $this->id;
+                    }
+
+                    public function getName(): ?string
+                    {
+                        return $this->name;
+                    }
+                };
+            },
+            $this->accountService->getForUser()
+        );
+
         $this->view->assign(
             'accounts',
-            SelectItemAdapter::factory($this->accountService->getForUser())
+            SelectItemAdapter::factory($accounts)
                 ->getItemsFromModelSelected([$publicLink->getItemId()])
         );
 
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
-            $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapWeb::$WEBURI).BootstrapWeb::$SUBURI;
+            $baseUrl = rtrim($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri(), '/');
 
             $this->view->assign(
                 'publicLinkURL',

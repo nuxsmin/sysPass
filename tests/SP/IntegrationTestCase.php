@@ -243,7 +243,9 @@ abstract class IntegrationTestCase extends TestCase
             'isInstalled' => true,
             'isMaintenance' => false,
             'getDbName' => self::$faker->colorName(),
-            'getPasswordSalt' => $this->passwordSalt
+            'getPasswordSalt' => $this->passwordSalt,
+            'getAuthTokenDefaultTime' => \SP\Domain\Config\Adapters\ConfigData::DEFAULT_AUTH_TOKEN_TIME,
+            'getAuthTokenMaxTime' => \SP\Domain\Config\Adapters\ConfigData::DEFAULT_AUTH_TOKEN_MAX_TIME,
         ];
     }
 

@@ -178,6 +178,7 @@ use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileHandlerFactory;
 use SP\Infrastructure\File\FileSystem;
 use SP\Infrastructure\File\FileSystemAdapter;
+use SP\Infrastructure\File\LazyFileHandler;
 use SP\Infrastructure\File\PhpFileLoader;
 use SP\Infrastructure\File\XmlFileStorage;
 use SP\Infrastructure\File\YamlFileStorage;
@@ -410,7 +411,7 @@ final class CoreDefinitions
                 );
             }),
             QueryFactory::class => create(QueryFactory::class)
-                ->constructor('mysql', QueryFactory::COMMON),
+                ->constructor('mysql'),
             CryptInterface::class => create(Crypt::class),
             CryptPKIHandler::class => factory(static function (PathsContext $pathsContext) {
                 $publicKeyPath = FileSystem::buildPath(
@@ -455,7 +456,7 @@ final class CoreDefinitions
             BackupFileService::class => autowire(BackupFile::class)
                 ->constructorParameter(
                     'dbBackupFile',
-                    create(FileHandler::class)
+                    create(LazyFileHandler::class)
                         ->constructor(
                             factory(
                                 static fn(BackupFiles $backupFiles) => (string)$backupFiles->getDbBackupFile()

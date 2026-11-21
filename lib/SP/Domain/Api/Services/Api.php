@@ -390,7 +390,7 @@ final class Api extends Service implements ApiService
         return $this->masterKeyStore->get();
     }
 
-    public function getRequestId(): int
+    public function getRequestId(): int|float|string|null
     {
         return $this->apiRequest->getId();
     }

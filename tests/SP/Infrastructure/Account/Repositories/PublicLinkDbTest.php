@@ -57,19 +57,41 @@ final class PublicLinkDbTest extends DatabaseRepositoryTestCase
     }
 
     #[Test]
-    public function staleReadsCanBothIncrementTheSameLink(): void
+    public function staleReadsRespectMaxCountViews(): void
     {
+        $pdo = getDbHandler()->getConnection();
         $link = $this->publicLink->getAll()->getDataAsArray(PublicLinkModel::class)[0];
+
+        $update = $pdo->prepare('UPDATE PublicLink SET dateExpire = ?, countViews = maxCountViews - 1 WHERE hash = ?');
+        $update->execute([time() + 600, $link->getHash()]);
+
         $first = $this->publicLink->getByHash($link->getHash())->getData(PublicLinkModel::class);
         $second = $this->publicLink->getByHash($link->getHash())->getData(PublicLinkModel::class);
-        $initial = $first->getCountViews();
 
         self::assertTrue($this->publicLink->addLinkView($first));
-        self::assertTrue($this->publicLink->addLinkView($second));
+        self::assertFalse($this->publicLink->addLinkView($second));
 
-        $query = getDbHandler()->getConnection()->prepare('SELECT countViews FROM PublicLink WHERE hash = ?');
+        $query = $pdo->prepare('SELECT countViews, maxCountViews FROM PublicLink WHERE hash = ?');
         $query->execute([$link->getHash()]);
-        self::assertSame($initial + 2, (int) $query->fetchColumn());
+        $row = $query->fetch(\PDO::FETCH_ASSOC);
+        self::assertSame((int) $row['maxCountViews'], (int) $row['countViews']);
     }
 
+    #[Test]
+    public function expiredLinkCannotIncrementView(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $link = $this->publicLink->getAll()->getDataAsArray(PublicLinkModel::class)[0];
+
+        $update = $pdo->prepare('UPDATE PublicLink SET dateExpire = ?, countViews = 0 WHERE hash = ?');
+        $update->execute([time() - 60, $link->getHash()]);
+
+        $expired = $this->publicLink->getByHash($link->getHash())->getData(PublicLinkModel::class);
+
+        self::assertFalse($this->publicLink->addLinkView($expired));
+
+        $query = $pdo->prepare('SELECT countViews FROM PublicLink WHERE hash = ?');
+        $query->execute([$link->getHash()]);
+        self::assertSame(0, (int) $query->fetchColumn());
+    }
 }

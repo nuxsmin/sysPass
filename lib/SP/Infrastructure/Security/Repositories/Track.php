@@ -127,8 +127,7 @@ final class Track extends BaseRepository implements TrackRepository
                              'ipv4' => $track->getIpv4(),
                              'ipv6' => $track->getIpv6(),
                              'source' => $track->getSource()
-                         ])
-            ->limit(1);
+                         ]);
 
         $queryData = QueryData::buildWithMapper($query, TrackModel::class);
 

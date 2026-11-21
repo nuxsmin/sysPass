@@ -619,7 +619,7 @@ class AccountTest extends IntegrationTestCase
     }
 
     #[Test]
-    public function unreadableVaultAfterParsingRecordsViewBeforeFailure(): void
+    public function unreadableVaultAfterParsingDoesNotRecordViewBeforeFailure(): void
     {
         $correctKey = new PublicLinkKey($this->passwordSalt);
         $wrongKey = new PublicLinkKey($this->passwordSalt);
@@ -629,10 +629,10 @@ class AccountTest extends IntegrationTestCase
         $service = $this->createMock(PublicLinkService::class);
         $service->method('getByHash')->willReturn($link);
         $service->method('getPublicLinkKey')->willReturn($correctKey);
-        $service->expects(self::once())->method('addLinkView');
+        $service->expects(self::never())->method('addLinkView');
         $accounts = $this->createMock(AccountService::class);
-        $accounts->expects(self::once())->method('incrementViewCounter');
-        $accounts->expects(self::once())->method('incrementDecryptCounter');
+        $accounts->expects(self::never())->method('incrementViewCounter');
+        $accounts->expects(self::never())->method('incrementDecryptCounter');
         $container = $this->buildContainer(
             self::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . $correctKey->getHash()]),
             [PublicLinkService::class => $service, AccountService::class => $accounts,
@@ -650,13 +650,60 @@ class AccountTest extends IntegrationTestCase
     }
 
     #[Test]
-    public function generatedPublicLinkForAnonymousVisitorDoesNotReachHashLookup(): void
+    public function failedAtomicViewUpdateDoesNotExposeAccountOrIncrementAccountCounters(): void
+    {
+        $key = new PublicLinkKey($this->passwordSalt);
+        $accountModel = AccountDataGenerator::factory()->buildAccountDataView();
+        $payload = serialize(
+            new Simple(
+                array_merge(
+                    $accountModel->toArray(),
+                    [
+                        'name' => 'synthetic-account-marker',
+                        'pass' => 'synthetic-secret',
+                        'key' => '',
+                    ]
+                )
+            )
+        );
+        $vault = Vault::factory(new Crypt())->saveData($payload, $key->getKey());
+        $link = $this->buildPublicLinkWithPayload($vault->getSerialized())->mutate(['hash' => $key->getHash()]);
+        $service = $this->createMock(PublicLinkService::class);
+        $service->method('getByHash')->willReturn($link);
+        $service->method('getPublicLinkKey')->willReturn($key);
+        $service->expects(self::once())->method('addLinkView')->willReturn(false);
+        $accounts = $this->createMock(AccountService::class);
+        $accounts->expects(self::never())->method('incrementViewCounter');
+        $accounts->expects(self::never())->method('incrementDecryptCounter');
+        $container = $this->buildContainer(
+            self::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . $key->getHash()]),
+            [PublicLinkService::class => $service, AccountService::class => $accounts,
+                DatabaseUtilInterface::class => $this->databaseUtilStub(), Context::class => $this->getUnauthenticatedContext()]
+        );
+
+        ob_start();
+        try {
+            self::runApp($container);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+        self::assertStringNotContainsString('synthetic-account-marker', $output);
+        self::assertStringNotContainsString('synthetic-secret', $output);
+        self::assertStringContainsString('permission to access this page', $output);
+        self::assertSame(200, $container->get(\Klein\Response::class)->code());
+    }
+
+    #[Test]
+    public function generatedPublicLinkForAnonymousVisitorReachesHashLookup(): void
     {
         $hash = str_repeat('a', 64);
         $url = \SP\Domain\Account\Services\PublicLink::getLinkForHash('http://localhost', $hash);
+        self::assertSame('http://localhost/index.php?r=account/viewLink/' . $hash, $url);
+
         parse_str((string) parse_url($url, PHP_URL_QUERY), $params);
         $service = $this->createMock(PublicLinkService::class);
-        $service->expects(self::never())->method('getByHash');
+        $service->expects(self::once())->method('getByHash')->with($hash)
+            ->willReturn($this->buildPublicLinkWithPayload('')->mutate(['dateExpire' => time() - 60]));
         $container = $this->buildContainer(
             self::buildRequest('get', 'index.php', $params),
             [PublicLinkService::class => $service, Context::class => $this->getUnauthenticatedContext(),
@@ -670,8 +717,7 @@ class AccountTest extends IntegrationTestCase
             $output = (string) ob_get_clean();
         }
         self::assertSame(200, $container->get(\Klein\Response::class)->code());
-        self::assertSame('', $output);
-        self::assertSame('', $container->get(\Klein\Response::class)->body());
+        self::assertStringContainsString('permission to access this page', $output);
     }
 
     #[Test]

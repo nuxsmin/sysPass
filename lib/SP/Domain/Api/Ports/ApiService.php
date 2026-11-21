@@ -90,7 +90,7 @@ interface ApiService
      */
     public function getMasterPass(): string;
 
-    public function getRequestId(): int;
+    public function getRequestId(): int|float|string|null;
 
     /**
      * @throws InvalidClassException

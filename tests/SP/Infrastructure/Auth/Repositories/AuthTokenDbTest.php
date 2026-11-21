@@ -53,6 +53,7 @@ final class AuthTokenDbTest extends DatabaseRepositoryTestCase
 
         self::assertSame(1, $result->getNumRows());
         self::assertSame(2, $result->getDataAsArray()[0]->userId);
+        self::assertNull($result->getDataAsArray()[0]->getToken());
     }
 
     #[Test]
@@ -62,5 +63,51 @@ final class AuthTokenDbTest extends DatabaseRepositoryTestCase
 
         self::assertSame(1, $page->getNumRows());
         self::assertSame(5, $page->getTotalNumRows());
+    }
+
+    #[Test]
+    public function searchForNonAdminIsolatesUserRowsEvenWhenOrFilterMatchesAnotherUser(): void
+    {
+        $this->context->setUserData($this->context->getUserData()->mutate(['id' => 2, 'isAdminApp' => false]));
+
+        $ownResult = $this->authToken->search(new ItemSearchDto('demo'));
+        self::assertSame(1, $ownResult->getNumRows());
+        self::assertSame(2, $ownResult->getDataAsArray()[0]->userId);
+
+        $otherUserMatch = $this->authToken->search(new ItemSearchDto('admin'));
+        self::assertSame(0, $otherUserMatch->getNumRows());
+    }
+
+    #[Test]
+    public function createAllowsMultipleActionsForSameUserAndRejectsSameUserAndAction(): void
+    {
+        $first = new \SP\Domain\Auth\Models\AuthToken([
+            'userId' => 2,
+            'token' => bin2hex(random_bytes(32)),
+            'actionId' => \SP\Domain\Core\Acl\AclActionsInterface::CLIENT_SEARCH,
+            'createdBy' => 1,
+        ]);
+        $second = new \SP\Domain\Auth\Models\AuthToken([
+            'userId' => 2,
+            'token' => bin2hex(random_bytes(32)),
+            'actionId' => \SP\Domain\Core\Acl\AclActionsInterface::CATEGORY_SEARCH,
+            'createdBy' => 1,
+        ]);
+
+        $firstId = $this->authToken->create($first)->getLastId();
+        $secondId = $this->authToken->create($second)->getLastId();
+
+        self::assertGreaterThan(0, $firstId);
+        self::assertGreaterThan($firstId, $secondId);
+
+        $this->expectException(\SP\Domain\Core\Exceptions\DuplicatedItemException::class);
+        $this->expectExceptionMessage('Authorization already exist');
+
+        $this->authToken->create(new \SP\Domain\Auth\Models\AuthToken([
+            'userId' => 2,
+            'token' => bin2hex(random_bytes(32)),
+            'actionId' => \SP\Domain\Core\Acl\AclActionsInterface::CATEGORY_SEARCH,
+            'createdBy' => 1,
+        ]));
     }
 }

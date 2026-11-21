@@ -171,10 +171,13 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
+        if (!$this->context->getUserData()->isAdminApp) {
+            $query->where('PublicLink.userId = :userId')
+                  ->bindValue('userId', $this->context->getUserData()->id);
+        }
+
         if (!empty($itemSearchData->getSeachString())) {
-            $query->where('User.login LIKE :login')
-                  ->orWhere('Account.name LIKE :accountName')
-                  ->orWhere('Client.name LIKE :clientName');
+            $query->where('(User.login LIKE :login OR Account.name LIKE :accountName OR Client.name LIKE :clientName)');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
 
@@ -263,7 +266,12 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->set('totalCountViews', '(totalCountViews + 1)')
             ->col('useInfo', $publicLinkData->getUseInfo())
             ->where('hash = :hash')
-            ->bindValues(['hash' => $publicLinkData->getHash()]);
+            ->where('countViews < maxCountViews')
+            ->where('dateExpire > :now')
+            ->bindValues([
+                'hash' => $publicLinkData->getHash(),
+                'now' => time(),
+            ]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the link'));
 

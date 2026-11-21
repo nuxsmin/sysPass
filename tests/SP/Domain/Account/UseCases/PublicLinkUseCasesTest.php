@@ -152,15 +152,31 @@ final class PublicLinkUseCasesTest extends TestCase
     }
 
     #[Test]
-    public function deleteBatchEmitsTheSelectionEvent(): void
+    public function deleteBatchDeduplicatesIdsAndEmitsTheSelectionEvent(): void
     {
-        $this->service->method('deleteByIdBatch')->willReturn(2);
+        $this->service
+            ->expects(self::once())
+            ->method('deleteByIdBatch')
+            ->with([4, 5])
+            ->willReturn(2);
 
         $result = (new DeletePublicLinksUseCase($this->service, $this->eventEmitter))
-            ->execute(new DeletePublicLinksCommand([4, 5]));
+            ->execute(new DeletePublicLinksCommand([4, 5, 4]));
 
         self::assertSame([4, 5], $result->ids);
         self::assertEvent('delete.publicLink.selection', 'Links deleted');
+    }
+
+    #[Test]
+    public function deleteBatchRejectsEmptyIds(): void
+    {
+        $this->service->expects(self::never())->method('deleteByIdBatch');
+
+        $this->expectException(\SP\Domain\Common\Services\ServiceException::class);
+        $this->expectExceptionMessage('Error while removing the links');
+
+        (new DeletePublicLinksUseCase($this->service, $this->eventEmitter))
+            ->execute(new DeletePublicLinksCommand([]));
     }
 
     #[Test]
@@ -173,6 +189,18 @@ final class PublicLinkUseCasesTest extends TestCase
 
         self::assertSame(4, $result->id);
         self::assertSame('edit.publicLink.refresh', $this->eventEmitter->getLastEvent()['name']);
+    }
+
+    #[Test]
+    public function refreshThrowsWhenServiceReturnsFalse(): void
+    {
+        $this->service->method('refresh')->willReturn(false);
+
+        $this->expectException(\SP\Domain\Common\Services\ServiceException::class);
+        $this->expectExceptionMessage('Error while renewing the link');
+
+        (new RefreshPublicLinkUseCase($this->service, $this->eventEmitter))
+            ->execute(new RefreshPublicLinkCommand(4));
     }
 
     #[Test]
@@ -190,12 +218,13 @@ final class PublicLinkUseCasesTest extends TestCase
     #[Test]
     public function searchReturnsTheLinks(): void
     {
-        $this->service->method('search')->willReturn(QueryResult::withTotalNumRows([], 2));
+        $link = PublicLinkDataGenerator::factory()->buildPublicLink();
+        $this->service->method('search')->willReturn(QueryResult::withTotalNumRows([$link], 2));
 
         $result = (new SearchPublicLinksUseCase($this->service))
             ->execute(new SearchPublicLinksCommand(new ItemSearchDto()));
 
-        self::assertSame([], $result->publicLinks);
+        self::assertSame([$link], $result->publicLinks);
         self::assertSame(2, $result->total);
     }
 

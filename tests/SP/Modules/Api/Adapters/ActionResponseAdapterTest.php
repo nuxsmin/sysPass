@@ -144,19 +144,23 @@ class ActionResponseAdapterTest extends UnitaryTestCase
     }
 
     #[Test]
-    public function toJsonRpcRejectsStringAndNullIdsDueToStrictIntSignature(): void
+    public function toJsonRpcAndErrorPreserveIntFloatStringAndNullIds(): void
     {
+        $response = ActionResponse::ok('Ok', ['x' => 1]);
+        $exception = SPException::error('Wrong', 'Hint', ActionResponseAdapter::INVALID_PARAMS);
         $adapter = new ActionResponseAdapter();
-        $response = ActionResponse::ok('Ok', []);
 
-        try {
-            $adapter->toJsonRpc($response, 'abc');
-            self::fail('Expected TypeError for string id');
-        } catch (\TypeError $e) {
-            self::assertStringContainsString('must be of type int', $e->getMessage());
+        foreach ([0, 1.5, 'abc', '0', null] as $id) {
+            $ok = json_decode($adapter->toJsonRpc($response, $id), true, 512, JSON_THROW_ON_ERROR);
+            $err = json_decode($adapter->toJsonRpcError('Err', -32600, $id), true, 512, JSON_THROW_ON_ERROR);
+            $exc = json_decode($adapter->toJsonRpcException($exception, $id), true, 512, JSON_THROW_ON_ERROR);
+
+            self::assertArrayHasKey('id', $ok);
+            self::assertArrayHasKey('id', $err);
+            self::assertArrayHasKey('id', $exc);
+            self::assertSame($id, $ok['id']);
+            self::assertSame($id, $err['id']);
+            self::assertSame($id, $exc['id']);
         }
-
-        $this->expectException(\TypeError::class);
-        $adapter->toJsonRpcError('Err', -32600, null);
     }
 }

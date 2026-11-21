@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Tests\Modules\Web\Controllers\UserPassReset;
 
-use Aura\SqlQuery\QueryFactory;
 use Error;
 use Klein\Request;
 use PDO;
@@ -76,15 +75,8 @@ final class UserPassRecoverDbIntegrationTest extends DatabaseIntegrationTestCase
         );
     }
 
-    /**
-     * Characterization of CoreDefinitions::QueryFactory::COMMON defect:
-     * Production DI constructs QueryFactory('mysql', QueryFactory::COMMON), so newUpdate()
-     * returns Common\Update without limit(). Calling UserPassRecoverRepository::toggleUsedByHash()
-     * through dispatch throws an uncaught \Error (not caught by SaveResetController or Bootstrap),
-     * leaving UserPassRecover.used = 0 and User.pass unchanged.
-     */
     #[Test]
-    public function productionDiSaveResetThrowsUncaughtErrorOnCommonUpdateLimit(): void
+    public function productionDiSaveResetUpdatesPasswordAndMarksHashUsed(): void
     {
         $pdo = getDbHandler()->getConnection();
         $pdo->exec('TRUNCATE TABLE UserPassRecover');
@@ -115,26 +107,23 @@ final class UserPassRecoverDbIntegrationTest extends DatabaseIntegrationTestCase
             [],
             [
                 'hash' => $hash,
-                'password' => 'never-applied-2026',
-                'password_repeat' => 'never-applied-2026',
+                'password' => 'updated-synthetic-pass-2026',
+                'password_repeat' => 'updated-synthetic-pass-2026',
             ],
             [Context::class => $this->getUnauthenticatedContext()]
         );
-        self::assertSame(500, $resetRes['code']);
+        self::assertSame(200, $resetRes['code']);
         $resetJson = json_decode($resetRes['body'], true, 512, JSON_THROW_ON_ERROR);
-        self::assertSame('ERROR', $resetJson['status'] ?? null);
-        self::assertSame('Internal error', $resetJson['description'] ?? null);
-        self::assertArrayHasKey('data', $resetJson);
-        self::assertNull($resetJson['data']);
-        self::assertStringNotContainsString('Aura\\SqlQuery', $resetRes['body']);
+        self::assertSame('OK', $resetJson['status'] ?? null);
+        self::assertSame('Password updated', $resetJson['description'] ?? null);
 
         $usedStmt = $pdo->prepare('SELECT used FROM UserPassRecover WHERE hash = :hash');
         $usedStmt->execute(['hash' => $hash]);
-        self::assertSame(0, (int)$usedStmt->fetchColumn());
+        self::assertSame(1, (int)$usedStmt->fetchColumn());
 
         $passStmt = $pdo->prepare('SELECT pass FROM User WHERE id = :id');
         $passStmt->execute(['id' => $userId]);
-        self::assertSame($initialPassHash, (string)$passStmt->fetchColumn());
+        self::assertNotSame($initialPassHash, (string)$passStmt->fetchColumn());
     }
 
     /**
@@ -218,7 +207,6 @@ final class UserPassRecoverDbIntegrationTest extends DatabaseIntegrationTestCase
             [
                 Context::class => $anonContext,
                 UserService::class => $failingUserService,
-                QueryFactory::class => new QueryFactory('mysql'),
             ]
         );
         $this->assertJsonDenied($failedReset, 'Error while updating the password');
@@ -244,7 +232,6 @@ final class UserPassRecoverDbIntegrationTest extends DatabaseIntegrationTestCase
             ],
             [
                 Context::class => $anonContext,
-                QueryFactory::class => new QueryFactory('mysql'),
             ]
         );
         $this->assertJsonDenied($retryReset, 'Wrong hash or expired');
@@ -557,7 +544,6 @@ $request = new Request(
 
 $builder = new ContainerBuilder();
 $builder->addDefinitions($domainDefs, $coreDefs, $moduleDefs, [
-    QueryFactory::class => new QueryFactory('mysql'),
     DatabaseConnectionData::class => $connData,
     DatabaseInterface::class => static fn(EventDispatcherInterface $ev) => new Database(getDbHandler($connData), $ev),
     ConfigFileService::class => $configFileService,

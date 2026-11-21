@@ -99,6 +99,101 @@ class ConfigGeneralTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
     }
 
+    #[Test]
+    public function saveAuthTokenLifetimesAsAdminStoresSeconds(): void
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'configGeneral/save'],
+                array_merge($this->getConfigParams(), [
+                    'auth_token_default_time' => '60',
+                    'auth_token_max_time' => '180',
+                ])
+            ),
+            [
+                \SP\Domain\Core\Context\Context::class => $this->buildAdminContext(),
+            ]
+        );
+
+        $this->expectOutputString('{"status":"OK","description":"Configuration updated","data":null}');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    #[Test]
+    public function nonAdminCannotModifyAuthTokenMaxTime(): void
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'configGeneral/save'],
+                array_merge($this->getConfigParams(), [
+                    'auth_token_max_time' => '180',
+                ])
+            )
+        );
+
+        $this->expectOutputRegex('/You don\'t have permission to do this operation/');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    #[Test]
+    public function saveRejectsDefaultTokenLifetimeGreaterThanMax(): void
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'configGeneral/save'],
+                array_merge($this->getConfigParams(), [
+                    'auth_token_default_time' => '200',
+                    'auth_token_max_time' => '100',
+                ])
+            ),
+            [
+                \SP\Domain\Core\Context\Context::class => $this->buildAdminContext(),
+            ]
+        );
+
+        $this->expectOutputRegex('/Default token lifetime cannot exceed the maximum lifetime/');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    #[Test]
+    public function saveRejectsNonPositiveTokenLifetime(): void
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'configGeneral/save'],
+                array_merge($this->getConfigParams(), [
+                    'auth_token_default_time' => '0',
+                ])
+            )
+        );
+
+        $this->expectOutputRegex('/Invalid default token lifetime/');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    private function buildAdminContext(): \SP\Domain\Core\Context\SessionContext
+    {
+        $context = self::createStub(\SP\Domain\Core\Context\SessionContext::class);
+        $context->method('isLoggedIn')->willReturn(true);
+        $context->method('getAuthCompleted')->willReturn(true);
+        $context->method('getUserData')->willReturn($this->getUserDataDto()->mutate(['isAdminApp' => true]));
+        $context->method('getUserProfile')->willReturn(new \SP\Domain\User\Models\ProfileData());
+
+        return $context;
+    }
+
     private function getConfigParams(): array
     {
         return [

@@ -93,7 +93,9 @@ function setup() {
     const record = {
         calls: [],
         out: [],
-        notifications: []
+        notifications: [],
+        magnificClosed: 0,
+        dialogs: []
     };
 
     globalThis.document = {
@@ -115,11 +117,13 @@ function setup() {
 
     const frmSearch = makeElement({"action-route": "account/search"});
     const resContent = makeElement();
+    const contentEl = makeElement();
     const badge = makeElement({"color-class": "danger"});
     const tooltip = makeElement();
     const elements = {
         "#frmSearch": frmSearch,
         "#res-content": resContent,
+        "#content": contentEl,
         "select.select-box-tags[data-hash][data-updated=true]": makeCollection([]),
         ".notifications-badge": makeCollection([badge]),
         ".notifications-tooltip": tooltip,
@@ -131,6 +135,18 @@ function setup() {
             return selector;
         }
         return elements[selector];
+    };
+    globalThis.$.magnificPopup = {
+        close: function () {
+            record.magnificClosed += 1;
+        }
+    };
+    globalThis.mdlDialog = function () {
+        return {
+            show: function (options) {
+                record.dialogs.push(options);
+            }
+        };
     };
 
     globalThis.sysPassApp = {
@@ -176,8 +192,12 @@ function setup() {
         },
         config: {
             LANG: {
+                43: "Accept",
                 68: "No updates available",
-                69: "Unable to check for updates"
+                69: "Unable to check for updates",
+                73: "API Token",
+                74: "Copy and store this token now. It will not be shown again.",
+                75: "Copy Token"
             }
         }
     };
@@ -393,3 +413,68 @@ test("main.getUpdates displays a warning without update content on failure", fun
     assert.equal(context.updates.children[1].textContent, "Unable to check for updates");
     assert.deepEqual(context.updates.htmlValues, []);
 });
+
+test("appMgmt.save displays generated token once in a DOM-escaped modal on create or refresh", function () {
+    const context = setup();
+    const $form = makeForm({"action-route": "authToken/saveCreate"});
+
+    context.actions.appMgmt.save($form);
+    assert.equal(context.record.calls.length, 1);
+
+    const syntheticToken = "<script>synthetic-token-123</script>";
+    context.record.calls[0].callback({
+        status: 0,
+        description: "Authorization added",
+        data: {itemId: 42, token: syntheticToken}
+    });
+
+    assert.equal(context.record.out.length, 1);
+    assert.equal(context.record.magnificClosed, 1);
+    assert.equal(context.record.dialogs.length, 1);
+
+    const dialog = context.record.dialogs[0];
+    assert.equal(dialog.title, "API Token");
+    assert.equal(dialog.cancelable, false);
+    assert.equal(dialog.positive.title, "Accept");
+    assert.equal(typeof dialog.text, "object");
+
+    const row = dialog.text.children[1];
+    const tokenNode = row.children[0];
+    const copyButton = row.children[1];
+    assert.equal(tokenNode.attrs.class, "dialog-text dialog-token-text");
+    assert.equal(tokenNode.textContent, syntheticToken);
+    assert.equal(copyButton.attrs["data-clipboard-target"], ".dialog-token-text");
+});
+
+test("appMgmt.save closes the form without opening a token modal on metadata-only update", function () {
+    const context = setup();
+    const $form = makeForm({"action-route": "authToken/saveEdit/42"});
+
+    context.actions.appMgmt.save($form);
+    context.record.calls[0].callback({
+        status: "OK",
+        description: "Authorization updated",
+        data: null
+    });
+
+    assert.equal(context.record.out.length, 1);
+    assert.equal(context.record.magnificClosed, 1);
+    assert.equal(context.record.dialogs.length, 0);
+});
+
+test("appMgmt.save does not close the form or open a token modal on error status", function () {
+    const context = setup();
+    const $form = makeForm({"action-route": "authToken/saveCreate"});
+
+    context.actions.appMgmt.save($form);
+    context.record.calls[0].callback({
+        status: 1,
+        description: "Validation error",
+        data: null
+    });
+
+    assert.equal(context.record.out.length, 1);
+    assert.equal(context.record.magnificClosed, 0);
+    assert.equal(context.record.dialogs.length, 0);
+});
+

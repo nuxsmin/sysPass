@@ -51,7 +51,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
 
     public const TABLE = 'AuthToken';
 
-    private const SEARCH_ONLY_FIELDS = ['name', 'login'];
+    private const SEARCH_ONLY_FIELDS = ['name', 'login', 'noExpiry'];
 
     /**
      * @param int $id
@@ -158,7 +158,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
                        'AuthToken.id',
                        'AuthToken.userId',
                        'AuthToken.actionId',
-                       'AuthToken.token',
+                       'AuthToken.expireDate',
                        'User.name',
                        'User.login'
                    ])
@@ -166,8 +166,13 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
+        if (!$this->context->getUserData()->isAdminApp) {
+            $query->where('AuthToken.userId = :userId')
+                  ->bindValue('userId', $this->context->getUserData()->id);
+        }
+
         if (!empty($itemSearchData->getSeachString())) {
-            $query->where('User.login  LIKE :userLogin OR User.name LIKE :userName');
+            $query->where('(User.login LIKE :userLogin OR User.name LIKE :userName)');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
 
@@ -218,8 +223,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
             ->newSelect()
             ->cols(['id'])
             ->from(self::TABLE)
-            ->where('userId = :userId')
-            ->orWhere('token = :token')
+            ->where('(userId = :userId OR token = :token)')
             ->where('actionId = :actionId')
             ->bindValues(
                 [
@@ -230,30 +234,6 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
             );
 
         return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
-    }
-
-    /**
-     * Obtener el token de la API de un usuario
-     *
-     * @param int $userId
-     * @return QueryResult<T>
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function getTokenByUserId(int $userId): QueryResult
-    {
-        $query = $this->queryFactory
-            ->newSelect()
-            ->from(self::TABLE)
-            ->cols(AuthTokenModel::getCols(self::SEARCH_ONLY_FIELDS))
-            ->where('userId = :userId')
-            ->where('token <> \'\'')
-            ->bindValues(['userId' => $userId])
-            ->limit(1);
-
-        $queryData = QueryData::buildWithMapper($query, AuthTokenModel::class);
-
-        return $this->db->runQuery($queryData);
     }
 
     /**
@@ -311,59 +291,6 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
             );
 
         return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
-    }
-
-    /**
-     * Regenerar el hash de los tokens de un usuario
-     *
-     * @param int $userId
-     * @param string $token
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function refreshTokenByUserId(int $userId, string $token): int
-    {
-        $query = $this->queryFactory
-            ->newUpdate()
-            ->table(self::TABLE)
-            ->col('token', $token)
-            ->set('startDate', 'UNIX_TIMESTAMP()')
-            ->where('userId = :userId', ['userId' => $userId]);
-
-        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
-
-        return $this->db->runQuery($queryData)->getAffectedNumRows();
-    }
-
-    /**
-     * Regenerar el hash de los tokens de un usuario
-     *
-     * @param int $userId
-     * @param string $vault
-     * @param string $hash
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function refreshVaultByUserId(int $userId, string $vault, string $hash): int
-    {
-        $query = $this->queryFactory
-            ->newUpdate()
-            ->table(self::TABLE)
-            ->cols([
-                       'vault' => $vault,
-                       'hash' => $hash
-                   ])
-            ->set('startDate', 'UNIX_TIMESTAMP()')
-            ->where('userId = :userId', ['userId' => $userId])
-            ->where('vault IS NOT NULL');
-
-        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Internal error'));
-
-        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**

@@ -149,6 +149,25 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
     }
 
     /**
+     * Delete custom field data for a single item and module using scalar bindings
+     *
+     * @return QueryResult<T>
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function deleteByItem(int $itemId, int $moduleId): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(CustomFieldDataModel::TABLE)
+            ->where('itemId = :itemId')
+            ->where('moduleId = :moduleId')
+            ->bindValues(['itemId' => $itemId, 'moduleId' => $moduleId]);
+
+        return $this->db->runQuery(QueryData::build($query));
+    }
+
+    /**
      * Returns all the items
      *
      * @return QueryResult<T>

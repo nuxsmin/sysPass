@@ -192,6 +192,20 @@ final class CustomFieldData extends Service implements CustomFieldDataService
     }
 
     /**
+     * Delete custom field data for a single item and module
+     *
+     * @throws ServiceException
+     */
+    public function deleteByItem(int $itemId, int $moduleId): void
+    {
+        try {
+            $this->customFieldDataRepository->deleteByItem($itemId, $moduleId);
+        } catch (SPException $e) {
+            throw ServiceException::from($e);
+        }
+    }
+
+    /**
      * Updates an item
      *
      * @param CustomFieldDataModel $customFieldData

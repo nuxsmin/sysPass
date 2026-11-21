@@ -165,13 +165,8 @@ final class HttpInitializationRedirectTest extends TestCase
         self::assertStringContainsString('Error while checking the database', $hop2['body']);
     }
 
-    /**
-     * Characterization of MaintenanceErrorController missing from Init::PARTIAL_INIT:
-     * Over real HTTP, requesting any non-partial route or error/maintenanceError itself
-     * repeatedly returns 302 Location: ...?r=error%2FmaintenanceError in a redirect loop.
-     */
     #[Test]
-    public function maintenanceModeTriggersRealHttpSelfRedirectLoop(): void
+    public function maintenanceModeRedirectsToMaintenanceErrorPage(): void
     {
         $hop1 = $this->httpGet('/index.php?r=account/search', 'maintenance_loop');
         self::assertSame(302, $hop1['status']);
@@ -179,14 +174,8 @@ final class HttpInitializationRedirectTest extends TestCase
         self::assertStringContainsString('r=' . rawurlencode('error/maintenanceError'), $loc1);
 
         $hop2 = $this->httpGet($this->locationToPathAndQuery($loc1), 'maintenance_loop');
-        self::assertSame(302, $hop2['status']);
-        $loc2 = $hop2['headers']['location'] ?? '';
-        self::assertStringContainsString('r=' . rawurlencode('error/maintenanceError'), $loc2);
-
-        $hop3 = $this->httpGet($this->locationToPathAndQuery($loc2), 'maintenance_loop');
-        self::assertSame(302, $hop3['status']);
-        $loc3 = $hop3['headers']['location'] ?? '';
-        self::assertStringContainsString('r=' . rawurlencode('error/maintenanceError'), $loc3);
+        self::assertSame(200, $hop2['status']);
+        self::assertStringContainsString('Application on maintenance', $hop2['body']);
     }
 
     /**

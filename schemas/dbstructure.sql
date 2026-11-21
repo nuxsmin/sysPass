@@ -240,6 +240,7 @@ CREATE TABLE `AuthToken`
     `startDate` int(10) unsigned     NOT NULL,
     `vault`     varbinary(2000) DEFAULT NULL,
     `hash`      varbinary(500)  DEFAULT NULL,
+    `expireDate` int(10) unsigned DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_AuthToken_01` (`token`, `actionId`),
     KEY `idx_AuthToken_01` (`userId`, `actionId`, `token`),

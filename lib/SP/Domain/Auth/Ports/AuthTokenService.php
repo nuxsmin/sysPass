@@ -30,6 +30,7 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -54,7 +55,9 @@ interface AuthTokenService
 
     /**
      * @throws ConstraintException
+     * @throws NoSuchItemException
      * @throws QueryException
+     * @throws UnauthorizedActionException
      */
     public function getById(int $id): AuthTokenModel;
 
@@ -62,17 +65,18 @@ interface AuthTokenService
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
+     * @throws UnauthorizedActionException
      */
     public function delete(int $id): void;
 
     /**
-     * Deletes all the items for given ids
+     * Deletes the given token IDs with per-token atomic outcomes.
      *
+     * @param int[] $ids
+     * @return array{deleted: int[], failed: array<int, string>}
      * @throws ServiceException
-     * @throws ConstraintException
-     * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids): void;
+    public function deleteByIdBatch(array $ids): array;
 
     /**
      * @throws SPException
@@ -82,6 +86,8 @@ interface AuthTokenService
      * @throws QueryException
      */
     public function create(AuthTokenModel $authToken): int;
+
+    public function getLastGeneratedToken(): ?string;
 
     /**
      * @throws Exception
@@ -96,6 +102,7 @@ interface AuthTokenService
      * @throws DuplicatedItemException
      * @throws NoSuchItemException
      * @throws ServiceException
+     * @throws UnauthorizedActionException
      */
     public function update(AuthTokenModel $authToken): void;
 

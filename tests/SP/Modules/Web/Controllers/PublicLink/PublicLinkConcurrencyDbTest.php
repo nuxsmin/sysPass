@@ -74,16 +74,13 @@ final class PublicLinkConcurrencyDbTest extends DatabaseIntegrationTestCase
     private const SYNTHETIC_ACCOUNT_NAME = 'Concurrent Synthetic Account';
 
     /**
-     * Characterization of current non-atomic last-view Public Link dispatch:
-     * two concurrent child PHP processes read countViews=2 (< maxCountViews=3)
-     * before either commits its UPDATE, so both visitors receive the decrypted
-     * secret and countViews exceeds maxCountViews in MariaDB.
-     *
-     * Contrast with approved target: at most one visitor receives disclosure,
-     * countViews never exceeds maxCountViews, and only successful disclosures count.
+     * With atomic addLinkView UPDATE (WHERE hash = :hash AND countViews < maxCountViews
+     * AND dateExpire > :now) and return-value checking in ViewLinkController, releasing
+     * two concurrent PHP workers at countViews=2 (< maxCountViews=3) lets strictly
+     * one visitor win the slot and disclose the secret while the loser sees permission error.
      */
     #[Test]
-    public function concurrentLastViewRequestsCharacterizeRaceAgainstMariaDb(): void
+    public function concurrentLastViewRequestsEnforceAtomicViewLimitAgainstMariaDb(): void
     {
         $pdo = getDbHandler()->getConnection();
         $pdo->exec('TRUNCATE TABLE PublicLink');
@@ -232,7 +229,6 @@ final class PublicLinkConcurrencyDbTest extends DatabaseIntegrationTestCase
             static fn(array $r): bool => str_contains($r['body'], 'permission to access this page')
         );
 
-        // Regardless of exact scheduling overlap, every disclosed response matches persisted increments
         $disclosureCount = count($disclosures);
         $summary = json_encode([
             'r0_code' => $results[0]['code'],
@@ -244,29 +240,21 @@ final class PublicLinkConcurrencyDbTest extends DatabaseIntegrationTestCase
             'linkRow' => $linkRow,
             'accountRow' => $accountRow,
         ]);
-        self::assertGreaterThanOrEqual(1, $disclosureCount, 'At least one last-view visitor must succeed: ' . $summary);
-        self::assertSame(2, $disclosureCount + count($denied));
-        self::assertSame(2 + $disclosureCount, (int) $linkRow['countViews']);
-        self::assertSame(2 + $disclosureCount, (int) $linkRow['totalCountViews']);
-        self::assertSame($disclosureCount, (int) $accountRow['countView']);
-        self::assertSame($disclosureCount, (int) $accountRow['countDecrypt']);
-
-        if ($disclosureCount === 2) {
-            // Race reproduced: both visitors received the last view and countViews exceeded maxCountViews (4 > 3)
-            self::assertGreaterThan((int) $linkRow['maxCountViews'], (int) $linkRow['countViews']);
-        }
+        self::assertSame(1, $disclosureCount, 'Strictly one concurrent last-view visitor must succeed: ' . $summary);
+        self::assertCount(1, $denied, 'Losing concurrent visitor must receive permission error: ' . $summary);
+        self::assertSame(3, (int) $linkRow['countViews']);
+        self::assertSame((int) $linkRow['maxCountViews'], (int) $linkRow['countViews']);
+        self::assertSame(3, (int) $linkRow['totalCountViews']);
+        self::assertSame(1, (int) $accountRow['countView']);
+        self::assertSame(1, (int) $accountRow['countDecrypt']);
     }
 
     /**
-     * Characterization of current DB persistence on failed vault decryption:
-     * ViewLinkController increments PublicLink.countViews, PublicLink.totalCountViews,
-     * Account.countView, and Account.countDecrypt in MariaDB BEFORE decrypting the vault,
-     * so wrong-key decryption fails with HTTP 500 while leaving all counters incremented.
-     *
-     * Contrast with approved target: only successful disclosures count toward views.
+     * When vault decryption fails (wrong key), ViewLinkController must not increment
+     * PublicLink.countViews, PublicLink.totalCountViews, Account.countView, or Account.countDecrypt.
      */
     #[Test]
-    public function viewLinkWithWrongKeyPersistsIncrementedCountersInDbBeforeFailure(): void
+    public function viewLinkWithWrongKeyDoesNotIncrementCountersInDbOnFailure(): void
     {
         $pdo = getDbHandler()->getConnection();
         $pdo->exec('TRUNCATE TABLE PublicLink');
@@ -307,10 +295,10 @@ final class PublicLinkConcurrencyDbTest extends DatabaseIntegrationTestCase
             'SELECT countView, countDecrypt FROM Account WHERE id = 1'
         )->fetch(PDO::FETCH_ASSOC);
 
-        self::assertSame(1, (int) $linkRow['countViews']);
-        self::assertSame(1, (int) $linkRow['totalCountViews']);
-        self::assertSame(1, (int) $accountRow['countView']);
-        self::assertSame(1, (int) $accountRow['countDecrypt']);
+        self::assertSame(0, (int) $linkRow['countViews']);
+        self::assertSame(0, (int) $linkRow['totalCountViews']);
+        self::assertSame(0, (int) $accountRow['countView']);
+        self::assertSame(0, (int) $accountRow['countDecrypt']);
     }
 
     #[Test]
@@ -329,18 +317,17 @@ final class PublicLinkConcurrencyDbTest extends DatabaseIntegrationTestCase
     }
 
     /**
-     * PublicLink::getLinkForHash() generates ?r=publicLink/view/<hash> (management route),
-     * not ?r=account/viewLink/<hash>. Dispatching it with a subpath base URL as an
-     * anonymous visitor hits login check (SessionTimeout -> empty 200), and as an
-     * authenticated admin attempts management ID lookup (500 Link not found).
+     * PublicLink::getLinkForHash() generates ?r=account/viewLink/<hash>, so
+     * dispatching the generated URL with a subpath base URL as an anonymous visitor
+     * reaches ViewLinkController hash lookup instead of hitting login SessionTimeout.
      */
     #[Test]
-    public function generatedPublicLinkWithSubpathBaseUrlTargetsManagementRoute(): void
+    public function generatedPublicLinkWithSubpathBaseUrlTargetsPublicViewerRoute(): void
     {
         $hash = str_repeat('b', 64);
         $url = PublicLinkServiceImpl::getLinkForHash('https://example.test/subpath', $hash);
 
-        self::assertSame('https://example.test/subpath/index.php?r=publicLink/view/' . $hash, $url);
+        self::assertSame('https://example.test/subpath/index.php?r=account/viewLink/' . $hash, $url);
 
         parse_str((string) parse_url($url, PHP_URL_QUERY), $params);
 
@@ -355,16 +342,8 @@ final class PublicLinkConcurrencyDbTest extends DatabaseIntegrationTestCase
             $anonBody = (string) ob_get_clean();
         }
         $anonResponse = $anonContainer->get(Response::class);
-        self::assertSame(200, $anonResponse->code());
-        self::assertSame('', $anonBody);
-
-        $authResult = $this->dispatch('get', $params['r']);
-        self::assertSame(500, $authResult['code']);
-        $decoded = $this->decodeJson($authResult['body']);
-        self::assertSame('ERROR', $decoded['status']);
-        self::assertSame('Internal error', $decoded['description']);
-        self::assertArrayHasKey('data', $decoded);
-        self::assertNull($decoded['data']);
+        self::assertSame(500, $anonResponse->code());
+        self::assertStringContainsString('Link not found', $anonBody !== '' ? $anonBody : (string) $anonResponse->body());
     }
 
     private function getUnauthenticatedContext(): SessionContext

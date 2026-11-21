@@ -111,6 +111,7 @@ final readonly class ConfigManagerPresenter
             $this->configData->isDemoEnabled()
             && !$userDto->isAdminApp
         );
+        $template->assign('isAdminApp', $userDto->isAdminApp);
         $template->assign(
             'isDisabled',
             $this->configData->isDemoEnabled()

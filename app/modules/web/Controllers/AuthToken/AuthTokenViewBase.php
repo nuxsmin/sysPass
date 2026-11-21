@@ -41,6 +41,8 @@ use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 
+use function SP\__;
+
 /**
  * A base class for all classes that creates viewieable actions
  */
@@ -81,9 +83,45 @@ abstract class AuthTokenViewBase extends ControllerBase
 
         $authToken = $authTokenId
             ? $this->authTokenService->getById($authTokenId)
+                                     ->mutate(['token' => null, 'vault' => null, 'hash' => null])
             : new AuthToken();
 
         $this->view->assign('authToken', $authToken);
+
+        $defaultTime = $this->configData->getAuthTokenDefaultTime();
+        $maxTime = $this->configData->getAuthTokenMaxTime();
+        $defaultDays = max(1, (int)round($defaultTime / 86400));
+        $maxExpireDateValue = date('Y-m-d', time() + max(86400, $maxTime));
+        $expireDate = $authToken->getExpireDate();
+
+        if ($authTokenId === null) {
+            $expireDateValue = '';
+            $expireDateInitial = '__new__';
+            $isNoExpiry = false;
+            $expireDateDisplay = sprintf(__('%d days'), $defaultDays);
+        } else {
+            $expireDateValue = $expireDate !== null && $expireDate > 0 ? date('Y-m-d', $expireDate) : '';
+            $expireDateInitial = $expireDate !== null && $expireDate > 0 ? date('Y-m-d', $expireDate) : 'never';
+            $isNoExpiry = $expireDate === null;
+
+            if ($expireDate === null) {
+                $expireDateDisplay = __('Never');
+            } elseif ($expireDate <= 0) {
+                $expireDateDisplay = __('Invalid');
+            } elseif ($expireDate <= time()) {
+                $expireDateDisplay = date('Y-m-d H:i', $expireDate) . ' (' . __('Expired') . ')';
+            } else {
+                $expireDateDisplay = date('Y-m-d H:i', $expireDate);
+            }
+        }
+
+        $this->view->assign('isAdminApp', (bool)$this->userDto?->isAdminApp);
+        $this->view->assign('defaultTokenDays', $defaultDays);
+        $this->view->assign('expireDateValue', $expireDateValue);
+        $this->view->assign('expireDateInitial', $expireDateInitial);
+        $this->view->assign('maxExpireDateValue', $maxExpireDateValue);
+        $this->view->assign('isNoExpiry', $isNoExpiry);
+        $this->view->assign('expireDateDisplay', $expireDateDisplay);
 
         $this->view->assign(
             'users',

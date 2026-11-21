@@ -125,19 +125,57 @@ final class ViewLinkController extends AccountControllerBase
                 return ActionResponse::ok($this->render());
             }
 
-            $this->publicLinkService->addLinkView($publicLink);
+            $decryptedAccount = Serde::deserialize(
+                $vault->getData(
+                    $this->publicLinkService->getPublicLinkKey($publicLink->getHash())->getKey()
+                ),
+                Simple::class
+            );
+            $accountProps = $decryptedAccount->toArray(includeOuter: true);
+            $accountViewDto = AccountViewDto::fromArray(
+                array_merge(
+                    [
+                        'id' => $publicLink->getItemId(),
+                        'name' => '',
+                        'login' => '',
+                        'clientId' => 0,
+                        'categoryId' => 0,
+                        'pass' => '',
+                        'userId' => 0,
+                        'userName' => '',
+                        'key' => '',
+                        'url' => '',
+                        'notes' => '',
+                        'userEditId' => 0,
+                        'userEditName' => '',
+                        'userEditLogin' => '',
+                        'isPrivate' => false,
+                        'isPrivateGroup' => false,
+                        'userGroupId' => 0,
+                        'userGroupName' => '',
+                        'otherUserEdit' => false,
+                        'otherUserGroupEdit' => false,
+                        'countView' => 0,
+                        'countDecrypt' => 0,
+                        'dateAdd' => '',
+                    ],
+                    array_filter($accountProps, static fn ($value) => $value !== null)
+                )
+            );
+
+            if (!$this->publicLinkService->addLinkView($publicLink)) {
+                ErrorUtil::showErrorInView(
+                    $this->view,
+                    ErrorUtil::ERR_PAGE_NO_PERMISSION,
+                    true,
+                    'account-link'
+                );
+
+                return ActionResponse::ok($this->render());
+            }
 
             $this->accountService->incrementViewCounter($publicLink->getItemId());
             $this->accountService->incrementDecryptCounter($publicLink->getItemId());
-
-            $accountViewDto = AccountViewDto::fromModel(
-                Serde::deserialize(
-                    $vault->getData(
-                        $this->publicLinkService->getPublicLinkKey($publicLink->getHash())->getKey()
-                    ),
-                    Simple::class
-                )
-            );
 
             $this->view->assign(
                 'title',

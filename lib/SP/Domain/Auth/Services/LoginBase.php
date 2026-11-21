@@ -56,7 +56,7 @@ abstract class LoginBase extends Service
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
-        $this->trackRequest = $this->trackService->buildTrackRequest(static::class);
+        $this->trackRequest = $this->trackService->buildTrackRequest(Login::class);
     }
 
     /**

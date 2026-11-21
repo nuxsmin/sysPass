@@ -81,18 +81,15 @@ final class SecurityAndPluginDbIntegrationTest extends DatabaseIntegrationTestCa
     }
 
     #[Test]
-    public function trackUnlockCrashes500ViaUpdateLimitAndCheckTrackingIsCappedAtOneRow(): void
+    public function trackUnlockUpdatesDbAndCheckTrackingCountsAllRows(): void
     {
         $pdo = getDbHandler()->getConnection();
 
         $unlockResult = $this->dispatch('post', 'track/unlock/1');
-        self::assertSame(500, $unlockResult['code']);
-        $unlockJson = $this->decodeJson($unlockResult['body']);
-        self::assertSame('ERROR', $unlockJson['status']);
-        self::assertSame('Internal error', $unlockJson['description']);
+        $this->assertJsonOk($unlockResult, 'Track unlocked');
         self::assertSame(
-            0,
-            (int)$pdo->query('SELECT COUNT(*) FROM Track WHERE timeUnlock IS NOT NULL')->fetchColumn()
+            1,
+            (int)$pdo->query('SELECT COUNT(*) FROM Track WHERE id = 1 AND timeUnlock IS NOT NULL')->fetchColumn()
         );
 
         // Seed 12 recent Track rows matching source='login' and client IP 192.0.2.10
@@ -125,26 +122,27 @@ final class SecurityAndPluginDbIntegrationTest extends DatabaseIntegrationTestCa
             'source' => $trackRequest->getSource(),
             'time' => $trackRequest->getTime(),
         ]);
-        self::assertSame(1, $repo->getTracksForClientFromTime($trackModel)->getNumRows());
-        self::assertFalse($trackService->checkTracking($trackRequest));
+        self::assertSame(12, $repo->getTracksForClientFromTime($trackModel)->getNumRows());
+        self::assertTrue($trackService->checkTracking($trackRequest));
     }
 
     #[Test]
-    public function pluginEnableDisableSingleDeleteCrash500WhileResetAndBatchDeleteCharacterizeDbState(): void
+    public function pluginEnableDisableSingleDeleteUpdateDbWhileResetAndBatchDeleteCharacterizeDbState(): void
     {
         $pdo = getDbHandler()->getConnection();
 
-        // 1. Enable/Disable/Single-Delete all call Update::limit(1) / Delete::limit(1) on autowired QueryFactory::COMMON -> Error -> HTTP 500 JSON
-        foreach (['plugin/enable/1', 'plugin/disable/3', 'plugin/delete/1'] as $route) {
-            $res = $this->dispatch('post', $route);
-            self::assertSame(500, $res['code'], $route);
-            $json = $this->decodeJson($res['body']);
-            self::assertSame('ERROR', $json['status'], $route);
-            self::assertSame('Internal error', $json['description'], $route);
-        }
-        self::assertSame(0, (int)$this->fetchValue('SELECT enabled FROM Plugin WHERE id = 1'));
-        self::assertSame(1, (int)$this->fetchValue('SELECT enabled FROM Plugin WHERE id = 3'));
-        self::assertNotFalse($pdo->query('SELECT id FROM Plugin WHERE id = 1')->fetchColumn());
+        // 1. Enable/Disable/Single-Delete now succeed cleanly with QueryFactory('mysql')
+        $enable1 = $this->dispatch('post', 'plugin/enable/1');
+        $this->assertJsonOk($enable1, 'Plugin enabled');
+        self::assertSame(1, (int)$this->fetchValue('SELECT enabled FROM Plugin WHERE id = 1'));
+
+        $disable3 = $this->dispatch('post', 'plugin/disable/3');
+        $this->assertJsonOk($disable3, 'Plugin disabled');
+        self::assertSame(0, (int)$this->fetchValue('SELECT enabled FROM Plugin WHERE id = 3'));
+
+        $delete1 = $this->dispatch('post', 'plugin/delete/1');
+        $this->assertJsonOk($delete1, 'Plugin deleted');
+        self::assertFalse($pdo->query('SELECT id FROM Plugin WHERE id = 1')->fetchColumn());
 
         // 2. Reset plugin 2 ('XML Exporter', Plugin.data='data', PluginData row exists) -> deletes PluginData, keeps Plugin.data!
         self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM PluginData WHERE name = 'XML Exporter'")->fetchColumn());
@@ -159,12 +157,12 @@ final class SecurityAndPluginDbIntegrationTest extends DatabaseIntegrationTestCa
         $resetAgainJson = $this->decodeJson($reset2Again['body']);
         self::assertSame('ERROR', $resetAgainJson['status']);
 
-        // 3. Batch delete items=[1, 9999] (no limit(1)) -> deletes plugin 1 permanently without rollback before throwing affected !== count(ids)
-        $batchDelete = $this->dispatch('post', 'plugin/delete', [], ['items' => ['1', '9999']]);
+        // 3. Batch delete items=[3, 9999] -> deletes plugin 3 permanently without rollback before throwing affected !== count(ids)
+        $batchDelete = $this->dispatch('post', 'plugin/delete', [], ['items' => ['3', '9999']]);
         self::assertSame(200, $batchDelete['code']);
         $batchJson = $this->decodeJson($batchDelete['body']);
         self::assertSame('ERROR', $batchJson['status']);
         self::assertSame('Error while deleting the plugins', $batchJson['description']);
-        self::assertFalse($pdo->query('SELECT id FROM Plugin WHERE id = 1')->fetchColumn());
+        self::assertFalse($pdo->query('SELECT id FROM Plugin WHERE id = 3')->fetchColumn());
     }
 }

@@ -33,7 +33,11 @@ use SP\Domain\Account\UseCases\Dtos\DeletePublicLinksResult;
 use SP\Domain\Common\Dtos\Command;
 use SP\Domain\Common\Ports\EventEmitter;
 use SP\Domain\Common\Ports\UseCase;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Core\Exceptions\SPException;
+
+use function SP\__u;
 
 /**
  * Delete a selection of public links use case.
@@ -54,7 +58,13 @@ final readonly class DeletePublicLinksUseCase implements UseCase
             throw new LogicException(sprintf('Expected command %s', DeletePublicLinksCommand::class));
         }
 
-        $this->publicLinkService->deleteByIdBatch($command->ids);
+        $ids = array_values(array_unique(array_map('intval', $command->ids)));
+
+        if (count($ids) === 0) {
+            throw new ServiceException(__u('Error while removing the links'), SPException::WARNING);
+        }
+
+        $this->publicLinkService->deleteByIdBatch($ids);
 
         $this->eventEmitter->emit(
             'delete.publicLink.selection',
@@ -62,6 +72,6 @@ final readonly class DeletePublicLinksUseCase implements UseCase
             EventMessage::build()->addDescription('Links deleted')
         );
 
-        return new DeletePublicLinksResult($command->ids);
+        return new DeletePublicLinksResult($ids);
     }
 }

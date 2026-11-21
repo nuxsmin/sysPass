@@ -92,6 +92,7 @@ final class Bootstrap extends BootstrapBase
     {
         return function (Request $request, Response $response) {
             $actionResponseAdapter = $this->buildInstanceFor(ActionResponseAdapter::class);
+            $apiRequest = null;
 
             try {
                 logger('API route');
@@ -99,14 +100,22 @@ final class Bootstrap extends BootstrapBase
                 $response->headers()->set('Content-type', 'application/json; charset=utf-8');
 
                 $apiRequest = $this->buildInstanceFor(ApiRequestService::class);
-                [$controllerName, $actionName] = explode('/', $apiRequest->getMethod());
+                $methodParts = explode('/', $apiRequest->getMethod(), 2);
+                $controllerName = $methodParts[0];
+                $actionName = $methodParts[1] ?? '';
                 $controllerClass = self::getClassFor($this->module->getName(), $controllerName, $actionName);
                 $methodName = $actionName . 'Action';
 
-                $method = $this->getActionMethod($controllerClass, $methodName);
+                $method = $actionName !== '' ? $this->getActionMethod($controllerClass, $methodName) : null;
 
                 if ($method === null) {
                     logger($controllerClass . '::' . $methodName);
+
+                    if ($apiRequest->isNotification()) {
+                        $response->code(Code::NO_CONTENT->value);
+
+                        return $response->body('');
+                    }
 
                     $response->code(Code::NOT_FOUND->value);
 
@@ -133,6 +142,12 @@ final class Bootstrap extends BootstrapBase
                     /** @var ActionResponse $actionResponse */
                     $actionResponse = $method->invoke($controller);
 
+                    if ($apiRequest->isNotification()) {
+                        $response->code(Code::NO_CONTENT->value);
+
+                        return $response->body('');
+                    }
+
                     if ($controller instanceof ControllerBase
                         && $controller->isAuthenticated() === false
                     ) {
@@ -151,11 +166,23 @@ final class Bootstrap extends BootstrapBase
                 } catch (SPException $e) {
                     processException($e);
 
+                    if ($apiRequest->isNotification()) {
+                        $response->code(Code::NO_CONTENT->value);
+
+                        return $response->body('');
+                    }
+
                     return $response->body(
                         $actionResponseAdapter->toJsonRpcException($e, $apiRequest->getId())
                     );
                 } catch (Throwable $e) {
                     processException($e);
+
+                    if ($apiRequest->isNotification()) {
+                        $response->code(Code::NO_CONTENT->value);
+
+                        return $response->body('');
+                    }
 
                     $response->code(Code::INTERNAL_SERVER_ERROR->value);
 
@@ -170,11 +197,23 @@ final class Bootstrap extends BootstrapBase
             } catch (ApiRequestException $e) {
                 processException($e);
 
+                if ($e->isNotification()) {
+                    $response->code(Code::NO_CONTENT->value);
+
+                    return $response->body('');
+                }
+
                 $response->code(Code::BAD_REQUEST->value);
 
-                return $response->body($actionResponseAdapter->toJsonRpcException($e, 0));
+                return $response->body($actionResponseAdapter->toJsonRpcException($e, $e->getRequestId()));
             } catch (Throwable $e) {
                 processException($e);
+
+                if ($apiRequest?->isNotification() === true) {
+                    $response->code(Code::NO_CONTENT->value);
+
+                    return $response->body('');
+                }
 
                 $response->code(Code::INTERNAL_SERVER_ERROR->value);
 
@@ -182,7 +221,7 @@ final class Bootstrap extends BootstrapBase
                     $actionResponseAdapter->toJsonRpcError(
                         'Internal error',
                         ActionResponseAdapter::INTERNAL_ERROR,
-                        0
+                        $apiRequest?->getId()
                     )
                 );
             }

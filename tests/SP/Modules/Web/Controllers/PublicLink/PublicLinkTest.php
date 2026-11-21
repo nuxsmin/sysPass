@@ -57,21 +57,41 @@ final class PublicLinkTest extends IntegrationTestCase
 
     public static function managedViewActors(): array
     {
-        return ['creator' => [10, false], 'other user' => [11, false], 'administrator' => [12, true]];
+        return [
+            'creator' => [10, false, true],
+            'other user' => [11, false, false],
+            'administrator' => [12, true, true],
+        ];
     }
 
     #[Test]
     #[DataProvider('managedViewActors')]
-    #[BodyChecker('checkView')]
-    public function managedViewWithActionPermissionCharacterizesActorScoping(int $actorId, bool $isAdmin): void
-    {
+    public function managedViewWithActionPermissionEnforcesCreatorOrAdminScoping(
+        int $actorId,
+        bool $isAdmin,
+        bool $allowed
+    ): void {
         $this->actorId = $actorId;
         $this->actorIsAdmin = $isAdmin;
-        $service = $this->createStub(PublicLinkService::class);
-        $service->method('getById')->willReturn(
-            PublicLinkDataGenerator::factory()->buildPublicLinkList()->mutate(['userId' => 10])
+
+        $link = PublicLinkDataGenerator::factory()->buildPublicLinkList()->mutate(['userId' => 10]);
+        $repository = $this->createStub(\SP\Domain\Account\Ports\PublicLinkRepository::class);
+        $repository->method('getById')->willReturn(
+            new \SP\Domain\Database\Dtos\QueryResult([new \SP\Domain\Common\Models\Simple($link->toArray())])
         );
-        $this->runRoute('get', 'publicLink/view/100', [PublicLinkService::class => $service]);
+
+        ob_start();
+        try {
+            $this->runRoute('get', 'publicLink/view/100', [\SP\Domain\Account\Ports\PublicLinkRepository::class => $repository]);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+
+        if ($allowed) {
+            $this->checkView($output);
+        } else {
+            $this->checkViewDenied($output);
+        }
     }
     #[Test]
     #[BodyChecker('checkSearch')]
@@ -228,8 +248,11 @@ final class PublicLinkTest extends IntegrationTestCase
 
     private function noopService(): array
     {
+        $service = $this->createStub(PublicLinkService::class);
+        $service->method('refresh')->willReturn(true);
+
         return [
-            PublicLinkService::class => $this->createStub(PublicLinkService::class),
+            PublicLinkService::class => $service,
             PublicLinkAuthorizationService::class => $this->createStub(PublicLinkAuthorizationService::class),
         ];
     }

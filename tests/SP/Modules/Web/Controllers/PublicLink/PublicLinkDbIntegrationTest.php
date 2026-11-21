@@ -80,14 +80,12 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
     }
 
     /**
-     * Characterization of current DB persistence on link creation:
-     * Both publicLink/saveCreate and publicLink/saveCreateFromAccount pass a
-     * PublicLink model whose $userId is null, but PublicLink::getUserId(): int
-     * casts null to 0 before the `?? $this->context->getUserData()->getId()` fallback
-     * in PublicLink::buildPublicLink(), triggering a MariaDB FK Integrity constraint error.
+     * With nullable PublicLink::getUserId(): ?int, both publicLink/saveCreate and
+     * publicLink/saveCreateFromAccount fall back to the authenticated creator's userId
+     * and persist valid PublicLink rows in MariaDB.
      */
     #[Test]
-    public function saveCreateAndSaveCreateFromAccountFailForeignKeyWithUserIdZero(): void
+    public function saveCreateAndSaveCreateFromAccountPersistWithCreatorUserId(): void
     {
         $pdo = getDbHandler()->getConnection();
         $pdo->exec('TRUNCATE TABLE PublicLink');
@@ -110,7 +108,7 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
             ['accountId' => '1', 'notify' => '0'],
             $creatorOverrides
         );
-        $this->assertJsonDenied($createResult, 'Integrity constraint');
+        $this->assertJsonOk($createResult, 'Link created');
 
         $fromAccResult = $this->dispatch(
             'get',
@@ -119,24 +117,34 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
             [],
             $creatorOverrides
         );
-        $this->assertJsonDenied($fromAccResult, 'Integrity constraint');
+        $this->assertJsonOk($fromAccResult, 'Link created');
 
-        self::assertSame(0, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink'));
+        self::assertSame(2, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink'));
+        self::assertSame(3, (int) $this->fetchValue('SELECT userId FROM PublicLink WHERE itemId = 1'));
+        self::assertSame(3, (int) $this->fetchValue('SELECT userId FROM PublicLink WHERE itemId = 2'));
+
+        $createdHash = (string) $this->fetchValue('SELECT hash FROM PublicLink WHERE itemId = 1');
+        $visitorResult = $this->dispatch(
+            'get',
+            'account/viewLink/' . $createdHash,
+            [],
+            [],
+            [Context::class => $this->getUnauthenticatedContext()]
+        );
+        self::assertSame(200, $visitorResult['code']);
+        self::assertStringContainsString(self::ACCOUNT_SECRET, $visitorResult['body']);
+        self::assertSame(1, (int) $this->fetchValue('SELECT countViews FROM PublicLink WHERE itemId = 1'));
     }
 
     /**
      * With real Acl + AccountAcl and real MariaDB persistence:
      * - A non-admin user without mgmPublicLinks (even with accPublicLinks) is denied
      *   publicLink/{search,view,edit,delete} and cannot remove the link in DB.
-     * - Another non-admin user (user_b, id=4) holding mgmPublicLinks passes ACL checks on
-     *   publicLink/{search,view,edit,refresh,delete} for user_a's link:
-     *   - refresh updates hash and resets countViews=0 in MariaDB,
-     *   - delete removes user_a's row in MariaDB,
-     *   - search hits PHP 8.3 Error ("Dynamic properties not allowed" on clientName hydration),
-     *   - view/edit pass GetPublicLinkUseCase and fail HTTP 500 ("Wrong object type" + trace)
-     *     in SelectItemAdapter because AccountRepository::getForUser() returns Simple objects.
-     * - An admin (id=1) exhibits the same management access (no creator scoping) and persists
-     *   refresh/delete on user_a's link.
+     * - Another non-admin user (user_b, id=4) holding mgmPublicLinks is scoped to their own
+     *   links in search and denied view, edit, refresh, and delete for user_a's link.
+     * - The creator (user_a, id=3) holding mgmPublicLinks can search, view, edit, refresh,
+     *   and delete their own link.
+     * - An admin (id=1) can search, view, edit, refresh, and delete any user's link.
      */
     #[Test]
     public function creatorOtherUserAndAdminManagementAccessWithRealPersistence(): void
@@ -147,6 +155,7 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
         $this->seedRealEncryptedPasswordForAccount(2, self::ACCOUNT_SECRET . '-2');
 
         [$linkId, $initialHash] = $this->seedRealPublicLinkRow(1, 3, self::ACCOUNT_SECRET);
+        [$otherUserLinkId, $otherUserHash] = $this->seedRealPublicLinkRow(2, 4, self::ACCOUNT_SECRET . '-2');
 
         // Other non-admin user (user_b, id=4) WITHOUT mgmPublicLinks (only accPublicLinks) is denied management routes
         $limitedUserOverrides = $this->realActorOverrides(
@@ -164,7 +173,7 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
         $this->assertJsonDenied($this->dispatch('get', 'publicLink/delete/' . $linkId, [], [], $limitedUserOverrides), self::DENIED_OP);
         self::assertSame(1, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE id = ' . $linkId));
 
-        // Other non-admin user (user_b, id=4) WITH mgmPublicLinks can manage, refresh, and delete user_a's link
+        // Other non-admin user (user_b, id=4) WITH mgmPublicLinks only sees own links and cannot manage user_a's link
         $otherManagerOverrides = $this->realActorOverrides(
             4,
             (new ProfileData())
@@ -174,31 +183,57 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
                 ->setMgmPublicLinks(true)
         );
 
-        $searchRes = $this->dispatch('get', 'publicLink/search', [], [], $otherManagerOverrides);
-        self::assertSame(500, $searchRes['code']);
-        $searchJson = $this->decodeJson($searchRes['body']);
-        self::assertSame('ERROR', $searchJson['status'] ?? null);
-        self::assertSame('Internal error', $searchJson['description'] ?? null);
-        self::assertArrayHasKey('data', $searchJson);
-        self::assertNull($searchJson['data']);
-        self::assertStringNotContainsString('Dynamic properties not allowed', $searchRes['body']);
+        $otherSearchJson = $this->assertJsonOk(
+            $this->dispatch('get', 'publicLink/search', [], [], $otherManagerOverrides)
+        );
+        $otherSearchHtml = (string) ($otherSearchJson['data']['html'] ?? '');
+        self::assertStringContainsString('data-item-id="' . $otherUserLinkId . '"', $otherSearchHtml);
+        self::assertStringNotContainsString('data-item-id="' . $linkId . '"', $otherSearchHtml);
 
-        $viewRes = $this->dispatch('get', 'publicLink/view/' . $linkId, [], [], $otherManagerOverrides);
-        self::assertSame(500, $viewRes['code']);
-        $viewJson = $this->decodeJson($viewRes['body']);
-        self::assertSame('Internal error', $viewJson['description'] ?? null);
-        self::assertArrayHasKey('data', $viewJson);
-        self::assertNull($viewJson['data']);
+        // Even a search matching user_a's login or Account 1 name must not bypass userId filter via OR
+        $orBypassSearchJson = $this->assertJsonOk(
+            $this->dispatch('get', 'publicLink/search', [], ['search' => 'Google'], $otherManagerOverrides)
+        );
+        self::assertStringNotContainsString('data-item-id="' . $linkId . '"', (string) ($orBypassSearchJson['data']['html'] ?? ''));
 
-        $editRes = $this->dispatch('get', 'publicLink/edit/' . $linkId, [], [], $otherManagerOverrides);
-        self::assertSame(500, $editRes['code']);
-        $editJson = $this->decodeJson($editRes['body']);
-        self::assertSame('Internal error', $editJson['description'] ?? null);
-        self::assertArrayHasKey('data', $editJson);
-        self::assertNull($editJson['data']);
+        $this->assertJsonDenied($this->dispatch('get', 'publicLink/view/' . $linkId, [], [], $otherManagerOverrides), self::DENIED_OP);
+        $this->assertJsonDenied($this->dispatch('get', 'publicLink/edit/' . $linkId, [], [], $otherManagerOverrides), self::DENIED_OP);
+        $this->assertJsonDenied($this->dispatch('get', 'publicLink/refresh/' . $linkId, [], [], $otherManagerOverrides), self::DENIED_OP);
+        self::assertSame($initialHash, (string) $this->fetchValue('SELECT hash FROM PublicLink WHERE id = ' . $linkId));
+        self::assertSame(2, (int) $this->fetchValue('SELECT countViews FROM PublicLink WHERE id = ' . $linkId));
+
+        $this->assertJsonDenied($this->dispatch('get', 'publicLink/delete/' . $linkId, [], [], $otherManagerOverrides), self::DENIED_OP);
+        self::assertSame(1, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE id = ' . $linkId));
+
+        // Creator (user_a, id=3) WITH mgmPublicLinks can search (own only), view, edit, refresh, and delete own link
+        $creatorOverrides = $this->realActorOverrides(
+            3,
+            (new ProfileData())
+                ->setAccView(true)
+                ->setAccViewPass(true)
+                ->setAccPublicLinks(true)
+                ->setMgmPublicLinks(true)
+        );
+
+        $creatorSearchJson = $this->assertJsonOk(
+            $this->dispatch('get', 'publicLink/search', [], [], $creatorOverrides)
+        );
+        $creatorSearchHtml = (string) ($creatorSearchJson['data']['html'] ?? '');
+        self::assertStringContainsString('data-item-id="' . $linkId . '"', $creatorSearchHtml);
+        self::assertStringNotContainsString('data-item-id="' . $otherUserLinkId . '"', $creatorSearchHtml);
+
+        $creatorViewJson = $this->assertJsonOk(
+            $this->dispatch('get', 'publicLink/view/' . $linkId, [], [], $creatorOverrides)
+        );
+        self::assertStringContainsString($initialHash, (string) ($creatorViewJson['data']['html'] ?? ''));
+
+        $creatorEditJson = $this->assertJsonOk(
+            $this->dispatch('get', 'publicLink/edit/' . $linkId, [], [], $creatorOverrides)
+        );
+        self::assertStringContainsString('saveEdit/' . $linkId, (string) ($creatorEditJson['data']['html'] ?? ''));
 
         $this->assertJsonOk(
-            $this->dispatch('get', 'publicLink/refresh/' . $linkId, [], [], $otherManagerOverrides),
+            $this->dispatch('get', 'publicLink/refresh/' . $linkId, [], [], $creatorOverrides),
             'Link updated'
         );
         $refreshedHash = (string) $this->fetchValue('SELECT hash FROM PublicLink WHERE id = ' . $linkId);
@@ -207,30 +242,25 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
         self::assertSame(0, (int) $this->fetchValue('SELECT countViews FROM PublicLink WHERE id = ' . $linkId));
 
         $this->assertJsonOk(
-            $this->dispatch('get', 'publicLink/delete/' . $linkId, [], [], $otherManagerOverrides),
+            $this->dispatch('get', 'publicLink/delete/' . $linkId, [], [], $creatorOverrides),
             'Link deleted'
         );
         self::assertSame(0, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE id = ' . $linkId));
 
-        // Creator (user_a, id=3) owns link on Account 2; Admin (id=1) manages, refreshes & deletes it with real ACLs
+        // Creator (user_a, id=3) owns link on Account 1; Admin (id=1) manages, refreshes & deletes it with real ACLs
+        $pdo->exec('DELETE FROM PublicLink WHERE id = ' . $otherUserLinkId);
         [$link2Id, $link2Hash] = $this->seedRealPublicLinkRow(2, 3, self::ACCOUNT_SECRET . '-2');
 
         $adminOverrides = $this->realActorOverrides(1, null);
-        $adminSearchRes = $this->dispatch('get', 'publicLink/search', [], [], $adminOverrides);
-        self::assertSame(500, $adminSearchRes['code']);
-        $adminSearchJson = $this->decodeJson($adminSearchRes['body']);
-        self::assertSame('ERROR', $adminSearchJson['status'] ?? null);
-        self::assertSame('Internal error', $adminSearchJson['description'] ?? null);
-        self::assertArrayHasKey('data', $adminSearchJson);
-        self::assertNull($adminSearchJson['data']);
-        self::assertStringNotContainsString('Dynamic properties not allowed', $adminSearchRes['body']);
+        $adminSearchJson = $this->assertJsonOk(
+            $this->dispatch('get', 'publicLink/search', [], [], $adminOverrides)
+        );
+        self::assertStringContainsString('data-item-id="' . $link2Id . '"', (string) ($adminSearchJson['data']['html'] ?? ''));
 
-        $adminView = $this->dispatch('get', 'publicLink/view/' . $link2Id, [], [], $adminOverrides);
-        self::assertSame(500, $adminView['code']);
-        $adminViewJson = $this->decodeJson($adminView['body']);
-        self::assertSame('Internal error', $adminViewJson['description'] ?? null);
-        self::assertArrayHasKey('data', $adminViewJson);
-        self::assertNull($adminViewJson['data']);
+        $adminViewJson = $this->assertJsonOk(
+            $this->dispatch('get', 'publicLink/view/' . $link2Id, [], [], $adminOverrides)
+        );
+        self::assertStringContainsString($link2Hash, (string) ($adminViewJson['data']['html'] ?? ''));
 
         $this->assertJsonOk(
             $this->dispatch('get', 'publicLink/refresh/' . $link2Id, [], [], $adminOverrides),
@@ -248,7 +278,7 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
     /**
      * When the link creator loses visibility to the underlying Account (account becomes private to another user),
      * refreshing fails AccountPermissionException and leaves hash and dateExpire untouched in MariaDB,
-     * while management view (up to SelectItemAdapter) and delete still bypass Account visibility if mgmPublicLinks is held.
+     * while management view and delete still succeed for the creator holding mgmPublicLinks.
      */
     #[Test]
     public function creatorLosingAccountAccessCannotRefreshButRetainsProfileBasedManagement(): void
@@ -284,53 +314,84 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
         self::assertSame($refreshedHash, (string) $this->fetchValue('SELECT hash FROM PublicLink WHERE id = ' . $linkId));
         self::assertSame($refreshedExpire, (int) $this->fetchValue('SELECT dateExpire FROM PublicLink WHERE id = ' . $linkId));
 
-        // Management view & delete check only Acl::PUBLICLINK_*, not Account visibility
-        $viewResult = $this->dispatch('get', 'publicLink/view/' . $linkId, [], [], $creatorOverrides);
-        self::assertSame(500, $viewResult['code']);
-        $viewResultJson = $this->decodeJson($viewResult['body']);
-        self::assertSame('Internal error', $viewResultJson['description'] ?? null);
-        self::assertArrayHasKey('data', $viewResultJson);
-        self::assertNull($viewResultJson['data']);
+        // Management view & delete check creator ownership + Acl::PUBLICLINK_*, not Account visibility
+        $viewJson = $this->assertJsonOk($this->dispatch('get', 'publicLink/view/' . $linkId, [], [], $creatorOverrides));
+        self::assertStringContainsString($refreshedHash, (string) ($viewJson['data']['html'] ?? ''));
 
         $this->assertJsonOk($this->dispatch('get', 'publicLink/delete/' . $linkId, [], [], $creatorOverrides), 'Link deleted');
         self::assertSame(0, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE id = ' . $linkId));
     }
 
     /**
-     * Batch delete is non-atomic: deleting [$validId, 999999] removes $validId in MariaDB
-     * even though DeletePublicLinksUseCase/PublicLink::deleteByIdBatch throws ServiceException
-     * and the controller returns an ERROR payload.
+     * Batch delete is transactional and deduplicated:
+     * - deleting [$linkId, 999999] fails with ERROR and preserves $linkId in MariaDB,
+     * - deleting empty items [] fails with ERROR and preserves existing rows,
+     * - deleting mixed own + another user's link by non-admin fails with DENIED_OP and preserves both rows,
+     * - deleting duplicate [$linkId, $linkId] succeeds and deletes the row cleanly.
      */
     #[Test]
-    public function batchDeletePartialHitRemovesExistingRowDespiteErrorResponse(): void
+    public function batchDeleteIsTransactionalOwnershipCheckedAndDeduplicated(): void
     {
         $pdo = getDbHandler()->getConnection();
         $pdo->exec('TRUNCATE TABLE PublicLink');
         $this->seedRealEncryptedPasswordForAccount(1, self::ACCOUNT_SECRET);
+        $this->seedRealEncryptedPasswordForAccount(2, self::ACCOUNT_SECRET . '-2');
 
-        [$linkId] = $this->seedRealPublicLinkRow(1, 1, self::ACCOUNT_SECRET);
+        [$adminLinkId] = $this->seedRealPublicLinkRow(1, 1, self::ACCOUNT_SECRET);
+        [$creatorLinkId] = $this->seedRealPublicLinkRow(2, 3, self::ACCOUNT_SECRET . '-2');
         $adminOverrides = $this->realActorOverrides(1, null);
+        $creatorOverrides = $this->realActorOverrides(
+            3,
+            (new ProfileData())
+                ->setAccView(true)
+                ->setAccViewPass(true)
+                ->setAccPublicLinks(true)
+                ->setMgmPublicLinks(true)
+        );
 
-        $batchResult = $this->dispatch(
+        $emptyResult = $this->dispatch('get', 'publicLink/delete', ['items' => []], [], $adminOverrides);
+        $this->assertJsonDenied($emptyResult, 'Error while removing the links');
+        self::assertSame(2, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink'));
+
+        $missingResult = $this->dispatch(
             'get',
             'publicLink/delete',
-            ['items' => [$linkId, 999999]],
+            ['items' => [$adminLinkId, 999999]],
             [],
             $adminOverrides
         );
+        $this->assertJsonDenied($missingResult, 'Link not found');
+        self::assertSame(1, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE id = ' . $adminLinkId));
 
-        $this->assertJsonDenied($batchResult, 'Error while removing the links');
-        self::assertSame(0, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE id = ' . $linkId));
+        $mixedOwnerResult = $this->dispatch(
+            'get',
+            'publicLink/delete',
+            ['items' => [$creatorLinkId, $adminLinkId]],
+            [],
+            $creatorOverrides
+        );
+        $this->assertJsonDenied($mixedOwnerResult, self::DENIED_OP);
+        self::assertSame(2, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink'));
+
+        $dupResult = $this->dispatch(
+            'get',
+            'publicLink/delete',
+            ['items' => [$creatorLinkId, $creatorLinkId]],
+            [],
+            $creatorOverrides
+        );
+        $this->assertJsonOk($dupResult, 'Links deleted');
+        self::assertSame(0, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE id = ' . $creatorLinkId));
+        self::assertSame(1, (int) $this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE id = ' . $adminLinkId));
     }
 
     /**
-     * End-to-end check of the generated URL vs the public visitor route against MariaDB:
-     * - publicLink/view/<id> fails HTTP 500 ("Internal error", data=null) when SelectItemAdapter throws RuntimeException,
+     * End-to-end check of the generated URL and management view against MariaDB:
+     * - publicLink/view/<id> succeeds with rendered HTML (no SelectItemAdapter error),
      * - PublicLink::getLinkForHash('https://example.test/subpath', $hash) points to
-     *   index.php?r=publicLink/view/<hash>, which returns empty 200 to anonymous visitors
-     *   and HTTP 500 ("Internal error", data=null) to authenticated managers,
-     * - account/viewLink/<hash> discloses the decrypted synthetic secret to an anonymous visitor
-     *   and increments countViews in MariaDB.
+     *   index.php?r=account/viewLink/<hash>,
+     * - dispatching the generated URL as an anonymous visitor discloses the decrypted
+     *   synthetic secret and increments countViews in MariaDB.
      */
     #[Test]
     public function endToEndGeneratedPublicLinkUrlVsAccountViewLink(): void
@@ -348,51 +409,18 @@ final class PublicLinkDbIntegrationTest extends DatabaseIntegrationTestCase
         $adminOverrides = $this->realActorOverrides(1, null);
 
         $viewRes = $this->dispatch('get', 'publicLink/view/' . $linkId, [], [], $adminOverrides);
-        self::assertSame(500, $viewRes['code']);
-        $viewResJson = $this->decodeJson($viewRes['body']);
-        self::assertSame('Internal error', $viewResJson['description'] ?? null);
-        self::assertArrayHasKey('data', $viewResJson);
-        self::assertNull($viewResJson['data']);
+        $viewResJson = $this->assertJsonOk($viewRes);
+        self::assertStringContainsString($hash, (string) ($viewResJson['data']['html'] ?? ''));
 
         $generatedUrl = PublicLinkServiceImpl::getLinkForHash('https://example.test/subpath', $hash);
-        self::assertSame('https://example.test/subpath/index.php?r=publicLink/view/' . $hash, $generatedUrl);
+        self::assertSame('https://example.test/subpath/index.php?r=account/viewLink/' . $hash, $generatedUrl);
+        self::assertStringContainsString($generatedUrl, (string) ($viewResJson['data']['html'] ?? ''));
 
         parse_str((string) parse_url($generatedUrl, PHP_URL_QUERY), $params);
 
-        // Anonymous dispatch to generated URL hits SessionTimeout (empty 200)
-        $anonResult = $this->dispatch(
-            'get',
-            $params['r'],
-            [],
-            [],
-            [Context::class => $this->getUnauthenticatedContext()]
-        );
-        self::assertSame(200, $anonResult['code']);
-        self::assertSame('', $anonResult['body']);
-
-        // Authenticated dispatch to generated URL with leading hex letter casts to int 0 -> new PublicLinkList() -> HTTP 500 Internal error
-        $authGeneratedResult = $this->dispatch('get', $params['r'], [], [], $adminOverrides);
-        self::assertSame(500, $authGeneratedResult['code']);
-        $authGenJson = $this->decodeJson($authGeneratedResult['body']);
-        self::assertSame('Internal error', $authGenJson['description'] ?? null);
-        self::assertArrayHasKey('data', $authGenJson);
-        self::assertNull($authGenJson['data']);
-
-        // Authenticated dispatch with leading digits (e.g. "99...") casts to non-existent int ID -> HTTP 500 Link not found
-        $digitGeneratedResult = $this->dispatch(
-            'get',
-            'publicLink/view/' . ('99' . str_repeat('a', 58)),
-            [],
-            [],
-            $adminOverrides
-        );
-        self::assertSame(500, $digitGeneratedResult['code']);
-        self::assertSame('Link not found', $this->decodeJson($digitGeneratedResult['body'])['description'] ?? null);
-
-        // Public visitor route account/viewLink/<hash> succeeds and discloses the synthetic secret
         $visitorResult = $this->dispatch(
             'get',
-            'account/viewLink/' . $hash,
+            $params['r'],
             [],
             [],
             [Context::class => $this->getUnauthenticatedContext()]

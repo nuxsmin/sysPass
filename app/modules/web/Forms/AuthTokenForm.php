@@ -24,10 +24,12 @@
 
 namespace SP\Modules\Web\Forms;
 
+use DateTimeImmutable;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Http\Ports\RequestService;
@@ -61,6 +63,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
      * @param int|null $id
      *
      * @return FormInterface
+     * @throws UnauthorizedActionException
      * @throws ValidationException
      */
     public function validateFor(int $action, ?int $id = null): FormInterface
@@ -73,7 +76,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
             case AclActionsInterface::AUTHTOKEN_CREATE:
             case AclActionsInterface::AUTHTOKEN_EDIT:
                 $this->analyzeRequestData();
-                $this->checkCommon();
+                $this->checkCommon($action);
                 break;
         }
 
@@ -83,11 +86,13 @@ final class AuthTokenForm extends FormBase implements FormInterface
     /**
      * Analizar los datos de la petición HTTP
      *
-     * @return void
+     * @throws ValidationException
      */
     protected function analyzeRequestData(): void
     {
         $this->refresh = $this->request->analyzeBool('refreshtoken', false);
+
+        [$expireDate, $noExpiry] = $this->parseExpiryFields();
 
         $this->authTokenData = new AuthToken(
             [
@@ -95,14 +100,84 @@ final class AuthTokenForm extends FormBase implements FormInterface
                 'userId' => $this->request->analyzeInt('users'),
                 'actionId' => $this->request->analyzeInt('actions'),
                 'hash' => $this->request->analyzeEncrypted('pass'),
+                'expireDate' => $expireDate,
+                'noExpiry' => $noExpiry,
             ]
         );
     }
 
     /**
+     * @return array{?int, ?bool}
      * @throws ValidationException
      */
-    protected function checkCommon(): void
+    private function parseExpiryFields(): array
+    {
+        $rawInitial = $this->request->analyzeString('expire_date_initial');
+        $rawUnix = $this->request->analyzeString('expire_date_unix');
+        $rawDate = $this->request->analyzeString('expire_date');
+        $noExpiryRequested = $this->request->analyzeBool('no_expiry', false);
+
+        $trimmedDate = $rawDate !== null ? trim($rawDate) : null;
+        $trimmedUnix = $rawUnix !== null ? trim($rawUnix) : null;
+        $trimmedInitial = $rawInitial !== null ? trim($rawInitial) : null;
+
+        $hasExplicitNewDate = ($trimmedDate !== null && $trimmedDate !== '' && ($trimmedInitial === null || $trimmedInitial === '__new__' || $trimmedDate !== $trimmedInitial))
+            || ($trimmedUnix !== null && $trimmedUnix !== '');
+
+        if ($noExpiryRequested) {
+            if ($hasExplicitNewDate) {
+                throw new ValidationException(__u('Cannot specify both an expiration date and no-expiry'));
+            }
+
+            return [null, true];
+        }
+
+        if ($trimmedUnix !== null && $trimmedUnix !== '') {
+            if (preg_match('/^\d+$/', $trimmedUnix) !== 1 || (int)$trimmedUnix <= 0) {
+                throw new ValidationException(__u('Invalid expiration date'));
+            }
+
+            return [(int)$trimmedUnix, false];
+        }
+
+        if ($trimmedDate !== null && $trimmedDate !== '') {
+            if ($trimmedInitial !== null && $trimmedInitial !== '__new__' && $trimmedDate === $trimmedInitial) {
+                return [null, null];
+            }
+
+            $parsedDate = DateTimeImmutable::createFromFormat('!Y-m-d', $trimmedDate);
+
+            if ($parsedDate === false || $parsedDate->format('Y-m-d') !== $trimmedDate) {
+                throw new ValidationException(__u('Invalid expiration date'));
+            }
+
+            $now = time();
+            $today = DateTimeImmutable::createFromFormat('!Y-m-d', date('Y-m-d', $now));
+            $daysDiff = $today !== false ? (int)$today->diff($parsedDate)->format('%r%a') : 0;
+
+            return [$now + ($daysDiff * 86400), false];
+        }
+
+        if ($trimmedInitial === 'never') {
+            if ($this->context->getUserData()->isAdminApp) {
+                return [null, false];
+            }
+
+            return [null, null];
+        }
+
+        if ($trimmedDate === '' || $trimmedInitial !== null) {
+            return [null, false];
+        }
+
+        return [null, null];
+    }
+
+    /**
+     * @throws UnauthorizedActionException
+     * @throws ValidationException
+     */
+    protected function checkCommon(int $action = AclActionsInterface::AUTHTOKEN_CREATE): void
     {
         if (0 === $this->authTokenData->getUserId()) {
             throw new ValidationException(__u('User not set'));
@@ -120,12 +195,17 @@ final class AuthTokenForm extends FormBase implements FormInterface
             ) {
                 throw new ValidationException(__u('You don\'t have permission to do this operation'));
             }
+
+            if ($this->authTokenData->getNoExpiry() === true) {
+                throw new UnauthorizedActionException();
+            }
         }
 
-        if (empty($this->authTokenData->getHash())
-            && (AuthToken::isSecuredAction($this->authTokenData->getActionId())
-                || $this->isRefresh())
-        ) {
+        $isKeyDependent = AuthToken::isKeyDependentAction((int)$this->authTokenData->getActionId());
+        $requiresPassword = $this->isRefresh()
+            || ($action === AclActionsInterface::AUTHTOKEN_CREATE && $isKeyDependent);
+
+        if (empty($this->authTokenData->getHash()) && $requiresPassword) {
             throw new ValidationException(__u('Password cannot be blank'));
         }
     }

@@ -259,4 +259,9 @@ final class Template implements TemplateInterface
     {
         return (new Uri($this->baseUrl))->addParam('r', $path)->getUri();
     }
+
+    public function __get(string $name): mixed
+    {
+        return $this->vars->get($name);
+    }
 }

@@ -23,24 +23,19 @@ final class InitializationRedirectTest extends IntegrationTestCase
     }
 
     #[Test]
-    public function maintenanceErrorRouteRedirectsBackToItselfInTheHarness(): void
+    public function maintenanceErrorRouteRendersMaintenancePageWithoutRedirecting(): void
     {
         $this->maintenance = true;
         $container = $this->buildContainer(self::buildRequest('get', 'index.php', ['r' => 'error/maintenanceError']));
         ob_start();
         try {
             self::runApp($container);
-            self::fail('Expected the in-process response to be locked');
-        } catch (LockedResponseException) {
-            // The initializer sends the redirect before bootstrap error handling completes.
         } finally {
-            ob_end_clean();
+            $output = (string) ob_get_clean();
         }
 
-        self::assertStringContainsString(
-            rawurlencode('error/maintenanceError'),
-            (string) $container->get(Response::class)->headers()->get('Location')
-        );
+        self::assertSame(200, $container->get(Response::class)->code());
+        self::assertStringContainsString('Application on maintenance', $output);
     }
 
     public static function databaseFailures(): array

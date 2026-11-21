@@ -197,8 +197,7 @@ final class AccountHelper extends AccountHelperBase
                 $accountActionsDto->setPublicLinkId($publicLinkData['id']);
                 $accountActionsDto->setPublicLinkCreatorId($publicLinkData['userId']);
 
-                $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
-                           $this->uriContext->getSubUri();
+                $baseUrl = rtrim($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri(), '/');
 
                 $this->view->assign(
                     'publicLinkUrl',

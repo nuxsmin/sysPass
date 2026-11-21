@@ -208,6 +208,34 @@ final class ConfigOperationsBoundaryTest extends IntegrationTestCase
         }
     }
 
+    #[Test]
+    public function deniedBackupDispatchesDoNotCreateEmptySqlArtifacts(): void
+    {
+        // 1. Anonymous session denied on configBackup/fileBackup (real BackupFileService)
+        $this->sessionLoggedIn = false;
+        $this->sessionAuthCompleted = false;
+        $anonRes = $this->dispatchWeb('get', 'configBackup/fileBackup');
+        self::assertSame('', $anonRes['body']);
+        self::assertSame([], glob($this->backupDir . DIRECTORY_SEPARATOR . '*') ?: []);
+
+        // 2. Unprivileged ACL denial on configBackup/fileBackup
+        $this->sessionLoggedIn = true;
+        $this->sessionAuthCompleted = true;
+        $this->sessionUser = $this->makeUserDto(50, false);
+        $this->sessionProfile = new ProfileData();
+        $aclRes = $this->dispatchWeb('get', 'configBackup/fileBackup');
+        self::assertSame(403, $aclRes['code']);
+        self::assertSame([], glob($this->backupDir . DIRECTORY_SEPARATOR . '*') ?: []);
+
+        // 3. Demo mode denial on configBackup/fileBackup
+        $this->sessionProfile = $this->makeFullConfigProfile();
+        $this->configOverrides = ['isDemoEnabled' => true];
+        $demoRes = $this->dispatchWeb('get', 'configBackup/fileBackup');
+        self::assertSame(200, $demoRes['code']);
+        self::assertSame('WARNING', json_decode($demoRes['body'], true, 512, JSON_THROW_ON_ERROR)['status']);
+        self::assertSame([], glob($this->backupDir . DIRECTORY_SEPARATOR . '*') ?: []);
+    }
+
     /**
      * Characterization: Demo mode behavior is inconsistent across Config/Backup/Export/Download:
      * - fileBackup, configGeneral/save, configEncryption/save, configEncryption/refresh return JSON WARNING.

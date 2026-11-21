@@ -62,7 +62,7 @@ final readonly class CreateAccountPublicLinkUseCase implements UseCase
 
         $publicLink = new PublicLink(
             [
-                'id' => PublickLinkType::Account->value,
+                'typeId' => PublickLinkType::Account->value,
                 'itemId' => $command->accountId,
                 'notify' => $command->notify,
                 'hash' => Password::generateRandomBytes(),

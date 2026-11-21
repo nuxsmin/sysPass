@@ -65,6 +65,13 @@ interface CustomFieldDataService
     public function delete(array $itemsId, int $moduleId): void;
 
     /**
+     * Delete custom field data for a single item and module
+     *
+     * @throws ServiceException
+     */
+    public function deleteByItem(int $itemId, int $moduleId): void;
+
+    /**
      * Creates an item
      *
      * @throws ServiceException

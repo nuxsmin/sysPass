@@ -62,6 +62,7 @@ use SP\Modules\Web\Controllers\Bootstrap\GetEnvironmentController;
 use SP\Modules\Web\Controllers\Error\DatabaseConnectionController;
 use SP\Modules\Web\Controllers\Error\DatabaseErrorController;
 use SP\Modules\Web\Controllers\Error\IndexController as ErrorIndexController;
+use SP\Modules\Web\Controllers\Error\MaintenanceErrorController;
 use SP\Modules\Web\Controllers\Install\IndexController as InstallIndexController;
 use SP\Modules\Web\Controllers\Install\InstallController;
 use SP\Modules\Web\Controllers\Items\AccountsUserController;
@@ -74,7 +75,6 @@ use SP\Modules\Web\Controllers\Resource\CssController;
 use SP\Modules\Web\Controllers\Resource\JsController;
 use SP\Modules\Web\Controllers\Status\CheckNoticesController;
 use SP\Modules\Web\Controllers\Status\CheckReleaseController;
-use SP\Modules\Web\Controllers\Status\StatusController;
 use SP\Modules\Web\Controllers\Upgrade\IndexController as UpgradeIndexController;
 use SP\Modules\Web\Controllers\Upgrade\UpgradeController;
 
@@ -98,11 +98,11 @@ final class Init extends HttpModuleBase
         GetEnvironmentController::class,
         CheckNoticesController::class,
         CheckReleaseController::class,
-        StatusController::class,
         UpgradeIndexController::class,
         UpgradeController::class,
         DatabaseConnectionController::class,
         DatabaseErrorController::class,
+        MaintenanceErrorController::class,
         ErrorIndexController::class,
     ];
     /**

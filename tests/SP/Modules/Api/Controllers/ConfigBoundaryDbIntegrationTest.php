@@ -120,9 +120,9 @@ final class ConfigBoundaryDbIntegrationTest extends TestCase
     }
 
     /**
-     * Characterization: config/backup and config/export reject unknown tokens, mismatched action tokens,
-     * disabled users, and users whose profile lacks isConfigBackup; denied config/backup dispatches
-     * still leave empty 0-byte sysPass_db-*.sql files due to eager DI FileHandler('wb+') construction.
+     * config/backup and config/export reject unknown tokens, mismatched action tokens,
+     * disabled users, and users whose profile lacks isConfigBackup without creating
+     * .sql, .tar.gz, or .xml artifacts on disk.
      */
     #[Test]
     public function configBackupAndExportRejectDeniedTokensDisabledUsersAndMissingAcl(): void
@@ -197,18 +197,10 @@ final class ConfigBoundaryDbIntegrationTest extends TestCase
         }
         self::assertSame(4, $this->countApiTracks($pdo));
 
-        // Denied config/backup dispatches (3 calls: #101, #103, #105) still eagerly instantiate
-        // CoreDefinitions BackupFileService -> FileHandler('wb+'), leaving 3 empty 0-byte sysPass_db-*.sql
-        // artifacts before setupApi() rejects the request; zero .tar.gz or .xml files are produced.
+        // Denied config/backup dispatches leave zero .sql, .tar.gz, or .xml files on disk
+        // because CoreDefinitions injects LazyFileHandler instead of eagerly opening BackupFileService.
         $remaining = glob($this->backupDir . DIRECTORY_SEPARATOR . '*') ?: [];
-        sort($remaining);
-        self::assertCount(3, $remaining);
-        foreach ($remaining as $path) {
-            self::assertMatchesRegularExpression('/\/sysPass_db-[0-9a-f]+\.sql$/', $path);
-            self::assertSame(0, filesize($path));
-        }
-        self::assertSame([], glob($this->backupDir . DIRECTORY_SEPARATOR . '*.tar.gz') ?: []);
-        self::assertSame([], glob($this->backupDir . DIRECTORY_SEPARATOR . '*.xml') ?: []);
+        self::assertSame([], $remaining);
     }
 
     /**
@@ -346,6 +338,7 @@ final class ConfigBoundaryDbIntegrationTest extends TestCase
         $context->setUserData(new UserDto(
             id: 1,
             login: 'admin',
+            isAdminApp: true,
             preferences: new UserPreferences(['lang' => 'en_US'])
         ));
         $context->setTrasientKey('_masterpass', self::MASTER_PASS);
