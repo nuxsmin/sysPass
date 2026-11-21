@@ -60,6 +60,15 @@ class AclTest extends UnitaryTestCase
     }
 
     #[Test]
+    public function accountFileUploadRequiresTheAccountFilesProfilePermission(): void
+    {
+        $this->setUser(new ProfileData());
+        self::assertFalse($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_FILE_UPLOAD));
+        $this->setUser(new ProfileData(['accFiles' => true]));
+        self::assertTrue($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_FILE_UPLOAD));
+    }
+
+    #[Test]
     public function nonAdminWithConfigBackupCanRunBackupAndExport(): void
     {
         $this->setUser(new ProfileData(['configBackup' => true]));

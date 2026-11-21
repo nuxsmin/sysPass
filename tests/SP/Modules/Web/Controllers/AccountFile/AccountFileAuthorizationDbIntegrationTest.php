@@ -123,7 +123,7 @@ final class AccountFileAuthorizationDbIntegrationTest extends DatabaseIntegratio
     }
 
     #[Test]
-    public function listViewDownloadUploadDeleteLackProfileAclAndAccountVisibilityChecks(): void
+    public function fileReadAndDeleteBoundariesAndUploadAuthorization(): void
     {
         $pdo = getDbHandler()->getConnection();
 
@@ -202,9 +202,8 @@ final class AccountFileAuthorizationDbIntegrationTest extends DatabaseIntegratio
         $this->assertResponseWasDispatched($downloadRes);
         self::assertSame('SECRET_PRIVATE_FILE_PAYLOAD <tag>', $downloadRes['body']);
 
-        // 4. Upload succeeds onto Admin's isPrivate=1 account even with blank ProfileData AND isFilesEnabled=false,
-        //    trusts client-declared MIME type over detected binary content, enforces decimal 1000-byte multiplier,
-        //    and fails on 0-byte upload (SplFileObject::fread(0) ValueError).
+        // 4. Upload requires its profile action. The remaining input behavior is
+        // characterized with a separate authorized owner and account.
         $binarySpoofFile = tempnam(TMP_PATH, 'spoof-');
         $oversize1001File = tempnam(TMP_PATH, 'over1001-');
         $emptyFile = tempnam(TMP_PATH, 'empty0-');
@@ -241,18 +240,61 @@ final class AccountFileAuthorizationDbIntegrationTest extends DatabaseIntegratio
                 ],
                 $uploadConfig
             );
-            $this->assertJsonOk($spoofRes, 'File saved');
+            $this->assertJsonDenied($spoofRes, "You don't have permission to do this operation");
             $uploadedId = (int)$pdo->query(
                 "SELECT id FROM AccountFile WHERE accountId = $privateAccId AND name = 'spoofed.bin'"
             )->fetchColumn();
-            self::assertGreaterThan(0, $uploadedId);
+            self::assertSame(0, $uploadedId);
+
+            $uploadProfile = (new ProfileData())->setAccFiles(true)->setAccEdit(true);
+            $uploadUser = $this->seedUser($pdo, 'file_upload_owner', 5, $uploadProfile);
+            $uploadAccountId = $this->seedAccount($pdo, 'Upload Owner Account', $uploadUser->id, 5, 0, 0);
+            $crossAccount = $this->dispatchAsUser(
+                'post', 'accountFile/upload/' . $privateAccId, $uploadUser, $uploadProfile, [], [],
+                ['inFile' => [
+                    'name' => 'denied-cross.txt', 'tmp_name' => $oversize1001File,
+                    'size' => 10, 'type' => 'text/plain',
+                ]],
+                ['isFilesEnabled' => true, 'getFilesAllowedMime' => ['text/plain'], 'getFilesAllowedSize' => 2]
+            );
+            $this->assertJsonDenied($crossAccount, "You don't have permission to access this account");
+            self::assertSame(0, (int)$pdo->query(
+                "SELECT COUNT(*) FROM AccountFile WHERE accountId = $privateAccId AND name = 'denied-cross.txt'"
+            )->fetchColumn());
+            $readOnlyAccountId = $this->seedAccount($pdo, 'Read Only Upload Account', 1, 1);
+            $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')
+                ->execute([$readOnlyAccountId, $uploadUser->id]);
+            $readOnly = $this->dispatchAsUser(
+                'post', 'accountFile/upload/' . $readOnlyAccountId, $uploadUser, $uploadProfile, [], [],
+                ['inFile' => [
+                    'name' => 'denied-readonly.txt', 'tmp_name' => $oversize1001File,
+                    'size' => 10, 'type' => 'text/plain',
+                ]],
+                ['isFilesEnabled' => true, 'getFilesAllowedMime' => ['text/plain'], 'getFilesAllowedSize' => 2]
+            );
+            $this->assertJsonDenied($readOnly, "You don't have permission to access this account");
+            self::assertSame(0, (int)$pdo->query(
+                "SELECT COUNT(*) FROM AccountFile WHERE accountId = $readOnlyAccountId AND name = 'denied-readonly.txt'"
+            )->fetchColumn());
+            $allowedRes = $this->dispatchAsUser(
+                'post', 'accountFile/upload/' . $uploadAccountId, $uploadUser, $uploadProfile, [], [],
+                ['inFile' => [
+                    'name' => 'owner-upload.txt', 'tmp_name' => $oversize1001File,
+                    'size' => 10, 'type' => 'text/plain',
+                ]],
+                ['isFilesEnabled' => true, 'getFilesAllowedMime' => ['text/plain'], 'getFilesAllowedSize' => 2]
+            );
+            $this->assertJsonOk($allowedRes, 'File saved');
+            self::assertSame(1, (int)$pdo->query(
+                "SELECT COUNT(*) FROM AccountFile WHERE accountId = $uploadAccountId AND name = 'owner-upload.txt'"
+            )->fetchColumn());
 
             // 1001 bytes exceeds allowedSize=1 * 1000 (decimal, not 1024 KiB)
             $overRes = $this->dispatchAsUser(
                 'post',
-                'accountFile/upload/' . $privateAccId,
-                $unprivilegedUser,
-                $emptyProfile,
+                'accountFile/upload/' . $uploadAccountId,
+                $uploadUser,
+                $uploadProfile,
                 [],
                 [],
                 [
@@ -272,9 +314,9 @@ final class AccountFileAuthorizationDbIntegrationTest extends DatabaseIntegratio
             // 0-byte upload fails FileHandler::readToString() (ValueError caught -> FileException)
             $emptyRes = $this->dispatchAsUser(
                 'post',
-                'accountFile/upload/' . $privateAccId,
-                $unprivilegedUser,
-                $emptyProfile,
+                'accountFile/upload/' . $uploadAccountId,
+                $uploadUser,
+                $uploadProfile,
                 [],
                 [],
                 [

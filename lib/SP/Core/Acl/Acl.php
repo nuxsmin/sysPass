@@ -124,6 +124,7 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             case self::ACCOUNT_DELETE:
                 return $userDto->isAdminAcc || $userProfile->isAccDelete();
             case self::ACCOUNT_FILE:
+            case self::ACCOUNT_FILE_UPLOAD:
                 return $userDto->isAdminAcc || $userProfile->isAccFiles();
             case self::ITEMS_MANAGE:
                 return $userDto->isAdminAcc

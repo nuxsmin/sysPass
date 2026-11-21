@@ -32,6 +32,8 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\File;
+use SP\Domain\Account\Ports\AccountService;
+use SP\Tests\Generators\AccountDataGenerator;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\BodyChecker;
@@ -202,8 +204,16 @@ class AccountFileTest extends IntegrationTestCase
             ]
         ];
 
+        $accounts = $this->createStub(AccountService::class);
+        $accounts->method('isVisible')->willReturn(true);
+        $accounts->method('getByIdEnriched')->willReturn(
+            AccountDataGenerator::factory()->buildAccountDataView()->mutate(['id' => 100])
+        );
+        $accounts->method('withUsers')->willReturnArgument(0);
+        $accounts->method('withUserGroups')->willReturnArgument(0);
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'accountFile/upload/100'], [], $files)
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'accountFile/upload/100'], [], $files),
+            [AccountService::class => $accounts]
         );
 
         IntegrationTestCase::runApp($container);
