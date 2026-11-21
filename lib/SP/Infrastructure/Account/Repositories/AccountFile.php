@@ -28,6 +28,7 @@ namespace SP\Infrastructure\Account\Repositories;
 
 use SP\Domain\Account\Models\File as FileModel;
 use SP\Domain\Account\Ports\AccountFileRepository;
+use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -93,6 +94,24 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
             ->from(FileModel::TABLE)
             ->join('INNER', 'Account', 'Account.id = AccountFile.accountId')
             ->join('INNER', 'Client', 'Client.id = Account.clientId')
+            ->where('AccountFile.id = :id')
+            ->bindValues(['id' => $id])
+            ->limit(1);
+
+        return $this->db->runQuery(QueryData::buildWithMapper($query, FileModel::class));
+    }
+
+    /**
+     * @inheritDoc
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getAccountIdById(int $id): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols(['AccountFile.id', 'AccountFile.accountId'])
+            ->from(FileModel::TABLE)
             ->where('AccountFile.id = :id')
             ->bindValues(['id' => $id])
             ->limit(1);
@@ -172,7 +191,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function search(ItemSearchDto $itemSearchData): QueryResult
+    public function search(ItemSearchDto $itemSearchData, ?AccountFilterBuilder $accountFilter = null): QueryResult
     {
         $query = $this->queryFactory
             ->newSelect()
@@ -195,10 +214,13 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
             ->offset($itemSearchData->getLimitStart());
 
         if (!empty($itemSearchData->getSeachString())) {
-            $query->where('AccountFile.name LIKE :name')
-                  ->orWhere('AccountFile.type LIKE :type')
-                  ->orWhere('Account.name LIKE :accountName')
-                  ->orWhere('Client.name LIKE :clientName');
+            // The alternatives are grouped so that they can be safely combined (AND) with the account filter
+            $query->where(
+                '(AccountFile.name LIKE :name'
+                . ' OR AccountFile.type LIKE :type'
+                . ' OR Account.name LIKE :accountName'
+                . ' OR Client.name LIKE :clientName)'
+            );
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
 
@@ -208,6 +230,11 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
                                    'accountName' => $search,
                                    'clientName' => $search,
                                ]);
+        }
+
+        if ($accountFilter !== null) {
+            // Restrict to the accounts the current user can see
+            $accountFilter->buildFilter(false, $query);
         }
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, FileModel::class), true);

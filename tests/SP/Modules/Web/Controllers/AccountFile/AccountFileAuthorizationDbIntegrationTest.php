@@ -54,8 +54,8 @@ use function DI\get;
 use function SP\Tests\getDbHandler;
 
 /**
- * DB-backed characterization tests for Web AccountFile authorization,
- * MIME/size validation, list limit, search ACL, and non-atomic batch deletion
+ * DB-backed tests for Web AccountFile authorization (list, view, download,
+ * upload, delete and search), MIME/size validation and batch deletion
  * against MariaDB.
  */
 #[Group('integration')]
@@ -154,8 +154,7 @@ final class AccountFileAuthorizationDbIntegrationTest extends DatabaseIntegratio
             base64_encode($pngBytes)
         );
 
-        // 1. List renders private account file metadata despite blank ProfileData and no Account access,
-        //    and AccountFileRepository::getByAccountId() applies LIMIT 1 so the 2nd file is omitted.
+        // 1. List is denied without the files profile action, whatever the account is
         $listRes = $this->dispatchAsUser(
             'get',
             'accountFile/list/' . $privateAccId,
@@ -167,40 +166,21 @@ final class AccountFileAuthorizationDbIntegrationTest extends DatabaseIntegratio
             ['isFilesEnabled' => true]
         );
         $this->assertResponseWasDispatched($listRes);
-        self::assertStringContainsString('a-private-secret.txt', $listRes['body']);
-        self::assertStringNotContainsString('b-private-image.png', $listRes['body']);
-        // Acl::getRouteFor() returns action routes regardless of user permissions, exposing delete/download/view links
-        self::assertStringContainsString('data-action-route="accountFile/delete"', $listRes['body']);
-        self::assertStringContainsString('data-action-route="accountFile/download"', $listRes['body']);
-        self::assertStringContainsString('data-action-route="accountFile/view"', $listRes['body']);
+        self::assertSame("You don't have permission to do this operation", $listRes['body']);
+        self::assertStringNotContainsString('a-private-secret.txt', $listRes['body']);
 
-        // 2. View discloses text/plain and image/png from isPrivate=1 account; XML returns WARNING; missing returns ERROR
-        $viewTxt = $this->dispatchAsUser('get', 'accountFile/view/' . $txtFileId, $unprivilegedUser, $emptyProfile);
-        $viewTxtJson = $this->assertJsonOk($viewTxt);
-        self::assertStringContainsString('SECRET_PRIVATE_FILE_PAYLOAD &lt;tag&gt;', (string)($viewTxtJson['data']['html'] ?? ''));
+        // 2. View is denied for every file id (text, image, unsupported type and missing ones alike)
+        foreach ([$txtFileId, $pngFileId, 1, 999999] as $fileId) {
+            $this->assertJsonDenied(
+                $this->dispatchAsUser('get', 'accountFile/view/' . $fileId, $unprivilegedUser, $emptyProfile),
+                "You don't have permission to do this operation"
+            );
+        }
 
-        $viewPng = $this->dispatchAsUser('get', 'accountFile/view/' . $pngFileId, $unprivilegedUser, $emptyProfile);
-        $viewPngJson = $this->assertJsonOk($viewPng);
-        self::assertStringContainsString(
-            chunk_split(base64_encode($pngBytes)),
-            (string)($viewPngJson['data']['html'] ?? '')
-        );
-
-        // Fixture id=1 is application/xml (not image or text/plain)
-        $viewXml = $this->dispatchAsUser('get', 'accountFile/view/1', $unprivilegedUser, $emptyProfile);
-        $viewXmlJson = $this->decodeJson($viewXml['body']);
-        self::assertSame('WARNING', $viewXmlJson['status'] ?? null);
-        self::assertSame('File not supported for preview', $viewXmlJson['description'] ?? null);
-
-        $viewMissing = $this->dispatchAsUser('get', 'accountFile/view/999999', $unprivilegedUser, $emptyProfile);
-        $viewMissingJson = $this->decodeJson($viewMissing['body']);
-        self::assertSame('ERROR', $viewMissingJson['status'] ?? null);
-        self::assertSame('File not found', $viewMissingJson['description'] ?? null);
-
-        // 3. Download returns exact bytes from isPrivate=1 account to unprivileged user
+        // 3. Download returns no content
         $downloadRes = $this->dispatchAsUser('get', 'accountFile/download/' . $txtFileId, $unprivilegedUser, $emptyProfile);
         $this->assertResponseWasDispatched($downloadRes);
-        self::assertSame('SECRET_PRIVATE_FILE_PAYLOAD <tag>', $downloadRes['body']);
+        self::assertSame("You don't have permission to do this operation", $downloadRes['body']);
 
         // 4. Upload requires its profile action. The remaining input behavior is
         // characterized with a separate authorized owner and account.
@@ -338,14 +318,96 @@ final class AccountFileAuthorizationDbIntegrationTest extends DatabaseIntegratio
             @unlink($emptyFile);
         }
 
-        // 5. Unprivileged user deletes file on Admin's isPrivate=1 account
+        // 5. Unprivileged user cannot delete the file (single and batch)
         $deleteRes = $this->dispatchAsUser('post', 'accountFile/delete/' . $txtFileId, $unprivilegedUser, $emptyProfile);
-        $this->assertJsonOk($deleteRes, 'File deleted');
-        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM AccountFile WHERE id = ' . $txtFileId)->fetchColumn());
+        $this->assertJsonDenied($deleteRes, "You don't have permission to do this operation");
+        $batchRes = $this->dispatchAsUser(
+            'post',
+            'accountFile/delete',
+            $unprivilegedUser,
+            $emptyProfile,
+            [],
+            ['items' => [$txtFileId, $pngFileId]]
+        );
+        $this->assertJsonDenied($batchRes, "You don't have permission to do this operation");
+        self::assertSame(
+            2,
+            (int)$pdo->query("SELECT COUNT(*) FROM AccountFile WHERE id IN ($txtFileId, $pngFileId)")->fetchColumn()
+        );
     }
 
     #[Test]
-    public function searchDeniesNonAdminAppEvenWithFileFlagsAndAdminAppSeesPrivateAccountFiles(): void
+    public function authorizedOwnerReadsAndDeletesOwnFilesButNotOthers(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+
+        $profile = (new ProfileData())->setAccFiles(true)->setAccEdit(true)->setAccView(true);
+        $owner = $this->seedUser($pdo, 'file_owner_user', 5, $profile);
+        $ownAccountId = $this->seedAccount($pdo, 'Owner Files Account', $owner->id, 5);
+        $ownFileId = $this->seedAccountFile($pdo, $ownAccountId, 'own.txt', 'text/plain', 'TXT', 'OWN_PAYLOAD', 'no_thumb');
+
+        $otherAccountId = $this->seedAccount($pdo, 'Admin Private Files Account', 1, 1, 1, 0);
+        $otherFileId = $this->seedAccountFile($pdo, $otherAccountId, 'other.txt', 'text/plain', 'TXT', 'OTHER_PAYLOAD', 'no_thumb');
+
+        $list = $this->dispatchAsUser(
+            'get', 'accountFile/list/' . $ownAccountId, $owner, $profile, [], [], [], ['isFilesEnabled' => true]
+        );
+        $this->assertResponseWasDispatched($list);
+        self::assertStringContainsString('own.txt', $list['body']);
+
+        $view = $this->assertJsonOk($this->dispatchAsUser('get', 'accountFile/view/' . $ownFileId, $owner, $profile));
+        self::assertStringContainsString('OWN_PAYLOAD', (string)($view['data']['html'] ?? ''));
+
+        $download = $this->dispatchAsUser('get', 'accountFile/download/' . $ownFileId, $owner, $profile);
+        $this->assertResponseWasDispatched($download);
+        self::assertSame('OWN_PAYLOAD', $download['body']);
+
+        // The files of an account the user cannot access (and missing files) get the very same denial
+        $noAccount = "You don't have permission to access this account";
+        $denied = $this->dispatchAsUser(
+            'get', 'accountFile/list/' . $otherAccountId, $owner, $profile, [], [], [], ['isFilesEnabled' => true]
+        );
+        self::assertSame($noAccount, $denied['body']);
+        foreach ([$otherFileId, 999999] as $fileId) {
+            $this->assertJsonDenied($this->dispatchAsUser('get', 'accountFile/view/' . $fileId, $owner, $profile), $noAccount);
+            self::assertSame(
+                $noAccount,
+                $this->dispatchAsUser('get', 'accountFile/download/' . $fileId, $owner, $profile)['body']
+            );
+            $this->assertJsonDenied(
+                $this->dispatchAsUser('post', 'accountFile/delete/' . $fileId, $owner, $profile),
+                $noAccount
+            );
+        }
+        self::assertSame(
+            1,
+            (int)$pdo->query('SELECT COUNT(*) FROM AccountFile WHERE id = ' . $otherFileId)->fetchColumn()
+        );
+
+        // Read only access to an account is not enough to delete its files
+        $readOnlyAccountId = $this->seedAccount($pdo, 'Read Only Files Account', 1, 1);
+        $readOnlyFileId = $this->seedAccountFile($pdo, $readOnlyAccountId, 'ro.txt', 'text/plain', 'TXT', 'RO', 'no_thumb');
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')
+            ->execute([$readOnlyAccountId, $owner->id]);
+        $this->assertJsonDenied(
+            $this->dispatchAsUser('post', 'accountFile/delete/' . $readOnlyFileId, $owner, $profile),
+            $noAccount
+        );
+        self::assertSame(
+            1,
+            (int)$pdo->query('SELECT COUNT(*) FROM AccountFile WHERE id = ' . $readOnlyFileId)->fetchColumn()
+        );
+
+        // The owner can delete the own file
+        $this->assertJsonOk(
+            $this->dispatchAsUser('post', 'accountFile/delete/' . $ownFileId, $owner, $profile),
+            'File deleted'
+        );
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM AccountFile WHERE id = ' . $ownFileId)->fetchColumn());
+    }
+
+    #[Test]
+    public function searchRequiresTheFilesPermissionAndOnlyListsVisibleAccountFiles(): void
     {
         $pdo = getDbHandler()->getConnection();
 
@@ -354,81 +416,100 @@ final class AccountFileAuthorizationDbIntegrationTest extends DatabaseIntegratio
             ->setMgmFiles(true)
             ->setAccView(true);
 
-        // Even with isAccFiles + isMgmFiles + isAdminAcc=true, Acl::checkUserAccess(ACCOUNT_FILE_SEARCH=25) returns false
         $fileMgrAccAdmin = $this->seedUser($pdo, 'file_mgr_acc_admin', 5, $fileProfile, false, true);
         $appAdmin = $this->seedUser($pdo, 'file_app_admin', 5, $fileProfile, true, false);
+        $plainUser = $this->seedUser($pdo, 'file_plain_user', 5, $fileProfile);
+        $noFilesUser = $this->seedUser($pdo, 'file_nofiles_user', 5, new ProfileData());
 
         $privateAccId = $this->seedAccount($pdo, 'Private Search Account', 1, 1, 1, 0);
         $privGrpAccId = $this->seedAccount($pdo, 'PrivateGroup Search Account', 1, 1, 0, 1);
+        $publicAccId = $this->seedAccount($pdo, 'Public Search Account', 1, 1, 0, 0);
 
         $this->seedAccountFile($pdo, $privateAccId, 'priv-search-secret.txt', 'text/plain', 'TXT', 'priv', 'no_thumb');
         $this->seedAccountFile($pdo, $privGrpAccId, 'privgrp-search-secret.txt', 'text/plain', 'TXT', 'privgrp', 'no_thumb');
+        $this->seedAccountFile($pdo, $publicAccId, 'public-search-visible.txt', 'text/plain', 'TXT', 'pub', 'no_thumb');
 
-        // 1. Non-adminApp denied on accountFile/search because ACCOUNT_FILE_SEARCH (25) is missing from Acl::checkUserAccess
-        $deniedRes = $this->dispatchAsUser('post', 'accountFile/search', $fileMgrAccAdmin, $fileProfile, [], ['search' => 'priv']);
-        $this->assertJsonDenied($deniedRes, "You don't have permission to do this operation");
+        // 1. Without the files profile action the search is denied
+        $this->assertJsonDenied(
+            $this->dispatchAsUser('post', 'accountFile/search', $noFilesUser, new ProfileData(), [], ['search' => 'search']),
+            "You don't have permission to do this operation"
+        );
 
-        // 2. If ACL passes (e.g. stubbed or adminApp), AccountFileRepository::search() applies NO AccountFilter visibility check
-        $adminRes = $this->dispatchAsUser('post', 'accountFile/search', $appAdmin, $fileProfile, [], ['search' => 'priv']);
-        $adminJson = $this->assertJsonOk($adminRes);
-        $html = (string)($adminJson['data']['html'] ?? '');
-        self::assertStringContainsString('priv-search-secret.txt', $html);
-        self::assertStringContainsString('privgrp-search-secret.txt', $html);
-        self::assertStringContainsString('Private Search Account', $html);
-        self::assertStringContainsString('PrivateGroup Search Account', $html);
+        // 2. Private accounts files are never listed, neither for the account administrators
+        foreach ([[$fileMgrAccAdmin, $fileProfile], [$appAdmin, $fileProfile]] as [$user, $profile]) {
+            $html = (string)($this->assertJsonOk(
+                $this->dispatchAsUser('post', 'accountFile/search', $user, $profile, [], ['search' => 'search'])
+            )['data']['html'] ?? '');
+            self::assertStringContainsString('public-search-visible.txt', $html);
+            self::assertStringNotContainsString('priv-search-secret.txt', $html);
+            self::assertStringNotContainsString('privgrp-search-secret.txt', $html);
+        }
+
+        // 3. A user without any access to the accounts does not see any file
+        $html = (string)($this->assertJsonOk(
+            $this->dispatchAsUser('post', 'accountFile/search', $plainUser, $fileProfile, [], ['search' => 'search'])
+        )['data']['html'] ?? '');
+        self::assertStringNotContainsString('public-search-visible.txt', $html);
+        self::assertStringNotContainsString('priv-search-secret.txt', $html);
+        self::assertStringNotContainsString('privgrp-search-secret.txt', $html);
     }
 
     #[Test]
-    public function batchDeleteDeletesValidFilesWithoutTransactionOnMissingOrDuplicateIds(): void
+    public function batchDeleteIsAllOrNothing(): void
     {
         $pdo = getDbHandler()->getConnection();
 
-        $emptyProfile = new ProfileData();
-        $unprivilegedUser = $this->seedUser($pdo, 'file_batch_del_user', 5, $emptyProfile);
+        $profile = (new ProfileData())->setAccFiles(true)->setAccEdit(true)->setAccView(true);
+        $user = $this->seedUser($pdo, 'file_batch_del_user', 5, $profile);
 
-        $privateAccId = $this->seedAccount($pdo, 'Batch File Owner Priv', 1, 1, 1, 0);
-        $f1 = $this->seedAccountFile($pdo, $privateAccId, 'batch-1.txt', 'text/plain', 'TXT', 'one', 'no_thumb');
-        $f2 = $this->seedAccountFile($pdo, $privateAccId, 'batch-2.txt', 'text/plain', 'TXT', 'two', 'no_thumb');
+        $ownAccountId = $this->seedAccount($pdo, 'Batch File Owner', $user->id, 5);
+        $f1 = $this->seedAccountFile($pdo, $ownAccountId, 'batch-1.txt', 'text/plain', 'TXT', 'one', 'no_thumb');
+        $f2 = $this->seedAccountFile($pdo, $ownAccountId, 'batch-2.txt', 'text/plain', 'TXT', 'two', 'no_thumb');
+        $f3 = $this->seedAccountFile($pdo, $ownAccountId, 'batch-3.txt', 'text/plain', 'TXT', 'three', 'no_thumb');
+
+        $otherAccountId = $this->seedAccount($pdo, 'Batch File Other Priv', 1, 1, 1, 0);
+        $foreign = $this->seedAccountFile($pdo, $otherAccountId, 'batch-foreign.txt', 'text/plain', 'TXT', 'x', 'no_thumb');
+
+        $noAccount = "You don't have permission to access this account";
+        $count = static fn(string $ids): int => (int)$pdo->query("SELECT COUNT(*) FROM AccountFile WHERE id IN ($ids)")
+                                                         ->fetchColumn();
 
         // 1. Empty items array returns OK "Files deleted" without touching rows
-        $emptyBatch = $this->dispatchAsUser(
-            'post',
-            'accountFile/delete',
-            $unprivilegedUser,
-            $emptyProfile,
-            [],
-            ['items' => []]
+        $this->assertJsonOk(
+            $this->dispatchAsUser('post', 'accountFile/delete', $user, $profile, [], ['items' => []]),
+            'Files deleted'
         );
-        $this->assertJsonOk($emptyBatch, 'Files deleted');
-        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM AccountFile WHERE id = ' . $f1)->fetchColumn());
+        self::assertSame(3, $count("$f1, $f2, $f3"));
 
-        // 2. Mixed [valid, missing] returns ERROR yet deletes $f1 in MariaDB (no transaction)
-        $mixedBatch = $this->dispatchAsUser(
-            'post',
-            'accountFile/delete',
-            $unprivilegedUser,
-            $emptyProfile,
-            [],
-            ['items' => [$f1, 999999]]
+        // 2. [valid, missing] deletes nothing
+        $this->assertJsonDenied(
+            $this->dispatchAsUser('post', 'accountFile/delete', $user, $profile, [], ['items' => [$f1, 999999]]),
+            $noAccount
         );
-        $mixedJson = $this->decodeJson($mixedBatch['body']);
-        self::assertSame('ERROR', $mixedJson['status'] ?? null);
-        self::assertSame('Error while deleting the files', $mixedJson['description'] ?? null);
-        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM AccountFile WHERE id = ' . $f1)->fetchColumn());
+        self::assertSame(3, $count("$f1, $f2, $f3"));
 
-        // 3. Duplicate [$f2, $f2] deletes $f2 in MariaDB despite returning ERROR (affected=1 !== count=2)
-        $dupBatch = $this->dispatchAsUser(
-            'post',
-            'accountFile/delete',
-            $unprivilegedUser,
-            $emptyProfile,
-            [],
-            ['items' => [$f2, $f2]]
+        // 3. [valid, forbidden] deletes nothing, with the same response as a missing file
+        $this->assertJsonDenied(
+            $this->dispatchAsUser('post', 'accountFile/delete', $user, $profile, [], ['items' => [$f1, $foreign]]),
+            $noAccount
         );
-        $dupJson = $this->decodeJson($dupBatch['body']);
+        self::assertSame(2, $count("$f1, $foreign"));
+
+        // 4. Duplicates are authorized, but the affected rows differ from the requested ones (unchanged behavior)
+        $dupJson = $this->decodeJson(
+            $this->dispatchAsUser('post', 'accountFile/delete', $user, $profile, [], ['items' => [$f2, $f2]])['body']
+        );
         self::assertSame('ERROR', $dupJson['status'] ?? null);
         self::assertSame('Error while deleting the files', $dupJson['description'] ?? null);
-        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM AccountFile WHERE id = ' . $f2)->fetchColumn());
+        self::assertSame(0, $count((string)$f2));
+
+        // 5. Every file authorized: all of them are deleted
+        $this->assertJsonOk(
+            $this->dispatchAsUser('post', 'accountFile/delete', $user, $profile, [], ['items' => [$f1, $f3]]),
+            'Files deleted'
+        );
+        self::assertSame(0, $count("$f1, $f3"));
+        self::assertSame(1, $count((string)$foreign));
     }
 
     /**

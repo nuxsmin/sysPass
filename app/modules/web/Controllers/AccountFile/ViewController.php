@@ -29,6 +29,7 @@ use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 
@@ -55,6 +56,12 @@ final class ViewController extends AccountFileBase
     #[Action(ResponseType::JSON)]
     public function viewAction(int $id): ActionResponse
     {
+        $denied = $this->authorizeFiles(AclActionsInterface::ACCOUNT_FILE_VIEW, [$id]);
+
+        if ($denied !== null) {
+            return $denied;
+        }
+
         $fileDto = $this->accountFileService->getById($id);
 
         $this->view->addTemplate('file', 'itemshow');

@@ -63,6 +63,17 @@ interface AccountFileService
     public function getById(int $id): FileDto;
 
     /**
+     * Returns the id of the account the given file belongs to, without loading the file content
+     *
+     * @param int $id The file id
+     *
+     * @throws NoSuchItemException
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getAccountIdById(int $id): int;
+
+    /**
      * Deletes all the items for given ids
      *
      * @param int[] $ids

@@ -29,6 +29,7 @@ use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 
@@ -54,8 +55,19 @@ final class DeleteController extends AccountFileBase
     #[Action(ResponseType::JSON)]
     public function deleteAction(?int $id): ActionResponse
     {
+        $ids = $id === null
+            ? array_map('intval', $this->getItemsIdFromRequest($this->request) ?? [])
+            : [$id];
+
+        // Every file must be authorized before deleting anything (all or nothing)
+        $denied = $this->authorizeFiles(AclActionsInterface::ACCOUNT_FILE_DELETE, $ids, true);
+
+        if ($denied !== null) {
+            return $denied;
+        }
+
         if ($id === null) {
-            $this->accountFileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+            $this->accountFileService->deleteByIdBatch($ids);
 
             $this->eventDispatcher->notify(
                 'delete.accountFile.selection',

@@ -55,6 +55,18 @@ final class AccountFileDbTest extends DatabaseRepositoryTestCase
     }
 
     #[Test]
+    public function getAccountIdByIdReturnsTheOwnerAccountOnly(): void
+    {
+        $expected = $this->accountFile->getById(1)->getData(FileModel::class)->getAccountId();
+
+        $result = $this->accountFile->getAccountIdById(1);
+
+        self::assertSame(1, $result->getNumRows());
+        self::assertSame($expected, $result->getData(FileModel::class)->getAccountId());
+        self::assertSame(0, $this->accountFile->getAccountIdById(999999)->getNumRows());
+    }
+
+    #[Test]
     public function searchFiltersByTheAccountAndClientNames(): void
     {
         $result = $this->accountFile->search(new ItemSearchDto('Google'));

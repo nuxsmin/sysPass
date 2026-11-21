@@ -30,6 +30,7 @@ use SP\Domain\Account\Dtos\FileDto;
 use SP\Domain\Account\Models\File as FileModel;
 use SP\Domain\Account\Ports\AccountFileRepository;
 use SP\Domain\Account\Ports\AccountFileService;
+use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -59,7 +60,8 @@ final class AccountFile extends Service implements AccountFileService
         Context $context,
         private readonly AccountFileRepository $accountFileRepository,
         private readonly ImageService $imageUtil,
-        private readonly FileSystemService $fileSystem
+        private readonly FileSystemService $fileSystem,
+        private readonly AccountFilterBuilder $accountFilter
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -99,6 +101,22 @@ final class AccountFile extends Service implements AccountFileService
         }
 
         return FileDto::fromResult($data, FileModel::class);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NoSuchItemException
+     * @throws SPException
+     */
+    public function getAccountIdById(int $id): int
+    {
+        $data = $this->accountFileRepository->getAccountIdById($id);
+
+        if ($data->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('File not found'));
+        }
+
+        return (int)$data->getData(FileModel::class)->getAccountId();
     }
 
     /**
@@ -153,7 +171,7 @@ final class AccountFile extends Service implements AccountFileService
      */
     public function search(ItemSearchDto $searchData): QueryResult
     {
-        return $this->accountFileRepository->search($searchData);
+        return $this->accountFileRepository->search($searchData, $this->accountFilter);
     }
 
     /**
