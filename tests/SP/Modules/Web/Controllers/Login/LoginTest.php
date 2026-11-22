@@ -505,7 +505,10 @@ final class LoginTest extends IntegrationTestCase
         self::assertCount(1, $crawler->filterXPath('//form[@id="frmLogin"]'));
         self::assertCount(1, $crawler->filterXPath('//body[contains(@class, "sp-app") and @data-theme="light"]'));
         self::assertCount(1, $crawler->filterXPath('//div[@id="box-pub-noheader"]//img[contains(@src, "syspass-stacked-primary.svg")]'));
-        self::assertCount(1, $crawler->filterXPath('//div[@id="box-pub-noheader"]//h1'));
+        self::assertCount(1, $crawler->filterXPath('//div[@id="box-login"]/h1'));
+        self::assertCount(1, $crawler->filterXPath('//form[@id="frmLogin"]//input[@name="user" and @autocomplete="username"]'));
+        self::assertCount(1, $crawler->filterXPath('//form[@id="frmLogin"]//input[@name="pass" and @autocomplete="current-password"]'));
+        self::assertCount(1, $crawler->filterXPath('//footer//*[@id="secure-info"]//*[contains(@class, "sp-auth-connection-warning")]'));
         self::assertStringNotContainsString('logo_icon.png', $output);
     }
 

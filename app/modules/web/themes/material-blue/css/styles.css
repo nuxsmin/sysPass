@@ -1920,53 +1920,132 @@ div.tag-list-box span.tag, div.tags-box span.tag {
   -webkit-border-radius: 3px !important;
 }
 
+body.login,
+body.logout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #F5F6FC;
+}
 body.login #wrap,
 body.logout #wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
   padding-bottom: 0;
 }
 body.login #container,
 body.logout #container {
-  display: grid;
+  display: flex;
+  flex: 1;
   align-items: center;
-  min-height: 100vh;
-  padding: var(--sp-space-8) var(--sp-space-4) 80px;
+  padding: var(--sp-space-8) var(--sp-space-4);
 }
 body.login #box-pub-noheader,
 body.logout #box-pub-noheader {
-  width: min(100%, 420px);
+  width: min(100%, 400px);
   min-height: 0;
 }
 body.login #box-pub-noheader .sp-auth-brand,
 body.logout #box-pub-noheader .sp-auth-brand {
-  padding: 0 0 var(--sp-space-6);
-  gap: var(--sp-space-3);
+  padding: 0;
+  margin: 0 auto var(--sp-space-6);
 }
 body.login #box-pub-noheader .sp-auth-logo,
 body.logout #box-pub-noheader .sp-auth-logo {
-  width: 144px;
+  width: 112px;
 }
 body.login #box-pub-noheader .box-form,
 body.login #box-pub-noheader .sp-auth-signin,
 body.logout #box-pub-noheader .box-form,
 body.logout #box-pub-noheader .sp-auth-signin {
   padding: var(--sp-space-6);
-  border-radius: 12px !important;
-  box-shadow: 0 2px 6px rgba(38, 53, 68, 0.1);
+  border-color: #DDE3EF;
+  border-radius: var(--sp-radius-md) !important;
+  box-shadow: none;
 }
-
-body.logout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+body.login #toast-container.toast-top-center,
 body.logout #toast-container.toast-top-center {
   position: static;
   order: -1;
   width: 100%;
   padding: var(--sp-space-4) var(--sp-space-4) 0;
 }
+body.login #toast-container.toast-top-center > div,
 body.logout #toast-container.toast-top-center > div {
-  width: min(100%, 420px);
+  width: min(100%, 400px);
+  overflow-wrap: anywhere;
+}
+body.login footer,
+body.logout footer {
+  position: static;
+  display: block;
+  padding: 0 var(--sp-space-4) var(--sp-space-4);
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 12px;
+  text-align: center;
+}
+body.login footer #footer-left,
+body.logout footer #footer-left {
+  display: none;
+}
+body.login footer #footer-right,
+body.logout footer #footer-right {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+}
+body.login footer #status,
+body.logout footer #status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-space-2);
+  width: 100%;
+  margin: var(--sp-space-2) 0 0;
+  padding: 0;
+}
+body.login footer #updates:empty,
+body.login footer #notices:empty,
+body.logout footer #updates:empty,
+body.logout footer #notices:empty {
+  display: none;
+}
+body.login footer #project,
+body.logout footer #project {
+  width: 100%;
+  padding: 0;
+  overflow-wrap: anywhere;
+}
+body.login footer #project a,
+body.login footer #project a:visited,
+body.logout footer #project a,
+body.logout footer #project a:visited {
+  color: var(--sp-muted);
+}
+body.login footer #secure-info,
+body.logout footer #secure-info {
+  max-width: 400px;
+  text-align: left;
+}
+body.login footer #secure-info .material-icons,
+body.logout footer #secure-info .material-icons {
+  display: none;
+}
+body.login footer .sp-auth-connection-warning,
+body.logout footer .sp-auth-connection-warning {
+  font-weight: 400;
+}
+
+body.logout .sp-auth-brand {
+  gap: var(--sp-space-3);
 }
 body.logout .sp-auth-signin a {
   display: flex;
@@ -1975,9 +2054,16 @@ body.logout .sp-auth-signin a {
   width: 100%;
   min-height: 44px;
   height: auto;
+  margin: 0;
   white-space: normal;
 }
 
+#box-pub-noheader #box-login .sp-auth-title {
+  margin: 0 0 var(--sp-space-6);
+  font-family: var(--sp-font-sans);
+  font-size: 20px;
+  line-height: 1.3;
+}
 #box-pub-noheader #box-login form fieldset#box-data {
   min-height: 0;
   height: auto;
@@ -1998,7 +2084,9 @@ body.logout .sp-auth-signin a {
   width: auto;
   margin-bottom: var(--sp-space-2);
   color: var(--sp-text);
+  font-family: var(--sp-font-sans);
   font-size: 14px;
+  font-weight: 500;
   line-height: 1.4;
   visibility: visible;
 }
@@ -2011,7 +2099,9 @@ body.logout .sp-auth-signin a {
   padding: 0 var(--sp-space-3);
   border: 1px solid var(--sp-border);
   border-radius: var(--sp-radius-sm);
+  background-color: var(--sp-background);
   color: var(--sp-text) !important;
+  font-family: var(--sp-font-sans);
   font-size: 16px;
 }
 #box-pub-noheader #box-login .mdl-textfield__input:focus {
@@ -2025,9 +2115,21 @@ body.logout .sp-auth-signin a {
   width: 100%;
   min-height: 44px;
   height: auto;
+  margin: 0;
   line-height: 1.4;
   padding: var(--sp-space-3);
   white-space: normal;
+  border-radius: var(--sp-radius-sm);
+  font-family: var(--sp-font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
+}
+#box-pub-noheader #box-login #btnLogin:disabled {
+  background-color: var(--sp-muted) !important;
+  color: var(--sp-on-accent) !important;
+  cursor: not-allowed;
 }
 #box-pub-noheader #box-login #box-actions {
   margin-top: var(--sp-space-4);

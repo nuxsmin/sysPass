@@ -42,9 +42,9 @@ use function SP\__;
         <img class="sp-auth-logo"
              src="<?php echo $_getvar('logo_stacked_primary'); ?>"
              alt="<?php echo htmlspecialchars($_getvar('app_name'), ENT_QUOTES); ?>"/>
-        <h1 class="sp-auth-title"><?php echo __('Sign in'); ?></h1>
     </div>
     <div id="box-login" class="box-form sp-panel round">
+        <h1 class="sp-auth-title"><?php echo __('Sign in'); ?></h1>
         <form method="post" name="frmLogin" id="frmLogin" class="form-action"
               data-onsubmit="main/login"
               data-route="login/login">

@@ -48,6 +48,9 @@ use function SP\__;
                 <span id="secure-info" class="status-info sp-status-badge sp-status-badge--error">
                     <i class="material-icons sp-color-text--error" aria-hidden="true">http</i>
                     <span>HTTP</span>
+                    <?php if (in_array($_getvar('page'), ['login', 'logout'], true)): ?>
+                        <span class="sp-auth-connection-warning"><?php echo __('Passwords sent from forms are encrypted using PKI, the remain data don\'t.'); ?></span>
+                    <?php endif; ?>
                 </span>
                 <span for="secure-info"
                       class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Tells whether the connection uses HTTPS or not.') . '<br><br>' . __('Passwords sent from forms are encrypted using PKI, the remain data don\'t.'); ?></span>
