@@ -984,7 +984,9 @@ sysPass.Actions = function (log) {
             opts.data = $obj.serialize() + "&sk=" + sysPassApp.sk.get();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
             });
         },
         refreshMpass: function ($obj) {
@@ -1000,7 +1002,9 @@ sysPass.Actions = function (log) {
                 });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
             });
         },
         mailCheck: function ($obj) {
@@ -1012,7 +1016,9 @@ sysPass.Actions = function (log) {
             opts.data = $form.serialize() + "&sk=" + sysPassApp.sk.get();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
             });
         }
     };

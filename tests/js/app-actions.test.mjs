@@ -93,6 +93,7 @@ function setup(options) {
     const opts = options || {};
     const record = {
         calls: [],
+        getUrlCalls: [],
         out: [],
         notifications: [],
         magnificClosed: 0,
@@ -177,6 +178,7 @@ function setup(options) {
                 }).join("/");
             },
             getUrl: function (base, data) {
+                record.getUrlCalls.push({base: base, data: data});
                 if (data === undefined || data === null || data.r === undefined) {
                     return base;
                 }
@@ -1105,4 +1107,184 @@ test("account.listFiles handles transport and HTTP error callbacks without overw
     assert.equal(context.listAccountFiles.children[0].className, "error round");
     assert.equal(context.listAccountFiles.children[0].textContent, "There was an error");
     assert.deepEqual(context.record.errors, ["There was an error"]);
+});
+
+test("config.import serializes form with sk and routes OK, ERROR, and WARNING envelopes to msg.out only", function () {
+    for (const outcome of [
+        {status: 0, description: "Import complete"},
+        {status: 1, description: "Import failed"},
+        {status: 2, description: "Import warning"}
+    ]) {
+        const context = setup();
+        const $form = makeForm({"action-route": "configImport/import"});
+        $form.serialize = function () {
+            return "import_type=xml";
+        };
+
+        context.actions.config.import($form);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.method, undefined);
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=configImport/import");
+        assert.equal(context.record.calls[0].opts.data, "import_type=xml&sk=sk");
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.magnificClosed, 0);
+        assert.deepEqual(context.content.htmlValues, []);
+        assert.deepEqual(context.resContent.htmlValues, []);
+    }
+});
+
+test("config.import handles null, undefined, and non-object responses without calling msg.out or throwing", function () {
+    for (const malformed of [null, undefined, "", 42]) {
+        const context = setup();
+        const $form = makeForm({"action-route": "configImport/import"});
+        $form.serialize = function () {
+            return "import_type=xml";
+        };
+
+        context.actions.config.import($form);
+        assert.equal(context.record.calls.length, 1);
+
+        assert.doesNotThrow(function () {
+            context.record.calls[0].callback(malformed);
+        });
+
+        assert.equal(context.record.out.length, 0);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.magnificClosed, 0);
+    }
+});
+
+test("config.refreshMpass dispatches GET with sk and isAjax=1 and routes OK, ERROR, and WARNING envelopes to msg.out only", function () {
+    for (const outcome of [
+        {status: 0, description: "Hash updated"},
+        {status: 1, description: "Hash update failed"},
+        {status: 2, description: "Hash update warning"}
+    ]) {
+        const context = setup();
+        const control = makeElement({"action-route": "configEncryption/refresh"});
+
+        context.actions.config.refreshMpass(control);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.method, "get");
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=configEncryption/refresh");
+        assert.deepEqual(context.record.getUrlCalls, [
+            {
+                base: "/index.php",
+                data: {
+                    r: "configEncryption/refresh",
+                    sk: "sk",
+                    isAjax: 1
+                }
+            }
+        ]);
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.magnificClosed, 0);
+        assert.deepEqual(context.content.htmlValues, []);
+        assert.deepEqual(context.resContent.htmlValues, []);
+    }
+});
+
+test("config.refreshMpass handles null, undefined, and non-object responses without calling msg.out or throwing", function () {
+    for (const malformed of [null, undefined, "", 42]) {
+        const context = setup();
+        const control = makeElement({"action-route": "configEncryption/refresh"});
+
+        context.actions.config.refreshMpass(control);
+        assert.equal(context.record.calls.length, 1);
+
+        assert.doesNotThrow(function () {
+            context.record.calls[0].callback(malformed);
+        });
+
+        assert.equal(context.record.out.length, 0);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.magnificClosed, 0);
+    }
+});
+
+test("config.mailCheck serializes data-src form with sk and routes OK, ERROR, and WARNING envelopes to msg.out only", function () {
+    for (const outcome of [
+        {status: 0, description: "Mail configuration OK"},
+        {status: 1, description: "Mail connection error"},
+        {status: 2, description: "Mail check warning"}
+    ]) {
+        const $form = makeForm();
+        $form.serialize = function () {
+            return "mail_server=smtp.example.com";
+        };
+        const context = setup({
+            elements: {"#frmMail": $form}
+        });
+        const control = makeElement({
+            "action-route": "configMail/check",
+            "src": "#frmMail"
+        });
+
+        context.actions.config.mailCheck(control);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.method, undefined);
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=configMail/check");
+        assert.equal(context.record.calls[0].opts.data, "mail_server=smtp.example.com&sk=sk");
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.magnificClosed, 0);
+        assert.deepEqual(context.content.htmlValues, []);
+        assert.deepEqual(context.resContent.htmlValues, []);
+    }
+});
+
+test("config.mailCheck handles null, undefined, and non-object responses without calling msg.out or throwing", function () {
+    for (const malformed of [null, undefined, "", 42]) {
+        const $form = makeForm();
+        $form.serialize = function () {
+            return "mail_server=smtp.example.com";
+        };
+        const context = setup({
+            elements: {"#frmMail": $form}
+        });
+        const control = makeElement({
+            "action-route": "configMail/check",
+            "src": "#frmMail"
+        });
+
+        context.actions.config.mailCheck(control);
+        assert.equal(context.record.calls.length, 1);
+
+        assert.doesNotThrow(function () {
+            context.record.calls[0].callback(malformed);
+        });
+
+        assert.equal(context.record.out.length, 0);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.magnificClosed, 0);
+    }
 });
