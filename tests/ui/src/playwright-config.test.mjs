@@ -67,6 +67,7 @@ test('write wiring is its own reporting-only selection', () => {
     'accountCreate.write.spec.ts',
     'accountEdit.write.spec.ts',
     'accountDelete.write.spec.ts',
+    'accountListFiles.write.spec.ts',
     'accountManagerDelete.write.spec.ts',
     'authTokenDelete.write.spec.ts',
     'itemMetadataDelete.write.spec.ts',

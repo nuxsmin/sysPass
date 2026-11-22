@@ -199,12 +199,17 @@ function setup(options) {
             getRequestOpts: function () {
                 return {};
             },
-            getActionCall: function (opts, callback) {
+            getActionCall: function (opts, callback, callbackError) {
                 let resolveFn;
                 const promise = new Promise(function (resolve) {
                     resolveFn = resolve;
                 });
-                record.calls.push({opts: opts, callback: callback, resolve: resolveFn});
+                record.calls.push({
+                    opts: opts,
+                    callback: callback,
+                    callbackError: callbackError,
+                    resolve: resolveFn
+                });
                 return promise;
             }
         },
@@ -226,6 +231,7 @@ function setup(options) {
         },
         config: {
             LANG: {
+                1: "There was an error",
                 12: "Delete selected items?",
                 15: "Delete file?",
                 43: "Accept",
@@ -242,6 +248,7 @@ function setup(options) {
     return {
         actions: globalThis.sysPass.Actions(log),
         badge: badge,
+        content: contentEl,
         listAccountFiles: listAccountFiles,
         record: record,
         resContent: resContent,
@@ -936,4 +943,166 @@ test("user.savePassword handles null, undefined, and non-object responses withou
         assert.equal(context.record.out.length, 0);
         assert.equal(context.record.magnificClosed, 0);
     }
+});
+
+test("account.listFiles injects valid HTML list and empty-state fragments", function () {
+    for (const html of [
+        "<div id=\"files-wrap\"><ul class=\"mdl-list\"><li>file.txt</li></ul></div>",
+        "<div id=\"files-wrap\"><ul class=\"mdl-list\"></ul></div>\n<div class=\"noRes round\">There are no linked files for the account</div>"
+    ]) {
+        const context = setup();
+
+        context.actions.account.listFiles(context.listAccountFiles);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.method, "get");
+        assert.equal(context.record.calls[0].opts.type, "html");
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=accountFile/list/10");
+        assert.equal(typeof context.record.calls[0].callbackError, "function");
+
+        context.record.calls[0].callback(html);
+        assert.deepEqual(context.listAccountFiles.htmlValues, [html]);
+        assert.equal(context.record.out.length, 0);
+        assert.equal(context.record.errors.length, 0);
+        assert.equal(context.listAccountFiles.children.length, 0);
+    }
+});
+
+test("account.listFiles injects data.html from a JSON OK envelope without injecting raw JSON", function () {
+    for (const payload of [
+        JSON.stringify({status: "OK", description: "", data: {html: "<div id=\"files-wrap\">ok</div>"}}),
+        {status: 0, description: "", data: {html: "<div id=\"files-wrap\">ok</div>"}}
+    ]) {
+        const context = setup();
+
+        context.actions.account.listFiles(context.listAccountFiles);
+        context.record.calls[0].callback(payload);
+
+        assert.deepEqual(context.listAccountFiles.htmlValues, ["<div id=\"files-wrap\">ok</div>"]);
+        assert.equal(context.record.out.length, 0);
+        assert.equal(context.record.errors.length, 0);
+    }
+});
+
+test("account.listFiles handles JSON ActionResponse error, warning, and status 10 without injecting raw JSON", function () {
+    const cases = [
+        {
+            raw: JSON.stringify({
+                status: "ERROR",
+                description: "You don't have permission to access this account <script>",
+                messages: [],
+                data: null
+            }),
+            expectedStatus: 1,
+            expectedDescription: "You don't have permission to access this account <script>"
+        },
+        {
+            raw: JSON.stringify({
+                status: "WARNING",
+                description: "File list warning",
+                messages: [],
+                data: null
+            }),
+            expectedStatus: 2,
+            expectedDescription: "File list warning"
+        },
+        {
+            raw: {status: 10, description: "Session finished", data: null},
+            expectedStatus: 10,
+            expectedDescription: "Session finished"
+        }
+    ];
+
+    for (const item of cases) {
+        const context = setup();
+
+        context.actions.account.listFiles(context.listAccountFiles);
+        context.record.calls[0].callback(item.raw);
+
+        assert.deepEqual(context.listAccountFiles.htmlValues, []);
+        assert.equal(context.listAccountFiles.emptied, true);
+        assert.equal(context.listAccountFiles.children.length, 1);
+        assert.equal(context.listAccountFiles.children[0].tagName, "p");
+        assert.equal(context.listAccountFiles.children[0].className, "error round");
+        assert.equal(context.listAccountFiles.children[0].textContent, item.expectedDescription);
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, item.expectedStatus);
+        assert.equal(context.record.out[0].description, item.expectedDescription);
+        assert.equal(context.record.errors.length, 0);
+    }
+});
+
+test("account.listFiles rejects OK JSON without HTML, non-object JSON, plain-text errors, and empty/malformed payloads", function () {
+    const cases = [
+        {
+            payload: JSON.stringify({status: "OK", description: "Files management disabled", data: null}),
+            expectedText: "Files management disabled"
+        },
+        {
+            payload: "[]",
+            expectedText: "There was an error"
+        },
+        {
+            payload: "null",
+            expectedText: "There was an error"
+        },
+        {
+            payload: "{\"status\":\"ERROR\"",
+            expectedText: "There was an error"
+        },
+        {
+            payload: "You don't have permission to access this account",
+            expectedText: "You don't have permission to access this account"
+        },
+        {
+            payload: "Files management disabled",
+            expectedText: "Files management disabled"
+        },
+        {
+            payload: "",
+            expectedText: "There was an error"
+        },
+        {
+            payload: null,
+            expectedText: "There was an error"
+        },
+        {
+            payload: undefined,
+            expectedText: "There was an error"
+        }
+    ];
+
+    for (const item of cases) {
+        const context = setup();
+
+        context.actions.account.listFiles(context.listAccountFiles);
+        assert.doesNotThrow(function () {
+            context.record.calls[0].callback(item.payload);
+        });
+
+        assert.deepEqual(context.listAccountFiles.htmlValues, []);
+        assert.equal(context.listAccountFiles.emptied, true);
+        assert.equal(context.listAccountFiles.children.length, 1);
+        assert.equal(context.listAccountFiles.children[0].className, "error round");
+        assert.equal(context.listAccountFiles.children[0].textContent, item.expectedText);
+        assert.equal(context.record.out.length, 0);
+        assert.deepEqual(context.record.errors, [item.expectedText]);
+    }
+});
+
+test("account.listFiles handles transport and HTTP error callbacks without overwriting #content", function () {
+    const context = setup();
+
+    context.actions.account.listFiles(context.listAccountFiles);
+    assert.equal(typeof context.record.calls[0].callbackError, "function");
+
+    context.record.calls[0].callbackError();
+
+    assert.deepEqual(context.content.htmlValues, []);
+    assert.equal(context.content.emptied, false);
+    assert.deepEqual(context.listAccountFiles.htmlValues, []);
+    assert.equal(context.listAccountFiles.emptied, true);
+    assert.equal(context.listAccountFiles.children.length, 1);
+    assert.equal(context.listAccountFiles.children[0].className, "error round");
+    assert.equal(context.listAccountFiles.children[0].textContent, "There was an error");
+    assert.deepEqual(context.record.errors, ["There was an error"]);
 });
