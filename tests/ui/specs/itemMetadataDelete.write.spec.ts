@@ -293,3 +293,138 @@ test('Custom field delete displays a synthetic ERROR and reloads the active tab'
     tracker.dispose();
   }
 });
+
+for (const [index, outcome] of (['OK', 'ERROR', 'WARNING', 'transport'] as const).entries()) {
+  test(`Item preset delete reconciles the ${outcome} outcome`, async ({ sessionPage: { page, context, session } }) => {
+    const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+    const priority = String(111 + index);
+    const message = `Synthetic item preset ${outcome}`;
+    const refreshes: PlaywrightRequest[] = [];
+    const onRequest = (request: PlaywrightRequest) => {
+      if (request.method() === 'GET' && parseActionRoute(request.url()) === 'itemManager/index') refreshes.push(request);
+    };
+    let createdId: string | null = null;
+    let security: { sk: string; csrf: string } | null = null;
+
+    try {
+      await runTierBIndex(page, tracker, session, TIER_B_INDEX_CASES.itemManager);
+      security = await page.evaluate(() => {
+        const app = (0, eval)('sysPassApp');
+        return { sk: app.sk.get(), csrf: app.config.CSRF };
+      });
+      const created = await page.request.post('/index.php?r=itemPreset/saveCreate', {
+        headers: { 'X-CSRF': security.csrf },
+        form: {
+          type: 'session.timeout',
+          user_id: String(FIXTURE.ids.users.admin),
+          ip_address: '127.0.0.1',
+          timeout: '300',
+          priority,
+          sk: security.sk,
+          isAjax: '1',
+        },
+      });
+      expect(created.status()).toBe(200);
+      expect((await created.json()).status).toBe('OK');
+
+      await runTierBIndex(page, tracker, session, TIER_B_INDEX_CASES.itemManager);
+      const grid = page.locator('#data-table-tblItemPreset');
+      const panel = grid.locator('xpath=ancestor::*[starts-with(@id,"tabs-")][1]');
+      const panelId = await panel.getAttribute('id');
+      const tabIndex = await panel.getAttribute('data-tab-index');
+      await page.locator(`#tabsHeader a[href="#${panelId}"]`).click();
+      const row = grid
+        .locator('tr')
+        .filter({ hasText: 'session.timeout' })
+        .filter({ has: page.locator('td.cell-data', { hasText: new RegExp(`^${priority}$`) }) });
+      await expect(row).toHaveCount(1);
+      const id = await row.getAttribute('data-item-id');
+      expect(id).toMatch(/^\d+$/);
+      createdId = id;
+      const control = row.locator('[data-onclick="appMgmt/delete"]');
+      await expect(control).toHaveAttribute('data-action-route', 'itemPreset/delete');
+      await expect(control).toHaveAttribute('data-item-id', id!);
+
+      if (outcome !== 'OK') {
+        await page.route('**/index.php?**', async (route) => {
+          const request = route.request();
+          if (request.method() === 'GET' && new URL(request.url()).searchParams.get('r') === `itemPreset/delete/${id}`) {
+            if (outcome === 'transport') await route.abort('failed');
+            else await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: outcome, description: message, messages: [], data: null }) });
+          } else await route.continue();
+        });
+      }
+
+      await page.locator('#toast-container').evaluateAll((nodes) => nodes.forEach((node) => node.remove()));
+      await grid.evaluate((element) => element.setAttribute('data-test-stale-grid', 'true'));
+      await control.click();
+      await expect(page.locator('#orrsDiag #alert-text')).toBeVisible();
+      page.on('request', onRequest);
+      const requestPromise = page.waitForRequest((request) => request.method() === 'GET' && new URL(request.url()).searchParams.get('r') === `itemPreset/delete/${id}`);
+      const responsePromise = outcome === 'transport' ? null : page.waitForResponse((response) => response.request().method() === 'GET' && new URL(response.url()).searchParams.get('r') === `itemPreset/delete/${id}`);
+      const refreshPromise = outcome === 'transport' ? null : page.waitForResponse((response) => response.request().method() === 'GET' && parseActionRoute(response.url()) === 'itemManager/index');
+      await page.locator('#orrsDiag #positive').click();
+      const request = await requestPromise;
+      expect(new URL(request.url()).searchParams.get('isAjax')).toBe('1');
+
+      if (responsePromise) {
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
+        const envelope = await response.json();
+        if (outcome === 'OK') {
+          expect(envelope.status).toBe('OK');
+        } else {
+          expect(envelope).toEqual({ status: outcome, description: message, messages: [], data: null });
+        }
+        await expect.poll(() => refreshes.length).toBe(1);
+        const [refresh] = refreshes;
+        expect(refresh).toBeDefined();
+        expect(new URL(refresh!.url()).searchParams.get('tabIndex')).toBe(tabIndex);
+        expect((await refreshPromise!).status()).toBe(200);
+        await expect(grid).not.toHaveAttribute('data-test-stale-grid', 'true');
+
+        if (outcome === 'OK') {
+          await expect(grid.locator(`tr[data-item-id="${id}"]`)).toHaveCount(0);
+          await expect(page.locator('.toast-success').filter({ hasText: envelope.description })).toBeVisible();
+          await expect(page.locator('.toast-error')).toHaveCount(0);
+          await expect(page.locator('.toast-warning')).toHaveCount(0);
+        } else {
+          await expect(grid.locator(`tr[data-item-id="${id}"]`)).toHaveCount(1);
+          await expect(page.locator(outcome === 'ERROR' ? '.toast-error' : '.toast-warning').filter({ hasText: message })).toBeVisible();
+          await expect(page.locator('.toast-success')).toHaveCount(0);
+        }
+      } else {
+        await expect(page.locator('.toast-error')).toBeVisible();
+        await expect(page.locator('.toast-success')).toHaveCount(0);
+        await page.waitForTimeout(1000);
+        expect(refreshes).toHaveLength(0);
+        await expect(grid).toHaveAttribute('data-test-stale-grid', 'true');
+      }
+
+      const searchRead = await page.request.get(`/index.php?r=itemPreset/search&sk=${encodeURIComponent(security.sk)}&isAjax=1`);
+      expect(searchRead.status()).toBe(200);
+      const searchBody = await searchRead.json();
+      expect(searchBody.status).toBe('OK');
+
+      const viewRead = await page.request.get(`/index.php?r=itemPreset/view/${id}&sk=${encodeURIComponent(security.sk)}&isAjax=1`);
+      expect(viewRead.status()).toBe(200);
+      const viewBody = await viewRead.json();
+
+      if (outcome === 'OK') {
+        expect(searchBody.data.html).not.toContain(`data-item-id="${id}"`);
+        expect(viewBody.status).toBe('ERROR');
+        createdId = null;
+      } else {
+        expect(searchBody.data.html).toContain(`data-item-id="${id}"`);
+        expect(viewBody.status).toBe('OK');
+      }
+    } finally {
+      page.off('request', onRequest);
+      await page.unroute('**/index.php?**');
+      if (createdId && security) {
+        await page.request.get(`/index.php?r=itemPreset/delete/${createdId}&sk=${encodeURIComponent(security.sk)}&isAjax=1`);
+      }
+      tracker.dispose();
+    }
+  });
+}

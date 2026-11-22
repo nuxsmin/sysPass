@@ -89,7 +89,8 @@ function makeCollection(items) {
     };
 }
 
-function setup() {
+function setup(options) {
+    const opts = options || {};
     const record = {
         calls: [],
         out: [],
@@ -118,10 +119,20 @@ function setup() {
     const frmSearch = makeElement({"action-route": "account/search"});
     const resContent = makeElement();
     const contentEl = makeElement();
+    if (opts.activeTab) {
+        const activeTab = makeElement(opts.activeTab);
+        activeTab.length = 1;
+        contentEl.find = function (selector) {
+            if (selector === "[id^='tabs-'].is-active") {
+                return activeTab;
+            }
+            return this;
+        };
+    }
     const listAccountFiles = makeElement({"action-route": "accountFile/list", "item-id": 10, "delete": 1});
     const badge = makeElement({"color-class": "danger"});
     const tooltip = makeElement();
-    const elements = {
+    const elements = Object.assign({
         "#frmSearch": frmSearch,
         "#res-content": resContent,
         "#content": contentEl,
@@ -130,7 +141,7 @@ function setup() {
         ".notifications-badge": makeCollection([badge]),
         ".notifications-tooltip": tooltip,
         "#updates": makeElement()
-    };
+    }, opts.elements || {});
 
     globalThis.$ = function (selector) {
         if (selector !== null && typeof selector === "object") {
@@ -169,7 +180,16 @@ function setup() {
                 if (data === undefined || data === null || data.r === undefined) {
                     return base;
                 }
-                return base + "?r=" + (Array.isArray(data.r) ? data.r.join("/") : data.r);
+                const route = Array.isArray(data.r)
+                    ? data.r.filter(function (part) {
+                        return part !== null && part !== undefined && part !== "";
+                    }).join("/")
+                    : data.r;
+                const params = ["r=" + route];
+                if (data.tabIndex !== undefined) {
+                    params.push("tabIndex=" + data.tabIndex);
+                }
+                return base + "?" + params.join("&");
             },
             sendNotification: function () {
                 record.notifications.push(Array.from(arguments));
@@ -195,10 +215,13 @@ function setup() {
             }
         },
         triggers: {
-            views: {}
+            views: {
+                common: function () {}
+            }
         },
         config: {
             LANG: {
+                12: "Delete selected items?",
                 15: "Delete file?",
                 43: "Accept",
                 44: "Cancel",
@@ -531,6 +554,111 @@ test("file.delete cancel reports cancellation without dispatching a request", fu
     const control = makeElement({"action-route": "accountFile/delete", "item-id": 77});
 
     context.actions.file.delete(control);
+    context.record.dialogs[0].negative.onClick({preventDefault: function () {}});
+
+    assert.equal(context.record.calls.length, 0);
+    assert.deepEqual(context.record.errors, ["Cancel"]);
+});
+
+test("appMgmt.delete dispatches single delete on confirm and refreshes the active tab on OK, ERROR and WARNING", function () {
+    for (const outcome of [
+        {status: 0, description: "Value deleted"},
+        {status: 1, description: "Delete error"},
+        {status: 2, description: "Delete warning"}
+    ]) {
+        const context = setup({
+            activeTab: {"tab-index": 7, "tab-route": "itemManager/index"}
+        });
+        const control = makeElement({"action-route": "itemPreset/delete", "item-id": 42});
+
+        context.actions.appMgmt.delete(control);
+        assert.equal(context.record.dialogs.length, 1);
+        assert.equal(context.record.calls.length, 0);
+
+        context.record.dialogs[0].positive.onClick({preventDefault: function () {}});
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.method, "get");
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=itemPreset/delete/42");
+        assert.deepEqual(context.record.calls[0].opts.data, {items: []});
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.calls.length, 2);
+        assert.equal(context.record.calls[1].opts.method, "get");
+        assert.equal(context.record.calls[1].opts.type, "html");
+        assert.equal(context.record.calls[1].opts.url, "/index.php?r=itemManager/index&tabIndex=7");
+    }
+});
+
+test("appMgmt.delete builds bulk delete route without trailing item id and sends items[]", function () {
+    const selectedRows = [
+        makeElement({"item-id": 11}),
+        makeElement({"item-id": 22})
+    ];
+    const gridTable = makeElement();
+    gridTable.find = function (selector) {
+        if (selector === ".is-selected") {
+            return makeCollection(selectedRows);
+        }
+        return this;
+    };
+
+    const context = setup({
+        activeTab: {"tab-index": 7, "tab-route": "itemManager/index"},
+        elements: {"#data-table-tblItemPreset": gridTable}
+    });
+    const control = makeElement({
+        "action-route": "itemPreset/delete",
+        "selection": "#data-table-tblItemPreset"
+    });
+
+    context.actions.appMgmt.delete(control);
+    assert.equal(context.record.dialogs.length, 1);
+
+    context.record.dialogs[0].positive.onClick({preventDefault: function () {}});
+    assert.equal(context.record.calls.length, 1);
+    assert.equal(context.record.calls[0].opts.method, "get");
+    assert.equal(context.record.calls[0].opts.url, "/index.php?r=itemPreset/delete");
+    assert.deepEqual(context.record.calls[0].opts.data, {items: [11, 22]});
+});
+
+test("appMgmt.delete aborts without dialog or request when bulk selection is empty", function () {
+    const gridTable = makeElement();
+    gridTable.find = function (selector) {
+        if (selector === ".is-selected") {
+            return makeCollection([]);
+        }
+        return this;
+    };
+
+    const context = setup({
+        activeTab: {"tab-index": 7, "tab-route": "itemManager/index"},
+        elements: {"#data-table-tblItemPreset": gridTable}
+    });
+    const control = makeElement({
+        "action-route": "itemPreset/delete",
+        "selection": "#data-table-tblItemPreset"
+    });
+
+    context.actions.appMgmt.delete(control);
+    assert.equal(context.record.dialogs.length, 0);
+    assert.equal(context.record.calls.length, 0);
+});
+
+test("appMgmt.delete cancel reports cancellation without dispatching a request", function () {
+    const context = setup({
+        activeTab: {"tab-index": 7, "tab-route": "itemManager/index"}
+    });
+    const control = makeElement({"action-route": "itemPreset/delete", "item-id": 42});
+
+    context.actions.appMgmt.delete(control);
+    assert.equal(context.record.dialogs.length, 1);
     context.record.dialogs[0].negative.onClick({preventDefault: function () {}});
 
     assert.equal(context.record.calls.length, 0);
