@@ -566,14 +566,12 @@ sysPass.Actions = function (log) {
             opts.data += "&sk=" + sysPassApp.sk.get();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
 
-                if (json.status === 0) {
+                if (json && json.status === 0) {
                     closeFloatingBox();
-
-                    if (typeof onSuccess === "function") {
-                        onSuccess();
-                    }
                 }
             });
         }

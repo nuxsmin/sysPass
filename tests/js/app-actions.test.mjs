@@ -863,3 +863,77 @@ test("notification.delete cancel reports cancellation without dispatching a requ
     assert.equal(context.record.calls.length, 0);
     assert.deepEqual(context.record.errors, ["Cancel"]);
 });
+
+test("user.savePassword dispatches POST, displays status via msg.out, and closes popup on status 0", function () {
+    const context = setup();
+    const $form = makeForm({"action-route": "user/saveEditPass/42"});
+    $form.serialize = function () {
+        return "password=encrypted&password_repeat=encrypted";
+    };
+
+    context.actions.user.savePassword($form);
+    assert.equal(context.record.calls.length, 1);
+    assert.equal(context.record.calls[0].opts.method, "post");
+    assert.equal(context.record.calls[0].opts.url, "/index.php?r=user/saveEditPass/42");
+    assert.equal(
+        context.record.calls[0].opts.data,
+        "password=encrypted&password_repeat=encrypted&sk=sk"
+    );
+
+    context.record.calls[0].callback({
+        status: 0,
+        description: "Password updated",
+        data: null
+    });
+
+    assert.equal(context.record.out.length, 1);
+    assert.equal(context.record.out[0].description, "Password updated");
+    assert.equal(context.record.magnificClosed, 1);
+});
+
+test("user.savePassword keeps popup open and displays status via msg.out on ERROR and WARNING", function () {
+    for (const outcome of [
+        {status: 1, description: "Password error"},
+        {status: 2, description: "Password warning"}
+    ]) {
+        const context = setup();
+        const $form = makeForm({"action-route": "user/saveEditPass/42"});
+        $form.serialize = function () {
+            return "password=encrypted&password_repeat=encrypted";
+        };
+
+        context.actions.user.savePassword($form);
+        assert.equal(context.record.calls.length, 1);
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.magnificClosed, 0);
+    }
+});
+
+test("user.savePassword handles null, undefined, and non-object responses without throwing", function () {
+    for (const malformed of [null, undefined, "", 42]) {
+        const context = setup();
+        const $form = makeForm({"action-route": "user/saveEditPass/42"});
+        $form.serialize = function () {
+            return "password=encrypted&password_repeat=encrypted";
+        };
+
+        context.actions.user.savePassword($form);
+        assert.equal(context.record.calls.length, 1);
+
+        assert.doesNotThrow(function () {
+            context.record.calls[0].callback(malformed);
+        });
+
+        assert.equal(context.record.out.length, 0);
+        assert.equal(context.record.magnificClosed, 0);
+    }
+});
