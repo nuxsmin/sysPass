@@ -42,6 +42,47 @@ function matchesSave(url: string, id: number): boolean {
   return new URL(url).searchParams.get('r') === `account/saveEdit/${id}`;
 }
 
+test('account file upload dispatches and persists a synthetic file', async ({ sessionPage: { page, context, session } }) => {
+  const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+  const accountId = FIXTURE.ids.accounts.parent;
+  const name = `upload-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.txt`;
+  const uploadRoute = `accountFile/upload/${accountId}`;
+  const listRoute = `accountFile/list/${accountId}`;
+  try {
+    await openSeededShell(page, tracker, session);
+    await page.goto(`/index.php?r=account/edit/${accountId}`, { waitUntil: 'domcontentloaded' });
+    await page.locator('a[href="#file-panel"]').click();
+    const drop = page.locator('#drop-account-files');
+    await expect(drop).toHaveAttribute('data-action-route', 'accountFile/upload');
+    await expect(drop).toHaveAttribute('data-item-id', String(accountId));
+    await expect(page.locator('#list-account-files #files-wrap')).toBeVisible();
+    const sk = await page.evaluate(() => (0, eval)('sysPassApp').sk.get());
+    const readFiles = async () => {
+      const response = await page.request.get(`/index.php?r=${listRoute}&sk=${encodeURIComponent(sk)}&isAjax=1`);
+      expect(response.status()).toBe(200);
+      return response.text();
+    };
+    expect(await readFiles()).not.toContain(name);
+    await page.locator('#toast-container').evaluateAll((nodes) => nodes.forEach((node) => node.remove()));
+    const chooserPromise = page.waitForEvent('filechooser');
+    await drop.click();
+    const chooser = await chooserPromise;
+    const uploadPromise = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).searchParams.get('r') === uploadRoute);
+    const listPromise = page.waitForResponse((response) => response.request().method() === 'GET' && new URL(response.url()).searchParams.get('r') === listRoute);
+    await chooser.setFiles({ name, mimeType: 'text/plain', buffer: Buffer.from('Synthetic upload fixture\n') });
+    const upload = await uploadPromise;
+    expect(upload.status()).toBe(200);
+    expect((await upload.json()).status).toBe('OK');
+    expect(upload.request().headers()['content-type']).toContain('multipart/form-data');
+    expect((await listPromise).status()).toBe(200);
+    await expect(page.locator('.toast-success')).toBeVisible();
+    await expect(page.locator('#list-account-files')).toContainText(name);
+    expect(await readFiles()).toContain(name);
+  } finally {
+    tracker.dispose();
+  }
+});
+
 test('account modification request displays a synthetic error without navigation', async ({ sessionPage: admin, isolatedPage: restricted }) => {
   const tracker = new ActionTracker(restricted.page, restricted.context, { sessionEstablished: false });
   const adminTracker = new ActionTracker(admin.page, admin.context, { sessionEstablished: false });

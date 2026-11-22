@@ -84,19 +84,36 @@ use Symfony\Component\DomCrawler\Crawler;
 class AccountTest extends IntegrationTestCase
 {
     private ?bool $legacyWikiEnabled = null;
+    private bool  $filesEnabled      = false;
 
     protected function getConfigData(): array
     {
-        return $this->legacyWikiEnabled === null ? parent::getConfigData() : array_merge(parent::getConfigData(), [
-            'isWikiEnabled' => true,
-            'isDokuwikiEnabled' => $this->legacyWikiEnabled,
-            'getWikiFilter' => ['Wiki'],
-            'getWikiPageurl' => 'https://wiki.example.test/page/',
-        ]);
+        $config = parent::getConfigData();
+
+        if ($this->legacyWikiEnabled !== null) {
+            $config = array_merge($config, [
+                'isWikiEnabled' => true,
+                'isDokuwikiEnabled' => $this->legacyWikiEnabled,
+                'getWikiFilter' => ['Wiki'],
+                'getWikiPageurl' => 'https://wiki.example.test/page/',
+            ]);
+        }
+
+        if ($this->filesEnabled) {
+            $config = array_merge($config, [
+                'isFilesEnabled' => true,
+                'getFilesAllowedSize' => 1024,
+                'getFilesAllowedExts' => ['TXT', 'PNG'],
+            ]);
+        }
+
+        return $config;
     }
 
     protected function setUp(): void
     {
+        $this->legacyWikiEnabled = null;
+        $this->filesEnabled = false;
         parent::setUp();
 
         $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
@@ -2063,5 +2080,128 @@ class AccountTest extends IntegrationTestCase
             $crawler->filterXPath('//select[@id="parent_account_id" and @data-item-id="0"]'),
             'The blank account create parent select must expose data-item-id="0"'
         );
+    }
+
+    #[Test]
+    public function editRendersFileDropzoneWhenUploadIsAuthorized(): void
+    {
+        $output = $this->renderAccountRouteWithFiles('account/edit/100', true);
+        $crawler = new Crawler($output);
+
+        self::assertCount(1, $crawler->filterXPath('//div[@id="file-panel"]//div[@id="list-account-files"]'));
+        self::assertCount(1, $crawler->filterXPath('//div[@id="file-panel"]//div[@id="box-upload-files"]'));
+
+        $dropzone = $crawler->filterXPath('//div[@id="box-upload-files"]//div[@id="drop-account-files"]');
+        self::assertCount(1, $dropzone);
+        self::assertSame('accountFile/upload', $dropzone->attr('data-action-route'));
+        self::assertSame('100', $dropzone->attr('data-item-id'));
+        self::assertSame('TXT,PNG', $dropzone->attr('data-files-ext'));
+
+        self::assertCount(
+            1,
+            $crawler->filterXPath('//div[@id="box-upload-files"]//form[@id="fileUploadForm"]//input[@id="inFile"]')
+        );
+    }
+
+    #[Test]
+    public function editOmitsFileDropzoneWhenFileUploadActionIsDenied(): void
+    {
+        $output = $this->renderAccountRouteWithFiles('account/edit/100', false);
+        $crawler = new Crawler($output);
+
+        self::assertCount(1, $crawler->filterXPath('//div[@id="file-panel"]//div[@id="list-account-files"]'));
+        self::assertCount(0, $crawler->filterXPath('//*[@id="box-upload-files"]'));
+        self::assertCount(0, $crawler->filterXPath('//*[@id="drop-account-files"]'));
+        self::assertCount(0, $crawler->filterXPath('//*[@id="fileUploadForm"]'));
+    }
+
+    /**
+     * @return array<string, array{string, bool}>
+     */
+    public static function nonEditAccountRoutesProvider(): array
+    {
+        return [
+            'view' => ['account/view/100', true],
+            'delete' => ['account/delete/100', false],
+            'editPass' => ['account/editPass/100', false],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('nonEditAccountRoutesProvider')]
+    public function nonEditAccountRoutesOmitFileDropzone(string $route, bool $expectsFileList): void
+    {
+        $output = $this->renderAccountRouteWithFiles($route, true);
+        $crawler = new Crawler($output);
+
+        if ($expectsFileList) {
+            self::assertCount(1, $crawler->filterXPath('//div[@id="file-panel"]//div[@id="list-account-files"]'));
+        }
+
+        self::assertCount(0, $crawler->filterXPath('//*[@id="box-upload-files"]'));
+        self::assertCount(0, $crawler->filterXPath('//*[@id="drop-account-files"]'));
+        self::assertCount(0, $crawler->filterXPath('//*[@id="fileUploadForm"]'));
+    }
+
+    private function renderAccountRouteWithFiles(string $route, bool $allowFileUpload): string
+    {
+        $this->filesEnabled = true;
+
+        $accountView = AccountDataGenerator::factory()
+            ->buildAccountDataView()
+            ->mutate(['id' => 100]);
+
+        $this->addDatabaseMapperResolver(
+            AccountView::class,
+            new QueryResult([$accountView])
+        );
+        $this->addDatabaseMapperResolver(
+            Item::class,
+            new QueryResult([new Item(['id' => 101, 'name' => 'Linked Item'])])
+        );
+
+        $acl = $this->createMock(AclInterface::class);
+        $acl->method('checkUserAccess')
+            ->willReturnCallback(
+                static fn(int $actionId): bool => $actionId !== AclActionsInterface::ACCOUNT_FILE_UPLOAD
+                    || $allowFileUpload
+            );
+        $acl->method('getRouteFor')
+            ->willReturnCallback(
+                static fn(int $actionId): string => match ($actionId) {
+                    AclActionsInterface::ACCOUNT_FILE_LIST => 'accountFile/list',
+                    AclActionsInterface::ACCOUNT_FILE_UPLOAD => 'accountFile/upload',
+                    default => (string)$actionId,
+                }
+            );
+
+        $accountAcl = self::createStub(AccountAclService::class);
+        $accountAcl->method('getAcl')
+            ->willReturnCallback(
+                static fn(int $actionId): AccountPermission => (new AccountPermission($actionId))
+                    ->setCompiledAccountAccess(true)
+                    ->setCompiledShowAccess(true)
+                    ->setResultView(true)
+                    ->setResultEdit(true)
+                    ->setShowFiles($acl->checkUserAccess(AclActionsInterface::ACCOUNT_FILE))
+                    ->setShowDelete($acl->checkUserAccess(AclActionsInterface::ACCOUNT_DELETE))
+            );
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => $route]),
+            [
+                AclInterface::class => $acl,
+                AccountAclService::class => $accountAcl,
+            ]
+        );
+
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($container);
+        } finally {
+            $output = (string)ob_get_clean();
+        }
+
+        return $output;
     }
 }

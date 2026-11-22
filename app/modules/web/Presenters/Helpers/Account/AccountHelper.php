@@ -462,6 +462,15 @@ final class AccountHelper extends AccountHelperBase
             && $this->acl->checkUserAccess(AclActionsInterface::TAG)
         );
         $this->view->assign('addTagRoute', $this->acl->getRouteFor(AclActionsInterface::TAG_CREATE));
+        $isEditAction = $this->actionId === AclActionsInterface::ACCOUNT_EDIT;
+
+        $this->view->assign('editAction', $isEditAction);
+        $this->view->assign(
+            'fileUploadEnabled',
+            $isEditAction
+            && $this->accountPermission->isResultEdit()
+            && $this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_FILE_UPLOAD)
+        );
         $this->view->assign('fileListRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_LIST));
         $this->view->assign('fileUploadRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_UPLOAD));
         $this->view->assign('disabled', $this->isView ? 'disabled' : '');

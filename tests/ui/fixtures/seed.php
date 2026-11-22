@@ -176,6 +176,7 @@ function configureApplication(ConfigFileService $configFileService): void
         ->setInstalled(true)
         ->setSiteLang('en_US')
         ->setFilesEnabled(true)
+        ->setFilesAllowedMime(['text/plain'])
         ->setCheckUpdates(false)
         ->setCheckNotices(false)
         ->setDebug(false)
@@ -536,6 +537,7 @@ function verifyFixture(
 
     $check($salt !== '', 'application password salt is missing');
     $check($config->isFilesEnabled(), 'filesEnabled is not enabled in application configuration');
+    $check(in_array('text/plain', $config->getFilesAllowedMime(), true), 'text/plain uploads are not enabled');
     $check(!$config->isCheckUpdates(), 'checkUpdates is not disabled in application configuration');
     $check(!$config->isCheckNotices(), 'checkNotices is not disabled in application configuration');
     $check(!$config->isDebug(), 'debug is not disabled in application configuration');
