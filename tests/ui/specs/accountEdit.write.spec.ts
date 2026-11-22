@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Page, Request as PlaywrightRequest } from '@playwright/test';
 import { accountCreateContract } from '../src/contracts';
 import { FIXTURE, RESTRICTED_CREDENTIALS } from '../src/fixture';
 import { loginThroughUi } from '../src/login';
@@ -82,6 +82,240 @@ test('account file upload dispatches and persists a synthetic file', async ({ se
     tracker.dispose();
   }
 });
+
+async function uploadSyntheticAccountFile(page: Page, accountId: number, name: string, content: string): Promise<{ sk: string; fileId: string }> {
+  await page.goto(`/index.php?r=account/edit/${accountId}`, { waitUntil: 'domcontentloaded' });
+  await page.locator('a[href="#file-panel"]').click();
+  const drop = page.locator('#drop-account-files');
+  await expect(drop).toHaveAttribute('data-action-route', 'accountFile/upload');
+  await expect(drop).toHaveAttribute('data-item-id', String(accountId));
+  await expect(page.locator('#list-account-files #files-wrap')).toBeVisible();
+  const chooserPromise = page.waitForEvent('filechooser');
+  await drop.click();
+  const chooser = await chooserPromise;
+  const uploadPromise = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).searchParams.get('r') === `accountFile/upload/${accountId}`);
+  const listPromise = page.waitForResponse((response) => response.request().method() === 'GET' && new URL(response.url()).searchParams.get('r') === `accountFile/list/${accountId}`);
+  await chooser.setFiles({ name, mimeType: 'text/plain', buffer: Buffer.from(content) });
+  const upload = await uploadPromise;
+  expect(upload.status()).toBe(200);
+  expect((await upload.json()).status).toBe('OK');
+  expect((await listPromise).status()).toBe(200);
+  const row = page.locator('#list-account-files li').filter({ hasText: name });
+  await expect(row).toHaveCount(1);
+  const fileId = await row.locator('[data-onclick="file/delete"]').getAttribute('data-item-id');
+  expect(fileId).toMatch(/^\d+$/);
+  const sk = await page.evaluate(() => (0, eval)('sysPassApp').sk.get());
+  return { sk, fileId: fileId! };
+}
+
+async function deleteSyntheticAccountFile(page: Page, fileId: string, sk: string): Promise<void> {
+  const response = await page.request.get(`/index.php?r=accountFile/delete/${fileId}&sk=${encodeURIComponent(sk)}&isAjax=1`);
+  expect(response.status()).toBe(200);
+  expect((await response.json()).status).toBe('OK');
+}
+
+test('account file delete dispatches and removes a persisted synthetic file', async ({ sessionPage: { page, context, session } }) => {
+  const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+  const accountId = FIXTURE.ids.accounts.parent;
+  const name = `delete-ok-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.txt`;
+  try {
+    await openSeededShell(page, tracker, session);
+    const { sk, fileId } = await uploadSyntheticAccountFile(page, accountId, name, 'Synthetic delete fixture\n');
+    const listRoute = `accountFile/list/${accountId}`;
+    const readFiles = async () => {
+      const response = await page.request.get(`/index.php?r=${listRoute}&del=1&sk=${encodeURIComponent(sk)}&isAjax=1`);
+      expect(response.status()).toBe(200);
+      return response.text();
+    };
+    expect(await readFiles()).toContain(name);
+
+    const row = page.locator('#list-account-files li').filter({ hasText: name });
+    await expect(row).toHaveCount(1);
+    const control = row.locator('[data-onclick="file/delete"]');
+    await expect(control).toHaveAttribute('data-action-route', 'accountFile/delete');
+    await expect(control).toHaveAttribute('data-item-id', fileId);
+    const deleteRoute = `accountFile/delete/${fileId}`;
+
+    await page.locator('#toast-container').evaluateAll((nodes) => nodes.forEach((node) => node.remove()));
+    await control.click();
+    await expect(page.locator('#orrsDiag #alert-text')).toBeVisible();
+    const deletePromise = page.waitForResponse((response) => response.request().method() === 'GET' && new URL(response.url()).searchParams.get('r') === deleteRoute);
+    const listPromise = page.waitForResponse((response) => response.request().method() === 'GET' && new URL(response.url()).searchParams.get('r') === listRoute);
+    await page.locator('#orrsDiag #positive').click();
+
+    const deleteResponse = await deletePromise;
+    expect(deleteResponse.status()).toBe(200);
+    expect((await deleteResponse.json()).status).toBe('OK');
+    expect((await listPromise).status()).toBe(200);
+    await expect(page.locator('.toast-success')).toBeVisible();
+    await expect(page.locator('#list-account-files')).not.toContainText(name);
+
+    const afterMarkup = await readFiles();
+    expect(afterMarkup).not.toContain(name);
+    expect(afterMarkup).not.toContain(`data-item-id="${fileId}"`);
+  } finally {
+    tracker.dispose();
+  }
+});
+
+for (const outcome of ['ERROR', 'WARNING', 'transport'] as const) {
+  test(`account file delete handles a ${outcome} outcome without reloading or deleting`, async ({ sessionPage: { page, context, session } }) => {
+    const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+    const accountId = FIXTURE.ids.accounts.parent;
+    const name = `delete-${outcome}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.txt`;
+    const message = `Synthetic file delete ${outcome}`;
+    const reloads: PlaywrightRequest[] = [];
+    const listRoute = `accountFile/list/${accountId}`;
+    const onRequest = (request: PlaywrightRequest) => {
+      if (request.method() === 'GET' && new URL(request.url()).searchParams.get('r') === listRoute) reloads.push(request);
+    };
+    let uploaded: { sk: string; fileId: string } | null = null;
+
+    try {
+      await openSeededShell(page, tracker, session);
+      uploaded = await uploadSyntheticAccountFile(page, accountId, name, `Synthetic delete ${outcome} fixture\n`);
+      const { sk, fileId } = uploaded;
+      const readFiles = async () => {
+        const response = await page.request.get(`/index.php?r=${listRoute}&del=1&sk=${encodeURIComponent(sk)}&isAjax=1`);
+        expect(response.status()).toBe(200);
+        return response.text();
+      };
+      expect(await readFiles()).toContain(name);
+
+      const row = page.locator('#list-account-files li').filter({ hasText: name });
+      await expect(row).toHaveCount(1);
+      const control = row.locator('[data-onclick="file/delete"]');
+      await expect(control).toHaveAttribute('data-action-route', 'accountFile/delete');
+      await expect(control).toHaveAttribute('data-item-id', fileId);
+      const deleteRoute = `accountFile/delete/${fileId}`;
+
+      await page.locator('#list-account-files #files-wrap').evaluate((el) => el.setAttribute('data-test-stale-files', 'true'));
+      await page.route('**/index.php?**', async (route) => {
+        const request = route.request();
+        if (request.method() === 'GET' && new URL(request.url()).searchParams.get('r') === deleteRoute) {
+          if (outcome === 'transport') await route.abort('failed');
+          else await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: outcome, description: message, messages: [], data: null }) });
+        } else await route.continue();
+      });
+
+      await page.locator('#toast-container').evaluateAll((nodes) => nodes.forEach((node) => node.remove()));
+      await control.click();
+      await expect(page.locator('#orrsDiag #alert-text')).toBeVisible();
+      page.on('request', onRequest);
+      const requestPromise = page.waitForRequest((request) => request.method() === 'GET' && new URL(request.url()).searchParams.get('r') === deleteRoute);
+      const responsePromise = outcome === 'transport' ? null : page.waitForResponse((response) => response.request().method() === 'GET' && new URL(response.url()).searchParams.get('r') === deleteRoute);
+      await page.locator('#orrsDiag #positive').click();
+
+      await requestPromise;
+      if (responsePromise) {
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
+        expect(await response.json()).toEqual({ status: outcome, description: message, messages: [], data: null });
+        const toast = outcome === 'ERROR' ? '.toast-error' : '.toast-warning';
+        await expect(page.locator(toast).filter({ hasText: message })).toBeVisible();
+      } else {
+        await expect(page.locator('.toast-error')).toBeVisible();
+      }
+
+      await expect(page.locator('.toast-success')).toHaveCount(0);
+      await page.waitForTimeout(1000);
+      expect(reloads).toHaveLength(0);
+      await expect(page.locator('#list-account-files #files-wrap')).toHaveAttribute('data-test-stale-files', 'true');
+      await expect(page.locator('#list-account-files')).toContainText(name);
+
+      const afterMarkup = await readFiles();
+      expect(afterMarkup).toContain(name);
+      expect(afterMarkup).toContain(`data-item-id="${fileId}"`);
+    } finally {
+      page.off('request', onRequest);
+      await page.unroute('**/index.php?**');
+      if (uploaded) {
+        await deleteSyntheticAccountFile(page, uploaded.fileId, uploaded.sk);
+      }
+      tracker.dispose();
+    }
+  });
+}
+
+for (const outcome of ['ERROR', 'WARNING', 'transport'] as const) {
+  test(`account file upload handles a ${outcome} outcome without persisting or reloading`, async ({ sessionPage: { page, context, session } }) => {
+    const tracker = new ActionTracker(page, context, { sessionEstablished: false });
+    const accountId = FIXTURE.ids.accounts.parent;
+    const suffix = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const existingName = `bb-existing-${outcome}-${suffix}.txt`;
+    const failedName = `aa-failed-${outcome}-${suffix}.txt`;
+    const message = `Synthetic file upload ${outcome}`;
+    const reloads: PlaywrightRequest[] = [];
+    const listRoute = `accountFile/list/${accountId}`;
+    const uploadRoute = `accountFile/upload/${accountId}`;
+    const onRequest = (request: PlaywrightRequest) => {
+      if (request.method() === 'GET' && new URL(request.url()).searchParams.get('r') === listRoute) reloads.push(request);
+    };
+    let uploaded: { sk: string; fileId: string } | null = null;
+
+    try {
+      await openSeededShell(page, tracker, session);
+      uploaded = await uploadSyntheticAccountFile(page, accountId, existingName, 'Baseline persisted file\n');
+      const { sk } = uploaded;
+      const readFiles = async () => {
+        const response = await page.request.get(`/index.php?r=${listRoute}&sk=${encodeURIComponent(sk)}&isAjax=1`);
+        expect(response.status()).toBe(200);
+        return response.text();
+      };
+      const beforeMarkup = await readFiles();
+      expect(beforeMarkup).toContain(existingName);
+      expect(beforeMarkup).not.toContain(failedName);
+
+      await page.locator('#list-account-files #files-wrap').evaluate((el) => el.setAttribute('data-test-stale-files', 'true'));
+      await page.route('**/index.php?**', async (route) => {
+        const request = route.request();
+        if (request.method() === 'POST' && new URL(request.url()).searchParams.get('r') === uploadRoute) {
+          if (outcome === 'transport') await route.abort('failed');
+          else await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: outcome, description: message, messages: [], data: null }) });
+        } else await route.continue();
+      });
+
+      await page.locator('#toast-container').evaluateAll((nodes) => nodes.forEach((node) => node.remove()));
+      page.on('request', onRequest);
+      const chooserPromise = page.waitForEvent('filechooser');
+      await page.locator('#drop-account-files').click();
+      const chooser = await chooserPromise;
+      const requestPromise = page.waitForRequest((request) => request.method() === 'POST' && new URL(request.url()).searchParams.get('r') === uploadRoute);
+      const responsePromise = outcome === 'transport' ? null : page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).searchParams.get('r') === uploadRoute);
+      await chooser.setFiles({ name: failedName, mimeType: 'text/plain', buffer: Buffer.from(`Failed upload ${outcome}\n`) });
+
+      const request = await requestPromise;
+      expect(request.headers()['content-type']).toContain('multipart/form-data');
+      if (responsePromise) {
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
+        expect(await response.json()).toEqual({ status: outcome, description: message, messages: [], data: null });
+        const toast = outcome === 'ERROR' ? '.toast-error' : '.toast-warning';
+        await expect(page.locator(toast).filter({ hasText: message })).toBeVisible();
+      } else {
+        await expect(page.locator('.toast-error')).toBeVisible();
+      }
+
+      await expect(page.locator('.toast-success')).toHaveCount(0);
+      await page.waitForTimeout(1000);
+      expect(reloads).toHaveLength(0);
+      await expect(page.locator('#list-account-files #files-wrap')).toHaveAttribute('data-test-stale-files', 'true');
+      await expect(page.locator('#list-account-files')).toContainText(existingName);
+      await expect(page.locator('#list-account-files')).not.toContainText(failedName);
+
+      const afterMarkup = await readFiles();
+      expect(afterMarkup).toContain(existingName);
+      expect(afterMarkup).not.toContain(failedName);
+    } finally {
+      page.off('request', onRequest);
+      await page.unroute('**/index.php?**');
+      if (uploaded) {
+        await deleteSyntheticAccountFile(page, uploaded.fileId, uploaded.sk);
+      }
+      tracker.dispose();
+    }
+  });
+}
 
 test('account modification request displays a synthetic error without navigation', async ({ sessionPage: admin, isolatedPage: restricted }) => {
   const tracker = new ActionTracker(restricted.page, restricted.context, { sessionEstablished: false });

@@ -118,12 +118,14 @@ function setup() {
     const frmSearch = makeElement({"action-route": "account/search"});
     const resContent = makeElement();
     const contentEl = makeElement();
+    const listAccountFiles = makeElement({"action-route": "accountFile/list", "item-id": 10, "delete": 1});
     const badge = makeElement({"color-class": "danger"});
     const tooltip = makeElement();
     const elements = {
         "#frmSearch": frmSearch,
         "#res-content": resContent,
         "#content": contentEl,
+        "#list-account-files": listAccountFiles,
         "select.select-box-tags[data-hash][data-updated=true]": makeCollection([]),
         ".notifications-badge": makeCollection([badge]),
         ".notifications-tooltip": tooltip,
@@ -148,6 +150,8 @@ function setup() {
             }
         };
     };
+
+    record.errors = [];
 
     globalThis.sysPassApp = {
         sk: {
@@ -183,6 +187,9 @@ function setup() {
             update: function () {}
         },
         msg: {
+            error: function (message) {
+                record.errors.push(message);
+            },
             out: function (json) {
                 record.out.push(json);
             }
@@ -192,7 +199,9 @@ function setup() {
         },
         config: {
             LANG: {
+                15: "Delete file?",
                 43: "Accept",
+                44: "Cancel",
                 68: "No updates available",
                 69: "Unable to check for updates",
                 73: "API Token",
@@ -205,6 +214,7 @@ function setup() {
     return {
         actions: globalThis.sysPass.Actions(log),
         badge: badge,
+        listAccountFiles: listAccountFiles,
         record: record,
         resContent: resContent,
         tooltip: tooltip,
@@ -478,3 +488,51 @@ test("appMgmt.save does not close the form or open a token modal on error status
     assert.equal(context.record.dialogs.length, 0);
 });
 
+test("file.delete dispatches delete on confirm and reloads #list-account-files only on status 0", function () {
+    const context = setup();
+    const control = makeElement({"action-route": "accountFile/delete", "item-id": 77});
+
+    context.actions.file.delete(control);
+    assert.equal(context.record.dialogs.length, 1);
+    assert.equal(context.record.calls.length, 0);
+
+    context.record.dialogs[0].positive.onClick();
+    assert.equal(context.record.calls.length, 1);
+    assert.equal(context.record.calls[0].opts.method, "get");
+    assert.equal(context.record.calls[0].opts.url, "/index.php?r=accountFile/delete/77");
+
+    context.record.calls[0].callback({status: 0, description: "File deleted", data: null});
+    assert.equal(context.record.out.length, 1);
+    assert.equal(context.record.out[0].description, "File deleted");
+    assert.equal(context.record.calls.length, 2);
+    assert.equal(context.record.calls[1].opts.method, "get");
+    assert.equal(context.record.calls[1].opts.type, "html");
+    assert.equal(context.record.calls[1].opts.url, "/index.php?r=accountFile/list/10");
+});
+
+test("file.delete passes ERROR and WARNING to msg.out without reloading #list-account-files", function () {
+    for (const status of [1, 2]) {
+        const context = setup();
+        const control = makeElement({"action-route": "accountFile/delete", "item-id": 77});
+
+        context.actions.file.delete(control);
+        context.record.dialogs[0].positive.onClick();
+        assert.equal(context.record.calls.length, 1);
+
+        context.record.calls[0].callback({status: status, description: "Delete outcome", data: null});
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, status);
+        assert.equal(context.record.calls.length, 1);
+    }
+});
+
+test("file.delete cancel reports cancellation without dispatching a request", function () {
+    const context = setup();
+    const control = makeElement({"action-route": "accountFile/delete", "item-id": 77});
+
+    context.actions.file.delete(control);
+    context.record.dialogs[0].negative.onClick({preventDefault: function () {}});
+
+    assert.equal(context.record.calls.length, 0);
+    assert.deepEqual(context.record.errors, ["Cancel"]);
+});
