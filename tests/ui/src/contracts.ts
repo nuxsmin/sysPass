@@ -173,7 +173,8 @@ function parentSelectConditions(
           {
             kind: 'count' as const,
             selector: '#parent_account_id + .selectize-control .option',
-            min: 2,
+            // Account::getForUser() excludes child accounts, so the seeded fixture yields 1 eligible parent account.
+            min: 1,
             label: 'linked-account options produced by items/accountsUser',
           },
         ]
