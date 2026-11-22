@@ -65,7 +65,9 @@ for (const outcome of ['ERROR', 'WARNING', 'transport'] as const) {
         expect(response.status()).toBe(200);
         expect(await response.json()).toEqual({ status: outcome, description: message, messages: [], data: null });
         await expect.poll(() => refreshes.length).toBe(1);
-        expect(new URL(refreshes[0].url()).searchParams.get('tabIndex')).toBe(tabIndex);
+        const [refresh] = refreshes;
+        expect(refresh).toBeDefined();
+        expect(new URL(refresh!.url()).searchParams.get('tabIndex')).toBe(tabIndex);
         expect((await refreshPromise!).status()).toBe(200);
         await expect(grid.locator('tr').filter({ hasText: name })).toHaveCount(1);
         await expect(page.locator(outcome === 'ERROR' ? '.toast-error' : '.toast-warning').filter({ hasText: message })).toBeVisible();
@@ -130,7 +132,9 @@ test('Client delete displays a synthetic ERROR and reloads the active tab', asyn
     expect(await response.json()).toEqual(envelope);
     // This records current client behaviour, not a server rollback guarantee.
     await expect.poll(() => refreshes.length).toBe(1);
-    expect(new URL(refreshes[0].url()).searchParams.get('tabIndex')).toBe(tabIndex);
+    const [refresh] = refreshes;
+    expect(refresh).toBeDefined();
+    expect(new URL(refresh!.url()).searchParams.get('tabIndex')).toBe(tabIndex);
     expect((await refreshPromise).status()).toBe(200);
     await expect(page.locator('.toast-error').filter({ hasText: envelope.description })).toBeVisible();
     await expect(page.locator('.toast-success')).toHaveCount(0);
@@ -192,7 +196,9 @@ test('Category delete displays a synthetic ERROR and reloads the active tab', as
     expect(await response.json()).toEqual(envelope);
     // Record current refresh behavior; interception says nothing about server rollback.
     await expect.poll(() => refreshes.length).toBe(1);
-    expect(new URL(refreshes[0].url()).searchParams.get('tabIndex')).toBe(tabIndex);
+    const [refresh] = refreshes;
+    expect(refresh).toBeDefined();
+    expect(new URL(refresh!.url()).searchParams.get('tabIndex')).toBe(tabIndex);
     expect((await refreshPromise).status()).toBe(200);
     await expect(page.locator('.toast-error').filter({ hasText: envelope.description })).toBeVisible();
     await expect(page.locator('.toast-success')).toHaveCount(0);
@@ -277,7 +283,9 @@ test('Custom field delete displays a synthetic ERROR and reloads the active tab'
     expect(await response.json()).toEqual(envelope);
     // Record current refresh behavior; interception does not establish server rollback.
     await expect.poll(() => refreshes.length).toBe(1);
-    expect(new URL(refreshes[0].url()).searchParams.get('tabIndex')).toBe(tabIndex);
+    const [refresh] = refreshes;
+    expect(refresh).toBeDefined();
+    expect(new URL(refresh!.url()).searchParams.get('tabIndex')).toBe(tabIndex);
     expect((await refreshPromise).status()).toBe(200);
     await expect(page.locator('.toast-error').filter({ hasText: envelope.description })).toBeVisible();
     await expect(page.locator('.toast-success')).toHaveCount(0);

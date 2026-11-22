@@ -266,6 +266,86 @@ class TrackTest extends UnitaryTestCase
         $this->assertNotNull($out->getIpv4());
     }
 
+    #[Test]
+    public function testCountForUserAndSourceFromTime(): void
+    {
+        $this->trackRepository
+            ->expects($this->once())
+            ->method('countForUserAndSourceFromTime')
+            ->with(42, 'auth_token_api', 1700000000)
+            ->willReturn(5);
+
+        $this->assertSame(5, $this->track->countForUserAndSourceFromTime(42, 'auth_token_api', 1700000000));
+    }
+
+    #[Test]
+    public function testAddUserTrackWithIpv4(): void
+    {
+        $ip = '192.0.2.10';
+        $this->request
+            ->expects($this->once())
+            ->method('getClientAddress')
+            ->willReturn($ip);
+
+        $this->trackRepository
+            ->expects($this->once())
+            ->method('add')
+            ->with(new TrackModel([
+                'userId' => 7,
+                'source' => 'api',
+                'ipv4' => inet_pton($ip),
+                'ipv6' => null,
+            ]))
+            ->willReturn(new QueryResult(null, 0, 55));
+
+        $this->assertSame(55, $this->track->addUserTrack(7, 'api'));
+    }
+
+    #[Test]
+    public function testAddUserTrackWithIpv6(): void
+    {
+        $ip = '2001:db8::1';
+        $this->request
+            ->expects($this->once())
+            ->method('getClientAddress')
+            ->willReturn($ip);
+
+        $this->trackRepository
+            ->expects($this->once())
+            ->method('add')
+            ->with(new TrackModel([
+                'userId' => 8,
+                'source' => 'api',
+                'ipv4' => null,
+                'ipv6' => inet_pton($ip),
+            ]))
+            ->willReturn(new QueryResult(null, 0, 56));
+
+        $this->assertSame(56, $this->track->addUserTrack(8, 'api'));
+    }
+
+    #[Test]
+    public function testAddUserTrackIgnoresInvalidClientAddress(): void
+    {
+        $this->request
+            ->expects($this->once())
+            ->method('getClientAddress')
+            ->willReturn('not-an-ip');
+
+        $this->trackRepository
+            ->expects($this->once())
+            ->method('add')
+            ->with(new TrackModel([
+                'userId' => 9,
+                'source' => 'cli',
+                'ipv4' => null,
+                'ipv6' => null,
+            ]))
+            ->willReturn(new QueryResult(null, 0, 57));
+
+        $this->assertSame(57, $this->track->addUserTrack(9, 'cli'));
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
