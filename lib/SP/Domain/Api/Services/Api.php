@@ -274,7 +274,7 @@ final class Api extends Service implements ApiService
                 throw new ServiceException(
                     __u('Internal error'),
                     SPException::ERROR,
-                    __u('Invalid data'),
+                    null,
                     JsonRpcErrorCode::INTERNAL_ERROR
                 );
             }
@@ -291,15 +291,18 @@ final class Api extends Service implements ApiService
             throw new ServiceException(
                 __u('Internal error'),
                 SPException::ERROR,
-                __u('Invalid data'),
+                null,
                 JsonRpcErrorCode::INTERNAL_ERROR
             );
         } catch (CryptException|InvalidClassException $e) {
+            $this->logger->error($e->getMessage());
+
             throw new ServiceException(
                 __u('Internal error'),
                 SPException::ERROR,
-                $e->getMessage(),
-                JsonRpcErrorCode::INTERNAL_ERROR
+                null,
+                JsonRpcErrorCode::INTERNAL_ERROR,
+                $e
             );
         }
     }
@@ -313,7 +316,7 @@ final class Api extends Service implements ApiService
             throw new ServiceException(
                 __u('API not initialized'),
                 SPException::ERROR,
-                __u('Please run setup method before'),
+                null,
                 JsonRpcErrorCode::INTERNAL_ERROR
             );
         }
@@ -358,7 +361,7 @@ final class Api extends Service implements ApiService
             return Filter::getArray($value);
         }
 
-        return null;
+        return $default;
     }
 
     /**
@@ -387,7 +390,7 @@ final class Api extends Service implements ApiService
         return $this->masterKeyStore->get();
     }
 
-    public function getRequestId(): int
+    public function getRequestId(): int|float|string|null
     {
         return $this->apiRequest->getId();
     }

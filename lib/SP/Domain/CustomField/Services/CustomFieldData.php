@@ -192,6 +192,34 @@ final class CustomFieldData extends Service implements CustomFieldDataService
     }
 
     /**
+     * Delete custom field data for a single item and module
+     *
+     * @throws ServiceException
+     */
+    public function deleteByItem(int $itemId, int $moduleId): void
+    {
+        try {
+            $this->customFieldDataRepository->deleteByItem($itemId, $moduleId);
+        } catch (SPException $e) {
+            throw ServiceException::from($e);
+        }
+    }
+
+    /**
+     * Delete custom field data for a specific item, module, and definition
+     *
+     * @throws ServiceException
+     */
+    public function deleteByDefinition(int $itemId, int $moduleId, int $definitionId): void
+    {
+        try {
+            $this->customFieldDataRepository->deleteByDefinition($itemId, $moduleId, $definitionId);
+        } catch (SPException $e) {
+            throw ServiceException::from($e);
+        }
+    }
+
+    /**
      * Updates an item
      *
      * @param CustomFieldDataModel $customFieldData
@@ -223,5 +251,24 @@ final class CustomFieldData extends Service implements CustomFieldDataService
     public function getAllEncrypted(): array
     {
         return $this->customFieldDataRepository->getAllEncrypted()->getDataAsArray(CustomFieldDataModel::class);
+    }
+
+    /**
+     * Copy custom field data rows from a source module/item to a destination module/item.
+     *
+     * @throws ServiceException
+     */
+    public function copyByModuleAndItem(int $srcModuleId, int $srcItemId, int $dstModuleId, int $dstItemId): int
+    {
+        try {
+            return $this->customFieldDataRepository->copyByModuleAndItem(
+                $srcModuleId,
+                $srcItemId,
+                $dstModuleId,
+                $dstItemId
+            );
+        } catch (SPException $e) {
+            throw ServiceException::from($e);
+        }
     }
 }

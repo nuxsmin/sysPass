@@ -45,6 +45,8 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
     private const DEFAULT_SITE_THEME            = 'material-blue';
     private const DEFAULT_SYSLOG_PORT           = 514;
     private const DEFAULT_ACCOUNT_EXPIRE_TIME   = 10368000;
+    public const  DEFAULT_AUTH_TOKEN_TIME       = 7776000;
+    public const  DEFAULT_AUTH_TOKEN_MAX_TIME   = 31536000;
     private const DEFAULT_PROXY_PORT            = 8080;
 
     public function getAttributes(): array
@@ -1226,6 +1228,30 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
     public function setLdapDatabaseEnabled(?bool $ldapDatabaseEnabled): ConfigDataInterface
     {
         $this->set(ConfigDataInterface::LDAP_DATABASE_ENABLED, (int)$ldapDatabaseEnabled);
+
+        return $this;
+    }
+
+    public function getAuthTokenDefaultTime(): int
+    {
+        return (int)$this->get(ConfigDataInterface::AUTH_TOKEN_DEFAULT_TIME, self::DEFAULT_AUTH_TOKEN_TIME);
+    }
+
+    public function setAuthTokenDefaultTime(?int $authTokenDefaultTime): ConfigDataInterface
+    {
+        $this->set(ConfigDataInterface::AUTH_TOKEN_DEFAULT_TIME, (int)$authTokenDefaultTime);
+
+        return $this;
+    }
+
+    public function getAuthTokenMaxTime(): int
+    {
+        return (int)$this->get(ConfigDataInterface::AUTH_TOKEN_MAX_TIME, self::DEFAULT_AUTH_TOKEN_MAX_TIME);
+    }
+
+    public function setAuthTokenMaxTime(?int $authTokenMaxTime): ConfigDataInterface
+    {
+        $this->set(ConfigDataInterface::AUTH_TOKEN_MAX_TIME, (int)$authTokenMaxTime);
 
         return $this;
     }

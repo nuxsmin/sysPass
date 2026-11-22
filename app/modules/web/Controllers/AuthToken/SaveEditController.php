@@ -105,6 +105,9 @@ final class SaveEditController extends AuthTokenSaveBase
             $this->customFieldService
         );
 
-        return ActionResponse::ok(__u('Authorization updated'));
+        $token = $this->authTokenService->getLastGeneratedToken();
+        $extra = $token !== null ? ['token' => $token] : null;
+
+        return ActionResponse::ok(__u('Authorization updated'), $extra);
     }
 }

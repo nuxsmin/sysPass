@@ -148,13 +148,25 @@ interface AccountService
     /**
      * Checks whether the account is visible to the current user
      *
+     * @param int  $id The account ID
+     * @param bool $useGlobalSearch
+     *
+     * @return bool
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function isVisible(int $id, bool $useGlobalSearch = false): bool;
+
+    /**
+     * Checks whether the current user can edit the account
+     *
      * @param int $id The account ID
      *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function isVisible(int $id): bool;
+    public function canEdit(int $id): bool;
 
     /**
      * Updates external items for the account

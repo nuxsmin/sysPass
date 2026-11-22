@@ -50,7 +50,7 @@ final class ActionResponseAdapter
     /**
      * @throws SPException
      */
-    public function toJsonRpc(ActionResponse $actionResponse, int $id): string
+    public function toJsonRpc(ActionResponse $actionResponse, int|float|string|null $id): string
     {
         return Serde::serializeJson(
             [
@@ -70,16 +70,18 @@ final class ActionResponseAdapter
         return Serde::serializeJson($this->buildResult($actionResponse), JSON_UNESCAPED_SLASHES);
     }
 
-    public function toJsonRpcException(Exception $e, int $id): string
+    public function toJsonRpcException(Exception $e, int|float|string|null $id): string
     {
-        $data = ($e instanceof SPException && $e->getHint() !== null)
+        $data = ($e instanceof SPException
+            && $e->getCode() === self::INVALID_PARAMS
+            && $e->getHint() !== null)
             ? ['help' => explode(PHP_EOL, $e->getHint())]
             : null;
 
         return $this->toJsonRpcError($e->getMessage(), $e->getCode(), $id, $data);
     }
 
-    public function toJsonRpcError(string $message, int $code, int $id, mixed $data = null): string
+    public function toJsonRpcError(string $message, int $code, int|float|string|null $id, mixed $data = null): string
     {
         return (string)json_encode(
             [

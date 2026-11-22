@@ -61,6 +61,11 @@ final class AccountHistory extends Model
     protected ?string $notes    = null;
     protected ?string $dateAdd  = null;
     protected ?string $dateEdit = null;
+    protected ?string $mPassHash = null;
+    protected ?string $userName = null;
+    protected ?string $userGroupName = null;
+    protected ?string $userEditName = null;
+    protected ?string $userEditLogin = null;
 
     public function getAccountId(): ?int
     {
@@ -127,12 +132,12 @@ final class AccountHistory extends Model
         return $this->notes;
     }
 
-    public function getDateAdd(): ?int
+    public function getDateAdd(): ?string
     {
         return $this->dateAdd;
     }
 
-    public function getDateEdit(): ?int
+    public function getDateEdit(): ?string
     {
         return $this->dateEdit;
     }

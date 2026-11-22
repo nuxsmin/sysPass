@@ -49,6 +49,7 @@ use SP\Tests\IntegrationTestCase;
 final class UserPassResetTest extends IntegrationTestCase
 {
     private bool $applicationUrlConfigured = true;
+    private bool $mailEnabled = true;
 
     #[Test]
     #[BodyChecker('checkIndex')]
@@ -175,6 +176,198 @@ final class UserPassResetTest extends IntegrationTestCase
         );
     }
 
+    #[Test]
+    public function disabledMailShowsUnavailableOnGetPagesButSaveRequestStillAttemptsSend(): void
+    {
+        $this->mailEnabled = false;
+        $user = $this->buildUser();
+
+        $indexResult = $this->dispatchRoute('get', 'userPassReset/index');
+        self::assertSame(200, $indexResult['code']);
+        self::assertStringContainsString('Option unavailable', $indexResult['body']);
+
+        $resetResult = $this->dispatchRoute('get', 'userPassReset/reset/abc123');
+        self::assertSame(200, $resetResult['code']);
+        self::assertStringContainsString('Option unavailable', $resetResult['body']);
+
+        // Characterization: SaveRequestController and RequestPasswordResetUseCase do not check isMailEnabled().
+        $mailService = $this->createMock(MailService::class);
+        $mailService->expects(self::once())->method('send');
+
+        $definitions = $this->definitions($user);
+        $definitions[MailService::class] = $mailService;
+
+        $postResult = $this->dispatchRoute(
+            'post',
+            'userPassReset/saveRequest',
+            $definitions,
+            [],
+            ['login' => $user->getLogin(), 'email' => $user->getEmail()]
+        );
+
+        self::assertSame(200, $postResult['code']);
+        $json = $this->decode($postResult['body']);
+        self::assertSame('OK', $json['status']);
+        self::assertSame('Request sent', $json['description']);
+    }
+
+    #[Test]
+    public function saveRequestExposesIdentityDependentErrorMessagesAndRecordsTrack(): void
+    {
+        $mailService = $this->createMock(MailService::class);
+        $mailService->expects(self::never())->method('send');
+
+        // 1. Unknown user
+        $trackUnknown = $this->createMock(TrackService::class);
+        $trackUnknown->method('buildTrackRequest')->willReturn(new TrackRequest(time(), 'saveRequest', '127.0.0.1'));
+        $trackUnknown->method('checkTracking')->willReturn(false);
+        $trackUnknown->expects(self::once())->method('add')->willReturn(1);
+
+        $userUnknown = $this->createStub(UserService::class);
+        $userUnknown->method('getByLogin')
+                    ->willThrowException(new \SP\Domain\Core\Exceptions\NoSuchItemException('User not found'));
+
+        $resUnknown = $this->dispatchRoute(
+            'post',
+            'userPassReset/saveRequest',
+            [
+                TrackService::class => $trackUnknown,
+                UserService::class => $userUnknown,
+                MailService::class => $mailService,
+            ],
+            [],
+            ['login' => 'missing_user', 'email' => 'missing@example.com']
+        );
+        self::assertSame(200, $resUnknown['code']);
+        $jsonUnknown = $this->decode($resUnknown['body']);
+        self::assertSame('ERROR', $jsonUnknown['status']);
+        self::assertSame('User not found', $jsonUnknown['description']);
+
+        // 2. Email mismatch
+        $user = $this->buildUser();
+        $defsMismatch = $this->definitions($user);
+        $defsMismatch[MailService::class] = $mailService;
+
+        $resMismatch = $this->dispatchRoute(
+            'post',
+            'userPassReset/saveRequest',
+            $defsMismatch,
+            [],
+            ['login' => $user->getLogin(), 'email' => 'wrong-email@example.com']
+        );
+        self::assertSame(200, $resMismatch['code']);
+        $jsonMismatch = $this->decode($resMismatch['body']);
+        self::assertSame('ERROR', $jsonMismatch['status']);
+        self::assertSame('Wrong data', $jsonMismatch['description']);
+
+        // 3. Disabled and LDAP users
+        foreach ([['isDisabled' => true, 'isLdap' => false], ['isDisabled' => false, 'isLdap' => true]] as $flags) {
+            $restrictedUser = $this->buildUser()->mutate($flags);
+            $defsRestricted = $this->definitions($restrictedUser);
+            $defsRestricted[MailService::class] = $mailService;
+
+            $resRestricted = $this->dispatchRoute(
+                'post',
+                'userPassReset/saveRequest',
+                $defsRestricted,
+                [],
+                ['login' => $restrictedUser->getLogin(), 'email' => $restrictedUser->getEmail()]
+            );
+            self::assertSame(200, $resRestricted['code']);
+            $jsonRestricted = $this->decode($resRestricted['body']);
+            self::assertSame('ERROR', $jsonRestricted['status']);
+            self::assertSame('Unable to reset the password', $jsonRestricted['description']);
+            self::assertSame('Please contact to the administrator', $jsonRestricted['data']);
+        }
+    }
+
+    #[Test]
+    public function saveRequestEmitsSuccessEventBeforeMailSendAndLeavesTokenOnMailFailure(): void
+    {
+        $user = $this->buildUser();
+
+        $recover = $this->createMock(UserPassRecoverService::class);
+        $recover->expects(self::once())->method('requestForUserId')->with($user->getId())->willReturn('hash123');
+        $recover->expects(self::once())->method('getMailMessage')->willReturn(new MailMessage());
+
+        $mailService = $this->createMock(MailService::class);
+        $mailService->expects(self::once())
+                    ->method('send')
+                    ->willThrowException(new \SP\Domain\Common\Services\ServiceException('SMTP transport down'));
+
+        $events = [];
+        $dispatcher = $this->createStub(\SP\Domain\Core\Events\EventDispatcherInterface::class);
+        $dispatcher->method('notify')
+                   ->willReturnCallback(static function (string $name) use (&$events): void {
+                       $events[] = $name;
+                   });
+
+        $definitions = $this->definitions($user, $recover);
+        $definitions[MailService::class] = $mailService;
+        $definitions[\SP\Domain\Core\Events\EventDispatcherInterface::class] = $dispatcher;
+
+        $result = $this->dispatchRoute(
+            'post',
+            'userPassReset/saveRequest',
+            $definitions,
+            [],
+            ['login' => $user->getLogin(), 'email' => $user->getEmail()]
+        );
+
+        self::assertSame(200, $result['code']);
+        $json = $this->decode($result['body']);
+        self::assertSame('ERROR', $json['status']);
+        self::assertSame('SMTP transport down', $json['description']);
+        // Characterization: request.user.passReset emitted BEFORE mailService->send() failed
+        self::assertContains('request.user.passReset', $events);
+        self::assertContains('exception', $events);
+    }
+
+    #[Test]
+    public function saveResetMarksTokenUsedBeforeUpdatePassFailsAndSkipsPasswordEvent(): void
+    {
+        $user = $this->buildUser();
+
+        $recover = $this->createMock(UserPassRecoverService::class);
+        $recover->expects(self::once())->method('getUserIdForHash')->with('validhash')->willReturn($user->getId());
+        $recover->expects(self::once())->method('toggleUsedByHash')->with('validhash');
+
+        $userService = $this->createMock(UserService::class);
+        $userService->expects(self::once())
+                    ->method('updatePass')
+                    ->willThrowException(new \SP\Domain\Common\Services\ServiceException('Error while updating the password'));
+
+        $events = [];
+        $dispatcher = $this->createStub(\SP\Domain\Core\Events\EventDispatcherInterface::class);
+        $dispatcher->method('notify')
+                   ->willReturnCallback(static function (string $name) use (&$events): void {
+                       $events[] = $name;
+                   });
+
+        $definitions = $this->definitions($user, $recover);
+        $definitions[UserService::class] = $userService;
+        $definitions[\SP\Domain\Core\Events\EventDispatcherInterface::class] = $dispatcher;
+
+        $result = $this->dispatchRoute(
+            'post',
+            'userPassReset/saveReset',
+            $definitions,
+            [],
+            [
+                'hash' => 'validhash',
+                'password' => 'new-password',
+                'password_repeat' => 'new-password',
+            ]
+        );
+
+        self::assertSame(200, $result['code']);
+        $json = $this->decode($result['body']);
+        self::assertSame('ERROR', $json['status']);
+        self::assertSame('Error while updating the password', $json['description']);
+        self::assertNotContains('edit.user.password', $events);
+        self::assertContains('exception', $events);
+    }
+
     public function checkIndex(string $output): void
     {
         self::assertStringContainsString('frmPassReset', $output);
@@ -228,6 +421,7 @@ final class UserPassResetTest extends IntegrationTestCase
     protected function getConfigData(): array
     {
         $configData = parent::getConfigData();
+        $configData['isMailEnabled'] = $this->mailEnabled;
 
         if ($this->applicationUrlConfigured) {
             $configData['getApplicationUrl'] = 'https://syspass.example.com';
@@ -293,5 +487,46 @@ final class UserPassResetTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @return array{body: string, code: int}
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    private function dispatchRoute(
+        string $method,
+        string $route,
+        array $definitions = [],
+        array $paramsGet = [],
+        array $paramsPost = []
+    ): array {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                $method,
+                'index.php',
+                array_merge(['r' => $route], $paramsGet),
+                $paramsPost,
+                [],
+                ['REMOTE_ADDR' => '127.0.0.1']
+            ),
+            $definitions
+        );
+
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($container);
+        } finally {
+            $echoed = (string)ob_get_clean();
+        }
+
+        /** @var \Klein\Response $response */
+        $response = $container->get(\Klein\Response::class);
+        $body = (string)$response->body();
+
+        return [
+            'body' => $body !== '' ? $body : $echoed,
+            'code' => (int)$response->code(),
+        ];
     }
 }

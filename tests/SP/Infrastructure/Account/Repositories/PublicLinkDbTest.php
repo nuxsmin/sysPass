@@ -30,6 +30,7 @@ use PHPUnit\Framework\Attributes\Test;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Infrastructure\Account\Repositories\PublicLink;
 use SP\Tests\DatabaseRepositoryTestCase;
+use function SP\Tests\getDbHandler;
 
 #[Group('integration')]
 final class PublicLinkDbTest extends DatabaseRepositoryTestCase
@@ -53,5 +54,76 @@ final class PublicLinkDbTest extends DatabaseRepositoryTestCase
         self::assertSame('admin', $links[0]->getUserLogin());
         self::assertSame('Google', $links[0]->getAccountName());
         self::assertSame('Apple', $links[1]->getAccountName());
+    }
+
+    #[Test]
+    public function staleReadsRespectMaxCountViews(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $link = $this->publicLink->getAll()->getDataAsArray(PublicLinkModel::class)[0];
+
+        $update = $pdo->prepare('UPDATE PublicLink SET dateExpire = ?, countViews = maxCountViews - 1 WHERE hash = ?');
+        $update->execute([time() + 600, $link->getHash()]);
+
+        $first = $this->publicLink->getByHash($link->getHash())->getData(PublicLinkModel::class);
+        $second = $this->publicLink->getByHash($link->getHash())->getData(PublicLinkModel::class);
+
+        self::assertTrue($this->publicLink->addLinkView($first));
+        self::assertFalse($this->publicLink->addLinkView($second));
+
+        $query = $pdo->prepare('SELECT countViews, maxCountViews FROM PublicLink WHERE hash = ?');
+        $query->execute([$link->getHash()]);
+        $row = $query->fetch(\PDO::FETCH_ASSOC);
+        self::assertSame((int) $row['maxCountViews'], (int) $row['countViews']);
+    }
+
+    #[Test]
+    public function expiredLinkCannotIncrementView(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $link = $this->publicLink->getAll()->getDataAsArray(PublicLinkModel::class)[0];
+
+        $update = $pdo->prepare('UPDATE PublicLink SET dateExpire = ?, countViews = 0 WHERE hash = ?');
+        $update->execute([time() - 60, $link->getHash()]);
+
+        $expired = $this->publicLink->getByHash($link->getHash())->getData(PublicLinkModel::class);
+
+        self::assertFalse($this->publicLink->addLinkView($expired));
+
+        $query = $pdo->prepare('SELECT countViews FROM PublicLink WHERE hash = ?');
+        $query->execute([$link->getHash()]);
+        self::assertSame(0, (int) $query->fetchColumn());
+    }
+
+    #[Test]
+    public function deleteByItemIdsRemovesAllMatchingLinksAndHandlesEmptyArray(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $links = $this->publicLink->getAll()->getDataAsArray(PublicLinkModel::class);
+        self::assertCount(2, $links);
+
+        $itemIds = array_map(static fn(PublicLinkModel $l) => (int)$l->getItemId(), $links);
+
+        $this->publicLink->deleteByItemIds([]);
+        self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM PublicLink')->fetchColumn());
+
+        $this->publicLink->deleteByItemIds([$itemIds[0], $itemIds[1], $itemIds[0]]);
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM PublicLink')->fetchColumn());
+    }
+
+    #[Test]
+    public function deleteByItemIdRemovesOnlyMatchingLinks(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $links = $this->publicLink->getAll()->getDataAsArray(PublicLinkModel::class);
+        self::assertCount(2, $links);
+
+        $firstItemId = (int)$links[0]->getItemId();
+        $this->publicLink->deleteByItemId($firstItemId);
+
+        $remaining = $this->publicLink->getAll()->getDataAsArray(PublicLinkModel::class);
+        self::assertCount(1, $remaining);
+        self::assertNotSame($firstItemId, (int)$remaining[0]->getItemId());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM PublicLink')->fetchColumn());
     }
 }

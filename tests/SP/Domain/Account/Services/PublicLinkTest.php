@@ -86,9 +86,28 @@ class PublicLinkTest extends UnitaryTestCase
 
                     return is_array($useInfo) && count($useInfo) === 1;
                 })
-            );
+            )
+            ->willReturn(true);
 
-        $this->publicLink->addLinkView($publicLink);
+        $this->assertTrue($this->publicLink->addLinkView($publicLink));
+    }
+
+    /**
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws ServiceException
+     */
+    #[Test]
+    public function testAddLinkViewReturnsFalseWhenRepositoryUpdateFails(): void
+    {
+        $publicLink = new PublicLinkModel(['hash' => self::$faker->sha1]);
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('addLinkView')
+            ->willReturn(false);
+
+        $this->assertFalse($this->publicLink->addLinkView($publicLink));
     }
 
     /**
@@ -140,9 +159,10 @@ class PublicLinkTest extends UnitaryTestCase
 
                     return is_array($useInfo) && count($useInfo) === 2;
                 })
-            );
+            )
+            ->willReturn(true);
 
-        $this->publicLink->addLinkView($publicLink);
+        $this->assertTrue($this->publicLink->addLinkView($publicLink));
     }
 
     /**
@@ -194,17 +214,95 @@ class PublicLinkTest extends UnitaryTestCase
     #[Test]
     public function testDeleteByIdBatch()
     {
-        $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 9));
+        $actorId = $this->context->getUserData()->id;
+        $ids = array_values(array_unique(array_map(fn() => self::$faker->randomNumber(), range(0, 9))));
+        $inputIds = array_merge($ids, [$ids[0]]);
+        $link = PublicLinkDataGenerator::factory()->buildPublicLink()->mutate(['userId' => $actorId]);
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('transactionAware')
+            ->with(self::isInstanceOf(\Closure::class), $this->publicLink)
+            ->willReturnCallback(fn (\Closure $closure, object $newThis) => $closure->call($newThis));
+
+        $this->publicLinkRepository
+            ->expects(self::exactly(count($ids)))
+            ->method('getById')
+            ->willReturn(new QueryResult([new Simple($link->toArray())]));
 
         $this->publicLinkRepository
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn(10);
+            ->willReturn(count($ids));
 
-        $actual = $this->publicLink->deleteByIdBatch($ids);
+        $actual = $this->publicLink->deleteByIdBatch($inputIds);
 
         $this->assertEquals(count($ids), $actual);
+    }
+
+    #[Test]
+    public function testDeleteByIdBatchRejectsEmptyIds(): void
+    {
+        $this->publicLinkRepository->expects(self::never())->method('transactionAware');
+        $this->publicLinkRepository->expects(self::never())->method('deleteByIdBatch');
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Error while removing the links');
+
+        $this->publicLink->deleteByIdBatch([]);
+    }
+
+    #[Test]
+    public function testDeleteByIdBatchRejectsMissingIdBeforeBatchDelete(): void
+    {
+        $ids = [10, 999];
+        $actorId = $this->context->getUserData()->id;
+        $link = PublicLinkDataGenerator::factory()->buildPublicLink()->mutate(['userId' => $actorId]);
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('transactionAware')
+            ->willReturnCallback(fn (\Closure $closure, object $newThis) => $closure->call($newThis));
+
+        $this->publicLinkRepository
+            ->expects(self::exactly(2))
+            ->method('getById')
+            ->willReturnOnConsecutiveCalls(
+                new QueryResult([new Simple($link->toArray())]),
+                new QueryResult([])
+            );
+
+        $this->publicLinkRepository->expects(self::never())->method('deleteByIdBatch');
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Link not found');
+
+        $this->publicLink->deleteByIdBatch($ids);
+    }
+
+    #[Test]
+    public function testDeleteByIdBatchRejectsUnauthorizedOwnerBeforeBatchDelete(): void
+    {
+        $actorId = $this->context->getUserData()->id;
+        $link = PublicLinkDataGenerator::factory()->buildPublicLink()->mutate(['userId' => $actorId + 1]);
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('transactionAware')
+            ->willReturnCallback(fn (\Closure $closure, object $newThis) => $closure->call($newThis));
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with(10)
+            ->willReturn(new QueryResult([new Simple($link->toArray())]));
+
+        $this->publicLinkRepository->expects(self::never())->method('deleteByIdBatch');
+
+        $this->expectException(\SP\Domain\Core\Acl\UnauthorizedActionException::class);
+
+        $this->publicLink->deleteByIdBatch([10]);
     }
 
     /**
@@ -215,7 +313,19 @@ class PublicLinkTest extends UnitaryTestCase
     #[Test]
     public function testDeleteByIdBatchWithCountMismatch()
     {
-        $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 9));
+        $actorId = $this->context->getUserData()->id;
+        $ids = array_values(array_unique(array_map(fn() => self::$faker->randomNumber(), range(0, 9))));
+        $link = PublicLinkDataGenerator::factory()->buildPublicLink()->mutate(['userId' => $actorId]);
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('transactionAware')
+            ->willReturnCallback(fn (\Closure $closure, object $newThis) => $closure->call($newThis));
+
+        $this->publicLinkRepository
+            ->expects(self::exactly(count($ids)))
+            ->method('getById')
+            ->willReturn(new QueryResult([new Simple($link->toArray())]));
 
         $this->publicLinkRepository
             ->expects(self::once())
@@ -243,12 +353,38 @@ class PublicLinkTest extends UnitaryTestCase
     #[Test]
     public function testUpdate()
     {
-        $publicLinkList = PublicLinkDataGenerator::factory()->buildPublicLinkList();
+        $actorId = $this->context->getUserData()->id;
+        $publicLinkList = PublicLinkDataGenerator::factory()->buildPublicLinkList()->mutate(['userId' => $actorId]);
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with($publicLinkList->getId())
+            ->willReturn(new QueryResult([new Simple($publicLinkList->toArray())]));
 
         $this->publicLinkRepository
             ->expects(self::once())
             ->method('update')
             ->with($publicLinkList);
+
+        $this->publicLink->update($publicLinkList);
+    }
+
+    #[Test]
+    public function testUpdateForbiddenForOtherUser(): void
+    {
+        $actorId = $this->context->getUserData()->id;
+        $publicLinkList = PublicLinkDataGenerator::factory()->buildPublicLinkList()->mutate(['userId' => $actorId + 1]);
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with($publicLinkList->getId())
+            ->willReturn(new QueryResult([new Simple($publicLinkList->toArray())]));
+
+        $this->publicLinkRepository->expects(self::never())->method('update');
+
+        $this->expectException(\SP\Domain\Core\Acl\UnauthorizedActionException::class);
 
         $this->publicLink->update($publicLinkList);
     }
@@ -261,11 +397,58 @@ class PublicLinkTest extends UnitaryTestCase
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
+        $actorId = $this->context->getUserData()->id;
+        $link = PublicLinkDataGenerator::factory()->buildPublicLink()->mutate(['id' => $id, 'userId' => $actorId]);
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with($id)
+            ->willReturn(new QueryResult([new Simple($link->toArray())]));
 
         $this->publicLinkRepository
             ->expects(self::once())
             ->method('delete')
             ->with($id);
+
+        $this->publicLink->delete($id);
+    }
+
+    #[Test]
+    public function testDeleteNotFound(): void
+    {
+        $id = self::$faker->randomNumber();
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with($id)
+            ->willReturn(new QueryResult([]));
+
+        $this->publicLinkRepository->expects(self::never())->method('delete');
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Link not found');
+
+        $this->publicLink->delete($id);
+    }
+
+    #[Test]
+    public function testDeleteForbiddenForOtherUser(): void
+    {
+        $id = self::$faker->randomNumber();
+        $actorId = $this->context->getUserData()->id;
+        $link = PublicLinkDataGenerator::factory()->buildPublicLink()->mutate(['id' => $id, 'userId' => $actorId + 1]);
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with($id)
+            ->willReturn(new QueryResult([new Simple($link->toArray())]));
+
+        $this->publicLinkRepository->expects(self::never())->method('delete');
+
+        $this->expectException(\SP\Domain\Core\Acl\UnauthorizedActionException::class);
 
         $this->publicLink->delete($id);
     }
@@ -338,7 +521,8 @@ class PublicLinkTest extends UnitaryTestCase
     public function testRefresh()
     {
         $id = self::$faker->randomNumber();
-        $publicLinkData = PublicLinkDataGenerator::factory()->buildPublicLink();
+        $actorId = $this->context->getUserData()->id;
+        $publicLinkData = PublicLinkDataGenerator::factory()->buildPublicLink()->mutate(['userId' => $actorId]);
 
         $this->publicLinkRepository
             ->expects(self::once())
@@ -388,6 +572,27 @@ class PublicLinkTest extends UnitaryTestCase
         $actual = $this->publicLink->refresh($id);
 
         $this->assertTrue($actual);
+    }
+
+    #[Test]
+    public function testRefreshForbiddenForOtherUser(): void
+    {
+        $id = self::$faker->randomNumber();
+        $actorId = $this->context->getUserData()->id;
+        $publicLinkData = PublicLinkDataGenerator::factory()->buildPublicLink()->mutate(['userId' => $actorId + 1]);
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with($id)
+            ->willReturn(new QueryResult([new Simple($publicLinkData->toArray())]));
+
+        $this->publicLinkRepository->expects(self::never())->method('refresh');
+        $this->authorization->expects(self::never())->method('check');
+
+        $this->expectException(\SP\Domain\Core\Acl\UnauthorizedActionException::class);
+
+        $this->publicLink->refresh($id);
     }
 
     /**
@@ -453,7 +658,8 @@ class PublicLinkTest extends UnitaryTestCase
     public function testGetById()
     {
         $itemId = self::$faker->randomNumber();
-        $builPublicLinkList = PublicLinkDataGenerator::factory()->buildPublicLinkList();
+        $actorId = $this->context->getUserData()->id;
+        $builPublicLinkList = PublicLinkDataGenerator::factory()->buildPublicLinkList()->mutate(['userId' => $actorId]);
 
         $this->publicLinkRepository
             ->expects(self::once())
@@ -463,7 +669,44 @@ class PublicLinkTest extends UnitaryTestCase
 
         $actual = $this->publicLink->getById($itemId);
 
-        $this->assertEquals($builPublicLinkList->toArray(null, ['clientName']), $actual->toArray());
+        $this->assertEquals($builPublicLinkList->toArray(), $actual->toArray());
+    }
+
+    #[Test]
+    public function testGetByIdForbiddenForOtherUser(): void
+    {
+        $itemId = self::$faker->randomNumber();
+        $actorId = $this->context->getUserData()->id;
+        $builPublicLinkList = PublicLinkDataGenerator::factory()->buildPublicLinkList()->mutate(['userId' => $actorId + 1]);
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with($itemId)
+            ->willReturn(new QueryResult([new Simple($builPublicLinkList->toArray())]));
+
+        $this->expectException(\SP\Domain\Core\Acl\UnauthorizedActionException::class);
+
+        $this->publicLink->getById($itemId);
+    }
+
+    #[Test]
+    public function testGetByIdAllowsAdminForOtherUser(): void
+    {
+        $itemId = self::$faker->randomNumber();
+        $actorId = $this->context->getUserData()->id;
+        $this->context->setUserData($this->context->getUserData()->mutate(['isAdminApp' => true]));
+        $builPublicLinkList = PublicLinkDataGenerator::factory()->buildPublicLinkList()->mutate(['userId' => $actorId + 1]);
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with($itemId)
+            ->willReturn(new QueryResult([new Simple($builPublicLinkList->toArray())]));
+
+        $actual = $this->publicLink->getById($itemId);
+
+        $this->assertEquals($builPublicLinkList->toArray(), $actual->toArray());
     }
 
     /**

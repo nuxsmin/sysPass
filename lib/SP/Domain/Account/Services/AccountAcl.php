@@ -87,14 +87,17 @@ final class AccountAcl extends Service implements AccountAclService
      */
     public function getAcl(int $actionId, AccountAclDto $accountAclDto, bool $isHistory = false): AccountPermission
     {
+        $this->userData = $this->context->getUserData();
         $this->accountPermission = new AccountPermission($actionId, $isHistory);
         $this->accountPermission->setShowPermission(
-            self::getShowPermission($this->context->getUserData(), $this->context->getUserProfile())
+            self::getShowPermission($this->userData, $this->context->getUserProfile())
         );
 
         $this->accountAclDto = $accountAclDto;
 
-        if (null !== $this->fileCache) {
+        $bypassCache = $isHistory && $accountAclDto->getDateEdit() === null;
+
+        if (null !== $this->fileCache && !$bypassCache) {
             $accountAcl = $this->getAclFromCache($accountAclDto->getAccountId(), $actionId);
 
             if (null !== $accountAcl) {
@@ -121,7 +124,7 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountPermission->setAccountId($accountAclDto->getAccountId());
 
-        return $this->buildAcl();
+        return $this->buildAcl(!$bypassCache);
     }
 
     /**
@@ -188,7 +191,7 @@ final class AccountAcl extends Service implements AccountAclService
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function buildAcl(): AccountPermission
+    private function buildAcl(bool $cacheResult): AccountPermission
     {
         $this->compileAccountAccess();
         $this->accountPermission->setCompiledAccountAccess(true);
@@ -198,7 +201,9 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountPermission->setTime(time());
 
-        $this->saveAclInCache($this->accountPermission);
+        if ($cacheResult) {
+            $this->saveAclInCache($this->accountPermission);
+        }
 
         return $this->accountPermission;
     }
@@ -212,6 +217,24 @@ final class AccountAcl extends Service implements AccountAclService
         $this->accountPermission->setResultView(false);
         $this->accountPermission->setResultEdit(false);
 
+        if ($this->accountAclDto->isPrivate()) {
+            if ($this->userData->id === $this->accountAclDto->getUserId()) {
+                $this->accountPermission->setResultView(true);
+                $this->accountPermission->setResultEdit(true);
+            }
+
+            return;
+        }
+
+        if ($this->accountAclDto->isPrivateGroup()) {
+            if ($this->userData->userGroupId === $this->accountAclDto->getUserGroupId()) {
+                $this->accountPermission->setResultView(true);
+                $this->accountPermission->setResultEdit(true);
+            }
+
+            return;
+        }
+
         // Check out if user is admin or owner/maingroup
         if ($this->userData->isAdminApp
             || $this->userData->isAdminAcc
@@ -224,29 +247,38 @@ final class AccountAcl extends Service implements AccountAclService
             return;
         }
 
+        // Analyze user's groups
+        // Groups in which the user is listed in
+        $userGroups = array_map(
+            static fn($value) => (int)($value['userGroupId'] ?? 0),
+            $this->userToUserGroupService->getGroupsForUser($this->userData->id)
+        );
+
+        // Check out if user's secondary groups match account's main group before secondary user grants
+        if ($this->getUserGroupsInMainGroup($userGroups)) {
+            $this->accountPermission->setUserInGroups(true);
+            $this->accountPermission->setResultView(true);
+            $this->accountPermission->setResultEdit(true);
+
+            return;
+        }
+
         // Check out if user is listed in secondary users of the account
         $userInUsers = $this->getUserInSecondaryUsers($this->userData->id);
         $this->accountPermission->setUserInUsers(count($userInUsers) > 0);
 
         if ($this->accountPermission->isUserInUsers()) {
             $this->accountPermission->setResultView(true);
-            $this->accountPermission->setResultEdit((int)$userInUsers[0]['isEdit'] === 1);
+            $canEdit = false;
 
-            return;
-        }
+            foreach ($userInUsers as $userEntry) {
+                if ((int)$userEntry['isEdit'] === 1) {
+                    $canEdit = true;
+                    break;
+                }
+            }
 
-        // Analyze user's groups
-        // Groups in which the user is listed in
-        $userGroups = array_map(
-            static fn($value) => (int)$value->userGroupId,
-            $this->userToUserGroupService->getGroupsForUser($this->userData->id)
-        );
-
-        // Check out if user groups match with account's main group
-        if ($this->getUserGroupsInMainGroup($userGroups)) {
-            $this->accountPermission->setUserInGroups(true);
-            $this->accountPermission->setResultView(true);
-            $this->accountPermission->setResultEdit(true);
+            $this->accountPermission->setResultEdit($canEdit);
 
             return;
         }
@@ -262,7 +294,16 @@ final class AccountAcl extends Service implements AccountAclService
 
         if ($this->accountPermission->isUserInGroups()) {
             $this->accountPermission->setResultView(true);
-            $this->accountPermission->setResultEdit((int)$userGroupsInSecondaryUserGroups[0]['isEdit'] === 1);
+            $canEdit = false;
+
+            foreach ($userGroupsInSecondaryUserGroups as $groupEntry) {
+                if ((int)$groupEntry['isEdit'] === 1) {
+                    $canEdit = true;
+                    break;
+                }
+            }
+
+            $this->accountPermission->setResultEdit($canEdit);
         }
     }
 
@@ -352,7 +393,9 @@ final class AccountAcl extends Service implements AccountAclService
         $this->accountPermission->setShowDelete($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_DELETE));
 
         // Mostrar acción de restaurar
-        $this->accountPermission->setShowRestore($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT));
+        $this->accountPermission->setShowRestore(
+            $this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT_RESTORE)
+        );
 
         // Mostrar acción de enlace público
         $this->accountPermission->setShowLink($this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE));

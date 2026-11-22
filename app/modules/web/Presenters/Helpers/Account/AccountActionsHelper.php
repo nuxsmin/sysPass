@@ -206,7 +206,7 @@ final class AccountActionsHelper extends HelperBase
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowRequest');
         $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_REQUEST));
         $action->addData('onclick', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
-        $action->addAttribute('type', 'submit');
+        $action->addAttribute('type', 'button');
 
         return $action;
     }
@@ -285,8 +285,8 @@ final class AccountActionsHelper extends HelperBase
 
                 $actions[] = $actionRefresh;
 
-                if ($userData->getIsAdminApp()
-                    || $userData->getId() === $accountActionsDto->getPublicLinkCreatorId()
+                if ($userData->isAdminApp
+                    || $userData->id === $accountActionsDto->getPublicLinkCreatorId()
                 ) {
                     $actionDelete = $this->getPublicLinkDeleteAction();
                     $actionDelete->addData('item-id', $itemId);
@@ -343,7 +343,7 @@ final class AccountActionsHelper extends HelperBase
         $action->addClass('btn-action');
         $action->setIcon($this->icons->delete());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowDelete');
-        $action->addData('action-route', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_DELETE));
+        $action->addData('action-route', 'account/saveDelete');
         $action->addData('onclick', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_DELETE));
         $action->addAttribute('type', 'button');
 

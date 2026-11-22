@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\UseCases\Dtos;
 
-use SP\Domain\Account\Models\PublicLinkList;
+use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Common\Dtos\Result;
 
 /**
@@ -35,7 +35,7 @@ use SP\Domain\Common\Dtos\Result;
 final readonly class SearchPublicLinksResult implements Result
 {
     /**
-     * @param PublicLinkList[] $publicLinks
+     * @param PublicLink[] $publicLinks
      */
     public function __construct(public array $publicLinks, public int $total)
     {

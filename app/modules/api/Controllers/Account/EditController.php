@@ -50,6 +50,12 @@ final class EditController extends AccountBase
 
         $accountRequest = $this->buildAccountRequest();
 
+        if ((string)($accountRequest->pass ?? '') !== ''
+            || ($accountRequest->parentId === 0 && $this->apiService->getParam('tokenPass') !== null)
+        ) {
+            $this->apiService->requireMasterPass();
+        }
+
         $this->accountService->update($accountRequest->id, $accountRequest);
 
         $accountDetails = $this->accountService->getByIdEnriched($accountRequest->id)->getAccountVData();
@@ -74,6 +80,10 @@ final class EditController extends AccountBase
      */
     private function buildAccountRequest(): AccountUpdateDto
     {
+        $private = $this->apiService->getParamInt('private');
+        $privateGroup = $this->apiService->getParamInt('privateGroup');
+        $tags = $this->apiService->getParamArray('tagsId');
+
         return AccountUpdateDto::fromArray(
             [
                 'id'             => $this->apiService->getParamInt('id', true),
@@ -83,17 +93,15 @@ final class EditController extends AccountBase
                 'login'          => $this->apiService->getParamString('login'),
                 'url'            => $this->apiService->getParamString('url'),
                 'notes'          => $this->apiService->getParamString('notes'),
-                'isPrivate'      => (bool)$this->apiService->getParamInt('private'),
-                'isPrivateGroup' => (bool)$this->apiService->getParamInt('privateGroup'),
+                'isPrivate'      => $private !== null ? (bool)$private : null,
+                'isPrivateGroup' => $privateGroup !== null ? (bool)$privateGroup : null,
                 'passDateChange' => $this->apiService->getParamInt('expireDate'),
                 'parentId'       => $this->apiService->getParamInt('parentId'),
                 'userId'         => $this->apiService->getParamInt('userId', false),
                 'userGroupId'    => $this->apiService->getParamInt('userGroupId', false),
                 'userEditId'     => $this->context->getUserData()->id,
-                'tags'           => array_map(
-                    'intval',
-                    $this->apiService->getParamArray('tagsId', false, [])
-                ),
+                'tags'           => $tags !== null ? array_map('intval', $tags) : null,
+                'pass'           => $this->apiService->getParamRaw('pass', false),
             ]
         );
     }

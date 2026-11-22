@@ -30,6 +30,7 @@ use Aura\SqlQuery\QueryFactory;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName as AccountPassItemWithIdAndNameModel;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account as AccountModel;
+use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Account\Models\AccountView as AccountViewModel;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
@@ -109,18 +110,20 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
-     * @param int $accountId
+     * @param int $id
      *
      * @return QueryResult<AccountPassItemWithIdAndNameModel>
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getPasswordHistoryForId(int $accountId): QueryResult
+    public function getPasswordHistoryForId(int $id): QueryResult
     {
-        $query = $this->accountFilterUser
-            ->buildFilterHistory()
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(AccountHistoryModel::TABLE)
             ->cols([
                        'AccountHistory.id',
+                       'AccountHistory.accountId',
                        'AccountHistory.name',
                        'AccountHistory.login',
                        'AccountHistory.pass',
@@ -128,8 +131,9 @@ final class Account extends BaseRepository implements AccountRepository
                        'AccountHistory.parentId',
                        'AccountHistory.mPassHash',
                    ])
-            ->where('AccountHistory.accountId = :accountId')
-            ->bindValues(['accountId' => $accountId]);
+            ->where('AccountHistory.id = :id')
+            ->bindValues(['id' => $id])
+            ->limit(1);
 
         return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountPassItemWithIdAndNameModel::class));
     }
@@ -188,10 +192,12 @@ final class Account extends BaseRepository implements AccountRepository
      */
     public function createRemoved(AccountModel $account): QueryResult
     {
+        $exclude = ($account->getId() ?? 0) > 0 ? [] : ['id'];
+
         $query = $this->queryFactory
             ->newInsert()
             ->into(AccountModel::TABLE)
-            ->cols($account->toArray(null, ['id']));
+            ->cols($account->toArray(null, $exclude));
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the account'));
 
@@ -374,7 +380,8 @@ final class Account extends BaseRepository implements AccountRepository
         int          $accountId,
         AccountModel $account,
         bool         $changeOwner,
-        bool         $changeUserGroup
+        bool         $changeUserGroup,
+        bool         $updatePrivacy = false
     ): QueryResult {
         $optional = ['clientId', 'categoryId', 'passDateChange'];
 
@@ -387,6 +394,11 @@ final class Account extends BaseRepository implements AccountRepository
         }
 
         $cols = array_filter($account->toArray($optional), static fn($value) => !empty($value));
+
+        if ($updatePrivacy) {
+            $cols['isPrivate'] = (int)($account->getIsPrivate() ?? 0);
+            $cols['isPrivateGroup'] = (int)($account->getIsPrivateGroup() ?? 0);
+        }
 
         if (count($cols) === 0) {
             return new QueryResult();
@@ -469,10 +481,10 @@ final class Account extends BaseRepository implements AccountRepository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function isVisible(int $accountId): bool
+    public function isVisible(int $accountId, bool $useGlobalSearch = false): bool
     {
         $query = $this->accountFilterUser
-            ->buildFilter()
+            ->buildFilter($useGlobalSearch)
             ->cols(['Account.id'])
             ->where('Account.id = :id')
             ->bindValues(['id' => $accountId])
@@ -526,14 +538,29 @@ final class Account extends BaseRepository implements AccountRepository
      */
     public function deleteByIdBatch(array $accountsId): QueryResult
     {
-        if (count($accountsId) === 0) {
+        $normalizedIds = array_values(array_unique(array_filter(
+            array_map('intval', $accountsId),
+            static fn(int $id): bool => $id > 0
+        )));
+
+        if ($normalizedIds === []) {
             return new QueryResult();
+        }
+
+        $placeholders = [];
+        $binds = [];
+
+        foreach ($normalizedIds as $index => $id) {
+            $param = 'id' . $index;
+            $placeholders[] = ':' . $param;
+            $binds[$param] = $id;
         }
 
         $query = $this->queryFactory
             ->newDelete()
             ->from(AccountModel::TABLE)
-            ->where('id IN (:ids)', ['ids' => $accountsId]);
+            ->where(sprintf('id IN (%s)', implode(', ', $placeholders)))
+            ->bindValues($binds);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 
@@ -622,6 +649,7 @@ final class Account extends BaseRepository implements AccountRepository
                        'Account.`key`',
                        'Account.url',
                        'Account.notes',
+                       'Account.parentId',
                        'Client.name AS clientName',
                        'Category.name AS categoryName',
                    ])
@@ -652,12 +680,12 @@ final class Account extends BaseRepository implements AccountRepository
                        'Client.name AS clientName',
                    ])
             ->join('INNER', 'Client', 'Account.clientId = Client.id')
+            ->where('(Account.parentId = 0 OR Account.parentId IS NULL)')
             ->orderBy(['Account.name ASC']);
 
         if ($accountId) {
             $query
                 ->where('Account.id <> :id')
-                ->where('Account.parentId = 0 OR Account.parentId IS NULL')
                 ->bindValues(['id' => $accountId]);
         }
 
@@ -686,6 +714,27 @@ final class Account extends BaseRepository implements AccountRepository
             ->orderBy(['Account.name ASC']);
 
         return $this->db->runQuery(QueryData::build($query));
+    }
+
+    /**
+     * Returns all child account IDs linked to a parent account without visibility filtering.
+     *
+     * @return int[]
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getChildIdsByParentId(int $parentId): array
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols(['id'])
+            ->from(AccountModel::TABLE)
+            ->where('parentId = :parentId')
+            ->bindValues(['parentId' => $parentId]);
+
+        $rows = $this->db->runQuery(QueryData::build($query))->getDataAsArray();
+
+        return array_values(array_map(static fn($row) => (int)($row['id'] ?? 0), $rows));
     }
 
     /**

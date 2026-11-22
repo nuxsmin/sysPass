@@ -1,9 +1,9 @@
 # 0004 - Test strategy and CI gating
 
-Status: Accepted (2026-10-31); amended by ADR-0009 (2026-11-01) and by ADR-0011 (2026-11-02, which assigns template-migration gating to HTTP Integration Tests and browser coverage to page loading only); CI gating amended 2026-11-07 (issue #2121); DB-backed HTTP integration variant added 2026-11-07 (issue #2124)
+Status: Accepted (2026-10-31); amended by ADR-0009 (2026-11-01) and by ADR-0011 (2026-11-02, which assigns template-migration gating to HTTP Integration Tests and browser coverage to page loading only); CI gating amended 2026-11-07 (issue #2121); DB-backed HTTP integration variant added 2026-11-07 (issue #2124); amended by ADR-0012 (accepted 2026-11-12, narrowed) for browser UI Workflow Tests limited to JS-to-backend wiring contracts only
 Issue: #2041 (plan P11-4, decisions D4 and P10-6, tracking #1976)
 
-Proposed follow-up: ADR-0012 revisits the restriction on browser workflow tests. It does not change this accepted strategy until adopted.
+ADR-0012 (accepted, narrowed to wiring contracts; layout and usability excluded) amends the browser-workflow exclusion for wiring contract tests only. All other browser workflow, layout and authorization testing remains excluded from the browser suite.
 
 ## Context
 
@@ -21,8 +21,10 @@ The pre-migration suite mixed these levels. Domain tests imported Infrastructure
 | **DB-backed Infrastructure** | Repository queries execute and return correct rows on the real engine | `tests/SP/Infrastructure/*/Repositories/*DbTest.php`; base `SP\Tests\DatabaseRepositoryTestCase` (`tests/SP/DatabaseRepositoryTestCase.php:40`) | `integration` | Real MariaDB with fixtures |
 | **HTTP-level web integration** | A request reaches the right action and produces the expected response body through the module bootstrap | `tests/SP/Modules/Web/Controllers/<Area>/`; base `SP\Tests\IntegrationTestCase` (`tests/SP/IntegrationTestCase.php:84`) for stubbed requests, or `SP\Tests\DatabaseIntegrationTestCase` (`tests/SP/DatabaseIntegrationTestCase.php`) for DB-backed requests | `integration` | In-process web bootstrap; stubbed container dependencies for characterisation tests, or the real `Database` adapter over fixtures for DB-backed flows |
 | **API and CLI adapter integration** | JSON-RPC envelopes and console commands keep their observable contract | `tests/SP/Modules/Api` and `tests/SP/Modules/Cli`; base `ApiTestCase` / `CliTestCase` | `integration` | Module bootstrap with stubbed dependencies where the test does not need a database |
+| **UI Smoke** (ADR-0009) | Page loads and its Page-load Actions complete without rendering or initialization failures | Browser page-load suite under `tests/ui/` | Browser suite (not a PHPUnit group) | Real browser against a disposable, seeded instance |
+| **UI Workflow** (ADR-0012) | JavaScript-bound controls send the expected Action request and render the backend's response (wiring contracts only; no layout, usability or authorization) | Browser wiring-contract tests; reporting until qualified | Browser suite (not a PHPUnit group) | Real browser against a disposable, reset instance with synthetic fixtures |
 
-The pyramid is deliberately narrow at the top. There is no browser or network end-to-end suite: the web integration tests build a container, dispatch an in-process `Klein\Request` through `Bootstrap::run()` and assert the rendered body, which covers the routing, controller, use case and view path without a second process.
+The pyramid is deliberately narrow at the top. The web integration tests build a container, dispatch an in-process `Klein\Request` through `Bootstrap::run()` and assert the rendered body, which covers the routing, controller, use case and view path without a second process. Browser tests are limited to the UI Smoke and UI Workflow rows above; there is no general browser or network end-to-end suite, and authorization is tested at the HTTP and backend layer.
 
 ### Unit tests use fakes, not Infrastructure
 
@@ -96,7 +98,7 @@ The workflow runs on pushes to `master`, pull requests targeting `master` or `fe
 
 - **Keep only unit tests.** Rejected: use cases with fakes cannot catch broken SQL, and the migration's riskiest changes were repository queries and namespace moves.
 - **Keep repository tests mocked.** Rejected: asserting generated SQL does not prove that MariaDB accepts it or returns the expected rows. The DB-backed tests found real defects during P10-2.
-- **Add a browser end-to-end suite.** Rejected for now: it adds a second runtime, browser binaries and flakiness for behaviour the in-process web bootstrap already covers. Revisit only for flows that depend on real HTTP semantics. ADR-0009 later accepts a browser suite limited to page-load observability; the rejection still stands for workflow and layout testing.
+- **Add a browser end-to-end suite.** Rejected for now: it adds a second runtime, browser binaries and flakiness for behaviour the in-process web bootstrap already covers. Revisit only for flows that depend on real HTTP semantics. ADR-0009 later accepts a browser suite limited to page-load observability; ADR-0012 amends this rejection for JS-to-backend wiring contract tests only, and the rejection still stands for general workflow, layout and authorization testing.
 - **Make the integration job opt-in per pull request.** Rejected in D4: the web controller tests had been excluded from CI for years and silently regressed. The repository variable enables the job by default.
 - **Gate every layer's coverage immediately.** Rejected: module coverage comes from the integration job, and a global gate would either fail on untested adapters or force low-value tests. Gate the core layers first and extend deliberately.
 - **Use docblock annotations instead of attributes.** Rejected: the suite standardised on PHPUnit attributes (`#[Test]`, `#[Group]`) and the metrics script checks for them.

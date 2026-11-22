@@ -93,11 +93,24 @@ interface AccountFileRepository extends Repository
     public function deleteByIdBatch(array $ids): int;
 
     /**
+     * Returns only the owner account id (without the file content) for the given file id
+     *
+     * @param int $id The file id
+     *
+     * @return QueryResult<T>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getAccountIdById(int $id): QueryResult;
+
+    /**
      * Searches for items by a given filter
      *
      * @param ItemSearchDto $itemSearchData
+     * @param AccountFilterBuilder|null $accountFilter When set, only the files of the accounts visible
+     *                                                 for the current user are returned
      *
      * @return QueryResult<T>
      */
-    public function search(ItemSearchDto $itemSearchData): QueryResult;
+    public function search(ItemSearchDto $itemSearchData, ?AccountFilterBuilder $accountFilter = null): QueryResult;
 }

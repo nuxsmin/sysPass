@@ -12,11 +12,12 @@ export interface UiFixture {
   credentials: {
     admin: FixtureCredential;
     demo: FixtureCredential;
+    restricted: FixtureCredential;
   };
   ids: {
-    groups: { demo: number };
-    profiles: { demo: number };
-    users: { admin: number; demo: number };
+    groups: { demo: number; restricted: number };
+    profiles: { demo: number; restricted: number };
+    users: { admin: number; demo: number; restricted: number };
     clients: { primary: number };
     categories: { primary: number };
     accounts: { parent: number; child: number };
@@ -25,6 +26,8 @@ export interface UiFixture {
   names: {
     demoGroup: string;
     demoProfile: string;
+    restrictedGroup: string;
+    restrictedProfile: string;
     client: string;
     category: string;
     parentAccount: string;
@@ -48,3 +51,4 @@ export const FIXTURE = JSON.parse(
 
 export const ADMIN_CREDENTIALS = FIXTURE.credentials.admin;
 export const DEMO_CREDENTIALS = FIXTURE.credentials.demo;
+export const RESTRICTED_CREDENTIALS = FIXTURE.credentials.restricted;

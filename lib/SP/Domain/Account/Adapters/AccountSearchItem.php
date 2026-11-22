@@ -47,7 +47,6 @@ final class AccountSearchItem
     public static bool $showTags          = false;
     public static bool $requestEnabled    = true;
     public static bool $wikiEnabled       = false;
-    public static bool $dokuWikiEnabled   = false;
     public static bool $publicLinkEnabled = false;
     public static bool $isDemoMode        = false;
 
@@ -135,8 +134,7 @@ final class AccountSearchItem
         if (self::$publicLinkEnabled
             && $this->accountSearchView->getPublicLinkHash() !== null
         ) {
-            $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
-                       $this->uriContext->getSubUri();
+            $baseUrl = rtrim($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri(), '/');
 
             return PublicLink::getLinkForHash($baseUrl, $this->accountSearchView->getPublicLinkHash());
         }

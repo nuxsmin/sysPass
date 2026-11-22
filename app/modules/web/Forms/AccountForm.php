@@ -28,6 +28,7 @@ use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Ports\AccountPresetService;
+use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Context\Context;
@@ -83,6 +84,7 @@ final class AccountForm extends FormBase implements FormInterface
             AclActionsInterface::ACCOUNT_EDIT =>
             $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
                   ->next(fn(AccountDto $dto) => $this->checkCommon($dto))
+                  ->next(fn(AccountDto $dto) => $this->checkPasswordOnEdit($dto))
                   ->resolve(),
             AclActionsInterface::ACCOUNT_CREATE,
             AclActionsInterface::ACCOUNT_COPY =>
@@ -113,28 +115,50 @@ final class AccountForm extends FormBase implements FormInterface
     private function analyzeRequestData(): AccountCreateDto|AccountUpdateDto
     {
         $userData = $this->context->getUserData();
-        $defaultUserId = $this->itemId === null ? $userData->id : null;
-        $defaultUserGroupId = $this->itemId === null ? $userData->userGroupId : null;
+        $isUpdate = $this->itemId !== null;
+        $defaultUserId = $isUpdate ? null : $userData->id;
+        $defaultUserGroupId = $isUpdate ? null : $userData->userGroupId;
 
         $properties = [
             'name' => $this->request->analyzeString('name'),
-            'login' => $this->request->analyzeString('login'),
+            'login' => $isUpdate && !$this->request->hasParam('login')
+                ? null
+                : $this->request->analyzeString('login'),
             'clientId' => $this->request->analyzeInt('client_id'),
             'categoryId' => $this->request->analyzeInt('category_id'),
             'pass' => $this->request->analyzeEncrypted('password'),
             'userId' => $this->request->analyzeInt('owner_id') ?? $defaultUserId,
-            'url' => $this->request->analyzeString('url'),
-            'notes' => $this->request->analyzeUnsafeString('notes'),
-            'private' => (int)$this->request->analyzeBool('private_enabled', false),
-            'privateGroup' => (int)$this->request->analyzeBool('private_group_enabled', false),
-            'passDateChange' => $this->request->analyzeInt('password_date_expire_unix'),
-            'parentId' => $this->request->analyzeInt('parent_account_id'),
+            'url' => $isUpdate && !$this->request->hasParam('url')
+                ? null
+                : $this->request->analyzeString('url'),
+            'notes' => $isUpdate && !$this->request->hasParam('notes')
+                ? null
+                : $this->request->analyzeUnsafeString('notes'),
+            'isPrivate' => $isUpdate && !$this->request->hasParam('private_enabled')
+                ? null
+                : $this->request->analyzeBool('private_enabled', false),
+            'isPrivateGroup' => $isUpdate && !$this->request->hasParam('private_group_enabled')
+                ? null
+                : $this->request->analyzeBool('private_group_enabled', false),
+            'passDateChange' => $isUpdate && !$this->request->hasParam('password_date_expire_unix')
+                ? null
+                : $this->request->analyzeInt('password_date_expire_unix'),
+            'parentId' => $isUpdate && !$this->request->hasParam('parent_account_id')
+                ? null
+                : $this->request->analyzeInt('parent_account_id'),
             'userGroupId' => $this->request->analyzeInt('main_usergroup_id') ?? $defaultUserGroupId,
+            'customFields' => $this->request->analyzeArray(
+                'customfield',
+                static fn($values) => array_map(
+                    static fn($value) => $value === null ? '' : Filter::getString((string)$value),
+                    $values
+                )
+            ),
         ];
 
-        return $this->itemId === null ? AccountCreateDto::fromArray($properties) : AccountUpdateDto::fromArray(
-            $properties
-        );
+        return $isUpdate
+            ? AccountUpdateDto::fromArray($properties)
+            : AccountCreateDto::fromArray($properties);
     }
 
     /**
@@ -155,6 +179,23 @@ final class AccountForm extends FormBase implements FormInterface
         }
 
         return $accountDto;
+    }
+
+    /**
+     * @throws ValidationException
+     * @throws SPException
+     */
+    private function checkPasswordOnEdit(AccountDto $accountDto): AccountDto
+    {
+        if ((string)($accountDto->pass ?? '') === '') {
+            return $accountDto;
+        }
+
+        if ($this->request->analyzeEncrypted('password_repeat') !== $accountDto->pass) {
+            throw new ValidationException(__u('Passwords do not match'));
+        }
+
+        return $this->accountPresetService->checkPasswordPreset($accountDto);
     }
 
     /**

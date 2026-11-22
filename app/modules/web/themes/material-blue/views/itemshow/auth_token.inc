@@ -123,6 +123,29 @@ $authToken = $_getvar('authToken');
                 </tr>
                 <tr>
                     <td class="descField"><?php
+                        echo __('Expiration Date'); ?></td>
+                    <td class="valField">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input id="expire_date" name="expire_date" type="date"
+                                   class="mdl-textfield__input mdl-color-text--indigo-400"
+                                   value="<?php
+                                   echo htmlspecialchars((string)$_getvar('expireDateValue', ''), ENT_QUOTES); ?>"
+                                   max="<?php
+                                   echo htmlspecialchars((string)$_getvar('maxExpireDateValue', ''), ENT_QUOTES); ?>">
+                            <label class="mdl-textfield__label"
+                                   for="expire_date"><?php
+                                printf(
+                                    __('Expiration Date (default: %d days)'),
+                                    (int)$_getvar('defaultTokenDays', 90)
+                                ); ?></label>
+                        </div>
+                        <input type="hidden" name="expire_date_initial"
+                               value="<?php
+                               echo htmlspecialchars((string)$_getvar('expireDateInitial', '__new__'), ENT_QUOTES); ?>">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="descField"><?php
                         echo __('Options'); ?></td>
                     <td class="valField">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
@@ -135,6 +158,22 @@ $authToken = $_getvar('authToken');
                             <span class="mdl-switch__label"><?php
                                 echo __('Refresh Authorization'); ?></span>
                         </label>
+                        <?php
+                        if ($_getvar('isAdminApp')): ?>
+                            <br>
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="no_expiry"
+                                   title="<?php
+                                   echo __('No Expiration'); ?>">
+                                <input type="checkbox" id="no_expiry"
+                                       class="mdl-switch__input mdl-color-text--indigo-400"
+                                       name="no_expiry" <?php
+                                echo $_getvar('isNoExpiry') ? 'checked' : ''; ?>/>
+                                <span class="mdl-switch__label"><?php
+                                    echo __('No Expiration'); ?></span>
+                            </label>
+                        <?php
+                        endif; ?>
                     </td>
                 </tr>
             <?php
@@ -147,7 +186,18 @@ $authToken = $_getvar('authToken');
                             echo __('Token'); ?></div>
 
                         <?php
-                        echo $authToken->getToken(); ?>
+                        echo '***'; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="descField"><?php
+                        echo __('Expiration'); ?></td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php
+                            echo __('Expiration'); ?></div>
+
+                        <?php
+                        echo htmlspecialchars((string)$_getvar('expireDateDisplay', ''), ENT_QUOTES); ?>
                     </td>
                 </tr>
             <?php

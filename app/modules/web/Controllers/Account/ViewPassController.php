@@ -81,7 +81,7 @@ final class ViewPassController extends AccountControllerBase
         $useImage = $this->configData->isAccountPassToImage()
                     || ($passwordPreset !== null && $passwordPreset->isUseImage());
 
-        $this->view->assign('isLinked', $parentId > 0);
+        $this->view->assign('isLinked', ((int)($account->getParentId() ?? 0)) > 0);
 
         $data = $this->accountPasswordHelper->getPasswordView($account, $useImage);
 

@@ -83,8 +83,6 @@ final class DeleteController extends ControllerBase
             $ids = $this->getItemsIdFromRequest($this->request);
             $this->accountService->deleteByIdBatch($ids);
 
-            $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $ids, $this->customFieldService);
-
             $this->eventDispatcher->notify(
                 'delete.account.selection',
                 new Event($this, EventMessage::build()->addDescription(__u('Accounts removed')))
@@ -96,8 +94,6 @@ final class DeleteController extends ControllerBase
         $accountView = $this->accountService->getByIdEnriched($id);
 
         $this->accountService->delete($id);
-
-        $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $id, $this->customFieldService);
 
         $this->eventDispatcher->notify(
             'delete.account',

@@ -27,6 +27,7 @@ namespace SP\Tests\Infrastructure\Security\Repositories;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use SP\Domain\Common\Providers\Address;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Security\Models\Track as TrackModel;
 use SP\Infrastructure\Security\Repositories\Track;
@@ -72,5 +73,67 @@ final class TrackDbTest extends DatabaseRepositoryTestCase
             static fn(TrackModel $track) => $track->getId(),
             $page->getDataAsArray(TrackModel::class)
         ));
+    }
+
+    #[Test]
+    public function addGetTracksForClientFromTimeUnlockAndClearWorkAgainstMariaDb(): void
+    {
+        $ipv4 = Address::toBinary('198.51.100.25');
+        $since = time() - 60;
+
+        $trackId = $this->track->add(new TrackModel([
+            'userId' => 2,
+            'source' => 'login',
+            'ipv4' => $ipv4,
+        ]))->getLastId();
+
+        self::assertGreaterThan(0, $trackId);
+
+        $active = $this->track->getTracksForClientFromTime(new TrackModel([
+            'time' => $since,
+            'source' => 'login',
+            'ipv4' => $ipv4,
+            'ipv6' => null,
+        ]));
+        self::assertSame(1, $active->getNumRows());
+
+        self::assertSame(1, $this->track->unlock($trackId));
+
+        $afterUnlock = $this->track->getTracksForClientFromTime(new TrackModel([
+            'time' => $since,
+            'source' => 'login',
+            'ipv4' => $ipv4,
+            'ipv6' => null,
+        ]));
+        self::assertSame(0, $afterUnlock->getNumRows());
+
+        self::assertTrue($this->track->clear());
+        self::assertFalse($this->track->clear());
+    }
+
+    #[Test]
+    public function countForUserAndSourceFromTimeScopesByUserSourceTimeWindowAndUnlock(): void
+    {
+        $now = time();
+        $sourceA = 'account.request:10';
+        $sourceB = 'account.request:11';
+
+        $id1 = $this->track->add(new TrackModel(['userId' => 2, 'source' => $sourceA]))->getLastId();
+        $this->track->add(new TrackModel(['userId' => 2, 'source' => $sourceA]));
+        $unlockedId = $this->track->add(new TrackModel(['userId' => 2, 'source' => $sourceA]))->getLastId();
+        $this->track->unlock($unlockedId);
+
+        // Different user / different source
+        $this->track->add(new TrackModel(['userId' => 3, 'source' => $sourceA]));
+        $this->track->add(new TrackModel(['userId' => 2, 'source' => $sourceB]));
+
+        // Simulate expired track >24h ago via direct DB insert or update? Let's test time cutoff directly:
+        self::assertSame(2, $this->track->countForUserAndSourceFromTime(2, $sourceA, $now - 86400));
+        self::assertSame(1, $this->track->countForUserAndSourceFromTime(3, $sourceA, $now - 86400));
+        self::assertSame(1, $this->track->countForUserAndSourceFromTime(2, $sourceB, $now - 86400));
+
+        // Future cutoff excludes all current rows
+        self::assertSame(0, $this->track->countForUserAndSourceFromTime(2, $sourceA, $now + 60));
+        self::assertGreaterThan(0, $id1);
     }
 }

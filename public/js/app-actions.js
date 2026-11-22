@@ -198,7 +198,7 @@ sysPass.Actions = function (log) {
                         const opts = sysPassApp.requests.getRequestOpts();
                         opts.url = ajaxUrl.entrypoint;
                         opts.data = {
-                            r: sysPassApp.util.buildRoute(["account/saveDelete", $obj.data("item-id")]),
+                            r: sysPassApp.util.buildRoute([$obj.data("action-route"), $obj.data("item-id")]),
                             sk: sysPassApp.sk.get()
                         };
 
@@ -275,11 +275,6 @@ sysPass.Actions = function (log) {
                 });
 
             return sysPassApp.requests.getActionCall(opts);
-        },
-        copyPassHistory: function ($obj) {
-            log.info("account:copyPassHistory");
-
-            account.copyPassHistory($obj);
         },
         copy: function ($obj) {
             log.info("account:copy");
@@ -370,6 +365,10 @@ sysPass.Actions = function (log) {
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);
 
+                if (json.status !== 0 || json.data === null || typeof json.data !== "object") {
+                    return;
+                }
+
                 if (json.data.itemId !== undefined
                     && json.data.nextAction !== undefined
                 ) {
@@ -390,8 +389,111 @@ sysPass.Actions = function (log) {
                     sk: sysPassApp.sk.get()
                 });
 
+            const fallbackError = (sysPassApp.config && sysPassApp.config.LANG && sysPassApp.config.LANG[1] !== undefined)
+                ? sysPassApp.config.LANG[1]
+                : "An error occurred";
+
+            const renderError = function (message) {
+                const errorNode = document.createElement("p");
+                errorNode.className = "error round";
+                errorNode.textContent = message;
+
+                $obj.empty().append(errorNode);
+            };
+
+            const parseJsonEnvelope = function (value) {
+                if (value !== null && typeof value === "object") {
+                    return Array.isArray(value) ? null : value;
+                }
+
+                if (typeof value !== "string") {
+                    return null;
+                }
+
+                const trimmed = value.trim();
+
+                if (!trimmed.startsWith("{")) {
+                    return null;
+                }
+
+                try {
+                    const parsed = JSON.parse(trimmed);
+                    return (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed))
+                        ? parsed
+                        : null;
+                } catch (e) {
+                    return null;
+                }
+            };
+
+            const normalizeStatus = function (status) {
+                const statusCodes = {OK: 0, ERROR: 1, WARNING: 2};
+
+                return (typeof status === "string" && statusCodes[status] !== undefined)
+                    ? statusCodes[status]
+                    : status;
+            };
+
             sysPassApp.requests.getActionCall(opts, function (response) {
-                $obj.html(response);
+                const envelope = parseJsonEnvelope(response);
+
+                if (envelope !== null) {
+                    const normalized = Object.assign({}, envelope, {
+                        status: normalizeStatus(envelope.status)
+                    });
+
+                    if (normalized.status === 0
+                        && normalized.data !== null
+                        && typeof normalized.data === "object"
+                        && typeof normalized.data.html === "string"
+                        && /<[a-zA-Z][^>]*>/.test(normalized.data.html)
+                    ) {
+                        $obj.html(normalized.data.html);
+                        return;
+                    }
+
+                    const message = (typeof normalized.description === "string" && normalized.description.trim().length > 0)
+                        ? normalized.description
+                        : fallbackError;
+
+                    if (normalized.status === 0) {
+                        sysPassApp.msg.error(message);
+                    } else {
+                        sysPassApp.msg.out(normalized);
+                    }
+
+                    renderError(message);
+                    return;
+                }
+
+                if (typeof response !== "string") {
+                    sysPassApp.msg.error(fallbackError);
+                    renderError(fallbackError);
+                    return;
+                }
+
+                const trimmed = response.trim();
+
+                if (trimmed.length === 0
+                    || trimmed === "null"
+                    || trimmed.startsWith("{")
+                    || trimmed.startsWith("[")
+                ) {
+                    sysPassApp.msg.error(fallbackError);
+                    renderError(fallbackError);
+                    return;
+                }
+
+                if (/<[a-zA-Z][^>]*>/.test(trimmed)) {
+                    $obj.html(response);
+                    return;
+                }
+
+                sysPassApp.msg.error(trimmed);
+                renderError(trimmed);
+            }, function () {
+                sysPassApp.msg.error(fallbackError);
+                renderError(fallbackError);
             });
         },
         search: function ($obj) {
@@ -413,8 +515,9 @@ sysPass.Actions = function (log) {
             opts.data = $frmSearch.serialize();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                if (json.status === 10) {
+                if (json.status !== 0 || json.data === null || typeof json.data !== "object") {
                     sysPassApp.msg.out(json);
+                    return;
                 }
 
                 $("#res-content").empty().html(json.data.html);
@@ -436,6 +539,10 @@ sysPass.Actions = function (log) {
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);
+
+                if (json.status !== 0 || json.data === null || typeof json.data !== "object") {
+                    return;
+                }
 
                 if (json.data.itemId !== undefined
                     && json.data.nextAction !== undefined
@@ -562,14 +669,12 @@ sysPass.Actions = function (log) {
             opts.data += "&sk=" + sysPassApp.sk.get();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
 
-                if (json.status === 0) {
+                if (json && json.status === 0) {
                     closeFloatingBox();
-
-                    if (typeof onSuccess === "function") {
-                        onSuccess();
-                    }
                 }
             });
         }
@@ -707,30 +812,53 @@ sysPass.Actions = function (log) {
 
             const $updates = $("#updates");
 
+            const renderStatus = function (message) {
+                const icon = document.createElement("div");
+                icon.id = "updates-info";
+                icon.className = "icon material-icons mdl-color-text--amber-200";
+                icon.textContent = "warning";
+
+                const tooltip = document.createElement("span");
+                tooltip.setAttribute("for", "updates-info");
+                tooltip.className = "mdl-tooltip mdl-tooltip--top mdl-tooltip--large";
+                tooltip.textContent = message;
+
+                $updates.empty().append(icon, tooltip);
+            };
+
             sysPassApp.requests.getActionCall(opts, function (json) {
-                if (json.status === 0) {
-                    if (json.data.length > 0) {
-                        $updates.html(
-                            `<a id="link-updates" href="${json.data.url}" target="_blank">${json.data.title}
-                            <div id="help-hasupdates" class="icon material-icons mdl-color-text--indigo-200">cloud_download</div>
-                            </a>
-                            <span for="link-updates" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">${json.data.description}</span>`);
+                if (json.status === 0 || json.status === "OK") {
+                    if (json.data && json.data.version) {
+                        const link = document.createElement("a");
+                        link.id = "link-updates";
+                        link.setAttribute("href", json.data.url);
+                        link.setAttribute("target", "_blank");
+                        link.setAttribute("rel", "noopener noreferrer");
+                        link.textContent = json.data.title;
+
+                        const icon = document.createElement("div");
+                        icon.id = "help-hasupdates";
+                        icon.className = "icon material-icons mdl-color-text--indigo-200";
+                        icon.textContent = "cloud_download";
+                        link.appendChild(icon);
+
+                        const tooltip = document.createElement("span");
+                        tooltip.setAttribute("for", "link-updates");
+                        tooltip.className = "mdl-tooltip mdl-tooltip--top mdl-tooltip--large";
+                        tooltip.textContent = json.data.description;
+
+                        $updates.empty().append(link, tooltip);
                     } else {
-                        $updates.html(
-                            `<div id="updates-info" class="icon material-icons mdl-color-text--teal-200">check_circle</div>
-                            <span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">${sysPassApp.config.LANG[68]}</span>`);
+                        renderStatus(sysPassApp.config.LANG[68]);
                     }
                 } else {
-                    $updates.html(
-                        `<div id="updates-info" class="icon material-icons mdl-color-text--amber-200">warning</div>
-                        <span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">${sysPassApp.config.LANG[69]}</span>`);
+                    renderStatus(sysPassApp.config.LANG[69]);
                 }
 
                 sysPassApp.theme.update();
             }, function () {
-                $updates.html(
-                    `<div id="updates-info" class="icon material-icons mdl-color-text--amber-200">warning</div>
-                    <span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">${sysPassApp.config.LANG[69]}</span>`);
+                renderStatus(sysPassApp.config.LANG[69]);
+                sysPassApp.theme.update();
             });
         },
         getNotices: function () {
@@ -765,32 +893,6 @@ sysPass.Actions = function (log) {
                 }
 
                 sysPassApp.theme.update();
-            });
-        }
-    };
-
-    /**
-     * Objeto con las acciones de comprobación
-     *
-     * @type {{ldap: checks.ldap, wiki: checks.wiki}}
-     */
-    const checks = {
-        wiki: function ($obj) {
-            log.info("checks:wiki");
-
-            const $form = $($obj.data("src"));
-            $form.find("[name='sk']").val(sysPassApp.sk.get());
-
-            const opts = sysPassApp.requests.getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
-            opts.data = $form.serialize();
-
-            sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
-
-                if (json.status === 0) {
-                    $("#dokuWikiResCheck").html(json.data);
-                }
             });
         }
     };
@@ -882,7 +984,9 @@ sysPass.Actions = function (log) {
             opts.data = $obj.serialize() + "&sk=" + sysPassApp.sk.get();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
             });
         },
         refreshMpass: function ($obj) {
@@ -898,7 +1002,9 @@ sysPass.Actions = function (log) {
                 });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
             });
         },
         mailCheck: function ($obj) {
@@ -910,7 +1016,9 @@ sysPass.Actions = function (log) {
             opts.data = $form.serialize() + "&sk=" + sysPassApp.sk.get();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
             });
         }
     };
@@ -1182,9 +1290,9 @@ sysPass.Actions = function (log) {
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);
 
-                if (json.status === 0) {
+                if (json.status === 0 || json.status === "OK") {
                     if (typeof onSuccess === "function") {
-                        onSuccess();
+                        onSuccess(json);
                     }
 
                     if ($obj.data("reload") !== undefined) {
@@ -1287,11 +1395,62 @@ sysPass.Actions = function (log) {
                 });
             });
         },
+        showGeneratedTokenDialog: function (token) {
+            const container = document.createElement("div");
+            container.setAttribute("id", "box-popup");
+            container.setAttribute("class", "box-password-view");
+
+            const notice = document.createElement("p");
+            notice.setAttribute("class", "dialog-token-notice");
+            notice.textContent = sysPassApp.config.LANG[74] || "Copy and store this token now. It will not be shown again.";
+            container.appendChild(notice);
+
+            const row = document.createElement("div");
+            row.setAttribute("class", "dialog-token-row");
+
+            const tokenBox = document.createElement("div");
+            tokenBox.setAttribute("class", "dialog-text dialog-token-text");
+            tokenBox.textContent = token;
+            row.appendChild(tokenBox);
+
+            const copyButton = document.createElement("button");
+            copyButton.setAttribute("type", "button");
+            copyButton.setAttribute("class", "dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect");
+            copyButton.setAttribute("data-clipboard-target", ".dialog-token-text");
+            copyButton.setAttribute("title", sysPassApp.config.LANG[75] || "Copy Token");
+            copyButton.textContent = sysPassApp.config.LANG[75] || "Copy Token";
+
+            const clipIcon = document.createElement("i");
+            clipIcon.setAttribute("class", "material-icons");
+            clipIcon.textContent = "content_copy";
+            copyButton.appendChild(clipIcon);
+
+            row.appendChild(copyButton);
+            container.appendChild(row);
+
+            mdlDialog().show({
+                title: sysPassApp.config.LANG[73] || "API Token",
+                text: container,
+                cancelable: false,
+                positive: {
+                    title: sysPassApp.config.LANG[43] || "Accept"
+                }
+            });
+        },
         save: function ($obj) {
             log.info("appMgmt:save");
 
-            tabs.save($obj, function () {
+            tabs.save($obj, function (json) {
                 closeFloatingBox();
+
+                if (json
+                    && json.data
+                    && typeof json.data.token === "string"
+                    && json.data.token.length > 0
+                    && typeof mdlDialog === "function"
+                ) {
+                    appMgmt.showGeneratedTokenDialog(json.data.token);
+                }
             });
         },
         search: function ($obj) {
@@ -1337,36 +1496,6 @@ sysPass.Actions = function (log) {
         },
         refresh: function ($obj) {
             $('#' + $obj.data("action-form")).submit();
-        }
-    };
-
-    /**
-     * Objeto con acciones sobre la wiki
-     *
-     * @type {{view: wiki.view}}
-     */
-    const wiki = {
-        show: function ($obj) {
-            log.info("wiki:show");
-
-            const opts = sysPassApp.requests.getRequestOpts();
-            opts.method = "get";
-            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
-                {
-                    r: $obj.data("action-route"),
-                    pageName: $obj.data("pagename"),
-                    actionId: $obj.data("action-id"),
-                    sk: sysPassApp.sk.get(),
-                    isAjax: 1
-                });
-
-            sysPassApp.requests.getActionCall(opts, function (json) {
-                if (json.status !== 0) {
-                    sysPassApp.msg.out(json);
-                } else {
-                    showFloatingBox(json.data.html);
-                }
-            });
         }
     };
 
@@ -1563,6 +1692,11 @@ sysPass.Actions = function (log) {
                 });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
+                if (json.status !== 0 || json.data === null || typeof json.data !== "object") {
+                    sysPassApp.msg.out(json);
+                    return;
+                }
+
                 const $badge = $(".notifications-badge");
                 const $tooltip = $(".notifications-tooltip");
 
@@ -1873,7 +2007,6 @@ sysPass.Actions = function (log) {
         account: account,
         accountManager: accountManager,
         file: file,
-        checks: checks,
         config: configManager,
         main: main,
         user: user,
@@ -1882,7 +2015,6 @@ sysPass.Actions = function (log) {
         ajaxUrl: ajaxUrl,
         plugin: plugin,
         notification: notification,
-        wiki: wiki,
         items: items,
         ldap: ldap,
         track: track

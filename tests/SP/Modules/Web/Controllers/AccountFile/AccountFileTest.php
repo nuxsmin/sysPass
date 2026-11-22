@@ -32,6 +32,8 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\File;
+use SP\Domain\Account\Ports\AccountService;
+use SP\Tests\Generators\AccountDataGenerator;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\BodyChecker;
@@ -53,8 +55,14 @@ class AccountFileTest extends IntegrationTestCase
     #[Test]
     public function deleteSingleFile()
     {
+        $this->addDatabaseMapperResolver(
+            File::class,
+            new QueryResult([File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())])
+        );
+
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'accountFile/delete/100'])
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'accountFile/delete/100']),
+            $this->accessibleAccount()
         );
 
         IntegrationTestCase::runApp($container);
@@ -76,6 +84,11 @@ class AccountFileTest extends IntegrationTestCase
                 return new QueryResult([], 3);
             }
 
+            // Owner lookup used to authorize each file
+            if ($queryData->getMapClassName() === File::class) {
+                return new QueryResult([File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())]);
+            }
+
             return new QueryResult();
         };
 
@@ -85,7 +98,8 @@ class AccountFileTest extends IntegrationTestCase
                 'index.php',
                 ['r' => 'accountFile/delete'],
                 ['items' => [100, 200, 300]]
-            )
+            ),
+            $this->accessibleAccount()
         );
 
         IntegrationTestCase::runApp($container);
@@ -112,7 +126,8 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountFile/download/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountFile/download/100']),
+            $this->accessibleAccount()
         );
 
         IntegrationTestCase::runApp($container);
@@ -143,7 +158,8 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountFile/list/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountFile/list/100']),
+            $this->accessibleAccount()
         );
 
         IntegrationTestCase::runApp($container);
@@ -202,8 +218,16 @@ class AccountFileTest extends IntegrationTestCase
             ]
         ];
 
+        $accounts = $this->createStub(AccountService::class);
+        $accounts->method('isVisible')->willReturn(true);
+        $accounts->method('getByIdEnriched')->willReturn(
+            AccountDataGenerator::factory()->buildAccountDataView()->mutate(['id' => 100])
+        );
+        $accounts->method('withUsers')->willReturnArgument(0);
+        $accounts->method('withUserGroups')->willReturnArgument(0);
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'accountFile/upload/100'], [], $files)
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'accountFile/upload/100'], [], $files),
+            [AccountService::class => $accounts]
         );
 
         IntegrationTestCase::runApp($container);
@@ -227,10 +251,30 @@ class AccountFileTest extends IntegrationTestCase
         );
 
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountFile/view/100'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountFile/view/100']),
+            $this->accessibleAccount()
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * The account owning the files is visible and accessible for the user
+     *
+     * @return array<class-string, AccountService>
+     * @throws Exception
+     */
+    private function accessibleAccount(): array
+    {
+        $accounts = $this->createStub(AccountService::class);
+        $accounts->method('isVisible')->willReturn(true);
+        $accounts->method('getByIdEnriched')->willReturn(
+            AccountDataGenerator::factory()->buildAccountDataView()->mutate(['id' => 100])
+        );
+        $accounts->method('withUsers')->willReturnArgument(0);
+        $accounts->method('withUserGroups')->willReturnArgument(0);
+
+        return [AccountService::class => $accounts];
     }
 
     protected function getConfigData(): array

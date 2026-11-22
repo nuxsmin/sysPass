@@ -32,6 +32,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Dtos\FileDto;
 use SP\Domain\Account\Models\File;
 use SP\Domain\Account\Ports\AccountFileRepository;
+use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Services\AccountFile;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -55,6 +56,7 @@ class AccountFileTest extends UnitaryTestCase
 
     private MockObject|AccountFileRepository $accountFileRepository;
     private ImageService|MockObject $imageUtil;
+    private AccountFilterBuilder|MockObject $accountFilter;
     private AccountFile                      $accountFile;
 
     /**
@@ -225,12 +227,42 @@ class AccountFileTest extends UnitaryTestCase
         $this->accountFileRepository
             ->expects(self::once())
             ->method('search')
-            ->with($itemSearchData)
+            ->with($itemSearchData, $this->accountFilter)
             ->willReturn(new QueryResult($files));
 
         $out = $this->accountFile->search($itemSearchData);
 
         $this->assertEquals($files, $out->getDataAsArray());
+    }
+
+    #[Test]
+    public function getAccountIdByIdReturnsTheOwnerAccountOfTheFile(): void
+    {
+        $file = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())
+            ->mutate(['id' => 10, 'accountId' => 77]);
+
+        $this->accountFileRepository
+            ->expects(self::once())
+            ->method('getAccountIdById')
+            ->with(10)
+            ->willReturn(new QueryResult([$file]));
+
+        self::assertSame(77, $this->accountFile->getAccountIdById(10));
+    }
+
+    #[Test]
+    public function getAccountIdByIdThrowsWhenTheFileDoesNotExist(): void
+    {
+        $this->accountFileRepository
+            ->expects(self::once())
+            ->method('getAccountIdById')
+            ->with(10)
+            ->willReturn(new QueryResult([]));
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('File not found');
+
+        $this->accountFile->getAccountIdById(10);
     }
 
     /**
@@ -262,6 +294,7 @@ class AccountFileTest extends UnitaryTestCase
 
         $this->accountFileRepository = $this->createMock(AccountFileRepository::class);
         $this->imageUtil = $this->createMock(ImageService::class);
+        $this->accountFilter = $this->createMock(AccountFilterBuilder::class);
 
         $this->accountFile =
             new AccountFile(
@@ -270,7 +303,8 @@ class AccountFileTest extends UnitaryTestCase
                 $this->context,
                 $this->accountFileRepository,
                 $this->imageUtil,
-                $this->fileSystem
+                $this->fileSystem,
+                $this->accountFilter
             );
     }
 }

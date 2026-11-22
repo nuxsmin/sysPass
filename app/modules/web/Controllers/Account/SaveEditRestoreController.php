@@ -65,16 +65,23 @@ final class SaveEditRestoreController extends AccountControllerBase
     public function saveEditRestoreAction(int $historyId, int $id): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT)
-            || !$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT_PASS)
+            || !$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_HISTORY_VIEW)
+            || !$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT_RESTORE)
         ) {
             return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
-        if (!$this->accountService->isVisible($id)) {
+        if (!$this->accountService->canEdit($id)) {
             return ActionResponse::error(__u('You don\'t have permission to access this account'));
         }
 
-        $this->accountService->restoreModified($this->accountHistoryService->getById($historyId));
+        $historyDto = $this->accountHistoryService->getById($historyId);
+
+        if ((int)($historyDto->accountId ?? 0) !== $id) {
+            return ActionResponse::error(__u('Error on restoring the account'));
+        }
+
+        $this->accountService->restoreModified($historyDto);
 
         $this->eventDispatcher->notify(
             'edit.account.restore',

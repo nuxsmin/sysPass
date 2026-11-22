@@ -115,8 +115,11 @@ class AccountSearchTest extends UnitaryTestCase
     {
         $out = $this->accountSearch->withFilterForGroup(123);
 
-        $bind = ['userGroupId' => 123];
-        $query = '`Account`.`userGroupId` = :userGroupId OR (`Account`.`id` IN (SELECT `AccountToUserGroup`.`accountId` FROM AccountToUserGroup WHERE `AccountToUserGroup`.`accountId` = id AND `AccountToUserGroup`.`userGroupId` = :userGroupId))';
+        $bind = [
+            'fGroupMainId' => 123,
+            'fGroupSecId' => 123,
+        ];
+        $query = '(`Account`.`userGroupId` = :fGroupMainId OR `Account`.`id` IN (SELECT `AccountToUserGroup`.`accountId` FROM AccountToUserGroup WHERE `AccountToUserGroup`.`accountId` = `Account`.`id` AND `AccountToUserGroup`.`userGroupId` = :fGroupSecId))';
 
         $this->assertEquals($bind, $out->getBindValues());
         $this->checkQueryRegex($out->getStatement(), $query);
@@ -163,8 +166,13 @@ class AccountSearchTest extends UnitaryTestCase
     {
         $out = $this->accountSearch->withFilterForUser(123, 456);
 
-        $bind = ['userId' => 123, 'userGroupId' => 456];
-        $query = '(`Account`.`userId` = :userId or `Account`.`userGroupId` = :userGroupId or `Account`.`id` IN (SELECT `AccountToUser`.`accountId` FROM AccountToUser WHERE `AccountToUser`.`accountId` = `Account`.`id` AND `AccountToUser`.`userId` = :userId UNION SELECT `AccountToUserGroup`.`accountId` FROM AccountToUserGroup WHERE `AccountToUserGroup`.`accountId` = `Account`.`id` AND `AccountToUserGroup`.`userGroupId` = :userGroupId))';
+        $bind = [
+            'fUserOwnerId' => 123,
+            'fUserGroupId' => 456,
+            'fUserToAccId' => 123,
+            'fUserToGrpId' => 456,
+        ];
+        $query = '(`Account`.`userId` = :fUserOwnerId or `Account`.`userGroupId` = :fUserGroupId or `Account`.`id` IN (SELECT `AccountToUser`.`accountId` FROM AccountToUser WHERE `AccountToUser`.`accountId` = `Account`.`id` AND `AccountToUser`.`userId` = :fUserToAccId UNION SELECT `AccountToUserGroup`.`accountId` FROM AccountToUserGroup WHERE `AccountToUserGroup`.`accountId` = `Account`.`id` AND `AccountToUserGroup`.`userGroupId` = :fUserToGrpId))';
 
         $this->assertEquals($bind, $out->getBindValues());
         $this->checkQueryRegex($out->getStatement(), $query);

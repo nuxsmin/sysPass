@@ -41,6 +41,7 @@ use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -85,7 +86,7 @@ final class PublicLink extends Service implements PublicLinkService
      */
     public static function getLinkForHash(string $baseUrl, string $hash): string
     {
-        return sprintf('%s/index.php?r=publicLink/view/%s', $baseUrl, $hash);
+        return sprintf('%s/index.php?r=account/viewLink/%s', rtrim($baseUrl, '/'), $hash);
     }
 
     public function buildLinkUrl(string $baseUrl, string $hash): string
@@ -119,6 +120,7 @@ final class PublicLink extends Service implements PublicLinkService
      * @throws SPException
      * @throws NoSuchItemException
      * @throws ServiceException
+     * @throws UnauthorizedActionException
      */
     public function refresh(int $id): bool
     {
@@ -128,8 +130,10 @@ final class PublicLink extends Service implements PublicLinkService
             throw new NoSuchItemException(__u('Link not found'));
         }
 
-        return $this->publicLinkRepository
-            ->refresh($this->buildPublicLink(PublicLinkModel::buildFromSimpleModel($result->getData())));
+        $publicLink = PublicLinkModel::buildFromSimpleModel($result->getData());
+        $this->assertCanManage($publicLink);
+
+        return $this->publicLinkRepository->refresh($this->buildPublicLink($publicLink));
     }
 
     /**
@@ -138,6 +142,7 @@ final class PublicLink extends Service implements PublicLinkService
      * @return PublicLinkList
      * @throws SPException
      * @throws NoSuchItemException
+     * @throws UnauthorizedActionException
      */
     public function getById(int $id): PublicLinkList
     {
@@ -147,7 +152,22 @@ final class PublicLink extends Service implements PublicLinkService
             throw new NoSuchItemException(__u('Link not found'));
         }
 
-        return PublicLinkList::buildFromSimpleModel($result->getData());
+        $publicLink = PublicLinkList::buildFromSimpleModel($result->getData());
+        $this->assertCanManage($publicLink);
+
+        return $publicLink;
+    }
+
+    /**
+     * @throws UnauthorizedActionException
+     */
+    private function assertCanManage(PublicLinkModel $publicLink): void
+    {
+        $userData = $this->context->getUserData();
+
+        if (!$userData->isAdminApp && $publicLink->getUserId() !== $userData->id) {
+            throw new UnauthorizedActionException();
+        }
     }
 
     /**
@@ -173,7 +193,7 @@ final class PublicLink extends Service implements PublicLinkService
                 'data' => $this->getSecuredLinkData($publicLink->getItemId(), $key),
                 'dateExpire' => self::calcDateExpire($this->config),
                 'maxCountViews' => $this->config->getConfigData()->getPublinksMaxViews(),
-                'userId' => $publicLink->getUserId() ?? $this->context->getUserData()->getId()
+                'userId' => $publicLink->getUserId() ?? $this->context->getUserData()->id
             ]
         );
     }
@@ -231,9 +251,18 @@ final class PublicLink extends Service implements PublicLinkService
      * @return PublicLinkService
      * @throws ConstraintException
      * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws UnauthorizedActionException
      */
     public function delete(int $id): PublicLinkService
     {
+        $result = $this->publicLinkRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Link not found'));
+        }
+
+        $this->assertCanManage(PublicLinkModel::buildFromSimpleModel($result->getData()));
         $this->publicLinkRepository->delete($id);
 
         return $this;
@@ -247,16 +276,39 @@ final class PublicLink extends Service implements PublicLinkService
      * @throws ConstraintException
      * @throws QueryException
      * @throws ServiceException
+     * @throws NoSuchItemException
+     * @throws UnauthorizedActionException
      */
     public function deleteByIdBatch(array $ids): int
     {
-        $count = $this->publicLinkRepository->deleteByIdBatch($ids);
+        $uniqueIds = array_values(array_unique(array_map('intval', $ids)));
 
-        if ($count !== count($ids)) {
+        if (count($uniqueIds) === 0) {
             throw new ServiceException(__u('Error while removing the links'), SPException::WARNING);
         }
 
-        return $count;
+        return $this->publicLinkRepository->transactionAware(
+            function () use ($uniqueIds): int {
+                foreach ($uniqueIds as $id) {
+                    $result = $this->publicLinkRepository->getById($id);
+
+                    if ($result->getNumRows() === 0) {
+                        throw new NoSuchItemException(__u('Link not found'));
+                    }
+
+                    $this->assertCanManage(PublicLinkModel::buildFromSimpleModel($result->getData()));
+                }
+
+                $count = $this->publicLinkRepository->deleteByIdBatch($uniqueIds);
+
+                if ($count !== count($uniqueIds)) {
+                    throw new ServiceException(__u('Error while removing the links'), SPException::WARNING);
+                }
+
+                return $count;
+            },
+            $this
+        );
     }
 
     /**
@@ -287,7 +339,7 @@ final class PublicLink extends Service implements PublicLinkService
      * @throws QueryException
      * @throws ServiceException
      */
-    public function addLinkView(PublicLinkModel $publicLink): void
+    public function addLinkView(PublicLinkModel $publicLink): bool
     {
         $useInfo = array();
 
@@ -305,7 +357,7 @@ final class PublicLink extends Service implements PublicLinkService
 
         $useInfo[] = self::getUseInfo($publicLink->getHash(), $this->request);
 
-        $this->publicLinkRepository->addLinkView($publicLink->mutate(['useInfo' => Serde::serialize($useInfo)]));
+        return $this->publicLinkRepository->addLinkView($publicLink->mutate(['useInfo' => Serde::serialize($useInfo)]));
     }
 
     /**
@@ -362,9 +414,18 @@ final class PublicLink extends Service implements PublicLinkService
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws UnauthorizedActionException
      */
     public function update(PublicLinkModel $publicLink): void
     {
+        $result = $this->publicLinkRepository->getById((int)$publicLink->getId());
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Link not found'));
+        }
+
+        $this->assertCanManage(PublicLinkModel::buildFromSimpleModel($result->getData()));
         $this->publicLinkRepository->update($publicLink);
     }
 }

@@ -649,30 +649,6 @@ parameters:
 			path: lib/SP/Domain/Account/Models/Account.php
 
 		-
-			message: '#^Method SP\\Domain\\Account\\Models\\AccountHistory\:\:getDateAdd\(\) never returns int so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: lib/SP/Domain/Account/Models/AccountHistory.php
-
-		-
-			message: '#^Method SP\\Domain\\Account\\Models\\AccountHistory\:\:getDateAdd\(\) should return int\|null but returns string\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: lib/SP/Domain/Account/Models/AccountHistory.php
-
-		-
-			message: '#^Method SP\\Domain\\Account\\Models\\AccountHistory\:\:getDateEdit\(\) never returns int so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: lib/SP/Domain/Account/Models/AccountHistory.php
-
-		-
-			message: '#^Method SP\\Domain\\Account\\Models\\AccountHistory\:\:getDateEdit\(\) should return int\|null but returns string\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: lib/SP/Domain/Account/Models/AccountHistory.php
-
-		-
 			message: '#^Method SP\\Domain\\Account\\Ports\\AccountAdapter\:\:transform\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1165,12 +1141,6 @@ parameters:
 			path: lib/SP/Domain/Account/Services/AccountReader.php
 
 		-
-			message: '#^Method SP\\Domain\\Account\\Services\\AccountReader\:\:getDataForLink\(\) should return SP\\Domain\\Common\\Models\\Simple but returns SP\\Domain\\Common\\Models\\Model\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: lib/SP/Domain/Account/Services/AccountReader.php
-
-		-
 			message: '#^Method SP\\Domain\\Account\\Services\\AccountReader\:\:getForUser\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1289,18 +1259,6 @@ parameters:
 			identifier: arrayValues.list
 			count: 1
 			path: lib/SP/Domain/Account/Services/Builders/AccountSearchTokenizer.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\User\\Dtos\\UserDto\:\:getId\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: lib/SP/Domain/Account/Services/PublicLink.php
-
-		-
-			message: '#^Expression on left side of \?\? is not nullable\.$#'
-			identifier: nullCoalesce.expr
-			count: 1
-			path: lib/SP/Domain/Account/Services/PublicLink.php
 
 		-
 			message: '#^Method SP\\Domain\\Account\\Services\\PublicLink\:\:__construct\(\) has parameter \$publicLinkRepository with generic interface SP\\Domain\\Account\\Ports\\PublicLinkRepository but does not specify its types\: T$#'
@@ -1609,12 +1567,6 @@ parameters:
 			path: lib/SP/Domain/Auth/Ports/AuthTokenRepository.php
 
 		-
-			message: '#^Method SP\\Domain\\Auth\\Ports\\AuthTokenService\:\:deleteByIdBatch\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: lib/SP/Domain/Auth/Ports/AuthTokenService.php
-
-		-
 			message: '#^Method SP\\Domain\\Auth\\Ports\\LdapActionsService\:\:getObjects\(\) has parameter \$attributes with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1747,20 +1699,8 @@ parameters:
 			path: lib/SP/Domain/Auth/Providers/Ldap/LdapUtil.php
 
 		-
-			message: '#^Call to an undefined method SP\\Domain\\Auth\\Services\\AuthToken\:\:getToken\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: lib/SP/Domain/Auth/Services/AuthToken.php
-
-		-
 			message: '#^Class SP\\Domain\\Auth\\Services\\AuthToken implements generic interface SP\\Domain\\Auth\\Ports\\AuthTokenService but does not specify its types\: T$#'
 			identifier: missingType.generics
-			count: 1
-			path: lib/SP/Domain/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Match expression does not handle remaining values\: int\<min, \-1\>\|int\<2, max\>$#'
-			identifier: match.unhandled
 			count: 1
 			path: lib/SP/Domain/Auth/Services/AuthToken.php
 
@@ -1771,25 +1711,7 @@ parameters:
 			path: lib/SP/Domain/Auth/Services/AuthToken.php
 
 		-
-			message: '#^Method SP\\Domain\\Auth\\Services\\AuthToken\:\:deleteByIdBatch\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: lib/SP/Domain/Auth/Services/AuthToken.php
-
-		-
 			message: '#^Method SP\\Domain\\Auth\\Services\\AuthToken\:\:getAll\(\) should return array\<T of SP\\Domain\\Auth\\Models\\AuthToken\> but returns array\<SP\\Domain\\Auth\\Services\\AuthToken\>\.$#'
-			identifier: return.type
-			count: 1
-			path: lib/SP/Domain/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Method SP\\Domain\\Auth\\Services\\AuthToken\:\:getById\(\) should return SP\\Domain\\Auth\\Models\\AuthToken but returns SP\\Domain\\Auth\\Services\\AuthToken\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: lib/SP/Domain/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Method SP\\Domain\\Auth\\Services\\AuthToken\:\:getTokenByToken\(\) should return SP\\Domain\\Auth\\Models\\AuthToken but returns SP\\Domain\\Auth\\Services\\AuthToken\|null\.$#'
 			identifier: return.type
 			count: 1
 			path: lib/SP/Domain/Auth/Services/AuthToken.php
@@ -1797,7 +1719,7 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$dataType of method SP\\Domain\\Database\\Dtos\\QueryResult\<SP\\Domain\\Auth\\Services\\AuthToken\>\:\:getData\(\) expects class\-string\<SP\\Domain\\Auth\\Services\\AuthToken\>\|null, string given\.$#'
 			identifier: argument.type
-			count: 3
+			count: 2
 			path: lib/SP/Domain/Auth/Services/AuthToken.php
 
 		-

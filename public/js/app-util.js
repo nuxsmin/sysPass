@@ -205,19 +205,12 @@ sysPass.Util = function (log) {
             opts.data = fd;
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                const status = json.status;
-                const description = json.description;
+                if (json && json.status === 0 && typeof options.requestDoneAction === "function") {
+                    options.requestDoneAction();
+                }
 
-                if (status === 0) {
-                    if (typeof options.requestDoneAction === "function") {
-                        options.requestDoneAction();
-                    }
-
-                    sysPassApp.msg.ok(description);
-                } else if (status === 10) {
-                    sysPassApp.appActions().main.logout();
-                } else {
-                    sysPassApp.msg.error(description);
+                if (json) {
+                    sysPassApp.msg.out(json);
                 }
             });
 

@@ -55,3 +55,31 @@ test('the Playwright config runs exactly the selected tier and keeps Tier A the 
 test('the installer spec is its own explicit selection', () => {
   assert.deepEqual(specsForTier('install'), ['install.spec.ts']);
 });
+
+test('admin navigation wiring is its own reporting-only selection', () => {
+  assert.deepEqual(specsForTier('wiring'), ['adminNavigation.wiring.spec.ts']);
+  assert.equal(TIER_A_SPECS.includes('adminNavigation.wiring.spec.ts'), false);
+  assert.equal(TIER_B_SPECS.includes('adminNavigation.wiring.spec.ts'), false);
+});
+
+test('write wiring is its own reporting-only selection', () => {
+  assert.deepEqual(specsForTier('write'), [
+    'accountCreate.write.spec.ts',
+    'accountEdit.write.spec.ts',
+    'accountDelete.write.spec.ts',
+    'accountListFiles.write.spec.ts',
+    'accountManagerDelete.write.spec.ts',
+    'authTokenDelete.write.spec.ts',
+    'itemMetadataDelete.write.spec.ts',
+    'notificationDelete.write.spec.ts',
+    'notificationSave.write.spec.ts',
+    'userGroupDelete.write.spec.ts',
+    'userDelete.write.spec.ts',
+    'userEditPass.write.spec.ts',
+    'userProfileDelete.write.spec.ts',
+  ]);
+  assert.equal(TIER_A_SPECS.includes('accountCreate.write.spec.ts'), false);
+  assert.equal(TIER_B_SPECS.includes('accountCreate.write.spec.ts'), false);
+  assert.equal(TIER_A_SPECS.includes('accountDelete.write.spec.ts'), false);
+  assert.equal(TIER_B_SPECS.includes('accountDelete.write.spec.ts'), false);
+});

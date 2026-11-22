@@ -558,7 +558,8 @@ class AccountAclTest extends UnitaryTestCase
 
         $this->context
             ->getUserProfile()
-            ->setAccEdit($shouldEdit);
+            ->setAccEdit($shouldEdit)
+            ->setAccViewHistory($shouldEdit);
 
         $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
@@ -566,6 +567,7 @@ class AccountAclTest extends UnitaryTestCase
             ->setResultView($shouldViewOrEdit)
             ->setResultEdit($shouldEdit)
             ->setShowEdit($shouldEdit)
+            ->setShowHistory($shouldEdit)
             ->setShowRestore($shouldEdit);
 
         $this->checkForUserByExample($this->setUpAccountEnvironment($accountId, $userId, $groupId), $example);
@@ -677,7 +679,7 @@ class AccountAclTest extends UnitaryTestCase
             ->setResultEdit($shouldEdit)
             ->setShowView($shouldViewOrEdit)
             ->setShowEdit($shouldEdit)
-            ->setShowRestore($shouldEdit)
+            ->setShowRestore(false)
             ->setShowDetails($shouldViewOrEdit)
             ->setShowPermission(
                 AccountAcl::getShowPermission($this->context->getUserData(), $this->context->getUserProfile())
@@ -687,11 +689,79 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    #[Test]
+    public function testShowRestoreRequiresEditAndViewHistory(): void
+    {
+        $dto = $this->setUpAccountEnvironment(1, 2, 2);
+        $accountAcl = new AccountAcl(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->acl,
+            $this->userToUserGroupService,
+            $this->appPaths,
+            $this->fileSystem
+        );
+
+        $this->context->getUserProfile()->setAccEdit(true)->setAccViewHistory(false);
+        self::assertFalse($accountAcl->getAcl(AclActionsInterface::ACCOUNT_HISTORY_VIEW, $dto)->isShowRestore());
+
+        $this->context->getUserProfile()->setAccEdit(false)->setAccViewHistory(true);
+        self::assertFalse($accountAcl->getAcl(AclActionsInterface::ACCOUNT_HISTORY_VIEW, $dto)->isShowRestore());
+
+        $this->context->getUserProfile()->setAccEdit(true)->setAccViewHistory(true);
+        self::assertTrue($accountAcl->getAcl(AclActionsInterface::ACCOUNT_HISTORY_VIEW, $dto)->isShowRestore());
+    }
+
+    /**
      * @throws Exception
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
+    #[Test]
+    public function historyWithUnknownEditTimeDoesNotReuseOrOverwriteCachedAcl(): void
+    {
+        $dto = new AccountAclDto(42, 999, [], 999, [], null);
+        $groups = $this->createStub(UserToUserGroupService::class);
+        $groups->method('getGroupsForUser')->willReturn([]);
+        $cache = $this->createMock(FileCacheService::class);
+        $staleGrant = new AccountPermission(AclActionsInterface::ACCOUNT_HISTORY_VIEW, true);
+        $staleGrant->setCompiledAccountAccess(true)->setResultView(true)->setTime(time());
+        $cache->expects(self::never())->method('load')->willReturn($staleGrant);
+        $cache->expects(self::never())->method('save');
+        $actions = $this->createStub(ActionsInterface::class);
+        $service = new AccountAcl(
+            $this->config, $this->eventDispatcherStub, $this->context,
+            new Acl($this->context, $this->eventDispatcherStub, $actions),
+            $groups, $this->appPaths, $this->fileSystem, $cache
+        );
+        $result = $service->getAcl(AclActionsInterface::ACCOUNT_HISTORY_VIEW, $dto, true);
+        self::assertFalse($result->checkAccountAccess(AclActionsInterface::ACCOUNT_HISTORY_VIEW));
+    }
+
+    #[Test]
+    public function historyWithKnownEditTimeRetainsCacheBehavior(): void
+    {
+        $dto = new AccountAclDto(42, 999, [], 999, [], time() - 60);
+        $groups = $this->createStub(UserToUserGroupService::class);
+        $cache = $this->createMock(FileCacheService::class);
+        $cached = new AccountPermission(AclActionsInterface::ACCOUNT_HISTORY_VIEW, true);
+        $cached->setTime(time() + 3600);
+        $cache->expects(self::once())->method('load')->willReturn($cached);
+        $cache->expects(self::never())->method('save');
+        $actions = $this->createStub(ActionsInterface::class);
+        $service = new AccountAcl(
+            $this->config, $this->eventDispatcherStub, $this->context,
+            new Acl($this->context, $this->eventDispatcherStub, $actions),
+            $groups, $this->appPaths, $this->fileSystem, $cache
+        );
+        self::assertSame($cached, $service->getAcl(AclActionsInterface::ACCOUNT_HISTORY_VIEW, $dto, true));
+    }
+
     #[Test]
     public function testCacheIsUsedWithHit(): void
     {
@@ -874,6 +944,210 @@ class AccountAclTest extends UnitaryTestCase
                   ->willThrowException(new FileException('test'));
 
         $accountAclService->getAcl(self::$faker->randomNumber(), $dto);
+    }
+
+    #[Test]
+    public function testPrivateAccountDeniesNonOwnerIncludingAdminAndGrants(): void
+    {
+        $this->context->getUserProfile()->setAccView(true)->setAccEdit(true)->setAccDelete(true);
+
+        $accountAcl = new AccountAcl(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->acl,
+            $this->userToUserGroupService,
+            $this->appPaths,
+            $this->fileSystem
+        );
+
+        $dto = new AccountAclDto(
+            10,
+            100,
+            [new Item(['id' => 200, 'isEdit' => 1])],
+            50,
+            [new Item(['id' => 5, 'isEdit' => 1])],
+            time(),
+            true,
+            false
+        );
+
+        // Non-owner isAdminApp=true with matching main group and explicit edit grant is still denied
+        $this->context->setUserData(UserDto::fromModel(new User([
+            'id' => 200,
+            'userGroupId' => 50,
+            'isAdminApp' => true,
+            'isAdminAcc' => true,
+        ])));
+        $denied = $accountAcl->getAcl(AclActionsInterface::ACCOUNT_VIEW, $dto);
+        self::assertFalse($denied->isResultView());
+        self::assertFalse($denied->isResultEdit());
+        self::assertFalse($denied->checkAccountAccess(AclActionsInterface::ACCOUNT_VIEW));
+
+        // Owner is allowed
+        $this->context->setUserData(UserDto::fromModel(new User([
+            'id' => 100,
+            'userGroupId' => 50,
+            'isAdminApp' => false,
+            'isAdminAcc' => false,
+        ])));
+        $allowed = $accountAcl->getAcl(AclActionsInterface::ACCOUNT_EDIT, $dto);
+        self::assertTrue($allowed->isResultView());
+        self::assertTrue($allowed->isResultEdit());
+        self::assertTrue($allowed->checkAccountAccess(AclActionsInterface::ACCOUNT_EDIT));
+    }
+
+    #[Test]
+    public function testPrivateGroupAccountDeniesNonPrimaryGroupIncludingAdminAndSecondaryGroup(): void
+    {
+        $this->context->getUserProfile()->setAccView(true)->setAccEdit(true);
+
+        $groups = $this->createStub(UserToUserGroupService::class);
+        $groups->method('getGroupsForUser')->willReturn([new Simple(['userGroupId' => 50])]);
+
+        $accountAcl = new AccountAcl(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->acl,
+            $groups,
+            $this->appPaths,
+            $this->fileSystem
+        );
+
+        $dto = new AccountAclDto(
+            11,
+            100,
+            [new Item(['id' => 200, 'isEdit' => 1])],
+            50,
+            [new Item(['id' => 5, 'isEdit' => 1])],
+            time(),
+            false,
+            true
+        );
+
+        // Non-matching primary userGroupId, even as isAdminApp + explicit grant + secondary membership in group 50
+        $this->context->setUserData(UserDto::fromModel(new User([
+            'id' => 200,
+            'userGroupId' => 5,
+            'isAdminApp' => true,
+            'isAdminAcc' => true,
+        ])));
+        $denied = $accountAcl->getAcl(AclActionsInterface::ACCOUNT_VIEW, $dto);
+        self::assertFalse($denied->isResultView());
+        self::assertFalse($denied->isResultEdit());
+
+        // Matching primary userGroupId is allowed
+        $this->context->setUserData(UserDto::fromModel(new User([
+            'id' => 201,
+            'userGroupId' => 50,
+            'isAdminApp' => false,
+            'isAdminAcc' => false,
+        ])));
+        $allowed = $accountAcl->getAcl(AclActionsInterface::ACCOUNT_EDIT, $dto);
+        self::assertTrue($allowed->isResultView());
+        self::assertTrue($allowed->isResultEdit());
+    }
+
+    #[Test]
+    public function testSecondaryMainGroupOutranksReadOnlyAccountToUserGrant(): void
+    {
+        $groups = $this->createStub(UserToUserGroupService::class);
+        $groups->method('getGroupsForUser')->willReturn([new Simple(['userGroupId' => 6])]);
+
+        $this->context->setUserData(UserDto::fromModel(new User([
+            'id' => 200,
+            'userGroupId' => 5,
+            'isAdminApp' => false,
+            'isAdminAcc' => false,
+        ])));
+
+        $dto = new AccountAclDto(
+            12,
+            1,
+            [new Item(['id' => 200, 'isEdit' => 0])],
+            6,
+            [],
+            time()
+        );
+
+        $accountAcl = new AccountAcl(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->acl,
+            $groups,
+            $this->appPaths,
+            $this->fileSystem
+        );
+
+        $acl = $accountAcl->getAcl(AclActionsInterface::ACCOUNT_EDIT, $dto);
+        self::assertTrue($acl->isResultView());
+        self::assertTrue($acl->isResultEdit());
+        self::assertTrue($acl->checkAccountAccess(AclActionsInterface::ACCOUNT_EDIT));
+    }
+
+    #[Test]
+    public function testSecondaryGroupEditTrueWhenFirstMatchingGroupIsReadOnly(): void
+    {
+        $this->config->getConfigData()->setAccountFullGroupAccess(true);
+
+        $groups = $this->createStub(UserToUserGroupService::class);
+        $groups->method('getGroupsForUser')->willReturn([
+            new Simple(['userGroupId' => 10]),
+            new Simple(['userGroupId' => 11]),
+        ]);
+
+        $this->context->setUserData(UserDto::fromModel(new User([
+            'id' => 200,
+            'userGroupId' => 5,
+            'isAdminApp' => false,
+            'isAdminAcc' => false,
+        ])));
+
+        $dto = new AccountAclDto(
+            13,
+            1,
+            [],
+            1,
+            [
+                new Item(['id' => 10, 'isEdit' => 0]),
+                new Item(['id' => 11, 'isEdit' => 1]),
+            ],
+            time()
+        );
+
+        $accountAcl = new AccountAcl(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->acl,
+            $groups,
+            $this->appPaths,
+            $this->fileSystem
+        );
+
+        $acl = $accountAcl->getAcl(AclActionsInterface::ACCOUNT_EDIT, $dto);
+        self::assertTrue($acl->isResultView());
+        self::assertTrue($acl->isResultEdit());
+        self::assertTrue($acl->isShowSave());
+    }
+
+    #[Test]
+    public function testAccountPermissionIsShowSaveRespectsResultEditForEditAction(): void
+    {
+        $editReadOnly = (new AccountPermission(AclActionsInterface::ACCOUNT_EDIT))
+            ->setResultView(true)
+            ->setResultEdit(false);
+        self::assertFalse($editReadOnly->isShowSave());
+
+        $editAllowed = (new AccountPermission(AclActionsInterface::ACCOUNT_EDIT))
+            ->setResultView(true)
+            ->setResultEdit(true);
+        self::assertTrue($editAllowed->isShowSave());
+
+        self::assertTrue((new AccountPermission(AclActionsInterface::ACCOUNT_CREATE))->isShowSave());
+        self::assertTrue((new AccountPermission(AclActionsInterface::ACCOUNT_COPY))->isShowSave());
     }
 
     protected function setUp(): void

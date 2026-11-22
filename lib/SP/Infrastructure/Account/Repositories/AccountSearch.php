@@ -49,6 +49,8 @@ use SP\Domain\Database\Dtos\QueryResult;
 final class AccountSearch extends BaseRepository implements AccountSearchRepository
 {
     private readonly SelectInterface $query;
+    private bool $isGlobalDiscovery = false;
+    private bool $hiddenFilterApplied = false;
 
     public function __construct(
         DatabaseInterface        $database,
@@ -115,7 +117,23 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
      */
     public function getByFilter(AccountSearchFilterDto $accountSearchFilter): QueryResult
     {
+        $this->isGlobalDiscovery = $this->accountFilterUser->isGlobalDiscoveryActive(
+            $accountSearchFilter->getGlobalSearch()
+        );
+
         $this->accountFilterUser->buildFilter($accountSearchFilter->getGlobalSearch(), $this->query);
+
+        if ($this->isGlobalDiscovery
+            && ($this->hiddenFilterApplied
+                || $accountSearchFilter->hasTags()
+                || $accountSearchFilter->isSearchFavorites())
+        ) {
+            $visibility = $this->accountFilterUser->buildVisibilityPredicate('visFilter');
+            if (!empty($visibility['sql'])) {
+                $this->query->where($visibility['sql'], $visibility['bindValues']);
+            }
+        }
+
         $this->filterByText($accountSearchFilter);
 
         if (AccountSearchConstants::FILTER_CHAIN_OR === $accountSearchFilter->getFilterOperator()) {
@@ -152,14 +170,37 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
         if (!empty($searchText)) {
             $searchTextLike = '%' . $searchText . '%';
 
+            if ($this->isGlobalDiscovery) {
+                $visibility = $this->accountFilterUser->buildVisibilityPredicate('visTxt');
+                if (!empty($visibility['sql'])) {
+                    $this->query->where(
+                        sprintf(
+                            '(Account.name LIKE :txtName OR (%s AND (Account.login LIKE :txtLogin OR Account.url LIKE :txtUrl OR Account.notes LIKE :txtNotes)))',
+                            $visibility['sql']
+                        ),
+                        array_merge(
+                            [
+                                'txtName' => $searchTextLike,
+                                'txtLogin' => $searchTextLike,
+                                'txtUrl' => $searchTextLike,
+                                'txtNotes' => $searchTextLike,
+                            ],
+                            $visibility['bindValues']
+                        )
+                    );
+
+                    return;
+                }
+            }
+
             $this->query
                 ->where(
-                    '(Account.name LIKE :name OR Account.login LIKE :login OR Account.url LIKE :url OR Account.notes LIKE :notes)',
+                    '(Account.name LIKE :txtName OR Account.login LIKE :txtLogin OR Account.url LIKE :txtUrl OR Account.notes LIKE :txtNotes)',
                     [
-                        'name' => $searchTextLike,
-                        'login' => $searchTextLike,
-                        'url' => $searchTextLike,
-                        'notes' => $searchTextLike,
+                        'txtName' => $searchTextLike,
+                        'txtLogin' => $searchTextLike,
+                        'txtUrl' => $searchTextLike,
+                        'txtNotes' => $searchTextLike,
                     ]
                 );
         }
@@ -234,9 +275,9 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
                 ->join(
                     'INNER',
                     'AccountToFavorite',
-                    'AccountToFavorite.accountId = Account.id AND AccountToFavorite.userId = :userId',
+                    'AccountToFavorite.accountId = Account.id AND AccountToFavorite.userId = :favUserId',
                     [
-                        'userId' => $this->context->getUserData()->id,
+                        'favUserId' => $this->context->getUserData()->id,
                     ]
                 );
         }
@@ -291,8 +332,8 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
         $orderKey = match ($filter->getSortKey()) {
             AccountSearchConstants::SORT_NAME => 'Account.name',
             AccountSearchConstants::SORT_CATEGORY => 'Account.categoryName',
-            AccountSearchConstants::SORT_LOGIN => 'Account.login',
-            AccountSearchConstants::SORT_URL => 'Account.url',
+            AccountSearchConstants::SORT_LOGIN => $this->isGlobalDiscovery ? 'Account.name' : 'Account.login',
+            AccountSearchConstants::SORT_URL => $this->isGlobalDiscovery ? 'Account.name' : 'Account.url',
             AccountSearchConstants::SORT_CLIENT => 'Account.clientName',
             default => 'Account.clientName, Account.name',
         };
@@ -319,19 +360,23 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
      */
     public function withFilterForUser(int $userId, int $userGroupId): SelectInterface
     {
+        $this->hiddenFilterApplied = true;
+
         $where = [
-            'Account.userId = :userId',
-            'Account.userGroupId = :userGroupId',
-            'Account.id IN (SELECT AccountToUser.accountId FROM AccountToUser WHERE AccountToUser.accountId = Account.id AND AccountToUser.userId = :userId
+            'Account.userId = :fUserOwnerId',
+            'Account.userGroupId = :fUserGroupId',
+            'Account.id IN (SELECT AccountToUser.accountId FROM AccountToUser WHERE AccountToUser.accountId = Account.id AND AccountToUser.userId = :fUserToAccId
                                     UNION
-                                    SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = Account.id AND AccountToUserGroup.userGroupId = :userGroupId)',
+                                    SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = Account.id AND AccountToUserGroup.userGroupId = :fUserToGrpId)',
         ];
 
         return $this->query
             ->where(sprintf('(%s)', join(sprintf(' %s ', AccountSearchConstants::FILTER_CHAIN_OR), $where)))
             ->bindValues([
-                             'userId' => $userId,
-                             'userGroupId' => $userGroupId,
+                             'fUserOwnerId' => $userId,
+                             'fUserGroupId' => $userGroupId,
+                             'fUserToAccId' => $userId,
+                             'fUserToGrpId' => $userGroupId,
                          ]);
     }
 
@@ -342,13 +387,15 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
      */
     public function withFilterForGroup(int $userGroupId): SelectInterface
     {
+        $this->hiddenFilterApplied = true;
+
         return $this->query
-            ->where('Account.userGroupId = :userGroupId')
-            ->orWhere(
-                '(Account.id IN (SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = id AND AccountToUserGroup.userGroupId = :userGroupId))'
+            ->where(
+                '(Account.userGroupId = :fGroupMainId OR Account.id IN (SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = Account.id AND AccountToUserGroup.userGroupId = :fGroupSecId))'
             )
             ->bindValues([
-                             'userGroupId' => $userGroupId,
+                             'fGroupMainId' => $userGroupId,
+                             'fGroupSecId' => $userGroupId,
                          ]);
     }
 
@@ -359,6 +406,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
      */
     public function withFilterForMainGroup(string $userGroupName): SelectInterface
     {
+        $this->hiddenFilterApplied = true;
         $userGroupNameLike = '%' . Filter::safeSearchString($userGroupName) . '%';
 
         return $this->query
@@ -375,6 +423,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
      */
     public function withFilterForOwner(string $owner): SelectInterface
     {
+        $this->hiddenFilterApplied = true;
         $ownerLike = '%' . Filter::safeSearchString($owner) . '%';
 
         return $this->query
@@ -392,6 +441,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
      */
     public function withFilterForFile(string $fileName): SelectInterface
     {
+        $this->hiddenFilterApplied = true;
         $fileNameLike = '%' . Filter::safeSearchString($fileName) . '%';
 
         return $this->query
@@ -410,6 +460,8 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
      */
     public function withFilterForAccountId(int $accountId): SelectInterface
     {
+        $this->hiddenFilterApplied = true;
+
         return $this->query
             ->where('Account.id = :accountId')
             ->bindValues([
@@ -465,12 +517,16 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
 
     public function withFilterForIsExpired(): SelectInterface
     {
+        $this->hiddenFilterApplied = true;
+
         return $this->query
             ->where('(Account.passDateChange > 0 AND UNIX_TIMESTAMP() > Account.passDateChange)');
     }
 
     public function withFilterForIsNotExpired(): SelectInterface
     {
+        $this->hiddenFilterApplied = true;
+
         return $this->query
             ->where(
                 '(Account.passDateChange = 0 OR Account.passDateChange IS NULL OR UNIX_TIMESTAMP() < Account.passDateChange)'

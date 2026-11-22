@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Account\UseCases;
 
 use LogicException;
-use SP\Domain\Account\Models\PublicLinkList;
+use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Account\UseCases\Dtos\SearchPublicLinksCommand;
 use SP\Domain\Account\UseCases\Dtos\SearchPublicLinksResult;
@@ -53,8 +53,8 @@ final readonly class SearchPublicLinksUseCase implements UseCase
 
         $result = $this->publicLinkService->search($command->search);
 
-        /** @var PublicLinkList[] $publicLinks */
-        $publicLinks = $result->getDataAsArray(PublicLinkList::class);
+        /** @var PublicLink[] $publicLinks */
+        $publicLinks = $result->getDataAsArray(PublicLink::class);
 
         return new SearchPublicLinksResult(
             $publicLinks,

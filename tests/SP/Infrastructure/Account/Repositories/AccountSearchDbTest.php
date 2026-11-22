@@ -33,6 +33,7 @@ use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Services\Builders\AccountFilter;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Account\Repositories\AccountSearch;
 use SP\Tests\DatabaseRepositoryTestCase;
 
@@ -98,6 +99,24 @@ final class AccountSearchDbTest extends DatabaseRepositoryTestCase
         $filter->setSearchFavorites(true);
 
         self::assertSame([1], $this->ids($this->search($filter)));
+    }
+
+    #[Test]
+    public function getByFilterReturnsOnlyTheAccountsVisibleToANonAdminUser(): void
+    {
+        $this->context->setUserProfile(new ProfileData());
+        $this->context->setUserData(
+            new UserDto(id: 4, isAdminApp: false, isAdminAcc: false, userGroupId: 2)
+        );
+
+        $filter = AccountSearchFilterDto::build('');
+        $ids = $this->ids($this->search($filter));
+
+        self::assertCount(2, $ids);
+        self::assertContains(1, $ids);
+        self::assertContains(2, $ids);
+        self::assertNotContains(3, $ids);
+        self::assertNotContains(4, $ids);
     }
 
     #[Test]

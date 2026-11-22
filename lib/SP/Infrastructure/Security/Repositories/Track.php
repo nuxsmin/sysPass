@@ -127,8 +127,7 @@ final class Track extends BaseRepository implements TrackRepository
                              'ipv4' => $track->getIpv4(),
                              'ipv6' => $track->getIpv6(),
                              'source' => $track->getSource()
-                         ])
-            ->limit(1);
+                         ]);
 
         $queryData = QueryData::buildWithMapper($query, TrackModel::class);
 
@@ -170,5 +169,35 @@ final class Track extends BaseRepository implements TrackRepository
         $queryData = QueryData::build($query)->setMapClassName(TrackModel::class);
 
         return $this->db->runQuery($queryData, true);
+    }
+
+    /**
+     * Counts unlocked tracks for a user and source from a given UNIX timestamp
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function countForUserAndSourceFromTime(int $userId, string $source, int $time): int
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(self::TABLE)
+            ->cols(['COUNT(*)' => 'num'])
+            ->where('userId = :userId AND source = :source AND time >= :time AND timeUnlock IS NULL')
+            ->bindValues([
+                'userId' => $userId,
+                'source' => $source,
+                'time' => $time,
+            ]);
+
+        $result = $this->db->runQuery(QueryData::build($query));
+
+        if ($result->getNumRows() === 0) {
+            return 0;
+        }
+
+        $data = $result->getData();
+
+        return (int)($data->num ?? 0);
     }
 }

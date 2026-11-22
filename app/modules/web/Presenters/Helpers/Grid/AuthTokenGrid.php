@@ -100,6 +100,7 @@ final class AuthTokenGrid extends GridBase
         $gridHeader = new DataGridHeader();
         $gridHeader->addHeader(__('User'));
         $gridHeader->addHeader(__('Action'));
+        $gridHeader->addHeader(__('Expiration'));
 
         return $gridHeader;
     }
@@ -109,11 +110,30 @@ final class AuthTokenGrid extends GridBase
         // Grid Data
         $gridData = new DataGridData();
         $gridData->setDataRowSourceId('id');
-        $gridData->addDataRowSource('userLogin');
+        $gridData->addDataRowSource('login');
         $gridData->addDataRowSource(
             'actionId',
             false,
             fn($value) => $this->acl->getInfoFor($value)
+        );
+        $gridData->addDataRowSource(
+            'expireDate',
+            false,
+            static function (?int $value): string {
+                if ($value === null) {
+                    return __('Never');
+                }
+
+                if ($value <= 0) {
+                    return __('Invalid');
+                }
+
+                if ($value <= time()) {
+                    return date('Y-m-d H:i', $value) . ' (' . __('Expired') . ')';
+                }
+
+                return date('Y-m-d H:i', $value);
+            }
         );
         $gridData->setData($this->queryResult);
 

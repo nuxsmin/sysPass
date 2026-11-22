@@ -144,6 +144,58 @@ class AccountItemsTest extends UnitaryTestCase
             ->method('transactionAware');
 
         $this->accountToUserGroupRepository
+            ->expects($this->never())
+            ->method('deleteTypeByAccountId');
+
+        $this->accountToUserGroupRepository
+            ->expects($this->never())
+            ->method('addByType');
+
+        $this->accountToUserRepository
+            ->expects($this->never())
+            ->method('transactionAware');
+
+        $this->accountToUserRepository
+            ->expects($this->never())
+            ->method('deleteTypeByAccountId');
+
+        $this->accountToUserRepository
+            ->expects($this->never())
+            ->method('addByType');
+
+        $this->accountToTagRepository
+            ->expects($this->never())
+            ->method('transactionAware');
+
+        $this->accountToTagRepository
+            ->expects($this->never())
+            ->method('deleteByAccountId');
+
+        $this->accountToTagRepository
+            ->expects($this->never())
+            ->method('add');
+
+        $this->accountItems->updateItems(true, 100, $accountUpdateDto);
+    }
+
+    #[Test]
+    public function testUpdateItemsWithEmptyArraysClearsItems(): void
+    {
+        $accountUpdateDto = AccountDataGenerator::factory()
+            ->buildAccountUpdateDto()
+            ->mutate([
+                'usersView' => [],
+                'usersEdit' => [],
+                'userGroupsView' => [],
+                'userGroupsEdit' => [],
+                'tags' => [],
+            ]);
+
+        $this->accountToUserGroupRepository
+            ->expects($this->never())
+            ->method('transactionAware');
+
+        $this->accountToUserGroupRepository
             ->expects($this->exactly(2))
             ->method('deleteTypeByAccountId')
             ->with(...self::withConsecutive([100, false], [100, true]));
@@ -304,6 +356,9 @@ class AccountItemsTest extends UnitaryTestCase
             ->expects($this->once())
             ->method('add')
             ->willThrowException(SPException::error('test'));
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('test');
 
         $this->accountItems->addItems(false, 100, $accountCreateDto);
     }

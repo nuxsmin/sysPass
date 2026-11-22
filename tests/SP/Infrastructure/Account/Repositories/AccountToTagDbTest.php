@@ -27,7 +27,7 @@ namespace SP\Tests\Infrastructure\Account\Repositories;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use SP\Domain\Common\Models\Simple;
+use SP\Domain\Common\Models\Item;
 use SP\Infrastructure\Account\Repositories\AccountToTag;
 use SP\Tests\DatabaseRepositoryTestCase;
 
@@ -54,13 +54,14 @@ final class AccountToTagDbTest extends DatabaseRepositoryTestCase
     #[Test]
     public function getTagsByAccountIdReturnsTheTagsOrderedByName(): void
     {
-        $tags = $this->accountToTag->getTagsByAccountId(1)->getDataAsArray(Simple::class);
+        $tags = $this->accountToTag->getTagsByAccountId(1)->getDataAsArray(Item::class);
 
+        self::assertContainsOnlyInstancesOf(Item::class, $tags);
         self::assertSame(
             ['windows', 'www'],
-            array_map(static fn(Simple $tag) => $tag->name, $tags)
+            array_map(static fn(Item $tag) => $tag->getName(), $tags)
         );
-        self::assertSame([2, 1], array_map(static fn(Simple $tag) => (int)$tag->id, $tags));
+        self::assertSame([2, 1], array_map(static fn(Item $tag) => (int)$tag->getId(), $tags));
     }
 
     #[Test]
@@ -74,11 +75,13 @@ final class AccountToTagDbTest extends DatabaseRepositoryTestCase
     {
         $this->accountToTag->add(2, [2]);
 
+        $tags = $this->accountToTag->getTagsByAccountId(2)->getDataAsArray(Item::class);
+        self::assertContainsOnlyInstancesOf(Item::class, $tags);
         self::assertSame(
             ['Linux', 'windows', 'www'],
             array_map(
-                static fn(Simple $tag) => $tag->name,
-                $this->accountToTag->getTagsByAccountId(2)->getDataAsArray(Simple::class)
+                static fn(Item $tag) => $tag->getName(),
+                $tags
             )
         );
     }

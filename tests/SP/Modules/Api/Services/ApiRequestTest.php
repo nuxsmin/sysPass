@@ -192,13 +192,144 @@ class ApiRequestTest extends UnitaryTestCase
         $this->assertEquals($jsonRpcRequest['method'], $out->getMethod());
     }
 
+    #[Test]
+    public function testMethodStripsNonAlphaSlashCharacters(): void
+    {
+        $stream = $this->getTempnam();
+
+        $jsonRpcRequest = self::buildJsonRpcRequest();
+        $jsonRpcRequest['method'] = 'account/view2_?';
+        file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
+
+        $out = ApiRequestAdapter::buildFromRequest($stream);
+
+        $this->assertSame('account/view', $out->getMethod());
+    }
+
+    #[DataProvider('getPreservedIds')]
+    #[Test]
+    public function testBuildFromRequestPreservesValidIdsExactly(int|string|float|null $inputId): void
+    {
+        $stream = $this->getTempnam();
+
+        $jsonRpcRequest = self::buildJsonRpcRequest();
+        $jsonRpcRequest['id'] = $inputId;
+        file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
+
+        $out = ApiRequestAdapter::buildFromRequest($stream);
+
+        $this->assertFalse($out->isNotification());
+        $this->assertSame($inputId, $out->getId());
+    }
+
+    #[Test]
+    public function testBuildFromRequestWithoutIdBuildsNotification(): void
+    {
+        $stream = $this->getTempnam();
+
+        $jsonRpcRequest = self::buildJsonRpcRequest();
+        unset($jsonRpcRequest['id']);
+        file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
+
+        $out = ApiRequestAdapter::buildFromRequest($stream);
+
+        $this->assertTrue($out->isNotification());
+        $this->assertNull($out->getId());
+    }
+
+    #[DataProvider('getInvalidIdTypes')]
+    #[Test]
+    public function testBuildFromRequestRejectsInvalidIdTypes(mixed $invalidId): void
+    {
+        $stream = $this->getTempnam();
+
+        $jsonRpcRequest = self::buildJsonRpcRequest();
+        $jsonRpcRequest['id'] = $invalidId;
+        file_put_contents($stream, json_encode($jsonRpcRequest, JSON_THROW_ON_ERROR));
+
+        $this->expectException(ApiRequestException::class);
+        $this->expectExceptionMessage('Invalid format');
+
+        ApiRequestAdapter::buildFromRequest($stream);
+    }
+
+    #[Test]
+    public function testBuildFromRequestNotificationFailingValidationMarksExceptionAsNotification(): void
+    {
+        $payloads = [
+            ['jsonrpc' => '2.0', 'method' => 'tag/search'],
+            ['jsonrpc' => '2.0', 'method' => 'tag/search', 'params' => []],
+            ['jsonrpc' => '2.0', 'method' => 'tag/search', 'params' => 'not-an-array'],
+        ];
+
+        foreach ($payloads as $payload) {
+            $stream = $this->getTempnam();
+            file_put_contents($stream, json_encode($payload, JSON_THROW_ON_ERROR));
+
+            try {
+                ApiRequestAdapter::buildFromRequest($stream);
+                $this->fail('Expected ApiRequestException for invalid notification payload');
+            } catch (ApiRequestException $e) {
+                $this->assertTrue($e->isNotification());
+                $this->assertNull($e->getRequestId());
+            } finally {
+                @unlink($stream);
+            }
+        }
+    }
+
+    #[Test]
+    public function testBuildFromRequestMalformedPayloadWithoutJsonRpcEnvelopeIsNotMarkedNotification(): void
+    {
+        $payloads = [
+            ['test' => 'test'],
+            ['jsonrpc' => '2.0', 'method' => 'tag/search', 'params' => [], 'id' => true],
+        ];
+
+        foreach ($payloads as $payload) {
+            $stream = $this->getTempnam();
+            file_put_contents($stream, json_encode($payload, JSON_THROW_ON_ERROR));
+
+            try {
+                ApiRequestAdapter::buildFromRequest($stream);
+                $this->fail('Expected ApiRequestException for malformed payload');
+            } catch (ApiRequestException $e) {
+                $this->assertFalse($e->isNotification());
+            } finally {
+                @unlink($stream);
+            }
+        }
+    }
+
+    public static function getPreservedIds(): array
+    {
+        return [
+            'zero int' => [0],
+            'negative int' => [-7],
+            'large int' => [9007199254740991],
+            'numeric string' => ['42'],
+            'string zero' => ['0'],
+            'non-numeric string' => ['req-abc'],
+            'float' => [1.5],
+            'null' => [null],
+        ];
+    }
+
+    public static function getInvalidIdTypes(): array
+    {
+        return [
+            'boolean true' => [true],
+            'boolean false' => [false],
+            'array' => [['nested']],
+        ];
+    }
+
     public static function getJsonRpcProperty(): array
     {
         return [
             ['jsonrpc'],
             ['method'],
             ['params'],
-            ['id'],
         ];
     }
 

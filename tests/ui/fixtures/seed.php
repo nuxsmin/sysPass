@@ -20,6 +20,7 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Ports\UserService;
@@ -175,10 +176,14 @@ function configureApplication(ConfigFileService $configFileService): void
         ->setInstalled(true)
         ->setSiteLang('en_US')
         ->setFilesEnabled(true)
+        ->setFilesAllowedMime(['text/plain'])
         ->setCheckUpdates(false)
         ->setCheckNotices(false)
         ->setDebug(false)
         ->setDemoEnabled(false)
+        ->setMailEnabled(false)
+        ->setMailRequestsEnabled(true)
+        ->setAuthBasicEnabled(false)
         ->setAuthBasicAutoLoginEnabled(false);
 
     $configFileService->save($config);
@@ -205,10 +210,15 @@ function resetFixture(
     $demoId = fixtureId($fixture, 'users', 'demo');
     $demoGroupId = fixtureId($fixture, 'groups', 'demo');
     $demoProfileId = fixtureId($fixture, 'profiles', 'demo');
+    $restrictedId = fixtureId($fixture, 'users', 'restricted');
+    $restrictedGroupId = fixtureId($fixture, 'groups', 'restricted');
+    $restrictedProfileId = fixtureId($fixture, 'profiles', 'restricted');
 
     $masterPassword = fixtureCredential($fixture, 'admin', 'masterPassword');
     $demoPassword = fixtureCredential($fixture, 'demo', 'password');
     $demoLogin = fixtureCredential($fixture, 'demo', 'login');
+    $restrictedPassword = fixtureCredential($fixture, 'restricted', 'password');
+    $restrictedLogin = fixtureCredential($fixture, 'restricted', 'login');
     $clientName = fixtureName($fixture, 'client');
     $categoryName = fixtureName($fixture, 'category');
     $parentName = fixtureName($fixture, 'parentAccount');
@@ -221,6 +231,9 @@ function resetFixture(
     $pdo->beginTransaction();
 
     try {
+        $pdo->exec("INSERT INTO CustomFieldType (name, text)
+                    SELECT 'text', 'Texto' FROM DUAL
+                    WHERE NOT EXISTS (SELECT 1 FROM CustomFieldType WHERE name = 'text')");
         $pdo->prepare('DELETE FROM AccountFile WHERE id = :fileId OR accountId IN (:fileParentId, :fileChildId)')
             ->execute(['fileId' => $fileId, 'fileParentId' => $parentId, 'fileChildId' => $childId]);
         $pdo->prepare('DELETE FROM AccountHistory WHERE accountId IN (:historyParentId, :historyChildId)')
@@ -243,10 +256,21 @@ function resetFixture(
             ->execute(['userId' => $demoId]);
         $pdo->prepare('DELETE FROM User WHERE id = :demoId OR login = :demoLogin')
             ->execute(['demoId' => $demoId, 'demoLogin' => $demoLogin]);
+        $pdo->prepare('DELETE FROM AccountToUserGroup WHERE userGroupId = :groupId')
+            ->execute(['groupId' => $restrictedGroupId]);
+        $pdo->prepare('DELETE FROM User WHERE id = :restrictedId OR login = :restrictedLogin')
+            ->execute([
+                'restrictedId' => $restrictedId,
+                'restrictedLogin' => $restrictedLogin,
+            ]);
         $pdo->prepare('DELETE FROM UserGroup WHERE id = :groupId')
             ->execute(['groupId' => $demoGroupId]);
+        $pdo->prepare('DELETE FROM UserGroup WHERE id = :groupId')
+            ->execute(['groupId' => $restrictedGroupId]);
         $pdo->prepare('DELETE FROM UserProfile WHERE id = :profileId')
             ->execute(['profileId' => $demoProfileId]);
+        $pdo->prepare('DELETE FROM UserProfile WHERE id = :profileId')
+            ->execute(['profileId' => $restrictedProfileId]);
 
         configureApplication($configFileService);
         $cryptPKIHandler->createKeys();
@@ -308,6 +332,54 @@ function resetFixture(
 
         $updatePreferences->bindValue(':preferences', $preferencesJson, PDO::PARAM_LOB);
         $updatePreferences->bindValue(':id', $demoId, PDO::PARAM_INT);
+        $updatePreferences->execute();
+
+        $pdo->prepare('INSERT INTO UserGroup (id, name, description) VALUES (:id, :name, :description)')
+            ->execute([
+                'id' => $restrictedGroupId,
+                'name' => fixtureName($fixture, 'restrictedGroup'),
+                'description' => 'Synthetic view-only UI discovery group',
+            ]);
+
+        $restrictedProfile = (new ProfileData())
+            ->setAccView(true)
+            ->toJson();
+
+        $pdo->prepare('INSERT INTO UserProfile (id, name, profile) VALUES (:id, :name, :profile)')
+            ->execute([
+                'id' => $restrictedProfileId,
+                'name' => fixtureName($fixture, 'restrictedProfile'),
+                'profile' => $restrictedProfile,
+            ]);
+
+        $restrictedMasterPass = $userMasterPassService->create(
+            $masterPassword,
+            $restrictedLogin,
+            $restrictedPassword
+        );
+
+        $pdo->prepare(
+            'INSERT INTO User
+                (id, name, userGroupId, login, ssoLogin, pass, mPass, mKey, email, notes, loginCount,
+                 userProfileId, lastLogin, lastUpdate, lastUpdateMPass, isAdminApp, isAdminAcc, isLdap,
+                 isDisabled, hashSalt, isMigrate, isChangePass, isChangedPass, preferences)
+             VALUES
+                (:id, :name, :userGroupId, :login, NULL, :pass, :mPass, :mKey, NULL, NULL, 0,
+                 :userProfileId, NULL, NOW(), :lastUpdateMPass, 0, 0, 0, 0, \'\', 0, 0, 0, NULL)'
+        )->execute([
+            'id' => $restrictedId,
+            'name' => fixtureName($fixture, 'restrictedProfile'),
+            'userGroupId' => $restrictedGroupId,
+            'login' => $restrictedLogin,
+            'pass' => $hashService->hashKey($restrictedPassword),
+            'mPass' => $restrictedMasterPass->getCryptMasterPass(),
+            'mKey' => $restrictedMasterPass->getCryptSecuredKey(),
+            'userProfileId' => $restrictedProfileId,
+            'lastUpdateMPass' => time(),
+        ]);
+
+        $updatePreferences->bindValue(':preferences', $preferencesJson, PDO::PARAM_LOB);
+        $updatePreferences->bindValue(':id', $restrictedId, PDO::PARAM_INT);
         $updatePreferences->execute();
 
         $pdo->prepare(
@@ -385,6 +457,21 @@ function resetFixture(
             'parentId' => $parentId,
         ]);
 
+        $pdo->prepare(
+            'INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit)
+             VALUES (:accountId, :userGroupId, 0)'
+        )->execute([
+            'accountId' => $parentId,
+            'userGroupId' => $restrictedGroupId,
+        ]);
+        $pdo->prepare(
+            'INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit)
+             VALUES (:accountId, :userGroupId, 0)'
+        )->execute([
+            'accountId' => $childId,
+            'userGroupId' => $restrictedGroupId,
+        ]);
+
         $insertFile = $pdo->prepare(
             'INSERT INTO AccountFile (id, accountId, name, type, size, content, extension, thumb)
              VALUES (:id, :accountId, :name, :type, :size, :content, :extension, :thumb)'
@@ -408,7 +495,7 @@ function resetFixture(
         throw $e;
     }
 
-    echo "E2E fixture reset OK: admin, demo, 2 accounts, 1 file\n";
+    echo "E2E fixture reset OK: admin, demo, restricted, 2 accounts, 1 file\n";
 }
 
 /**
@@ -429,11 +516,16 @@ function verifyFixture(
     $fileId = fixtureId($fixture, 'files', 'childDocument');
     $demoId = fixtureId($fixture, 'users', 'demo');
     $adminId = fixtureId($fixture, 'users', 'admin');
+    $restrictedId = fixtureId($fixture, 'users', 'restricted');
+    $restrictedGroupId = fixtureId($fixture, 'groups', 'restricted');
+    $restrictedProfileId = fixtureId($fixture, 'profiles', 'restricted');
     $masterPassword = fixtureCredential($fixture, 'admin', 'masterPassword');
     $adminLogin = fixtureCredential($fixture, 'admin', 'login');
     $adminPassword = fixtureCredential($fixture, 'admin', 'password');
     $demoLogin = fixtureCredential($fixture, 'demo', 'login');
     $demoPassword = fixtureCredential($fixture, 'demo', 'password');
+    $restrictedLogin = fixtureCredential($fixture, 'restricted', 'login');
+    $restrictedPassword = fixtureCredential($fixture, 'restricted', 'password');
     $config = $configFileService->getConfigData();
     $salt = (string)$config->getPasswordSalt();
 
@@ -445,9 +537,13 @@ function verifyFixture(
 
     $check($salt !== '', 'application password salt is missing');
     $check($config->isFilesEnabled(), 'filesEnabled is not enabled in application configuration');
+    $check(in_array('text/plain', $config->getFilesAllowedMime(), true), 'text/plain uploads are not enabled');
     $check(!$config->isCheckUpdates(), 'checkUpdates is not disabled in application configuration');
     $check(!$config->isCheckNotices(), 'checkNotices is not disabled in application configuration');
     $check(!$config->isDebug(), 'debug is not disabled in application configuration');
+    $check(!$config->isMailEnabled(), 'mailEnabled is not disabled in application configuration');
+    $check($config->isMailRequestsEnabled(), 'mailRequestsEnabled is not enabled in application configuration');
+    $check(!$config->isAuthBasicEnabled(), 'authBasicEnabled is not disabled in application configuration');
     $check(
         !$config->isAuthBasicAutoLoginEnabled(),
         'authBasicAutoLoginEnabled is not disabled in application configuration'
@@ -459,10 +555,10 @@ function verifyFixture(
     if (!$document->load($configFile)) {
         $errors[] = 'application configuration file is not readable';
     } else {
-        foreach (['filesEnabled', 'checkUpdates', 'checkNotices', 'debug', 'authBasicAutoLoginEnabled'] as $name) {
+        foreach (['filesEnabled', 'checkUpdates', 'checkNotices', 'debug', 'mailEnabled', 'mailRequestsEnabled', 'authBasicEnabled', 'authBasicAutoLoginEnabled'] as $name) {
             $node = $document->getElementsByTagName($name)->item(0);
             $actual = $node?->textContent;
-            $valid = $name === 'filesEnabled'
+            $valid = in_array($name, ['filesEnabled', 'mailRequestsEnabled'], true)
                 ? $actual === '1'
                 : $actual === '0' || $actual === '';
 
@@ -491,6 +587,7 @@ function verifyFixture(
     foreach ([
                  'admin' => [$adminId, $adminLogin, $adminPassword],
                  'demo' => [$demoId, $demoLogin, $demoPassword],
+                 'restricted' => [$restrictedId, $restrictedLogin, $restrictedPassword],
              ] as $label => [$id, $login, $password]) {
         $readUser->execute(['id' => $id, 'login' => $login]);
         $user = $readUser->fetch();
@@ -572,6 +669,9 @@ function verifyFixture(
         $check($file['content'] === fixtureContent($fixture, 'childFileText'), 'synthetic account file content is unexpected');
     }
 
+    $typeId = $pdo->query("SELECT id FROM CustomFieldType WHERE name = 'text'")->fetchColumn();
+    $check($typeId !== false && (int)$typeId > 0, 'synthetic custom field type is missing');
+
     $clientExists = $pdo->prepare('SELECT COUNT(*) FROM Client WHERE id = :id AND name = :name');
     $clientExists->execute([
         'id' => fixtureId($fixture, 'clients', 'primary'),
@@ -586,11 +686,75 @@ function verifyFixture(
     ]);
     $check((int)$groupExists->fetchColumn() === 1, 'synthetic demo group is missing');
 
+    $restrictedGroupExists = $pdo->prepare('SELECT COUNT(*) FROM UserGroup WHERE id = :id AND name = :name');
+    $restrictedGroupExists->execute([
+        'id' => $restrictedGroupId,
+        'name' => fixtureName($fixture, 'restrictedGroup'),
+    ]);
+    $check((int)$restrictedGroupExists->fetchColumn() === 1, 'synthetic restricted group is missing');
+
+    $restrictedProfile = $pdo->prepare('SELECT name, profile FROM UserProfile WHERE id = :id');
+    $restrictedProfile->execute(['id' => $restrictedProfileId]);
+    $profileRow = $restrictedProfile->fetch();
+
+    if (!is_array($profileRow)) {
+        $errors[] = 'synthetic restricted profile is missing';
+    } else {
+        $check(
+            $profileRow['name'] === fixtureName($fixture, 'restrictedProfile'),
+            'synthetic restricted profile name is unexpected'
+        );
+
+        $profile = json_decode((string)$profileRow['profile'], true);
+        $check(is_array($profile), 'synthetic restricted profile is not valid JSON');
+        $check(($profile['accView'] ?? false) === true, 'synthetic restricted profile must allow account view');
+        $check(($profile['accViewPass'] ?? false) === false, 'synthetic restricted profile must deny account password view');
+        $check(($profile['accViewHistory'] ?? false) === false, 'synthetic restricted profile must deny account history view');
+        $check(($profile['accEdit'] ?? false) === false, 'synthetic restricted profile must deny account edit');
+        $check(($profile['accEditPass'] ?? false) === false, 'synthetic restricted profile must deny account password edit');
+        $check(($profile['accAdd'] ?? false) === false, 'synthetic restricted profile must deny account create');
+        $check(($profile['accDelete'] ?? false) === false, 'synthetic restricted profile must deny account delete');
+        $check(($profile['accFiles'] ?? false) === false, 'synthetic restricted profile must deny account files');
+        $check(($profile['accPermission'] ?? false) === false, 'synthetic restricted profile must deny account permissions');
+        $check(($profile['accPublicLinks'] ?? false) === false, 'synthetic restricted profile must deny public links');
+        $check(($profile['configGeneral'] ?? false) === false, 'synthetic restricted profile must deny general configuration');
+        $check(($profile['configEncryption'] ?? false) === false, 'synthetic restricted profile must deny encryption configuration');
+        $check(($profile['configBackup'] ?? false) === false, 'synthetic restricted profile must deny backup configuration');
+        $check(($profile['configImport'] ?? false) === false, 'synthetic restricted profile must deny import configuration');
+        $check(($profile['mgmUsers'] ?? false) === false, 'synthetic restricted profile must deny user management');
+        $check(($profile['mgmGroups'] ?? false) === false, 'synthetic restricted profile must deny group management');
+        $check(($profile['mgmProfiles'] ?? false) === false, 'synthetic restricted profile must deny profile management');
+        $check(($profile['evl'] ?? false) === false, 'synthetic restricted profile must deny event log access');
+    }
+
+    $restrictedUser = $pdo->prepare(
+        'SELECT userGroupId, userProfileId FROM User WHERE id = :id AND login = :login'
+    );
+    $restrictedUser->execute(['id' => $restrictedId, 'login' => $restrictedLogin]);
+    $restrictedUserRow = $restrictedUser->fetch();
+    $check(is_array($restrictedUserRow), 'synthetic restricted user is missing');
+
+    if (is_array($restrictedUserRow)) {
+        $check((int)$restrictedUserRow['userGroupId'] === $restrictedGroupId, 'synthetic restricted user group is unexpected');
+        $check((int)$restrictedUserRow['userProfileId'] === $restrictedProfileId, 'synthetic restricted user profile is unexpected');
+    }
+
+    $restrictedLinks = $pdo->prepare(
+        'SELECT COUNT(*) FROM AccountToUserGroup
+         WHERE userGroupId = :groupId AND accountId IN (:parentId, :childId) AND isEdit = 0'
+    );
+    $restrictedLinks->execute([
+        'groupId' => $restrictedGroupId,
+        'parentId' => $parentId,
+        'childId' => $childId,
+    ]);
+    $check((int)$restrictedLinks->fetchColumn() === 2, 'synthetic restricted account view links are missing');
+
     if ($errors !== []) {
         throw new RuntimeException(implode('; ', $errors));
     }
 
-    echo "E2E fixture verification OK: login hashes, master password metadata, vaults, account ciphertext and configuration\n";
+    echo "E2E fixture verification OK: login hashes, master password metadata, vaults, account ciphertext, restricted profile and configuration\n";
 }
 
 try {

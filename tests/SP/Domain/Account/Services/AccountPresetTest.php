@@ -175,6 +175,41 @@ class AccountPresetTest extends UnitaryTestCase
 
     /**
      * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    #[Test]
+    public function testCheckPasswordPresetSkipsEmptyLinkedPasswordAndValidatesExplicitPassword(): void
+    {
+        $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
+        $itemPreset = $itemPresetDataGenerator->buildItemPresetData($itemPresetDataGenerator->buildPassword())
+                                              ->mutate(['fixed' => 1]);
+
+        $this->itemPresetService
+            ->expects(self::once())
+            ->method('getForCurrentUser')
+            ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD)
+            ->willReturn($itemPreset);
+        $this->passwordValidator
+            ->expects(self::once())
+            ->method('validate')
+            ->with(self::callback(static fn($password) => $password instanceof Password), 'explicit-new-pass');
+
+        $linkedEmptyDto = AccountDataGenerator::factory()->buildAccountCreateDto()->mutate([
+            'parentId' => 10,
+            'pass' => '',
+        ]);
+        self::assertSame($linkedEmptyDto, $this->accountPreset->checkPasswordPreset($linkedEmptyDto));
+
+        $linkedExplicitDto = AccountDataGenerator::factory()->buildAccountCreateDto()->mutate([
+            'parentId' => 10,
+            'pass' => 'explicit-new-pass',
+        ]);
+        $this->accountPreset->checkPasswordPreset($linkedExplicitDto);
+    }
+
+    /**
+     * @throws ConstraintException
      * @throws SPException
      * @throws QueryException
      */

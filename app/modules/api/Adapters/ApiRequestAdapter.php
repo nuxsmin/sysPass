@@ -39,9 +39,10 @@ use function SP\__u;
  */
 final class ApiRequestAdapter implements ApiRequestService
 {
-    protected ?string         $method = null;
-    protected ?int            $id     = null;
-    protected ?ApiRequestData $data   = null;
+    protected ?string                 $method       = null;
+    protected int|float|string|null   $id           = null;
+    protected bool                    $notification = false;
+    protected ?ApiRequestData         $data         = null;
 
     private function __construct()
     {
@@ -94,18 +95,13 @@ final class ApiRequestAdapter implements ApiRequestService
             throw new ApiRequestException(
                 __u('Invalid data'),
                 SPException::ERROR,
-                $e->getMessage(),
-                JsonRpcErrorCode::PARSE_ERROR
+                null,
+                JsonRpcErrorCode::PARSE_ERROR,
+                $e
             );
         }
 
-        if (!isset(
-            $data['jsonrpc'],
-            $data['method'],
-            $data['id'],
-            $data['params']['authToken']
-        )
-        ) {
+        if (!is_array($data)) {
             throw new ApiRequestException(
                 __u('Invalid format'),
                 SPException::ERROR,
@@ -114,9 +110,47 @@ final class ApiRequestAdapter implements ApiRequestService
             );
         }
 
+        $hasId = array_key_exists('id', $data);
+        $rawId = $hasId ? $data['id'] : null;
+
+        if ($hasId && !is_int($rawId) && !is_float($rawId) && !is_string($rawId) && $rawId !== null) {
+            throw new ApiRequestException(
+                __u('Invalid format'),
+                SPException::ERROR,
+                null,
+                JsonRpcErrorCode::INVALID_REQUEST
+            );
+        }
+
+        $isNotification = !$hasId
+            && ($data['jsonrpc'] ?? null) === '2.0'
+            && is_string($data['method'] ?? null)
+            && $data['method'] !== '';
+
+        if (!isset(
+            $data['jsonrpc'],
+            $data['method'],
+            $data['params']['authToken']
+        )
+            || $data['jsonrpc'] !== '2.0'
+            || !is_string($data['method'])
+            || $data['method'] === ''
+            || !is_array($data['params'])
+        ) {
+            throw (new ApiRequestException(
+                __u('Invalid format'),
+                SPException::ERROR,
+                null,
+                JsonRpcErrorCode::INVALID_REQUEST
+            ))
+                ->withRequestId($rawId)
+                ->asNotification($isNotification);
+        }
+
         $apiRequest = new self();
         $apiRequest->method = preg_replace('#[^a-z/]+#i', '', $data['method']);
-        $apiRequest->id = filter_var($data['id'], FILTER_VALIDATE_INT) ?: 1;
+        $apiRequest->id = $rawId;
+        $apiRequest->notification = !$hasId;
         $apiRequest->data = new ApiRequestData($data['params']);
 
         return $apiRequest;
@@ -152,10 +186,15 @@ final class ApiRequestAdapter implements ApiRequestService
     }
 
     /**
-     * @return int
+     * @return int|float|string|null
      */
-    public function getId(): int
+    public function getId(): int|float|string|null
     {
         return $this->id;
+    }
+
+    public function isNotification(): bool
+    {
+        return $this->notification;
     }
 }

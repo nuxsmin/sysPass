@@ -25,7 +25,12 @@
 namespace SP\Modules\Web\Presenters\Helpers\Account;
 
 use DateTime;
+use SP\Domain\Account\Models\Account as AccountModel;
+use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
+use SP\Domain\Account\Ports\AccountHistoryRepository;
+use SP\Domain\Account\Ports\AccountRepository;
 use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Account\Adapters\AccountPermission;
@@ -70,7 +75,9 @@ final class AccountHistoryHelper extends AccountHelperBase
         private readonly CategoryService           $categoryService,
         private readonly ClientService             $clientService,
         private readonly AccountToUserService      $accountToUserService,
-        private readonly AccountToUserGroupService $accountToUserGroupService
+        private readonly AccountToUserGroupService $accountToUserGroupService,
+        private readonly ?AccountRepository        $accountRepository = null,
+        private readonly ?AccountHistoryRepository $accountHistoryRepository = null
     ) {
         parent::__construct($config, $context, $eventDispatcher, $template, $request, $acl, $accountActionsHelper, $masterPassService);
     }
@@ -108,7 +115,7 @@ final class AccountHistoryHelper extends AccountHelperBase
             )->getItemsFromArraySelected([$accountHistoryViewDto->id])
         );
 
-        $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryViewDto->passDate));
+        $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryViewDto->passDate ?? 0));
         $this->view->assign(
             'accountPassDateChange',
             date('Y-m-d', $accountHistoryViewDto->passDateChange ?: 0)
@@ -125,7 +132,7 @@ final class AccountHistoryHelper extends AccountHelperBase
         );
         $this->view->assign(
             'isModified',
-            strtotime($accountHistoryViewDto->dateEdit) !== false
+            $accountHistoryViewDto->dateEdit !== null && strtotime($accountHistoryViewDto->dateEdit) !== false
         );
 
         $accountActionsDto = new AccountActionsDto($this->accountId, $accountHistoryViewDto->id, 0);
@@ -148,13 +155,85 @@ final class AccountHistoryHelper extends AccountHelperBase
      */
     protected function checkAccess(AccountHistoryViewDto $accountHistoryViewDto): void
     {
+        $dateEdit = $accountHistoryViewDto->dateEdit;
+        $editTime = null;
+        if ($dateEdit !== null) {
+            try {
+                $parsed = DateTime::createFromFormat('Y-m-d H:i:s', $dateEdit);
+            } catch (\ValueError) {
+                throw new AccountPermissionException(SPException::INFO);
+            }
+            if ($parsed === false || $parsed->format('Y-m-d H:i:s') !== $dateEdit) {
+                throw new AccountPermissionException(SPException::INFO);
+            }
+            $editTime = $parsed->getTimestamp();
+        }
+
+        $isLiveAccount = false;
+        $userId = $accountHistoryViewDto->userId;
+        $userGroupId = $accountHistoryViewDto->userGroupId;
+        $usersId = [];
+        $userGroupsId = [];
+        $isPrivate = (bool)($accountHistoryViewDto->isPrivate ?? false);
+        $isPrivateGroup = (bool)($accountHistoryViewDto->isPrivateGroup ?? false);
+
+        if ($this->accountRepository !== null && $this->accountId !== null) {
+            $liveResult = $this->accountRepository->getById($this->accountId);
+
+            if ($liveResult->getNumRows() > 0) {
+                $isLiveAccount = true;
+                /** @var AccountModel $liveAccount */
+                $liveAccount = $liveResult->getData(AccountModel::class);
+                $userId = (int)$liveAccount->getUserId();
+                $userGroupId = (int)$liveAccount->getUserGroupId();
+                $usersId = $this->accountToUserService->getUsersByAccountId($this->accountId);
+                $userGroupsId = $this->accountToUserGroupService->getUserGroupsByAccountId($this->accountId);
+                $isPrivate = (bool)$liveAccount->getIsPrivate();
+                $isPrivateGroup = (bool)$liveAccount->getIsPrivateGroup();
+            } elseif ($this->accountHistoryRepository !== null) {
+                /** @var AccountHistoryModel[] $allRows */
+                $allRows = $this->accountHistoryRepository
+                    ->getByAccountId($this->accountId)
+                    ->getDataAsArray(AccountHistoryModel::class);
+                $deletionSnapshots = array_values(array_filter(
+                    $allRows,
+                    static fn(AccountHistoryModel $row): bool => (int)$row->getIsDeleted() === 1
+                ));
+
+                if (count($deletionSnapshots) !== 1) {
+                    throw new AccountPermissionException(SPException::INFO);
+                }
+
+                $snap = $deletionSnapshots[0];
+                $isValidSnap = (int)($snap->getParentId() ?? 0) > 0
+                    || ((string)($snap->getPass() ?? '') !== '' && (string)($snap->getKey() ?? '') !== '');
+
+                if (!$isValidSnap) {
+                    throw new AccountPermissionException(SPException::INFO);
+                }
+
+                $userId = (int)$snap->getUserId();
+                $userGroupId = (int)$snap->getUserGroupId();
+                $isPrivate = (bool)$snap->getIsPrivate();
+                $isPrivateGroup = (bool)$snap->getIsPrivateGroup();
+            } else {
+                $usersId = $this->accountToUserService->getUsersByAccountId($this->accountId);
+                $userGroupsId = $this->accountToUserGroupService->getUserGroupsByAccountId($this->accountId);
+            }
+        } else {
+            $usersId = $this->accountToUserService->getUsersByAccountId($this->accountId);
+            $userGroupsId = $this->accountToUserGroupService->getUserGroupsByAccountId($this->accountId);
+        }
+
         $acccountAclDto = new AccountAclDto(
             $this->accountId,
-            $accountHistoryViewDto->userId,
-            $this->accountToUserService->getUsersByAccountId($this->accountId),
-            $accountHistoryViewDto->userGroupId,
-            $this->accountToUserGroupService->getUserGroupsByAccountId($this->accountId),
-            DateTime::createFromFormat('Y-m-d H:i:s', $accountHistoryViewDto->dateEdit)->getTimestamp()
+            $userId,
+            $usersId,
+            $userGroupId,
+            $userGroupsId,
+            $editTime,
+            $isPrivate,
+            $isPrivateGroup
         );
 
         $this->accountPermission = $this->accountAclService->getAcl($this->actionId, $acccountAclDto, true);
@@ -162,6 +241,19 @@ final class AccountHistoryHelper extends AccountHelperBase
         if ($this->accountPermission->checkAccountAccess($this->actionId) === false) {
             throw new AccountPermissionException(SPException::INFO);
         }
+
+        if (!$isLiveAccount && $this->accountRepository !== null) {
+            $this->accountPermission->setShowRestore(false);
+        } else {
+            $this->accountPermission->setShowRestore(
+                $this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT_RESTORE)
+                && $this->accountPermission->isResultEdit()
+            );
+        }
+
+        $this->accountPermission->setShowViewPass(
+            $this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_HISTORY_VIEW_PASS)
+        );
     }
 
     /**

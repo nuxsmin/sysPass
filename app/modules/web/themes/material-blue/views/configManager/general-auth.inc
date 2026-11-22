@@ -193,4 +193,66 @@ use function SP\__;
             </select>
         </td>
     </tr>
+    <tr>
+        <td class="descField">
+            <?php
+            echo __('Default token lifetime (days)'); ?>
+            <div id="help-auth_token_default_time"
+                 class="icon material-icons <?php
+                 echo $icons->help()->getClass(); ?>"><?php
+                echo $icons->help()->getIcon(); ?></div>
+            <div class="mdl-tooltip mdl-tooltip--large"
+                 for="help-auth_token_default_time">
+                <p>
+                    <?php
+                    echo __('Default lifetime in days for newly created API authorizations.'); ?>
+                </p>
+            </div>
+        </td>
+        <td class="valField">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input id="auth_token_default_time" name="auth_token_default_time"
+                       type="number"
+                       min="1"
+                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                       value="<?php
+                       echo (int)ceil($configData->getAuthTokenDefaultTime() / 86400); ?>"/>
+                <label class="mdl-textfield__label"
+                       for="auth_token_default_time"><?php
+                    echo __('Default token lifetime (days)'); ?></label>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <?php
+            echo __('Maximum token lifetime (days)'); ?>
+            <div id="help-auth_token_max_time"
+                 class="icon material-icons <?php
+                 echo $icons->help()->getClass(); ?>"><?php
+                echo $icons->help()->getIcon(); ?></div>
+            <div class="mdl-tooltip mdl-tooltip--large"
+                 for="help-auth_token_max_time">
+                <p>
+                    <?php
+                    echo __('Maximum lifetime in days allowed for newly created or updated API authorizations.'); ?>
+                </p>
+            </div>
+        </td>
+        <td class="valField">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input id="auth_token_max_time" name="auth_token_max_time"
+                       type="number"
+                       min="1"
+                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                       value="<?php
+                       echo (int)ceil($configData->getAuthTokenMaxTime() / 86400); ?>"
+                    <?php
+                    echo !$_getvar('isAdminApp') ? 'disabled' : ''; ?>/>
+                <label class="mdl-textfield__label"
+                       for="auth_token_max_time"><?php
+                    echo __('Maximum token lifetime (days)'); ?></label>
+            </div>
+        </td>
+    </tr>
 </table>

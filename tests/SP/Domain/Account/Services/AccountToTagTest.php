@@ -81,6 +81,35 @@ class AccountToTagTest extends UnitaryTestCase
      * @throws SPException
      */
     #[Test]
+    public function testGetTagsByAccountIdWithItemModels()
+    {
+        $accountId = self::$faker->randomNumber();
+        $item = new Item([
+            'id' => self::$faker->randomNumber(),
+            'name' => self::$faker->colorName,
+            'hash' => sha1('tag'),
+        ]);
+
+        $result = new QueryResult([$item]);
+
+        $this->accountToTagRepository
+            ->expects(self::once())
+            ->method('getTagsByAccountId')
+            ->with($accountId)
+            ->willReturn($result);
+
+        $actual = $this->accountToTag->getTagsByAccountId($accountId);
+
+        $this->assertCount(1, $actual);
+        $this->assertSame($item, $actual[0]);
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    #[Test]
     public function testGetTagsByAccountIdWithNotags()
     {
         $accountId = self::$faker->randomNumber();

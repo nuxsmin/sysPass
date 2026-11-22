@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Presenters\Helpers\Grid;
 
+use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
@@ -126,8 +127,16 @@ final class PublicLinkGrid extends GridBase
         $gridData->setDataRowSourceId('id');
         $gridData->addDataRowSource('accountName');
         $gridData->addDataRowSource('clientName');
-        $gridData->addDataRowSource('getDateAddFormat', true);
-        $gridData->addDataRowSource('getDateExpireFormat', true);
+        $gridData->addDataRowSource(
+            'dateAdd',
+            false,
+            static fn (?int $value) => $value ? Date::getDateFromUnix($value) : '-'
+        );
+        $gridData->addDataRowSource(
+            'dateExpire',
+            false,
+            static fn (?int $value) => $value ? Date::getDateFromUnix($value) : '-'
+        );
         $gridData->addDataRowSource('userLogin');
         $gridData->addDataRowSource(
             'notify',

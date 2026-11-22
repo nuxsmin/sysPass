@@ -70,6 +70,27 @@ function writeSummary(root, summary) {
   writeFileSync(path.join(root, 'run-summary.json'), `${JSON.stringify(summary, null, 2)}\n`);
 }
 
+function completeWorkflowSummary(tier, spec, overrides = {}) {
+  return completeSummary({
+    status: 'passed',
+    completeTierA: false,
+    completeTierB: false,
+    completeTierInstall: false,
+    completeTierWiring: tier === 'WIRING',
+    completeTierWrite: tier === 'WRITE',
+    selection: {
+      tier,
+      selectedSpecs: [spec],
+      explicit: false,
+      partialSelection: false,
+      partialReasons: [],
+    },
+    counts: { selected: 1, completed: 1, failed: 0, skipped: 0, retries: 0, knownFailed: 0, newFailed: 0 },
+    firstAttemptResults: { passed: 1, failed: 0, skipped: 0 },
+    ...overrides,
+  });
+}
+
 test('a complete passing Tier A run within budget is eligible', () => {
   const evaluation = evaluateRunSummary(completeSummary());
 
@@ -1161,9 +1182,12 @@ test('the runner normalizes lower-case tier tokens and rejects unknown tiers as 
   });
 
   assert.equal(invalid.status, 2, invalid.stderr);
-  assert.match(invalid.stderr, /SP_UI_TIER must be A, B or INSTALL; received 'Z'/);
+  assert.match(
+    invalid.stderr,
+    /SP_UI_TIER must be A, B, INSTALL, WIRING, WRITE or DISCOVERY; received 'Z'/,
+  );
 
-  for (const token of ['a', 'b']) {
+  for (const token of ['a', 'b', 'wiring', 'discovery']) {
     const lowercase = spawnSync('bash', [RUNNER], {
       cwd: path.resolve(UI_DIR, '..', '..'),
       encoding: 'utf8',
@@ -1205,6 +1229,7 @@ test('the runner keeps sibling Tier A and Tier B summary roots', () => {
 
   assert.match(source, /summaries\/tier-A/, 'Tier A must retain a dedicated summary root');
   assert.match(source, /summaries\/tier-B/, 'Tier B must retain a dedicated summary root');
+  assert.match(source, /summaries\/tier-write/, 'Tier WRITE must retain a dedicated summary root');
   assert.doesNotMatch(
     source,
     /DEFAULT_SUMMARY_ROOT="\$UI_DIR\/summaries"$/m,
@@ -1259,4 +1284,126 @@ test('a Tier A summary cannot be used as installer evidence', () => {
 
   assert.equal(evaluation.ok, false);
   assert.match(evaluation.reasons.join('\n'), /not a complete Tier INSTALL selection/);
+});
+
+test('complete WIRING and WRITE runs are observations only for their own selection', () => {
+  for (const [tier, spec, flag] of [
+    ['WIRING', 'adminNavigation.wiring.spec.ts', 'completeTierWiring'],
+    ['WRITE', 'accountCreate.write.spec.ts', 'completeTierWrite'],
+  ]) {
+    const summary = completeWorkflowSummary(tier, spec);
+    const evaluation = evaluateRunSummary(summary, { tier });
+    const markdown = renderMarkdown(summary, evaluation, { tier });
+
+    assert.equal(evaluation.ok, true, evaluation.reasons.join('; '));
+    assert.equal(evaluation[flag], true);
+    assert.equal(evaluation.completeTierA, false);
+    assert.equal(evaluation.completeTierB, false);
+    assert.equal(evaluation.completeTierInstall, false);
+    assert.match(markdown, new RegExp(`UI smoke Tier ${tier} observation`));
+    assert.match(markdown, new RegExp(`Complete Tier ${tier} \\| yes`));
+    assert.match(markdown, new RegExp(`may be counted as one Tier ${tier} observation`));
+    assert.doesNotMatch(markdown, /Tier A observation/);
+  }
+});
+
+test('failed, partial, setup-failed, skipped and flaky workflow runs are not observations', () => {
+  for (const [tier, spec, flag] of [
+    ['WIRING', 'adminNavigation.wiring.spec.ts', 'completeTierWiring'],
+    ['WRITE', 'accountCreate.write.spec.ts', 'completeTierWrite'],
+  ]) {
+    const cases = [
+      completeWorkflowSummary(tier, spec, { status: 'failed', [flag]: false }),
+      completeWorkflowSummary(tier, spec, {
+        status: 'partial',
+        [flag]: false,
+        partialSelection: true,
+        partialReasons: ['selection is not complete'],
+      }),
+      completeWorkflowSummary(tier, spec, { status: 'setup-failed', [flag]: false }),
+      completeWorkflowSummary(tier, spec, {
+        status: 'partial',
+        [flag]: false,
+        counts: { selected: 1, completed: 0, failed: 0, skipped: 1, retries: 0 },
+      }),
+      completeWorkflowSummary(tier, spec, {
+        status: 'flaky',
+        [flag]: false,
+        counts: { selected: 1, completed: 1, failed: 0, skipped: 0, retries: 1, flaky: 1 },
+      }),
+    ];
+
+    for (const summary of cases) {
+      const evaluation = evaluateRunSummary(summary, { tier });
+      const markdown = renderMarkdown(summary, evaluation, { tier });
+
+      assert.equal(evaluation.ok, false, `${tier} ${summary.status} must not be eligible`);
+      assert.equal(evaluation[flag], false);
+      assert.match(markdown, new RegExp(`must not be counted as a Tier ${tier} observation`));
+    }
+  }
+});
+
+test('a WIRING summary cannot satisfy Tier A and a WIRING report cannot annotate as Tier B', () => {
+  const wiring = completeWorkflowSummary('WIRING', 'adminNavigation.wiring.spec.ts');
+  const asTierA = evaluateRunSummary(wiring, { tier: 'A' });
+  const asTierB = evaluateRunSummary(wiring, { tier: 'B' });
+
+  assert.equal(asTierA.ok, false);
+  assert.match(asTierA.reasons.join('\n'), /belongs to Tier WIRING|not a complete Tier A selection/);
+  assert.equal(asTierB.ok, false);
+  assert.match(asTierB.reasons.join('\n'), /belongs to Tier WIRING|not a complete Tier B selection/);
+});
+
+test('failed WIRING and WRITE reports do not change Tier A or Tier B completeness', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'sp-ui-workflow-isolation-'));
+  const tierA = path.join(root, 'tier-A', 'run-a');
+  const tierB = path.join(root, 'tier-B', 'run-b');
+  const tierWiring = path.join(root, 'tier-wiring', 'run-wiring');
+  const tierWrite = path.join(root, 'tier-write', 'run-write');
+
+  for (const directory of [tierA, tierB, tierWiring, tierWrite]) {
+    mkdirSync(directory, { recursive: true });
+  }
+
+  writeSummary(tierA, completeSummary());
+  writeSummary(tierB, completeTierBSummary());
+  writeSummary(
+    tierWiring,
+    completeWorkflowSummary('WIRING', 'adminNavigation.wiring.spec.ts', {
+      status: 'failed',
+      completeTierWiring: false,
+      counts: { selected: 1, completed: 1, failed: 1, skipped: 0, retries: 0 },
+    }),
+  );
+  writeSummary(
+    tierWrite,
+    completeWorkflowSummary('WRITE', 'accountCreate.write.spec.ts', {
+      status: 'failed',
+      completeTierWrite: false,
+      counts: { selected: 1, completed: 1, failed: 1, skipped: 0, retries: 0 },
+    }),
+  );
+
+  const evaluationA = evaluateRunSummary(
+    JSON.parse(readFileSync(path.join(tierA, 'run-summary.json'), 'utf8')),
+    { tier: 'A' },
+  );
+  const evaluationB = evaluateRunSummary(
+    JSON.parse(readFileSync(path.join(tierB, 'run-summary.json'), 'utf8')),
+    { tier: 'B' },
+  );
+  const evaluationWiring = evaluateRunSummary(
+    JSON.parse(readFileSync(path.join(tierWiring, 'run-summary.json'), 'utf8')),
+    { tier: 'WIRING' },
+  );
+  const evaluationWrite = evaluateRunSummary(
+    JSON.parse(readFileSync(path.join(tierWrite, 'run-summary.json'), 'utf8')),
+    { tier: 'WRITE' },
+  );
+
+  assert.equal(evaluationA.ok, true, evaluationA.reasons.join('; '));
+  assert.equal(evaluationB.ok, true, evaluationB.reasons.join('; '));
+  assert.equal(evaluationWiring.ok, false);
+  assert.equal(evaluationWrite.ok, false);
 });

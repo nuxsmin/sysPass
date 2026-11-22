@@ -3,7 +3,7 @@
 Status: Accepted (2026-11-01); amended by ADR-0011 (2026-11-02) and the quality-review plan revision (2026-11-04). Implemented by #2076-#2085 and under observation since 2026-11-06; unqualified (no 30-day history).
 Related: ADR-0004 (#2041), ADR-0011 (#2089), suite #2075 and #2076-#2086, transport/boot #2096-#2098, attachment decision #2116, tracking #1976.
 
-Proposed follow-up: ADR-0012 considers browser workflow tests separately from this Page-load smoke suite. This ADR's smoke-suite scope remains unchanged until any follow-up is adopted.
+Proposed follow-up: ADR-0012 (accepted 2026-11-12, narrowed to JS-to-backend wiring contracts) covers browser UI Workflow Tests separately from this Page-load smoke suite. This ADR's smoke-suite scope remains unchanged.
 
 ## Context
 
@@ -111,7 +111,7 @@ Clean URLs remain independent future work under ADR-0006 (#2064 / #2073); the fu
 ## Consequences
 
 - Adds a separate browser-test package and CI check alongside existing PHP checks and Node asset tooling; it does not join the Composer/PHPUnit pipeline.
-- ADR-0004's no-browser-suite decision is amended only for critical page-load observability, not general workflows or layout.
+- ADR-0004's no-browser-suite decision is amended here only for critical page-load observability; ADR-0012 separately amends it for JS-to-backend wiring contracts. General workflows, layout and authorization remain excluded.
 - Isolation and trustworthy positive contracts precede rollout; safe early Tier A observation precedes optional breadth and required-check promotion.
 
 ## Revision history

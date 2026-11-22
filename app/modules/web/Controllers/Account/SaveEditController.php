@@ -54,7 +54,7 @@ final class SaveEditController extends AccountSaveBase
             return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
-        if (!$this->accountService->isVisible($id)) {
+        if (!$this->accountService->canEdit($id)) {
             return ActionResponse::error(__u('You don\'t have permission to access this account'));
         }
 
@@ -74,13 +74,6 @@ final class SaveEditController extends AccountSaveBase
                                        ->addDetail(__u('Client'), $accountDetails->getClientName());
                 }
             )
-        );
-
-        $this->updateCustomFieldsForItem(
-            AclActionsInterface::ACCOUNT,
-            $id,
-            $this->request,
-            $this->customFieldService
         );
 
         return ActionResponse::ok(

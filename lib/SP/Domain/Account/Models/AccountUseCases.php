@@ -92,19 +92,28 @@ trait AccountUseCases
         return $account;
     }
 
-    public static function restoreRemoved(AccountHistoryDto $accountHistoryDto, int $userEditId): Account
-    {
+    public static function restoreRemoved(
+        AccountHistoryDto $accountHistoryDto,
+        int $userEditId,
+        bool $preserveId = false
+    ): Account {
         $account = new Account();
-        $account->pass = $accountHistoryDto->pass;
-        $account->key = $accountHistoryDto->key;
-        $account->userEditId = $userEditId;
-        $account->passDate = $accountHistoryDto->passDate;
-        $account->dateAdd = $accountHistoryDto->dateAdd;
-        $account->dateEdit = $accountHistoryDto->dateEdit;
-        $account->countView = $accountHistoryDto->countView;
-        $account->countDecrypt = $accountHistoryDto->countDecrypt;
 
         self::buildCommon($accountHistoryDto, $account);
+
+        $account->pass = $accountHistoryDto->pass ?? '';
+        $account->key = $accountHistoryDto->key ?? '';
+        $account->notes = $accountHistoryDto->notes ?? '';
+        $account->userEditId = $userEditId;
+        $account->passDate = $accountHistoryDto->passDate ?? time();
+        $account->dateAdd = $accountHistoryDto->dateAdd ?: date('Y-m-d H:i:s');
+        $account->dateEdit = $accountHistoryDto->dateEdit;
+        $account->countView = $accountHistoryDto->countView ?? 0;
+        $account->countDecrypt = $accountHistoryDto->countDecrypt ?? 0;
+
+        if ($preserveId && ($accountHistoryDto->accountId ?? 0) > 0) {
+            $account->id = $accountHistoryDto->accountId;
+        }
 
         return $account;
     }
@@ -112,11 +121,11 @@ trait AccountUseCases
     public static function restoreModified(AccountHistoryDto $accountHistoryDto, int $userEditId): Account
     {
         $account = new Account();
-        $account->pass = $accountHistoryDto->pass;
-        $account->key = $accountHistoryDto->key;
-        $account->userEditId = $userEditId;
-
         self::buildCommon($accountHistoryDto, $account);
+        $account->pass = $accountHistoryDto->pass ?? '';
+        $account->key = $accountHistoryDto->key ?? '';
+        $account->notes = $accountHistoryDto->notes ?? '';
+        $account->userEditId = $userEditId;
 
         return $account;
     }

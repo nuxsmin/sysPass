@@ -46,6 +46,10 @@ final class SaveCreateController extends AccountSaveBase
     #[Action(ResponseType::JSON)]
     public function saveCreateAction(): ActionResponse
     {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_CREATE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
         $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_CREATE);
 
         $accountId = $this->accountService->create($this->accountForm->getItemData());
@@ -62,13 +66,6 @@ final class SaveCreateController extends AccountSaveBase
                                        ->addDetail(__u('Client'), $accountView->getClientName());
                 }
             )
-        );
-
-        $this->addCustomFieldsForItem(
-            AclActionsInterface::ACCOUNT,
-            $accountId,
-            $this->request,
-            $this->customFieldService
         );
 
         return ActionResponse::ok(

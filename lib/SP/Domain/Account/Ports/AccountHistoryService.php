@@ -112,6 +112,19 @@ interface AccountHistoryService
     public function deleteByAccountIdBatch(array $ids): int;
 
     /**
+     * @throws QueryException
+     * @throws ConstraintException
+     * @return \SP\Domain\Account\Models\AccountHistory[]
+     */
+    public function getByAccountId(int $accountId): array;
+
+    /**
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function reassignAccountId(int $oldAccountId, int $newAccountId, string $dateAdd): int;
+
+    /**
      * @throws SPException
      * @throws ConstraintException
      */

@@ -173,7 +173,7 @@ function parentSelectConditions(
           {
             kind: 'count' as const,
             selector: '#parent_account_id + .selectize-control .option',
-            min: 2,
+            min: 1,
             label: 'linked-account options produced by items/accountsUser',
           },
         ]

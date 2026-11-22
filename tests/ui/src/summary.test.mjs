@@ -4,6 +4,8 @@ import test from 'node:test';
 import {
   TIER_A_SPECS,
   TIER_B_SPECS,
+  TIER_WIRING_SPECS,
+  TIER_WRITE_SPECS,
   buildRunSummary,
   classifyFailure,
   renderJUnit,
@@ -615,4 +617,93 @@ test('an incomplete or failing Tier B selection is never complete Tier B', () =>
   assert.equal(failed.status, 'failed');
   assert.equal(failed.completeTierB, false);
   assert.equal(failed.completeTierA, false);
+});
+
+const WORKFLOW_TIERS = [
+  ['WIRING', TIER_WIRING_SPECS, 'completeTierWiring'],
+  ['WRITE', TIER_WRITE_SPECS, 'completeTierWrite'],
+];
+
+function buildWorkflow(tier, specs, tests, overrides = {}) {
+  return build(tests, {
+    selection: resolveSelection({
+      tier,
+      specs: '',
+      grep: false,
+      availableSpecs: specs,
+    }),
+    environment: { ...ENVIRONMENT, tier },
+    ...overrides,
+  });
+}
+
+test('complete WIRING and WRITE selections set only their own completion flag', () => {
+  for (const [tier, specs, flag] of WORKFLOW_TIERS) {
+    const summary = buildWorkflow(
+      tier,
+      specs,
+      specs.map((spec) => testRun({ title: spec, file: spec, statuses: ['passed'] })),
+    );
+    const xml = renderJUnit(summary);
+
+    assert.equal(summary.status, 'passed');
+    assert.equal(summary[flag], true, `${tier} must be complete for its own selection`);
+    assert.equal(summary.completeTierA, false);
+    assert.equal(summary.completeTierB, false);
+    assert.equal(summary.completeTierInstall, false);
+    assert.match(xml, new RegExp(`sp-ui\\.${flag}" value="true"`));
+    assert.match(xml, /sp-ui.completeTierA" value="false"/);
+    assert.match(xml, /sp-ui.completeTierB" value="false"/);
+    assert.match(xml, /sp-ui.completeTierInstall" value="false"/);
+  }
+
+  const tierA = build([
+    testRun({ title: 'login', statuses: ['passed'] }),
+    testRun({ title: 'shell', file: 'shell.spec.ts', statuses: ['passed'] }),
+  ]);
+  assert.equal(tierA.completeTierWiring, false);
+  assert.equal(tierA.completeTierWrite, false);
+});
+
+test('workflow selections are never complete when setup, selection or execution is incomplete', () => {
+  for (const [tier, specs, flag] of WORKFLOW_TIERS) {
+    const spec = specs[0];
+    const cases = [
+      buildWorkflow(tier, specs, [], {
+        setupFailure: true,
+        globalErrors: [{ message: 'setup failed password=CANARY_WRITE_SETUP' }],
+      }),
+      buildWorkflow(tier, specs, [testRun({ title: spec, file: spec, statuses: ['passed'] })], {
+        selection: resolveSelection({
+          tier,
+          specs: '',
+          grep: true,
+          availableSpecs: specs,
+        }),
+      }),
+      buildWorkflow(tier, specs, [testRun({ title: spec, file: spec, statuses: ['interrupted'] })], {
+        resultStatus: 'interrupted',
+        cancelled: true,
+      }),
+      buildWorkflow(tier, specs, [testRun({ title: spec, file: spec, statuses: ['skipped'] })]),
+      buildWorkflow(tier, specs, [testRun({ title: spec, file: spec, statuses: ['failed', 'passed'] })]),
+      buildWorkflow(tier, specs, [testRun({ title: spec, file: spec, statuses: ['failed'] })]),
+      buildWorkflow(tier, specs, [
+        testRun({
+          title: spec,
+          file: spec,
+          statuses: ['timedOut'],
+          errorMessage: 'Test timeout of 30000ms exceeded',
+        }),
+      ]),
+    ];
+
+    for (const summary of cases) {
+      assert.notEqual(summary.status, 'passed', `${tier} must not report a passing status`);
+      assert.equal(summary[flag], false, `${tier} must not be complete`);
+      assert.equal(summary.completeTierA, false);
+      assert.equal(summary.completeTierB, false);
+      assert.equal(summary.completeTierInstall, false);
+    }
+  }
 });

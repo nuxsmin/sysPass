@@ -65,6 +65,20 @@ interface CustomFieldDataService
     public function delete(array $itemsId, int $moduleId): void;
 
     /**
+     * Delete custom field data for a single item and module
+     *
+     * @throws ServiceException
+     */
+    public function deleteByItem(int $itemId, int $moduleId): void;
+
+    /**
+     * Delete custom field data for a specific item, module, and definition
+     *
+     * @throws ServiceException
+     */
+    public function deleteByDefinition(int $itemId, int $moduleId, int $definitionId): void;
+
+    /**
      * Creates an item
      *
      * @throws ServiceException
@@ -89,4 +103,11 @@ interface CustomFieldDataService
      * @throws ServiceException
      */
     public function getAllEncrypted(): array;
+
+    /**
+     * Copy custom field data rows from a source module/item to a destination module/item.
+     *
+     * @throws ServiceException
+     */
+    public function copyByModuleAndItem(int $srcModuleId, int $srcItemId, int $dstModuleId, int $dstItemId): int;
 }

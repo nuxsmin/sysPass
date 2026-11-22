@@ -52,6 +52,7 @@ class PublicLink extends Model implements ItemWithIdAndNameModel
     protected ?string $userName        = null;
     protected ?string $userLogin       = null;
     protected ?string $accountName     = null;
+    protected ?string $clientName      = null;
 
     public function getData(): ?string
     {
@@ -73,9 +74,9 @@ class PublicLink extends Model implements ItemWithIdAndNameModel
         return (int)$this->itemId;
     }
 
-    public function getUserId(): int
+    public function getUserId(): ?int
     {
-        return (int)$this->userId;
+        return $this->userId;
     }
 
     public function getTypeId(): ?int
@@ -141,5 +142,15 @@ class PublicLink extends Model implements ItemWithIdAndNameModel
     public function getAccountName(): ?string
     {
         return $this->accountName;
+    }
+
+    public function getClientName(): ?string
+    {
+        return $this->clientName;
+    }
+
+    public function getCountViewsString(): string
+    {
+        return sprintf('%d/%d/%d', $this->countViews ?? 0, $this->maxCountViews ?? 0, $this->totalCountViews ?? 0);
     }
 }

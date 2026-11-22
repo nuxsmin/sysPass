@@ -52,7 +52,7 @@ use function SP\__;
         </div>
 
         <?php
-        if ($_getvar('editAction')): ?>
+        if ($_getvar('editAction') && $_getvar('fileUploadEnabled', false) && $accountAcl->isResultEdit()): ?>
             <div id="box-upload-files">
                 <div id="drop-account-files"
                      class="round active-tooltip dropzone"

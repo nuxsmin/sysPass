@@ -27,6 +27,9 @@ namespace SP\Modules\Web\Controllers\AccountFile;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Models\File;
+use SP\Domain\Account\Dtos\AccountAclDto;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
+use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Auth\Services\AuthException;
@@ -34,6 +37,7 @@ use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\File\Ports\FileHandlerFactoryInterface;
@@ -59,6 +63,7 @@ final class UploadController extends ControllerBase
         WebControllerHelper                 $webControllerHelper,
         private readonly AccountFileService $accountFileService,
         private readonly AccountService     $accountService,
+        private readonly AccountAclService  $accountAclService,
         private readonly FileHandlerFactoryInterface $fileHandlerFactory
     ) {
         parent::__construct($webControllerHelper);
@@ -77,6 +82,27 @@ final class UploadController extends ControllerBase
     #[Action(ResponseType::JSON)]
     public function uploadAction(int $accountId): ActionResponse
     {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_FILE_UPLOAD)
+            || !$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT)
+        ) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
+        if (!$this->accountService->isVisible($accountId)) {
+            return ActionResponse::error(__u('You don\'t have permission to access this account'));
+        }
+
+        $account = new AccountEnrichedDto($this->accountService->getByIdEnriched($accountId));
+        $account = $this->accountService->withUsers($account);
+        $account = $this->accountService->withUserGroups($account);
+        $permission = $this->accountAclService->getAcl(
+            AclActionsInterface::ACCOUNT_EDIT,
+            AccountAclDto::makeFromAccount($account)
+        );
+        if (!$permission->checkAccountAccess(AclActionsInterface::ACCOUNT_EDIT)) {
+            return ActionResponse::error(__u('You don\'t have permission to access this account'));
+        }
+
         $file = $this->router->request()->files()->get('inFile');
 
         if ($accountId === 0 || null === $file) {

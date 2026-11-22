@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { normalizeTier } from './tiers.mjs';
 
 export const INSTALL_TIER = 'INSTALL';
+export const DISCOVERY_TIER = 'DISCOVERY';
 
 /**
  * The installer switch is explicit. Only the literal value `1` enables the
@@ -105,6 +106,10 @@ export function resolveRunPlan({ tier = 'A', install = '', diagnosticRetry = '0'
 
   if (installRequested && diagnosticRetryRequested) {
     throw new Error('installer selection requires retries: 0; diagnostic retry is not allowed');
+  }
+
+  if (installRequested && normalizedTier === DISCOVERY_TIER) {
+    throw new Error('inventory discovery cannot run the installer');
   }
 
   const seededTier = normalizedTier === INSTALL_TIER ? null : normalizedTier;

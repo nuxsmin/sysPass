@@ -80,17 +80,21 @@ class PublicLinkTest extends UnitaryTestCase
     public function testSearch(): void
     {
         $item = new ItemSearchDto(self::$faker->name);
+        $actorId = $this->context->getUserData()->id;
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($item) {
+            static function (QueryData $arg) use ($item, $actorId) {
                 $params = $arg->getQuery()->getBindValues();
+                $statement = $arg->getQuery()->getStatement();
                 $searchStringLike = '%' . $item->getSeachString() . '%';
 
-                return $params['login'] === $searchStringLike
+                return $params['userId'] === $actorId
+                       && $params['login'] === $searchStringLike
                        && $params['accountName'] === $searchStringLike
                        && $params['clientName'] === $searchStringLike
                        && $arg->getMapClassName() === PublicLinkModel::class
-                       && !empty($arg->getQuery()->getStatement());
+                       && str_contains($statement, '`PublicLink`.`userId` = :userId')
+                       && str_contains($statement, '(`User`.`login` LIKE :login OR `Account`.`name` LIKE :accountName OR `Client`.`name` LIKE :clientName)');
             }
         );
 
@@ -158,10 +162,13 @@ class PublicLinkTest extends UnitaryTestCase
             static function (QueryData $arg) use ($publicLinkData) {
                 $query = $arg->getQuery();
                 $values = $query->getBindValues();
+                $statement = $query->getStatement();
 
                 return $values['hash'] === $publicLinkData->getHash()
                        && $values['useInfo'] === $publicLinkData->getUseInfo()
-                       && !empty($query->getStatement());
+                       && is_int($values['now'] ?? null)
+                       && str_contains($statement, 'countViews < maxCountViews')
+                       && str_contains($statement, 'dateExpire > :now');
             }
         );
 
@@ -171,6 +178,18 @@ class PublicLinkTest extends UnitaryTestCase
             ->willReturn(new QueryResult(null, 1));
 
         $this->assertTrue($this->publicLink->addLinkView($publicLinkData));
+    }
+
+    #[Test]
+    public function testAddLinkViewReturnsFalseWhenNoRowsAffected(): void
+    {
+        $publicLinkData = $this->buildPublicLinkData();
+
+        $this->database->expects(self::once())
+            ->method('runQuery')
+            ->willReturn(new QueryResult(null, 0));
+
+        $this->assertFalse($this->publicLink->addLinkView($publicLinkData));
     }
 
     private function buildPublicLinkData(): PublicLinkModel
@@ -420,13 +439,19 @@ class PublicLinkTest extends UnitaryTestCase
     #[Test]
     public function testSearchWithoutString(): void
     {
-        $callback = new Callback(
-            static function (QueryData $arg) {
-                $query = $arg->getQuery();
+        $actorId = $this->context->getUserData()->id;
 
-                return count($query->getBindValues()) === 0
+        $callback = new Callback(
+            static function (QueryData $arg) use ($actorId) {
+                $query = $arg->getQuery();
+                $params = $query->getBindValues();
+                $statement = $query->getStatement();
+
+                return count($params) === 1
+                       && ($params['userId'] ?? null) === $actorId
+                       && str_contains($statement, '`PublicLink`.`userId` = :userId')
                        && $arg->getMapClassName() === PublicLinkModel::class
-                       && !empty($query->getStatement());
+                       && !empty($statement);
             }
         );
 
@@ -437,6 +462,39 @@ class PublicLinkTest extends UnitaryTestCase
             ->willReturn(new QueryResult());
 
         $this->publicLink->search(new ItemSearchDto());
+    }
+
+    #[Test]
+    public function testSearchForAdminOmitsUserIdFilter(): void
+    {
+        $this->context->setUserData($this->context->getUserData()->mutate(['isAdminApp' => true]));
+
+        $item = new ItemSearchDto(self::$faker->name);
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($item) {
+                $query = $arg->getQuery();
+                $params = $query->getBindValues();
+                $statement = $query->getStatement();
+                $searchStringLike = '%' . $item->getSeachString() . '%';
+
+                return !array_key_exists('userId', $params)
+                       && $params['login'] === $searchStringLike
+                       && $params['accountName'] === $searchStringLike
+                       && $params['clientName'] === $searchStringLike
+                       && !str_contains($statement, '`PublicLink`.`userId` = :userId')
+                       && str_contains($statement, '(`User`.`login` LIKE :login OR `Account`.`name` LIKE :accountName OR `Client`.`name` LIKE :clientName)')
+                       && $arg->getMapClassName() === PublicLinkModel::class;
+            }
+        );
+
+        $this->database
+            ->expects(self::once())
+            ->method('runQuery')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->publicLink->search($item);
     }
 
     protected function setUp(): void

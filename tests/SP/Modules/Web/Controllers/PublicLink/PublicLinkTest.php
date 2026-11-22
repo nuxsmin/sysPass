@@ -27,11 +27,15 @@ declare(strict_types=1);
 namespace SP\Modules\Web\Controllers\PublicLink;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Ports\PublicLinkAuthorizationService;
 use SP\Domain\Account\Ports\PublicLinkService;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\PublicLinkDataGenerator;
 use SP\Tests\IntegrationTestCase;
@@ -42,6 +46,53 @@ use SP\Tests\IntegrationTestCase;
 #[Group('integration')]
 final class PublicLinkTest extends IntegrationTestCase
 {
+    private ?int $actorId = null;
+    private bool $actorIsAdmin = false;
+
+    protected function getUserDataDto(): UserDto
+    {
+        $user = parent::getUserDataDto();
+        return $this->actorId === null ? $user : $user->mutate(['id' => $this->actorId, 'isAdminApp' => $this->actorIsAdmin]);
+    }
+
+    public static function managedViewActors(): array
+    {
+        return [
+            'creator' => [10, false, true],
+            'other user' => [11, false, false],
+            'administrator' => [12, true, true],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('managedViewActors')]
+    public function managedViewWithActionPermissionEnforcesCreatorOrAdminScoping(
+        int $actorId,
+        bool $isAdmin,
+        bool $allowed
+    ): void {
+        $this->actorId = $actorId;
+        $this->actorIsAdmin = $isAdmin;
+
+        $link = PublicLinkDataGenerator::factory()->buildPublicLinkList()->mutate(['userId' => 10]);
+        $repository = $this->createStub(\SP\Domain\Account\Ports\PublicLinkRepository::class);
+        $repository->method('getById')->willReturn(
+            new \SP\Domain\Database\Dtos\QueryResult([new \SP\Domain\Common\Models\Simple($link->toArray())])
+        );
+
+        ob_start();
+        try {
+            $this->runRoute('get', 'publicLink/view/100', [\SP\Domain\Account\Ports\PublicLinkRepository::class => $repository]);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+
+        if ($allowed) {
+            $this->checkView($output);
+        } else {
+            $this->checkViewDenied($output);
+        }
+    }
     #[Test]
     #[BodyChecker('checkSearch')]
     public function search(): void
@@ -68,6 +119,24 @@ final class PublicLinkTest extends IntegrationTestCase
     public function view(): void
     {
         $this->runRoute('get', 'publicLink/view/100', $this->serviceStub());
+    }
+
+    #[Test]
+    #[BodyChecker('checkViewDenied')]
+    public function viewWithoutActionPermissionDoesNotLookUpLink(): void
+    {
+        $acl = $this->createStub(AclInterface::class);
+        $acl->method('checkUserAccess')->willReturnCallback(
+            static fn(int $action): bool => $action !== AclActionsInterface::PUBLICLINK_VIEW
+        );
+        $service = $this->createMock(PublicLinkService::class);
+        $service->expects(self::never())->method('getById');
+        $this->runRoute('get', 'publicLink/view/100', [AclInterface::class => $acl, PublicLinkService::class => $service]);
+    }
+
+    public function checkViewDenied(string $output): void
+    {
+        self::assertSame('ERROR', $this->decode($output)['status']);
     }
 
     #[Test]
@@ -179,8 +248,11 @@ final class PublicLinkTest extends IntegrationTestCase
 
     private function noopService(): array
     {
+        $service = $this->createStub(PublicLinkService::class);
+        $service->method('refresh')->willReturn(true);
+
         return [
-            PublicLinkService::class => $this->createStub(PublicLinkService::class),
+            PublicLinkService::class => $service,
             PublicLinkAuthorizationService::class => $this->createStub(PublicLinkAuthorizationService::class),
         ];
     }

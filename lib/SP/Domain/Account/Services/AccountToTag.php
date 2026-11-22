@@ -28,7 +28,7 @@ namespace SP\Domain\Account\Services;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Account\Ports\AccountToTagService;
 use SP\Domain\Common\Models\Item;
-use SP\Domain\Common\Models\Simple;
+use SP\Domain\Common\Models\Model;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
@@ -65,8 +65,11 @@ final class AccountToTag extends Service implements AccountToTagService
     {
         $tags = $this->accountToTagRepository
             ->getTagsByAccountId($id)
-            ->getDataAsArray(Simple::class);
+            ->getDataAsArray();
 
-        return array_map(fn($tag) => Item::buildFromSimpleModel($tag), $tags);
+        return array_map(
+            static fn(Model $tag): Item => $tag instanceof Item ? $tag : Item::buildFromSimpleModel($tag),
+            $tags
+        );
     }
 }

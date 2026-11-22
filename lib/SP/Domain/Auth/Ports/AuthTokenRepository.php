@@ -101,14 +101,6 @@ interface AuthTokenRepository extends Repository
     public function create(AuthTokenModel $authToken): QueryResult;
 
     /**
-     * Obtener el token de la API de un usuario
-     *
-     * @param int $userId
-     * @return QueryResult<T>
-     */
-    public function getTokenByUserId(int $userId): QueryResult;
-
-    /**
      * Updates an item
      *
      * @param AuthTokenModel $authToken
@@ -118,31 +110,6 @@ interface AuthTokenRepository extends Repository
      * @throws QueryException
      */
     public function update(AuthTokenModel $authToken): bool;
-
-    /**
-     * Regenerar el hash de los tokens de un usuario
-     *
-     * @param int $userId
-     * @param string $token
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function refreshTokenByUserId(int $userId, string $token): int;
-
-    /**
-     * Regenerar el hash de los tokens de un usuario
-     *
-     * @param int $userId
-     * @param string $vault
-     * @param string $hash
-     *
-     * @return int
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function refreshVaultByUserId(int $userId, string $vault, string $hash): int;
 
     /**
      * Devolver los datos de un token

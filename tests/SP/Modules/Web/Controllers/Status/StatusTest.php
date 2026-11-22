@@ -41,6 +41,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use SP\Domain\Common\Enums\ResponseStatus;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Tests\IntegrationTestCase;
 use Throwable;
@@ -51,15 +52,17 @@ use Throwable;
 #[Group('integration')]
 final class StatusTest extends IntegrationTestCase
 {
+    private bool $isAdminApp = true;
+
     #[Test]
-    public function checkRelease(): void
+    public function checkReleaseRouteReturnsAnUpdateEnvelope(): void
     {
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/status']),
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
             $this->definitions(
                 [
                     'tag_name' => 'v5.2.10.23010101',
-                    'html_url' => 'https://example.com/release',
+                    'html_url' => 'https://github.com/nuxsmin/sysPass/releases/tag/v5.2.10.23010101',
                     'name' => 'Release',
                     'body' => 'Release body',
                     'published_at' => '2023-01-01',
@@ -67,10 +70,58 @@ final class StatusTest extends IntegrationTestCase
             )
         );
 
-        $response = $container->get(StatusController::class)->statusAction();
+        ob_start();
+        IntegrationTestCase::runApp($container);
+        $output = ob_get_clean();
+        $response = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
 
-        self::assertSame(ResponseStatus::OK, $response->status);
-        self::assertSame('v5.2.10.23010101', $response->extra['version']);
+        self::assertSame(ResponseStatus::OK->name, $response['status']);
+        self::assertSame('v5.2.10.23010101', $response['data']['version']);
+        self::assertSame(
+            'https://github.com/nuxsmin/sysPass/releases/tag/v5.2.10.23010101',
+            $response['data']['url']
+        );
+    }
+
+    #[Test]
+    public function checkReleaseRejectsNonAdminUsers(): void
+    {
+        $this->isAdminApp = false;
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
+            $this->definitions(
+                [
+                    'tag_name' => 'v5.2.10.23010101',
+                    'html_url' => 'https://github.com/nuxsmin/sysPass/releases/tag/latest',
+                ]
+            )
+        );
+
+        $response = $container->get(CheckReleaseController::class)->checkReleaseAction();
+
+        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertNull($response->extra);
+    }
+
+    #[Test]
+    public function checkReleaseRejectsNonGitHubReleaseUrls(): void
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
+            $this->definitions(
+                [
+                    'tag_name' => 'v5.2.10.23010101',
+                    'html_url' => 'https://example.com/release',
+                    'name' => 'Release',
+                    'body' => 'Release body',
+                ]
+            )
+        );
+
+        $response = $container->get(CheckReleaseController::class)->checkReleaseAction();
+
+        self::assertSame(ResponseStatus::WARNING, $response->status);
+        self::assertNull($response->extra);
     }
 
     #[Test]
@@ -99,7 +150,7 @@ final class StatusTest extends IntegrationTestCase
     public function checkReleaseHandlesConnectionError(): void
     {
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/status']),
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
             $this->definitionsFor(
                 new ConnectException(
                     'Connection refused',
@@ -108,16 +159,17 @@ final class StatusTest extends IntegrationTestCase
             )
         );
 
-        $response = $container->get(StatusController::class)->statusAction();
+        $response = $container->get(CheckReleaseController::class)->checkReleaseAction();
 
-        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertSame(ResponseStatus::WARNING, $response->status);
+        self::assertNull($response->extra);
     }
 
     #[Test]
     public function checkReleaseHandlesHttpError(): void
     {
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/status']),
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
             $this->definitionsFor(
                 new ClientException(
                     'Not Found',
@@ -127,24 +179,26 @@ final class StatusTest extends IntegrationTestCase
             )
         );
 
-        $response = $container->get(StatusController::class)->statusAction();
+        $response = $container->get(CheckReleaseController::class)->checkReleaseAction();
 
-        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertSame(ResponseStatus::WARNING, $response->status);
+        self::assertNull($response->extra);
     }
 
     #[Test]
     public function checkReleaseHandlesNonJsonResponse(): void
     {
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/status']),
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
             $this->definitionsFor(
                 new GuzzleResponse(200, ['content-type' => 'text/html'], '<html></html>')
             )
         );
 
-        $response = $container->get(StatusController::class)->statusAction();
+        $response = $container->get(CheckReleaseController::class)->checkReleaseAction();
 
-        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertSame(ResponseStatus::WARNING, $response->status);
+        self::assertNull($response->extra);
     }
 
     #[Test]
@@ -169,7 +223,7 @@ final class StatusTest extends IntegrationTestCase
     public function checkReleaseThroughRealGuzzleHandlerStack(): void
     {
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/status']),
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
             $this->definitionsWithClient(
                 $this->guzzleClient(
                     new GuzzleResponse(
@@ -178,7 +232,7 @@ final class StatusTest extends IntegrationTestCase
                         json_encode(
                             [
                                 'tag_name' => 'v5.2.10.23010101',
-                                'html_url' => 'https://example.com/release',
+                                'html_url' => 'https://github.com/nuxsmin/sysPass/releases/tag/v5.2.10.23010101',
                                 'name' => 'Release',
                                 'body' => 'Release body',
                                 'published_at' => '2023-01-01',
@@ -190,7 +244,7 @@ final class StatusTest extends IntegrationTestCase
             )
         );
 
-        $response = $container->get(StatusController::class)->statusAction();
+        $response = $container->get(CheckReleaseController::class)->checkReleaseAction();
 
         self::assertSame(ResponseStatus::OK, $response->status);
         self::assertSame('v5.2.10.23010101', $response->extra['version']);
@@ -200,13 +254,13 @@ final class StatusTest extends IntegrationTestCase
     public function checkReleaseHandlesRealGuzzleHttpError(): void
     {
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/status']),
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
             $this->definitionsWithClient($this->guzzleClient(new GuzzleResponse(404)))
         );
 
-        $response = $container->get(StatusController::class)->statusAction();
+        $response = $container->get(CheckReleaseController::class)->checkReleaseAction();
 
-        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertSame(ResponseStatus::WARNING, $response->status);
     }
 
     /**
@@ -275,5 +329,250 @@ final class StatusTest extends IntegrationTestCase
             ClientInterface::class => $client,
             PhpExtensionCheckerService::class => $extensionChecker,
         ];
+    }
+
+    protected function getUserDataDto(): UserDto
+    {
+        return parent::getUserDataDto()->mutate(['isAdminApp' => $this->isAdminApp]);
+    }
+
+    #[Test]
+    public function dispatchedAnonymousIncompleteAndNonAdminAreDeniedCheckNoticesAndStatusIsRetired(): void
+    {
+        $anonCtx = $this->createStub(\SP\Domain\Core\Context\SessionContext::class);
+        $anonCtx->method('isLoggedIn')->willReturn(false);
+        $anonCtx->method('getAuthCompleted')->willReturn(false);
+        $anonCtx->method('getUserData')->willReturn(new UserDto());
+
+        $incompleteCtx = $this->createStub(\SP\Domain\Core\Context\SessionContext::class);
+        $incompleteCtx->method('isLoggedIn')->willReturn(true);
+        $incompleteCtx->method('getAuthCompleted')->willReturn(false);
+        $incompleteCtx->method('getUserData')->willReturn(
+            parent::getUserDataDto()->mutate(['isAdminApp' => true])
+        );
+
+        $this->isAdminApp = false;
+
+        $demoConfigData = self::createConfiguredStub(
+            \SP\Domain\Config\Ports\ConfigDataInterface::class,
+            array_merge($this->getConfigData(), ['isDemoEnabled' => true])
+        );
+        $demoConfigService = $this->createStub(\SP\Domain\Config\Ports\ConfigFileService::class);
+        $demoConfigService->method('getConfigData')->willReturn($demoConfigData);
+
+        $actors = [
+            'anonymous' => [
+                'overrides' => [\SP\Domain\Core\Context\Context::class => $anonCtx],
+                'kind' => 'unauthenticated',
+            ],
+            'incomplete' => [
+                'overrides' => [\SP\Domain\Core\Context\Context::class => $incompleteCtx],
+                'kind' => 'unauthenticated',
+            ],
+            'non-admin' => [
+                'overrides' => [],
+                'kind' => 'non_admin',
+            ],
+            'non-admin-demo' => [
+                'overrides' => [
+                    \SP\Domain\Config\Ports\ConfigFileService::class => $demoConfigService,
+                    \SP\Domain\Config\Ports\ConfigDataInterface::class => $demoConfigData,
+                ],
+                'kind' => 'non_admin',
+            ],
+        ];
+
+        foreach ($actors as $label => $actor) {
+            $actorOverrides = $actor['overrides'];
+
+            // 1. status/checkNotices blocks before any outbound HTTP request
+            $noticesClient = $this->createMock(ClientInterface::class);
+            $noticesClient->expects(self::never())->method('request');
+
+            if ($actor['kind'] === 'unauthenticated') {
+                $cNoticesJson = $this->buildContainer(
+                    IntegrationTestCase::buildRequest(
+                        'get',
+                        'index.php',
+                        ['r' => 'status/checkNotices'],
+                        [],
+                        [],
+                        ['HTTP_ACCEPT' => 'application/json']
+                    ),
+                    $this->definitionsWithClient($noticesClient) + $actorOverrides
+                );
+                ob_start();
+                try {
+                    IntegrationTestCase::runApp($cNoticesJson);
+                } finally {
+                    $noticesOut = (string) ob_get_clean();
+                }
+                $noticesBody = (string) $cNoticesJson->get(\Klein\Response::class)->body();
+                $decodedNotices = json_decode($noticesBody, true, 512, JSON_THROW_ON_ERROR);
+                self::assertSame(10, $decodedNotices['status'], $label);
+                self::assertSame($noticesBody, $noticesOut, $label);
+            } else {
+                $cNoticesNonAdmin = $this->buildContainer(
+                    IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkNotices']),
+                    $this->definitionsWithClient($noticesClient) + $actorOverrides
+                );
+                ob_start();
+                try {
+                    IntegrationTestCase::runApp($cNoticesNonAdmin);
+                } finally {
+                    $noticesOut = (string) ob_get_clean();
+                }
+                $decodedNotices = json_decode($noticesOut, true, 512, JSON_THROW_ON_ERROR);
+                self::assertSame(ResponseStatus::ERROR->name, $decodedNotices['status'], $label);
+                self::assertNull($decodedNotices['data'], $label);
+            }
+
+            // 2. Legacy status/status is retired (404, zero outbound HTTP)
+            $statusClient = $this->createMock(ClientInterface::class);
+            $statusClient->expects(self::never())->method('request');
+
+            $cStatus = $this->buildContainer(
+                IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/status']),
+                $this->definitionsWithClient($statusClient) + $actorOverrides
+            );
+            ob_start();
+            try {
+                IntegrationTestCase::runApp($cStatus);
+            } finally {
+                ob_end_clean();
+            }
+            self::assertSame(404, $cStatus->get(\Klein\Response::class)->code(), $label);
+
+            // 3. status/checkRelease blocks before making any outbound HTTP request.
+            $releaseClient = $this->createMock(ClientInterface::class);
+            $releaseClient->expects(self::never())->method('request');
+
+            $cReleaseNoAccept = $this->buildContainer(
+                IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
+                $this->definitionsWithClient($releaseClient) + $actorOverrides
+            );
+            if ($actor['kind'] === 'unauthenticated') {
+                ob_start();
+                try {
+                    IntegrationTestCase::runApp($cReleaseNoAccept);
+                } finally {
+                    ob_end_clean();
+                }
+                /** @var \Klein\Response $releaseNoAcceptResp */
+                $releaseNoAcceptResp = $cReleaseNoAccept->get(\Klein\Response::class);
+                $releaseHeaders = $releaseNoAcceptResp->headers()->all();
+                self::assertSame(302, $releaseNoAcceptResp->code(), $label);
+                self::assertStringContainsString(
+                    'r=login',
+                    (string) ($releaseHeaders['location'] ?? $releaseHeaders['Location'] ?? ''),
+                    $label
+                );
+
+                // With Accept: */*, checks() sends nothing and throws SessionTimeout (empty 200)
+                $releaseClientStar = $this->createMock(ClientInterface::class);
+                $releaseClientStar->expects(self::never())->method('request');
+                $cReleaseStar = $this->buildContainer(
+                    IntegrationTestCase::buildRequest(
+                        'get',
+                        'index.php',
+                        ['r' => 'status/checkRelease'],
+                        [],
+                        [],
+                        ['HTTP_ACCEPT' => '*/*']
+                    ),
+                    $this->definitionsWithClient($releaseClientStar) + $actorOverrides
+                );
+                ob_start();
+                try {
+                    IntegrationTestCase::runApp($cReleaseStar);
+                } finally {
+                    $starOut = (string) ob_get_clean();
+                }
+                self::assertSame('', $starOut, $label);
+
+                // With Accept: application/json, the timeout response is sent once.
+                $releaseClientJson = $this->createMock(ClientInterface::class);
+                $releaseClientJson->expects(self::never())->method('request');
+                $cReleaseJson = $this->buildContainer(
+                    IntegrationTestCase::buildRequest(
+                        'get',
+                        'index.php',
+                        ['r' => 'status/checkRelease'],
+                        [],
+                        [],
+                        ['HTTP_ACCEPT' => 'application/json']
+                    ),
+                    $this->definitionsWithClient($releaseClientJson) + $actorOverrides
+                );
+                ob_start();
+                try {
+                    IntegrationTestCase::runApp($cReleaseJson);
+                } finally {
+                    $jsonOut = (string) ob_get_clean();
+                }
+                $responseBody = (string) $cReleaseJson->get(\Klein\Response::class)->body();
+                $jsonDecoded = json_decode($responseBody, true, 512, JSON_THROW_ON_ERROR);
+                self::assertSame(10, $jsonDecoded['status'], $label);
+                self::assertSame($responseBody, $jsonOut, $label);
+            } else {
+                ob_start();
+                try {
+                    IntegrationTestCase::runApp($cReleaseNoAccept);
+                } finally {
+                    $releaseOut = (string) ob_get_clean();
+                }
+                $decodedRelease = json_decode($releaseOut, true, 512, JSON_THROW_ON_ERROR);
+                self::assertSame(ResponseStatus::ERROR->name, $decodedRelease['status'], $label);
+                self::assertNull($decodedRelease['data'], $label);
+            }
+        }
+    }
+
+    #[Test]
+    public function dispatchedCheckReleaseAndNoticesReturnSafeEnvelopesOnMalformedResponses(): void
+    {
+        $this->isAdminApp = true;
+
+        $malformedRelease = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
+            $this->definitions(['unexpected' => 'fields'])
+        );
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($malformedRelease);
+        } finally {
+            $relOut = (string) ob_get_clean();
+        }
+        $relDecoded = json_decode($relOut, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame(ResponseStatus::WARNING->name, $relDecoded['status']);
+        self::assertNull($relDecoded['data']);
+
+        $malformedNoticesHtml = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkNotices']),
+            $this->definitionsFor(new GuzzleResponse(200, ['content-type' => 'text/html'], '<html>oops</html>'))
+        );
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($malformedNoticesHtml);
+        } finally {
+            $notOut = (string) ob_get_clean();
+        }
+        $notDecoded = json_decode($notOut, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame(ResponseStatus::ERROR->name, $notDecoded['status']);
+        self::assertNull($notDecoded['data']);
+
+        $malformedNoticesJson = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkNotices']),
+            $this->definitions(['unexpected' => 'fields'])
+        );
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($malformedNoticesJson);
+        } finally {
+            $notJsonOut = (string) ob_get_clean();
+        }
+        $notJsonDecoded = json_decode($notJsonOut, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame(ResponseStatus::ERROR->name, $notJsonDecoded['status']);
+        self::assertNull($notJsonDecoded['data']);
     }
 }

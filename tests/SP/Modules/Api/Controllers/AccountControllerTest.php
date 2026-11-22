@@ -739,7 +739,7 @@ class AccountControllerTest extends ApiTestCase
         $response = self::processJsonResponse($api);
 
         $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('The account doesn\'t exist', $response->error->message);
+        $this->assertEquals('You don\'t have permission to access this account', $response->error->message);
     }
 
     /**

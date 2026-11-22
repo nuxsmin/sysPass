@@ -83,22 +83,9 @@ trait DatabaseTrait
                 exit(1);
             }
 
-            if (!empty($dbPass)) {
-                $cmd = sprintf(
-                    'mysql -h %s -u %s -p%s %s',
-                    $dbServer,
-                    $dbUser,
-                    $dbPass,
-                    $dbName
-                );
-            } else {
-                $cmd = sprintf(
-                    'mysql -h %s -u %s %s',
-                    $dbServer,
-                    $dbUser,
-                    $dbName
-                );
-            }
+            $cmd = ['mysql', '-h', (string)$dbServer, '-u', (string)$dbUser, (string)$dbName];
+            $environment = getenv();
+            $environment['MYSQL_PWD'] = (string)$dbPass;
 
             $process = proc_open(
                 $cmd,
@@ -107,7 +94,9 @@ trait DatabaseTrait
                     1 => ['pipe', 'w'],
                     2 => ['pipe', 'w']
                 ],
-                $pipes
+                $pipes,
+                null,
+                $environment
             );
 
             if (is_resource($process) === false) {
@@ -131,7 +120,7 @@ trait DatabaseTrait
                 /** @noinspection ForgottenDebugOutputInspection */
                 error_log(sprintf('Cannot load fixtures from: %s', $file));
                 /** @noinspection ForgottenDebugOutputInspection */
-                error_log(sprintf('CMD: %s', $cmd));
+                error_log('Failed to execute mysql fixture loader');
                 /** @noinspection ForgottenDebugOutputInspection */
                 error_log($stderr ?: $stdout);
 

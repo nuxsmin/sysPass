@@ -6,8 +6,11 @@ import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { isAllowedArtifact } from './uploads.mjs';
+import { buildFailureRecord } from './failure-evidence.mjs';
 import { canaryRuntimeStatus } from './canary-runtime.mjs';
+import { buildRunSummary, renderJUnit, resolveSelection } from './summary.mjs';
+import { specsForTier } from './tiers.mjs';
+import { buildUploadManifest, isAllowedArtifact } from './uploads.mjs';
 import {
   MASK_COLOR,
   SENSITIVE_BOX,
@@ -447,5 +450,80 @@ test('a diagnostic retry keeps first-attempt failure evidence and never claims T
       /CANARY_RETRY_SECRET/,
       `${file} retained the synthetic retry canary`,
     );
+  }
+});
+
+test('a WRITE failure canary never reaches summary, JUnit, failure.json, manifest or console output', () => {
+  const name = 'CANARY_WRITE_NAME_7d3e';
+  const login = 'CANARY_WRITE_LOGIN_8c1f';
+  const password = 'CANARY_WRITE_PASSWORD_9a2b';
+  const ciphertext = 'CANARY_WRITE_CIPHERTEXT_4f6d';
+  const route = 'account/saveCreate';
+  const url = `http://ui-smoke.invalid/index.php?r=${route}&name=${name}&login=${login}&password=${password}&ciphertext=${ciphertext}`;
+  const message = `http [${route}]: POST ${url} failed with password=${password}`;
+  const selection = resolveSelection({
+    tier: 'WRITE',
+    specs: '',
+    grep: false,
+    availableSpecs: specsForTier('WRITE'),
+  });
+  const summary = buildRunSummary({
+    runId: 'ui-workflow.write-canary',
+    selection,
+    commit: { sha: 'f'.repeat(40), short: 'fffffffff', dirty: false, branch: 'master' },
+    environment: { ci: true, node: 'v20.19.2', platform: 'linux', playwright: '1.63.0', tier: 'WRITE' },
+    tests: [
+      {
+        title: 'creates one account through the write wiring',
+        file: 'tests/ui/specs/accountCreate.write.spec.ts',
+        attempts: [
+          {
+            status: 'failed',
+            durationMs: 42,
+            error: { message, stack: `Error: ${message}\n    at ${url}` },
+          },
+        ],
+      },
+    ],
+    startedAt: '2026-11-12T00:00:00.000Z',
+    finishedAt: '2026-11-12T00:01:00.000Z',
+    durationMs: 60_000,
+    resultStatus: 'failed',
+    globalErrors: [{ message }],
+  });
+  const junit = renderJUnit(summary);
+  const failure = buildFailureRecord({
+    runId: 'ui-workflow.write-canary',
+    test: {
+      title: 'creates one account through the write wiring',
+      file: 'tests/ui/specs/accountCreate.write.spec.ts',
+      project: 'chromium',
+    },
+    error: { message, stack: `Error: ${message}\n    at ${url}` },
+    pageUrl: url,
+    requests: [{ route, method: 'POST', status: 500, url }],
+    consoleEntries: [{ type: 'error', text: `save request failed: ${url} password=${password}` }],
+  });
+  const manifest = buildUploadManifest([
+    { path: 'run-summary.json', contents: JSON.stringify(summary) },
+    { path: 'junit.xml', contents: junit },
+    { path: 'failures/attempt-1/failure.json', contents: JSON.stringify(failure) },
+  ]);
+  const retained = {
+    summary: JSON.stringify(summary),
+    junit,
+    failure: JSON.stringify(failure),
+    manifest: JSON.stringify(manifest),
+    console: JSON.stringify(failure.console),
+  };
+
+  assert.equal(summary.status, 'failed');
+  assert.equal(summary.completeTierWrite, false);
+  assert.equal(summary.completeTierA, false);
+
+  for (const [artifact, contents] of Object.entries(retained)) {
+    for (const secret of [name, login, password, ciphertext]) {
+      assert.doesNotMatch(contents, new RegExp(secret), `${artifact} retained the synthetic WRITE canary`);
+    }
   }
 });

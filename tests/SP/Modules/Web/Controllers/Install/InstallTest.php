@@ -185,4 +185,52 @@ final class InstallTest extends IntegrationTestCase
 
         return $container;
     }
+
+    #[Test]
+    public function installWhenAlreadyInstalledDispatchesToInstallerWithoutControllerGuard(): void
+    {
+        $installedConfig = self::createConfiguredStub(
+            \SP\Domain\Config\Ports\ConfigDataInterface::class,
+            array_merge(parent::getConfigData(), ['isInstalled' => true, 'getSiteLang' => 'en_US'])
+        );
+        $configService = $this->createStub(\SP\Domain\Config\Ports\ConfigFileService::class);
+        $configService->method('getConfigData')->willReturn($installedConfig);
+
+        $installer = $this->createMock(InstallerService::class);
+        $installer->expects(self::once())->method('run');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'install/install'],
+                [
+                    'sitelang' => 'en_US',
+                    'adminlogin' => 'admin',
+                    'adminpass' => 'synthetic-secret',
+                    'masterpassword' => 'synthetic-master',
+                    'dbuser' => 'root',
+                    'dbpass' => 'synthetic-dbpass',
+                    'dbname' => 'syspass_test',
+                    'dbhost' => '127.0.0.1',
+                ]
+            ),
+            [
+                \SP\Domain\Config\Ports\ConfigFileService::class => $configService,
+                \SP\Domain\Config\Ports\ConfigDataInterface::class => $installedConfig,
+                InstallerService::class => $installer,
+            ]
+        );
+
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($container);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+
+        $json = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('OK', $json['status']);
+        self::assertSame('Installation finished', $json['description']);
+    }
 }

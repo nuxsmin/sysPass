@@ -42,20 +42,36 @@ class AuthToken extends Model
         AclActionsInterface::ACCOUNT_CREATE,
     ];
 
-    protected ?int    $id        = null;
-    protected ?int    $userId    = null;
-    protected ?string $token     = null;
-    protected ?int    $createdBy = null;
-    protected ?int    $startDate = null;
-    protected ?int    $actionId  = null;
-    protected ?string $hash      = null;
-    protected ?string $vault     = null;
-    protected ?string $name      = null;
-    protected ?string $login     = null;
+    private const KEY_DEPENDENT_ACTIONS = [
+        AclActionsInterface::ACCOUNT_VIEW_PASS,
+        AclActionsInterface::ACCOUNT_EDIT_PASS,
+        AclActionsInterface::ACCOUNT_CREATE,
+        AclActionsInterface::ACCOUNT_VIEW,
+        AclActionsInterface::CATEGORY_VIEW,
+        AclActionsInterface::CLIENT_VIEW,
+    ];
+
+    protected ?int    $id         = null;
+    protected ?int    $userId     = null;
+    protected ?string $token      = null;
+    protected ?int    $createdBy  = null;
+    protected ?int    $startDate  = null;
+    protected ?int    $expireDate = null;
+    protected ?int    $actionId   = null;
+    protected ?string $hash       = null;
+    protected ?string $vault      = null;
+    protected ?string $name       = null;
+    protected ?string $login      = null;
+    protected ?bool   $noExpiry   = null;
 
     public static function isSecuredAction(int $action): bool
     {
         return in_array($action, self::SECURED_ACTIONS, true);
+    }
+
+    public static function isKeyDependentAction(int $action): bool
+    {
+        return in_array($action, self::KEY_DEPENDENT_ACTIONS, true);
     }
 
     public function getId(): ?int
@@ -88,6 +104,11 @@ class AuthToken extends Model
         return $this->startDate;
     }
 
+    public function getExpireDate(): ?int
+    {
+        return $this->expireDate;
+    }
+
     public function getActionId(): ?int
     {
         return $this->actionId;
@@ -106,5 +127,10 @@ class AuthToken extends Model
     public function getLogin(): ?string
     {
         return $this->login;
+    }
+
+    public function getNoExpiry(): ?bool
+    {
+        return $this->noExpiry;
     }
 }

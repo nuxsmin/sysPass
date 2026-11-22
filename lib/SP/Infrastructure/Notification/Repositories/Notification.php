@@ -82,7 +82,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
         $query = $this->queryFactory
             ->newUpdate()
             ->table(NotificationModel::TABLE)
-            ->cols($notification->toArray(null, ['id']))
+            ->cols($notification->toArray(null, ['id', 'date']))
             ->set('date', 'UNIX_TIMESTAMP()')
             ->where('id = :id', ['id' => $notification->getId()])
             ->limit(1);
@@ -214,6 +214,13 @@ final class Notification extends BaseRepository implements NotificationRepositor
      */
     public function getByIdBatch(array $notificationsId): QueryResult
     {
+        if (count($notificationsId) === 0) {
+            /** @var QueryResult<T> $empty */
+            $empty = new QueryResult();
+
+            return $empty;
+        }
+
         $query = $this->queryFactory
             ->newSelect()
             ->from(NotificationModel::TABLE)

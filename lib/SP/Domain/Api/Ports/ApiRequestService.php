@@ -69,7 +69,9 @@ interface ApiRequestService
     public function getMethod(): string;
 
     /**
-     * @return int
+     * @return int|float|string|null
      */
-    public function getId(): int;
+    public function getId(): int|float|string|null;
+
+    public function isNotification(): bool;
 }

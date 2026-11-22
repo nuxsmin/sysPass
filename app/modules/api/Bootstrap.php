@@ -34,15 +34,18 @@ use ReflectionAttribute;
 use ReflectionMethod;
 use ReflectionNamedType;
 use SP\Core\Bootstrap\BootstrapBase;
+use SP\Domain\Api\Exceptions\ApiRequestException;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Api\Adapters\ActionResponseAdapter;
 use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Http\Code;
+use Throwable;
 
 use function SP\logger;
 use function SP\processException;
@@ -89,6 +92,7 @@ final class Bootstrap extends BootstrapBase
     {
         return function (Request $request, Response $response) {
             $actionResponseAdapter = $this->buildInstanceFor(ActionResponseAdapter::class);
+            $apiRequest = null;
 
             try {
                 logger('API route');
@@ -96,14 +100,22 @@ final class Bootstrap extends BootstrapBase
                 $response->headers()->set('Content-type', 'application/json; charset=utf-8');
 
                 $apiRequest = $this->buildInstanceFor(ApiRequestService::class);
-                [$controllerName, $actionName] = explode('/', $apiRequest->getMethod());
+                $methodParts = explode('/', $apiRequest->getMethod(), 2);
+                $controllerName = $methodParts[0];
+                $actionName = $methodParts[1] ?? '';
                 $controllerClass = self::getClassFor($this->module->getName(), $controllerName, $actionName);
                 $methodName = $actionName . 'Action';
 
-                $method = $this->getActionMethod($controllerClass, $methodName);
+                $method = $actionName !== '' ? $this->getActionMethod($controllerClass, $methodName) : null;
 
                 if ($method === null) {
                     logger($controllerClass . '::' . $methodName);
+
+                    if ($apiRequest->isNotification()) {
+                        $response->code(Code::NO_CONTENT->value);
+
+                        return $response->body('');
+                    }
 
                     $response->code(Code::NOT_FOUND->value);
 
@@ -130,6 +142,12 @@ final class Bootstrap extends BootstrapBase
                     /** @var ActionResponse $actionResponse */
                     $actionResponse = $method->invoke($controller);
 
+                    if ($apiRequest->isNotification()) {
+                        $response->code(Code::NO_CONTENT->value);
+
+                        return $response->body('');
+                    }
+
                     if ($controller instanceof ControllerBase
                         && $controller->isAuthenticated() === false
                     ) {
@@ -145,19 +163,67 @@ final class Bootstrap extends BootstrapBase
                     return $response->body(
                         $actionResponseAdapter->toJsonRpc($actionResponse, $apiRequest->getId())
                     );
-                } catch (Exception $e) {
+                } catch (SPException $e) {
                     processException($e);
+
+                    if ($apiRequest->isNotification()) {
+                        $response->code(Code::NO_CONTENT->value);
+
+                        return $response->body('');
+                    }
 
                     return $response->body(
                         $actionResponseAdapter->toJsonRpcException($e, $apiRequest->getId())
                     );
+                } catch (Throwable $e) {
+                    processException($e);
+
+                    if ($apiRequest->isNotification()) {
+                        $response->code(Code::NO_CONTENT->value);
+
+                        return $response->body('');
+                    }
+
+                    $response->code(Code::INTERNAL_SERVER_ERROR->value);
+
+                    return $response->body(
+                        $actionResponseAdapter->toJsonRpcError(
+                            'Internal error',
+                            ActionResponseAdapter::INTERNAL_ERROR,
+                            $apiRequest->getId()
+                        )
+                    );
                 }
-            } catch (Exception $e) {
+            } catch (ApiRequestException $e) {
                 processException($e);
+
+                if ($e->isNotification()) {
+                    $response->code(Code::NO_CONTENT->value);
+
+                    return $response->body('');
+                }
+
+                $response->code(Code::BAD_REQUEST->value);
+
+                return $response->body($actionResponseAdapter->toJsonRpcException($e, $e->getRequestId()));
+            } catch (Throwable $e) {
+                processException($e);
+
+                if ($apiRequest?->isNotification() === true) {
+                    $response->code(Code::NO_CONTENT->value);
+
+                    return $response->body('');
+                }
 
                 $response->code(Code::INTERNAL_SERVER_ERROR->value);
 
-                return $response->body($actionResponseAdapter->toJsonRpcException($e, 0));
+                return $response->body(
+                    $actionResponseAdapter->toJsonRpcError(
+                        'Internal error',
+                        ActionResponseAdapter::INTERNAL_ERROR,
+                        $apiRequest?->getId()
+                    )
+                );
             }
         };
     }

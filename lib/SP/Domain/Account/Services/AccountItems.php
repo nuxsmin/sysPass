@@ -73,78 +73,90 @@ final class AccountItems extends Service implements AccountItemsService
         AccountUpdateDto $accountUpdateDto
     ): void {
         if ($userCanChangePermissions) {
-            if (null === $accountUpdateDto->userGroupsView) {
-                $this->accountToUserGroupRepository->deleteTypeByAccountId($accountId, false);
-            } elseif (count($accountUpdateDto->userGroupsView) > 0) {
-                $this->accountToUserGroupRepository->transactionAware(
-                    function () use ($accountUpdateDto, $accountId) {
-                        $this->accountToUserGroupRepository
-                            ->deleteTypeByAccountId($accountId, false);
-                        $this->accountToUserGroupRepository
-                            ->addByType($accountId, $accountUpdateDto->userGroupsView);
-                    },
-                    $this
-                );
+            if ($accountUpdateDto->userGroupsView !== null) {
+                if (count($accountUpdateDto->userGroupsView) === 0) {
+                    $this->accountToUserGroupRepository->deleteTypeByAccountId($accountId, false);
+                } else {
+                    $this->accountToUserGroupRepository->transactionAware(
+                        function () use ($accountUpdateDto, $accountId) {
+                            $this->accountToUserGroupRepository
+                                ->deleteTypeByAccountId($accountId, false);
+                            $this->accountToUserGroupRepository
+                                ->addByType($accountId, $accountUpdateDto->userGroupsView);
+                        },
+                        $this
+                    );
+                }
             }
 
-            if (null === $accountUpdateDto->userGroupsEdit) {
-                $this->accountToUserGroupRepository->deleteTypeByAccountId($accountId, true);
-            } elseif (count($accountUpdateDto->userGroupsEdit) > 0) {
-                $this->accountToUserGroupRepository->transactionAware(
-                    function () use ($accountUpdateDto, $accountId) {
-                        $this->accountToUserGroupRepository
-                            ->deleteTypeByAccountId($accountId, true);
-                        $this->accountToUserGroupRepository
-                            ->addByType($accountId, $accountUpdateDto->userGroupsEdit, true);
-                    },
-                    $this
-                );
+            if ($accountUpdateDto->userGroupsEdit !== null) {
+                if (count($accountUpdateDto->userGroupsEdit) === 0) {
+                    $this->accountToUserGroupRepository->deleteTypeByAccountId($accountId, true);
+                } else {
+                    $this->accountToUserGroupRepository->transactionAware(
+                        function () use ($accountUpdateDto, $accountId) {
+                            $this->accountToUserGroupRepository
+                                ->deleteTypeByAccountId($accountId, true);
+                            $this->accountToUserGroupRepository
+                                ->addByType($accountId, $accountUpdateDto->userGroupsEdit, true);
+                        },
+                        $this
+                    );
+                }
             }
 
-            if (null === $accountUpdateDto->usersView) {
-                $this->accountToUserRepository->deleteTypeByAccountId($accountId, false);
-            } elseif (count($accountUpdateDto->usersView) > 0) {
-                $this->accountToUserRepository->transactionAware(
-                    function () use ($accountUpdateDto, $accountId) {
-                        $this->accountToUserRepository
-                            ->deleteTypeByAccountId($accountId, false);
-                        $this->accountToUserRepository
-                            ->addByType($accountId, $accountUpdateDto->usersView);
-                    },
-                    $this
-                );
+            if ($accountUpdateDto->usersView !== null) {
+                if (count($accountUpdateDto->usersView) === 0) {
+                    $this->accountToUserRepository->deleteTypeByAccountId($accountId, false);
+                } else {
+                    $this->accountToUserRepository->transactionAware(
+                        function () use ($accountUpdateDto, $accountId) {
+                            $this->accountToUserRepository
+                                ->deleteTypeByAccountId($accountId, false);
+                            $this->accountToUserRepository
+                                ->addByType($accountId, $accountUpdateDto->usersView);
+                        },
+                        $this
+                    );
+                }
             }
 
-            if (null === $accountUpdateDto->usersEdit) {
-                $this->accountToUserRepository->deleteTypeByAccountId($accountId, true);
-            } elseif (count($accountUpdateDto->usersEdit) > 0) {
-                $this->accountToUserRepository->transactionAware(
-                    function () use ($accountUpdateDto, $accountId) {
-                        $this->accountToUserRepository
-                            ->deleteTypeByAccountId($accountId, true);
-                        $this->accountToUserRepository
-                            ->addByType($accountId, $accountUpdateDto->usersEdit, true);
-                    },
-                    $this
-                );
+            if ($accountUpdateDto->usersEdit !== null) {
+                if (count($accountUpdateDto->usersEdit) === 0) {
+                    $this->accountToUserRepository->deleteTypeByAccountId($accountId, true);
+                } else {
+                    $this->accountToUserRepository->transactionAware(
+                        function () use ($accountUpdateDto, $accountId) {
+                            $this->accountToUserRepository
+                                ->deleteTypeByAccountId($accountId, true);
+                            $this->accountToUserRepository
+                                ->addByType($accountId, $accountUpdateDto->usersEdit, true);
+                        },
+                        $this
+                    );
+                }
             }
         }
 
-        if (null === $accountUpdateDto->tags) {
-            $this->accountToTagRepository->deleteByAccountId($accountId);
-        } elseif (count($accountUpdateDto->tags) > 0) {
-            $this->accountToTagRepository->transactionAware(
-                function () use ($accountUpdateDto, $accountId) {
-                    $this->accountToTagRepository->deleteByAccountId($accountId);
-                    $this->accountToTagRepository->add($accountId, $accountUpdateDto->tags);
-                },
-                $this
-            );
+        if ($accountUpdateDto->tags !== null) {
+            if (count($accountUpdateDto->tags) === 0) {
+                $this->accountToTagRepository->deleteByAccountId($accountId);
+            } else {
+                $this->accountToTagRepository->transactionAware(
+                    function () use ($accountUpdateDto, $accountId) {
+                        $this->accountToTagRepository->deleteByAccountId($accountId);
+                        $this->accountToTagRepository->add($accountId, $accountUpdateDto->tags);
+                    },
+                    $this
+                );
+            }
         }
     }
 
     /**
      * Adds external items to the account
+     *
+     * @throws SPException
      */
     public function addItems(bool $userCanChangePermissions, int $accountId, AccountCreateDto $accountCreateDto): void
     {
@@ -183,6 +195,8 @@ final class AccountItems extends Service implements AccountItemsService
             }
         } catch (SPException $e) {
             $this->logger->error($e->getMessage());
+
+            throw $e;
         }
     }
 }

@@ -30,11 +30,15 @@ use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Common\Providers\Html;
 use SP\Domain\Http\Providers\Uri;
+use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
@@ -48,10 +52,15 @@ final class SaveRequestController extends AccountControllerBase
 {
     use ItemTrait;
 
+    private const MAX_REQUESTS_PER_DAY     = 3;
+    private const RATE_LIMIT_WINDOW_SECONDS = 86400;
+    private const RATE_LIMIT_SOURCE_PREFIX = 'account.request:';
+
     public function __construct(
         WebControllerHelper             $webControllerHelper,
         private readonly AccountService $accountService,
-        private readonly UserService    $userService
+        private readonly UserService    $userService,
+        private readonly TrackService   $trackService
     ) {
         parent::__construct($webControllerHelper);
     }
@@ -67,13 +76,38 @@ final class SaveRequestController extends AccountControllerBase
     #[Action(ResponseType::JSON)]
     public function saveRequestAction(int $id): ActionResponse
     {
-        $description = $this->request->analyzeString('description');
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_REQUEST)) {
+            throw new UnauthorizedPageException(SPException::INFO);
+        }
 
-        if (empty($description)) {
+        if (!$this->accountService->isVisible($id, true)) {
+            throw new AccountPermissionException(SPException::INFO);
+        }
+
+        try {
+            $accountView = $this->accountService->getByIdEnriched($id);
+        } catch (NoSuchItemException) {
+            throw new AccountPermissionException(SPException::INFO);
+        }
+
+        $description = trim($this->request->analyzeString('description', ''));
+
+        if ($description === '') {
             throw new ValidationException(__u('A description is needed'));
         }
 
-        $accountView = $this->accountService->getByIdEnriched($id);
+        $trackSource = self::RATE_LIMIT_SOURCE_PREFIX . $id;
+        $recentRequests = $this->trackService->countForUserAndSourceFromTime(
+            $this->userDto->id,
+            $trackSource,
+            time() - self::RATE_LIMIT_WINDOW_SECONDS
+        );
+
+        if ($recentRequests >= self::MAX_REQUESTS_PER_DAY) {
+            throw new ValidationException(__u('Maximum number of requests exceeded'));
+        }
+
+        $this->trackService->addUserTrack($this->userDto->id, $trackSource);
 
         $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
                    $this->uriContext->getSubUri();
@@ -83,7 +117,7 @@ final class SaveRequestController extends AccountControllerBase
 
         $deepLinkUrl = Html::getSafeUrl($deepLink->getUriSigned($this->configData->getPasswordSalt()));
 
-        $usersId = [$accountView->getUserId(), $accountView->getUserEditId()];
+        $usersId = [$accountView->getUserId()];
 
         $this->eventDispatcher->notify(
             'request.account',

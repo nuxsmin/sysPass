@@ -32,5 +32,30 @@ use SP\Domain\Core\Exceptions\SPException;
  */
 final class ApiRequestException extends SPException
 {
+    private int|float|string|null $requestId = null;
+    private bool $notification = false;
 
+    public function withRequestId(int|float|string|null $requestId): self
+    {
+        $this->requestId = $requestId;
+
+        return $this;
+    }
+
+    public function getRequestId(): int|float|string|null
+    {
+        return $this->requestId;
+    }
+
+    public function asNotification(bool $notification = true): self
+    {
+        $this->notification = $notification;
+
+        return $this;
+    }
+
+    public function isNotification(): bool
+    {
+        return $this->notification;
+    }
 }

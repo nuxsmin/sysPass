@@ -33,6 +33,7 @@ use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -59,6 +60,7 @@ interface PublicLinkService
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
+     * @throws UnauthorizedActionException
      */
     public function getById(int $id): PublicLinkList;
 
@@ -70,6 +72,7 @@ interface PublicLinkService
      * @throws SPException
      * @throws NoSuchItemException
      * @throws ServiceException
+     * @throws UnauthorizedActionException
      */
     public function refresh(int $id): bool;
 
@@ -82,6 +85,7 @@ interface PublicLinkService
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
+     * @throws UnauthorizedActionException
      */
     public function delete(int $id): PublicLinkService;
 
@@ -93,6 +97,8 @@ interface PublicLinkService
      * @throws ConstraintException
      * @throws QueryException
      * @throws ServiceException
+     * @throws NoSuchItemException
+     * @throws UnauthorizedActionException
      */
     public function deleteByIdBatch(array $ids): int;
 
@@ -120,7 +126,7 @@ interface PublicLinkService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function addLinkView(PublicLink $publicLink): void;
+    public function addLinkView(PublicLink $publicLink): bool;
 
     /**
      * @throws SPException
@@ -142,6 +148,8 @@ interface PublicLinkService
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws UnauthorizedActionException
      */
     public function update(PublicLink $publicLink): void;
 }

@@ -25,12 +25,14 @@ declare(strict_types=1);
 
 namespace SP\Tests\Infrastructure\Account\Repositories;
 
+use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Models\File as FileModel;
+use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -230,6 +232,57 @@ class AccountFileTest extends UnitaryTestCase
             ->willReturn(new QueryResult());
 
         $this->accountFile->search($item);
+    }
+
+    #[Test]
+    public function getAccountIdByIdSelectsOnlyTheOwnerAccountWithoutContent(): void
+    {
+        $callback = new Callback(
+            static function (QueryData $arg) {
+                $statement = $arg->getQuery()->getStatement();
+
+                return $arg->getQuery()->getBindValues()['id'] === 100
+                       && $arg->getMapClassName() === FileModel::class
+                       && str_contains($statement, 'accountId')
+                       && !str_contains($statement, 'content');
+            }
+        );
+
+        $this->database->expects(self::once())
+            ->method('runQuery')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountFile->getAccountIdById(100);
+    }
+
+    #[Test]
+    public function searchAppliesTheAccountFilterAndGroupsTheSearchConditions(): void
+    {
+        $filter = $this->createMock(AccountFilterBuilder::class);
+        $filter->expects(self::once())
+            ->method('buildFilter')
+            ->with(false, self::isInstanceOf(SelectInterface::class))
+            ->willReturnCallback(
+                static fn(bool $global, SelectInterface $query): SelectInterface => $query->where(
+                    'Account.id = :filteredAccountId'
+                )
+            );
+
+        $callback = new Callback(
+            static function (QueryData $arg) {
+                $statement = $arg->getQuery()->getStatement();
+
+                return preg_match('/WHERE\s+\(`AccountFile`\.`name` LIKE :name .*:clientName\)\s+AND `Account`\.`id` = :filteredAccountId/s', $statement) === 1;
+            }
+        );
+
+        $this->database->expects(self::once())
+            ->method('runQuery')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountFile->search(new ItemSearchDto('abc'), $filter);
     }
 
     protected function setUp(): void

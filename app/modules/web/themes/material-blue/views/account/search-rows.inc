@@ -194,6 +194,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                     <?php
                     endif; ?>
                 </div>
+                <?php if ($accountSearchItem->isShow()): ?>
                 <div class="label-row-down">
                     <div class="tags-box">
                         <?php
@@ -208,6 +209,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         endforeach; ?>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
             <div class="label-right">
                 <div class="account-info">
@@ -395,41 +397,13 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         if ($wikiFilter
                             && $accountSearchItem->isWikiMatch($wikiFilter)
                         ): ?>
-                            <?php
-                            if (AccountSearchItem::$dokuWikiEnabled): ?>
-                                <a href="<?php
-                                echo $_getvar('wikiPageUrl'), urlencode(
-                                    $accountSearchData->getName()
-                                ); ?>"
-                                   target="_blank">
-                                    <i class="material-icons"
-                                       title="<?php
-                                       echo __('Link to Wiki'); ?>">library_books</i>
-                                </a>
-                                <i class="btn-action material-icons fg-green100"
+                            <a href="<?php
+                            echo $_getvar('wikiPageUrl'), urlencode($accountSearchData->getName()); ?>"
+                               target="_blank">
+                                <i class="material-icons"
                                    title="<?php
-                                   echo __('View at Wiki'); ?>"
-                                   data-action-route="<?php
-                                   echo AclActionsInterface::WIKI_VIEW; ?>"
-                                   data-pagename="<?php
-                                   echo htmlspecialchars($accountSearchData->getName(), ENT_QUOTES); ?>"
-                                   data-pagename="<?php
-                                   echo htmlspecialchars(
-                                       $accountSearchData->getName(),
-                                       ENT_QUOTES
-                                   ); ?>"
-                                   data-onclick="wiki/show">library_books</i>
-                            <?php
-                            else: ?>
-                                <a href="<?php
-                                echo $_getvar('wikiPageUrl'), urlencode($accountSearchData->getName()); ?>"
-                                   target="_blank">
-                                    <i class="material-icons"
-                                       title="<?php
-                                       echo __('Link to Wiki'); ?>">library_books</i>
-                                </a>
-                            <?php
-                            endif; ?>
+                                   echo __('Link to Wiki'); ?>">library_books</i>
+                            </a>
                         <?php
                         endif; ?>
                     <?php
@@ -453,7 +427,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                data-item-id="<?php
                                echo $accountSearchData->getId(); ?>"
                                data-parent-id="<?php
-                               echo $accountSearchData->getParentId(); ?>"
+                               echo $accountSearchItem->isShow() ? $accountSearchData->getParentId() : 0; ?>"
                                 <?php
                                 foreach ($action->getData() as $dataName => $dataValue):
                                     printf('data-%s="%s"', $dataName, $dataValue);
@@ -490,7 +464,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                             data-item-id="<?php
                                             echo $accountSearchData->getId(); ?>"
                                             data-parent-id="<?php
-                                            echo $accountSearchData->getParentId(); ?>"
+                                            echo $accountSearchItem->isShow() ? $accountSearchData->getParentId() : 0; ?>"
                                             <?php
                                             foreach ($actionMenu->getData() as $dataName => $dataValue):
                                                 printf('data-%s="%s"', $dataName, $dataValue);

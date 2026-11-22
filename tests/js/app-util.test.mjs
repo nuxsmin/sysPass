@@ -99,3 +99,187 @@ test("buildRoute rejects a malformed route", function () {
         util.buildRoute(["account/view", "bad?id", 12]);
     }, /malformed route/i);
 });
+
+function setupFileUploadTest() {
+    const calls = [];
+    const okMessages = [];
+    const errorMessages = [];
+    const warnMessages = [];
+    let logoutCalls = 0;
+    let doneCalls = 0;
+
+    const handlers = {};
+    const inputEl = {
+        on: function (event, cb) {
+            handlers["input:" + event] = cb;
+            return this;
+        },
+        click: function () {}
+    };
+    const formEl = {
+        hide: function () {
+            return this;
+        },
+        find: function () {
+            return inputEl;
+        }
+    };
+    const dropEl = {
+        data: function (key) {
+            return key === "item-id" ? 42 : undefined;
+        },
+        on: function (event, cb) {
+            handlers["drop:" + event] = cb;
+            return this;
+        }
+    };
+
+    globalThis.window = { File: function () {}, FileList: function () {}, FileReader: function () {} };
+    globalThis.$ = function (selector) {
+        if (selector === "#fileUploadForm") {
+            return formEl;
+        }
+        return dropEl;
+    };
+    globalThis.$.extend = Object.assign;
+
+    globalThis.sysPassApp = {
+        sk: {
+            get: function () {
+                return "test-sk";
+            }
+        },
+        requests: {
+            getRequestOpts: function () {
+                return {};
+            },
+            getActionCall: function (opts, callback) {
+                calls.push({ opts: opts, callback: callback });
+            }
+        },
+        actions: {
+            main: {
+                logout: function () {
+                    logoutCalls += 1;
+                }
+            }
+        },
+        msg: {
+            ok: function (message) {
+                okMessages.push(message);
+            },
+            error: function (message) {
+                errorMessages.push(message);
+            },
+            warn: function (message) {
+                warnMessages.push(message);
+            },
+            out: function (data) {
+                if (typeof data === "object" && data !== null) {
+                    let description = data.description;
+                    if (data.messages !== undefined && data.messages.length > 0) {
+                        description = description + "<br>" + data.messages.join("<br>");
+                    }
+                    switch (data.status) {
+                        case 0:
+                            this.ok(description);
+                            break;
+                        case 1:
+                            this.error(description);
+                            break;
+                        case 2:
+                            this.warn(description);
+                            break;
+                        case 10:
+                            globalThis.sysPassApp.actions.main.logout();
+                            break;
+                        default:
+                            this.error(description);
+                    }
+                }
+            }
+        },
+        config: {
+            FILES: {
+                MAX_SIZE: 1000
+            },
+            LANG: {
+                17: "Too many files",
+                18: "File too large",
+                19: "Invalid mime"
+            }
+        }
+    };
+
+    const upload = util.fileUpload(dropEl);
+    upload.url = "/index.php?r=accountFile/upload/42";
+    upload.allowedMime = ["text/plain"];
+    upload.requestDoneAction = function () {
+        doneCalls += 1;
+    };
+
+    const triggerUpload = function () {
+        handlers["input:change"].call({
+            files: [{ name: "note.txt", size: 12, type: "text/plain" }]
+        });
+    };
+
+    return {
+        triggerUpload,
+        calls,
+        okMessages,
+        errorMessages,
+        warnMessages,
+        getLogoutCalls: () => logoutCalls,
+        getDoneCalls: () => doneCalls
+    };
+}
+
+test("fileUpload sendFile handles OK by reloading and displaying ok message", function () {
+    const ctx = setupFileUploadTest();
+    ctx.triggerUpload();
+    assert.equal(ctx.calls.length, 1);
+
+    ctx.calls[0].callback({ status: 0, description: "File saved", messages: [] });
+    assert.equal(ctx.getDoneCalls(), 1);
+    assert.deepEqual(ctx.okMessages, ["File saved"]);
+    assert.deepEqual(ctx.errorMessages, []);
+    assert.deepEqual(ctx.warnMessages, []);
+});
+
+test("fileUpload sendFile handles ERROR without running requestDoneAction", function () {
+    const ctx = setupFileUploadTest();
+    ctx.triggerUpload();
+    assert.equal(ctx.calls.length, 1);
+
+    ctx.calls[0].callback({ status: 1, description: "Upload error", messages: ["Detail A"] });
+    assert.equal(ctx.getDoneCalls(), 0);
+    assert.deepEqual(ctx.okMessages, []);
+    assert.deepEqual(ctx.errorMessages, ["Upload error<br>Detail A"]);
+    assert.deepEqual(ctx.warnMessages, []);
+});
+
+test("fileUpload sendFile handles WARNING as warning without running requestDoneAction", function () {
+    const ctx = setupFileUploadTest();
+    ctx.triggerUpload();
+    assert.equal(ctx.calls.length, 1);
+
+    ctx.calls[0].callback({ status: 2, description: "Upload warning", messages: [] });
+    assert.equal(ctx.getDoneCalls(), 0);
+    assert.deepEqual(ctx.okMessages, []);
+    assert.deepEqual(ctx.errorMessages, []);
+    assert.deepEqual(ctx.warnMessages, ["Upload warning"]);
+});
+
+test("fileUpload sendFile handles status 10 by calling actions.main.logout", function () {
+    const ctx = setupFileUploadTest();
+    ctx.triggerUpload();
+    assert.equal(ctx.calls.length, 1);
+
+    ctx.calls[0].callback({ status: 10, description: "Session expired" });
+    assert.equal(ctx.getDoneCalls(), 0);
+    assert.equal(ctx.getLogoutCalls(), 1);
+    assert.deepEqual(ctx.okMessages, []);
+    assert.deepEqual(ctx.errorMessages, []);
+    assert.deepEqual(ctx.warnMessages, []);
+});

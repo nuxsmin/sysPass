@@ -164,8 +164,24 @@ final class AccountSearchData
                     ->getTagsByAccountId($accountSearchView->getId())
                     ->getDataAsArray();
 
+                $favorite = isset($favorites[$accountSearchView->getId()]);
                 $users = !$accountSearchView->getIsPrivate() ? $cache->getUsers() : null;
                 $userGroups = !$accountSearchView->getIsPrivate() ? $cache->getUserGroups() : null;
+
+                if (!$accountAcl->isResultView()) {
+                    $tags = [];
+                    $favorite = false;
+                    $users = null;
+                    $userGroups = null;
+                    $accountSearchView = new AccountSearchView([
+                        'id' => $accountSearchView->getId(),
+                        'name' => $accountSearchView->getName(),
+                        'clientId' => $accountSearchView->getClientId(),
+                        'clientName' => $accountSearchView->getClientName(),
+                        'categoryId' => $accountSearchView->getCategoryId(),
+                        'categoryName' => $accountSearchView->getCategoryName(),
+                    ]);
+                }
 
                 return new AccountSearchItem(
                     $accountSearchView,
@@ -174,7 +190,7 @@ final class AccountSearchData
                     $this->uriContext,
                     $tags,
                     $maxTextLength,
-                    isset($favorites[$accountSearchView->getId()]),
+                    $favorite,
                     $users,
                     $userGroups,
                     $this->pickAccountColor($accountSearchView->getClientId()),

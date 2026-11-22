@@ -91,7 +91,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50"
                                        value="<?php
-                                       echo htmlspecialchars($accountView->name, ENT_QUOTES); ?>"
+                                       echo htmlspecialchars((string)($accountView->name ?? ''), ENT_QUOTES); ?>"
                                        tabindex="1" readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -162,7 +162,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="255" tabindex="4"
                                        value="<?php
-                                       echo htmlspecialchars($accountView->url, ENT_QUOTES); ?>"
+                                       echo htmlspecialchars((string)($accountView->url ?? ''), ENT_QUOTES); ?>"
                                        readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -179,7 +179,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50" tabindex="5"
                                        value="<?php
-                                       echo htmlspecialchars($accountView->login, ENT_QUOTES); ?>"
+                                       echo htmlspecialchars((string)($accountView->login ?? ''), ENT_QUOTES); ?>"
                                        readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -216,7 +216,7 @@ $accountAcl = $_getvar('accountAcl');
                                 name="notes" tabindex="9"
                                 maxlength="5000"
                                 readonly><?php
-                            echo htmlspecialchars($accountView->notes, ENT_QUOTES); ?>
+                            echo htmlspecialchars((string)($accountView->notes ?? ''), ENT_QUOTES); ?>
                         </textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php
@@ -266,9 +266,9 @@ $accountAcl = $_getvar('accountAcl');
                             <?php
                             printf(
                                 '%s (%s)',
-                                $accountView->dateEdit,
-                                htmlspecialchars($accountView->userEditName, ENT_QUOTES)
-                                    ?: htmlspecialchars($accountView->userEditLogin, ENT_QUOTES)
+                                (string)($accountView->dateEdit ?? ''),
+                                htmlspecialchars((string)($accountView->userEditName ?? ''), ENT_QUOTES)
+                                    ?: htmlspecialchars((string)($accountView->userEditLogin ?? ''), ENT_QUOTES)
                             ); ?>
                         </td>
                     </tr>

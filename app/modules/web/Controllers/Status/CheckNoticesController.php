@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\Status;
 
-use JsonException;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -41,12 +40,15 @@ use function SP\processException;
  */
 final class CheckNoticesController extends StatusBase
 {
-    /**
-     * @throws JsonException
-     */
     #[Action(ResponseType::JSON)]
     public function checkNoticesAction(): ActionResponse
     {
+        $this->checks();
+
+        if (!$this->session->getUserData()->isAdminApp) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
         try {
             $this->extensionChecker->checkCurl(true);
 
@@ -57,10 +59,18 @@ final class CheckNoticesController extends StatusBase
             ) {
                 $requestData = json_decode($request->getBody(), false, 512, JSON_THROW_ON_ERROR);
 
-                if ($requestData !== null && !isset($requestData->message)) {
+                if (is_array($requestData)) {
                     $notices = [];
 
                     foreach ($requestData as $notice) {
+                        if (!is_object($notice)
+                            || !is_string($notice->title ?? null)
+                            || !is_string($notice->created_at ?? null)
+                            || !is_string($notice->body ?? null)
+                        ) {
+                            return ActionResponse::error(__u('Notifications not available'));
+                        }
+
                         $notices[] = [
                             'title' => $notice->title,
                             'date'  => $notice->created_at,
@@ -71,7 +81,9 @@ final class CheckNoticesController extends StatusBase
                     return ActionResponse::ok('', $notices);
                 }
 
-                logger($requestData->message);
+                if (is_object($requestData) && is_string($requestData->message ?? null)) {
+                    logger($requestData->message);
+                }
             }
 
             return ActionResponse::error(__u('Notifications not available'));
@@ -80,7 +92,7 @@ final class CheckNoticesController extends StatusBase
         } catch (Throwable $e) {
             processException($e);
 
-            return ActionResponse::error($e->getMessage());
+            return ActionResponse::error(__u('Notifications not available'));
         }
     }
 }

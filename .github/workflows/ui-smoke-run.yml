@@ -52,23 +52,62 @@ jobs:
           REQUESTED_TIER: ${{ inputs.tier }}
         run: |
           set -euo pipefail
-          case "$REQUESTED_TIER" in
-            A|B) ;;
+          tier="$(printf '%s' "$REQUESTED_TIER" | tr '[:lower:]' '[:upper:]')"
+          case "$tier" in
+            A|B|WIRING|WRITE) ;;
             *)
-              echo "::error::Unsupported UI smoke tier '$REQUESTED_TIER'; expected exactly A or B."
+              echo "::error::Unsupported UI smoke tier '$REQUESTED_TIER'; expected A, B, WIRING or WRITE."
               exit 1
               ;;
           esac
-          slug="$(printf '%s' "$REQUESTED_TIER" | tr '[:upper:]' '[:lower:]')"
-          echo "UI_SMOKE_TIER_SLUG=$slug" >> "$GITHUB_ENV"
+          case "$tier" in
+            A)
+              family="ui-smoke"
+              observed_label="UI smoke observed commit"
+              observed_heading="UI smoke observed commit"
+              setup_error="UI smoke workflow failed before the runner retained Playwright evidence."
+              setup_prefix="ui-smoke.ci-setup"
+              ;;
+            B)
+              family="ui-smoke"
+              observed_label="Tier B observed commit"
+              observed_heading="UI smoke Tier B observed commit"
+              setup_error="UI smoke Tier B workflow failed before the runner retained Playwright evidence."
+              setup_prefix="ui-smoke.tier-b-ci-setup"
+              ;;
+            WIRING)
+              family="ui-workflow"
+              observed_label="UI Workflow (navigation wiring) observed commit"
+              observed_heading="UI Workflow (navigation wiring) observed commit"
+              setup_error="UI Workflow (navigation wiring) failed before the runner retained Playwright evidence."
+              setup_prefix="ui-workflow.wiring-ci-setup"
+              ;;
+            WRITE)
+              family="ui-workflow"
+              observed_label="UI Workflow (account creation) observed commit"
+              observed_heading="UI Workflow (account creation) observed commit"
+              setup_error="UI Workflow (account creation) failed before the runner retained Playwright evidence."
+              setup_prefix="ui-workflow.write-ci-setup"
+              ;;
+          esac
+          slug="$(printf '%s' "$tier" | tr '[:upper:]' '[:lower:]')"
+          {
+            echo "UI_SMOKE_TIER=$tier"
+            echo "UI_SMOKE_TIER_SLUG=$slug"
+            echo "UI_SMOKE_ARTIFACT_FAMILY=$family"
+            echo "UI_SMOKE_OBSERVED_COMMIT_LABEL=$observed_label"
+            echo "UI_SMOKE_OBSERVED_COMMIT_HEADING=$observed_heading"
+            echo "UI_SMOKE_SETUP_ERROR=$setup_error"
+            echo "UI_SMOKE_SETUP_RUN_ID_PREFIX=$setup_prefix"
+          } >> "$GITHUB_ENV"
 
       - name: Record observed commit and setup start
         timeout-minutes: 2
         env:
           # Tier-specific headings are preserved so existing observation
           # history and summaries keep their identity.
-          OBSERVED_COMMIT_LABEL: ${{ inputs.tier == 'B' && 'Tier B observed commit' || 'UI smoke observed commit' }}
-          OBSERVED_COMMIT_HEADING: ${{ inputs.tier == 'B' && 'UI smoke Tier B observed commit' || 'UI smoke observed commit' }}
+          OBSERVED_COMMIT_LABEL: ${{ env.UI_SMOKE_OBSERVED_COMMIT_LABEL }}
+          OBSERVED_COMMIT_HEADING: ${{ env.UI_SMOKE_OBSERVED_COMMIT_HEADING }}
         run: |
           set -euo pipefail
           commit="$(git rev-parse HEAD)"
@@ -218,8 +257,8 @@ jobs:
         timeout-minutes: 3
         env:
           SP_UI_SUMMARY_DIR: ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}
-          SP_UI_SETUP_ERROR: ${{ inputs.tier == 'B' && 'UI smoke Tier B workflow failed before the runner retained Playwright evidence.' || 'UI smoke workflow failed before the runner retained Playwright evidence.' }}
-          SP_UI_SETUP_RUN_ID: ${{ inputs.tier == 'B' && format('ui-smoke.tier-b-ci-setup-{0}-{1}', github.run_id, github.run_attempt) || format('ui-smoke.ci-setup-{0}-{1}', github.run_id, github.run_attempt) }}
+          SP_UI_SETUP_ERROR: ${{ env.UI_SMOKE_SETUP_ERROR }}
+          SP_UI_SETUP_RUN_ID: ${{ format('{0}-{1}-{2}', env.UI_SMOKE_SETUP_RUN_ID_PREFIX, github.run_id, github.run_attempt) }}
         run: |
           set -euo pipefail
           source scripts/lib/ui-smoke-report.sh
@@ -270,7 +309,7 @@ jobs:
         if: always() && steps.verify_evidence.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
-          name: ui-smoke-tier-${{ env.UI_SMOKE_TIER_SLUG }}-${{ github.sha }}-${{ github.run_id }}
+          name: ${{ env.UI_SMOKE_ARTIFACT_FAMILY }}-tier-${{ env.UI_SMOKE_TIER_SLUG }}-${{ github.sha }}-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}/*/run-summary.json
             ${{ runner.temp }}/ui-summaries/tier-${{ inputs.tier }}/*/junit.xml

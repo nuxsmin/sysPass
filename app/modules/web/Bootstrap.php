@@ -34,6 +34,7 @@ use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
 use SP\Core\Bootstrap\BootstrapBase;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
@@ -43,16 +44,21 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Core\Exceptions\InitializationException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Http\Code;
 use SP\Domain\Http\Header;
 use SP\Util\Util;
+use Throwable;
 
 use function SP\logger;
 use function SP\processException;
 use function SP\__;
+use function SP\__u;
 
 /**
  * Class Bootstrap
@@ -150,14 +156,38 @@ final class Bootstrap extends BootstrapBase
                 );
 
                 $response->code(Code::FORBIDDEN->value);
-            } catch (Exception $e) {
+            } catch (ValidationException|DuplicatedItemException|AuthException $e) {
+                processException($e);
+
+                $this->buildResponse(
+                    $method,
+                    ActionResponse::error($e->getMessage()),
+                    $response
+                );
+
+                $response->code(Code::BAD_REQUEST->value);
+            } catch (SPException $e) {
+                processException($e);
+
+                $this->eventDispatcher->notify('exception', new Event($e));
+
+                $message = $e instanceof QueryException ? __u('Internal error') : $e->getMessage();
+
+                $this->buildResponse(
+                    $method,
+                    ActionResponse::error($message),
+                    $response
+                );
+
+                $response->code(Code::INTERNAL_SERVER_ERROR->value);
+            } catch (Throwable $e) {
                 processException($e);
 
                 $this->eventDispatcher->notify('exception', new Event($e));
 
                 $this->buildResponse(
                     $method,
-                    ActionResponse::error($e->getMessage(), $e->getTrace()),
+                    ActionResponse::error(__u('Internal error')),
                     $response
                 );
 

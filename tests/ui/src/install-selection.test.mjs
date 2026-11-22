@@ -25,7 +25,7 @@ test('the installer selection is explicit and separate from Tier A and Tier B', 
   assert.equal(installer.installSelected, true);
   assert.deepEqual(installer.phases, ['install']);
 
-  for (const tier of ['A', 'a', 'B', 'b']) {
+  for (const tier of ['A', 'a', 'B', 'b', 'DISCOVERY', 'discovery']) {
     const plan = resolveRunPlan({ tier });
 
     assert.equal(plan.installSelected, false);
@@ -34,6 +34,19 @@ test('the installer selection is explicit and separate from Tier A and Tier B', 
   }
 
   assert.equal(resolveRunPlan({}).tier, 'A', 'Tier A remains the default');
+});
+
+test('inventory discovery is a seeded-only selection and rejects the installer', () => {
+  const plan = resolveRunPlan({ tier: 'discovery' });
+
+  assert.equal(plan.tier, 'DISCOVERY');
+  assert.equal(plan.seededTier, 'DISCOVERY');
+  assert.equal(plan.installSelected, false);
+  assert.deepEqual(plan.phases, ['seeded']);
+  assert.throws(
+    () => resolveRunPlan({ tier: 'DISCOVERY', install: '1' }),
+    /inventory discovery cannot run the installer/,
+  );
 });
 
 test('a combined selection runs the seeded specs before the installer phase', () => {

@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclInterface;
@@ -57,6 +58,7 @@ abstract class SimpleControllerBase
     protected readonly ConfigDataInterface        $configData;
     protected readonly UriContextInterface        $uriContext;
     protected readonly HashService                $hashService;
+    private readonly BrowserAuthService           $browser;
 
     /**
      * @throws SessionTimeout
@@ -70,6 +72,7 @@ abstract class SimpleControllerBase
         $this->extensionChecker = $simpleControllerHelper->getExtensionChecker();
         $this->uriContext = $simpleControllerHelper->getUriContext();
         $this->hashService = $simpleControllerHelper->getHashService();
+        $this->browser = $simpleControllerHelper->getBrowser();
         $this->config = $simpleControllerHelper->getConfig();
         $this->configData = $this->config->getConfigData();
         $this->eventDispatcher = $simpleControllerHelper->getEventDispatcher();
@@ -90,6 +93,13 @@ abstract class SimpleControllerBase
     protected function checks(): void
     {
         if ($this->session->isLoggedIn() === false || $this->session->getAuthCompleted() !== true) {
+            $this->handleSessionTimeout();
+
+            throw new SessionTimeout();
+        }
+
+        if (!$this->isBrowserAuthValid($this->browser)) {
+            $this->invalidateSession();
             $this->handleSessionTimeout();
 
             throw new SessionTimeout();

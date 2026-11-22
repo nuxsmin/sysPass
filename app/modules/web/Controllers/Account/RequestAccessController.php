@@ -30,21 +30,22 @@ use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Presenters\Helpers\Account\AccountRequestHelper;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class RequestAccessController
  */
-final class RequestAccessController extends ControllerBase
+final class RequestAccessController extends AccountControllerBase
 {
 
     public function __construct(
@@ -60,21 +61,30 @@ final class RequestAccessController extends ControllerBase
      *
      * @param int $id Account's ID
      * @return ActionResponse
+     * @throws AccountPermissionException
      * @throws UnauthorizedActionException
      * @throws UnauthorizedPageException
      * @throws ConstraintException
      * @throws QueryException
      * @throws UpdatedMasterPassException
-     * @throws NoSuchItemException
      */
     #[Action(ResponseType::PLAIN_TEXT)]
     public function requestAccessAction(int $id): ActionResponse
     {
         $this->accountRequestHelper->initializeFor(AclActionsInterface::ACCOUNT_REQUEST);
+
+        if (!$this->accountService->isVisible($id, true)) {
+            throw new AccountPermissionException(SPException::INFO);
+        }
+
+        try {
+            $accountView = $this->accountService->getByIdEnriched($id);
+        } catch (NoSuchItemException) {
+            throw new AccountPermissionException(SPException::INFO);
+        }
+
         $this->accountRequestHelper->setIsView(true);
-        $this->accountRequestHelper->setViewForRequest(
-            new AccountEnrichedDto($this->accountService->getByIdEnriched($id))
-        );
+        $this->accountRequestHelper->setViewForRequest(new AccountEnrichedDto($accountView));
 
         $this->view->addTemplate('account-request');
         $this->view->assign('formRoute', 'account/saveRequest');

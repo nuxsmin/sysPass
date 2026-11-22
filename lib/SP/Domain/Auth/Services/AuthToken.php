@@ -32,26 +32,30 @@ use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenRepository;
 use SP\Domain\Auth\Ports\AuthTokenService;
-use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Crypt\Ports\MasterKeyStore;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Database\Dtos\QueryResult;
+use Throwable;
 
 use function SP\__u;
 
@@ -62,15 +66,12 @@ use function SP\__u;
  */
 final class AuthToken extends Service implements AuthTokenService
 {
-    private const CAN_USE_SECURE_TOKEN_ACTIONS = [
-        AclActionsInterface::ACCOUNT_VIEW,
-        AclActionsInterface::CATEGORY_VIEW,
-        AclActionsInterface::CLIENT_VIEW,
-    ];
+    private ?string $lastGeneratedToken = null;
 
     /**
      * @param AuthTokenRepository<AuthToken> $authTokenRepository
      * @param CryptInterface $crypt
+     * @param CustomFieldDataService<\SP\Domain\CustomField\Models\CustomFieldData> $customFieldDataService
      */
     public function __construct(
         ConfigFileService $config,
@@ -79,7 +80,8 @@ final class AuthToken extends Service implements AuthTokenService
         private readonly AuthTokenRepository $authTokenRepository,
         private readonly CryptInterface      $crypt,
         private readonly MasterKeyStore      $masterKeyStore,
-        private readonly HashService         $hashService
+        private readonly HashService         $hashService,
+        private readonly CustomFieldDataService $customFieldDataService
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -98,36 +100,91 @@ final class AuthToken extends Service implements AuthTokenService
     /**
      * @param int $id
      * @return AuthTokenModel
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     * @throws UnauthorizedActionException
      */
     public function getById(int $id): AuthTokenModel
     {
-        return $this->authTokenRepository->getById($id)->getData(AuthTokenModel::class);
+        $result = $this->authTokenRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Token not found'));
+        }
+
+        /** @var AuthTokenModel $authToken */
+        $authToken = $result->getData(AuthTokenModel::class);
+        $this->assertCanManage($authToken);
+
+        return $authToken;
     }
 
     /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
+     * @throws ServiceException
+     * @throws UnauthorizedActionException
+     * @throws Exception
      */
     public function delete(int $id): void
     {
-        if ($this->authTokenRepository->delete($id)->getAffectedNumRows() === 0) {
-            throw new NoSuchItemException(__u('Token not found'));
-        }
+        $this->authTokenRepository->transactionAware(
+            function () use ($id): void {
+                $this->getById($id);
+
+                if ($this->authTokenRepository->delete($id)->getAffectedNumRows() === 0) {
+                    throw new NoSuchItemException(__u('Token not found'));
+                }
+
+                $this->customFieldDataService->deleteByItem($id, AclActionsInterface::AUTHTOKEN);
+            },
+            $this
+        );
     }
 
     /**
-     * Deletes all the items for given ids
+     * Deletes the given token IDs with per-token atomic outcomes.
      *
+     * @param int[] $ids
+     * @return array{deleted: int[], failed: array<int, string>}
      * @throws ServiceException
-     * @throws ConstraintException
-     * @throws QueryException
      */
-    public function deleteByIdBatch(array $ids): void
+    public function deleteByIdBatch(array $ids): array
     {
-        if ($this->authTokenRepository->deleteByIdBatch($ids)->getAffectedNumRows() === 0) {
+        $uniqueIds = array_values(array_unique(array_map('intval', $ids)));
+
+        if ($uniqueIds === []) {
             throw new ServiceException(__u('Error while removing the tokens'), SPException::WARNING);
         }
+
+        $deleted = [];
+        $failed = [];
+
+        foreach ($uniqueIds as $id) {
+            if ($id <= 0) {
+                $failed[$id] = __u('Token not found');
+                continue;
+            }
+
+            try {
+                $this->delete($id);
+                $deleted[] = $id;
+            } catch (UnauthorizedActionException) {
+                $failed[$id] = __u('You don\'t have permission to do this operation');
+            } catch (NoSuchItemException) {
+                $failed[$id] = __u('Token not found');
+            } catch (Throwable $e) {
+                $this->eventDispatcher->notify('exception', new Event($e));
+                $failed[$id] = __u('Error while removing the tokens');
+            }
+        }
+
+        return [
+            'deleted' => $deleted,
+            'failed' => $failed,
+        ];
     }
 
     /**
@@ -139,9 +196,33 @@ final class AuthToken extends Service implements AuthTokenService
      */
     public function create(AuthTokenModel $authToken): int
     {
-        $secureAuthToken = $this->injectSecureData($authToken, $this->getOrBuildToken($authToken));
+        $this->lastGeneratedToken = null;
+        $this->assertCanManage($authToken);
 
-        return $this->authTokenRepository->create($secureAuthToken)->getLastId();
+        $expireDate = $this->resolveExpireDate($authToken, null, false);
+        $token = $this->generateToken();
+        $secureAuthToken = $this->injectSecureData($authToken, $token, null, $expireDate);
+        $id = $this->authTokenRepository->create($secureAuthToken)->getLastId();
+        $this->lastGeneratedToken = $token;
+
+        return $id;
+    }
+
+    public function getLastGeneratedToken(): ?string
+    {
+        return $this->lastGeneratedToken;
+    }
+
+    /**
+     * @throws UnauthorizedActionException
+     */
+    private function assertCanManage(AuthTokenModel $authToken): void
+    {
+        $userData = $this->context->getUserData();
+
+        if (!$userData->isAdminApp && $authToken->getUserId() !== $userData->id) {
+            throw new UnauthorizedActionException();
+        }
     }
 
     /**
@@ -149,31 +230,130 @@ final class AuthToken extends Service implements AuthTokenService
      *
      * @throws CryptException
      * @throws ServiceException
+     * @throws ValidationException
      */
-    private function injectSecureData(AuthTokenModel $authToken, string $token): AuthTokenModel
-    {
-        if (AuthTokenModel::isSecuredAction($authToken->getActionId())
-            || $this->canUseSecureTokenAction($authToken->getActionId())
-        ) {
-            $properties = [
-                'vault' => $this->getSecureData($token, $authToken->getHash())->getSerialized(),
-                'hash' => $this->hashService->hashKey($authToken->getHash())
-            ];
+    private function injectSecureData(
+        AuthTokenModel $authToken,
+        string $token,
+        ?AuthTokenModel $existing = null,
+        ?int $expireDate = null
+    ): AuthTokenModel {
+        if (AuthTokenModel::isKeyDependentAction((int)$authToken->getActionId())) {
+            if (!empty($authToken->getHash())) {
+                $properties = [
+                    'vault' => $this->getSecureData($token, $authToken->getHash())->getSerialized(),
+                    'hash' => $this->hashService->hashKey($authToken->getHash())
+                ];
+            } elseif ($existing !== null
+                && $existing->getToken() === $token
+                && !empty($existing->getVault())
+                && !empty($existing->getHash())
+            ) {
+                $properties = [
+                    'vault' => $existing->getVault(),
+                    'hash' => $existing->getHash()
+                ];
+            } else {
+                throw new ValidationException(__u('Password cannot be blank'));
+            }
         } else {
             $properties = [
+                'vault' => null,
                 'hash' => null
             ];
         }
 
         $properties['token'] = $token;
         $properties['createdBy'] = $this->context->getUserData()->id;
+        $properties['expireDate'] = $expireDate;
 
         return $authToken->mutate($properties);
     }
 
-    private function canUseSecureTokenAction(int $action): bool
-    {
-        return in_array($action, self::CAN_USE_SECURE_TOKEN_ACTIONS, true);
+    /**
+     * Resolves and validates token expiration timestamp according to system policy and caller role.
+     *
+     * @throws UnauthorizedActionException
+     * @throws ValidationException
+     */
+    private function resolveExpireDate(
+        AuthTokenModel  $authToken,
+        ?AuthTokenModel $existing,
+        bool            $actionChanged
+    ): ?int {
+        $now = time();
+        $configData = $this->config->getConfigData();
+        $defaultTime = $configData->getAuthTokenDefaultTime();
+        $maxTime = $configData->getAuthTokenMaxTime();
+
+        if ($maxTime <= 0) {
+            throw new ValidationException(__u('Invalid maximum token lifetime configuration'));
+        }
+
+        $noExpiry = $authToken->getNoExpiry();
+        $requestedExpireDate = $authToken->getExpireDate();
+        $isAdminApp = $this->context->getUserData()->isAdminApp;
+
+        if ($noExpiry === true) {
+            if (!$isAdminApp) {
+                throw new UnauthorizedActionException();
+            }
+
+            if ($requestedExpireDate !== null) {
+                throw new ValidationException(__u('Invalid expiration date'));
+            }
+
+            return null;
+        }
+
+        if ($requestedExpireDate !== null) {
+            if ($existing !== null
+                && !$actionChanged
+                && $requestedExpireDate === $existing->getExpireDate()
+            ) {
+                return $existing->getExpireDate();
+            }
+
+            if ($requestedExpireDate <= $now) {
+                throw new ValidationException(__u('Invalid expiration date'));
+            }
+
+            if ($requestedExpireDate > $now + $maxTime) {
+                throw new ValidationException(__u('Expiration date exceeds the maximum allowed lifetime'));
+            }
+
+            return $requestedExpireDate;
+        }
+
+        if ($existing !== null && $noExpiry === null) {
+            $existingExpireDate = $existing->getExpireDate();
+
+            if (!$actionChanged) {
+                return $existingExpireDate;
+            }
+
+            if ($existingExpireDate !== null) {
+                if ($existingExpireDate <= $now) {
+                    throw new ValidationException(__u('Invalid expiration date'));
+                }
+
+                if ($existingExpireDate > $now + $maxTime) {
+                    throw new ValidationException(__u('Expiration date exceeds the maximum allowed lifetime'));
+                }
+
+                return $existingExpireDate;
+            }
+
+            if ($isAdminApp) {
+                return null;
+            }
+        }
+
+        if ($defaultTime <= 0 || $defaultTime > $maxTime) {
+            throw new ValidationException(__u('Default token lifetime exceeds the maximum allowed lifetime'));
+        }
+
+        return $now + $defaultTime;
     }
 
     /**
@@ -192,22 +372,6 @@ final class AuthToken extends Service implements AuthTokenService
     }
 
     /**
-     * @param AuthTokenModel $authToken
-     * @return string|null
-     * @throws EnvironmentIsBrokenException
-     * @throws SPException
-     */
-    private function getOrBuildToken(AuthTokenModel $authToken): ?string
-    {
-        $currentToken = $this->authTokenRepository->getTokenByUserId($authToken->getUserId());
-
-        return match ($currentToken->getNumRows()) {
-            1 => $currentToken->getData(AuthTokenModel::class)->getToken(),
-            0 => $this->generateToken()
-        };
-    }
-
-    /**
      * Generar un token de acceso
      *
      * @throws EnvironmentIsBrokenException
@@ -222,24 +386,24 @@ final class AuthToken extends Service implements AuthTokenService
      */
     public function refreshAndUpdate(AuthTokenModel $authToken): void
     {
+        $this->lastGeneratedToken = null;
+
         $this->authTokenRepository->transactionAware(
-            function () use ($authToken) {
+            function () use ($authToken): void {
+                $existing = $this->getById((int)$authToken->getId());
+                $userData = $this->context->getUserData();
+
+                if (!$userData->isAdminApp && $authToken->getUserId() !== $userData->id) {
+                    throw new UnauthorizedActionException();
+                }
+
+                $actionChanged = $existing->getActionId() !== $authToken->getActionId();
+                $expireDate = $this->resolveExpireDate($authToken, $existing, $actionChanged);
                 $token = $this->generateToken();
-                $vault = Serde::serialize($this->getSecureData($token, $authToken->getHash()));
-
-                $this->authTokenRepository->refreshTokenByUserId(
-                    $authToken->getUserId(),
-                    $token
-                );
-                $this->authTokenRepository->refreshVaultByUserId(
-                    $authToken->getUserId(),
-                    $vault,
-                    $this->hashService->hashKey($authToken->getHash())
-                );
-
-                $secureData = $this->injectSecureData($authToken, $token);
+                $secureData = $this->injectSecureData($authToken, $token, $existing, $expireDate);
 
                 $this->authTokenRepository->update($secureData);
+                $this->lastGeneratedToken = $token;
             },
             $this
         );
@@ -253,12 +417,28 @@ final class AuthToken extends Service implements AuthTokenService
      * @throws QueryException
      * @throws SPException
      * @throws ServiceException
+     * @throws UnauthorizedActionException
      */
     public function update(AuthTokenModel $authToken): void
     {
-        $secureAuthToken = $this->injectSecureData($authToken, $this->getOrBuildToken($authToken));
+        $this->lastGeneratedToken = null;
+
+        $existing = $this->getById((int)$authToken->getId());
+        $userData = $this->context->getUserData();
+
+        if (!$userData->isAdminApp && $authToken->getUserId() !== $userData->id) {
+            throw new UnauthorizedActionException();
+        }
+
+        $actionChanged = $existing->getActionId() !== $authToken->getActionId();
+        $expireDate = $this->resolveExpireDate($authToken, $existing, $actionChanged);
+        $token = $actionChanged ? $this->generateToken() : (string)$existing->getToken();
+
+        $secureAuthToken = $this->injectSecureData($authToken, $token, $existing, $expireDate);
 
         $this->authTokenRepository->update($secureAuthToken);
+
+        $this->lastGeneratedToken = $actionChanged ? $token : null;
     }
 
     /**
@@ -287,7 +467,15 @@ final class AuthToken extends Service implements AuthTokenService
             throw new NoSuchItemException(__u('Token not found'));
         }
 
-        return $result->getData(AuthTokenModel::class);
+        /** @var AuthTokenModel $authToken */
+        $authToken = $result->getData(AuthTokenModel::class);
+        $expireDate = $authToken->getExpireDate();
+
+        if ($expireDate !== null && ($expireDate <= 0 || $expireDate <= time())) {
+            throw new NoSuchItemException(__u('Token not found'));
+        }
+
+        return $authToken;
     }
 
     /**

@@ -33,12 +33,21 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Models\AccountHistory;
+use SP\Domain\Category\Models\Category;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Config\Models\Config;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\User;
+use SP\Domain\User\Models\UserGroup;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
+use SP\Tests\Generators\CategoryGenerator;
+use SP\Tests\Generators\ClientGenerator;
+use SP\Tests\Generators\UserDataGenerator;
+use SP\Tests\Generators\UserGroupGenerator;
 use SP\Tests\IntegrationTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -48,6 +57,14 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class AccountHistoryManagerTest extends IntegrationTestCase
 {
+    protected function getUserDataDto(): UserDto
+    {
+        return parent::getUserDataDto()->mutate([
+            'id' => 1,
+            'userGroupId' => 1,
+        ]);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -71,8 +88,22 @@ class AccountHistoryManagerTest extends IntegrationTestCase
     public function deleteSingle()
     {
         $this->addDatabaseMapperResolver(
+            Account::class,
+            new QueryResult([
+                AccountDataGenerator::factory()->buildAccount()->mutate([
+                    'id' => 1,
+                    'userId' => 1,
+                    'userGroupId' => 1,
+                    'isPrivate' => 0,
+                    'isPrivateGroup' => 0,
+                ]),
+            ])
+        );
+        $this->addDatabaseMapperResolver(
             AccountHistory::class,
-            new QueryResult([AccountDataGenerator::factory()->buildAccountHistoryData()])
+            new QueryResult([
+                AccountDataGenerator::factory()->buildAccountHistoryData()->mutate(['id' => 100, 'accountId' => 1]),
+            ])
         );
 
         $container = $this->buildContainer(
@@ -92,9 +123,36 @@ class AccountHistoryManagerTest extends IntegrationTestCase
     #[Test]
     public function deleteMultiple()
     {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_starts_with($statement, 'DELETE FROM `AccountHistory`')) {
+                return new QueryResult([], 3);
+            }
+
+            return $this->resolveDatabaseQuery($queryData);
+        };
+
+        $generator = AccountDataGenerator::factory();
+        $this->addDatabaseMapperResolver(
+            Account::class,
+            new QueryResult([
+                $generator->buildAccount()->mutate([
+                    'id' => 1,
+                    'userId' => 1,
+                    'userGroupId' => 1,
+                    'isPrivate' => 0,
+                    'isPrivateGroup' => 0,
+                ]),
+            ])
+        );
         $this->addDatabaseMapperResolver(
             AccountHistory::class,
-            new QueryResult([AccountDataGenerator::factory()->buildAccountHistoryData()])
+            new QueryResult([
+                $generator->buildAccountHistoryData()->mutate(['id' => 100, 'accountId' => 1]),
+                $generator->buildAccountHistoryData()->mutate(['id' => 200, 'accountId' => 1]),
+                $generator->buildAccountHistoryData()->mutate(['id' => 300, 'accountId' => 1]),
+            ])
         );
 
         $container = $this->buildContainer(
@@ -133,15 +191,20 @@ class AccountHistoryManagerTest extends IntegrationTestCase
                 $accountHistory = AccountDataGenerator::factory()
                                                       ->buildAccountHistoryData()
                                                       ->mutate(
-                                                          ['isModify' => 1, 'isDeleted' => 0]
+                                                          ['isModify' => 1, 'isDeleted' => 0, 'parentId' => 0]
                                                       );
 
                 return new QueryResult([$accountHistory]);
             } elseif ($queryData->getMapClassName() === Account::class) {
                 $account = AccountDataGenerator::factory()
-                                               ->buildAccount();
+                                               ->buildAccount()
+                                               ->mutate(['parentId' => 0]);
 
                 return new QueryResult([$account]);
+            } elseif ($queryData->getMapClassName() === Client::class) {
+                return new QueryResult([ClientGenerator::factory()->buildClient()]);
+            } elseif ($queryData->getMapClassName() === Category::class) {
+                return new QueryResult([CategoryGenerator::factory()->buildCategory()]);
             } elseif ($queryData->getMapClassName() === Config::class) {
                 return new QueryResult([new Config(['parameter' => 'masterPwd', 'value' => 'a_pass'])]);
             }
@@ -175,16 +238,36 @@ class AccountHistoryManagerTest extends IntegrationTestCase
             if ($queryData->getMapClassName() === AccountHistory::class) {
                 $accountHistory = AccountDataGenerator::factory()
                                                       ->buildAccountHistoryData()
-                                                      ->mutate(
-                                                          ['isModify' => 0, 'isDeleted' => 1]
-                                                      );
+                                                      ->mutate([
+                                                          'id' => 100,
+                                                          'accountId' => 1,
+                                                          'userId' => 1,
+                                                          'userGroupId' => 1,
+                                                          'isModify' => 0,
+                                                          'isDeleted' => 1,
+                                                          'isPrivate' => 0,
+                                                          'isPrivateGroup' => 0,
+                                                          'pass' => 'p',
+                                                          'key' => 'k',
+                                                          'parentId' => 0,
+                                                          'dateAdd' => '2026-01-01 00:00:00',
+                                                      ]);
 
                 return new QueryResult([$accountHistory]);
             } elseif ($queryData->getMapClassName() === Account::class) {
                 $account = AccountDataGenerator::factory()
-                                               ->buildAccount();
+                                               ->buildAccount()
+                                               ->mutate(['dateAdd' => '2026-05-01 00:00:00']);
 
                 return new QueryResult([$account]);
+            } elseif ($queryData->getMapClassName() === Client::class) {
+                return new QueryResult([ClientGenerator::factory()->buildClient()]);
+            } elseif ($queryData->getMapClassName() === Category::class) {
+                return new QueryResult([CategoryGenerator::factory()->buildCategory()]);
+            } elseif ($queryData->getMapClassName() === User::class) {
+                return new QueryResult([UserDataGenerator::factory()->buildUserData()]);
+            } elseif ($queryData->getMapClassName() === UserGroup::class) {
+                return new QueryResult([UserGroupGenerator::factory()->buildUserGroupData()]);
             } elseif ($queryData->getMapClassName() === Config::class) {
                 return new QueryResult([new Config(['parameter' => 'masterPwd', 'value' => 'a_pass'])]);
             }

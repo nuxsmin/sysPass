@@ -197,8 +197,7 @@ final class AccountHelper extends AccountHelperBase
                 $accountActionsDto->setPublicLinkId($publicLinkData['id']);
                 $accountActionsDto->setPublicLinkCreatorId($publicLinkData['userId']);
 
-                $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
-                           $this->uriContext->getSubUri();
+                $baseUrl = rtrim($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri(), '/');
 
                 $this->view->assign(
                     'publicLinkUrl',
@@ -267,6 +266,126 @@ final class AccountHelper extends AccountHelperBase
         );
 
         $this->setViewCommon();
+    }
+
+    /**
+     * Sets account's view variables for copying an account without leaking source
+     * history, linked accounts, public links, or source privacy flags.
+     *
+     * @throws AccountPermissionException
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws NoSuchPropertyException
+     * @throws QueryException
+     * @throws SPException
+     * @throws ServiceException
+     * @throws UnauthorizedActionException
+     */
+    public function setViewForCopy(AccountEnrichedDto $accountEnrichedDto): void
+    {
+        if (!$this->actionGranted) {
+            throw new UnauthorizedActionException();
+        }
+
+        $sourceAccountId = $accountEnrichedDto->getAccountView()->getId();
+        $this->accountPermission = $this->checkAccess($accountEnrichedDto);
+
+        $accountData = $accountEnrichedDto->getAccountView();
+
+        $selectUsers = SelectItemAdapter::factory($this->userService->getAll());
+        $selectUserGroups = SelectItemAdapter::factory($this->userGroupService->getAll());
+        $selectTags = SelectItemAdapter::factory($this->tagService->getAll());
+
+        $usersView = SelectItemAdapter::getIdFromArrayOfObjects(
+            array_filter(
+                $accountEnrichedDto->getUsers(),
+                static fn($value) => (int)$value->isEdit === 0
+            )
+        );
+
+        $usersEdit = SelectItemAdapter::getIdFromArrayOfObjects(
+            array_filter(
+                $accountEnrichedDto->getUsers(),
+                static fn($value) => (int)$value->isEdit === 1
+            )
+        );
+
+        $userGroupsView = SelectItemAdapter::getIdFromArrayOfObjects(
+            array_filter(
+                $accountEnrichedDto->getUserGroups(),
+                static fn($value) => (int)$value->isEdit === 0
+            )
+        );
+
+        $userGroupsEdit = SelectItemAdapter::getIdFromArrayOfObjects(
+            array_filter(
+                $accountEnrichedDto->getUserGroups(),
+                static fn($value) => (int)$value->isEdit === 1
+            )
+        );
+
+        $userData = $this->context->getUserData();
+        $userProfileData = $this->context->getUserProfile() ?? new ProfileData();
+
+        $accountPrivate = new AccountPrivate();
+
+        if ($itemPresetPrivate =
+            $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
+        ) {
+            $accountPrivate = $itemPresetPrivate->hydrate(AccountPrivate::class) ?? $accountPrivate;
+        }
+
+        $this->view->assign('otherUsersView', $selectUsers->getItemsFromModelSelected($usersView));
+        $this->view->assign('otherUsersEdit', $selectUsers->getItemsFromModelSelected($usersEdit));
+        $this->view->assign('otherUserGroupsView', $selectUserGroups->getItemsFromModelSelected($userGroupsView));
+        $this->view->assign('otherUserGroupsEdit', $selectUserGroups->getItemsFromModelSelected($userGroupsEdit));
+        $this->view->assign('users', $selectUsers->getItemsFromModelSelected([$userData->id]));
+        $this->view->assign('userGroups', $selectUserGroups->getItemsFromModelSelected([$userData->userGroupId]));
+        $this->view->assign(
+            'tags',
+            $selectTags->getItemsFromModelSelected(
+                SelectItemAdapter::getIdFromArrayOfObjects($accountEnrichedDto->getTags())
+            )
+        );
+        $this->view->assign('historyData', []);
+        $this->view->assign('isModified', false);
+        $this->view->assign('maxFileSize', round($this->configData->getFilesAllowedSize() / 1024, 1));
+        $this->view->assign('filesAllowedExts', implode(',', $this->configData->getFilesAllowedExts()));
+        $this->view->assign('publicLinkShow', false);
+        $this->view->assign('publicLinkId', 0);
+        $this->view->assign('publicLinkUrl', null);
+        $this->view->assign('allowPrivate', $userProfileData->isAccPrivate() || $userData->isAdminApp);
+        $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup() || $userData->isAdminApp);
+        $this->view->assign('privateUserCheck', $accountPrivate->isPrivateUser());
+        $this->view->assign('privateUserGroupCheck', $accountPrivate->isPrivateGroup());
+        $this->view->assign('accountPassDate', '');
+        $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
+        $this->view->assign('linkedAccounts', []);
+        $this->view->assign('accountId', 0);
+        $this->view->assign('accountData', $accountData);
+        $this->view->assign('gotData', true);
+        $this->view->assign('copyAction', true);
+
+        $this->accountId = $sourceAccountId;
+
+        $this->view->assign(
+            'accountActions',
+            $this->accountActionsHelper->getActionsForAccount(
+                $this->accountPermission,
+                new AccountActionsDto(0)
+            )
+        );
+        $this->view->assign(
+            'accountActionsMenu',
+            $this->accountActionsHelper->getActionsGrouppedForAccount(
+                $this->accountPermission,
+                new AccountActionsDto(0)
+            )
+        );
+
+        $this->setViewCommon();
+        $this->view->assign('accountId', 0);
+        $this->accountId = null;
     }
 
     /**
@@ -343,6 +462,15 @@ final class AccountHelper extends AccountHelperBase
             && $this->acl->checkUserAccess(AclActionsInterface::TAG)
         );
         $this->view->assign('addTagRoute', $this->acl->getRouteFor(AclActionsInterface::TAG_CREATE));
+        $isEditAction = $this->actionId === AclActionsInterface::ACCOUNT_EDIT;
+
+        $this->view->assign('editAction', $isEditAction);
+        $this->view->assign(
+            'fileUploadEnabled',
+            $isEditAction
+            && $this->accountPermission->isResultEdit()
+            && $this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_FILE_UPLOAD)
+        );
         $this->view->assign('fileListRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_LIST));
         $this->view->assign('fileUploadRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_UPLOAD));
         $this->view->assign('disabled', $this->isView ? 'disabled' : '');

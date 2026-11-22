@@ -30,6 +30,7 @@ use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\__u;
@@ -57,21 +58,33 @@ final class DeleteController extends AuthTokenSaveBase
         }
 
         if ($id === null) {
-            $ids = $this->getItemsIdFromRequest($this->request);
-            $this->authTokenService->deleteByIdBatch($ids);
-            $this->deleteCustomFieldsForItem(AclActionsInterface::AUTHTOKEN, $ids, $this->customFieldService);
+            $ids = array_map('intval', $this->getItemsIdFromRequest($this->request) ?? []);
+            $result = $this->authTokenService->deleteByIdBatch($ids);
 
-            $this->eventDispatcher->notify(
-                'delete.authToken.selection',
-                new Event($this, EventMessage::build(__u('Authorizations deleted')))
-            );
+            if ($result['deleted'] !== []) {
+                $this->eventDispatcher->notify(
+                    'delete.authToken.selection',
+                    new Event($this, EventMessage::build(__u('Authorizations deleted')))
+                );
+            }
 
-            return ActionResponse::ok(__u('Authorizations deleted'));
+            if ($result['failed'] === []) {
+                return ActionResponse::ok(__u('Authorizations deleted'));
+            }
+
+            if ($result['deleted'] !== []) {
+                return ActionResponse::warning(__u('Some authorizations could not be deleted'), $result);
+            }
+
+            $uniqueReasons = array_values(array_unique($result['failed']));
+            if ($uniqueReasons === [__u('You don\'t have permission to do this operation')]) {
+                throw new UnauthorizedActionException();
+            }
+
+            return ActionResponse::error(__u('Error while removing the tokens'), $result);
         }
 
         $this->authTokenService->delete($id);
-
-        $this->deleteCustomFieldsForItem(AclActionsInterface::AUTHTOKEN, $id, $this->customFieldService);
 
         $this->eventDispatcher->notify(
             'delete.authToken',

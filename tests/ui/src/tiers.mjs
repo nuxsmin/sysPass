@@ -20,19 +20,28 @@ export const TIER_B_SPECS = [
 
 export const TIER_INSTALL_SPECS = ['install.spec.ts'];
 
+export const TIER_WIRING_SPECS = ['adminNavigation.wiring.spec.ts'];
+
+export const TIER_WRITE_SPECS = ['accountCreate.write.spec.ts', 'accountEdit.write.spec.ts', 'accountDelete.write.spec.ts', 'accountListFiles.write.spec.ts', 'accountManagerDelete.write.spec.ts', 'authTokenDelete.write.spec.ts', 'itemMetadataDelete.write.spec.ts', 'notificationDelete.write.spec.ts', 'notificationSave.write.spec.ts', 'userGroupDelete.write.spec.ts', 'userDelete.write.spec.ts', 'userEditPass.write.spec.ts', 'userProfileDelete.write.spec.ts'];
+
+export const TIER_DISCOVERY_SPECS = ['discovery.spec.ts'];
+
 export const TIER_SPECS = {
   A: TIER_A_SPECS,
   B: TIER_B_SPECS,
   INSTALL: TIER_INSTALL_SPECS,
+  WIRING: TIER_WIRING_SPECS,
+  WRITE: TIER_WRITE_SPECS,
+  DISCOVERY: TIER_DISCOVERY_SPECS,
 };
 
 /**
  * Normalize a caller-supplied tier token. Lower-case and surrounding whitespace
- * are accepted; anything outside the explicit A/B/INSTALL selection is a usage
- * error rather than an unknown "Tier Z" observation.
+ * are accepted; anything outside the explicit A/B/INSTALL/WIRING/WRITE/DISCOVERY
+ * selection is a usage error rather than an unknown "Tier Z" observation.
  *
  * @param {string | null | undefined} value
- * @returns {'A' | 'B' | 'INSTALL'}
+ * @returns {'A' | 'B' | 'INSTALL' | 'WIRING' | 'WRITE' | 'DISCOVERY'}
  */
 export function normalizeTier(value) {
   const normalized = String(value ?? 'A').trim().toUpperCase();

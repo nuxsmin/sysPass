@@ -24,7 +24,11 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
+use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Account\Models\AccountSearchView;
+use SP\Domain\Account\Ports\AccountAclService;
+use SP\Domain\Account\Ports\AccountCacheService;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchService;
 use SP\Domain\Api\Ports\ApiService;
@@ -42,9 +46,11 @@ use SP\Modules\Api\Controllers\ControllerBase;
 final class SearchController extends ControllerBase
 {
     public function __construct(
-        ApiControllerHelper                             $controllerHelper,
-        ApiService                                      $apiService,
-        private readonly AccountSearchService           $accountSearchService
+        ApiControllerHelper                   $controllerHelper,
+        ApiService                            $apiService,
+        private readonly AccountSearchService $accountSearchService,
+        private readonly AccountAclService    $accountAclService,
+        private readonly AccountCacheService  $accountCacheService
     ) {
         parent::__construct($controllerHelper, $apiService);
     }
@@ -55,11 +61,41 @@ final class SearchController extends ControllerBase
         $this->setupApi(AclActionsInterface::ACCOUNT_SEARCH);
 
         $accountSearchFilter = $this->buildAccountSearchFilter();
+        $items = $this->accountSearchService->getByFilter($accountSearchFilter)->getDataAsArray() ?? [];
 
-        return ActionResponse::ok(
-            '',
-            ($this->accountSearchService->getByFilter($accountSearchFilter)->getDataAsArray() ?? [])
+        $sanitized = array_map(
+            function (AccountSearchView $item): AccountSearchView {
+                $cache = $this->accountCacheService->getCacheForAccount(
+                    (int)$item->getId(),
+                    (int)(strtotime($item->getDateEdit() ?? '') ?: 0)
+                );
+
+                $accountAcl = $this->accountAclService->getAcl(
+                    AclActionsInterface::ACCOUNT_SEARCH,
+                    AccountAclDto::makeFromAccountSearch(
+                        $item,
+                        $cache->getUsers(),
+                        $cache->getUserGroups()
+                    )
+                );
+
+                if ($accountAcl->isResultView()) {
+                    return $item;
+                }
+
+                return new AccountSearchView([
+                    'id' => $item->getId(),
+                    'name' => $item->getName(),
+                    'clientId' => $item->getClientId(),
+                    'clientName' => $item->getClientName(),
+                    'categoryId' => $item->getCategoryId(),
+                    'categoryName' => $item->getCategoryName(),
+                ]);
+            },
+            $items
         );
+
+        return ActionResponse::ok('', $sanitized);
     }
 
     /**
@@ -68,7 +104,11 @@ final class SearchController extends ControllerBase
      */
     private function buildAccountSearchFilter(): AccountSearchFilterDto
     {
+        $globalSearch = ($this->apiService->getParamInt('globalSearch', false, 0) ?? 0) !== 0
+            || ($this->apiService->getParamInt('gsearch', false, 0) ?? 0) !== 0;
+
         $filter = AccountSearchFilterDto::build($this->apiService->getParamString('text') ?? '')
+                                        ->setGlobalSearch($globalSearch)
                                         ->setCategoryId($this->apiService->getParamInt('categoryId'))
                                         ->setClientId($this->apiService->getParamInt('clientId'))
                                         ->setTagsId(

@@ -29,7 +29,9 @@ use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use function SP\__;
 use function SP\__u;
 
@@ -47,6 +49,10 @@ final class DeleteController extends AccountBase
         $this->setupApi(AclActionsInterface::ACCOUNT_DELETE);
 
         $id = $this->apiService->getParamInt('id', true);
+
+        if (!$this->accountService->canEdit($id)) {
+            throw new AccountPermissionException(SPException::INFO);
+        }
 
         $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 

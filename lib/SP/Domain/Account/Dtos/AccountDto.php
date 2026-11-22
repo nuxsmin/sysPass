@@ -34,6 +34,9 @@ use SP\Domain\Core\Exceptions\SPException;
  */
 abstract class AccountDto extends Dto
 {
+    /**
+     * @param array<int|string, mixed>|null $customFields
+     */
     public function __construct(
         public readonly ?int    $id = null,
         public readonly ?int    $clientId = null,
@@ -61,7 +64,8 @@ abstract class AccountDto extends Dto
         public readonly ?array  $otherUserGroupsEdit = null,
         public readonly ?array  $tags = null,
         public readonly ?array  $userGroupsView = null,
-        public readonly ?array  $userGroupsEdit = null
+        public readonly ?array  $userGroupsEdit = null,
+        public readonly ?array  $customFields = null
     ) {
     }
 
@@ -143,6 +147,15 @@ abstract class AccountDto extends Dto
     public function withTags(array $tags): static
     {
         return $this->mutate(['tags' => $tags]);
+    }
+
+    /**
+     * @param array<int|string, mixed>|null $customFields
+     * @throws SPException
+     */
+    public function withCustomFields(?array $customFields): static
+    {
+        return $this->mutate(['customFields' => $customFields]);
     }
 
     /**

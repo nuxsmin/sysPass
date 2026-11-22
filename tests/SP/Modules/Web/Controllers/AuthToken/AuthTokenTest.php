@@ -74,6 +74,16 @@ class AuthTokenTest extends IntegrationTestCase
     #[Test]
     public function deleteMultiple()
     {
+        $this->databaseQueryResolver = function ($queryData) {
+            if ($queryData->getMapClassName() === AuthToken::class) {
+                return new QueryResult([
+                    AuthTokenGenerator::factory()->buildAuthToken()->mutate(['userId' => self::USER_ID]),
+                ]);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest(
                 'get',
@@ -87,6 +97,102 @@ class AuthTokenTest extends IntegrationTestCase
         $this->expectOutputString('{"status":"OK","description":"Authorizations deleted","data":null}');
     }
 
+    #[Test]
+    public function deleteMultipleMixedPartialSuccess()
+    {
+        $this->databaseQueryResolver = function ($queryData) {
+            if ($queryData->getMapClassName() === AuthToken::class) {
+                $id = (int)($queryData->getQuery()->getBindValues()['id'] ?? 0);
+
+                return match ($id) {
+                    100 => new QueryResult([
+                        AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+                            'id' => 100,
+                            'userId' => self::USER_ID,
+                            'login' => 'secret-owner-name',
+                        ]),
+                    ]),
+                    200 => new QueryResult([
+                        AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+                            'id' => 200,
+                            'userId' => self::OTHER_USER_ID,
+                            'login' => 'other-secret-owner',
+                        ]),
+                    ]),
+                    default => new QueryResult([]),
+                };
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'authToken/delete', 'items' => [100, 200, 999]]
+            )
+        );
+
+        $this->expectOutputString(
+            '{"status":"WARNING","description":"Some authorizations could not be deleted","data":{"deleted":[100],"failed":{"200":"You don\'t have permission to do this operation","999":"Token not found"}}}'
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    #[Test]
+    public function deleteMultipleAllUnauthorizedIsForbidden()
+    {
+        $this->databaseQueryResolver = function ($queryData) {
+            if ($queryData->getMapClassName() === AuthToken::class) {
+                return new QueryResult([
+                    AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+                        'id' => 200,
+                        'userId' => self::OTHER_USER_ID,
+                    ]),
+                ]);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'authToken/delete', 'items' => [200]]
+            )
+        );
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":"Please contact to the administrator"}'
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function deleteBatchEmptyReturnsError()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'authToken/delete']
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Error while removing the tokens","data":null}');
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -95,6 +201,13 @@ class AuthTokenTest extends IntegrationTestCase
     #[Test]
     public function deleteSingle()
     {
+        $this->addDatabaseMapperResolver(
+            AuthToken::class,
+            new QueryResult([
+                AuthTokenGenerator::factory()->buildAuthToken()->mutate(['id' => 100, 'userId' => self::USER_ID]),
+            ])
+        );
+
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'authToken/delete/100'])
         );
@@ -115,7 +228,9 @@ class AuthTokenTest extends IntegrationTestCase
     {
         $this->addDatabaseMapperResolver(
             AuthToken::class,
-            new QueryResult([AuthTokenGenerator::factory()->buildAuthToken()])
+            new QueryResult([
+                AuthTokenGenerator::factory()->buildAuthToken()->mutate(['userId' => self::USER_ID]),
+            ])
         );
 
         $container = $this->buildContainer(
@@ -131,6 +246,7 @@ class AuthTokenTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    #[BodyChecker('outputCheckerSaveWithToken')]
     public function saveCreate()
     {
         $data = [
@@ -144,8 +260,6 @@ class AuthTokenTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
-
-        $this->expectOutputString('{"status":"OK","description":"Authorization added","data":null}');
     }
 
     /**
@@ -207,8 +321,76 @@ class AuthTokenTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
+    public function saveCreateForKeyDependentActionWithBlankPassIsDenied()
+    {
+        $data = [
+            'users' => self::USER_ID,
+            'actions' => AclActionsInterface::ACCOUNT_VIEW,
+            'pass' => ''
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data)
+        );
+
+        $this->expectOutputRegex('/Password cannot be blank/');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditScopeChangeToKeyDependentActionWithBlankPassIsDenied()
+    {
+        $this->addDatabaseMapperResolver(
+            AuthToken::class,
+            new QueryResult([
+                AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+                    'id' => 100,
+                    'userId' => self::USER_ID,
+                    'actionId' => AclActionsInterface::ACCOUNT_SEARCH,
+                ]),
+            ])
+        );
+
+        $data = [
+            'users' => self::USER_ID,
+            'actions' => AclActionsInterface::CATEGORY_VIEW,
+            'pass' => ''
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveEdit/100'], $data)
+        );
+
+        $this->expectOutputRegex('/Password cannot be blank/');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
     public function saveEdit()
     {
+        $this->addDatabaseMapperResolver(
+            AuthToken::class,
+            new QueryResult([
+                AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+                    'id' => 100,
+                    'userId' => self::USER_ID,
+                    'actionId' => AclActionsInterface::ACCOUNT_SEARCH,
+                ]),
+            ])
+        );
+
         $data = [
             'users' => self::USER_ID,
             'actions' => AclActionsInterface::ACCOUNT_SEARCH,
@@ -222,6 +404,40 @@ class AuthTokenTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Authorization updated","data":null}');
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerSaveWithToken')]
+    public function saveEditWithRefresh()
+    {
+        $this->addDatabaseMapperResolver(
+            AuthToken::class,
+            new QueryResult([
+                AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+                    'id' => 100,
+                    'userId' => self::USER_ID,
+                    'actionId' => AclActionsInterface::ACCOUNT_SEARCH,
+                ]),
+            ])
+        );
+
+        $data = [
+            'users' => self::USER_ID,
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
+            'pass' => self::$faker->sha1(),
+            'refreshtoken' => 'on',
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveEdit/100'], $data)
+        );
+
+        IntegrationTestCase::runApp($container);
     }
 
     /**
@@ -262,8 +478,16 @@ class AuthTokenTest extends IntegrationTestCase
             AuthToken::class,
             QueryResult::withTotalNumRows(
                 [
-                    $authTokenGenerator->buildAuthToken(),
-                    $authTokenGenerator->buildAuthToken()
+                    $authTokenGenerator->buildAuthToken()->mutate([
+                        'login' => 'alice_login',
+                        'token' => null,
+                        'expireDate' => time() - 3600,
+                    ]),
+                    $authTokenGenerator->buildAuthToken()->mutate([
+                        'login' => 'bob_login',
+                        'token' => null,
+                        'expireDate' => null,
+                    ]),
                 ],
                 2
             )
@@ -287,11 +511,120 @@ class AuthTokenTest extends IntegrationTestCase
     {
         $this->addDatabaseMapperResolver(
             AuthToken::class,
-            new QueryResult([AuthTokenGenerator::factory()->buildAuthToken()])
+            new QueryResult([
+                AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+                    'userId' => self::USER_ID,
+                    'token' => 'secret-view-token-2026',
+                    'expireDate' => time() + 86400,
+                ]),
+            ])
         );
 
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'authToken/view/100'])
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    #[Test]
+    #[BodyChecker('outputCheckerSaveWithToken')]
+    public function saveCreateWithValidExpireDate(): void
+    {
+        $data = [
+            'users' => self::USER_ID,
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
+            'pass' => '',
+            'expire_date' => date('Y-m-d', strtotime('+30 days')),
+            'expire_date_initial' => '__new__',
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data)
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    #[Test]
+    public function saveCreateWithPastExpireDateIsDenied(): void
+    {
+        $data = [
+            'users' => self::USER_ID,
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
+            'pass' => '',
+            'expire_date' => date('Y-m-d', strtotime('-1 day')),
+            'expire_date_initial' => '__new__',
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data)
+        );
+
+        $this->expectOutputRegex('/Invalid expiration date/');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    #[Test]
+    public function saveCreateWithOverMaxExpireDateIsDenied(): void
+    {
+        $data = [
+            'users' => self::USER_ID,
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
+            'pass' => '',
+            'expire_date' => date('Y-m-d', strtotime('+400 days')),
+            'expire_date_initial' => '__new__',
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data)
+        );
+
+        $this->expectOutputRegex('/Expiration date exceeds the maximum allowed lifetime/');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    #[Test]
+    public function saveCreateNoExpiryForbiddenForNonAdmin(): void
+    {
+        $data = [
+            'users' => self::USER_ID,
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
+            'pass' => '',
+            'no_expiry' => 'on',
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data)
+        );
+
+        $this->expectOutputRegex('/You don\'t have permission to do this operation/');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    #[Test]
+    #[BodyChecker('outputCheckerSaveWithToken')]
+    public function saveCreateNoExpiryAllowedForAdmin(): void
+    {
+        $adminContext = self::createStub(\SP\Domain\Core\Context\SessionContext::class);
+        $adminContext->method('isLoggedIn')->willReturn(true);
+        $adminContext->method('getAuthCompleted')->willReturn(true);
+        $adminContext->method('getUserData')->willReturn($this->getUserDataDto()->mutate(['isAdminApp' => true]));
+        $adminContext->method('getUserProfile')->willReturn(new \SP\Domain\User\Models\ProfileData());
+
+        $data = [
+            'users' => self::USER_ID,
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
+            'pass' => '',
+            'no_expiry' => 'on',
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data),
+            [\SP\Domain\Core\Context\Context::class => $adminContext]
         );
 
         IntegrationTestCase::runApp($container);
@@ -315,7 +648,7 @@ class AuthTokenTest extends IntegrationTestCase
             '//div[@id="box-popup"]//form[@name="frmTokens"]//select|//input'
         )->extract(['_name']);
 
-        self::assertCount(5, $filter);
+        self::assertCount(7, $filter);
     }
 
     /**
@@ -331,7 +664,7 @@ class AuthTokenTest extends IntegrationTestCase
             '//div[@id="box-popup"]//form[@name="frmTokens"]//select|//input'
         )->extract(['_name']);
 
-        self::assertCount(5, $filter);
+        self::assertCount(7, $filter);
         self::assertEquals('OK', $json->status);
     }
 
@@ -351,6 +684,10 @@ class AuthTokenTest extends IntegrationTestCase
 
         self::assertCount(2, $filter);
         self::assertEquals('OK', $json->status);
+        self::assertStringContainsString('alice_login', $json->data->html);
+        self::assertStringContainsString('bob_login', $json->data->html);
+        self::assertStringContainsString('Expired', $json->data->html);
+        self::assertStringContainsString('Never', $json->data->html);
     }
 
     /**
@@ -368,5 +705,21 @@ class AuthTokenTest extends IntegrationTestCase
 
         self::assertCount(3, $filter);
         self::assertEquals('OK', $json->status);
+        self::assertStringContainsString('***', $json->data->html);
+        self::assertStringContainsString('Expiration', $json->data->html);
+        self::assertStringNotContainsString('secret-view-token-2026', $json->data->html);
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerSaveWithToken(string $output): void
+    {
+        $json = json_decode($output);
+
+        self::assertEquals('OK', $json->status);
+        self::assertIsObject($json->data);
+        self::assertMatchesRegularExpression('/^[0-9a-f]{64}$/', (string)($json->data->token ?? ''));
     }
 }

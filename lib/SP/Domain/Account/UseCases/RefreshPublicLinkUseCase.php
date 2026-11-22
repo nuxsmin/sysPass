@@ -33,6 +33,10 @@ use SP\Domain\Account\UseCases\Dtos\RefreshPublicLinkResult;
 use SP\Domain\Common\Dtos\Command;
 use SP\Domain\Common\Ports\EventEmitter;
 use SP\Domain\Common\Ports\UseCase;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\SPException;
+
+use function SP\__u;
 
 /**
  * Refresh a public link use case.
@@ -53,7 +57,9 @@ final readonly class RefreshPublicLinkUseCase implements UseCase
             throw new LogicException(sprintf('Expected command %s', RefreshPublicLinkCommand::class));
         }
 
-        $this->publicLinkService->refresh($command->id);
+        if (!$this->publicLinkService->refresh($command->id)) {
+            throw new ServiceException(__u('Error while renewing the link'), SPException::WARNING);
+        }
 
         $this->eventEmitter->emit('edit.publicLink.refresh', $this);
 

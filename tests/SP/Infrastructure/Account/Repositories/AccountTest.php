@@ -106,14 +106,14 @@ class AccountTest extends UnitaryTestCase
                 $params = $query->getBindValues();
 
                 return count($params) === 1
-                       && $params['accountId'] === 1
+                       && $params['id'] === 1
                        && $arg->getMapClassName() === AccountPassItemWithIdAndName::class
                        && !empty($query->getStatement());
             }
         );
 
         $this->accountFilterUser
-            ->expects(self::once())
+            ->expects(self::never())
             ->method('buildFilterHistory');
 
         $this->database->expects(self::once())->method('runQuery')->with($callback, false);
@@ -767,11 +767,13 @@ class AccountTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($id) {
                 $params = $arg->getQuery()->getBindValues();
+                $statement = $arg->getQuery()->getStatement();
 
                 return count($params) === 1
                        && $params['id'] === $id
                        && $arg->getMapClassName() === Simple::class
-                       && !empty($arg->getQuery()->getStatement());
+                       && str_contains($statement, 'parentId')
+                       && !empty($statement);
             }
         );
 
@@ -788,11 +790,13 @@ class AccountTest extends UnitaryTestCase
         $callback = new Callback(
             function (QueryData $arg) use ($id) {
                 $params = $arg->getQuery()->getBindValues();
+                $statement = $arg->getQuery()->getStatement();
 
                 return count($params) === 1
                        && $params['id'] === $id
                        && $arg->getMapClassName() === Simple::class
-                       && !empty($arg->getQuery()->getStatement());
+                       && str_contains($statement, '(`Account`.`parentId` = 0 OR `Account`.`parentId` IS NULL)')
+                       && !empty($statement);
             }
         );
 
@@ -809,10 +813,12 @@ class AccountTest extends UnitaryTestCase
         $callback = new Callback(
             function (QueryData $arg) {
                 $params = $arg->getQuery()->getBindValues();
+                $statement = $arg->getQuery()->getStatement();
 
                 return count($params) === 0
                        && $arg->getMapClassName() === Simple::class
-                       && !empty($arg->getQuery()->getStatement());
+                       && str_contains($statement, '(`Account`.`parentId` = 0 OR `Account`.`parentId` IS NULL)')
+                       && !empty($statement);
             }
         );
 
