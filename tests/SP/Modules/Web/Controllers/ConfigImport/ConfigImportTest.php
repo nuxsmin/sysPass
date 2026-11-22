@@ -31,6 +31,12 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\Category\Models\Category;
+use SP\Domain\Client\Models\Client;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\User;
+use SP\Domain\User\Models\UserGroup;
 use SP\Tests\InjectVault;
 use SP\Tests\IntegrationTestCase;
 
@@ -43,6 +49,14 @@ use function SP\Tests\getResource;
 #[InjectVault]
 class ConfigImportTest extends IntegrationTestCase
 {
+    protected function getUserDataDto(): UserDto
+    {
+        return parent::getUserDataDto()->mutate([
+            'id' => 1,
+            'userGroupId' => 1,
+        ]);
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -51,35 +65,56 @@ class ConfigImportTest extends IntegrationTestCase
     #[Test]
     public function import()
     {
+        $this->addDatabaseMapperResolver(
+            Client::class,
+            new QueryResult([new Client(['id' => 1])])
+        );
+        $this->addDatabaseMapperResolver(
+            Category::class,
+            new QueryResult([new Category(['id' => 1])])
+        );
+        $this->addDatabaseMapperResolver(
+            User::class,
+            new QueryResult([new User(['id' => 1, 'userGroupId' => 1])])
+        );
+        $this->addDatabaseMapperResolver(
+            UserGroup::class,
+            new QueryResult([new UserGroup(['id' => 1])])
+        );
+
         $file = sprintf('%s.csv', self::$faker->filePath());
 
         file_put_contents($file, getResource('import', 'data.csv'));
 
-        $files = [
-            'inFile' => [
-                'name' => self::$faker->name(),
-                'tmp_name' => $file,
-                'size' => filesize($file),
-                'type' => 'text/plain'
-            ]
-        ];
+        try {
+            $files = [
+                'inFile' => [
+                    'name' => self::$faker->name(),
+                    'tmp_name' => $file,
+                    'size' => filesize($file),
+                    'type' => 'text/plain'
+                ]
+            ];
 
-        $data = [
-            'import_defaultuser' => 1,
-            'import_defaultgroup' => 1,
-            'importPwd' => self::$faker->password(),
-            'importMasterPwd' => self::$faker->password(),
-            'csvDelimiter' => ';',
-        ];
+            $data = [
+                'import_defaultuser' => 1,
+                'import_defaultgroup' => 1,
+                'importPwd' => self::$faker->password(),
+                'importMasterPwd' => self::$faker->password(),
+                'csvDelimiter' => ';',
+            ];
 
-        $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configImport/import'], $data, $files)
-        );
+            $container = $this->buildContainer(
+                IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configImport/import'], $data, $files)
+            );
 
-        $this->expectOutputString(
-            '{"status":"OK","description":"Import finished","data":"Please check out the event log for more details"}'
-        );
+            $this->expectOutputString(
+                '{"status":"OK","description":"Import finished","data":"Please check out the event log for more details"}'
+            );
 
-        IntegrationTestCase::runApp($container);
+            IntegrationTestCase::runApp($container);
+        } finally {
+            @unlink($file);
+        }
     }
 }
