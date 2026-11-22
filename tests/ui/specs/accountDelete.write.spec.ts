@@ -59,7 +59,7 @@ async function createDisposableAccount(
   page: Page,
   tracker: ActionTracker,
 ): Promise<{ itemId: number; name: string }> {
-  const createLink = page.locator('a.btn-menu[data-route="account/create"]').first();
+  const createLink = page.locator('.btn-menu[data-route="account/create"]').first();
   await expect(createLink).toHaveAttribute('data-view', 'account');
 
   const createContract = accountCreateContract({

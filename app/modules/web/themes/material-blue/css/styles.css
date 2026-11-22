@@ -80,6 +80,21 @@
   font-weight: 600;
   box-shadow: inset 0 -2px 0 var(--sp-on-accent);
 }
+.sp-header-primary button.mdl-navigation__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 8px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+.sp-header-primary .mdl-navigation .material-icons {
+  font-size: 20px;
+}
 .sp-header-primary :focus-visible {
   outline: 3px solid var(--sp-on-accent);
   outline-offset: 2px;
@@ -118,7 +133,7 @@
   max-width: 100%;
   height: auto;
 }
-.sp-brand-home .sp-brand-logo--compact {
+.sp-brand-home img.sp-brand-logo--compact {
   display: none;
   width: 28px;
   min-width: 24px;
@@ -129,10 +144,10 @@
   .sp-brand-home {
     padding: 6px;
   }
-  .sp-brand-home .sp-brand-logo--wide {
+  .sp-brand-home img.sp-brand-logo--wide {
     display: none;
   }
-  .sp-brand-home .sp-brand-logo--compact {
+  .sp-brand-home img.sp-brand-logo--compact {
     display: block;
   }
 }
@@ -800,6 +815,63 @@ body.userpassreset footer a:visited {
   width: 75%;
   margin: 0 auto;
 }
+#content .sp-account-page {
+  width: min(100%, 1100px);
+}
+#content .sp-account-page #title.titleNormal {
+  padding: var(--sp-space-3) 0;
+  background: var(--sp-background);
+  color: var(--sp-text);
+  border-bottom: 1px solid var(--sp-border);
+  font-weight: 600;
+  letter-spacing: normal;
+}
+#content .sp-account-page #title .material-icons {
+  color: var(--sp-accent);
+}
+#content .sp-account-page .mdl-tabs__tab-bar {
+  justify-content: flex-start;
+}
+#content .sp-account-page .mdl-tabs__tab.is-active::after {
+  background: var(--sp-accent);
+}
+#content .sp-account-page #account-panel > table {
+  display: block;
+  padding: var(--sp-space-4);
+}
+#content .sp-account-page #account-panel > table > tbody {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-space-2) var(--sp-space-6);
+}
+#content .sp-account-page #account-panel > table > tbody > tr {
+  display: flex;
+  align-items: center;
+  height: auto;
+  min-width: 0;
+}
+#content .sp-account-page #account-panel .sp-account-field--wide {
+  grid-column: 1/-1;
+}
+#content .sp-account-page #account-panel td.descField {
+  flex: 0 0 100px;
+  width: auto;
+  border: 0;
+  text-align: left;
+  padding: 0 var(--sp-space-2) 0 0;
+}
+#content .sp-account-page #account-panel td.valField {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+}
+#content .sp-account-page #account-panel .mdl-textfield {
+  width: 100%;
+  max-width: 24rem;
+}
+#content .sp-account-page #account-panel .sp-account-field--wide .mdl-textfield {
+  max-width: none;
+}
 #content fieldset.data {
   margin: 2em auto;
 }
@@ -1064,19 +1136,49 @@ body.userpassreset footer a:visited {
   justify-content: flex-start;
   align-items: center;
   text-align: left;
+  gap: var(--sp-space-2);
+}
+#content #searchbox .search-text {
+  display: flex;
+  align-items: center;
+  flex: 1 1 200px;
+  min-width: 0;
+}
+#content #searchbox .search-text .mdl-textfield {
+  flex: 1;
+  min-width: 0;
+}
+#content #searchbox .search-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-space-2);
 }
 #content #searchbox .search-filters > * {
-  margin: 0 0.5em;
+  margin: 0;
 }
 #content #searchbox .search-filters .filter-buttons {
   display: inline-block;
 }
 #content #searchbox .search-filters .filter-slider {
-  width: 10em;
+  width: 8em;
+}
+#content #searchbox .search-filters--selects {
+  flex: 2 1 360px;
+}
+#content #searchbox .search-filters--selects .selectize-control {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+#content #searchbox .search-filters--controls {
+  flex: 0 1 auto;
 }
 #content #searchbox .search-filters-tags {
   display: none;
   flex-grow: 2;
+}
+#content #searchbox input[type=submit] {
+  position: absolute;
 }
 #content .btn-clear {
   opacity: 0.35;
@@ -1818,24 +1920,121 @@ div.tag-list-box span.tag, div.tags-box span.tag {
   -webkit-border-radius: 3px !important;
 }
 
-#box-pub-noheader #box-login {
-  position: relative;
-  min-height: 14em;
+body.login #wrap,
+body.logout #wrap {
+  padding-bottom: 0;
+}
+body.login #container,
+body.logout #container {
+  display: grid;
+  align-items: center;
+  min-height: 100vh;
+  padding: var(--sp-space-8) var(--sp-space-4) 80px;
+}
+body.login #box-pub-noheader,
+body.logout #box-pub-noheader {
+  width: min(100%, 420px);
+  min-height: 0;
+}
+body.login #box-pub-noheader .sp-auth-brand,
+body.logout #box-pub-noheader .sp-auth-brand {
+  padding: 0 0 var(--sp-space-6);
+  gap: var(--sp-space-3);
+}
+body.login #box-pub-noheader .sp-auth-logo,
+body.logout #box-pub-noheader .sp-auth-logo {
+  width: 144px;
+}
+body.login #box-pub-noheader .box-form,
+body.login #box-pub-noheader .sp-auth-signin,
+body.logout #box-pub-noheader .box-form,
+body.logout #box-pub-noheader .sp-auth-signin {
+  padding: var(--sp-space-6);
+  border-radius: 12px !important;
+  box-shadow: 0 2px 6px rgba(38, 53, 68, 0.1);
+}
+
+body.logout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+body.logout #toast-container.toast-top-center {
+  position: static;
+  order: -1;
+  width: 100%;
+  padding: var(--sp-space-4) var(--sp-space-4) 0;
+}
+body.logout #toast-container.toast-top-center > div {
+  width: min(100%, 420px);
+}
+body.logout .sp-auth-signin a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  height: auto;
+  white-space: normal;
+}
+
+#box-pub-noheader #box-login form fieldset#box-data {
+  min-height: 0;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+#box-pub-noheader #box-login .form-control + .form-control {
+  margin-top: var(--sp-space-4);
+}
+#box-pub-noheader #box-login .mdl-textfield {
+  width: 100%;
+  padding: 0;
+}
+#box-pub-noheader #box-login .mdl-textfield__label {
+  position: static;
+  display: block;
+  width: auto;
+  margin-bottom: var(--sp-space-2);
+  color: var(--sp-text);
+  font-size: 14px;
+  line-height: 1.4;
+  visibility: visible;
+}
+#box-pub-noheader #box-login .mdl-textfield__label::after {
+  display: none;
+}
+#box-pub-noheader #box-login .mdl-textfield__input {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--sp-space-3);
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius-sm);
+  color: var(--sp-text) !important;
+  font-size: 16px;
+}
+#box-pub-noheader #box-login .mdl-textfield__input:focus {
+  outline: 3px solid var(--sp-focus);
+  outline-offset: 2px;
 }
 #box-pub-noheader #box-login #box-buttons {
-  position: absolute;
-  top: 2em;
-  right: 2em;
+  margin-top: var(--sp-space-6);
+}
+#box-pub-noheader #box-login #btnLogin {
+  width: 100%;
+  min-height: 44px;
+  height: auto;
+  line-height: 1.4;
+  padding: var(--sp-space-3);
+  white-space: normal;
 }
 #box-pub-noheader #box-login #box-actions {
-  width: 100%;
-  text-align: right;
-}
-#box-pub-noheader #box-login #box-actions a {
-  color: var(--sp-accent);
+  margin-top: var(--sp-space-4);
+  text-align: center;
 }
 #box-pub-noheader #box-updated {
-  width: 350px;
+  width: 100%;
   margin: 3em auto;
   font-size: 14px;
   text-align: center;
@@ -1861,15 +2060,6 @@ div.tag-list-box span.tag, div.tags-box span.tag {
 }
 
 @media screen and (max-width: 600px) {
-  #box-pub-noheader #box-login #box-buttons {
-    position: relative;
-    top: 0;
-    right: 0;
-    text-align: right;
-  }
-  #box-pub-noheader #box-login #box-actions {
-    margin-top: 1em;
-  }
   #box-pub-noheader #demo-info ul {
     display: flex;
     flex-direction: column;
@@ -1890,9 +2080,6 @@ div.tag-list-box span.tag, div.tags-box span.tag {
 /*@media screen and (min-width: 1000px) {}*/
 /*@media screen and (min-width: 1400px) {}*/
 @media screen and (max-width: 1000px) {
-  #content #searchbox .search-filters > * {
-    margin: 0.5em 1em 0.5em 0;
-  }
   footer {
     display: none;
     justify-content: space-between;
@@ -1910,6 +2097,11 @@ div.tag-list-box span.tag, div.tags-box span.tag {
     padding: 0.5em 0;
   }
 }
+@media screen and (max-width: 700px) {
+  #content .sp-account-page #account-panel > table > tbody {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 @media screen and (max-width: 600px) {
   #content input, #box-popup input {
     width: 100%;
@@ -1924,13 +2116,18 @@ div.tag-list-box span.tag, div.tags-box span.tag {
     display: block;
   }
   #content #searchbox .mdl-textfield {
-    width: 90%;
+    width: 100%;
   }
   #content #searchbox .search-text {
-    width: 90%;
-  }
-  #content #searchbox .search-filters .selectize-control {
     width: 100%;
+    flex-basis: 100%;
+  }
+  #content #searchbox .search-filters--selects {
+    flex-basis: 100%;
+  }
+  #content #searchbox .search-filters--selects .selectize-control {
+    width: 100%;
+    flex-basis: 100%;
   }
   #content .data-header-minimal li.search-filter-spacer {
     display: none;

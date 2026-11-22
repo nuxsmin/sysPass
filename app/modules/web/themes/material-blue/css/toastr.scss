@@ -36,8 +36,16 @@
   background-color: $color-blue-fg;
 }
 
-.toast-warning {
+#toast-container > .toast-warning {
   background-color: var(--sp-warning-bg);
   color: var(--sp-warning);
   border: 1px solid var(--sp-warning);
+  background-image: none !important;
+  padding-left: 15px;
+
+  .toast-close-button {
+    color: var(--sp-warning);
+    text-shadow: none;
+    opacity: 1;
+  }
 }

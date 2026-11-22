@@ -11,7 +11,7 @@ async function createAccount(page: Page, tracker: ActionTracker, session: Parame
   const contract = accountCreateContract({ mode: 'in-shell', parentAccount: FIXTURE.names.parentAccount });
   tracker.setContract(contract);
   const since = Date.now();
-  await page.locator('a.btn-menu[data-route="account/create"]').first().click();
+  await page.locator('.btn-menu[data-route="account/create"]').first().click();
   await tracker.waitForReady(contract, since);
   const suffix = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   await page.locator('#name').fill(`Edit fixture ${suffix}`);

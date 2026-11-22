@@ -19,7 +19,7 @@
       display: flex;
       justify-content: space-between;
       width: 100%;
-      min-height: 8em;
+      min-height: 0;
       height: auto;
       text-align: left;
       margin: 0 auto 0.5em;
@@ -32,14 +32,14 @@
       .label-row-up,
       .label-row-down {
         display: flex;
-        min-height: 3em;
+        min-height: 0;
         height: auto;
         width: 100%;
         padding: 0.5em 0;
       }
 
       .label-row-down {
-        height: 3em;
+        height: auto;
       }
 
       .label-left {
@@ -47,14 +47,14 @@
         flex-wrap: wrap;
         align-items: center;
         width: 100%;
-        height: 4em;
+        height: auto;
       }
 
       .label-right {
         display: flex;
         flex-wrap: wrap;
         width: 18em;
-        height: 4em;
+        height: auto;
 
         & > div {
           width: 18em;
@@ -63,7 +63,7 @@
 
       .label-field {
         width: 100%;
-        min-height: 3em;
+        min-height: 0;
         height: auto;
         padding: 0 .3em;
       }
@@ -106,7 +106,7 @@
       padding: .5em 0 .5em 0;
       text-align: left;
       opacity: 0.85;
-      min-height: 4em;
+      min-height: 0;
 
       &:hover {
         opacity: 1;

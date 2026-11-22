@@ -50,50 +50,38 @@ use function SP\__;
               data-route="login/login">
             <fieldset id="box-data">
                 <div class="form-control">
-                    <i class="material-icons">perm_identity</i>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <label class="mdl-textfield__label" for="user"><?php echo __('User'); ?></label>
                         <input id="user" name="user" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="80" autocomplete="off" autofocus>
-                        <label class="mdl-textfield__label"
-                               for="user"><?php
-                            echo __('User'); ?></label>
+                               maxlength="80" autocomplete="username" autofocus>
                     </div>
                 </div>
 
                 <div class="form-control">
-                    <i class="material-icons">vpn_key</i>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <label class="mdl-textfield__label" for="pass"><?php echo __('Password'); ?></label>
                         <input id="pass" name="pass" type="password"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="255" autocomplete="off">
-                        <label class="mdl-textfield__label"
-                               for="pass"><?php
-                            echo __('Password'); ?></label>
+                               maxlength="255" autocomplete="current-password">
                     </div>
                 </div>
 
                 <div id="soldpass" class="extra-hidden form-control">
-                    <i class="material-icons">vpn_key</i>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <label class="mdl-textfield__label" for="oldpass"><?php echo __('Previous Password'); ?></label>
                         <input id="oldpass" name="oldpass" type="password"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" autocomplete="off">
-                        <label class="mdl-textfield__label"
-                               for="oldpass"><?php
-                            echo __('Previous Password'); ?></label>
                     </div>
                 </div>
 
                 <div id="smpass" class="extra-hidden form-control">
-                    <i class="material-icons">vpn_key</i>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <label class="mdl-textfield__label" for="mpass"><?php echo __('Master Password'); ?></label>
                         <input id="mpass" name="mpass" type="password"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" autocomplete="off">
-                        <label class="mdl-textfield__label"
-                               for="mpass"><?php
-                            echo __('Master Password'); ?></label>
                     </div>
                 </div>
 
@@ -113,10 +101,10 @@ use function SP\__;
             </fieldset>
             <div id="box-buttons">
                 <button id="btnLogin" type="submit" form="frmLogin"
-                        class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored sp-btn-primary"
+                        class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored sp-btn-primary"
                         title="<?php
                         echo __('Sign in'); ?>">
-                    <i class="material-icons">play_arrow</i>
+                    <?php echo __('Sign in'); ?>
                 </button>
             </div>
         </form>

@@ -54,7 +54,7 @@ test('account create submits through the JS form and persists the account', asyn
 
     await openSeededShell(page, tracker, session);
 
-    const createLink = page.locator('a.btn-menu[data-route="account/create"]').first();
+    const createLink = page.locator('.btn-menu[data-route="account/create"]').first();
     await expect(createLink).toHaveAttribute('data-view', 'account');
 
     const createContract = accountCreateContract({

@@ -194,7 +194,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                     <?php
                     endif; ?>
                 </div>
-                <?php if ($accountSearchItem->isShow()): ?>
+                <?php if ($accountSearchItem->isShow() && $accountSearchItem->getTags() !== []): ?>
                 <div class="label-row-down">
                     <div class="tags-box">
                         <?php

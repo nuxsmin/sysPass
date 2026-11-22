@@ -105,6 +105,11 @@ test('authenticates once and loads the complete seeded shell', async ({ sessionP
     await expect(
       page.locator('.account-label', { hasText: FIXTURE.names.childAccount }),
     ).toBeVisible();
+
+    for (const width of [375, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await expect(page.locator('.sp-brand-home img:visible')).toHaveCount(1);
+    }
   } finally {
     tracker.dispose();
   }
@@ -186,6 +191,15 @@ test('account view loads in-shell with the seeded file and linked-account conten
   try {
     await openSeededShell(page, tracker);
     await openInShellAccountView(page, tracker);
+
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const headerColor = await page.locator('header.sp-header-primary').evaluate((element) => getComputedStyle(element).backgroundColor);
+    const titleColor = await page.locator('.sp-account-page #title').evaluate((element) => getComputedStyle(element).backgroundColor);
+    expect(titleColor).not.toBe(headerColor);
+    const name = await page.locator('#account-panel #name').boundingBox();
+    const client = await page.locator('#client_id + .selectize-control').boundingBox();
+    expect(name && client).toBeTruthy();
+    expect(client!.x).toBeGreaterThan(name!.x + 100);
   } finally {
     tracker.dispose();
   }
@@ -199,7 +213,7 @@ test('account create loads in-shell with the seeded linked-account option', asyn
   try {
     await openSeededShell(page, tracker);
 
-    const link = page.locator('a.btn-menu[data-route="account/create"]').first();
+    const link = page.locator('.btn-menu[data-route="account/create"]').first();
     await expect(link).toHaveAttribute('data-view', 'account');
 
     const contract = accountCreateContract({

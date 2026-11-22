@@ -51,7 +51,7 @@ $showPermissions = $accountAcl->isShowPermission()
 $showCustomFields = count($_getvar('customFields', 0)) > 0;
 ?>
 
-<div class="data-container">
+<div class="data-container sp-account-page">
     <div id="title" class="titleNormal">
         <i class="material-icons"><?php
             echo $_getvar('title')['icon']; ?></i>
@@ -249,7 +249,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                     echo $_getvar('readonly'); ?>
                                 >
                                 <label class="mdl-textfield__label"
-                                       for="name"><?php
+                                       for="url"><?php
                                     echo __('Access URL or IP'); ?></label>
                             </div>
                         </td>
@@ -270,7 +270,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                     echo $_getvar('readonly'); ?>
                                 >
                                 <label class="mdl-textfield__label"
-                                       for="name"><?php
+                                       for="login"><?php
                                     echo __('Access user'); ?></label>
                             </div>
                         </td>
@@ -343,7 +343,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         endif; ?>
                     <?php
                     endif; ?>
-                    <tr>
+                    <tr class="sp-account-field--wide">
                         <td class="descField"><?php
                             echo __('Notes'); ?></td>
                         <td class="valField">
@@ -362,7 +362,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                             </div>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="sp-account-field--wide">
                         <td class="descField"><?php
                             echo __('Tags'); ?></td>
                         <td class="valField">

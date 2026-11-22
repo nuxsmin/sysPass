@@ -66,7 +66,7 @@ $pager = $data->getPager();
             include $this->includePartial('help_account_search'); ?>
         </div>
 
-        <div class="search-filters">
+        <div class="search-filters search-filters--selects">
             <select id="client" name="client"
                     class="select-box select-box-deselect" tabindex="3">
                 <option value=""><?php
@@ -100,7 +100,7 @@ $pager = $data->getPager();
             </select>
         </div>
 
-        <div class="search-filters">
+        <div class="search-filters search-filters--controls">
 
             <div class="filter-buttons">
                 <?php

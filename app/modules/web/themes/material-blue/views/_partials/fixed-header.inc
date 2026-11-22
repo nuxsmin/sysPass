@@ -40,18 +40,19 @@ use function SP\__;
                 <nav class="mdl-navigation mdl-layout--large-screen-only">
                     <?php /** @var DataGridAction $action */
                     foreach ($_getvar('actions') as $action): ?>
-                        <a id="btn-<?php echo $action->getId(); ?>"
+                        <button type="button" id="btn-<?php echo $action->getId(); ?>"
                            class="btn-menu mdl-navigation__link"
+                           aria-label="<?php echo htmlspecialchars($action->getTitle(), ENT_QUOTES); ?>"
                             <?php foreach ($action->getData() as $dataName => $dataValue): ?>
                                 <?php echo 'data-', $dataName, '="', $dataValue, '"'; ?>
                             <?php endforeach; ?>>
                             <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
-                        </a>
+                        </button>
                         <span for="btn-<?php echo $action->getId(); ?>"
                               class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                     <?php endforeach; ?>
 
-                    <a id="notifications" class="btn-menu mdl-navigation__link"
+                    <button type="button" id="notifications" class="btn-menu mdl-navigation__link"
                        aria-label="<?php echo htmlspecialchars(__('Notifications'), ENT_QUOTES); ?>"
                        data-route="notification/index"
                        data-historyreset="1"
@@ -59,7 +60,7 @@ use function SP\__;
                         <i class="material-icons mdl-badge mdl-badge--overlap notifications-badge"
                            data-badge="0"
                            data-color-class="sp-color-text--warning">notifications</i>
-                    </a>
+                    </button>
 
                     <span for="notifications"
                           class="mdl-tooltip mdl-tooltip--bottom notifications-tooltip">

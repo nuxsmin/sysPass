@@ -1,26 +1,135 @@
+body.login,
+body.logout {
+  #wrap {
+    padding-bottom: 0;
+  }
+
+  #container {
+    display: grid;
+    align-items: center;
+    min-height: 100vh;
+    padding: var(--sp-space-8) var(--sp-space-4) 80px;
+  }
+
+  #box-pub-noheader {
+    width: min(100%, 420px);
+    min-height: 0;
+
+    .sp-auth-brand {
+      padding: 0 0 var(--sp-space-6);
+      gap: var(--sp-space-3);
+    }
+
+    .sp-auth-logo {
+      width: 144px;
+    }
+
+    .box-form,
+    .sp-auth-signin {
+      padding: var(--sp-space-6);
+      border-radius: 12px !important;
+      box-shadow: 0 2px 6px rgba(38, 53, 68, 0.1);
+    }
+  }
+}
+
+body.logout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  #toast-container.toast-top-center {
+    position: static;
+    order: -1;
+    width: 100%;
+    padding: var(--sp-space-4) var(--sp-space-4) 0;
+  }
+
+  #toast-container.toast-top-center > div {
+    width: min(100%, 420px);
+  }
+
+  .sp-auth-signin a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 44px;
+    height: auto;
+    white-space: normal;
+  }
+}
+
 #box-pub-noheader {
   #box-login {
-    position: relative;
-    min-height: 14em;
+    form fieldset#box-data {
+      min-height: 0;
+      height: auto;
+      padding: 0;
+      margin: 0;
+      border: 0;
+    }
+
+    .form-control + .form-control {
+      margin-top: var(--sp-space-4);
+    }
+
+    .mdl-textfield {
+      width: 100%;
+      padding: 0;
+    }
+
+    .mdl-textfield__label {
+      position: static;
+      display: block;
+      width: auto;
+      margin-bottom: var(--sp-space-2);
+      color: var(--sp-text);
+      font-size: 14px;
+      line-height: 1.4;
+      visibility: visible;
+
+      &::after {
+        display: none;
+      }
+    }
+
+    .mdl-textfield__input {
+      width: 100%;
+      height: 44px;
+      padding: 0 var(--sp-space-3);
+      border: 1px solid var(--sp-border);
+      border-radius: var(--sp-radius-sm);
+      color: var(--sp-text) !important;
+      font-size: 16px;
+
+      &:focus {
+        outline: 3px solid var(--sp-focus);
+        outline-offset: 2px;
+      }
+    }
 
     #box-buttons {
-      position: absolute;
-      top: 2em;
-      right: 2em;
+      margin-top: var(--sp-space-6);
+    }
+
+    #btnLogin {
+      width: 100%;
+      min-height: 44px;
+      height: auto;
+      line-height: 1.4;
+      padding: var(--sp-space-3);
+      white-space: normal;
     }
 
     #box-actions {
-      width: 100%;
-      text-align: right;
-
-      a {
-        color: var(--sp-accent);
-      }
+      margin-top: var(--sp-space-4);
+      text-align: center;
     }
   }
 
   #box-updated {
-    width: 350px;
+    width: 100%;
     margin: 3em auto;
     font-size: 14px;
     text-align: center;
@@ -51,19 +160,6 @@
 
 @media screen and (max-width: 600px) {
   #box-pub-noheader {
-    #box-login {
-      #box-buttons {
-        position: relative;
-        top: 0;
-        right: 0;
-        text-align: right;
-      }
-
-      #box-actions {
-        margin-top: 1em;
-      }
-    }
-
     #demo-info {
       ul {
         display: flex;
@@ -83,4 +179,3 @@
     }
   }
 }
-

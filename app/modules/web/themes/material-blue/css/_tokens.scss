@@ -93,6 +93,23 @@
     }
   }
 
+  button.mdl-navigation__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 8px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    cursor: pointer;
+  }
+
+  .mdl-navigation .material-icons {
+    font-size: 20px;
+  }
+
   :focus-visible {
     outline: 3px solid var(--sp-on-accent);
     outline-offset: 2px;
@@ -135,7 +152,7 @@
     height: auto;
   }
 
-  .sp-brand-logo--compact {
+  img.sp-brand-logo--compact {
     display: none;
     width: 28px;
     min-width: 24px;
@@ -147,11 +164,11 @@
   .sp-brand-home {
     padding: 6px;
 
-    .sp-brand-logo--wide {
+    img.sp-brand-logo--wide {
       display: none;
     }
 
-    .sp-brand-logo--compact {
+    img.sp-brand-logo--compact {
       display: block;
     }
   }

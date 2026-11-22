@@ -230,6 +230,76 @@
     margin: 0 auto;
   }
 
+  .sp-account-page {
+    width: min(100%, 1100px);
+
+    #title.titleNormal {
+      padding: var(--sp-space-3) 0;
+      background: var(--sp-background);
+      color: var(--sp-text);
+      border-bottom: 1px solid var(--sp-border);
+      font-weight: 600;
+      letter-spacing: normal;
+    }
+
+    #title .material-icons {
+      color: var(--sp-accent);
+    }
+
+    .mdl-tabs__tab-bar {
+      justify-content: flex-start;
+    }
+
+    .mdl-tabs__tab.is-active::after {
+      background: var(--sp-accent);
+    }
+
+    #account-panel > table {
+      display: block;
+      padding: var(--sp-space-4);
+    }
+
+    #account-panel > table > tbody {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--sp-space-2) var(--sp-space-6);
+    }
+
+    #account-panel > table > tbody > tr {
+      display: flex;
+      align-items: center;
+      height: auto;
+      min-width: 0;
+    }
+
+    #account-panel .sp-account-field--wide {
+      grid-column: 1 / -1;
+    }
+
+    #account-panel td.descField {
+      flex: 0 0 100px;
+      width: auto;
+      border: 0;
+      text-align: left;
+      padding: 0 var(--sp-space-2) 0 0;
+    }
+
+    #account-panel td.valField {
+      flex: 1;
+      min-width: 0;
+      padding: 0;
+    }
+
+    #account-panel .mdl-textfield {
+      width: 100%;
+      max-width: 24rem;
+    }
+
+    #account-panel .sp-account-field--wide .mdl-textfield {
+      max-width: none;
+    }
+  }
+
   fieldset.data {
     margin: 2em auto;
 
@@ -562,11 +632,29 @@
       justify-content: flex-start;
       align-items: center;
       text-align: left;
+      gap: var(--sp-space-2);
+    }
+
+    .search-text {
+      display: flex;
+      align-items: center;
+      flex: 1 1 200px;
+      min-width: 0;
+
+      .mdl-textfield {
+        flex: 1;
+        min-width: 0;
+      }
     }
 
     .search-filters {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sp-space-2);
+
       & > * {
-        margin: 0 .5em;
+        margin: 0;
       }
 
       .filter-buttons {
@@ -574,13 +662,30 @@
       }
 
       .filter-slider {
-        width: 10em;
+        width: 8em;
       }
+    }
+
+    .search-filters--selects {
+      flex: 2 1 360px;
+
+      .selectize-control {
+        flex: 1 1 160px;
+        min-width: 0;
+      }
+    }
+
+    .search-filters--controls {
+      flex: 0 1 auto;
     }
 
     .search-filters-tags {
       display: none;
       flex-grow: 2;
+    }
+
+    input[type="submit"] {
+      position: absolute;
     }
   }
 
@@ -1383,15 +1488,6 @@ div.tag-list-box, div.tags-box {
 /*@media screen and (min-width: 1400px) {}*/
 
 @media screen and (max-width: 1000px) {
-  #content {
-    #searchbox {
-      .search-filters {
-        & > * {
-          margin: .5em 1em .5em 0;
-        }
-      }
-    }
-  }
   footer {
     display: none;
     justify-content: space-between;
@@ -1410,6 +1506,12 @@ div.tag-list-box, div.tags-box {
       width: 100%;
       padding: .5em 0;
     }
+  }
+}
+
+@media screen and (max-width: 700px) {
+  #content .sp-account-page #account-panel > table > tbody {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1437,16 +1539,20 @@ div.tag-list-box, div.tags-box {
   #content {
     #searchbox {
       .mdl-textfield {
-        width: 90%;
+        width: 100%;
       }
 
       .search-text {
-        width: 90%;
+        width: 100%;
+        flex-basis: 100%;
       }
 
-      .search-filters {
+      .search-filters--selects {
+        flex-basis: 100%;
+
         .selectize-control {
           width: 100%;
+          flex-basis: 100%;
         }
       }
     }
