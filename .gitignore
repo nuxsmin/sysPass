@@ -88,5 +88,6 @@ public/vendor/css/*.css.map
 app/modules/web/themes/material-blue/js/*.min.js.map
 app/modules/web/themes/material-blue/css/*.css.map
 
+.idea/
 .kilo/plans/
 .phpactor.json
