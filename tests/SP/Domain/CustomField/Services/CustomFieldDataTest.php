@@ -37,6 +37,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
@@ -705,6 +706,161 @@ class CustomFieldDataTest extends UnitaryTestCase
         $this->expectExceptionMessage('test');
 
         $this->customFieldData->updateMasterPass($customFieldData, $password);
+    }
+
+    /**
+     * @throws ServiceException
+     * @throws ContextException
+     */
+    #[Test]
+    public function testDecryptThrowsServiceExceptionOnCryptException(): void
+    {
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'secret');
+
+        $this->crypt
+            ->expects(self::once())
+            ->method('decrypt')
+            ->with('enc-data', 'enc-key', 'secret')
+            ->willThrowException(new CryptException('decrypt failed'));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('decrypt failed');
+
+        $this->customFieldData->decrypt('enc-data', 'enc-key');
+    }
+
+    /**
+     * @throws ServiceException
+     * @throws ContextException
+     */
+    #[Test]
+    public function testCreateRejectsOversizedSecuredKey(): void
+    {
+        $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
+        $customFieldDefinition = $this->createMock(CustomFieldDefinitionModel::class);
+        $customFieldDefinition->expects(self::once())
+            ->method('getIsEncrypted')
+            ->willReturn(1);
+
+        $this->customFieldDefinitionRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with($customFieldData->getDefinitionId())
+            ->willReturn(new QueryResult([$customFieldDefinition]));
+
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'secret');
+
+        $this->crypt
+            ->expects(self::once())
+            ->method('makeSecuredKey')
+            ->with('secret')
+            ->willReturn(str_repeat('k', 1001));
+
+        $this->customFieldDataRepository->expects(self::never())->method('create');
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Internal error');
+
+        $this->customFieldData->create($customFieldData);
+    }
+
+    /**
+     * @throws ServiceException
+     */
+    #[Test]
+    public function testDeleteByItem(): void
+    {
+        $this->customFieldDataRepository
+            ->expects(self::once())
+            ->method('deleteByItem')
+            ->with(15, 1)
+            ->willReturn(new QueryResult(null, 2));
+
+        $this->customFieldData->deleteByItem(15, 1);
+    }
+
+    /**
+     * @throws ServiceException
+     */
+    #[Test]
+    public function testDeleteByItemError(): void
+    {
+        $this->customFieldDataRepository
+            ->expects(self::once())
+            ->method('deleteByItem')
+            ->with(15, 1)
+            ->willThrowException(QueryException::error('delete item error'));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('delete item error');
+
+        $this->customFieldData->deleteByItem(15, 1);
+    }
+
+    /**
+     * @throws ServiceException
+     */
+    #[Test]
+    public function testDeleteByDefinition(): void
+    {
+        $this->customFieldDataRepository
+            ->expects(self::once())
+            ->method('deleteByDefinition')
+            ->with(15, 1, 9)
+            ->willReturn(new QueryResult(null, 1));
+
+        $this->customFieldData->deleteByDefinition(15, 1, 9);
+    }
+
+    /**
+     * @throws ServiceException
+     */
+    #[Test]
+    public function testDeleteByDefinitionError(): void
+    {
+        $this->customFieldDataRepository
+            ->expects(self::once())
+            ->method('deleteByDefinition')
+            ->with(15, 1, 9)
+            ->willThrowException(ConstraintException::error('delete def error'));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('delete def error');
+
+        $this->customFieldData->deleteByDefinition(15, 1, 9);
+    }
+
+    /**
+     * @throws ServiceException
+     */
+    #[Test]
+    public function testCopyByModuleAndItem(): void
+    {
+        $this->customFieldDataRepository
+            ->expects(self::once())
+            ->method('copyByModuleAndItem')
+            ->with(1, 10, 2, 20)
+            ->willReturn(3);
+
+        self::assertSame(3, $this->customFieldData->copyByModuleAndItem(1, 10, 2, 20));
+    }
+
+    /**
+     * @throws ServiceException
+     */
+    #[Test]
+    public function testCopyByModuleAndItemError(): void
+    {
+        $this->customFieldDataRepository
+            ->expects(self::once())
+            ->method('copyByModuleAndItem')
+            ->with(1, 10, 2, 20)
+            ->willThrowException(SPException::error('copy error'));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('copy error');
+
+        $this->customFieldData->copyByModuleAndItem(1, 10, 2, 20);
     }
 
     protected function setUp(): void

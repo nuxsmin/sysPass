@@ -62,7 +62,9 @@ test('User Group delete reconciles the ERROR outcome', async ({ sessionPage: { p
     expect(response.status()).toBe(200);
     expect(await response.json()).toEqual({ status: outcome, description: message, messages: [], data: null });
     await expect.poll(() => refreshes.length).toBe(1);
-    expect(new URL(refreshes[0].url()).searchParams.get('tabIndex')).toBe(tabIndex);
+    const [refresh] = refreshes;
+    expect(refresh).toBeDefined();
+    expect(new URL(refresh!.url()).searchParams.get('tabIndex')).toBe(tabIndex);
     expect((await refreshPromise).status()).toBe(200);
     await expect(grid.locator('tr').filter({ hasText: name })).toHaveCount(1);
     await expect(page.locator('.toast-error').filter({ hasText: message })).toBeVisible();
@@ -145,7 +147,9 @@ test('bulk User Group delete displays a synthetic ERROR and reloads the active t
     expect(await response.json()).toEqual(envelope);
     // This records current client behaviour, not a server rollback guarantee.
     await expect.poll(() => refreshes.length).toBe(1);
-    expect(new URL(refreshes[0].url()).searchParams.get('tabIndex')).toBe(tabIndex);
+    const [refresh] = refreshes;
+    expect(refresh).toBeDefined();
+    expect(new URL(refresh!.url()).searchParams.get('tabIndex')).toBe(tabIndex);
     expect((await refreshPromise).status()).toBe(200);
     await expect(page.locator('.toast-error').filter({ hasText: message })).toBeVisible();
     await expect(page.locator('.toast-success')).toHaveCount(0);

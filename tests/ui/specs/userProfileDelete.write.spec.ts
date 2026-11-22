@@ -49,7 +49,9 @@ test('User Profile delete reconciles the ERROR outcome', async ({ sessionPage: {
     expect(response.status()).toBe(200);
     expect(await response.json()).toEqual({ status: 'ERROR', description: message, messages: [], data: null });
     await expect.poll(() => refreshes.length).toBe(1);
-    expect(new URL(refreshes[0].url()).searchParams.get('tabIndex')).toBe(tabIndex);
+    const [refresh] = refreshes;
+    expect(refresh).toBeDefined();
+    expect(new URL(refresh!.url()).searchParams.get('tabIndex')).toBe(tabIndex);
     expect((await refreshPromise).status()).toBe(200);
     await expect(grid.locator(`tr[data-item-id="${id}"]`)).toContainText(name);
     await expect(page.locator('.toast-error').filter({ hasText: message })).toBeVisible();
@@ -85,7 +87,9 @@ test('bulk User Profile delete displays a synthetic ERROR and reloads the active
     await page.locator(`#tabsHeader a[href="#${panelId}"]`).click();
     for (const [index, id] of ids.entries()) {
       const row = grid.locator(`tr[data-item-id="${id}"]`);
-      await expect(row).toContainText(names[index]);
+      const expectedName = names[index];
+      expect(expectedName).toBeDefined();
+      await expect(row).toContainText(expectedName!);
       await row.locator('label.mdl-checkbox').click();
       await expect(row).toHaveClass(/is-selected/);
     }
@@ -115,7 +119,9 @@ test('bulk User Profile delete displays a synthetic ERROR and reloads the active
     expect(await response.json()).toEqual(envelope);
     // This records current client behaviour, not a server rollback guarantee.
     await expect.poll(() => refreshes.length).toBe(1);
-    expect(new URL(refreshes[0].url()).searchParams.get('tabIndex')).toBe(tabIndex);
+    const [refresh] = refreshes;
+    expect(refresh).toBeDefined();
+    expect(new URL(refresh!.url()).searchParams.get('tabIndex')).toBe(tabIndex);
     expect((await refreshPromise).status()).toBe(200);
     await expect(page.locator('.toast-error').filter({ hasText: message })).toBeVisible();
     await expect(page.locator('.toast-success')).toHaveCount(0);
