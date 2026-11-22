@@ -65,8 +65,8 @@ class ConfigImportTest extends IntegrationTestCase
         ];
 
         $data = [
-            'import_defaultuser' => self::$faker->randomNumber(3),
-            'import_defaultgroup' => self::$faker->randomNumber(3),
+            'import_defaultuser' => 1,
+            'import_defaultgroup' => 1,
             'importPwd' => self::$faker->password(),
             'importMasterPwd' => self::$faker->password(),
             'csvDelimiter' => ';',
