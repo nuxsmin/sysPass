@@ -200,7 +200,12 @@ function setup(options) {
                 return {};
             },
             getActionCall: function (opts, callback) {
-                record.calls.push({opts: opts, callback: callback});
+                let resolveFn;
+                const promise = new Promise(function (resolve) {
+                    resolveFn = resolve;
+                });
+                record.calls.push({opts: opts, callback: callback, resolve: resolveFn});
+                return promise;
             }
         },
         theme: {
@@ -658,6 +663,200 @@ test("appMgmt.delete cancel reports cancellation without dispatching a request",
     const control = makeElement({"action-route": "itemPreset/delete", "item-id": 42});
 
     context.actions.appMgmt.delete(control);
+    assert.equal(context.record.dialogs.length, 1);
+    context.record.dialogs[0].negative.onClick({preventDefault: function () {}});
+
+    assert.equal(context.record.calls.length, 0);
+    assert.deepEqual(context.record.errors, ["Cancel"]);
+});
+
+test("notification.save closes popup, refreshes list, and reloads badge after list resolves on status 0", async function () {
+    for (const route of ["notification/saveCreate", "notification/saveEdit/42"]) {
+        const context = setup();
+        const $form = makeForm({
+            "route": route,
+            "action-next": "notification/index"
+        });
+        $form.serialize = function () {
+            return "notification_type=notice&notification_component=test";
+        };
+
+        context.actions.notification.save($form);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=" + route);
+        assert.equal(
+            context.record.calls[0].opts.data,
+            "notification_type=notice&notification_component=test&sk=sk"
+        );
+
+        context.record.calls[0].callback({
+            status: 0,
+            description: "Notification saved",
+            data: null
+        });
+
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].description, "Notification saved");
+        assert.equal(context.record.magnificClosed, 1);
+        assert.equal(context.record.calls.length, 2);
+        assert.equal(context.record.calls[1].opts.method, "get");
+        assert.equal(context.record.calls[1].opts.type, "html");
+        assert.equal(context.record.calls[1].opts.url, "/index.php?r=notification/index");
+
+        await Promise.resolve();
+        assert.equal(context.record.calls.length, 2);
+
+        context.record.calls[1].resolve();
+        await Promise.resolve();
+        assert.equal(context.record.calls.length, 3);
+        assert.equal(context.record.calls[2].opts.method, "get");
+        assert.equal(context.record.calls[2].opts.useLoading, false);
+        assert.equal(context.record.calls[2].opts.url, "/index.php?r=items/notifications");
+    }
+});
+
+test("notification.save keeps popup open and skips list/badge reload on ERROR and WARNING", async function () {
+    for (const outcome of [
+        {status: 1, description: "Validation error"},
+        {status: 2, description: "Save warning"}
+    ]) {
+        const context = setup();
+        const $form = makeForm({
+            "route": "notification/saveCreate",
+            "action-next": "notification/index"
+        });
+        $form.serialize = function () {
+            return "notification_type=notice";
+        };
+
+        context.actions.notification.save($form);
+        assert.equal(context.record.calls.length, 1);
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+        await Promise.resolve();
+
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.magnificClosed, 0);
+        assert.equal(context.record.calls.length, 1);
+    }
+});
+
+test("notification.delete dispatches single delete on confirm and reloads list then badge on OK, ERROR and WARNING", async function () {
+    for (const outcome of [
+        {status: 0, description: "Notification deleted"},
+        {status: 1, description: "Delete error"},
+        {status: 2, description: "Delete warning"}
+    ]) {
+        const context = setup();
+        const control = makeElement({
+            "action-route": "notification/delete",
+            "action-next": "notification/index",
+            "item-id": 42
+        });
+
+        context.actions.notification.delete(control);
+        assert.equal(context.record.dialogs.length, 1);
+        assert.equal(context.record.calls.length, 0);
+
+        context.record.dialogs[0].positive.onClick({preventDefault: function () {}});
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.method, "get");
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=notification/delete/42");
+        assert.deepEqual(context.record.calls[0].opts.data, {items: []});
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.calls.length, 2);
+        assert.equal(context.record.calls[1].opts.method, "get");
+        assert.equal(context.record.calls[1].opts.type, "html");
+        assert.equal(context.record.calls[1].opts.url, "/index.php?r=notification/index");
+
+        await Promise.resolve();
+        assert.equal(context.record.calls.length, 2);
+
+        context.record.calls[1].resolve();
+        await Promise.resolve();
+        assert.equal(context.record.calls.length, 3);
+        assert.equal(context.record.calls[2].opts.url, "/index.php?r=items/notifications");
+    }
+});
+
+test("notification.delete builds bulk delete route without trailing item id and sends items[]", function () {
+    const selectedRows = [
+        makeElement({"item-id": 11}),
+        makeElement({"item-id": 22})
+    ];
+    const gridTable = makeElement();
+    gridTable.find = function (selector) {
+        if (selector === ".is-selected") {
+            return makeCollection(selectedRows);
+        }
+        return this;
+    };
+
+    const context = setup({
+        elements: {"#data-table-tblNotifications": gridTable}
+    });
+    const control = makeElement({
+        "action-route": "notification/delete",
+        "action-next": "notification/index",
+        "selection": "#data-table-tblNotifications"
+    });
+
+    context.actions.notification.delete(control);
+    assert.equal(context.record.dialogs.length, 1);
+
+    context.record.dialogs[0].positive.onClick({preventDefault: function () {}});
+    assert.equal(context.record.calls.length, 1);
+    assert.equal(context.record.calls[0].opts.method, "get");
+    assert.equal(context.record.calls[0].opts.url, "/index.php?r=notification/delete");
+    assert.deepEqual(context.record.calls[0].opts.data, {items: [11, 22]});
+});
+
+test("notification.delete aborts without dialog or request when bulk selection is empty", function () {
+    const gridTable = makeElement();
+    gridTable.find = function (selector) {
+        if (selector === ".is-selected") {
+            return makeCollection([]);
+        }
+        return this;
+    };
+
+    const context = setup({
+        elements: {"#data-table-tblNotifications": gridTable}
+    });
+    const control = makeElement({
+        "action-route": "notification/delete",
+        "action-next": "notification/index",
+        "selection": "#data-table-tblNotifications"
+    });
+
+    context.actions.notification.delete(control);
+    assert.equal(context.record.dialogs.length, 0);
+    assert.equal(context.record.calls.length, 0);
+});
+
+test("notification.delete cancel reports cancellation without dispatching a request", function () {
+    const context = setup();
+    const control = makeElement({
+        "action-route": "notification/delete",
+        "action-next": "notification/index",
+        "item-id": 42
+    });
+
+    context.actions.notification.delete(control);
     assert.equal(context.record.dialogs.length, 1);
     context.record.dialogs[0].negative.onClick({preventDefault: function () {}});
 
