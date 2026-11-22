@@ -67,11 +67,15 @@ test('write wiring is its own reporting-only selection', () => {
     'accountCreate.write.spec.ts',
     'accountEdit.write.spec.ts',
     'accountDelete.write.spec.ts',
+    'accountListFiles.write.spec.ts',
+    'accountManagerDelete.write.spec.ts',
     'authTokenDelete.write.spec.ts',
     'itemMetadataDelete.write.spec.ts',
     'notificationDelete.write.spec.ts',
+    'notificationSave.write.spec.ts',
     'userGroupDelete.write.spec.ts',
     'userDelete.write.spec.ts',
+    'userEditPass.write.spec.ts',
     'userProfileDelete.write.spec.ts',
   ]);
   assert.equal(TIER_A_SPECS.includes('accountCreate.write.spec.ts'), false);

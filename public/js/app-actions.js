@@ -389,8 +389,111 @@ sysPass.Actions = function (log) {
                     sk: sysPassApp.sk.get()
                 });
 
+            const fallbackError = (sysPassApp.config && sysPassApp.config.LANG && sysPassApp.config.LANG[1] !== undefined)
+                ? sysPassApp.config.LANG[1]
+                : "An error occurred";
+
+            const renderError = function (message) {
+                const errorNode = document.createElement("p");
+                errorNode.className = "error round";
+                errorNode.textContent = message;
+
+                $obj.empty().append(errorNode);
+            };
+
+            const parseJsonEnvelope = function (value) {
+                if (value !== null && typeof value === "object") {
+                    return Array.isArray(value) ? null : value;
+                }
+
+                if (typeof value !== "string") {
+                    return null;
+                }
+
+                const trimmed = value.trim();
+
+                if (!trimmed.startsWith("{")) {
+                    return null;
+                }
+
+                try {
+                    const parsed = JSON.parse(trimmed);
+                    return (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed))
+                        ? parsed
+                        : null;
+                } catch (e) {
+                    return null;
+                }
+            };
+
+            const normalizeStatus = function (status) {
+                const statusCodes = {OK: 0, ERROR: 1, WARNING: 2};
+
+                return (typeof status === "string" && statusCodes[status] !== undefined)
+                    ? statusCodes[status]
+                    : status;
+            };
+
             sysPassApp.requests.getActionCall(opts, function (response) {
-                $obj.html(response);
+                const envelope = parseJsonEnvelope(response);
+
+                if (envelope !== null) {
+                    const normalized = Object.assign({}, envelope, {
+                        status: normalizeStatus(envelope.status)
+                    });
+
+                    if (normalized.status === 0
+                        && normalized.data !== null
+                        && typeof normalized.data === "object"
+                        && typeof normalized.data.html === "string"
+                        && /<[a-zA-Z][^>]*>/.test(normalized.data.html)
+                    ) {
+                        $obj.html(normalized.data.html);
+                        return;
+                    }
+
+                    const message = (typeof normalized.description === "string" && normalized.description.trim().length > 0)
+                        ? normalized.description
+                        : fallbackError;
+
+                    if (normalized.status === 0) {
+                        sysPassApp.msg.error(message);
+                    } else {
+                        sysPassApp.msg.out(normalized);
+                    }
+
+                    renderError(message);
+                    return;
+                }
+
+                if (typeof response !== "string") {
+                    sysPassApp.msg.error(fallbackError);
+                    renderError(fallbackError);
+                    return;
+                }
+
+                const trimmed = response.trim();
+
+                if (trimmed.length === 0
+                    || trimmed === "null"
+                    || trimmed.startsWith("{")
+                    || trimmed.startsWith("[")
+                ) {
+                    sysPassApp.msg.error(fallbackError);
+                    renderError(fallbackError);
+                    return;
+                }
+
+                if (/<[a-zA-Z][^>]*>/.test(trimmed)) {
+                    $obj.html(response);
+                    return;
+                }
+
+                sysPassApp.msg.error(trimmed);
+                renderError(trimmed);
+            }, function () {
+                sysPassApp.msg.error(fallbackError);
+                renderError(fallbackError);
             });
         },
         search: function ($obj) {
@@ -566,14 +669,12 @@ sysPass.Actions = function (log) {
             opts.data += "&sk=" + sysPassApp.sk.get();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
 
-                if (json.status === 0) {
+                if (json && json.status === 0) {
                     closeFloatingBox();
-
-                    if (typeof onSuccess === "function") {
-                        onSuccess();
-                    }
                 }
             });
         }
@@ -883,7 +984,9 @@ sysPass.Actions = function (log) {
             opts.data = $obj.serialize() + "&sk=" + sysPassApp.sk.get();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
             });
         },
         refreshMpass: function ($obj) {
@@ -899,7 +1002,9 @@ sysPass.Actions = function (log) {
                 });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
             });
         },
         mailCheck: function ($obj) {
@@ -911,7 +1016,9 @@ sysPass.Actions = function (log) {
             opts.data = $form.serialize() + "&sk=" + sysPassApp.sk.get();
 
             sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
             });
         }
     };

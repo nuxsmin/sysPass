@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/tests/SP/Infrastructure" />
         <option value="$PROJECT_DIR$/tests/SP/Mvc" />
         <option value="$PROJECT_DIR$/tests/SP/Util" />
+        <option value="$PROJECT_DIR$/tests/SP/Architecture" />
         <option value="$PROJECT_DIR$/tests/SP/Modules/Web" />
         <option value="$PROJECT_DIR$/tests/SP/Modules/Api" />
         <option value="$PROJECT_DIR$/tests/SP/Modules/Cli" />

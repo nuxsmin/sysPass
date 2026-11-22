@@ -93,6 +93,7 @@ function setup(options) {
     const opts = options || {};
     const record = {
         calls: [],
+        getUrlCalls: [],
         out: [],
         notifications: [],
         magnificClosed: 0,
@@ -177,6 +178,7 @@ function setup(options) {
                 }).join("/");
             },
             getUrl: function (base, data) {
+                record.getUrlCalls.push({base: base, data: data});
                 if (data === undefined || data === null || data.r === undefined) {
                     return base;
                 }
@@ -199,8 +201,18 @@ function setup(options) {
             getRequestOpts: function () {
                 return {};
             },
-            getActionCall: function (opts, callback) {
-                record.calls.push({opts: opts, callback: callback});
+            getActionCall: function (opts, callback, callbackError) {
+                let resolveFn;
+                const promise = new Promise(function (resolve) {
+                    resolveFn = resolve;
+                });
+                record.calls.push({
+                    opts: opts,
+                    callback: callback,
+                    callbackError: callbackError,
+                    resolve: resolveFn
+                });
+                return promise;
             }
         },
         theme: {
@@ -221,6 +233,7 @@ function setup(options) {
         },
         config: {
             LANG: {
+                1: "There was an error",
                 12: "Delete selected items?",
                 15: "Delete file?",
                 43: "Accept",
@@ -237,6 +250,7 @@ function setup(options) {
     return {
         actions: globalThis.sysPass.Actions(log),
         badge: badge,
+        content: contentEl,
         listAccountFiles: listAccountFiles,
         record: record,
         resContent: resContent,
@@ -680,4 +694,613 @@ test("main.getNotices renders notice badge with semantic warning class", functio
     assert.equal(notices.htmlValues.length, 1);
     assert.match(notices.htmlValues[0], /sp-color-text--warning/);
     assert.doesNotMatch(notices.htmlValues[0], /mdl-color-text--amber-200/);
+  
+test("notification.save closes popup, refreshes list, and reloads badge after list resolves on status 0", async function () {
+    for (const route of ["notification/saveCreate", "notification/saveEdit/42"]) {
+        const context = setup();
+        const $form = makeForm({
+            "route": route,
+            "action-next": "notification/index"
+        });
+        $form.serialize = function () {
+            return "notification_type=notice&notification_component=test";
+        };
+
+        context.actions.notification.save($form);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=" + route);
+        assert.equal(
+            context.record.calls[0].opts.data,
+            "notification_type=notice&notification_component=test&sk=sk"
+        );
+
+        context.record.calls[0].callback({
+            status: 0,
+            description: "Notification saved",
+            data: null
+        });
+
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].description, "Notification saved");
+        assert.equal(context.record.magnificClosed, 1);
+        assert.equal(context.record.calls.length, 2);
+        assert.equal(context.record.calls[1].opts.method, "get");
+        assert.equal(context.record.calls[1].opts.type, "html");
+        assert.equal(context.record.calls[1].opts.url, "/index.php?r=notification/index");
+
+        await Promise.resolve();
+        assert.equal(context.record.calls.length, 2);
+
+        context.record.calls[1].resolve();
+        await Promise.resolve();
+        assert.equal(context.record.calls.length, 3);
+        assert.equal(context.record.calls[2].opts.method, "get");
+        assert.equal(context.record.calls[2].opts.useLoading, false);
+        assert.equal(context.record.calls[2].opts.url, "/index.php?r=items/notifications");
+    }
+});
+
+test("notification.save keeps popup open and skips list/badge reload on ERROR and WARNING", async function () {
+    for (const outcome of [
+        {status: 1, description: "Validation error"},
+        {status: 2, description: "Save warning"}
+    ]) {
+        const context = setup();
+        const $form = makeForm({
+            "route": "notification/saveCreate",
+            "action-next": "notification/index"
+        });
+        $form.serialize = function () {
+            return "notification_type=notice";
+        };
+
+        context.actions.notification.save($form);
+        assert.equal(context.record.calls.length, 1);
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+        await Promise.resolve();
+
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.magnificClosed, 0);
+        assert.equal(context.record.calls.length, 1);
+    }
+});
+
+test("notification.delete dispatches single delete on confirm and reloads list then badge on OK, ERROR and WARNING", async function () {
+    for (const outcome of [
+        {status: 0, description: "Notification deleted"},
+        {status: 1, description: "Delete error"},
+        {status: 2, description: "Delete warning"}
+    ]) {
+        const context = setup();
+        const control = makeElement({
+            "action-route": "notification/delete",
+            "action-next": "notification/index",
+            "item-id": 42
+        });
+
+        context.actions.notification.delete(control);
+        assert.equal(context.record.dialogs.length, 1);
+        assert.equal(context.record.calls.length, 0);
+
+        context.record.dialogs[0].positive.onClick({preventDefault: function () {}});
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.method, "get");
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=notification/delete/42");
+        assert.deepEqual(context.record.calls[0].opts.data, {items: []});
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.calls.length, 2);
+        assert.equal(context.record.calls[1].opts.method, "get");
+        assert.equal(context.record.calls[1].opts.type, "html");
+        assert.equal(context.record.calls[1].opts.url, "/index.php?r=notification/index");
+
+        await Promise.resolve();
+        assert.equal(context.record.calls.length, 2);
+
+        context.record.calls[1].resolve();
+        await Promise.resolve();
+        assert.equal(context.record.calls.length, 3);
+        assert.equal(context.record.calls[2].opts.url, "/index.php?r=items/notifications");
+    }
+});
+
+test("notification.delete builds bulk delete route without trailing item id and sends items[]", function () {
+    const selectedRows = [
+        makeElement({"item-id": 11}),
+        makeElement({"item-id": 22})
+    ];
+    const gridTable = makeElement();
+    gridTable.find = function (selector) {
+        if (selector === ".is-selected") {
+            return makeCollection(selectedRows);
+        }
+        return this;
+    };
+
+    const context = setup({
+        elements: {"#data-table-tblNotifications": gridTable}
+    });
+    const control = makeElement({
+        "action-route": "notification/delete",
+        "action-next": "notification/index",
+        "selection": "#data-table-tblNotifications"
+    });
+
+    context.actions.notification.delete(control);
+    assert.equal(context.record.dialogs.length, 1);
+
+    context.record.dialogs[0].positive.onClick({preventDefault: function () {}});
+    assert.equal(context.record.calls.length, 1);
+    assert.equal(context.record.calls[0].opts.method, "get");
+    assert.equal(context.record.calls[0].opts.url, "/index.php?r=notification/delete");
+    assert.deepEqual(context.record.calls[0].opts.data, {items: [11, 22]});
+});
+
+test("notification.delete aborts without dialog or request when bulk selection is empty", function () {
+    const gridTable = makeElement();
+    gridTable.find = function (selector) {
+        if (selector === ".is-selected") {
+            return makeCollection([]);
+        }
+        return this;
+    };
+
+    const context = setup({
+        elements: {"#data-table-tblNotifications": gridTable}
+    });
+    const control = makeElement({
+        "action-route": "notification/delete",
+        "action-next": "notification/index",
+        "selection": "#data-table-tblNotifications"
+    });
+
+    context.actions.notification.delete(control);
+    assert.equal(context.record.dialogs.length, 0);
+    assert.equal(context.record.calls.length, 0);
+});
+
+test("notification.delete cancel reports cancellation without dispatching a request", function () {
+    const context = setup();
+    const control = makeElement({
+        "action-route": "notification/delete",
+        "action-next": "notification/index",
+        "item-id": 42
+    });
+
+    context.actions.notification.delete(control);
+    assert.equal(context.record.dialogs.length, 1);
+    context.record.dialogs[0].negative.onClick({preventDefault: function () {}});
+
+    assert.equal(context.record.calls.length, 0);
+    assert.deepEqual(context.record.errors, ["Cancel"]);
+});
+
+test("user.savePassword dispatches POST, displays status via msg.out, and closes popup on status 0", function () {
+    const context = setup();
+    const $form = makeForm({"action-route": "user/saveEditPass/42"});
+    $form.serialize = function () {
+        return "password=encrypted&password_repeat=encrypted";
+    };
+
+    context.actions.user.savePassword($form);
+    assert.equal(context.record.calls.length, 1);
+    assert.equal(context.record.calls[0].opts.method, "post");
+    assert.equal(context.record.calls[0].opts.url, "/index.php?r=user/saveEditPass/42");
+    assert.equal(
+        context.record.calls[0].opts.data,
+        "password=encrypted&password_repeat=encrypted&sk=sk"
+    );
+
+    context.record.calls[0].callback({
+        status: 0,
+        description: "Password updated",
+        data: null
+    });
+
+    assert.equal(context.record.out.length, 1);
+    assert.equal(context.record.out[0].description, "Password updated");
+    assert.equal(context.record.magnificClosed, 1);
+});
+
+test("user.savePassword keeps popup open and displays status via msg.out on ERROR and WARNING", function () {
+    for (const outcome of [
+        {status: 1, description: "Password error"},
+        {status: 2, description: "Password warning"}
+    ]) {
+        const context = setup();
+        const $form = makeForm({"action-route": "user/saveEditPass/42"});
+        $form.serialize = function () {
+            return "password=encrypted&password_repeat=encrypted";
+        };
+
+        context.actions.user.savePassword($form);
+        assert.equal(context.record.calls.length, 1);
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.magnificClosed, 0);
+    }
+});
+
+test("user.savePassword handles null, undefined, and non-object responses without throwing", function () {
+    for (const malformed of [null, undefined, "", 42]) {
+        const context = setup();
+        const $form = makeForm({"action-route": "user/saveEditPass/42"});
+        $form.serialize = function () {
+            return "password=encrypted&password_repeat=encrypted";
+        };
+
+        context.actions.user.savePassword($form);
+        assert.equal(context.record.calls.length, 1);
+
+        assert.doesNotThrow(function () {
+            context.record.calls[0].callback(malformed);
+        });
+
+        assert.equal(context.record.out.length, 0);
+        assert.equal(context.record.magnificClosed, 0);
+    }
+});
+
+test("account.listFiles injects valid HTML list and empty-state fragments", function () {
+    for (const html of [
+        "<div id=\"files-wrap\"><ul class=\"mdl-list\"><li>file.txt</li></ul></div>",
+        "<div id=\"files-wrap\"><ul class=\"mdl-list\"></ul></div>\n<div class=\"noRes round\">There are no linked files for the account</div>"
+    ]) {
+        const context = setup();
+
+        context.actions.account.listFiles(context.listAccountFiles);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.method, "get");
+        assert.equal(context.record.calls[0].opts.type, "html");
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=accountFile/list/10");
+        assert.equal(typeof context.record.calls[0].callbackError, "function");
+
+        context.record.calls[0].callback(html);
+        assert.deepEqual(context.listAccountFiles.htmlValues, [html]);
+        assert.equal(context.record.out.length, 0);
+        assert.equal(context.record.errors.length, 0);
+        assert.equal(context.listAccountFiles.children.length, 0);
+    }
+});
+
+test("account.listFiles injects data.html from a JSON OK envelope without injecting raw JSON", function () {
+    for (const payload of [
+        JSON.stringify({status: "OK", description: "", data: {html: "<div id=\"files-wrap\">ok</div>"}}),
+        {status: 0, description: "", data: {html: "<div id=\"files-wrap\">ok</div>"}}
+    ]) {
+        const context = setup();
+
+        context.actions.account.listFiles(context.listAccountFiles);
+        context.record.calls[0].callback(payload);
+
+        assert.deepEqual(context.listAccountFiles.htmlValues, ["<div id=\"files-wrap\">ok</div>"]);
+        assert.equal(context.record.out.length, 0);
+        assert.equal(context.record.errors.length, 0);
+    }
+});
+
+test("account.listFiles handles JSON ActionResponse error, warning, and status 10 without injecting raw JSON", function () {
+    const cases = [
+        {
+            raw: JSON.stringify({
+                status: "ERROR",
+                description: "You don't have permission to access this account <script>",
+                messages: [],
+                data: null
+            }),
+            expectedStatus: 1,
+            expectedDescription: "You don't have permission to access this account <script>"
+        },
+        {
+            raw: JSON.stringify({
+                status: "WARNING",
+                description: "File list warning",
+                messages: [],
+                data: null
+            }),
+            expectedStatus: 2,
+            expectedDescription: "File list warning"
+        },
+        {
+            raw: {status: 10, description: "Session finished", data: null},
+            expectedStatus: 10,
+            expectedDescription: "Session finished"
+        }
+    ];
+
+    for (const item of cases) {
+        const context = setup();
+
+        context.actions.account.listFiles(context.listAccountFiles);
+        context.record.calls[0].callback(item.raw);
+
+        assert.deepEqual(context.listAccountFiles.htmlValues, []);
+        assert.equal(context.listAccountFiles.emptied, true);
+        assert.equal(context.listAccountFiles.children.length, 1);
+        assert.equal(context.listAccountFiles.children[0].tagName, "p");
+        assert.equal(context.listAccountFiles.children[0].className, "error round");
+        assert.equal(context.listAccountFiles.children[0].textContent, item.expectedDescription);
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, item.expectedStatus);
+        assert.equal(context.record.out[0].description, item.expectedDescription);
+        assert.equal(context.record.errors.length, 0);
+    }
+});
+
+test("account.listFiles rejects OK JSON without HTML, non-object JSON, plain-text errors, and empty/malformed payloads", function () {
+    const cases = [
+        {
+            payload: JSON.stringify({status: "OK", description: "Files management disabled", data: null}),
+            expectedText: "Files management disabled"
+        },
+        {
+            payload: "[]",
+            expectedText: "There was an error"
+        },
+        {
+            payload: "null",
+            expectedText: "There was an error"
+        },
+        {
+            payload: "{\"status\":\"ERROR\"",
+            expectedText: "There was an error"
+        },
+        {
+            payload: "You don't have permission to access this account",
+            expectedText: "You don't have permission to access this account"
+        },
+        {
+            payload: "Files management disabled",
+            expectedText: "Files management disabled"
+        },
+        {
+            payload: "",
+            expectedText: "There was an error"
+        },
+        {
+            payload: null,
+            expectedText: "There was an error"
+        },
+        {
+            payload: undefined,
+            expectedText: "There was an error"
+        }
+    ];
+
+    for (const item of cases) {
+        const context = setup();
+
+        context.actions.account.listFiles(context.listAccountFiles);
+        assert.doesNotThrow(function () {
+            context.record.calls[0].callback(item.payload);
+        });
+
+        assert.deepEqual(context.listAccountFiles.htmlValues, []);
+        assert.equal(context.listAccountFiles.emptied, true);
+        assert.equal(context.listAccountFiles.children.length, 1);
+        assert.equal(context.listAccountFiles.children[0].className, "error round");
+        assert.equal(context.listAccountFiles.children[0].textContent, item.expectedText);
+        assert.equal(context.record.out.length, 0);
+        assert.deepEqual(context.record.errors, [item.expectedText]);
+    }
+});
+
+test("account.listFiles handles transport and HTTP error callbacks without overwriting #content", function () {
+    const context = setup();
+
+    context.actions.account.listFiles(context.listAccountFiles);
+    assert.equal(typeof context.record.calls[0].callbackError, "function");
+
+    context.record.calls[0].callbackError();
+
+    assert.deepEqual(context.content.htmlValues, []);
+    assert.equal(context.content.emptied, false);
+    assert.deepEqual(context.listAccountFiles.htmlValues, []);
+    assert.equal(context.listAccountFiles.emptied, true);
+    assert.equal(context.listAccountFiles.children.length, 1);
+    assert.equal(context.listAccountFiles.children[0].className, "error round");
+    assert.equal(context.listAccountFiles.children[0].textContent, "There was an error");
+    assert.deepEqual(context.record.errors, ["There was an error"]);
+});
+
+test("config.import serializes form with sk and routes OK, ERROR, and WARNING envelopes to msg.out only", function () {
+    for (const outcome of [
+        {status: 0, description: "Import complete"},
+        {status: 1, description: "Import failed"},
+        {status: 2, description: "Import warning"}
+    ]) {
+        const context = setup();
+        const $form = makeForm({"action-route": "configImport/import"});
+        $form.serialize = function () {
+            return "import_type=xml";
+        };
+
+        context.actions.config.import($form);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.method, undefined);
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=configImport/import");
+        assert.equal(context.record.calls[0].opts.data, "import_type=xml&sk=sk");
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.magnificClosed, 0);
+        assert.deepEqual(context.content.htmlValues, []);
+        assert.deepEqual(context.resContent.htmlValues, []);
+    }
+});
+
+test("config.import handles null, undefined, and non-object responses without calling msg.out or throwing", function () {
+    for (const malformed of [null, undefined, "", 42]) {
+        const context = setup();
+        const $form = makeForm({"action-route": "configImport/import"});
+        $form.serialize = function () {
+            return "import_type=xml";
+        };
+
+        context.actions.config.import($form);
+        assert.equal(context.record.calls.length, 1);
+
+        assert.doesNotThrow(function () {
+            context.record.calls[0].callback(malformed);
+        });
+
+        assert.equal(context.record.out.length, 0);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.magnificClosed, 0);
+    }
+});
+
+test("config.refreshMpass dispatches GET with sk and isAjax=1 and routes OK, ERROR, and WARNING envelopes to msg.out only", function () {
+    for (const outcome of [
+        {status: 0, description: "Hash updated"},
+        {status: 1, description: "Hash update failed"},
+        {status: 2, description: "Hash update warning"}
+    ]) {
+        const context = setup();
+        const control = makeElement({"action-route": "configEncryption/refresh"});
+
+        context.actions.config.refreshMpass(control);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.method, "get");
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=configEncryption/refresh");
+        assert.deepEqual(context.record.getUrlCalls, [
+            {
+                base: "/index.php",
+                data: {
+                    r: "configEncryption/refresh",
+                    sk: "sk",
+                    isAjax: 1
+                }
+            }
+        ]);
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.magnificClosed, 0);
+        assert.deepEqual(context.content.htmlValues, []);
+        assert.deepEqual(context.resContent.htmlValues, []);
+    }
+});
+
+test("config.refreshMpass handles null, undefined, and non-object responses without calling msg.out or throwing", function () {
+    for (const malformed of [null, undefined, "", 42]) {
+        const context = setup();
+        const control = makeElement({"action-route": "configEncryption/refresh"});
+
+        context.actions.config.refreshMpass(control);
+        assert.equal(context.record.calls.length, 1);
+
+        assert.doesNotThrow(function () {
+            context.record.calls[0].callback(malformed);
+        });
+
+        assert.equal(context.record.out.length, 0);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.magnificClosed, 0);
+    }
+});
+
+test("config.mailCheck serializes data-src form with sk and routes OK, ERROR, and WARNING envelopes to msg.out only", function () {
+    for (const outcome of [
+        {status: 0, description: "Mail configuration OK"},
+        {status: 1, description: "Mail connection error"},
+        {status: 2, description: "Mail check warning"}
+    ]) {
+        const $form = makeForm();
+        $form.serialize = function () {
+            return "mail_server=smtp.example.com";
+        };
+        const context = setup({
+            elements: {"#frmMail": $form}
+        });
+        const control = makeElement({
+            "action-route": "configMail/check",
+            "src": "#frmMail"
+        });
+
+        context.actions.config.mailCheck(control);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.calls[0].opts.method, undefined);
+        assert.equal(context.record.calls[0].opts.url, "/index.php?r=configMail/check");
+        assert.equal(context.record.calls[0].opts.data, "mail_server=smtp.example.com&sk=sk");
+
+        context.record.calls[0].callback({
+            status: outcome.status,
+            description: outcome.description,
+            data: null
+        });
+
+        assert.equal(context.record.out.length, 1);
+        assert.equal(context.record.out[0].status, outcome.status);
+        assert.equal(context.record.out[0].description, outcome.description);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.magnificClosed, 0);
+        assert.deepEqual(context.content.htmlValues, []);
+        assert.deepEqual(context.resContent.htmlValues, []);
+    }
+});
+
+test("config.mailCheck handles null, undefined, and non-object responses without calling msg.out or throwing", function () {
+    for (const malformed of [null, undefined, "", 42]) {
+        const $form = makeForm();
+        $form.serialize = function () {
+            return "mail_server=smtp.example.com";
+        };
+        const context = setup({
+            elements: {"#frmMail": $form}
+        });
+        const control = makeElement({
+            "action-route": "configMail/check",
+            "src": "#frmMail"
+        });
+
+        context.actions.config.mailCheck(control);
+        assert.equal(context.record.calls.length, 1);
+
+        assert.doesNotThrow(function () {
+            context.record.calls[0].callback(malformed);
+        });
+
+        assert.equal(context.record.out.length, 0);
+        assert.equal(context.record.calls.length, 1);
+        assert.equal(context.record.magnificClosed, 0);
+    }
 });

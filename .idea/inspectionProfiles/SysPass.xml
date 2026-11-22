@@ -113,7 +113,6 @@
     <inspection_tool class="IsEmptyFunctionUsageInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="SUGGEST_TO_USE_COUNT_CHECK" value="true" />
     </inspection_tool>
-    <inspection_tool class="JSHint" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="JSXDomNesting" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MessDetectorValidationInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false">
       <scope name="Project Files" level="WEAK WARNING" enabled="false" />

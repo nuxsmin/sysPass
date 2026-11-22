@@ -1326,6 +1326,248 @@ class AuthTokenTest extends UnitaryTestCase
         self::assertEquals($noExpiryToken, $this->authToken->getTokenByToken($noExpiryToken->getActionId(), $noExpiryToken->getToken()));
     }
 
+    #[Test]
+    public function testDeleteThrowsNoSuchItemWhenZeroAffectedRows(): void
+    {
+        $ownerId = $this->context->getUserData()->id;
+        $existing = AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+            'id' => 10,
+            'userId' => $ownerId,
+        ]);
+
+        $this->authTokenRepository
+            ->expects(self::once())
+            ->method('transactionAware')
+            ->willReturnCallback(static fn(callable $fn) => $fn());
+
+        $this->authTokenRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with(10)
+            ->willReturn(new QueryResult([$existing]));
+
+        $this->authTokenRepository
+            ->expects(self::once())
+            ->method('delete')
+            ->with(10)
+            ->willReturn(new QueryResult(null, 0));
+
+        $this->customFieldDataService->expects(self::never())->method('deleteByItem');
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Token not found');
+
+        $this->authToken->delete(10);
+    }
+
+    #[Test]
+    public function testDeleteByIdBatchRecordsFailureForNonPositiveIds(): void
+    {
+        $this->authTokenRepository->expects(self::never())->method('delete');
+
+        $result = $this->authToken->deleteByIdBatch([0, -5]);
+
+        self::assertSame([], $result['deleted']);
+        self::assertSame([
+            0 => 'Token not found',
+            -5 => 'Token not found',
+        ], $result['failed']);
+    }
+
+    #[Test]
+    public function testCreateRejectsInvalidMaxLifetimeConfig(): void
+    {
+        $this->config->getConfigData()->setAuthTokenMaxTime(0);
+
+        $authToken = AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+            'userId' => $this->context->getUserData()->id,
+            'actionId' => AclActionsInterface::ACCOUNT_SEARCH,
+        ]);
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Invalid maximum token lifetime configuration');
+
+        $this->authToken->create($authToken);
+    }
+
+    #[Test]
+    public function testCreateRejectsInvalidDefaultLifetimeConfig(): void
+    {
+        $this->config->getConfigData()->setAuthTokenMaxTime(3600);
+        $this->config->getConfigData()->setAuthTokenDefaultTime(7200);
+
+        $authToken = AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+            'userId' => $this->context->getUserData()->id,
+            'actionId' => AclActionsInterface::ACCOUNT_SEARCH,
+            'expireDate' => null,
+            'noExpiry' => null,
+        ]);
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Default token lifetime exceeds the maximum allowed lifetime');
+
+        $this->authToken->create($authToken);
+    }
+
+    #[Test]
+    public function testCreateAdminNoExpiryWithExplicitExpireDateThrowsValidation(): void
+    {
+        $this->context->setUserData($this->context->getUserData()->mutate(['isAdminApp' => true]));
+
+        $authToken = AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+            'userId' => $this->context->getUserData()->id,
+            'actionId' => AclActionsInterface::ACCOUNT_SEARCH,
+            'expireDate' => time() + 3600,
+            'noExpiry' => true,
+        ]);
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Invalid expiration date');
+
+        $this->authToken->create($authToken);
+    }
+
+    #[Test]
+    public function testUpdatePreservesRequestedExpireDateUnchangedWhenSameAction(): void
+    {
+        $ownerId = $this->context->getUserData()->id;
+        $legacyExpireDate = time() - 10;
+        $existing = AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+            'userId' => $ownerId,
+            'actionId' => AclActionsInterface::ACCOUNT_SEARCH,
+            'expireDate' => $legacyExpireDate,
+        ]);
+        $input = $existing->mutate(['hash' => null, 'noExpiry' => null]);
+
+        $this->authTokenRepository->expects(self::once())->method('getById')->willReturn(new QueryResult([$existing]));
+        $this->authTokenRepository
+            ->expects(self::once())
+            ->method('update')
+            ->with(new Callback(static fn(AuthTokenModel $current): bool => $current->getExpireDate() === $legacyExpireDate))
+            ->willReturn(true);
+
+        $this->authToken->update($input);
+    }
+
+    #[Test]
+    public function testUpdateScopeChangeWithExpiredExistingDateThrowsValidation(): void
+    {
+        $ownerId = $this->context->getUserData()->id;
+        $existing = AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+            'userId' => $ownerId,
+            'actionId' => AclActionsInterface::ACCOUNT_SEARCH,
+            'expireDate' => time() - 60,
+        ]);
+        $input = $existing->mutate([
+            'actionId' => AclActionsInterface::TAG_SEARCH,
+            'hash' => null,
+            'expireDate' => null,
+            'noExpiry' => null,
+        ]);
+
+        $this->authTokenRepository->expects(self::once())->method('getById')->willReturn(new QueryResult([$existing]));
+        $this->authTokenRepository->expects(self::never())->method('update');
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Invalid expiration date');
+
+        $this->authToken->update($input);
+    }
+
+    #[Test]
+    public function testUpdateScopeChangePreservesValidExistingFutureExpireDate(): void
+    {
+        $ownerId = $this->context->getUserData()->id;
+        $futureDate = time() + 7200;
+        $existing = AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+            'userId' => $ownerId,
+            'actionId' => AclActionsInterface::ACCOUNT_SEARCH,
+            'expireDate' => $futureDate,
+        ]);
+        $input = $existing->mutate([
+            'actionId' => AclActionsInterface::TAG_SEARCH,
+            'hash' => null,
+            'expireDate' => null,
+            'noExpiry' => null,
+        ]);
+
+        $this->authTokenRepository->expects(self::once())->method('getById')->willReturn(new QueryResult([$existing]));
+        $this->authTokenRepository
+            ->expects(self::once())
+            ->method('update')
+            ->with(new Callback(static fn(AuthTokenModel $current): bool => $current->getExpireDate() === $futureDate))
+            ->willReturn(true);
+
+        $this->authToken->update($input);
+    }
+
+    #[Test]
+    public function testUpdateScopeChangePreservesNullExpireDateForAdmin(): void
+    {
+        $this->context->setUserData($this->context->getUserData()->mutate(['isAdminApp' => true]));
+        $existing = AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+            'userId' => $this->context->getUserData()->id,
+            'actionId' => AclActionsInterface::ACCOUNT_SEARCH,
+            'expireDate' => null,
+        ]);
+        $input = $existing->mutate([
+            'actionId' => AclActionsInterface::TAG_SEARCH,
+            'hash' => null,
+            'expireDate' => null,
+            'noExpiry' => null,
+        ]);
+
+        $this->authTokenRepository->expects(self::once())->method('getById')->willReturn(new QueryResult([$existing]));
+        $this->authTokenRepository
+            ->expects(self::once())
+            ->method('update')
+            ->with(new Callback(static fn(AuthTokenModel $current): bool => $current->getExpireDate() === null))
+            ->willReturn(true);
+
+        $this->authToken->update($input);
+    }
+
+    #[Test]
+    public function testRefreshAndUpdateRejectsReassigningOwnerByNonAdmin(): void
+    {
+        $ownerId = $this->context->getUserData()->id;
+        $existing = AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+            'id' => 25,
+            'userId' => $ownerId,
+        ]);
+        $input = $existing->mutate(['userId' => $ownerId + 99]);
+
+        $this->authTokenRepository
+            ->expects(self::once())
+            ->method('transactionAware')
+            ->willReturnCallback(static fn(callable $fn) => $fn());
+
+        $this->authTokenRepository->expects(self::once())->method('getById')->with(25)->willReturn(new QueryResult([$existing]));
+        $this->authTokenRepository->expects(self::never())->method('update');
+
+        $this->expectException(UnauthorizedActionException::class);
+
+        $this->authToken->refreshAndUpdate($input);
+    }
+
+    #[Test]
+    public function testUpdateRejectsReassigningOwnerByNonAdmin(): void
+    {
+        $ownerId = $this->context->getUserData()->id;
+        $existing = AuthTokenGenerator::factory()->buildAuthToken()->mutate([
+            'id' => 26,
+            'userId' => $ownerId,
+        ]);
+        $input = $existing->mutate(['userId' => $ownerId + 99]);
+
+        $this->authTokenRepository->expects(self::once())->method('getById')->with(26)->willReturn(new QueryResult([$existing]));
+        $this->authTokenRepository->expects(self::never())->method('update');
+
+        $this->expectException(UnauthorizedActionException::class);
+
+        $this->authToken->update($input);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
