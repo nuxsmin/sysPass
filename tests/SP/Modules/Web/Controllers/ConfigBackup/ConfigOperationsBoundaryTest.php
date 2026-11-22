@@ -361,6 +361,8 @@ final class ConfigOperationsBoundaryTest extends IntegrationTestCase
 
         $configData = new ConfigData([
             ConfigDataInterface::INSTALLED => true,
+            ConfigDataInterface::APP_VERSION => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
+            ConfigDataInterface::DATABASE_VERSION => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
             ConfigDataInterface::DB_NAME => 'syspass_test',
             ConfigDataInterface::AUTH_BASIC_ENABLED => false,
             ConfigDataInterface::HTTPS_ENABLED => false,
@@ -509,6 +511,8 @@ final class ConfigOperationsBoundaryTest extends IntegrationTestCase
         // ConfigGeneral/SaveController maintenance lock toggle with real AppLock in tempDir
         $configData = new ConfigData([
             ConfigDataInterface::INSTALLED => true,
+            ConfigDataInterface::APP_VERSION => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
+            ConfigDataInterface::DATABASE_VERSION => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
             ConfigDataInterface::DB_NAME => 'syspass_test',
             ConfigDataInterface::PASSWORD_SALT => 'salt-for-general',
             ConfigDataInterface::AUTH_BASIC_ENABLED => false,

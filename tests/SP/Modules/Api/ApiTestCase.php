@@ -172,11 +172,16 @@ abstract class ApiTestCase extends TestCase
                         ConfigDataInterface::class => static function (ConfigFileService $config) use (
                             $databaseConnectionData
                         ) {
+                            $version = \SP\Domain\Common\Providers\Version::getVersionStringNormalized();
+
                             $configData = $config->getConfigData()
                                 ->setDbHost($databaseConnectionData->getDbHost())
                                 ->setDbName($databaseConnectionData->getDbName())
                                 ->setDbUser($databaseConnectionData->getDbUser())
                                 ->setDbPass($databaseConnectionData->getDbPass())
+                                ->setAppVersion($version)
+                                ->setDatabaseVersion($version)
+                                ->setConfigVersion($version)
                                 ->setInstalled(true);
 
                             // Update the in-memory config without touching the file

@@ -223,6 +223,49 @@ final class BootstrapJsonRpcContractTest extends TestCase
         self::assertSame(JsonRpcErrorCode::INVALID_REQUEST, $decodedNonRequest['error']['code']);
     }
 
+    #[Test]
+    public function upgradeNeededGeneratesKeyAndReturnsInitializationError(): void
+    {
+        $configData = self::createConfiguredStub(
+            ConfigDataInterface::class,
+            [
+                'isInstalled' => true,
+                'isMaintenance' => false,
+                'isHttpsEnabled' => false,
+                'getAppVersion' => '3211.22070201',
+                'getDatabaseVersion' => '3211.22070201',
+                'getConfigVersion' => '3211.22070201',
+                'getUpgradeKey' => null,
+                'getDbName' => 'syspass_test',
+                'getSiteLang' => 'en_US',
+                'getPasswordSalt' => 'synthetic-salt',
+            ]
+        );
+        $configFile = $this->createMock(ConfigFileService::class);
+        $configFile->method('getConfigData')->willReturn($configData);
+        $configFile->expects(self::once())->method('generateUpgradeKey')->willReturnSelf();
+
+        $tagRepository = $this->createMock(TagRepository::class);
+        $tagRepository->expects(self::never())->method('search');
+
+        $res = $this->dispatch(
+            json_encode(
+                ['jsonrpc' => '2.0', 'method' => 'tag/search', 'params' => ['authToken' => 'abc'], 'id' => 1],
+                JSON_THROW_ON_ERROR
+            ),
+            [
+                ConfigDataInterface::class => $configData,
+                ConfigFileService::class => $configFile,
+                TagRepository::class => $tagRepository,
+            ]
+        );
+
+        self::assertSame(500, $res['code']);
+        $decoded = json_decode($res['body'], true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame(1, $decoded['id']);
+        self::assertSame('Internal error', $decoded['error']['message'] ?? null);
+    }
+
     /**
      * @param array<string, mixed> $overrides
      * @return array{code: int, body: string}
@@ -243,7 +286,9 @@ final class BootstrapJsonRpcContractTest extends TestCase
                     'isInstalled' => true,
                     'isMaintenance' => false,
                     'isHttpsEnabled' => false,
-                    'getConfigVersion' => '330.0',
+                    'getAppVersion' => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
+                    'getDatabaseVersion' => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
+                    'getConfigVersion' => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
                     'getDbName' => 'syspass_test',
                     'getSiteLang' => 'en_US',
                     'getPasswordSalt' => 'synthetic-salt',

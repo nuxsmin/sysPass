@@ -28,8 +28,10 @@ use Exception;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Http\Method;
 use SP\Domain\Upgrade\Ports\UpgradeService;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
@@ -56,7 +58,7 @@ final class UpgradeController extends ControllerBase
     {
         try {
             $this->checkEnvironment();
-            $this->upgradeService->upgrade($this->configData->getAppVersion(), $this->configData);
+            $this->upgradeService->upgrade($this->resolveCurrentVersion(), $this->configData);
 
             $this->configData->setUpgradeKey(null);
             $this->config->save($this->configData);
@@ -82,12 +84,47 @@ final class UpgradeController extends ControllerBase
      */
     private function checkEnvironment(): void
     {
+        if ($this->request->getMethod() !== Method::POST) {
+            throw new ValidationException(__u('Invalid request method'), SPException::ERROR);
+        }
+
         if ($this->request->analyzeBool('chkConfirm', false) === false) {
             throw new ValidationException(__u('The updating need to be confirmed'), SPException::ERROR);
         }
 
-        if ($this->request->analyzeString('key') !== $this->configData->getUpgradeKey()) {
+        $upgradeKey = $this->configData->getUpgradeKey();
+        $providedKey = $this->request->analyzeString('key');
+
+        if (empty($upgradeKey) || empty($providedKey) || !hash_equals($upgradeKey, $providedKey)) {
             throw new ValidationException(__u('Wrong security code'), SPException::ERROR);
         }
+    }
+
+    private function resolveCurrentVersion(): string
+    {
+        $candidates = array_values(
+            array_filter(
+                [
+                    $this->configData->getAppVersion(),
+                    $this->configData->getDatabaseVersion(),
+                    (string)$this->configData->getConfigVersion(),
+                ],
+                static fn (string $version): bool => $version !== ''
+            )
+        );
+
+        if ($candidates === []) {
+            return '';
+        }
+
+        $lowest = $candidates[0];
+
+        foreach (array_slice($candidates, 1) as $candidate) {
+            if (Version::checkVersion($candidate, $lowest)) {
+                $lowest = $candidate;
+            }
+        }
+
+        return $lowest;
     }
 }

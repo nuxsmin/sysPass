@@ -56,13 +56,16 @@ class UpgradeDatabaseTest extends UnitaryTestCase
     {
         $configData = $this->createMock(ConfigDataInterface::class);
 
-        $this->database->expects($this->exactly(2))
+        $this->database->expects($this->exactly(5))
                        ->method('runQueryRaw')
                        ->with(
                            ...
                            self::withConsecutive(
                                ['alter table CustomFieldData drop column id'],
-                               ['alter table CustomFieldData add primary key (moduleId, itemId, definitionId)']
+                               ['alter table CustomFieldData add primary key (moduleId, itemId, definitionId)'],
+                               ['alter table CustomFieldData drop foreign key fk_CustomFieldData_definitionId'],
+                               ['alter table CustomFieldData add constraint fk_CustomFieldData_definitionId foreign key (definitionId) references CustomFieldDefinition (id) on delete cascade'],
+                               ['alter table AuthToken add column expireDate int(10) unsigned DEFAULT NULL']
                            )
                        );
 
@@ -71,6 +74,17 @@ class UpgradeDatabaseTest extends UnitaryTestCase
                    ->with('400.24210101');
 
         $this->upgradeDatabase->apply('400.24210101', $configData);
+    }
+
+    #[Test]
+    public function testNormalizedVersionIsAtOrAboveDatabaseUpgrade(): void
+    {
+        $normalized = \SP\Domain\Common\Providers\Version::getVersionStringNormalized();
+
+        self::assertFalse(
+            \SP\Domain\Common\Providers\Version::checkVersion($normalized, '400.24210101'),
+            sprintf('Version::getVersionStringNormalized() (%s) must not lag behind 400.24210101', $normalized)
+        );
     }
 
     /**

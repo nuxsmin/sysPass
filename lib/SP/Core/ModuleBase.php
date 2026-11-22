@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Core;
 
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
@@ -83,6 +84,21 @@ abstract class ModuleBase implements ModuleInterface
 
     protected function checkUpgradeNeeded(): bool
     {
-        return false;
+        if (!$this->configData->isInstalled()) {
+            return false;
+        }
+
+        if (!empty($this->configData->getUpgradeKey())) {
+            return true;
+        }
+
+        $targetVersion = Version::getVersionStringNormalized();
+        $appVersion = $this->configData->getAppVersion();
+        $databaseVersion = $this->configData->getDatabaseVersion();
+
+        return $appVersion === ''
+               || $databaseVersion === ''
+               || Version::checkVersion($appVersion, $targetVersion)
+               || Version::checkVersion($databaseVersion, $targetVersion);
     }
 }

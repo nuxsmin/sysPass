@@ -237,6 +237,8 @@ final class LdapOperationsBoundaryTest extends IntegrationTestCase
 
         $realConfig = new \SP\Domain\Config\Adapters\ConfigData([
             \SP\Domain\Config\Ports\ConfigDataInterface::INSTALLED => true,
+            \SP\Domain\Config\Ports\ConfigDataInterface::APP_VERSION => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
+            \SP\Domain\Config\Ports\ConfigDataInterface::DATABASE_VERSION => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
             \SP\Domain\Config\Ports\ConfigDataInterface::DB_NAME => 'syspass_test',
             \SP\Domain\Config\Ports\ConfigDataInterface::PASSWORD_SALT => 'salt',
             \SP\Domain\Config\Ports\ConfigDataInterface::AUTH_BASIC_ENABLED => false,

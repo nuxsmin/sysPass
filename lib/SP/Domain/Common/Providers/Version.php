@@ -32,7 +32,7 @@ final class Version
 {
     public const VERSION      = [4, 0, 0];
     public const VERSION_TEXT = '4.0';
-    public const BUILD        = 21031301;
+    public const BUILD        = 24210101;
 
     /**
      * Devolver versión normalizada en cadena
@@ -59,7 +59,7 @@ final class Version
         $version1 = self::normalizeVersionForCompare($version1);
         $version2 = self::normalizeVersionForCompare($version2);
 
-        if ($version1 === null || $version2 === null) {
+        if ($version1 === null || $version2 === null || $version1 === '' || $version2 === '') {
             return false;
         }
 
@@ -87,7 +87,11 @@ final class Version
     {
         if (!empty($versionIn)) {
             if (is_string($versionIn)) {
-                [$version, $build] = explode('.', $versionIn);
+                if (!str_contains($versionIn, '.')) {
+                    return '';
+                }
+
+                [$version, $build] = explode('.', $versionIn, 2);
             } elseif (is_array($versionIn) && count($versionIn) === 4) {
                 $version = implode('', array_slice($versionIn, 0, 3));
                 $build = $versionIn[3];

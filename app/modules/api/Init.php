@@ -98,6 +98,8 @@ final class Init extends HttpModuleBase
 
         // Checks if upgrade is needed
         if ($this->checkUpgradeNeeded()) {
+            $this->config->generateUpgradeKey();
+
             throw new InitializationException('Upgrade needed');
         }
 

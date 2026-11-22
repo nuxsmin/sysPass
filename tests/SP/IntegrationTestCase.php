@@ -239,9 +239,14 @@ abstract class IntegrationTestCase extends TestCase
 
     protected function getConfigData(): array
     {
+        $version = \SP\Domain\Common\Providers\Version::getVersionStringNormalized();
+
         return [
             'isInstalled' => true,
             'isMaintenance' => false,
+            'getAppVersion' => $version,
+            'getDatabaseVersion' => $version,
+            'getConfigVersion' => $version,
             'getDbName' => self::$faker->colorName(),
             'getPasswordSalt' => $this->passwordSalt,
             'getAuthTokenDefaultTime' => \SP\Domain\Config\Adapters\ConfigData::DEFAULT_AUTH_TOKEN_TIME,

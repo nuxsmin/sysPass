@@ -83,6 +83,8 @@ final class Upgrade extends Service implements UpgradeService
      */
     public function upgrade(string $version, ConfigDataInterface $configData): void
     {
+        $this->assertSupportedVersion($version);
+
         if (!$this->appLock->tryLock(0, 'upgrade')) {
             $this->eventDispatcher->notify(
                 'upgrade.process',
@@ -106,8 +108,10 @@ final class Upgrade extends Service implements UpgradeService
                 )
             );
 
-            foreach ($this->getTargetUpgradeHandlers($version) as $upgradeHandler) {
-                if (!$upgradeHandler->apply($version, $configData)) {
+            $applied = false;
+
+            foreach ($this->getTargetUpgradeHandlers($version) as $targetVersion => $upgradeHandler) {
+                if (!$upgradeHandler->apply($targetVersion, $configData)) {
                     throw UpgradeException::critical(
                         __u('Error while applying the update'),
                         __u('Please, check the event log for more details')
@@ -115,6 +119,16 @@ final class Upgrade extends Service implements UpgradeService
                 }
 
                 $this->logger->debug('Upgrade: ' . $upgradeHandler::class);
+
+                $this->config->save($configData);
+                $applied = true;
+            }
+
+            if ($applied) {
+                $targetVersion = Version::getVersionStringNormalized();
+
+                $configData->setAppVersion($targetVersion)
+                           ->setConfigVersion($targetVersion);
 
                 $this->config->save($configData);
             }
@@ -132,7 +146,33 @@ final class Upgrade extends Service implements UpgradeService
     }
 
     /**
-     * @return iterable<UpgradeHandlerService>
+     * @throws UpgradeException
+     */
+    private function assertSupportedVersion(string $version): void
+    {
+        if (!preg_match('/^\d+(?:\.\d+){1,2}$/', $version)) {
+            throw UpgradeException::error(
+                __u('Unsupported version for direct upgrade'),
+                __u('Please upgrade to sysPass 3.2 before upgrading to 4.0')
+            );
+        }
+
+        $parts = explode('.', $version);
+        $isNormalized = count($parts) === 2 && (int)$parts[0] >= 100;
+        $isBelowMinimum = $isNormalized
+            ? Version::checkVersion($version, '320.0')
+            : version_compare($version, '3.2', '<');
+
+        if ($isBelowMinimum) {
+            throw UpgradeException::error(
+                __u('Unsupported version for direct upgrade'),
+                __u('Please upgrade to sysPass 3.2 before upgrading to 4.0')
+            );
+        }
+    }
+
+    /**
+     * @return iterable<string, UpgradeHandlerService>
      * @throws ServiceException
      */
     private function getTargetUpgradeHandlers(string $version): iterable
@@ -145,7 +185,7 @@ final class Upgrade extends Service implements UpgradeService
                     $instance = $attribute->newInstance();
 
                     if (Version::checkVersion($version, $instance->version)) {
-                        yield $this->container->get($class);
+                        yield $instance->version => $this->container->get($class);
                     }
                 }
             }

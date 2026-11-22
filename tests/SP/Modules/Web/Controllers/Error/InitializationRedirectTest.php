@@ -16,10 +16,27 @@ use SP\Tests\IntegrationTestCase;
 final class InitializationRedirectTest extends IntegrationTestCase
 {
     private bool $maintenance = false;
+    private ?string $appVersion = null;
+    private ?string $databaseVersion = null;
+    private ?string $upgradeKey = null;
 
     protected function getConfigData(): array
     {
-        return array_merge(parent::getConfigData(), ['isMaintenance' => $this->maintenance]);
+        $configData = array_merge(parent::getConfigData(), ['isMaintenance' => $this->maintenance]);
+
+        if ($this->appVersion !== null) {
+            $configData['getAppVersion'] = $this->appVersion;
+        }
+
+        if ($this->databaseVersion !== null) {
+            $configData['getDatabaseVersion'] = $this->databaseVersion;
+        }
+
+        if ($this->upgradeKey !== null) {
+            $configData['getUpgradeKey'] = $this->upgradeKey;
+        }
+
+        return $configData;
     }
 
     #[Test]
@@ -186,5 +203,89 @@ final class InitializationRedirectTest extends IntegrationTestCase
             rawurlencode('error/maintenanceError'),
             (string) $nonAjaxContainer->get(Response::class)->headers()->get('Location')
         );
+    }
+
+    #[Test]
+    public function outdatedVersionGeneratesUpgradeKeyAndRedirectsToUpgrade(): void
+    {
+        $configData = self::createConfiguredStub(
+            \SP\Domain\Config\Ports\ConfigDataInterface::class,
+            array_merge(
+                parent::getConfigData(),
+                [
+                    'getAppVersion' => '3211.22070201',
+                    'getDatabaseVersion' => '3211.22070201',
+                    'getUpgradeKey' => null,
+                ]
+            )
+        );
+
+        $configFileService = $this->createMock(\SP\Domain\Config\Ports\ConfigFileService::class);
+        $configFileService->method('getConfigData')->willReturn($configData);
+        $configFileService->expects(self::once())->method('generateUpgradeKey')->willReturnSelf();
+
+        $container = $this->buildContainer(
+            self::buildRequest('get', 'index.php', ['r' => 'account/search']),
+            [\SP\Domain\Config\Ports\ConfigFileService::class => $configFileService]
+        );
+
+        ob_start();
+        try {
+            self::runApp($container);
+            self::fail('Expected the in-process response to be locked');
+        } catch (LockedResponseException) {
+            // Expected redirect to upgrade
+        } finally {
+            ob_end_clean();
+        }
+
+        $location = (string) $container->get(Response::class)->headers()->get('Location');
+        self::assertStringContainsString(rawurlencode('upgrade'), $location);
+    }
+
+    #[Test]
+    public function pendingUpgradeKeyRedirectsToUpgradeEvenWhenVersionsMatch(): void
+    {
+        $this->appVersion = \SP\Domain\Common\Providers\Version::getVersionStringNormalized();
+        $this->databaseVersion = \SP\Domain\Common\Providers\Version::getVersionStringNormalized();
+        $this->upgradeKey = 'pending-upgrade-key';
+
+        $container = $this->buildContainer(
+            self::buildRequest('get', 'index.php', ['r' => 'account/search'])
+        );
+
+        ob_start();
+        try {
+            self::runApp($container);
+            self::fail('Expected the in-process response to be locked');
+        } catch (LockedResponseException) {
+            // Expected redirect to upgrade
+        } finally {
+            ob_end_clean();
+        }
+
+        $location = (string) $container->get(Response::class)->headers()->get('Location');
+        self::assertStringContainsString(rawurlencode('upgrade'), $location);
+    }
+
+    #[Test]
+    public function upgradeIndexRouteRendersWithoutRedirectWhenUpgradeNeeded(): void
+    {
+        $this->appVersion = '3211.22070201';
+        $this->databaseVersion = '3211.22070201';
+
+        $container = $this->buildContainer(
+            self::buildRequest('get', 'index.php', ['r' => 'upgrade/index'])
+        );
+
+        ob_start();
+        try {
+            self::runApp($container);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+
+        self::assertSame(200, $container->get(Response::class)->code());
+        self::assertStringContainsString('id="frmUpgrade"', $output);
     }
 }

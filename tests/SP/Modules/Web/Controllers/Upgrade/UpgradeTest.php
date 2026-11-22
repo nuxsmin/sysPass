@@ -69,10 +69,10 @@ final class UpgradeTest extends IntegrationTestCase
     public function upgrade(): void
     {
         $this->runRoute(
-            'get',
+            'post',
             'upgrade/upgrade',
-            ['chkConfirm' => 1, 'key' => 'upgrade-key'],
             [],
+            ['chkConfirm' => 1, 'key' => 'upgrade-key'],
             [UpgradeService::class => $this->createStub(UpgradeService::class)]
         );
     }
@@ -82,10 +82,10 @@ final class UpgradeTest extends IntegrationTestCase
     public function wrongKey(): void
     {
         $this->runRoute(
-            'get',
+            'post',
             'upgrade/upgrade',
-            ['chkConfirm' => 1, 'key' => 'wrong'],
             [],
+            ['chkConfirm' => 1, 'key' => 'wrong'],
             [UpgradeService::class => $this->createStub(UpgradeService::class)]
         );
     }
@@ -95,10 +95,10 @@ final class UpgradeTest extends IntegrationTestCase
     public function notConfirmed(): void
     {
         $this->runRoute(
-            'get',
+            'post',
             'upgrade/upgrade',
-            ['key' => 'upgrade-key'],
             [],
+            ['key' => 'upgrade-key'],
             [UpgradeService::class => $this->createStub(UpgradeService::class)]
         );
     }
@@ -107,7 +107,7 @@ final class UpgradeTest extends IntegrationTestCase
     {
         $crawler = new Crawler($output);
 
-        self::assertCount(1, $crawler->filterXPath('//form[@id="frmUpgrade"]'));
+        self::assertCount(1, $crawler->filterXPath('//form[@id="frmUpgrade" and @method="post"]'));
     }
 
     private function outputCheckerUpgrade(string $output): void
@@ -163,7 +163,7 @@ final class UpgradeTest extends IntegrationTestCase
         $upgradeService->expects(self::never())->method('upgrade');
 
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'upgrade/upgrade', 'chkConfirm' => 1]),
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'upgrade/upgrade'], ['chkConfirm' => 1]),
             [UpgradeService::class => $upgradeService]
         );
 
@@ -179,18 +179,94 @@ final class UpgradeTest extends IntegrationTestCase
         self::assertSame('Wrong security code', $json['description']);
     }
 
-    /**
-     * Characterization of UpgradeController::checkEnvironment():
-     * Request::analyzeString('key') returns null when omitted, which strictly equals
-     * ConfigData::getUpgradeKey() when null (no upgradeKey configured).
-     */
     #[Test]
-    public function omittedKeyWhenConfiguredUpgradeKeyIsNullPassesCheckAndClearsKeyAfterUpgrade(): void
+    public function getRequestIsRejectedWithoutRunningUpgrade(): void
+    {
+        $upgradeService = $this->createMock(UpgradeService::class);
+        $upgradeService->expects(self::never())->method('upgrade');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'upgrade/upgrade', 'chkConfirm' => 1, 'key' => 'upgrade-key']
+            ),
+            [UpgradeService::class => $upgradeService]
+        );
+
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($container);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+
+        $json = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('ERROR', $json['status']);
+        self::assertSame('Invalid request method', $json['description']);
+    }
+
+    public static function invalidConfiguredUpgradeKeyProvider(): array
+    {
+        return [
+            'null key' => [null, null],
+            'empty key' => ['', ''],
+        ];
+    }
+
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidConfiguredUpgradeKeyProvider')]
+    public function emptyOrNullConfiguredUpgradeKeyRejectsUpgrade(?string $configuredKey, ?string $submittedKey): void
     {
         $configData = new \SP\Domain\Config\Adapters\ConfigData();
         $configData->setInstalled(true);
         $configData->setAppVersion('3.2');
-        $configData->setUpgradeKey(null);
+        $configData->setUpgradeKey($configuredKey);
+        $configData->setPasswordSalt($this->passwordSalt);
+
+        $configService = $this->createMock(\SP\Domain\Config\Ports\ConfigFileService::class);
+        $configService->method('getConfigData')->willReturn($configData);
+        $configService->expects(self::never())->method('save');
+
+        $upgradeService = $this->createMock(UpgradeService::class);
+        $upgradeService->expects(self::never())->method('upgrade');
+
+        $paramsPost = ['chkConfirm' => 1];
+
+        if ($submittedKey !== null) {
+            $paramsPost['key'] = $submittedKey;
+        }
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'upgrade/upgrade'], $paramsPost),
+            [
+                \SP\Domain\Config\Ports\ConfigFileService::class => $configService,
+                \SP\Domain\Config\Ports\ConfigDataInterface::class => $configData,
+                UpgradeService::class => $upgradeService,
+            ]
+        );
+
+        ob_start();
+        try {
+            IntegrationTestCase::runApp($container);
+        } finally {
+            $output = (string) ob_get_clean();
+        }
+
+        $json = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('ERROR', $json['status']);
+        self::assertSame('Wrong security code', $json['description']);
+    }
+
+    #[Test]
+    public function upgradeFallsBackToDatabaseVersionWhenAppVersionIsEmptyAndClearsUpgradeKey(): void
+    {
+        $configData = new \SP\Domain\Config\Adapters\ConfigData();
+        $configData->setInstalled(true);
+        $configData->setAppVersion('');
+        $configData->setDatabaseVersion('3211.22070201');
+        $configData->setConfigVersion('3211.22070201');
+        $configData->setUpgradeKey('upgrade-key');
         $configData->setPasswordSalt($this->passwordSalt);
 
         $configService = $this->createMock(\SP\Domain\Config\Ports\ConfigFileService::class);
@@ -198,10 +274,15 @@ final class UpgradeTest extends IntegrationTestCase
         $configService->expects(self::once())->method('save')->with($configData);
 
         $upgradeService = $this->createMock(UpgradeService::class);
-        $upgradeService->expects(self::once())->method('upgrade')->with('3.2', $configData);
+        $upgradeService->expects(self::once())->method('upgrade')->with('3211.22070201', $configData);
 
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'upgrade/upgrade', 'chkConfirm' => 1]),
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'upgrade/upgrade'],
+                ['chkConfirm' => 1, 'key' => 'upgrade-key']
+            ),
             [
                 \SP\Domain\Config\Ports\ConfigFileService::class => $configService,
                 \SP\Domain\Config\Ports\ConfigDataInterface::class => $configData,
@@ -239,9 +320,10 @@ final class UpgradeTest extends IntegrationTestCase
 
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest(
-                'get',
+                'post',
                 'index.php',
-                ['r' => 'upgrade/upgrade', 'chkConfirm' => 1, 'key' => 'upgrade-key']
+                ['r' => 'upgrade/upgrade'],
+                ['chkConfirm' => 1, 'key' => 'upgrade-key']
             ),
             [
                 \SP\Domain\Config\Ports\ConfigFileService::class => $configService,

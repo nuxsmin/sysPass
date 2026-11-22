@@ -230,6 +230,11 @@ final class Init extends HttpModuleBase
             }
 
             if ($this->checkUpgradeNeeded()) {
+                logger('Upgrade needed', 'INFO');
+
+                $this->config->generateUpgradeKey();
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_UPGRADE))->send();
+
                 throw new InitializationException('Upgrade needed');
             }
 
@@ -247,7 +252,7 @@ final class Init extends HttpModuleBase
                 $this->initUserSession();
             }
 
-            //TODO:Load plugins
+            // Runtime plugin loading is intentionally disabled and deferred to a follow-up task
 
             if ($this->context->isLoggedIn()
                 && $this->context->getAppStatus() === ContextBase::APP_STATUS_RELOADED
