@@ -94,4 +94,36 @@ final class PublicLinkDbTest extends DatabaseRepositoryTestCase
         $query->execute([$link->getHash()]);
         self::assertSame(0, (int) $query->fetchColumn());
     }
+
+    #[Test]
+    public function deleteByItemIdsRemovesAllMatchingLinksAndHandlesEmptyArray(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $links = $this->publicLink->getAll()->getDataAsArray(PublicLinkModel::class);
+        self::assertCount(2, $links);
+
+        $itemIds = array_map(static fn(PublicLinkModel $l) => (int)$l->getItemId(), $links);
+
+        $this->publicLink->deleteByItemIds([]);
+        self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM PublicLink')->fetchColumn());
+
+        $this->publicLink->deleteByItemIds([$itemIds[0], $itemIds[1], $itemIds[0]]);
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM PublicLink')->fetchColumn());
+    }
+
+    #[Test]
+    public function deleteByItemIdRemovesOnlyMatchingLinks(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $links = $this->publicLink->getAll()->getDataAsArray(PublicLinkModel::class);
+        self::assertCount(2, $links);
+
+        $firstItemId = (int)$links[0]->getItemId();
+        $this->publicLink->deleteByItemId($firstItemId);
+
+        $remaining = $this->publicLink->getAll()->getDataAsArray(PublicLinkModel::class);
+        self::assertCount(1, $remaining);
+        self::assertNotSame($firstItemId, (int)$remaining[0]->getItemId());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM PublicLink')->fetchColumn());
+    }
 }

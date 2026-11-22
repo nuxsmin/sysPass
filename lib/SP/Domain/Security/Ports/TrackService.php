@@ -80,4 +80,16 @@ interface TrackService
      * @throws QueryException
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult;
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function countForUserAndSourceFromTime(int $userId, string $source, int $time): int;
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function addUserTrack(int $userId, string $source): int;
 }

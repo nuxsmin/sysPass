@@ -54,177 +54,426 @@ use function DI\get;
 use function SP\Tests\getDbHandler;
 
 /**
- * DB-backed characterization tests for Account access request
- * (account/requestAccess and account/saveRequest) boundaries and Notification
- * persistence against MariaDB.
+ * DB-backed target tests for Account access request (APP-ACCOUNT-REQUEST:
+ * account/requestAccess and account/saveRequest) against MariaDB.
  */
 #[Group('integration')]
 final class AccountRequestDbIntegrationTest extends DatabaseIntegrationTestCase
 {
-    private const MASTER_PASS = '12345678900';
+    private const MASTER_PASS    = '12345678900';
+    private const DENIED_ACCOUNT = "You don't have permission to access this account";
 
     #[Test]
-    public function requestAccessFormRejectsAnonymousWith403AndExposesGuessedPrivateAccountsToIncompleteAndUnprivilegedUsers(): void
-    {
-        $pdo = getDbHandler()->getConnection();
-
-        $emptyProfile = new ProfileData();
-        $unprivilegedUser = $this->seedUser($pdo, 'req_unpriv_user', 5, $emptyProfile);
-
-        $privAccId = $this->seedAccount($pdo, 'Secret Private Request Target', 1, 1, 1, 1, 0);
-        $privGrpAccId = $this->seedAccount($pdo, 'Secret PrivateGroup Request Target', 1, 1, 1, 0, 1);
-
-        // 1. Anonymous user hitting RequestAccessController (does not call checkLoggedIn) gets HTTP 403 UnauthorizedPageException
-        //    rather than SessionTimeout redirect
-        $anonRes = $this->dispatchSessionState('get', 'account/requestAccess/' . $privAccId, false, false, null, null);
-        self::assertSame(403, $anonRes['code']);
-        self::assertStringContainsString("You don't have permission to access this page", $anonRes['body']);
-        self::assertStringNotContainsString('Secret Private Request Target', $anonRes['body']);
-
-        // 2. Incomplete session (isLoggedIn=true, getAuthCompleted=false) passes Acl::checkUserAccess(ACCOUNT_REQUEST)
-        //    and discloses guessed isPrivate=1 Account name + client name
-        $incompleteRes = $this->dispatchSessionState(
-            'get',
-            'account/requestAccess/' . $privAccId,
-            true,
-            false,
-            $unprivilegedUser,
-            $emptyProfile,
-            ['isAjax' => '1'],
-            [],
-            ['isGlobalSearch' => false]
-        );
-        self::assertLessThan(400, $incompleteRes['code']);
-        self::assertStringContainsString('Secret Private Request Target', $incompleteRes['body']);
-        self::assertStringContainsString('Google', $incompleteRes['body']);
-
-        // 3. Completed unprivileged user (accGlobalSearch=false, isGlobalSearch=false) discloses both private & group-private names
-        $privGrpRes = $this->dispatchSessionState(
-            'get',
-            'account/requestAccess/' . $privGrpAccId,
-            true,
-            true,
-            $unprivilegedUser,
-            $emptyProfile,
-            ['isAjax' => '1'],
-            [],
-            ['isGlobalSearch' => false]
-        );
-        self::assertLessThan(400, $privGrpRes['code']);
-        self::assertStringContainsString('Secret PrivateGroup Request Target', $privGrpRes['body']);
-        self::assertStringContainsString('Google', $privGrpRes['body']);
-    }
-
-    #[Test]
-    public function saveRequestEnforcesLoginButAllowsGuessedPrivateAccountsNotifiesEditorAndHasNoRateLimit(): void
+    public function anonymousAndIncompleteSessionsAreRejectedOnRequestFormAndSaveRequest(): void
     {
         $pdo = getDbHandler()->getConnection();
         self::truncateTable('Notification');
+        self::truncateTable('Track');
 
         $emptyProfile = new ProfileData();
-        $requester = $this->seedUser($pdo, 'req_submitter', 5, $emptyProfile);
-        $lastEditor = $this->seedUser($pdo, 'req_last_editor', 5, $emptyProfile);
+        $incompleteUser = $this->seedUser($pdo, 'req_gate_incomplete', 5, $emptyProfile);
+        $accountId = $this->seedAccount($pdo, 'Gate Request Target', 1, 1, 1, 0, 0);
 
-        // Account 1: owner = 1 (admin), userEditId = $lastEditor->id, isPrivate = 1
-        $privDistinctEditorAccId = $this->seedAccount(
-            $pdo,
-            'Private Distinct Editor Target',
-            1,
-            1,
-            $lastEditor->id,
-            1,
-            0
-        );
-        // Account 2: owner = 1 (admin), userEditId = 1 (same user), isPrivateGroup = 1
-        $privGrpSameEditorAccId = $this->seedAccount(
-            $pdo,
-            'PrivateGroup Same Editor Target',
-            1,
-            1,
-            1,
-            0,
-            1
-        );
-
-        // 1. Anonymous & incomplete sessions are blocked by AccountControllerBase::checkLoggedIn()
         foreach ([
             'anonymous' => [false, false, null, null],
-            'incomplete' => [true, false, $requester, $emptyProfile],
+            'incomplete' => [true, false, $incompleteUser, $emptyProfile],
         ] as $label => [$loggedIn, $authCompleted, $actor, $actorProfile]) {
-            $blockedRes = $this->dispatchSessionState(
+            $formRes = $this->dispatchSessionState(
+                'get',
+                'account/requestAccess/' . $accountId,
+                $loggedIn,
+                $authCompleted,
+                $actor,
+                $actorProfile,
+                ['isAjax' => '1']
+            );
+            self::assertSame('', $formRes['body'], "$label GET requestAccess body");
+            self::assertStringNotContainsString('Gate Request Target', $formRes['body']);
+
+            $saveRes = $this->dispatchSessionState(
                 'post',
-                'account/saveRequest/' . $privDistinctEditorAccId,
+                'account/saveRequest/' . $accountId,
                 $loggedIn,
                 $authCompleted,
                 $actor,
                 $actorProfile,
                 [],
-                ['description' => 'Unauthorized attempt']
+                ['description' => 'Unauthorized request attempt']
             );
-            self::assertSame('', $blockedRes['body'], "$label saveRequest");
+            self::assertSame('', $saveRes['body'], "$label POST saveRequest body");
         }
-        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Notification')->fetchColumn());
 
-        // 2. Empty description fails validation without persisting Notification
-        $blankDescRes = $this->dispatchSessionState(
-            'post',
-            'account/saveRequest/' . $privDistinctEditorAccId,
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Notification')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Track')->fetchColumn());
+    }
+
+    #[Test]
+    public function unprivilegedGuessedPrivatePrivateGroupAndMissingAccountsAreGenericallyDeniedWithoutOracle(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        self::truncateTable('Notification');
+        self::truncateTable('Track');
+
+        $noGlobalProfile = new ProfileData();
+        $unprivUser = $this->seedUser($pdo, 'req_unpriv_user', 5, $noGlobalProfile);
+
+        $globalProfile = (new ProfileData())->setAccGlobalSearch(true);
+        $globalUser = $this->seedUser($pdo, 'req_global_probe', 5, $globalProfile);
+
+        $sharedAccId = $this->seedAccount($pdo, 'NonPrivate Request Target', 1, 1, 1, 0, 0);
+        $privAccId = $this->seedAccount($pdo, 'Secret Private Request Target', 1, 1, 1, 1, 0);
+        $privGrpAccId = $this->seedAccount($pdo, 'Secret PrivateGroup Request Target', 1, 1, 1, 0, 1);
+        $missingId = 999999;
+
+        // 1. Missing ID baseline response for GET and POST
+        $missingForm = $this->dispatchSessionState(
+            'get',
+            'account/requestAccess/' . $missingId,
             true,
             true,
-            $requester,
-            $emptyProfile,
+            $globalUser,
+            $globalProfile,
+            ['isAjax' => '1'],
             [],
-            ['description' => '']
+            ['isGlobalSearch' => true]
         );
-        $this->assertJsonDenied($blankDescRes, 'A description is needed');
-        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Notification')->fetchColumn());
+        self::assertSame(403, $missingForm['code']);
+        self::assertStringContainsString(self::DENIED_ACCOUNT, $missingForm['body']);
 
-        // 3. Unprivileged requester (accGlobalSearch=false, isGlobalSearch=false) succeeds against guessed isPrivate=1 account
-        //    and persists Notification rows for BOTH owner (userId=1) AND last editor ($lastEditor->id)
-        $okDistinctRes = $this->dispatchSessionState(
+        $missingSave = $this->dispatchSessionState(
             'post',
-            'account/saveRequest/' . $privDistinctEditorAccId,
+            'account/saveRequest/' . $missingId,
             true,
             true,
-            $requester,
-            $emptyProfile,
+            $globalUser,
+            $globalProfile,
             [],
-            ['description' => 'Need private access for audit'],
+            ['description' => 'Probe missing'],
+            ['isGlobalSearch' => true]
+        );
+        self::assertSame(403, $missingSave['code']);
+        $this->assertJsonDenied($missingSave, self::DENIED_ACCOUNT);
+
+        // 2. Unprivileged user without global search cannot request non-private account lacking grants
+        $unprivForm = $this->dispatchSessionState(
+            'get',
+            'account/requestAccess/' . $sharedAccId,
+            true,
+            true,
+            $unprivUser,
+            $noGlobalProfile,
+            ['isAjax' => '1'],
+            [],
             ['isGlobalSearch' => false]
         );
-        $this->assertJsonOk($okDistinctRes, 'Request done');
+        self::assertSame($missingForm['code'], $unprivForm['code']);
+        self::assertSame($missingForm['body'], $unprivForm['body']);
+        self::assertStringNotContainsString('NonPrivate Request Target', $unprivForm['body']);
+
+        $unprivSave = $this->dispatchSessionState(
+            'post',
+            'account/saveRequest/' . $sharedAccId,
+            true,
+            true,
+            $unprivUser,
+            $noGlobalProfile,
+            [],
+            ['description' => 'Unprivileged probe'],
+            ['isGlobalSearch' => false]
+        );
+        self::assertSame($missingSave['code'], $unprivSave['code']);
+        self::assertSame($missingSave['body'], $unprivSave['body']);
+
+        // 3. Global-search user cannot request guessed isPrivate=1 or isPrivateGroup=1 accounts
+        foreach ([
+            [$privAccId, 'Secret Private Request Target'],
+            [$privGrpAccId, 'Secret PrivateGroup Request Target'],
+        ] as [$targetId, $secretName]) {
+            $formRes = $this->dispatchSessionState(
+                'get',
+                'account/requestAccess/' . $targetId,
+                true,
+                true,
+                $globalUser,
+                $globalProfile,
+                ['isAjax' => '1'],
+                [],
+                ['isGlobalSearch' => true]
+            );
+            self::assertSame($missingForm['code'], $formRes['code']);
+            self::assertSame($missingForm['body'], $formRes['body']);
+            self::assertStringNotContainsString($secretName, $formRes['body']);
+            self::assertStringNotContainsString('Google', $formRes['body']);
+
+            $saveRes = $this->dispatchSessionState(
+                'post',
+                'account/saveRequest/' . $targetId,
+                true,
+                true,
+                $globalUser,
+                $globalProfile,
+                [],
+                ['description' => 'Probing private target'],
+                ['isGlobalSearch' => true]
+            );
+            self::assertSame($missingSave['code'], $saveRes['code']);
+            self::assertSame($missingSave['body'], $saveRes['body']);
+        }
+
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Notification')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Track')->fetchColumn());
+    }
+
+    #[Test]
+    public function readOnlyAndGlobalSearchUsersNotifyOnlyOwnerRequireNonEmptyReasonAndLeaveGrantsUnchanged(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        self::truncateTable('Notification');
+        self::truncateTable('Track');
+
+        $roProfile = (new ProfileData())->setAccView(true);
+        $roUser = $this->seedUser($pdo, 'req_ro_user', 5, $roProfile);
+
+        $globalProfile = (new ProfileData())->setAccGlobalSearch(true);
+        $globalUser = $this->seedUser($pdo, 'req_gsearch_user', 5, $globalProfile);
+
+        $owner = $this->seedUser($pdo, 'req_acc_owner', 6, new ProfileData());
+        $lastEditor = $this->seedUser($pdo, 'req_last_editor', 6, new ProfileData());
+
+        $roAccountId = $this->seedAccount(
+            $pdo,
+            'RO Requestable Account',
+            $owner->id,
+            6,
+            $lastEditor->id,
+            0,
+            0
+        );
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')
+            ->execute([$roAccountId, $roUser->id]);
+
+        $globalAccountId = $this->seedAccount(
+            $pdo,
+            'Global Searchable Account',
+            $owner->id,
+            6,
+            $owner->id,
+            0,
+            0
+        );
+
+        // 1. Whitespace-only & empty reasons rejected on eligible account without persisting Notification or Track
+        foreach (['', "   \t\n  "] as $blankDescription) {
+            $blankRes = $this->dispatchSessionState(
+                'post',
+                'account/saveRequest/' . $roAccountId,
+                true,
+                true,
+                $roUser,
+                $roProfile,
+                [],
+                ['description' => $blankDescription],
+                ['isGlobalSearch' => false]
+            );
+            $this->assertJsonDenied($blankRes, 'A description is needed');
+        }
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Notification')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Track')->fetchColumn());
+
+        // 2. Read-only user opens form & submits request even when global search is disabled;
+        //    only the owner ($owner->id) is notified — NEVER $lastEditor->id
+        $roFormRes = $this->dispatchSessionState(
+            'get',
+            'account/requestAccess/' . $roAccountId,
+            true,
+            true,
+            $roUser,
+            $roProfile,
+            ['isAjax' => '1'],
+            [],
+            ['isGlobalSearch' => false]
+        );
+        self::assertSame(200, $roFormRes['code']);
+        self::assertStringContainsString('RO Requestable Account', $roFormRes['body']);
+        self::assertStringContainsString('Google', $roFormRes['body']);
+        self::assertStringNotContainsString('secret-req-pass', $roFormRes['body']);
+        self::assertStringNotContainsString('req-acc-login', $roFormRes['body']);
+
+        $roSaveRes = $this->dispatchSessionState(
+            'post',
+            'account/saveRequest/' . $roAccountId,
+            true,
+            true,
+            $roUser,
+            $roProfile,
+            [],
+            ['description' => 'Please grant edit access for maintenance'],
+            ['isGlobalSearch' => false]
+        );
+        $this->assertJsonOk($roSaveRes, 'Request done');
+        self::assertStringNotContainsString('secret-req-pass', $roSaveRes['body']);
 
         $rows = $pdo->query('SELECT userId, type, component, description FROM Notification ORDER BY id ASC')
             ->fetchAll(PDO::FETCH_ASSOC);
-        self::assertCount(2, $rows);
-        self::assertSame([1, $lastEditor->id], [(int)$rows[0]['userId'], (int)$rows[1]['userId']]);
-        self::assertStringContainsString('Private Distinct Editor Target', (string)$rows[0]['description']);
-        self::assertStringContainsString('Need private access for audit', (string)$rows[1]['description']);
+        self::assertCount(1, $rows);
+        self::assertSame($owner->id, (int)$rows[0]['userId']);
+        self::assertStringContainsString('RO Requestable Account', (string)$rows[0]['description']);
+        self::assertStringContainsString('Please grant edit access for maintenance', (string)$rows[0]['description']);
+        self::assertStringNotContainsString('secret-req-pass', (string)$rows[0]['description']);
+        self::assertStringNotContainsString('req-acc-login', (string)$rows[0]['description']);
 
-        // 4. When owner === userEditId, SaveRequestController passes [$id, $id] without array_unique(),
-        //    persisting 2 duplicate Notification rows for the same owner, and enforces NO rate limit (>3 requests succeed).
+        // Read-only grant must not have been upgraded
+        $grantIsEdit = $pdo->prepare('SELECT isEdit FROM AccountToUser WHERE accountId = ? AND userId = ?');
+        $grantIsEdit->execute([$roAccountId, $roUser->id]);
+        self::assertSame(0, (int)$grantIsEdit->fetchColumn());
+
+        // 3. Global-search user requests access to discovered non-private account without disclosure or duplicate notifications
         self::truncateTable('Notification');
 
-        for ($i = 1; $i <= 4; $i++) {
+        $globalFormRes = $this->dispatchSessionState(
+            'get',
+            'account/requestAccess/' . $globalAccountId,
+            true,
+            true,
+            $globalUser,
+            $globalProfile,
+            ['isAjax' => '1'],
+            [],
+            ['isGlobalSearch' => true]
+        );
+        self::assertSame(200, $globalFormRes['code']);
+        self::assertStringContainsString('Global Searchable Account', $globalFormRes['body']);
+        self::assertStringContainsString('Google', $globalFormRes['body']);
+        self::assertStringNotContainsString('secret-req-pass', $globalFormRes['body']);
+        self::assertStringNotContainsString('req-acc-login', $globalFormRes['body']);
+        self::assertStringNotContainsString('https://req-acc.example.test', $globalFormRes['body']);
+
+        $globalSaveRes = $this->dispatchSessionState(
+            'post',
+            'account/saveRequest/' . $globalAccountId,
+            true,
+            true,
+            $globalUser,
+            $globalProfile,
+            [],
+            ['description' => 'Need access for incident triage'],
+            ['isGlobalSearch' => true]
+        );
+        $this->assertJsonOk($globalSaveRes, 'Request done');
+
+        $globalRows = $pdo->query('SELECT userId, description FROM Notification ORDER BY id ASC')
+            ->fetchAll(PDO::FETCH_ASSOC);
+        self::assertCount(1, $globalRows);
+        self::assertSame($owner->id, (int)$globalRows[0]['userId']);
+        self::assertStringNotContainsString('secret-req-pass', (string)$globalRows[0]['description']);
+
+        // No grant was implicitly created for the global-search requester
+        $createdGrants = $pdo->prepare('SELECT COUNT(*) FROM AccountToUser WHERE accountId = ? AND userId = ?');
+        $createdGrants->execute([$globalAccountId, $globalUser->id]);
+        self::assertSame(0, (int)$createdGrants->fetchColumn());
+    }
+
+    #[Test]
+    public function rateLimitAllowsAtMostThreeRequestsPerUserAndAccountInRolling24Hours(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        self::truncateTable('Notification');
+        self::truncateTable('Track');
+
+        $globalProfile = (new ProfileData())->setAccGlobalSearch(true);
+        $userA = $this->seedUser($pdo, 'req_rl_user_a', 5, $globalProfile);
+        $userB = $this->seedUser($pdo, 'req_rl_user_b', 5, $globalProfile);
+        $owner = $this->seedUser($pdo, 'req_rl_owner', 6, new ProfileData());
+
+        $accountX = $this->seedAccount($pdo, 'RateLimit Target X', $owner->id, 6, $owner->id, 0, 0);
+        $accountY = $this->seedAccount($pdo, 'RateLimit Target Y', $owner->id, 6, $owner->id, 0, 0);
+
+        // Seed 3 expired tracks (>24h ago) for (userA, accountX) — must be ignored by rolling 24h window
+        $expiredStmt = $pdo->prepare(
+            'INSERT INTO Track (userId, source, time) VALUES (?, ?, ?)'
+        );
+        for ($e = 1; $e <= 3; $e++) {
+            $expiredStmt->execute([$userA->id, 'account.request:' . $accountX, time() - 86401 - $e]);
+        }
+
+        // First 3 requests for (userA, accountX) succeed
+        for ($i = 1; $i <= 3; $i++) {
             $res = $this->dispatchSessionState(
                 'post',
-                'account/saveRequest/' . $privGrpSameEditorAccId,
+                'account/saveRequest/' . $accountX,
                 true,
                 true,
-                $requester,
-                $emptyProfile,
+                $userA,
+                $globalProfile,
                 [],
-                ['description' => 'Repeated request #' . $i],
-                ['isGlobalSearch' => false]
+                ['description' => 'Request #' . $i],
+                ['isGlobalSearch' => true]
             );
             $this->assertJsonOk($res, 'Request done');
         }
 
-        // 4 requests * 2 duplicate owner IDs = 8 Notification rows for userId=1
-        self::assertSame(
-            8,
-            (int)$pdo->query('SELECT COUNT(*) FROM Notification WHERE userId = 1')->fetchColumn()
+        self::assertSame(3, (int)$pdo->query('SELECT COUNT(*) FROM Notification')->fetchColumn());
+
+        // 4th request within 24h is rejected with generic limit message and creates no notification or track
+        $fourthRes = $this->dispatchSessionState(
+            'post',
+            'account/saveRequest/' . $accountX,
+            true,
+            true,
+            $userA,
+            $globalProfile,
+            [],
+            ['description' => 'Request #4 blocked'],
+            ['isGlobalSearch' => true]
         );
+        $this->assertJsonDenied($fourthRes, 'Maximum number of requests exceeded');
+        self::assertStringNotContainsString('RateLimit Target X', $fourthRes['body']);
+        self::assertSame(3, (int)$pdo->query('SELECT COUNT(*) FROM Notification')->fetchColumn());
+
+        // Deleting Notifications does NOT reset the Track-based rate limit
+        self::truncateTable('Notification');
+        $afterDeleteRes = $this->dispatchSessionState(
+            'post',
+            'account/saveRequest/' . $accountX,
+            true,
+            true,
+            $userA,
+            $globalProfile,
+            [],
+            ['description' => 'After notification delete'],
+            ['isGlobalSearch' => true]
+        );
+        $this->assertJsonDenied($afterDeleteRes, 'Maximum number of requests exceeded');
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Notification')->fetchColumn());
+
+        // Independent per account: (userA, accountY) still succeeds
+        $otherAccountRes = $this->dispatchSessionState(
+            'post',
+            'account/saveRequest/' . $accountY,
+            true,
+            true,
+            $userA,
+            $globalProfile,
+            [],
+            ['description' => 'Different account request'],
+            ['isGlobalSearch' => true]
+        );
+        $this->assertJsonOk($otherAccountRes, 'Request done');
+
+        // Independent per user: (userB, accountX) still succeeds
+        $otherUserRes = $this->dispatchSessionState(
+            'post',
+            'account/saveRequest/' . $accountX,
+            true,
+            true,
+            $userB,
+            $globalProfile,
+            [],
+            ['description' => 'Different user request'],
+            ['isGlobalSearch' => true]
+        );
+        $this->assertJsonOk($otherUserRes, 'Request done');
+        self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM Notification')->fetchColumn());
     }
 
     /**

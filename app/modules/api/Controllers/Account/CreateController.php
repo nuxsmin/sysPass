@@ -77,6 +77,7 @@ final class CreateController extends AccountBase
     private function buildAccountRequest(): AccountCreateDto
     {
         $userData = $this->context->getUserData();
+        $parentId = $this->apiService->getParamInt('parentId');
 
         return AccountCreateDto::fromArray(
             [
@@ -89,14 +90,14 @@ final class CreateController extends AccountBase
                 'isPrivate'      => (bool)$this->apiService->getParamInt('private'),
                 'isPrivateGroup' => (bool)$this->apiService->getParamInt('privateGroup'),
                 'passDateChange' => $this->apiService->getParamInt('expireDate'),
-                'parentId'       => $this->apiService->getParamInt('parentId'),
+                'parentId'       => $parentId,
                 'userId'         => $this->apiService->getParamInt('userId', false, $userData->id),
                 'userGroupId'    => $this->apiService->getParamInt('userGroupId', false, $userData->userGroupId),
                 'tags'           => array_map(
                     'intval',
                     $this->apiService->getParamArray('tagsId', false, [])
                 ),
-                'pass'           => $this->apiService->getParamRaw('pass', true),
+                'pass'           => $this->apiService->getParamRaw('pass', $parentId === null || $parentId <= 0),
             ]
         );
     }

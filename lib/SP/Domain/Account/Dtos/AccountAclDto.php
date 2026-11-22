@@ -38,12 +38,14 @@ final class AccountAclDto
     use ItemDataTrait;
 
     public function __construct(
-        private readonly int $accountId,
-        private readonly int $userId,
-        private array        $usersId,
-        private readonly int $userGroupId,
-        private array        $userGroupsId,
-        private readonly ?int $dateEdit
+        private readonly int  $accountId,
+        private readonly int  $userId,
+        private array         $usersId,
+        private readonly int  $userGroupId,
+        private array         $userGroupsId,
+        private readonly ?int $dateEdit,
+        private readonly bool $isPrivate = false,
+        private readonly bool $isPrivateGroup = false
     ) {
         $this->usersId = self::buildFromItemData($usersId);
         $this->userGroupsId = self::buildFromItemData($userGroupsId);
@@ -56,13 +58,17 @@ final class AccountAclDto
      */
     public static function makeFromAccount(AccountEnrichedDto $accountDetailsResponse): AccountAclDto
     {
+        $accountView = $accountDetailsResponse->getAccountView();
+
         return new self(
             $accountDetailsResponse->getId(),
-            $accountDetailsResponse->getAccountView()->getUserId(),
+            $accountView->getUserId(),
             $accountDetailsResponse->getUsers(),
-            $accountDetailsResponse->getAccountView()->getUserGroupId(),
+            $accountView->getUserGroupId(),
             $accountDetailsResponse->getUserGroups(),
-            (int)(strtotime($accountDetailsResponse->getAccountView()->getDateEdit() ?? '') ?: 0)
+            (int)(strtotime($accountView->getDateEdit() ?? '') ?: 0),
+            (bool)$accountView->getIsPrivate(),
+            (bool)$accountView->getIsPrivateGroup()
         );
     }
 
@@ -81,6 +87,16 @@ final class AccountAclDto
         return $this->dateEdit;
     }
 
+    public function isPrivate(): bool
+    {
+        return $this->isPrivate;
+    }
+
+    public function isPrivateGroup(): bool
+    {
+        return $this->isPrivateGroup;
+    }
+
     /**
      * @param AccountSearchView $accountSearchView
      *
@@ -95,12 +111,14 @@ final class AccountAclDto
         array $userGroups
     ): AccountAclDto {
         return new self(
-            $accountSearchView->getId(),
-            $accountSearchView->getUserId(),
+            (int)$accountSearchView->getId(),
+            (int)$accountSearchView->getUserId(),
             $users,
-            $accountSearchView->getUserGroupId(),
+            (int)$accountSearchView->getUserGroupId(),
             $userGroups,
-            (int)(strtotime($accountSearchView->getDateEdit() ?? '') ?: 0)
+            (int)(strtotime($accountSearchView->getDateEdit() ?? '') ?: 0),
+            (bool)$accountSearchView->getIsPrivate(),
+            (bool)$accountSearchView->getIsPrivateGroup()
         );
     }
 

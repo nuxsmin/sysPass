@@ -34,19 +34,33 @@ use SP\Domain\Export\Ports\XmlVerifyService;
 use SP\Domain\Export\Services\XmlVerify;
 use SP\Domain\Account\Adapters\Account;
 use SP\Domain\Account\Ports\AccountAdapter;
+use SP\Domain\Account\Ports\AccountHistoryRepository;
+use SP\Domain\Account\Ports\AccountHistoryService;
+use SP\Domain\Account\Ports\AccountRepository;
+use SP\Domain\Account\Ports\AccountToUserGroupRepository;
+use SP\Domain\Account\Ports\AccountToUserRepository;
+use SP\Domain\Account\Services\AccountHistory;
+use SP\Domain\Account\Services\AccountReader;
+use SP\Domain\Account\Services\AccountWriter;
 use SP\Domain\Category\Adapters\Category;
 use SP\Domain\Category\Ports\CategoryAdapter;
 use SP\Domain\Client\Adapters\Client;
 use SP\Domain\Client\Ports\ClientAdapter;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Services\ImportHelper;
+use SP\Domain\User\Ports\UserToUserGroupRepository;
 use SP\Infrastructure\Common\Repositories\SimpleRepository;
 use SP\Infrastructure\File\FileSystem;
 
 use function DI\autowire;
 use function DI\factory;
+use function DI\get;
 
 /**
  * Class DomainDefinitions
@@ -72,7 +86,6 @@ final class DomainDefinitions
         'SP\Domain\Account\Ports\AccountFileService' => 'SP\Domain\Account\Services\AccountFile',
         'SP\Domain\Account\Ports\AccountFilterBuilder' => 'SP\Domain\Account\Services\Builders\AccountFilter',
         'SP\Domain\Account\Ports\AccountHistoryRepository' => 'SP\Infrastructure\Account\Repositories\AccountHistory',
-        'SP\Domain\Account\Ports\AccountHistoryService' => 'SP\Domain\Account\Services\AccountHistory',
         'SP\Domain\Account\Ports\AccountItemsService' => 'SP\Domain\Account\Services\AccountItems',
         'SP\Domain\Account\Ports\AccountMasterPasswordService' => 'SP\Domain\Account\Services\AccountMasterPassword',
         'SP\Domain\Account\Ports\AccountPresetService' => 'SP\Domain\Account\Services\AccountPreset',
@@ -224,6 +237,20 @@ final class DomainDefinitions
                 ->constructorParameter('baseUrl', factory([UriContextInterface::class, 'getWebUri'])),
             ClientAdapter::class => autowire(Client::class)
                 ->constructorParameter('baseUrl', factory([UriContextInterface::class, 'getWebUri'])),
+            AccountHistoryService::class => autowire(AccountHistory::class)
+                ->constructorParameter('accountRepository', get(AccountRepository::class))
+                ->constructorParameter('accountToUserRepository', get(AccountToUserRepository::class))
+                ->constructorParameter('accountToUserGroupRepository', get(AccountToUserGroupRepository::class))
+                ->constructorParameter('customFieldDataService', get(CustomFieldDataService::class))
+                ->constructorParameter('userToUserGroupRepository', get(UserToUserGroupRepository::class)),
+            AccountReader::class => autowire(AccountReader::class)
+                ->constructorParameter('acl', get(AclInterface::class))
+                ->constructorParameter('accountHistoryRepository', get(AccountHistoryRepository::class)),
+            AccountWriter::class => autowire(AccountWriter::class)
+                ->constructorParameter('acl', get(AclInterface::class))
+                ->constructorParameter('crypt', get(CryptInterface::class))
+                ->constructorParameter('masterKeyStore', get(MasterKeyStore::class))
+                ->constructorParameter('userToUserGroupRepository', get(UserToUserGroupRepository::class)),
         ];
 
         foreach (self::PORTS as $port => $implementation) {

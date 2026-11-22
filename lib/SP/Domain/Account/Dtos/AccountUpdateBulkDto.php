@@ -35,8 +35,11 @@ final class AccountUpdateBulkDto
      *
      * @param AccountUpdateDto[] $accountUpdateDto
      */
-    public function __construct(array $accountsId, private array $accountUpdateDto)
-    {
+    public function __construct(
+        array $accountsId,
+        private array $accountUpdateDto,
+        private readonly bool $deleteHistory = false
+    ) {
         $accountUpdateDto = array_combine($accountsId, $this->accountUpdateDto);
 
         $this->accountUpdateDto =
@@ -49,5 +52,10 @@ final class AccountUpdateBulkDto
     public function getAccountUpdateDto(): array
     {
         return $this->accountUpdateDto;
+    }
+
+    public function isDeleteHistory(): bool
+    {
+        return $this->deleteHistory;
     }
 }

@@ -172,18 +172,18 @@ class NotificationTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 9
+                return count($params) === 8
+                       && !array_key_exists('date', $params)
                        && $params['id'] === $notification->getId()
                        && $params['type'] === $notification->getType()
                        && $params['userId'] === $notification->getUserId()
                        && $params['component'] === $notification->getComponent()
                        && $params['description'] === $notification->getDescription()
-                       && $params['date'] === $notification->getDate()
                        && $params['checked'] === $notification->isChecked()
                        && $params['sticky'] === $notification->isSticky()
                        && $params['onlyAdmin'] === $notification->isOnlyAdmin()
                        && is_a($query, UpdateInterface::class)
-                       && !empty($query->getStatement());
+                       && str_contains((string)$query->getStatement(), 'UNIX_TIMESTAMP()');
             }
         );
 

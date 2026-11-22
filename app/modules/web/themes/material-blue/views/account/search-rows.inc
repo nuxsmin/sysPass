@@ -194,6 +194,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                     <?php
                     endif; ?>
                 </div>
+                <?php if ($accountSearchItem->isShow()): ?>
                 <div class="label-row-down">
                     <div class="tags-box">
                         <?php
@@ -208,6 +209,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         endforeach; ?>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
             <div class="label-right">
                 <div class="account-info">
@@ -425,7 +427,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                data-item-id="<?php
                                echo $accountSearchData->getId(); ?>"
                                data-parent-id="<?php
-                               echo $accountSearchData->getParentId(); ?>"
+                               echo $accountSearchItem->isShow() ? $accountSearchData->getParentId() : 0; ?>"
                                 <?php
                                 foreach ($action->getData() as $dataName => $dataValue):
                                     printf('data-%s="%s"', $dataName, $dataValue);
@@ -462,7 +464,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                             data-item-id="<?php
                                             echo $accountSearchData->getId(); ?>"
                                             data-parent-id="<?php
-                                            echo $accountSearchData->getParentId(); ?>"
+                                            echo $accountSearchItem->isShow() ? $accountSearchData->getParentId() : 0; ?>"
                                             <?php
                                             foreach ($actionMenu->getData() as $dataName => $dataValue):
                                                 printf('data-%s="%s"', $dataName, $dataValue);

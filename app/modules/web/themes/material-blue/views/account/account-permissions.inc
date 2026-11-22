@@ -362,12 +362,13 @@ use function SP\__;
 
         <?php
         if ($_getvar('allowPrivate') === true):
-            $checked = ($gotData && $accountView->getIsPrivate()) || $_getvar('privateUserCheck');
+            $checked = ($gotData && !$_getvar('copyAction') && $accountView->getIsPrivate()) || $_getvar('privateUserCheck');
             ?>
             <tr>
                 <td class="descField"><?php
                     echo __('Private Account'); ?></td>
                 <td class="valField">
+                    <input type="hidden" name="private_enabled" value="0">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                            for="private_enabled">
                         <input name="private_enabled" type="checkbox"
@@ -385,12 +386,13 @@ use function SP\__;
 
         <?php
         if ($_getvar('allowPrivateGroup') === true):
-            $checked = ($gotData && $accountView->getIsPrivateGroup()) || $_getvar('privateUserGroupCheck');
+            $checked = ($gotData && !$_getvar('copyAction') && $accountView->getIsPrivateGroup()) || $_getvar('privateUserGroupCheck');
             ?>
             <tr>
                 <td class="descField"><?php
                     echo __('Private Account for Group'); ?></td>
                 <td class="valField">
+                    <input type="hidden" name="private_group_enabled" value="0">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                            for="private_group_enabled">
                         <input name="private_group_enabled" type="checkbox"

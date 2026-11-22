@@ -34,6 +34,7 @@ use SP\Domain\Common\Models\Model;
 class AccountPassItemWithIdAndName extends Model implements ItemWithIdAndNameModel
 {
     protected ?int    $id        = null;
+    protected ?int    $accountId = null;
     protected ?string $name      = null;
     protected ?string $login     = null;
     protected ?string $pass      = null;
@@ -44,6 +45,11 @@ class AccountPassItemWithIdAndName extends Model implements ItemWithIdAndNameMod
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getAccountId(): ?int
+    {
+        return $this->accountId;
     }
 
     public function getName(): ?string

@@ -27,6 +27,7 @@ namespace SP\Domain\Account\Ports;
 
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Database\Dtos\QueryResult;
@@ -113,6 +114,26 @@ interface AccountHistoryRepository extends Repository
      * @return int
      */
     public function deleteByIdBatch(array $ids): int;
+
+    /**
+     * Returns all the items matching the given ids
+     *
+     * @param int[] $ids
+     * @return QueryResult<AccountHistory>
+     */
+    public function getByIds(array $ids): QueryResult;
+
+    /**
+     * Returns all history entries for a given account id ordered newest first
+     *
+     * @return QueryResult<AccountHistory>
+     */
+    public function getByAccountId(int $accountId): QueryResult;
+
+    /**
+     * Reassigns history rows matching oldAccountId and dateAdd to a new account id
+     */
+    public function reassignAccountId(int $oldAccountId, int $newAccountId, string $dateAdd): int;
 
     /**
      * Searches for items by a given filter

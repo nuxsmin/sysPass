@@ -96,6 +96,15 @@ interface CustomFieldDataRepository extends Repository
     public function deleteByItem(int $itemId, int $moduleId): QueryResult;
 
     /**
+     * Delete custom field data for a specific item, module, and definition
+     *
+     * @return QueryResult<T>
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function deleteByDefinition(int $itemId, int $moduleId, int $definitionId): QueryResult;
+
+    /**
      * Returns all the items that were encrypted
      *
      * @return QueryResult<T>
@@ -119,4 +128,12 @@ interface CustomFieldDataRepository extends Repository
      * @return QueryResult<T>
      */
     public function getAll(): QueryResult;
+
+    /**
+     * Copy custom field data rows from a source module/item to a destination module/item.
+     *
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function copyByModuleAndItem(int $srcModuleId, int $srcItemId, int $dstModuleId, int $dstItemId): int;
 }

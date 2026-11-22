@@ -31,6 +31,9 @@ namespace SP\Domain\Account\Dtos;
  */
 final class AccountHistoryDto extends AccountDto
 {
+    /**
+     * @param array<int|string, mixed>|null $customFields
+     */
     public function __construct(
         ?int                    $id = null,
         ?int                    $clientId = null,
@@ -65,6 +68,11 @@ final class AccountHistoryDto extends AccountDto
         public readonly ?int    $passDate = null,
         public readonly ?string $dateAdd = null,
         public readonly ?string $dateEdit = null,
+        public readonly ?string $userEditName = null,
+        public readonly ?string $userEditLogin = null,
+        ?array                  $customFields = null,
+        public readonly ?string $userName = null,
+        public readonly ?string $userGroupName = null,
     ) {
         parent::__construct(
             $id,
@@ -93,7 +101,8 @@ final class AccountHistoryDto extends AccountDto
             $otherUserGroupsEdit,
             $tags,
             $userGroupsView,
-            $userGroupsEdit
+            $userGroupsEdit,
+            $customFields
         );
     }
 }

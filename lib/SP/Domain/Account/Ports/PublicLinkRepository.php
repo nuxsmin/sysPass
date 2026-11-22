@@ -54,6 +54,28 @@ interface PublicLinkRepository extends Repository
     public function delete(int $id): void;
 
     /**
+     * Deletes all public links associated with the given item ID
+     *
+     * @param int $itemId
+     *
+     * @return void
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByItemId(int $itemId): void;
+
+    /**
+     * Deletes all public links associated with the given item IDs
+     *
+     * @param int[] $itemIds
+     *
+     * @return void
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByItemIds(array $itemIds): void;
+
+    /**
      * Returns all the items
      *
      * @return QueryResult<T>

@@ -126,7 +126,13 @@ interface AccountRepository extends Repository
      * @return QueryResult
      * @throws SPException
      */
-    public function updateBulk(int $accountId, Account $account, bool $changeOwner, bool $changeUserGroup): QueryResult;
+    public function updateBulk(
+        int $accountId,
+        Account $account,
+        bool $changeOwner,
+        bool $changeUserGroup,
+        bool $updatePrivacy = false
+    ): QueryResult;
 
     /**
      * Incrementa el contador de visitas de una cuenta en la BBDD
@@ -167,6 +173,17 @@ interface AccountRepository extends Repository
      * @throws QueryException
      */
     public function getLinked(int $accountId): QueryResult;
+
+    /**
+     * Returns all child account IDs linked to a parent account without visibility filtering.
+     *
+     * @param int $parentId
+     *
+     * @return int[]
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getChildIdsByParentId(int $parentId): array;
 
     /**
      * Obtener los datos relativos a la clave de todas las cuentas.
@@ -233,13 +250,14 @@ interface AccountRepository extends Repository
     /**
      * Checks whether the account is visible to the current user
      *
-     * @param int $accountId
+     * @param int  $accountId
+     * @param bool $useGlobalSearch
      *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function isVisible(int $accountId): bool;
+    public function isVisible(int $accountId, bool $useGlobalSearch = false): bool;
 
     /**
      * Returns all the items

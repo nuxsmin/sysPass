@@ -198,7 +198,7 @@ class AccountPermission
 
     public function isShowSave(): bool
     {
-        return $this->actionId === AclActionsInterface::ACCOUNT_EDIT
+        return ($this->actionId === AclActionsInterface::ACCOUNT_EDIT && $this->resultEdit)
                || $this->actionId === AclActionsInterface::ACCOUNT_CREATE
                || $this->actionId === AclActionsInterface::ACCOUNT_COPY;
     }

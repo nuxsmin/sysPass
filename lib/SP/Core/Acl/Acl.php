@@ -113,8 +113,13 @@ final readonly class Acl implements AclActionsInterface, AclInterface
                 return $userDto->isAdminAcc || $userProfile->isAccViewPass();
             case self::ACCOUNT_HISTORY_VIEW:
                 return $userDto->isAdminAcc || $userProfile->isAccViewHistory();
+            case self::ACCOUNT_HISTORY_VIEW_PASS:
+            case self::ACCOUNT_HISTORY_COPY_PASS:
+                return $userDto->isAdminAcc || ($userProfile->isAccViewHistory() && $userProfile->isAccViewPass());
             case self::ACCOUNT_EDIT:
                 return $userDto->isAdminAcc || $userProfile->isAccEdit();
+            case self::ACCOUNT_EDIT_RESTORE:
+                return $userDto->isAdminAcc || ($userProfile->isAccEdit() && $userProfile->isAccViewHistory());
             case self::ACCOUNT_EDIT_PASS:
                 return $userDto->isAdminAcc || $userProfile->isAccEditPass();
             case self::ACCOUNT_CREATE:
@@ -191,8 +196,14 @@ final readonly class Acl implements AclActionsInterface, AclInterface
                 return $userProfile->isMgmPublicLinks() || $userProfile->isAccPublicLinks();
             case self::ACCOUNTMGR:
             case self::ACCOUNTMGR_SEARCH:
+            case self::ACCOUNTMGR_VIEW:
+            case self::ACCOUNTMGR_DELETE:
+            case self::ACCOUNTMGR_BULK_EDIT:
             case self::ACCOUNTMGR_HISTORY:
             case self::ACCOUNTMGR_HISTORY_SEARCH:
+            case self::ACCOUNTMGR_HISTORY_VIEW:
+            case self::ACCOUNTMGR_HISTORY_DELETE:
+            case self::ACCOUNTMGR_HISTORY_RESTORE:
                 return $userDto->isAdminAcc || $userProfile->isMgmAccounts();
             case self::FILE:
             case self::FILE_SEARCH:

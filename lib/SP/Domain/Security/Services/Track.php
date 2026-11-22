@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Security\Services;
 
 use Exception;
+use SP\Domain\Common\Providers\Address;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
@@ -181,5 +182,48 @@ final class Track extends Service implements TrackService
     public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         return $this->trackRepository->search($itemSearchData, time() - self::TIME_TRACKING);
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function countForUserAndSourceFromTime(int $userId, string $source, int $time): int
+    {
+        return $this->trackRepository->countForUserAndSourceFromTime($userId, $source, $time);
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function addUserTrack(int $userId, string $source): int
+    {
+        $ipv4 = null;
+        $ipv6 = null;
+        $address = $this->request->getClientAddress();
+
+        if ($address !== '') {
+            try {
+                $binary = Address::toBinary($address);
+
+                if (strlen($binary) === 4) {
+                    $ipv4 = $binary;
+                } else {
+                    $ipv6 = $binary;
+                }
+            } catch (InvalidArgumentException) {
+                // Non-IP or empty client address in CLI/test execution does not prevent user-scoped tracking
+            }
+        }
+
+        return $this->trackRepository->add(
+            new TrackModel([
+                'userId' => $userId,
+                'source' => $source,
+                'ipv4' => $ipv4,
+                'ipv6' => $ipv6,
+            ])
+        )->getLastId();
     }
 }

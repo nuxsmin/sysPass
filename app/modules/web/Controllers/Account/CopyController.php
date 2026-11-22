@@ -75,7 +75,7 @@ final class CopyController extends AccountViewBase
             )
         );
 
-        $this->accountHelper->setViewForAccount($accountEnrichedDto);
+        $this->accountHelper->setViewForCopy($accountEnrichedDto);
 
         $this->view->addTemplate('account');
         $this->view->assign(

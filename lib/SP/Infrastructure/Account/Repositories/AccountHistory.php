@@ -68,7 +68,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                    ])
             ->join('INNER', 'User as User', 'Account.userId = User.id')
             ->join('LEFT', 'User as UserEdit', 'Account.userEditId = UserEdit.id')
-            ->where('Account.id = :id')
+            ->where('Account.accountId = :id')
             ->bindValues(['id' => $id])
             ->orderBy(['Account.id DESC']);
 
@@ -100,7 +100,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                        'url' => $accountData->getUrl(),
                        'pass' => $accountData->getPass(),
                        'key' => $accountData->getKey(),
-                       'notes' => $accountData->getNotes(),
+                       'notes' => $accountData->getNotes() ?? '',
                        'userId' => $accountData->getUserId(),
                        'userGroupId' => $accountData->getUserGroupId(),
                        'userEditId' => $accountData->getUserEditId(),
@@ -172,6 +172,8 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                        'Account.userEditId',
                        'Account.login',
                        'Account.url',
+                       'Account.pass',
+                       'Account.`key`',
                        'Account.notes',
                        'Account.countView',
                        'Account.countDecrypt',
@@ -186,7 +188,15 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                        'Account.parentId',
                        'Account.isModify',
                        'Account.isDeleted',
+                       'Account.mPassHash',
+                       'User.name AS userName',
+                       'UserGroup.name AS userGroupName',
+                       'UserEdit.name AS userEditName',
+                       'UserEdit.login AS userEditLogin',
                    ])
+            ->join('LEFT', 'User AS User', 'Account.userId = User.id')
+            ->join('LEFT', 'UserGroup', 'Account.userGroupId = UserGroup.id')
+            ->join('LEFT', 'User AS UserEdit', 'Account.userEditId = UserEdit.id')
             ->where('Account.id = :id')
             ->bindValues(['id' => $id])
             ->limit(1);
@@ -196,6 +206,156 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                               ->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
         return $this->db->runQuery($queryData);
+    }
+
+    /**
+     * Returns all the items matching the given ids
+     *
+     * @param int[] $ids
+     *
+     * @return QueryResult<AccountHistoryModel>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getByIds(array $ids): QueryResult
+    {
+        $normalizedIds = array_values(array_unique(array_filter(
+            array_map('intval', $ids),
+            static fn(int $id): bool => $id > 0
+        )));
+
+        if ($normalizedIds === []) {
+            /** @var QueryResult<AccountHistoryModel> $empty */
+            $empty = new QueryResult();
+
+            return $empty;
+        }
+
+        $placeholders = [];
+        $binds = [];
+
+        foreach ($normalizedIds as $index => $id) {
+            $param = 'id' . $index;
+            $placeholders[] = ':' . $param;
+            $binds[$param] = $id;
+        }
+
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(sprintf('%s AS Account', AccountHistoryModel::TABLE))
+            ->cols([
+                       'Account.id',
+                       'Account.accountId',
+                       'Account.name',
+                       'Account.categoryId',
+                       'Account.userId',
+                       'Account.clientId',
+                       'Account.userGroupId',
+                       'Account.userEditId',
+                       'Account.login',
+                       'Account.url',
+                       'Account.pass',
+                       'Account.`key`',
+                       'Account.notes',
+                       'Account.countView',
+                       'Account.countDecrypt',
+                       'Account.dateAdd',
+                       'Account.dateEdit',
+                       'Account.otherUserEdit',
+                       'Account.otherUserGroupEdit',
+                       'Account.isPrivate',
+                       'Account.isPrivateGroup',
+                       'Account.passDate',
+                       'Account.passDateChange',
+                       'Account.parentId',
+                       'Account.isModify',
+                       'Account.isDeleted',
+                       'Account.mPassHash',
+                   ])
+            ->where(sprintf('Account.id IN (%s)', implode(', ', $placeholders)))
+            ->bindValues($binds);
+
+        $queryData = QueryData::build($query)
+                              ->setMapClassName(AccountHistoryModel::class)
+                              ->setOnErrorMessage(__u('Error while retrieving account\'s data'));
+
+        return $this->db->runQuery($queryData);
+    }
+
+    /**
+     * Returns all history entries for a given account id ordered newest first
+     *
+     * @return QueryResult<AccountHistoryModel>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getByAccountId(int $accountId): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(sprintf('%s AS Account', AccountHistoryModel::TABLE))
+            ->cols([
+                       'Account.id',
+                       'Account.accountId',
+                       'Account.name',
+                       'Account.categoryId',
+                       'Account.userId',
+                       'Account.clientId',
+                       'Account.userGroupId',
+                       'Account.userEditId',
+                       'Account.login',
+                       'Account.url',
+                       'Account.pass',
+                       'Account.`key`',
+                       'Account.notes',
+                       'Account.countView',
+                       'Account.countDecrypt',
+                       'Account.dateAdd',
+                       'Account.dateEdit',
+                       'Account.otherUserEdit',
+                       'Account.otherUserGroupEdit',
+                       'Account.isPrivate',
+                       'Account.isPrivateGroup',
+                       'Account.passDate',
+                       'Account.passDateChange',
+                       'Account.parentId',
+                       'Account.isModify',
+                       'Account.isDeleted',
+                       'Account.mPassHash',
+                   ])
+            ->where('Account.accountId = :accountId')
+            ->bindValues(['accountId' => $accountId])
+            ->orderBy(['Account.id DESC']);
+
+        $queryData = QueryData::build($query)
+                              ->setMapClassName(AccountHistoryModel::class)
+                              ->setOnErrorMessage(__u('Error while retrieving account\'s data'));
+
+        return $this->db->runQuery($queryData);
+    }
+
+    /**
+     * Reassigns history rows matching oldAccountId and dateAdd to a new account id
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function reassignAccountId(int $oldAccountId, int $newAccountId, string $dateAdd): int
+    {
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table(AccountHistoryModel::TABLE)
+            ->cols(['accountId' => $newAccountId])
+            ->where('accountId = :oldAccountId')
+            ->where('dateAdd = :dateAdd')
+            ->bindValues([
+                             'oldAccountId' => $oldAccountId,
+                             'dateAdd' => $dateAdd,
+                         ]);
+
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating history'));
+
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -264,14 +424,29 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
      */
     public function deleteByIdBatch(array $ids): int
     {
-        if (count($ids) === 0) {
+        $normalizedIds = array_values(array_unique(array_filter(
+            array_map('intval', $ids),
+            static fn(int $id): bool => $id > 0
+        )));
+
+        if ($normalizedIds === []) {
             return 0;
+        }
+
+        $placeholders = [];
+        $binds = [];
+
+        foreach ($normalizedIds as $index => $id) {
+            $param = 'id' . $index;
+            $placeholders[] = ':' . $param;
+            $binds[$param] = $id;
         }
 
         $query = $this->queryFactory
             ->newDelete()
             ->from(AccountHistoryModel::TABLE)
-            ->where('id IN (:ids)', ['ids' => $ids]);
+            ->where(sprintf('id IN (%s)', implode(', ', $placeholders)))
+            ->bindValues($binds);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 
@@ -289,14 +464,29 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
      */
     public function deleteByAccountIdBatch(array $ids): int
     {
-        if (count($ids) === 0) {
+        $normalizedIds = array_values(array_unique(array_filter(
+            array_map('intval', $ids),
+            static fn(int $id): bool => $id > 0
+        )));
+
+        if ($normalizedIds === []) {
             return 0;
+        }
+
+        $placeholders = [];
+        $binds = [];
+
+        foreach ($normalizedIds as $index => $id) {
+            $param = 'id' . $index;
+            $placeholders[] = ':' . $param;
+            $binds[$param] = $id;
         }
 
         $query = $this->queryFactory
             ->newDelete()
             ->from(AccountHistoryModel::TABLE)
-            ->where('accountId IN (:accountIds)', ['accountIds' => $ids]);
+            ->where(sprintf('accountId IN (%s)', implode(', ', $placeholders)))
+            ->bindValues($binds);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the accounts'));
 
@@ -314,6 +504,9 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult
     {
+        $userData = $this->context->getUserData();
+        $isAdmin = $userData->isAdminApp || $userData->isAdminAcc;
+
         $query = $this->queryFactory
             ->newSelect()
             ->from(sprintf('%s AS Account', AccountHistoryModel::TABLE))
@@ -328,21 +521,69 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                    ])
             ->join('INNER', 'Category', 'Account.categoryId = Category.id')
             ->join('INNER', 'Client', 'Account.clientId = Client.id')
+            ->join('LEFT', sprintf('%s AS LiveAcc', AccountModel::TABLE), 'LiveAcc.id = Account.accountId')
             ->orderBy(['IFNULL(Account.dateEdit,Account.dateAdd) DESC', 'clientName ASC', 'Account.id DESC'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
+        $bindValues = [];
+
+        if ($isAdmin) {
+            $liveBranch = 'LiveAcc.id IS NOT NULL';
+            $deletedBranch = '(LiveAcc.id IS NULL'
+                . ' AND (SELECT COUNT(*) FROM AccountHistory DelCnt WHERE DelCnt.accountId = Account.accountId AND DelCnt.isDeleted = 1) = 1'
+                . ' AND EXISTS (SELECT 1 FROM AccountHistory DelSnap WHERE DelSnap.accountId = Account.accountId AND DelSnap.isDeleted = 1'
+                . ' AND (DelSnap.parentId > 0 OR (DelSnap.pass IS NOT NULL AND BIT_LENGTH(DelSnap.pass) > 0 AND DelSnap.key IS NOT NULL AND BIT_LENGTH(DelSnap.key) > 0))))';
+        } else {
+            $liveBranch = '(LiveAcc.id IS NOT NULL'
+                . ' AND (LiveAcc.isPrivate IS NULL OR LiveAcc.isPrivate = 0 OR (LiveAcc.isPrivate = 1 AND LiveAcc.userId = :shLivePrivUserId))'
+                . ' AND (LiveAcc.isPrivateGroup IS NULL OR LiveAcc.isPrivateGroup = 0 OR (LiveAcc.isPrivateGroup = 1 AND LiveAcc.userGroupId = :shLivePrivGrpId))'
+                . ' AND (LiveAcc.userId = :shLiveOwnerId'
+                . ' OR LiveAcc.userGroupId = :shLiveGroupId'
+                . ' OR LiveAcc.id IN (SELECT accountId FROM AccountToUser WHERE accountId = LiveAcc.id AND userId = :shLiveAtuUserId'
+                . ' UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = LiveAcc.id AND userGroupId = :shLiveAtugGroupId)'
+                . ' OR LiveAcc.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = LiveAcc.userGroupId AND userId = :shLiveUtugUserId)'
+                . ' OR EXISTS (SELECT 1 FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = LiveAcc.id AND uug.userId = :shLiveFullGrpUserId)))';
+
+            $deletedBranch = '(LiveAcc.id IS NULL'
+                . ' AND (SELECT COUNT(*) FROM AccountHistory DelCnt WHERE DelCnt.accountId = Account.accountId AND DelCnt.isDeleted = 1) = 1'
+                . ' AND EXISTS (SELECT 1 FROM AccountHistory DelSnap WHERE DelSnap.accountId = Account.accountId AND DelSnap.isDeleted = 1'
+                . ' AND (DelSnap.parentId > 0 OR (DelSnap.pass IS NOT NULL AND BIT_LENGTH(DelSnap.pass) > 0 AND DelSnap.key IS NOT NULL AND BIT_LENGTH(DelSnap.key) > 0))'
+                . ' AND (DelSnap.isPrivate IS NULL OR DelSnap.isPrivate = 0 OR (DelSnap.isPrivate = 1 AND DelSnap.userId = :shDelPrivUserId))'
+                . ' AND (DelSnap.isPrivateGroup IS NULL OR DelSnap.isPrivateGroup = 0 OR (DelSnap.isPrivateGroup = 1 AND DelSnap.userGroupId = :shDelPrivGrpId))'
+                . ' AND (DelSnap.userId = :shDelOwnerId'
+                . ' OR DelSnap.userGroupId = :shDelGroupId'
+                . ' OR DelSnap.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = DelSnap.userGroupId AND userId = :shDelUtugUserId))))';
+
+            $bindValues = [
+                'shLivePrivUserId' => $userData->id,
+                'shLivePrivGrpId' => $userData->userGroupId,
+                'shLiveOwnerId' => $userData->id,
+                'shLiveGroupId' => $userData->userGroupId,
+                'shLiveAtuUserId' => $userData->id,
+                'shLiveAtugGroupId' => $userData->userGroupId,
+                'shLiveUtugUserId' => $userData->id,
+                'shLiveFullGrpUserId' => $userData->id,
+                'shDelPrivUserId' => $userData->id,
+                'shDelPrivGrpId' => $userData->userGroupId,
+                'shDelOwnerId' => $userData->id,
+                'shDelGroupId' => $userData->userGroupId,
+                'shDelUtugUserId' => $userData->id,
+            ];
+        }
+
+        $query->where(sprintf('(%s OR %s)', $liveBranch, $deletedBranch));
+
         if (!empty($itemSearchData->getSeachString())) {
-            $query
-                ->where('Account.name LIKE :name')
-                ->orWhere('Client.name LIKE :clientName');
+            $query->where('(Account.name LIKE :name OR Client.name LIKE :clientName)');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
+            $bindValues['name'] = $search;
+            $bindValues['clientName'] = $search;
+        }
 
-            $query->bindValues([
-                                   'name' => $search,
-                                   'clientName' => $search,
-                               ]);
+        if ($bindValues !== []) {
+            $query->bindValues($bindValues);
         }
 
         return $this->db->runQuery(QueryData::build($query), true);

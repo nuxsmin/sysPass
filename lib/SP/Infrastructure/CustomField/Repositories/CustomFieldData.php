@@ -134,16 +134,30 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
      */
     public function deleteBatch(array $itemIds, int $moduleId): QueryResult
     {
-        if (count($itemIds) === 0) {
+        $normalizedIds = array_values(array_unique(array_filter(
+            array_map('intval', $itemIds),
+            static fn(int $id): bool => $id > 0
+        )));
+
+        if ($normalizedIds === []) {
             return new QueryResult();
+        }
+
+        $placeholders = [];
+        $binds = ['moduleId' => $moduleId];
+
+        foreach ($normalizedIds as $index => $id) {
+            $param = 'id' . $index;
+            $placeholders[] = ':' . $param;
+            $binds[$param] = $id;
         }
 
         $query = $this->queryFactory
             ->newDelete()
             ->from(CustomFieldDataModel::TABLE)
-            ->where('itemId IN (:itemIds)')
+            ->where(sprintf('itemId IN (%s)', implode(', ', $placeholders)))
             ->where('moduleId = :moduleId')
-            ->bindValues(['itemIds' => $itemIds, 'moduleId' => $moduleId]);
+            ->bindValues($binds);
 
         return $this->db->runQuery(QueryData::build($query));
     }
@@ -163,6 +177,30 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
             ->where('itemId = :itemId')
             ->where('moduleId = :moduleId')
             ->bindValues(['itemId' => $itemId, 'moduleId' => $moduleId]);
+
+        return $this->db->runQuery(QueryData::build($query));
+    }
+
+    /**
+     * Delete custom field data for a specific item, module, and definition
+     *
+     * @return QueryResult<T>
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function deleteByDefinition(int $itemId, int $moduleId, int $definitionId): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(CustomFieldDataModel::TABLE)
+            ->where('itemId = :itemId')
+            ->where('moduleId = :moduleId')
+            ->where('definitionId = :definitionId')
+            ->bindValues([
+                'itemId' => $itemId,
+                'moduleId' => $moduleId,
+                'definitionId' => $definitionId,
+            ]);
 
         return $this->db->runQuery(QueryData::build($query));
     }
@@ -247,5 +285,51 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
                          ]);
 
         return $this->db->runQuery(QueryData::build($query));
+    }
+
+    /**
+     * Copy custom field data rows from a source module/item to a destination module/item.
+     *
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function copyByModuleAndItem(int $srcModuleId, int $srcItemId, int $dstModuleId, int $dstItemId): int
+    {
+        $select = $this->queryFactory
+            ->newSelect()
+            ->from(CustomFieldDataModel::TABLE)
+            ->cols(['definitionId', 'data', '`key`'])
+            ->where('moduleId = :srcModuleId')
+            ->where('itemId = :srcItemId')
+            ->bindValues([
+                'srcModuleId' => $srcModuleId,
+                'srcItemId' => $srcItemId,
+            ]);
+
+        $rows = $this->db->runQuery(QueryData::build($select))->getDataAsArray();
+
+        if ($rows === []) {
+            return 0;
+        }
+
+        $insert = $this->queryFactory
+            ->newInsert()
+            ->into(CustomFieldDataModel::TABLE);
+
+        $insertRows = [];
+
+        foreach ($rows as $row) {
+            $insertRows[] = [
+                'itemId' => $dstItemId,
+                'moduleId' => $dstModuleId,
+                'definitionId' => (int)$row['definitionId'],
+                'data' => $row['data'],
+                'key' => $row['key'],
+            ];
+        }
+
+        $insert->addRows($insertRows);
+
+        return $this->db->runQuery(QueryData::build($insert))->getAffectedNumRows();
     }
 }

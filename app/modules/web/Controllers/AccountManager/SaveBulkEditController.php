@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers\AccountManager;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
-use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountPresetService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Auth\Services\AuthException;
@@ -61,10 +60,9 @@ final class SaveBulkEditController extends ControllerBase
      * @throws SessionTimeout
      */
     public function __construct(
-        WebControllerHelper                    $webControllerHelper,
-        private readonly AccountService        $accountService,
-        private readonly AccountHistoryService $accountHistoryService,
-        AccountPresetService                   $accountPresetService
+        WebControllerHelper             $webControllerHelper,
+        private readonly AccountService $accountService,
+        AccountPresetService            $accountPresetService
     ) {
         parent::__construct($webControllerHelper);
 
@@ -86,27 +84,40 @@ final class SaveBulkEditController extends ControllerBase
             return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
-        $itemsId = Util::itemsIdAdapter($this->request->analyzeString('itemsId'));
+        $itemsId = array_values(array_unique(array_filter(
+            Util::itemsIdAdapter($this->request->analyzeString('itemsId')),
+            static fn(int $id): bool => $id > 0
+        )));
+
+        if ($itemsId === []) {
+            return ActionResponse::error(__u('You don\'t have permission to access this account'));
+        }
+
+        $editableIds = [];
+        $skippedCount = 0;
 
         foreach ($itemsId as $itemId) {
-            if (!$this->accountService->isVisible($itemId)) {
-                return ActionResponse::error(__u('You don\'t have permission to access this account'));
+            if ($this->accountService->canEdit($itemId)) {
+                $editableIds[] = $itemId;
+            } else {
+                $skippedCount++;
             }
         }
 
+        if ($editableIds === []) {
+            return ActionResponse::error(__u('You don\'t have permission to access this account'));
+        }
+
         $accountBulkDto = new AccountUpdateBulkDto(
-            $itemsId,
+            $editableIds,
             array_map(
                 fn(int $id) => $this->accountForm
                     ->validateFor(AclActionsInterface::ACCOUNTMGR_BULK_EDIT, $id)
                     ->getItemData(),
-                $itemsId
-            )
+                $editableIds
+            ),
+            $this->request->analyzeBool('delete_history', false)
         );
-
-        if ($this->request->analyzeBool('delete_history', false)) {
-            $this->accountHistoryService->deleteByAccountIdBatch($itemsId);
-        }
 
         $this->accountService->updateBulk($accountBulkDto);
 
@@ -114,6 +125,10 @@ final class SaveBulkEditController extends ControllerBase
             'edit.account.bulk',
             new Event($this, EventMessage::build(__u('Accounts updated')))
         );
+
+        if ($skippedCount > 0) {
+            return ActionResponse::warning(__u('Accounts updated'));
+        }
 
         return ActionResponse::ok(__u('Accounts updated'));
     }

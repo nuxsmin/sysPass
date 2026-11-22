@@ -173,6 +173,72 @@ final class AccountDbTest extends DatabaseRepositoryTestCase
         self::assertSame(0, $this->countRowsForAccount('AccountToFavorite', $id));
     }
 
+    #[Test]
+    public function getChildIdsByParentIdReturnsLinkedChildren(): void
+    {
+        $parentId = $this->account->create($this->buildAccountModel())->getLastId();
+        $childA = $this->account->create($this->buildAccountModel()->mutate(['name' => 'Child A', 'parentId' => $parentId]))->getLastId();
+        $childB = $this->account->create($this->buildAccountModel()->mutate(['name' => 'Child B', 'parentId' => $parentId]))->getLastId();
+
+        $childIds = $this->account->getChildIdsByParentId($parentId);
+        sort($childIds);
+
+        self::assertSame([$childA, $childB], $childIds);
+        self::assertSame([], $this->account->getChildIdsByParentId($childA));
+    }
+
+    #[Test]
+    public function restoreModifiedCreateRemovedUpdateBulkDeleteBatchAndPasswordHistoryWork(): void
+    {
+        $id = $this->account->create($this->buildAccountModel())->getLastId();
+
+        $restoredModel = new AccountModel([
+            'name' => 'Restored Repo Name',
+            'login' => 'restored_login',
+            'url' => 'https://restored.example.test',
+            'notes' => 'restored notes',
+            'clientId' => 2,
+            'categoryId' => 2,
+            'pass' => 'restored_enc_pass',
+            'key' => 'restored_enc_key',
+            'otherUserEdit' => 0,
+            'otherUserGroupEdit' => 0,
+            'isPrivate' => 0,
+            'isPrivateGroup' => 0,
+            'userId' => 3,
+            'userGroupId' => 2,
+            'userEditId' => 3,
+            'passDateChange' => 0,
+            'parentId' => 0,
+        ]);
+        self::assertSame(1, $this->account->restoreModified($id, $restoredModel)->getAffectedNumRows());
+        self::assertSame('Restored Repo Name', $this->account->getById($id)->getData(AccountModel::class)->getName());
+
+        $bulkModel = new AccountModel(['clientId' => 3, 'userEditId' => 1]);
+        self::assertSame(1, $this->account->updateBulk($id, $bulkModel, false, false)->getAffectedNumRows());
+        self::assertSame(3, $this->account->getById($id)->getData(AccountModel::class)->getClientId());
+
+        self::assertSame(1, $this->account->deleteByIdBatch([$id])->getAffectedNumRows());
+        self::assertSame(0, $this->account->getById($id)->getNumRows());
+
+        // createRemoved preserves explicit ID when supplied
+        $removedWithId = $this->buildAccountModel()->mutate([
+            'id' => 9876,
+            'name' => 'Removed Explicit ID',
+            'dateAdd' => '2026-01-01 00:00:00',
+            'passDate' => 1700000000,
+            'countView' => 0,
+            'countDecrypt' => 0,
+        ]);
+        self::assertSame(1, $this->account->createRemoved($removedWithId)->getAffectedNumRows());
+        self::assertSame('Removed Explicit ID', $this->account->getById(9876)->getData(AccountModel::class)->getName());
+
+        // getPasswordHistoryForId matches AccountHistory.id (multi-history safe)
+        $histPass = $this->account->getPasswordHistoryForId(5);
+        self::assertSame(1, $histPass->getNumRows());
+        self::assertSame(5, $histPass->getData(\SP\Domain\Account\Adapters\AccountPassItemWithIdAndName::class)->getId());
+    }
+
     private function buildAccountModel(): AccountModel
     {
         return new AccountModel([

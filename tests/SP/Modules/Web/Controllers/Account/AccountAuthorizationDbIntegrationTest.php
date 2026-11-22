@@ -63,8 +63,20 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
     private const MASTER_PASS = '12345678900';
     private const DENIED_ACCOUNT = "You don't have permission to access this account";
 
+    protected function getConfigData(): array
+    {
+        return array_merge(
+            parent::getConfigData(),
+            [
+                'isPublinksEnabled' => true,
+                'getPublinksMaxTime' => 600,
+                'getPublinksMaxViews' => 3,
+            ]
+        );
+    }
+
     #[Test]
-    public function readOnlyAccountToUserAndGroupAreBlockedFromEditFormButCanMutateViaSaveEndpoints(): void
+    public function readOnlyAccountToUserAndGroupAreDeniedOnEditFormAndAllSaveMutations(): void
     {
         $pdo = getDbHandler()->getConnection();
 
@@ -85,7 +97,6 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
         $pdo->prepare('INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit) VALUES (?, ?, 0)')
             ->execute([$groupAccountId, 5]);
 
-        // Seed a history row for userAccountId to characterize saveEditRestore authorization vs persistence
         $historyId = $this->seedAccountHistory($pdo, $userAccountId, 'Admin RO History Snapshot', 1, 1);
 
         // 1. View form renders (AccountAcl resultView=true), while Edit and Delete GET forms are denied (resultEdit=false)
@@ -102,8 +113,7 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
         $editFormGroupRes = $this->dispatchAsUser('get', 'account/edit/' . $groupAccountId, $roUser, $profile);
         self::assertStringContainsString(self::DENIED_ACCOUNT, $editFormGroupRes['body']);
 
-        // 2. Current runtime: SaveEdit / SaveEditPass / SaveDelete only check profile ACL + isVisible() (AccountFilter),
-        //    which ignores AccountToUser.isEdit=0 and AccountToUserGroup.isEdit=0!
+        // 2. SaveEdit / SaveEditPass / SaveEditRestore / SaveDelete must also deny read-only grants
         $saveEditUser = $this->dispatchAsUser(
             'post',
             'account/saveEdit/' . $userAccountId,
@@ -120,9 +130,9 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
                 'notes' => 'mutated notes',
             ]
         );
-        $this->assertJsonOk($saveEditUser, 'Account updated');
+        $this->assertJsonDenied($saveEditUser, self::DENIED_ACCOUNT);
         self::assertSame(
-            'Mutated By RO User',
+            'Admin RO User Target',
             $this->fetchValue('SELECT name FROM Account WHERE id = ' . $userAccountId)
         );
 
@@ -142,9 +152,9 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
                 'notes' => 'mutated notes',
             ]
         );
-        $this->assertJsonOk($saveEditGroup, 'Account updated');
+        $this->assertJsonDenied($saveEditGroup, self::DENIED_ACCOUNT);
         self::assertSame(
-            'Mutated By RO Group',
+            'Admin RO Group Target',
             $this->fetchValue('SELECT name FROM Account WHERE id = ' . $groupAccountId)
         );
 
@@ -161,28 +171,25 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
                 'owner_id' => '1',
             ]
         );
-        $this->assertJsonOk($saveEditPass, 'Password updated');
+        $this->assertJsonDenied($saveEditPass, self::DENIED_ACCOUNT);
         $newPassHash = sha1((string)$this->fetchValue('SELECT pass FROM Account WHERE id = ' . $userAccountId));
-        self::assertNotSame($oldPassHash, $newPassHash);
+        self::assertSame($oldPassHash, $newPassHash);
 
-        // SaveEditRestore bypasses isEdit=0 check as well and reaches restoreModified() -> fails on omitted pass/key
         $restoreRes = $this->dispatchAsUser(
             'post',
             'account/saveEditRestore/' . $historyId . '/' . $userAccountId,
             $roUser,
             $profile
         );
-        $restoreJson = $this->decodeJson($restoreRes['body']);
-        self::assertSame('ERROR', $restoreJson['status'] ?? null);
-        self::assertStringNotContainsString(self::DENIED_ACCOUNT, (string)($restoreJson['description'] ?? ''));
+        $this->assertJsonDenied($restoreRes, self::DENIED_ACCOUNT);
 
         $saveDeleteUser = $this->dispatchAsUser('post', 'account/saveDelete/' . $userAccountId, $roUser, $profile);
-        $this->assertJsonOk($saveDeleteUser, 'Account removed');
-        self::assertSame(0, (int)$this->fetchValue('SELECT COUNT(*) FROM Account WHERE id = ' . $userAccountId));
+        $this->assertJsonDenied($saveDeleteUser, self::DENIED_ACCOUNT);
+        self::assertSame(1, (int)$this->fetchValue('SELECT COUNT(*) FROM Account WHERE id = ' . $userAccountId));
 
         $saveDeleteGroup = $this->dispatchAsUser('post', 'account/saveDelete/' . $groupAccountId, $roUser, $profile);
-        $this->assertJsonOk($saveDeleteGroup, 'Account removed');
-        self::assertSame(0, (int)$this->fetchValue('SELECT COUNT(*) FROM Account WHERE id = ' . $groupAccountId));
+        $this->assertJsonDenied($saveDeleteGroup, self::DENIED_ACCOUNT);
+        self::assertSame(1, (int)$this->fetchValue('SELECT COUNT(*) FROM Account WHERE id = ' . $groupAccountId));
     }
 
     #[Test]
@@ -201,8 +208,7 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
         $pdo->prepare('INSERT INTO UserToUserGroup (userId, userGroupId) VALUES (?, ?)')
             ->execute([$user->id, 6]);
 
-        // Case 1: AccountToUser(isEdit=0) vs AccountToUserGroup(isEdit=1) + secondary UserToUserGroup(6) main group
-        // AccountAcl short-circuits on AccountToUser (resultEdit=false), while AccountFilter grants visibility.
+        // Case 1: Secondary UserToUserGroup(6) main group outranks AccountToUser(isEdit=0)
         $precAccountId = $this->seedAccount($pdo, 'Precedence Account', 1, 6, 'prec-login');
         $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')
             ->execute([$precAccountId, $user->id]);
@@ -214,7 +220,9 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
         self::assertStringContainsString('Precedence Account', $precView['body']);
 
         $precEditForm = $this->dispatchAsUser('get', 'account/edit/' . $precAccountId, $user, $profile);
-        self::assertStringContainsString(self::DENIED_ACCOUNT, $precEditForm['body']);
+        $this->assertResponseWasDispatched($precEditForm);
+        self::assertStringContainsString('Precedence Account', $precEditForm['body']);
+        self::assertStringContainsString('account/saveEdit', $precEditForm['body']);
 
         $precSaveEdit = $this->dispatchAsUser(
             'post',
@@ -316,7 +324,7 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
     }
 
     #[Test]
-    public function privateAndPrivateGroupBypassWebViewEditDeleteButEnforceFilterOnPassAndSaveMutations(): void
+    public function privateAndPrivateGroupEnforceOwnerAndPrimaryGroupAcrossAllWebEndpoints(): void
     {
         $pdo = getDbHandler()->getConnection();
 
@@ -351,21 +359,19 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
             ] as $accLabel => $acc) {
                 $id = $acc['id'];
 
-                // Web view/edit/delete load via unfiltered getByIdEnriched() + AccountAcl (which does NOT check isPrivate/isPrivateGroup)
                 $viewRes = $this->dispatchAsUser('get', 'account/view/' . $id, $actor, $profile);
-                $this->assertResponseWasDispatched($viewRes);
-                self::assertStringContainsString($acc['name'], $viewRes['body'], "$label viewing $accLabel");
-                self::assertStringContainsString($acc['login'], $viewRes['body'], "$label login leak on $accLabel");
+                self::assertStringContainsString(self::DENIED_ACCOUNT, $viewRes['body'], "$label viewing $accLabel");
+                self::assertStringNotContainsString($acc['name'], $viewRes['body'], "$label name leak on $accLabel");
+                self::assertStringNotContainsString($acc['login'], $viewRes['body'], "$label login leak on $accLabel");
 
                 $editRes = $this->dispatchAsUser('get', 'account/edit/' . $id, $actor, $profile);
-                $this->assertResponseWasDispatched($editRes);
-                self::assertStringContainsString($acc['name'], $editRes['body'], "$label edit form on $accLabel");
+                self::assertStringContainsString(self::DENIED_ACCOUNT, $editRes['body'], "$label edit form on $accLabel");
+                self::assertStringNotContainsString($acc['name'], $editRes['body'], "$label edit name leak on $accLabel");
 
                 $delRes = $this->dispatchAsUser('get', 'account/delete/' . $id, $actor, $profile);
-                $this->assertResponseWasDispatched($delRes);
-                self::assertStringContainsString($acc['name'], $delRes['body'], "$label delete form on $accLabel");
+                self::assertStringContainsString(self::DENIED_ACCOUNT, $delRes['body'], "$label delete form on $accLabel");
+                self::assertStringNotContainsString($acc['name'], $delRes['body'], "$label delete name leak on $accLabel");
 
-                // ViewPass / SaveEdit / SaveDelete use AccountFilter (enforcing isPrivate and primary-group isPrivateGroup)
                 $viewPassRes = $this->dispatchAsUser('post', 'account/viewPass/' . $id, $actor, $profile);
                 $viewPassJson = $this->decodeJson($viewPassRes['body']);
                 self::assertSame('ERROR', $viewPassJson['status'] ?? null, "$label viewPass on $accLabel");
@@ -394,12 +400,168 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
 
         // Verify same primary userGroupId user CAN access isPrivateGroup=1 without AccountToUser
         $samePrimaryGroupUser = $this->seedUser($pdo, 'web_same_primary_grp', 6, $profile);
+        $sameGrpView = $this->dispatchAsUser('get', 'account/view/' . $privGrpAccountId, $samePrimaryGroupUser, $profile);
+        $this->assertResponseWasDispatched($sameGrpView);
+        self::assertStringContainsString('Group6 PrivateGroup Secret', $sameGrpView['body']);
+
+        $sameGrpEdit = $this->dispatchAsUser('get', 'account/edit/' . $privGrpAccountId, $samePrimaryGroupUser, $profile);
+        $this->assertResponseWasDispatched($sameGrpEdit);
+        self::assertStringContainsString('account/saveEdit', $sameGrpEdit['body']);
+
         $sameGrpPass = $this->dispatchAsUser('post', 'account/viewPass/' . $privGrpAccountId, $samePrimaryGroupUser, $profile);
         $this->assertJsonOk($sameGrpPass);
     }
 
     #[Test]
-    public function globalSearchMatchesHiddenFieldsWhileRedactingRowDetailsAndExcludingPrivateAccounts(): void
+    public function multiSecondaryGroupGrantAllowsEditWhenSecondGrantHasEditFlag(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+
+        $profile = (new ProfileData())
+            ->setAccView(true)
+            ->setAccEdit(true);
+
+        $user = $this->seedUser($pdo, 'web_multi_grp_user', 5, $profile);
+        $pdo->prepare('INSERT INTO UserToUserGroup (userId, userGroupId) VALUES (?, ?)')
+            ->execute([$user->id, 4]);
+        $pdo->prepare('INSERT INTO UserToUserGroup (userId, userGroupId) VALUES (?, ?)')
+            ->execute([$user->id, 6]);
+
+        $accountId = $this->seedAccount($pdo, 'Multi Group Edit Target', 1, 1, 'multi-grp-login');
+        $pdo->prepare('INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit) VALUES (?, ?, 0)')
+            ->execute([$accountId, 4]);
+        $pdo->prepare('INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit) VALUES (?, ?, 1)')
+            ->execute([$accountId, 6]);
+
+        $editForm = $this->dispatchAsUser(
+            'get',
+            'account/edit/' . $accountId,
+            $user,
+            $profile,
+            [],
+            [],
+            ['isAccountFullGroupAccess' => true]
+        );
+        $this->assertResponseWasDispatched($editForm);
+        self::assertStringContainsString('account/saveEdit', $editForm['body']);
+
+        $saveEdit = $this->dispatchAsUser(
+            'post',
+            'account/saveEdit/' . $accountId,
+            $user,
+            $profile,
+            [],
+            [
+                'name' => 'Multi Group Updated',
+                'login' => 'multi-grp-login',
+                'client_id' => '1',
+                'category_id' => '1',
+            ],
+            ['isAccountFullGroupAccess' => true]
+        );
+        $this->assertJsonOk($saveEdit, 'Account updated');
+        self::assertSame('Multi Group Updated', $this->fetchValue('SELECT name FROM Account WHERE id = ' . $accountId));
+    }
+
+    #[Test]
+    public function nonOwnerAndAccAdminCannotChangePrivacyFlagsOnEdit(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+
+        $ownerProfile = (new ProfileData())
+            ->setAccView(true)
+            ->setAccEdit(true)
+            ->setAccPrivate(true)
+            ->setAccPrivateGroup(true);
+
+        $owner = $this->seedUser($pdo, 'web_priv_owner', 5, $ownerProfile);
+        $sharedEditor = $this->seedUser($pdo, 'web_priv_shared_editor', 6, $ownerProfile);
+        $accAdmin = $this->seedUser($pdo, 'web_priv_acc_admin', 6, $ownerProfile, false, true);
+
+        $accountId = $this->seedAccount($pdo, 'Privacy Lock Target', $owner->id, 5, 'priv-lock');
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 1)')
+            ->execute([$accountId, $sharedEditor->id]);
+
+        foreach ([$sharedEditor, $accAdmin] as $actor) {
+            $res = $this->dispatchAsUser(
+                'post',
+                'account/saveEdit/' . $accountId,
+                $actor,
+                $ownerProfile,
+                [],
+                [
+                    'name' => 'Should Not Set Private',
+                    'client_id' => '1',
+                    'category_id' => '1',
+                    'private_enabled' => '1',
+                ]
+            );
+            $json = $this->decodeJson($res['body']);
+            self::assertSame('ERROR', $json['status'] ?? null);
+            self::assertStringNotContainsString('Integrity constraint', $res['body']);
+            self::assertSame(0, (int)$this->fetchValue('SELECT isPrivate FROM Account WHERE id = ' . $accountId));
+            self::assertSame('Privacy Lock Target', $this->fetchValue('SELECT name FROM Account WHERE id = ' . $accountId));
+
+            $resGrp = $this->dispatchAsUser(
+                'post',
+                'account/saveEdit/' . $accountId,
+                $actor,
+                $ownerProfile,
+                [],
+                [
+                    'name' => 'Should Not Set PrivateGroup',
+                    'client_id' => '1',
+                    'category_id' => '1',
+                    'private_group_enabled' => '1',
+                ]
+            );
+            $jsonGrp = $this->decodeJson($resGrp['body']);
+            self::assertSame('ERROR', $jsonGrp['status'] ?? null);
+            self::assertStringNotContainsString('Integrity constraint', $resGrp['body']);
+            self::assertSame(0, (int)$this->fetchValue('SELECT isPrivateGroup FROM Account WHERE id = ' . $accountId));
+        }
+
+        // Owner CAN toggle isPrivate and isPrivateGroup on their own account
+        $ownerSetRes = $this->dispatchAsUser(
+            'post',
+            'account/saveEdit/' . $accountId,
+            $owner,
+            $ownerProfile,
+            [],
+            [
+                'name' => 'Owner Set Private',
+                'client_id' => '1',
+                'category_id' => '1',
+                'private_enabled' => '1',
+                'private_group_enabled' => '1',
+            ]
+        );
+        $this->assertJsonOk($ownerSetRes, 'Account updated');
+        self::assertSame(1, (int)$this->fetchValue('SELECT isPrivate FROM Account WHERE id = ' . $accountId));
+        self::assertSame(1, (int)$this->fetchValue('SELECT isPrivateGroup FROM Account WHERE id = ' . $accountId));
+
+        // Owner submitting with hidden false input ('0') clears isPrivate & isPrivateGroup
+        $ownerClearRes = $this->dispatchAsUser(
+            'post',
+            'account/saveEdit/' . $accountId,
+            $owner,
+            $ownerProfile,
+            [],
+            [
+                'name' => 'Owner Cleared Private',
+                'client_id' => '1',
+                'category_id' => '1',
+                'private_enabled' => '0',
+                'private_group_enabled' => '0',
+            ]
+        );
+        $this->assertJsonOk($ownerClearRes, 'Account updated');
+        self::assertSame(0, (int)$this->fetchValue('SELECT isPrivate FROM Account WHERE id = ' . $accountId));
+        self::assertSame(0, (int)$this->fetchValue('SELECT isPrivateGroup FROM Account WHERE id = ' . $accountId));
+    }
+
+    #[Test]
+    public function globalSearchMatchesNameClientCategoryWhileRedactingDetailsExcludingPrivateAndPreventingHiddenFilterLeaks(): void
     {
         $pdo = getDbHandler()->getConnection();
 
@@ -411,6 +573,22 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
 
         $searcher = $this->seedUser($pdo, 'web_gsearch_user', 5, $profile);
 
+        // Accessible account with tags, notes, login, url
+        $accessibleId = $this->seedAccount(
+            $pdo,
+            'Visible Search Account',
+            $searcher->id,
+            5,
+            'visible-secret-login',
+            0,
+            0,
+            'https://visible-secret.example.test',
+            'visible-secret-notes-token'
+        );
+        $pdo->prepare('INSERT INTO AccountToTag (accountId, tagId) VALUES (?, 2)')->execute([$accessibleId]);
+
+        // Inaccessible non-private account with parentId > 0, tag 1, file attachment, and expired password
+        $parentId = $this->seedAccount($pdo, 'Hidden Parent Source', 1, 1, 'hidden-parent-login');
         $nonPrivId = $this->seedAccount(
             $pdo,
             'Hidden Inaccessible Account',
@@ -420,9 +598,16 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
             0,
             0,
             'https://gsearch-secret.example.test',
-            'gsearch-secret-notes-token'
+            'gsearch-secret-notes-token',
+            'parent-secret-pass',
+            $parentId,
+            time() - 600
         );
         $pdo->prepare('INSERT INTO AccountToTag (accountId, tagId) VALUES (?, 1)')->execute([$nonPrivId]);
+        $pdo->prepare(
+            "INSERT INTO AccountFile (accountId, name, size, content, extension, type, thumb)
+             VALUES (?, 'secret-attachment.pdf', 4, 'test', 'pdf', 'application/pdf', '')"
+        )->execute([$nonPrivId]);
 
         $this->seedAccount(
             $pdo,
@@ -447,7 +632,8 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
             'gsearch-secret-notes-token'
         );
 
-        foreach (['gsearch-secret-notes-token', 'gsearch-secret-login', 'gsearch-secret.example.test'] as $term) {
+        // 1. Name, client:, category:, name_regex: match inaccessible non-private account, with strict redaction
+        foreach (['Hidden Inaccessible', 'client:Google', 'category:Web'] as $term) {
             $res = $this->dispatchAsUser(
                 'post',
                 'account/search',
@@ -468,29 +654,117 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
             $json = $this->assertJsonOk($res);
             $html = (string)($json['data']['html'] ?? '');
 
-            // Matches inaccessible non-private account on hidden login/url/notes
             self::assertStringContainsString('Hidden Inaccessible Account', $html, "Term: $term");
-            self::assertStringContainsString('Google', $html);
-            self::assertStringContainsString('Web', $html);
-            // Current runtime: AccountToTagRepository maps Simple::class which ItemDataTrait filters out (tags-box stays empty)
-            self::assertStringNotContainsString('data-tag-id="1"', $html);
-
-            // Redacts login, url, and view/viewPass action routes while rendering requestAccess
             self::assertStringNotContainsString('gsearch-secret-login', $html);
             self::assertStringNotContainsString('https://gsearch-secret.example.test', $html);
-            self::assertStringContainsString('data-action-route="account/requestAccess"', $html);
-            self::assertStringNotContainsString('data-action-route="account/view"', $html);
-            self::assertStringNotContainsString('data-action-route="account/viewPass"', $html);
-            self::assertStringNotContainsString('data-action-route="account/edit"', $html);
+            self::assertStringNotContainsString('data-parent-id="' . $parentId . '"', $html);
 
-            // Excludes isPrivate=1 and isPrivateGroup=1 accounts
+            $cards = explode('<div class="account-label round shadow">', $html);
+            $hiddenCard = null;
+            foreach ($cards as $card) {
+                if (str_contains($card, 'Hidden Inaccessible Account')) {
+                    $hiddenCard = $card;
+                    break;
+                }
+            }
+            self::assertNotNull($hiddenCard, "Missing card for Hidden Inaccessible Account on term: $term");
+            self::assertStringContainsString('Google', $hiddenCard);
+            self::assertStringContainsString('Web', $hiddenCard);
+            self::assertStringNotContainsString('data-tag-id="1"', $hiddenCard);
+            self::assertStringContainsString('data-action-route="account/requestAccess"', $hiddenCard);
+            self::assertStringNotContainsString('data-action-route="account/view"', $hiddenCard);
+            self::assertStringNotContainsString('data-action-route="account/viewPass"', $hiddenCard);
+            self::assertStringNotContainsString('data-action-route="account/edit"', $hiddenCard);
+
+            // Private / group-private excluded
             self::assertStringNotContainsString('Hidden Private Should Exclude', $html);
             self::assertStringNotContainsString('Hidden PrivateGroup Should Exclude', $html);
         }
+
+        // 2. Hidden-field text queries & sensitive SQL filters do NOT reveal inaccessible accounts
+        foreach ([
+            ['search' => 'gsearch-secret-notes-token'],
+            ['search' => 'gsearch-secret-login'],
+            ['search' => 'gsearch-secret.example.test'],
+            ['search' => 'file:secret-attachment.pdf'],
+            ['search' => 'owner:admin'],
+            ['search' => 'user:admin'],
+            ['search' => 'group:Admins'],
+            ['search' => 'maingroup:Admins'],
+            ['search' => 'is:expired'],
+            ['search' => 'Hidden Inaccessible', 'tags' => ['1']],
+        ] as $postOverrides) {
+            $res = $this->dispatchAsUser(
+                'post',
+                'account/search',
+                $searcher,
+                $profile,
+                [],
+                array_merge([
+                    'gsearch' => '1',
+                    'isAjax' => '1',
+                    'start' => '0',
+                    'skey' => '0',
+                    'sorder' => '0',
+                ], $postOverrides),
+                ['isGlobalSearch' => true]
+            );
+
+            $json = $this->assertJsonOk($res);
+            $html = (string)($json['data']['html'] ?? '');
+            self::assertStringNotContainsString(
+                'Hidden Inaccessible Account',
+                $html,
+                'Filter should not match inaccessible account: ' . json_encode($postOverrides)
+            );
+        }
+
+        // 3. Accessible account still matches hidden notes & tags in global search, and renders its tags
+        $visRes = $this->dispatchAsUser(
+            'post',
+            'account/search',
+            $searcher,
+            $profile,
+            [],
+            [
+                'search' => 'visible-secret-notes-token',
+                'tags' => ['2'],
+                'gsearch' => '1',
+                'isAjax' => '1',
+                'start' => '0',
+                'skey' => '3',
+                'sorder' => '0',
+            ],
+            ['isGlobalSearch' => true]
+        );
+        $visJson = $this->assertJsonOk($visRes);
+        $visHtml = (string)($visJson['data']['html'] ?? '');
+        self::assertStringContainsString('Visible Search Account', $visHtml);
+        self::assertStringContainsString('data-tag-id="2"', $visHtml);
+
+        // 4. Sorting by login (skey=3) or url (skey=4) in global search executes safely without SQL error
+        $sortRes = $this->dispatchAsUser(
+            'post',
+            'account/search',
+            $searcher,
+            $profile,
+            [],
+            [
+                'search' => 'Hidden Inaccessible',
+                'gsearch' => '1',
+                'isAjax' => '1',
+                'start' => '0',
+                'skey' => '3',
+                'sorder' => '0',
+            ],
+            ['isGlobalSearch' => true]
+        );
+        $sortJson = $this->assertJsonOk($sortRes);
+        self::assertStringContainsString('Hidden Inaccessible Account', (string)($sortJson['data']['html'] ?? ''));
     }
 
     #[Test]
-    public function linkedParentIdHasNoAuthorizationCheckAndViewPassDecryptsChildPasswordOnly(): void
+    public function linkedParentEnforcesAuthorizationInheritanceValidationAndRevokesPublicLinks(): void
     {
         $pdo = getDbHandler()->getConnection();
 
@@ -498,14 +772,83 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
             ->setAccAdd(true)
             ->setAccView(true)
             ->setAccViewPass(true)
-            ->setAccEdit(true);
+            ->setAccEdit(true)
+            ->setAccEditPass(true);
 
         $user = $this->seedUser($pdo, 'web_child_creator', 5, $profile);
 
-        // Inaccessible isPrivate=1 parent owned by admin (encrypted pass in fixture = decryptable by admin, not accessible to $user)
-        $privateParentId = $this->seedAccount($pdo, 'Private Parent Account', 1, 1, 'parent-login', 1, 0);
+        $privateParentId = $this->seedAccount($pdo, 'Private Parent Account', 1, 1, 'priv-parent-login', 1, 0);
+        $sharedParentId = $this->seedAccount(
+            $pdo,
+            'Shared Parent Account',
+            1,
+            1,
+            'shared-parent-login',
+            0,
+            0,
+            'https://parent.test',
+            'parent notes',
+            'parent-secret-pass'
+        );
+        $otherOwnedId = $this->seedAccount($pdo, 'Other Owned Account', $user->id, 5, 'other-owned-login');
 
-        // Non-admin user creates a child linked to inaccessible private parent without supplying password
+        // 1. Rejects creating child linked to inaccessible parent
+        $deniedCreate = $this->dispatchAsUser(
+            'post',
+            'account/saveCreate',
+            $user,
+            $profile,
+            [],
+            [
+                'name' => 'Denied Private Child',
+                'login' => 'child-login',
+                'client_id' => '1',
+                'category_id' => '1',
+                'parent_account_id' => (string)$privateParentId,
+            ]
+        );
+        $this->assertJsonDenied($deniedCreate, self::DENIED_ACCOUNT);
+
+        // 2. Rejects whitespace-only name and notes > 5000 chars
+        $blankNameRes = $this->dispatchAsUser(
+            'post',
+            'account/saveCreate',
+            $user,
+            $profile,
+            [],
+            [
+                'name' => "  \t  ",
+                'login' => 'blank-name',
+                'client_id' => '1',
+                'category_id' => '1',
+                'password' => 'valid-pass-1',
+                'password_repeat' => 'valid-pass-1',
+            ]
+        );
+        self::assertSame('ERROR', $this->decodeJson($blankNameRes['body'])['status'] ?? null);
+
+        $longNotesRes = $this->dispatchAsUser(
+            'post',
+            'account/saveCreate',
+            $user,
+            $profile,
+            [],
+            [
+                'name' => 'Long Notes',
+                'login' => 'long-notes',
+                'client_id' => '1',
+                'category_id' => '1',
+                'notes' => str_repeat('n', 5001),
+                'password' => 'valid-pass-1',
+                'password_repeat' => 'valid-pass-1',
+            ]
+        );
+        self::assertSame('ERROR', $this->decodeJson($longNotesRes['body'])['status'] ?? null);
+
+        // 3. Grant view access to sharedParentId -> passwordless linked create succeeds & trims padded name
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')
+            ->execute([$sharedParentId, $user->id]);
+
         $createRes = $this->dispatchAsUser(
             'post',
             'account/saveCreate',
@@ -513,11 +856,11 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
             $profile,
             [],
             [
-                'name' => 'Child Linked To Private Parent',
+                'name' => '  Child Linked Shared  ',
                 'login' => 'child-login',
                 'client_id' => '1',
                 'category_id' => '1',
-                'parent_account_id' => (string)$privateParentId,
+                'parent_account_id' => (string)$sharedParentId,
                 'password' => '',
                 'password_repeat' => '',
             ]
@@ -525,35 +868,227 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
         $createJson = $this->assertJsonOk($createRes, 'Account created');
         $childId = (int)($createJson['data']['itemId'] ?? 0);
         self::assertGreaterThan(0, $childId);
-        self::assertSame($privateParentId, (int)$this->fetchValue('SELECT parentId FROM Account WHERE id = ' . $childId));
+        self::assertSame('Child Linked Shared', $this->fetchValue('SELECT name FROM Account WHERE id = ' . $childId));
+        self::assertSame($sharedParentId, (int)$this->fetchValue('SELECT parentId FROM Account WHERE id = ' . $childId));
 
-        // Direct viewPass on the private parent itself is denied
-        $parentPassRes = $this->dispatchAsUser('post', 'account/viewPass/' . $privateParentId, $user, $profile);
-        $parentPassJson = $this->decodeJson($parentPassRes['body']);
-        self::assertSame('ERROR', $parentPassJson['status'] ?? null);
-
-        // viewPass/{child}/{parent} succeeds without checking $parentId access, sets Linked Account icon,
-        // and decrypts child's own password (empty), NOT parent's password
-        $childLinkedPassRes = $this->dispatchAsUser(
+        // 4. Rejects chained parent on create and cycle/self-link on edit
+        $chainedRes = $this->dispatchAsUser(
             'post',
-            'account/viewPass/' . $childId . '/' . $privateParentId,
+            'account/saveCreate',
             $user,
-            $profile
+            $profile,
+            [],
+            [
+                'name' => 'Grandchild Account',
+                'login' => 'grandchild-login',
+                'client_id' => '1',
+                'category_id' => '1',
+                'parent_account_id' => (string)$childId,
+            ]
         );
-        $childLinkedJson = $this->assertJsonOk($childLinkedPassRes);
-        $linkedHtml = (string)($childLinkedJson['data']['html'] ?? '');
-        self::assertStringContainsString('child-login', $linkedHtml);
-        self::assertStringContainsString('Linked Account', $linkedHtml);
-        self::assertStringNotContainsString('parent-secret-pass', $linkedHtml);
+        self::assertSame('ERROR', $this->decodeJson($chainedRes['body'])['status'] ?? null);
 
-        $childUnlinkedPassRes = $this->dispatchAsUser(
+        $selfLinkRes = $this->dispatchAsUser(
             'post',
-            'account/viewPass/' . $childId . '/0',
+            'account/saveEdit/' . $otherOwnedId,
             $user,
-            $profile
+            $profile,
+            [],
+            [
+                'name' => 'Other Owned Account',
+                'client_id' => '1',
+                'category_id' => '1',
+                'parent_account_id' => (string)$otherOwnedId,
+            ]
         );
-        $childUnlinkedJson = $this->assertJsonOk($childUnlinkedPassRes);
-        self::assertStringNotContainsString('Linked Account', (string)($childUnlinkedJson['data']['html'] ?? ''));
+        self::assertSame('ERROR', $this->decodeJson($selfLinkRes['body'])['status'] ?? null);
+
+        // Make user admin owner of sharedParentId momentarily? No, user cannot edit sharedParentId, so test cycle with user's own parent->child
+        $userParentId = $this->seedAccount($pdo, 'User Owned Parent', $user->id, 5, 'u-parent');
+        $userChildId = $this->seedAccount($pdo, 'User Owned Child', $user->id, 5, 'u-child', 0, 0, 'https://example.test', 'notes', 'p', $userParentId);
+        self::assertGreaterThan(0, $userChildId);
+        $cycleRes = $this->dispatchAsUser(
+            'post',
+            'account/saveEdit/' . $userParentId,
+            $user,
+            $profile,
+            [],
+            [
+                'name' => 'User Owned Parent',
+                'client_id' => '1',
+                'category_id' => '1',
+                'parent_account_id' => (string)$userChildId,
+            ]
+        );
+        self::assertSame('ERROR', $this->decodeJson($cycleRes['body'])['status'] ?? null);
+
+        // 5. viewPass & copyPass reveal inherited parent password regardless of URL parentId param
+        $childPassRes = $this->dispatchAsUser('post', 'account/viewPass/' . $childId . '/0', $user, $profile);
+        $childPassJson = $this->assertJsonOk($childPassRes);
+        $passHtml = (string)($childPassJson['data']['html'] ?? '');
+        self::assertStringContainsString('child-login', $passHtml);
+        self::assertStringContainsString('parent-secret-pass', $passHtml);
+        self::assertStringContainsString('Linked Account', $passHtml);
+
+        $spoofedParentPassRes = $this->dispatchAsUser('post', 'account/viewPass/' . $childId . '/999999', $user, $profile);
+        $spoofedJson = $this->assertJsonOk($spoofedParentPassRes);
+        self::assertStringContainsString('parent-secret-pass', (string)($spoofedJson['data']['html'] ?? ''));
+
+        $copyPassRes = $this->dispatchAsUser('post', 'account/copyPass/' . $childId, $user, $profile);
+        $copyJson = $this->assertJsonOk($copyPassRes);
+        self::assertSame('parent-secret-pass', $copyJson['data']['accpass'] ?? null);
+
+        // 6. Create PublicLink on linked child
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')
+            ->execute([$childId, $user->id]); // already owner, no-op or skip; grant publicLink ACL via profile override:
+        $linkProfile = (clone $profile)->setAccPublicLinks(true);
+        $createLinkRes = $this->dispatchAsUser(
+            'post',
+            'publicLink/saveCreateFromAccount/' . $childId . '/0',
+            $user,
+            $linkProfile
+        );
+        $this->assertJsonOk($createLinkRes);
+        $childLinkId = (int)$this->fetchValue('SELECT id FROM PublicLink WHERE itemId = ' . $childId);
+        $childLinkHash = (string)$this->fetchValue('SELECT hash FROM PublicLink WHERE id = ' . $childLinkId);
+        self::assertNotSame('', $childLinkHash);
+
+        // 7. Revoke user's access to parent -> viewPass, copyPass, publicLink/refresh fail closed,
+        //    while already issued account/viewLink/{hash} remains usable
+        $pdo->prepare('DELETE FROM AccountToUser WHERE accountId = ? AND userId = ?')
+            ->execute([$sharedParentId, $user->id]);
+
+        $lostViewPass = $this->dispatchAsUser('post', 'account/viewPass/' . $childId, $user, $profile);
+        self::assertSame('ERROR', $this->decodeJson($lostViewPass['body'])['status'] ?? null);
+        self::assertStringNotContainsString('parent-secret-pass', $lostViewPass['body']);
+
+        $lostCopyPass = $this->dispatchAsUser('post', 'account/copyPass/' . $childId, $user, $profile);
+        self::assertSame('ERROR', $this->decodeJson($lostCopyPass['body'])['status'] ?? null);
+        self::assertStringNotContainsString('parent-secret-pass', $lostCopyPass['body']);
+
+        $lostRefresh = $this->dispatchAsUser('post', 'publicLink/refresh/' . $childLinkId, $user, $linkProfile);
+        self::assertSame('ERROR', $this->decodeJson($lostRefresh['body'])['status'] ?? null);
+
+        $anonContext = self::createStub(SessionContext::class);
+        $anonContext->method('isLoggedIn')->willReturn(false);
+        $anonContext->method('getAuthCompleted')->willReturn(false);
+        $anonContext->method('getUserData')->willReturn(new UserDto());
+        $anonContext->method('getUserProfile')->willReturn(null);
+        $anonConfigData = self::createConfiguredStub(ConfigDataInterface::class, $this->getConfigData());
+        $anonConfigService = $this->createStub(ConfigFileService::class);
+        $anonConfigService->method('getConfigData')->willReturn($anonConfigData);
+
+        $anonLinkRes = $this->dispatch(
+            'get',
+            'account/viewLink/' . $childLinkHash,
+            [],
+            [],
+            [
+                Context::class => $anonContext,
+                ConfigFileService::class => $anonConfigService,
+                ConfigDataInterface::class => $anonConfigData,
+            ]
+        );
+        self::assertStringContainsString('parent-secret-pass', $anonLinkRes['body']);
+
+        // 8. Re-grant parent access & admin updates parent password -> child's revealed pass updates & child PublicLink is revoked
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')
+            ->execute([$sharedParentId, $user->id]);
+        $adminProfile = (new ProfileData())
+            ->setAccView(true)
+            ->setAccViewPass(true)
+            ->setAccEdit(true)
+            ->setAccEditPass(true);
+        $adminUser = UserDto::fromModel(UserDataGenerator::factory()->buildUserData()->mutate([
+            'id' => 1,
+            'userGroupId' => 1,
+            'isAdminApp' => true,
+            'isAdminAcc' => true,
+        ]));
+        $parentEditPassRes = $this->dispatchAsUser(
+            'post',
+            'account/saveEditPass/' . $sharedParentId,
+            $adminUser,
+            $adminProfile,
+            [],
+            [
+                'password' => 'parent-rotated-pass',
+                'password_repeat' => 'parent-rotated-pass',
+            ]
+        );
+        $this->assertJsonOk($parentEditPassRes);
+        self::assertSame(0, (int)$this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE itemId = ' . $childId));
+
+        $afterRotatePass = $this->dispatchAsUser('post', 'account/viewPass/' . $childId, $user, $profile);
+        $this->assertJsonOk($afterRotatePass);
+        self::assertStringContainsString('parent-rotated-pass', $afterRotatePass['body']);
+
+        // 9. Re-issue child PublicLink, then test unlink requirements & link revocation
+        $this->assertJsonOk(
+            $this->dispatchAsUser('post', 'publicLink/saveCreateFromAccount/' . $childId . '/0', $user, $linkProfile)
+        );
+        self::assertSame(1, (int)$this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE itemId = ' . $childId));
+
+        $noEditPassProfile = (clone $profile)->setAccEditPass(false);
+        $unlinkNoPerm = $this->dispatchAsUser(
+            'post',
+            'account/saveEdit/' . $childId,
+            $user,
+            $noEditPassProfile,
+            [],
+            [
+                'name' => 'Child Linked Shared',
+                'client_id' => '1',
+                'category_id' => '1',
+                'parent_account_id' => '0',
+                'password' => 'independent-pass',
+                'password_repeat' => 'independent-pass',
+            ]
+        );
+        self::assertSame('ERROR', $this->decodeJson($unlinkNoPerm['body'])['status'] ?? null);
+        self::assertSame($sharedParentId, (int)$this->fetchValue('SELECT parentId FROM Account WHERE id = ' . $childId));
+        self::assertSame(1, (int)$this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE itemId = ' . $childId));
+
+        $unlinkEmptyPass = $this->dispatchAsUser(
+            'post',
+            'account/saveEdit/' . $childId,
+            $user,
+            $profile,
+            [],
+            [
+                'name' => 'Child Linked Shared',
+                'client_id' => '1',
+                'category_id' => '1',
+                'parent_account_id' => '0',
+                'password' => '',
+                'password_repeat' => '',
+            ]
+        );
+        self::assertSame('ERROR', $this->decodeJson($unlinkEmptyPass['body'])['status'] ?? null);
+        self::assertSame($sharedParentId, (int)$this->fetchValue('SELECT parentId FROM Account WHERE id = ' . $childId));
+
+        $unlinkOk = $this->dispatchAsUser(
+            'post',
+            'account/saveEdit/' . $childId,
+            $user,
+            $profile,
+            [],
+            [
+                'name' => 'Child Unlinked',
+                'client_id' => '1',
+                'category_id' => '1',
+                'parent_account_id' => '0',
+                'password' => 'independent-pass',
+                'password_repeat' => 'independent-pass',
+            ]
+        );
+        $this->assertJsonOk($unlinkOk, 'Account updated');
+        self::assertSame(0, (int)$this->fetchValue('SELECT parentId FROM Account WHERE id = ' . $childId));
+        self::assertSame(0, (int)$this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE itemId = ' . $childId));
+
+        $independentPassRes = $this->dispatchAsUser('post', 'account/viewPass/' . $childId, $user, $profile);
+        $this->assertJsonOk($independentPassRes);
+        self::assertStringContainsString('independent-pass', $independentPassRes['body']);
     }
 
     /**
@@ -694,15 +1229,17 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
         int    $isPrivateGroup = 0,
         string $url = 'https://example.test',
         string $notes = 'synthetic notes',
-        string $plainPass = 'parent-secret-pass'
+        string $plainPass = 'parent-secret-pass',
+        int    $parentId = 0,
+        int    $passDateChange = 0
     ): int {
         $crypt = new Crypt();
         $key = $crypt->makeSecuredKey(self::MASTER_PASS);
         $encPass = $crypt->encrypt($plainPass, $key, self::MASTER_PASS);
 
         $stmt = $pdo->prepare(
-            'INSERT INTO Account (userGroupId, userId, userEditId, clientId, name, categoryId, login, url, pass, `key`, notes, dateAdd, isPrivate, isPrivateGroup, passDate, parentId)
-             VALUES (?, ?, ?, 1, ?, 1, ?, ?, ?, ?, ?, NOW(), ?, ?, UNIX_TIMESTAMP(), 0)'
+            'INSERT INTO Account (userGroupId, userId, userEditId, clientId, name, categoryId, login, url, pass, `key`, notes, dateAdd, isPrivate, isPrivateGroup, passDate, passDateChange, parentId)
+             VALUES (?, ?, ?, 1, ?, 1, ?, ?, ?, ?, ?, NOW(), ?, ?, UNIX_TIMESTAMP(), ?, ?)'
         );
         $stmt->execute([
             $userGroupId,
@@ -716,6 +1253,8 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
             $notes,
             $isPrivate,
             $isPrivateGroup,
+            $passDateChange,
+            $parentId,
         ]);
 
         return (int)$pdo->lastInsertId();

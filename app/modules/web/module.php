@@ -26,6 +26,8 @@ use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\Session;
 use SP\Core\Crypt\Csrf;
+use SP\Domain\Account\Ports\AccountHistoryRepository;
+use SP\Domain\Account\Ports\AccountRepository;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
@@ -36,6 +38,7 @@ use SP\Domain\Html\Ports\JsMinifyService;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountHistoryHelper;
 use SP\Modules\Web\Presenters\Helpers\Account\AccountSearchData;
 use SP\Modules\Web\Controllers\Resource\CssController;
 use SP\Modules\Web\Controllers\Resource\JsController;
@@ -68,6 +71,9 @@ return [
     SessionContext::class => get(Context::class),
     CsrfHandler::class => autowire(Csrf::class)
         ->constructorParameter('context', get(Context::class)),
+    AccountHistoryHelper::class => autowire(AccountHistoryHelper::class)
+        ->constructorParameter('accountRepository', get(AccountRepository::class))
+        ->constructorParameter('accountHistoryRepository', get(AccountHistoryRepository::class)),
     AccountSearchData::class => autowire(AccountSearchData::class)
         ->constructorParameter(
             'fileCache',

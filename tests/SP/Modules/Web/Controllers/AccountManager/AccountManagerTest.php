@@ -323,8 +323,8 @@ class AccountManagerTest extends IntegrationTestCase
             }
 
             /** @noinspection SqlWithoutWhere */
-            if (str_starts_with($statement, 'DELETE `Account`')) {
-                return new QueryResult([], 1);
+            if (str_starts_with($statement, 'DELETE FROM `Account`')) {
+                return new QueryResult([], 3);
             }
 
             if ($queryData->getMapClassName() === AccountView::class) {

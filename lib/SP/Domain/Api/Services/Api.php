@@ -361,7 +361,7 @@ final class Api extends Service implements ApiService
             return Filter::getArray($value);
         }
 
-        return null;
+        return $default;
     }
 
     /**

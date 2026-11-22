@@ -161,6 +161,10 @@ class AccountHistoryTest extends UnitaryTestCase
             'otherUserGroupEdit',
             'otherUserEdit',
             'isModify',
+            'customFields',
+            'userEditName',
+            'userEditLogin',
+            'mPassHash',
         ];
 
         $current = $this->accountHistory->getById($id);

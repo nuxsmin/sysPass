@@ -178,9 +178,18 @@ final class Account extends Service implements AccountService
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function isVisible(int $id): bool
+    public function isVisible(int $id, bool $useGlobalSearch = false): bool
     {
-        return $this->accountReader->isVisible($id);
+        return $this->accountReader->isVisible($id, $useGlobalSearch);
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function canEdit(int $id): bool
+    {
+        return $this->accountReader->canEdit($id);
     }
 
     /**

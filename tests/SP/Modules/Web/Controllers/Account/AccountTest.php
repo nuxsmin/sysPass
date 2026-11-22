@@ -48,6 +48,8 @@ use SP\Domain\Account\Models\AccountHistory;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Account\Models\PublicLink;
+use SP\Domain\Category\Models\Category;
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Adapters\SerializedPayloadRewriter;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Models\Simple;
@@ -64,6 +66,8 @@ use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
+use SP\Tests\Generators\CategoryGenerator;
+use SP\Tests\Generators\ClientGenerator;
 use SP\Tests\Generators\PublicLinkDataGenerator;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\InjectConfigParam;
@@ -109,7 +113,11 @@ class AccountTest extends IntegrationTestCase
     protected function getUserDataDto(): UserDto
     {
         $userPreferences = UserDataGenerator::factory()->buildUserPreferencesData()->mutate(['topNavbar' => true]);
-        return parent::getUserDataDto()->mutate(['preferences' => $userPreferences]);
+        return parent::getUserDataDto()->mutate([
+            'id' => self::$faker->numberBetween(1, 999),
+            'userGroupId' => self::$faker->numberBetween(1, 999),
+            'preferences' => $userPreferences,
+        ]);
     }
 
     protected function getUserProfile(): ProfileData
@@ -134,12 +142,17 @@ class AccountTest extends IntegrationTestCase
     #[InjectCrypt]
     public function viewPassHistory()
     {
+        $accountGenerator = AccountDataGenerator::factory();
+        $this->addDatabaseMapperResolver(
+            Account::class,
+            new QueryResult([$accountGenerator->buildAccount()->mutate(['id' => 1, 'parentId' => 0])])
+        );
         $this->addDatabaseMapperResolver(
             AccountPassItemWithIdAndName::class,
             new QueryResult([
                                 AccountPassItemWithIdAndName::buildFromSimpleModel(
-                                    AccountDataGenerator::factory()->buildAccountDataView()
-                                )
+                                    $accountGenerator->buildAccountDataView()
+                                )->mutate(['accountId' => 1, 'parentId' => 0])
                             ])
         );
 
@@ -174,7 +187,7 @@ class AccountTest extends IntegrationTestCase
             new QueryResult([
                                 AccountPassItemWithIdAndName::buildFromSimpleModel(
                                     AccountDataGenerator::factory()->buildAccountDataView()
-                                )
+                                )->mutate(['parentId' => 0])
                             ])
         );
 
@@ -299,10 +312,15 @@ class AccountTest extends IntegrationTestCase
                 'restoreModified',
                 [AclActionsInterface::ACCOUNT_EDIT],
             ],
-            'saveEditRestoreWithoutEditPass' => [
+            'saveEditRestoreWithoutViewHistory' => [
                 'account/saveEditRestore/1/100',
                 'restoreModified',
-                [AclActionsInterface::ACCOUNT_EDIT_PASS],
+                [AclActionsInterface::ACCOUNT_HISTORY_VIEW],
+            ],
+            'saveEditRestoreWithoutEditRestore' => [
+                'account/saveEditRestore/1/100',
+                'restoreModified',
+                [AclActionsInterface::ACCOUNT_EDIT_RESTORE],
             ],
         ];
     }
@@ -823,6 +841,8 @@ class AccountTest extends IntegrationTestCase
     {
         $history = AccountDataGenerator::factory()->buildAccountHistoryData()->mutate([
             'dateEdit' => null,
+            'isDeleted' => 1,
+            'parentId' => 0,
             'userName' => self::$faker->userName(),
             'userGroupName' => self::$faker->userName(),
             'userEditName' => self::$faker->userName(),
@@ -845,6 +865,8 @@ class AccountTest extends IntegrationTestCase
         $date = '2024-02-10 12:34:56';
         $history = AccountDataGenerator::factory()->buildAccountHistoryData()->mutate([
             'dateEdit' => $date,
+            'isDeleted' => 1,
+            'parentId' => 0,
             'userName' => self::$faker->userName(),
             'userGroupName' => self::$faker->userName(),
             'userEditName' => self::$faker->userName(),
@@ -902,6 +924,8 @@ class AccountTest extends IntegrationTestCase
         $accountHistory = AccountDataGenerator::factory()
                                               ->buildAccountHistoryData()
                                               ->mutate([
+                                                           'isDeleted' => 1,
+                                                           'parentId' => 0,
                                                            'userName' => self::$faker->userName(),
                                                            'userGroupName' => self::$faker->userName(),
                                                            'userEditName' => self::$faker->userName(),
@@ -1080,14 +1104,33 @@ class AccountTest extends IntegrationTestCase
     {
         $accountDataGenerator = AccountDataGenerator::factory();
 
+        $historyId = self::$faker->randomNumber(3);
+        $accountId = self::$faker->randomNumber(3);
+
+        $history = $accountDataGenerator->buildAccountHistoryData()->mutate([
+            'id' => $historyId,
+            'accountId' => $accountId,
+            'parentId' => 0,
+        ]);
+
         $this->addDatabaseMapperResolver(
             AccountHistory::class,
-            new QueryResult([$accountDataGenerator->buildAccountHistoryData()])
+            new QueryResult([$history])
         );
 
         $this->addDatabaseMapperResolver(
             Account::class,
-            new QueryResult([$accountDataGenerator->buildAccount()])
+            new QueryResult([$accountDataGenerator->buildAccount()->mutate(['id' => $accountId, 'parentId' => 0])])
+        );
+
+        $this->addDatabaseMapperResolver(
+            Client::class,
+            new QueryResult([ClientGenerator::factory()->buildClient()->mutate(['id' => $history->getClientId()])])
+        );
+
+        $this->addDatabaseMapperResolver(
+            Category::class,
+            new QueryResult([CategoryGenerator::factory()->buildCategory()->mutate(['id' => $history->getCategoryId()])])
         );
 
         $this->addDatabaseMapperResolver(
@@ -1101,9 +1144,6 @@ class AccountTest extends IntegrationTestCase
             'password' => $account->getPass(),
             'password_repeat' => $account->getPass(),
         ];
-
-        $historyId = self::$faker->randomNumber(3);
-        $accountId = self::$faker->randomNumber(3);
 
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest(
@@ -1181,9 +1221,14 @@ class AccountTest extends IntegrationTestCase
     {
         $accountDataGenerator = AccountDataGenerator::factory();
 
+        $existingAccount = $accountDataGenerator->buildAccount()->mutate([
+            'isPrivate' => 0,
+            'isPrivateGroup' => 0,
+        ]);
+
         $this->addDatabaseMapperResolver(
             Account::class,
-            new QueryResult([$accountDataGenerator->buildAccount()])
+            new QueryResult([$existingAccount])
         );
 
         $this->addDatabaseMapperResolver(
@@ -1191,7 +1236,29 @@ class AccountTest extends IntegrationTestCase
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );
 
-        $account = $accountDataGenerator->buildAccount();
+        $account = $accountDataGenerator->buildAccount()->mutate(['parentId' => 0]);
+
+        $this->addDatabaseMapperResolver(
+            \SP\Domain\Client\Models\Client::class,
+            new QueryResult([new \SP\Domain\Client\Models\Client(['id' => $account->getClientId()])])
+        );
+        $this->addDatabaseMapperResolver(
+            \SP\Domain\Category\Models\Category::class,
+            new QueryResult([new \SP\Domain\Category\Models\Category(['id' => $account->getCategoryId()])])
+        );
+        $this->addDatabaseMapperResolver(
+            \SP\Domain\User\Models\User::class,
+            new QueryResult([
+                new \SP\Domain\User\Models\User([
+                    'id' => $existingAccount->getUserId(),
+                    'userGroupId' => $existingAccount->getUserGroupId(),
+                ]),
+            ])
+        );
+        $this->addDatabaseMapperResolver(
+            \SP\Domain\User\Models\UserGroup::class,
+            new QueryResult([new \SP\Domain\User\Models\UserGroup(['id' => $existingAccount->getUserGroupId()])])
+        );
 
         $paramsPost = [
             'name' => $account->getName(),
@@ -1202,8 +1269,8 @@ class AccountTest extends IntegrationTestCase
             'password_repeat' => $account->getPass(),
             'owner_id' => $account->getUserId(),
             'notes' => $account->getNotes(),
-            'private_enabled' => $account->getIsPrivate(),
-            'private_group_enabled' => $account->getIsPrivateGroup(),
+            'private_enabled' => 0,
+            'private_group_enabled' => 0,
             'password_date_expire_unix' => $account->getPassDate(),
             'parent_account_id' => $account->getParentId(),
             'main_usergroup_id' => $account->getUserGroupId(),
@@ -1320,7 +1387,7 @@ class AccountTest extends IntegrationTestCase
             new QueryResult([
                                 AccountPassItemWithIdAndName::buildFromSimpleModel(
                                     AccountDataGenerator::factory()->buildAccountDataView()
-                                )
+                                )->mutate(['parentId' => 0])
                             ])
         );
 
@@ -1346,12 +1413,17 @@ class AccountTest extends IntegrationTestCase
     #[InjectCrypt]
     public function copyPassHistory()
     {
+        $accountGenerator = AccountDataGenerator::factory();
+        $this->addDatabaseMapperResolver(
+            Account::class,
+            new QueryResult([$accountGenerator->buildAccount()->mutate(['id' => 1, 'parentId' => 0])])
+        );
         $this->addDatabaseMapperResolver(
             AccountPassItemWithIdAndName::class,
             new QueryResult([
                                 AccountPassItemWithIdAndName::buildFromSimpleModel(
-                                    AccountDataGenerator::factory()->buildAccountDataView()
-                                )
+                                    $accountGenerator->buildAccountDataView()
+                                )->mutate(['accountId' => 1, 'parentId' => 0])
                             ])
         );
 
@@ -1564,7 +1636,29 @@ class AccountTest extends IntegrationTestCase
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );
 
-        $account = $accountDataGenerator->buildAccount();
+        $account = $accountDataGenerator->buildAccount()->mutate(['parentId' => 0]);
+
+        $this->addDatabaseMapperResolver(
+            \SP\Domain\Client\Models\Client::class,
+            new QueryResult([new \SP\Domain\Client\Models\Client(['id' => $account->getClientId()])])
+        );
+        $this->addDatabaseMapperResolver(
+            \SP\Domain\Category\Models\Category::class,
+            new QueryResult([new \SP\Domain\Category\Models\Category(['id' => $account->getCategoryId()])])
+        );
+        $this->addDatabaseMapperResolver(
+            \SP\Domain\User\Models\User::class,
+            new QueryResult([
+                new \SP\Domain\User\Models\User([
+                    'id' => $account->getUserId(),
+                    'userGroupId' => $account->getUserGroupId(),
+                ]),
+            ])
+        );
+        $this->addDatabaseMapperResolver(
+            \SP\Domain\User\Models\UserGroup::class,
+            new QueryResult([new \SP\Domain\User\Models\UserGroup(['id' => $account->getUserGroupId()])])
+        );
 
         $paramsPost = [
             'name' => $account->getName(),
@@ -1575,8 +1669,8 @@ class AccountTest extends IntegrationTestCase
             'password_repeat' => $account->getPass(),
             'owner_id' => $account->getUserId(),
             'notes' => $account->getNotes(),
-            'private_enabled' => $account->getIsPrivate(),
-            'private_group_enabled' => $account->getIsPrivateGroup(),
+            'private_enabled' => 0,
+            'private_group_enabled' => 0,
             'password_date_expire_unix' => $account->getPassDate(),
             'parent_account_id' => $account->getParentId(),
             'main_usergroup_id' => $account->getUserGroupId(),
@@ -1619,7 +1713,29 @@ class AccountTest extends IntegrationTestCase
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
         );
 
-        $account = $accountDataGenerator->buildAccount();
+        $account = $accountDataGenerator->buildAccount()->mutate(['parentId' => 0]);
+
+        $this->addDatabaseMapperResolver(
+            \SP\Domain\Client\Models\Client::class,
+            new QueryResult([new \SP\Domain\Client\Models\Client(['id' => $account->getClientId()])])
+        );
+        $this->addDatabaseMapperResolver(
+            \SP\Domain\Category\Models\Category::class,
+            new QueryResult([new \SP\Domain\Category\Models\Category(['id' => $account->getCategoryId()])])
+        );
+        $this->addDatabaseMapperResolver(
+            \SP\Domain\User\Models\User::class,
+            new QueryResult([
+                new \SP\Domain\User\Models\User([
+                    'id' => $account->getUserId(),
+                    'userGroupId' => $account->getUserGroupId(),
+                ]),
+            ])
+        );
+        $this->addDatabaseMapperResolver(
+            \SP\Domain\User\Models\UserGroup::class,
+            new QueryResult([new \SP\Domain\User\Models\UserGroup(['id' => $account->getUserGroupId()])])
+        );
 
         $paramsPost = [
             'name' => $account->getName(),
@@ -1630,8 +1746,8 @@ class AccountTest extends IntegrationTestCase
             'password_repeat' => $account->getPass(),
             'owner_id' => $account->getUserId(),
             'notes' => $account->getNotes(),
-            'private_enabled' => $account->getIsPrivate(),
-            'private_group_enabled' => $account->getIsPrivateGroup(),
+            'private_enabled' => 0,
+            'private_group_enabled' => 0,
             'password_date_expire_unix' => $account->getPassDate(),
             'parent_account_id' => $account->getParentId(),
             'main_usergroup_id' => $account->getUserGroupId(),
@@ -1815,7 +1931,7 @@ class AccountTest extends IntegrationTestCase
             '//div[@class="data-container"]//form[@name="frmaccount"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
-        self::assertCount(2, $filter);
+        self::assertCount(3, $filter);
     }
 
     /**

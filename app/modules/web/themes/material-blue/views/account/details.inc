@@ -50,7 +50,7 @@ use function SP\__;
                     echo __('Visits'); ?></div>
 
                 <?php
-                echo $accountView->countView . '(' . $accountView->countDecrypt . ')'; ?>
+                echo (int)($accountView->countView ?? 0) . '(' . (int)($accountView->countDecrypt ?? 0) . ')'; ?>
             </td>
         </tr>
         <tr>
@@ -78,7 +78,7 @@ use function SP\__;
                     printf(
                         '%s (%s)',
                         $accountView->dateEdit,
-                        htmlspecialchars($accountView->userEditName, ENT_QUOTES)
+                        htmlspecialchars((string)($accountView->userEditName ?? ''), ENT_QUOTES)
                     ); ?>
                 </td>
             </tr>
@@ -93,8 +93,8 @@ use function SP\__;
                     echo __('Owner'); ?></div>
 
                 <?php
-                echo htmlspecialchars($accountView->userName, ENT_QUOTES) ?: htmlspecialchars(
-                    $accountView->login,
+                echo htmlspecialchars((string)($accountView->userName ?? ''), ENT_QUOTES) ?: htmlspecialchars(
+                    (string)($accountView->login ?? ''),
                     ENT_QUOTES
                 ); ?>
             </td>
@@ -107,7 +107,7 @@ use function SP\__;
                     echo __('Main Group'); ?></div>
 
                 <?php
-                echo htmlspecialchars($accountView->userGroupName, ENT_QUOTES); ?>
+                echo htmlspecialchars((string)($accountView->userGroupName ?? ''), ENT_QUOTES); ?>
             </td>
         </tr>
 
@@ -132,8 +132,8 @@ use function SP\__;
                         echo __('Editor'); ?></div>
 
                     <?php
-                    echo htmlspecialchars($accountView->userEditName, ENT_QUOTES) ?: htmlspecialchars(
-                        $accountView->userEditLogin,
+                    echo htmlspecialchars((string)($accountView->userEditName ?? ''), ENT_QUOTES) ?: htmlspecialchars(
+                        (string)($accountView->userEditLogin ?? ''),
                         ENT_QUOTES
                     ); ?>
                 </td>

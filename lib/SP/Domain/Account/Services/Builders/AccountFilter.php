@@ -119,7 +119,60 @@ final readonly class AccountFilter implements AccountFilterBuilder
     ): bool {
         return !$userData->isAdminApp
                && !$userData->isAdminAcc
-               && !($this->configData->isGlobalSearch() && $useGlobalSearch && $userProfile->isAccGlobalSearch());
+               && !($this->configData->isGlobalSearch() && $useGlobalSearch && ($userProfile?->isAccGlobalSearch() ?? false));
+    }
+
+    public function isGlobalDiscoveryActive(bool $useGlobalSearch): bool
+    {
+        $userData = $this->context->getUserData();
+        $userProfile = $this->context->getUserProfile();
+
+        return !$userData->isAdminApp
+               && !$userData->isAdminAcc
+               && $this->configData->isGlobalSearch()
+               && $useGlobalSearch
+               && ($userProfile?->isAccGlobalSearch() ?? false);
+    }
+
+    /**
+     * @return array{sql: string, bindValues: array<string, mixed>}
+     */
+    public function buildVisibilityPredicate(string $prefix = 'vis'): array
+    {
+        $userData = $this->context->getUserData();
+
+        $userIdOwnerKey = $prefix . 'UserIdOwner';
+        $userGroupIdOwnerKey = $prefix . 'UserGroupIdOwner';
+        $userIdAccountUserKey = $prefix . 'UserIdAccountUser';
+        $userGroupIdAccountGroupKey = $prefix . 'UserGroupIdAccountGroup';
+        $userIdGroupMembershipKey = $prefix . 'UserIdGroupMembership';
+
+        $where = [
+            "Account.userId = :$userIdOwnerKey",
+            "Account.userGroupId = :$userGroupIdOwnerKey",
+            "Account.id IN (SELECT accountId FROM AccountToUser WHERE accountId = Account.id AND userId = :$userIdAccountUserKey UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = Account.id AND userGroupId = :$userGroupIdAccountGroupKey)",
+            "Account.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = :$userIdGroupMembershipKey)",
+        ];
+
+        $bindValues = [
+            $userIdOwnerKey => $userData->id,
+            $userGroupIdOwnerKey => $userData->userGroupId,
+            $userIdAccountUserKey => $userData->id,
+            $userGroupIdAccountGroupKey => $userData->userGroupId,
+            $userIdGroupMembershipKey => $userData->id,
+        ];
+
+        if ($this->configData->isAccountFullGroupAccess()) {
+            $userIdFullGroupKey = $prefix . 'UserIdFullGroup';
+            $where[] =
+                "Account.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = Account.id AND uug.userId = :$userIdFullGroupKey LIMIT 1)";
+            $bindValues[$userIdFullGroupKey] = $userData->id;
+        }
+
+        return [
+            'sql' => sprintf('(%s)', implode(sprintf(' %s ', AccountSearchConstants::FILTER_CHAIN_OR), $where)),
+            'bindValues' => $bindValues,
+        ];
     }
 
     /**

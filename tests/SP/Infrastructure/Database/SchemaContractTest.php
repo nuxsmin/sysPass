@@ -161,6 +161,7 @@ final class SchemaContractTest extends DatabaseRepositoryTestCase
      * @var array<string, string[]>
      */
     private const NON_COLUMN_PROPERTIES = [
+        'SP\Domain\Account\Models\AccountHistory' => ['userEditLogin', 'userEditName', 'userGroupName', 'userName'],
         'SP\Domain\Account\Models\File' => ['accountName', 'clientName'],
         'SP\Domain\Auth\Models\AuthToken' => ['name', 'login', 'noExpiry'],
         'SP\Domain\ItemPreset\Models\ItemPreset' => ['score', 'userName', 'userProfileName', 'userGroupName'],
@@ -176,9 +177,6 @@ final class SchemaContractTest extends DatabaseRepositoryTestCase
      * @var array<string, array<string, string>>
      */
     private const UNMODELLED_COLUMNS = [
-        'AccountHistory' => [
-            'mPassHash' => 'Supplied from AccountHistoryCreateDto::getMasterPassHash() on every create.',
-        ],
         'AccountToUser' => [
             'accountId' => 'Raw array insert; no AccountToUser model properties.',
             'userId' => 'Raw array insert; no AccountToUser model properties.',

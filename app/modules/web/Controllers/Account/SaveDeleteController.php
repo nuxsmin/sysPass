@@ -68,7 +68,7 @@ final class SaveDeleteController extends AccountControllerBase
             return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
-        if (!$this->accountService->isVisible($id)) {
+        if (!$this->accountService->canEdit($id)) {
             return ActionResponse::error(__u('You don\'t have permission to access this account'));
         }
 
@@ -85,8 +85,6 @@ final class SaveDeleteController extends AccountControllerBase
                             ->addDetail(__u('Client'), $accountDetails->getClientName())
             )
         );
-
-        $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $id, $this->customFieldService);
 
         return ActionResponse::ok(__u('Account removed'));
     }

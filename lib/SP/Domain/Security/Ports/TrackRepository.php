@@ -85,4 +85,12 @@ interface TrackRepository
      * @return QueryResult<T>
      */
     public function search(ItemSearchDto $itemSearchData, int $time): QueryResult;
+
+    /**
+     * Counts unlocked tracks for a user and source from a given UNIX timestamp
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function countForUserAndSourceFromTime(int $userId, string $source, int $time): int;
 }

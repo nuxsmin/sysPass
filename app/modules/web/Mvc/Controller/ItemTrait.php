@@ -156,7 +156,7 @@ trait ItemTrait
                 );
 
                 if (empty($customFieldData->getData())) {
-                    $customFieldDataService->delete([$itemId], $moduleId);
+                    $customFieldDataService->deleteByDefinition((int)$itemId, $moduleId, (int)$id);
                 } else {
                     $customFieldDataService->updateOrCreate($customFieldData);
                 }

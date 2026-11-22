@@ -63,14 +63,19 @@ final class AccountPreset extends Service implements AccountPresetService
     }
 
     /**
-     * @param AccountDto $accountDto
-     * @return AccountDto
+     * @template TDto of AccountDto
+     * @param TDto $accountDto
+     * @return TDto
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
     public function checkPasswordPreset(AccountDto $accountDto): AccountDto
     {
+        if ($accountDto->parentId > 0 && (string)($accountDto->pass ?? '') === '') {
+            return $accountDto;
+        }
+
         $itemPreset = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD);
 
         if ($itemPreset !== null && $itemPreset->getFixed() === 1) {

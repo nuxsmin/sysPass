@@ -103,17 +103,18 @@ class AccountHistoryTest extends UnitaryTestCase
     #[Test]
     public function testDeleteByIdBatch(): void
     {
-        $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
+        $ids = [101, 202, 303];
 
         $callback = new Callback(
             static function (QueryData $arg) use ($ids) {
                 $values = $arg->getQuery()->getBindValues();
 
-                return array_shift($values) === array_shift($ids)
-                       && array_shift($values) === array_shift($ids)
-                       && array_shift($values) === array_shift($ids)
+                return count($values) === 3
+                       && ($values['id0'] ?? null) === $ids[0]
+                       && ($values['id1'] ?? null) === $ids[1]
+                       && ($values['id2'] ?? null) === $ids[2]
                        && $arg->getMapClassName() === Simple::class
-                       && !empty($arg->getQuery()->getStatement());
+                       && str_contains($arg->getQuery()->getStatement(), 'id IN (:id0, :id1, :id2)');
             }
         );
 
@@ -197,6 +198,34 @@ class AccountHistoryTest extends UnitaryTestCase
     #[Test]
     public function testSearchWithoutString(): void
     {
+        $callback = new Callback(
+            static function (QueryData $arg) {
+                $params = $arg->getQuery()->getBindValues();
+
+                return count($params) === 13
+                       && !isset($params['name'], $params['clientName'])
+                       && isset($params['shLivePrivUserId'], $params['shDelPrivUserId'])
+                       && $arg->getMapClassName() === Simple::class
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->database
+            ->expects(self::once())
+            ->method('runQuery')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountHistory->search(new ItemSearchDto());
+    }
+
+    #[Test]
+    public function testSearchAsAdminWithoutString(): void
+    {
+        $this->context->setUserData(
+            $this->context->getUserData()->mutate(['isAdminApp' => true])
+        );
+
         $callback = new Callback(
             static function (QueryData $arg) {
                 return count($arg->getQuery()->getBindValues()) === 0

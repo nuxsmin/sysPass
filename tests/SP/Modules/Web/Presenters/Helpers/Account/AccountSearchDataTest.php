@@ -159,6 +159,63 @@ class AccountSearchDataTest extends UnitaryTestCase
     }
 
     /**
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
+     */
+    #[Test]
+    public function testBuildFromRedactsDiscoveryRowsWhenResultViewIsFalse(): void
+    {
+        $raw = new AccountSearchView([
+            'id' => 42,
+            'name' => 'Secret Service Account',
+            'clientId' => 1,
+            'clientName' => 'Google',
+            'categoryId' => 2,
+            'categoryName' => 'Web',
+            'login' => 'secret-login',
+            'url' => 'https://secret.example.test',
+            'notes' => 'secret-notes',
+            'parentId' => 99,
+            'num_files' => 3,
+            'publicLinkHash' => 'pub-hash',
+            'userName' => 'Hidden Owner',
+            'userGroupName' => 'Hidden Group',
+        ]);
+
+        $this->accountToFavoriteService->method('getForUserId')->willReturn([42 => 1]);
+        $this->accountCacheService->method('getCacheForAccount')
+            ->willReturn(new AccountCacheDto(42, [new Item(['id' => 200])], [new Item(['id' => 300])]));
+        $this->accountAclService->method('getAcl')
+            ->willReturn(new \SP\Domain\Account\Adapters\AccountPermission(AclActionsInterface::ACCOUNT_SEARCH));
+        $this->accountToTagRepository->method('getTagsByAccountId')
+            ->willReturn(new QueryResult([new Item(['id' => 1, 'name' => 'tag1'])]));
+
+        $result = $this->accountSearchDataBuilder->buildFrom(new QueryResult([$raw]))->getDataAsArray();
+        self::assertCount(1, $result);
+
+        $item = $result[0];
+        $view = $item->getAccountSearchView();
+
+        self::assertFalse($item->isShow());
+        self::assertSame(42, $view->getId());
+        self::assertSame('Secret Service Account', $view->getName());
+        self::assertSame('Google', $view->getClientName());
+        self::assertSame('Web', $view->getCategoryName());
+        self::assertSame([], $item->getTags());
+        self::assertFalse($item->isFavorite());
+        self::assertSame(['(G*) <em></em>', '(U*) <em></em>'], $item->getAccesses());
+        self::assertSame('', (string)$view->getLogin());
+        self::assertSame('', (string)$view->getUrl());
+        self::assertSame('', (string)$view->getNotes());
+        self::assertSame(0, (int)$view->getParentId());
+        self::assertSame(0, (int)$view->getNumFiles());
+        self::assertSame('', (string)$view->getPublicLinkHash());
+        self::assertSame('', (string)$view->getUserName());
+        self::assertSame('', (string)$view->getUserGroupName());
+    }
+
+    /**
      * @throws Exception
      */
     #[Test]

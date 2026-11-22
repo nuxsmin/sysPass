@@ -464,4 +464,9 @@ class Request implements RequestService
     {
         return (string)$this->request->server()->get($key, '');
     }
+
+    public function hasParam(string $param): bool
+    {
+        return $this->params->exists($param);
+    }
 }

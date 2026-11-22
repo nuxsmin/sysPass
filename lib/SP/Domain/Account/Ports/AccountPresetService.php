@@ -39,6 +39,9 @@ use SP\Domain\Core\Exceptions\ValidationException;
 interface AccountPresetService
 {
     /**
+     * @template TDto of AccountDto
+     * @param TDto $accountDto
+     * @return TDto
      * @throws ValidationException
      * @throws ConstraintException
      * @throws NoSuchPropertyException

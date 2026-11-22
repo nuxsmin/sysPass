@@ -68,13 +68,6 @@ final class SaveCreateController extends AccountSaveBase
             )
         );
 
-        $this->addCustomFieldsForItem(
-            AclActionsInterface::ACCOUNT,
-            $accountId,
-            $this->request,
-            $this->customFieldService
-        );
-
         return ActionResponse::ok(
             __u('Account created'),
             [

@@ -122,4 +122,6 @@ interface RequestService
     public function getServer(string $key): string;
 
     public function resolveSecureAppPath(string $path, ?string $base = null): string;
+
+    public function hasParam(string $param): bool;
 }

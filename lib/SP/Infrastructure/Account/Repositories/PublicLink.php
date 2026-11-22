@@ -70,6 +70,57 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
     }
 
     /**
+     * Deletes all public links associated with the given item ID
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByItemId(int $itemId): void
+    {
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('PublicLink')
+            ->where('itemId = :itemId')
+            ->bindValue('itemId', $itemId);
+
+        $this->db->runQuery(QueryData::build($query)->setOnErrorMessage(__u('Error while removing the link')));
+    }
+
+    /**
+     * Deletes all public links associated with the given item IDs
+     *
+     * @param int[] $itemIds
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByItemIds(array $itemIds): void
+    {
+        $uniqueIds = array_values(array_unique(array_map('intval', $itemIds)));
+
+        if (count($uniqueIds) === 0) {
+            return;
+        }
+
+        $placeholders = [];
+        $bindValues = [];
+
+        foreach ($uniqueIds as $index => $itemId) {
+            $key = 'itemId' . $index;
+            $placeholders[] = ':' . $key;
+            $bindValues[$key] = $itemId;
+        }
+
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from('PublicLink')
+            ->where('itemId IN (' . implode(', ', $placeholders) . ')')
+            ->bindValues($bindValues);
+
+        $this->db->runQuery(QueryData::build($query)->setOnErrorMessage(__u('Error while removing the link')));
+    }
+
+    /**
      * Returns all the items
      *
      * @return QueryResult<T>

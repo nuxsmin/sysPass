@@ -41,4 +41,16 @@ interface AccountFilterBuilder
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
      */
     public function buildFilter(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface;
+
+    /**
+     * Returns true when a non-admin user is performing an authorized global discovery query.
+     */
+    public function isGlobalDiscoveryActive(bool $useGlobalSearch): bool;
+
+    /**
+     * Builds the normal (non-global-search) account visibility OR predicate and unique bind values.
+     *
+     * @return array{sql: string, bindValues: array<string, mixed>}
+     */
+    public function buildVisibilityPredicate(string $prefix = 'vis'): array;
 }

@@ -44,6 +44,23 @@ final class AccountHistoryViewDto extends Dto
         public readonly ?int    $categoryId,
         public readonly ?int    $clientId,
         public readonly ?int    $passDate,
+        public readonly ?string $name = null,
+        public readonly ?string $login = null,
+        public readonly ?string $url = null,
+        public readonly ?string $notes = null,
+        public readonly ?bool   $isPrivate = null,
+        public readonly ?bool   $isPrivateGroup = null,
+        public readonly ?bool   $isModify = null,
+        public readonly ?bool   $isDeleted = null,
+        public readonly ?string $dateAdd = null,
+        public readonly ?int    $userEditId = null,
+        public readonly ?int    $parentId = null,
+        public readonly ?string $userEditName = null,
+        public readonly ?string $userEditLogin = null,
+        public readonly ?int    $countView = null,
+        public readonly ?int    $countDecrypt = null,
+        public readonly ?string $userName = null,
+        public readonly ?string $userGroupName = null,
     ) {
     }
 }

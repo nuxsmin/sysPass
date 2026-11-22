@@ -37,7 +37,7 @@ final class RepositoryDbTestCoverageTest extends TestCase
     /**
      * Monotonic limit for the method allowlist. It may only be lowered.
      */
-    private const UNCOVERED_METHOD_ALLOWLIST_LIMIT = 121;
+    private const UNCOVERED_METHOD_ALLOWLIST_LIMIT = 90;
 
     /**
      * Public methods of repositories that already have a *DbTest class but are not
@@ -48,8 +48,6 @@ final class RepositoryDbTestCoverageTest extends TestCase
      */
     private const UNCOVERED_METHOD_ALLOWLIST = [
         'Account' => [
-            'createRemoved',
-            'deleteByIdBatch',
             'editPassword',
             'getAccountsPassData',
             'getAll',
@@ -59,14 +57,11 @@ final class RepositoryDbTestCoverageTest extends TestCase
             'getForUser',
             'getLinked',
             'getPasswordForId',
-            'getPasswordHistoryForId',
             'getTotalNumAccounts',
             'incrementDecryptCounter',
             'incrementViewCounter',
             'isVisible',
-            'restoreModified',
             'search',
-            'updateBulk',
             'updatePassword',
         ],
         'AccountFile' => [
@@ -75,15 +70,7 @@ final class RepositoryDbTestCoverageTest extends TestCase
             'deleteByIdBatch',
             'getByAccountId',
         ],
-        'AccountHistory' => [
-            'create',
-            'delete',
-            'deleteByAccountIdBatch',
-            'deleteByIdBatch',
-            'getAccountsPassData',
-            'getHistoryForAccount',
-            'updatePassword',
-        ],
+        'AccountHistory' => [],
         'AccountSearch' => [
             'withFilterForAccountId',
             'withFilterForAccountNameRegex',
@@ -122,7 +109,6 @@ final class RepositoryDbTestCoverageTest extends TestCase
         'CustomFieldData' => [
             'checkExists',
             'create',
-            'deleteBatch',
             'getAll',
             'getAllEncrypted',
             'update',
@@ -144,22 +130,7 @@ final class RepositoryDbTestCoverageTest extends TestCase
             'getAll',
             'getByFilter',
         ],
-        'Notification' => [
-            'create',
-            'delete',
-            'deleteAdmin',
-            'deleteAdminBatch',
-            'deleteByIdBatch',
-            'getAll',
-            'getAllActiveForAdmin',
-            'getAllActiveForUserId',
-            'getAllForUserId',
-            'getById',
-            'getByIdBatch',
-            'getForUserIdByDate',
-            'setCheckedById',
-            'update',
-        ],
+        'Notification' => [],
         'PublicLink' => [
             'create',
             'delete',
@@ -170,12 +141,7 @@ final class RepositoryDbTestCoverageTest extends TestCase
             'search',
             'update',
         ],
-        'Track' => [
-            'add',
-            'clear',
-            'getTracksForClientFromTime',
-            'unlock',
-        ],
+        'Track' => [],
         'User' => [
             'create',
             'delete',

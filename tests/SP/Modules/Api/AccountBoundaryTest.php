@@ -98,7 +98,7 @@ final class AccountBoundaryTest extends TestCase
     }
 
     #[Test]
-    public function readOnlyAccountToUserAndGroupAreIgnoredByApiEditEditPassAndDelete(): void
+    public function readOnlyAccountToUserAndGroupAreRejectedByApiEditEditPassAndDelete(): void
     {
         $pdo = getDbHandler()->getConnection();
 
@@ -139,8 +139,8 @@ final class AccountBoundaryTest extends TestCase
             ],
             'id' => 101,
         ]);
-        self::assertSame(0, $editUserRes['json']['result']['resultCode'] ?? null);
-        self::assertSame('API Mutated User Target', $pdo->query('SELECT name FROM Account WHERE id = ' . $userAccId)->fetchColumn());
+        self::assertSame("You don't have permission to access this account", $editUserRes['json']['error']['message'] ?? null);
+        self::assertSame('API RO User Target', $pdo->query('SELECT name FROM Account WHERE id = ' . $userAccId)->fetchColumn());
 
         $editGroupRes = $this->dispatchJsonRpc([
             'jsonrpc' => '2.0',
@@ -159,8 +159,8 @@ final class AccountBoundaryTest extends TestCase
             ],
             'id' => 102,
         ]);
-        self::assertSame(0, $editGroupRes['json']['result']['resultCode'] ?? null);
-        self::assertSame('API Mutated Group Target', $pdo->query('SELECT name FROM Account WHERE id = ' . $groupAccId)->fetchColumn());
+        self::assertSame("You don't have permission to access this account", $editGroupRes['json']['error']['message'] ?? null);
+        self::assertSame('API RO Group Target', $pdo->query('SELECT name FROM Account WHERE id = ' . $groupAccId)->fetchColumn());
 
         $oldPass = (string)$pdo->query('SELECT pass FROM Account WHERE id = ' . $userAccId)->fetchColumn();
         $editPassRes = $this->dispatchJsonRpc([
@@ -174,9 +174,9 @@ final class AccountBoundaryTest extends TestCase
             ],
             'id' => 103,
         ]);
-        self::assertSame(0, $editPassRes['json']['result']['resultCode'] ?? null);
+        self::assertSame("You don't have permission to access this account", $editPassRes['json']['error']['message'] ?? null);
         $newPass = (string)$pdo->query('SELECT pass FROM Account WHERE id = ' . $userAccId)->fetchColumn();
-        self::assertNotSame($oldPass, $newPass);
+        self::assertSame($oldPass, $newPass);
 
         $delUserRes = $this->dispatchJsonRpc([
             'jsonrpc' => '2.0',
@@ -187,8 +187,8 @@ final class AccountBoundaryTest extends TestCase
             ],
             'id' => 104,
         ]);
-        self::assertSame(0, $delUserRes['json']['result']['resultCode'] ?? null);
-        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Account WHERE id = ' . $userAccId)->fetchColumn());
+        self::assertSame("You don't have permission to access this account", $delUserRes['json']['error']['message'] ?? null);
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM Account WHERE id = ' . $userAccId)->fetchColumn());
 
         $delGroupRes = $this->dispatchJsonRpc([
             'jsonrpc' => '2.0',
@@ -199,8 +199,123 @@ final class AccountBoundaryTest extends TestCase
             ],
             'id' => 105,
         ]);
-        self::assertSame(0, $delGroupRes['json']['result']['resultCode'] ?? null);
-        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Account WHERE id = ' . $groupAccId)->fetchColumn());
+        self::assertSame("You don't have permission to access this account", $delGroupRes['json']['error']['message'] ?? null);
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM Account WHERE id = ' . $groupAccId)->fetchColumn());
+    }
+
+    #[Test]
+    public function apiEditPreservesOmittedFieldsClearsExplicitTagsRevokesPublicLinksAndRejectsInvalidMutations(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+
+        $editorProfile = (new ProfileData())
+            ->setAccView(true)
+            ->setAccEdit(true)
+            ->setAccEditPass(true)
+            ->setAccPrivate(true)
+            ->setAccPrivateGroup(true);
+
+        $ownerId = $this->insertUserWithGroup($pdo, 'api_patch_owner', 5, $editorProfile);
+        $sharedEditorId = $this->insertUserWithGroup($pdo, 'api_patch_shared', 5, $editorProfile, false, true);
+
+        $targetId = $this->seedAccount(
+            $pdo,
+            'API Patch Target',
+            $ownerId,
+            5,
+            'orig-api-login',
+            0,
+            0,
+            'https://orig-api.test',
+            'orig-api-notes'
+        );
+        $pdo->prepare('INSERT INTO AccountToTag (accountId, tagId) VALUES (?, 1), (?, 2)')->execute([$targetId, $targetId]);
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 1)')->execute([$targetId, $sharedEditorId]);
+        $pdo->prepare(
+            "INSERT INTO PublicLink (itemId, hash, data, userId, typeId, notify, dateAdd, dateExpire)
+             VALUES (?, 'api-target-publink', 'data', ?, 1, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP() + 3600)"
+        )->execute([$targetId, $ownerId]);
+
+        $ownerEditTok = $this->seedTokenForUser($ownerId, AclActionsInterface::ACCOUNT_EDIT);
+        $sharedEditTok = $this->seedTokenForUser($sharedEditorId, AclActionsInterface::ACCOUNT_EDIT);
+
+        // Non-owner shared editor (even isAdminAcc) cannot enable privacy
+        $nonOwnerPrivRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/edit',
+            'params' => [
+                'authToken' => $sharedEditTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $targetId,
+                'name' => 'API Patch Target',
+                'clientId' => 1,
+                'categoryId' => 1,
+                'private' => 1,
+            ],
+            'id' => 111,
+        ]);
+        self::assertArrayHasKey('error', $nonOwnerPrivRes['json']);
+        self::assertSame(0, (int)$pdo->query('SELECT isPrivate FROM Account WHERE id = ' . $targetId)->fetchColumn());
+
+        // Validation: whitespace-only name or oversized login rejected
+        $blankNameRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/edit',
+            'params' => [
+                'authToken' => $ownerEditTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $targetId,
+                'name' => '   ',
+                'clientId' => 1,
+                'categoryId' => 1,
+            ],
+            'id' => 112,
+        ]);
+        self::assertArrayHasKey('error', $blankNameRes['json']);
+        self::assertSame('API Patch Target', $pdo->query('SELECT name FROM Account WHERE id = ' . $targetId)->fetchColumn());
+
+        // Owner sets private=1 while omitting login/url/notes/tagsId -> preserved, PublicLink preserved
+        $privOnlyRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/edit',
+            'params' => [
+                'authToken' => $ownerEditTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $targetId,
+                'name' => 'API Patch Target',
+                'clientId' => 1,
+                'categoryId' => 1,
+                'private' => 1,
+            ],
+            'id' => 113,
+        ]);
+        self::assertSame(0, $privOnlyRes['json']['result']['resultCode'] ?? null);
+        self::assertSame('orig-api-login', $pdo->query('SELECT login FROM Account WHERE id = ' . $targetId)->fetchColumn());
+        self::assertSame('https://orig-api.test', $pdo->query('SELECT url FROM Account WHERE id = ' . $targetId)->fetchColumn());
+        self::assertSame('orig-api-notes', $pdo->query('SELECT notes FROM Account WHERE id = ' . $targetId)->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT isPrivate FROM Account WHERE id = ' . $targetId)->fetchColumn());
+        self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM AccountToTag WHERE accountId = ' . $targetId)->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM PublicLink WHERE itemId = ' . $targetId)->fetchColumn());
+
+        // Owner clears tagsId: [] -> tags deleted & PublicLink revoked, while private/login/url/notes still preserved
+        $clearTagsRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/edit',
+            'params' => [
+                'authToken' => $ownerEditTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $targetId,
+                'name' => 'API Patch Target',
+                'clientId' => 1,
+                'categoryId' => 1,
+                'tagsId' => [],
+            ],
+            'id' => 114,
+        ]);
+        self::assertSame(0, $clearTagsRes['json']['result']['resultCode'] ?? null);
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM AccountToTag WHERE accountId = ' . $targetId)->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT isPrivate FROM Account WHERE id = ' . $targetId)->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM PublicLink WHERE itemId = ' . $targetId)->fetchColumn());
     }
 
     #[Test]
@@ -343,7 +458,7 @@ final class AccountBoundaryTest extends TestCase
     }
 
     #[Test]
-    public function parentIdIsUncheckedOnCreateEditViewPassAndApiSearchIgnoresGlobalSearch(): void
+    public function globalSearchRedactsAndPreventsLeaksAndLinkedParentEnforcesAuthorizationInheritanceAndRevokesLinks(): void
     {
         $pdo = getDbHandler()->getConnection();
 
@@ -352,10 +467,24 @@ final class AccountBoundaryTest extends TestCase
             ->setAccView(true)
             ->setAccViewPass(true)
             ->setAccEdit(true)
+            ->setAccEditPass(true)
             ->setAccGlobalSearch(true);
 
         $userId = $this->insertUserWithGroup($pdo, 'api_child_user', 5, $profile);
         $privateParentId = $this->seedAccount($pdo, 'API Private Parent', 1, 1, 'api-parent-login', 1, 0);
+        $sharedParentId = $this->seedAccount(
+            $pdo,
+            'API Shared Parent',
+            1,
+            1,
+            'api-shared-login',
+            0,
+            0,
+            'https://api-parent.example.test',
+            'parent notes',
+            'parent-secret-pass'
+        );
+        $grandParentId = $this->seedAccount($pdo, 'API GrandParent', 1, 1, 'api-gp-login');
         $hiddenNonPrivId = $this->seedAccount(
             $pdo,
             'API Hidden NonPrivate',
@@ -365,39 +494,145 @@ final class AccountBoundaryTest extends TestCase
             0,
             0,
             'https://api-hidden.example.test',
-            'api-hidden-notes-token'
+            'api-hidden-notes-token',
+            'hidden-pass',
+            $grandParentId
         );
-        self::assertGreaterThan(0, $hiddenNonPrivId);
+        $pdo->prepare('INSERT INTO AccountToTag (accountId, tagId) VALUES (?, 1)')->execute([$hiddenNonPrivId]);
+
+        $ownedId = $this->seedAccount($pdo, 'API Owned Account', $userId, 5, 'api-owned-login');
 
         $createTok = $this->seedTokenForUser($userId, AclActionsInterface::ACCOUNT_CREATE);
         $editTok = $this->seedTokenForUser($userId, AclActionsInterface::ACCOUNT_EDIT);
         $passTok = $this->seedTokenForUser($userId, AclActionsInterface::ACCOUNT_VIEW_PASS);
         $searchTok = $this->seedTokenForUser($userId, AclActionsInterface::ACCOUNT_SEARCH);
 
-        // 1. Create child linked to inaccessible isPrivate=1 parent succeeds without checking parent access
+        // 1. Create child linked to inaccessible parent fails closed
+        $deniedCreate = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/create',
+            'params' => [
+                'authToken' => $createTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'name' => 'API Denied Child',
+                'clientId' => 1,
+                'categoryId' => 1,
+                'login' => 'api-child-login',
+                'parentId' => $privateParentId,
+            ],
+            'id' => 301,
+        ]);
+        self::assertArrayHasKey('error', $deniedCreate['json']);
+
+        // 2. Rejects whitespace-only name & notes > 5000 chars
+        $blankNameRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/create',
+            'params' => [
+                'authToken' => $createTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'name' => " \t ",
+                'clientId' => 1,
+                'categoryId' => 1,
+                'pass' => 'valid-api-pass',
+            ],
+            'id' => 302,
+        ]);
+        self::assertArrayHasKey('error', $blankNameRes['json']);
+
+        $longNotesRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/create',
+            'params' => [
+                'authToken' => $createTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'name' => 'Long Notes API',
+                'clientId' => 1,
+                'categoryId' => 1,
+                'notes' => str_repeat('z', 5001),
+                'pass' => 'valid-api-pass',
+            ],
+            'id' => 303,
+        ]);
+        self::assertArrayHasKey('error', $longNotesRes['json']);
+
+        // 3. Grant view access to sharedParentId -> passwordless linked create succeeds & trims name
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')
+            ->execute([$sharedParentId, $userId]);
+
         $createRes = $this->dispatchJsonRpc([
             'jsonrpc' => '2.0',
             'method' => 'account/create',
             'params' => [
                 'authToken' => $createTok->getToken(),
                 'tokenPass' => self::TOKEN_PASS,
-                'name' => 'API Child Linked Account',
+                'name' => '  API Child Linked Account  ',
                 'clientId' => 1,
                 'categoryId' => 1,
                 'login' => 'api-child-login',
                 'url' => 'https://api-child.example.test',
                 'notes' => 'api-child-notes',
-                'parentId' => $privateParentId,
-                'pass' => 'child-own-api-pass',
+                'parentId' => $sharedParentId,
             ],
-            'id' => 301,
+            'id' => 304,
         ]);
         self::assertSame(0, $createRes['json']['result']['resultCode'] ?? null);
         $childId = (int)($createRes['json']['result']['itemId'] ?? 0);
         self::assertGreaterThan(0, $childId);
-        self::assertSame($privateParentId, (int)$pdo->query('SELECT parentId FROM Account WHERE id = ' . $childId)->fetchColumn());
+        self::assertSame('API Child Linked Account', $pdo->query('SELECT name FROM Account WHERE id = ' . $childId)->fetchColumn());
+        self::assertSame($sharedParentId, (int)$pdo->query('SELECT parentId FROM Account WHERE id = ' . $childId)->fetchColumn());
 
-        // 2. viewPass on child returns child's own password, NOT parent's password
+        // 4. Rejects chained parent, self-link, and cycle on edit
+        $chainedRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/create',
+            'params' => [
+                'authToken' => $createTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'name' => 'API Grandchild',
+                'clientId' => 1,
+                'categoryId' => 1,
+                'parentId' => $childId,
+            ],
+            'id' => 305,
+        ]);
+        self::assertArrayHasKey('error', $chainedRes['json']);
+
+        $selfEditRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/edit',
+            'params' => [
+                'authToken' => $editTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $ownedId,
+                'name' => 'API Owned Account',
+                'clientId' => 1,
+                'categoryId' => 1,
+                'parentId' => $ownedId,
+            ],
+            'id' => 306,
+        ]);
+        self::assertArrayHasKey('error', $selfEditRes['json']);
+
+        $userParentId = $this->seedAccount($pdo, 'API User Parent', $userId, 5, 'api-u-parent');
+        $userChildId = $this->seedAccount($pdo, 'API User Child', $userId, 5, 'api-u-child', 0, 0, 'https://example.test', 'n', 'p', $userParentId);
+        $cycleEditRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/edit',
+            'params' => [
+                'authToken' => $editTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $userParentId,
+                'name' => 'API User Parent',
+                'clientId' => 1,
+                'categoryId' => 1,
+                'parentId' => $userChildId,
+            ],
+            'id' => 307,
+        ]);
+        self::assertArrayHasKey('error', $cycleEditRes['json']);
+
+        // 5. viewPass on linked child inherits parent's password; fails closed if parent access is revoked
         $childPassRes = $this->dispatchJsonRpc([
             'jsonrpc' => '2.0',
             'method' => 'account/viewPass',
@@ -406,50 +641,164 @@ final class AccountBoundaryTest extends TestCase
                 'tokenPass' => self::TOKEN_PASS,
                 'id' => $childId,
             ],
-            'id' => 302,
+            'id' => 308,
         ]);
         self::assertSame(0, $childPassRes['json']['result']['resultCode'] ?? null);
-        self::assertSame('child-own-api-pass', $childPassRes['json']['result']['result']['password'] ?? null);
-        self::assertNotSame('parent-secret-pass', $childPassRes['json']['result']['result']['password'] ?? null);
+        self::assertSame('parent-secret-pass', $childPassRes['json']['result']['result']['password'] ?? null);
 
-        // 3. Edit an owned unlinked account to link privateParentId also succeeds without parent authorization check
-        $ownedId = $this->seedAccount($pdo, 'API Owned Account', $userId, 5, 'api-owned-login');
-        $editRes = $this->dispatchJsonRpc([
+        $pdo->prepare('DELETE FROM AccountToUser WHERE accountId = ? AND userId = ?')
+            ->execute([$sharedParentId, $userId]);
+
+        $deniedPassRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/viewPass',
+            'params' => [
+                'authToken' => $passTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $childId,
+            ],
+            'id' => 309,
+        ]);
+        self::assertArrayHasKey('error', $deniedPassRes['json']);
+        self::assertStringNotContainsString('parent-secret-pass', $deniedPassRes['body']);
+
+        // 6. Re-grant parent access, seed a PublicLink for child, rotate parent pass -> revokes child PublicLink
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')
+            ->execute([$sharedParentId, $userId]);
+        $pdo->prepare(
+            "INSERT INTO PublicLink (itemId, hash, data, userId, typeId, notify, dateAdd, dateExpire, maxCountViews, countViews, useInfo)
+             VALUES (?, 'api-child-link-hash', 'data', ?, 1, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP() + 600, 10, 0, '')"
+        )->execute([$childId, $userId]);
+
+        $adminProfile = (new ProfileData())
+            ->setAccView(true)
+            ->setAccViewPass(true)
+            ->setAccEdit(true)
+            ->setAccEditPass(true);
+        $adminUserId = $this->insertUserWithGroup($pdo, 'api_admin_rotator', 1, $adminProfile, true, true);
+        $adminEditPassTok = $this->seedTokenForUser($adminUserId, AclActionsInterface::ACCOUNT_EDIT_PASS);
+
+        $rotateRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/editPass',
+            'params' => [
+                'authToken' => $adminEditPassTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $sharedParentId,
+                'pass' => 'api-parent-rotated',
+            ],
+            'id' => 310,
+        ]);
+        self::assertSame(0, $rotateRes['json']['result']['resultCode'] ?? null);
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM PublicLink WHERE itemId = ' . $childId)->fetchColumn());
+
+        $afterRotatePass = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/viewPass',
+            'params' => [
+                'authToken' => $passTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $childId,
+            ],
+            'id' => 311,
+        ]);
+        self::assertSame('api-parent-rotated', $afterRotatePass['json']['result']['result']['password'] ?? null);
+
+        // 7. Unlinking child requires ACCOUNT_EDIT_PASS + explicit pass when child has no own password, and works when both are satisfied
+        $unlinkEmptyRes = $this->dispatchJsonRpc([
             'jsonrpc' => '2.0',
             'method' => 'account/edit',
             'params' => [
                 'authToken' => $editTok->getToken(),
                 'tokenPass' => self::TOKEN_PASS,
-                'id' => $ownedId,
-                'name' => 'API Owned Linked Account',
+                'id' => $childId,
+                'name' => 'API Child Linked Account',
                 'clientId' => 1,
                 'categoryId' => 1,
-                'login' => 'api-owned-login',
-                'notes' => 'api owned notes',
-                'parentId' => $privateParentId,
-                'userId' => $userId,
-                'userGroupId' => 5,
+                'parentId' => 0,
             ],
-            'id' => 303,
+            'id' => 312,
         ]);
-        self::assertSame(0, $editRes['json']['result']['resultCode'] ?? null);
-        self::assertSame($privateParentId, (int)$pdo->query('SELECT parentId FROM Account WHERE id = ' . $ownedId)->fetchColumn());
+        self::assertArrayHasKey('error', $unlinkEmptyRes['json']);
+        self::assertSame($sharedParentId, (int)$pdo->query('SELECT parentId FROM Account WHERE id = ' . $childId)->fetchColumn());
 
-        // 4. account/search ignores globalSearch even when ConfigData::isGlobalSearch() is true,
-        //    so hidden non-private account returns 0 results while owned account returns login/url/notes
-        $hiddenSearchRes = $this->dispatchJsonRpc([
+        $unlinkOkRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/edit',
+            'params' => [
+                'authToken' => $editTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $childId,
+                'name' => 'API Child Unlinked',
+                'clientId' => 1,
+                'categoryId' => 1,
+                'parentId' => 0,
+                'pass' => 'child-independent-api-pass',
+            ],
+            'id' => 313,
+        ]);
+        self::assertSame(0, $unlinkOkRes['json']['result']['resultCode'] ?? null);
+        self::assertSame(0, (int)$pdo->query('SELECT parentId FROM Account WHERE id = ' . $childId)->fetchColumn());
+
+        $independentPass = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/viewPass',
+            'params' => [
+                'authToken' => $passTok->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $childId,
+            ],
+            'id' => 314,
+        ]);
+        self::assertSame('child-independent-api-pass', $independentPass['json']['result']['result']['password'] ?? null);
+
+        // 8. Global search via API matches inaccessible non-private account by name with redacted fields,
+        //    blocks hidden-field/tag queries on inaccessible accounts, and returns full fields on visible accounts
+        $globalNameRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => $searchTok->getToken(),
+                'text' => 'API Hidden NonPrivate',
+                'globalSearch' => 1,
+            ],
+            'id' => 315,
+        ], true);
+        self::assertSame(0, $globalNameRes['json']['result']['resultCode'] ?? null);
+        $globalItems = $globalNameRes['json']['result']['result'] ?? [];
+        self::assertCount(1, $globalItems);
+        self::assertSame('API Hidden NonPrivate', $globalItems[0]['name'] ?? null);
+        self::assertSame('Google', $globalItems[0]['clientName'] ?? null);
+        self::assertSame('Web', $globalItems[0]['categoryName'] ?? null);
+        self::assertSame('', $globalItems[0]['login'] ?? '');
+        self::assertSame('', $globalItems[0]['url'] ?? '');
+        self::assertSame('', $globalItems[0]['notes'] ?? '');
+        self::assertSame(0, (int)($globalItems[0]['parentId'] ?? 0));
+
+        $hiddenNotesSearch = $this->dispatchJsonRpc([
             'jsonrpc' => '2.0',
             'method' => 'account/search',
             'params' => [
                 'authToken' => $searchTok->getToken(),
                 'text' => 'api-hidden-notes-token',
                 'globalSearch' => 1,
-                'gsearch' => 1,
             ],
-            'id' => 304,
+            'id' => 316,
         ], true);
-        self::assertSame(0, $hiddenSearchRes['json']['result']['resultCode'] ?? null);
-        self::assertSame([], $hiddenSearchRes['json']['result']['result'] ?? null);
+        self::assertSame([], $hiddenNotesSearch['json']['result']['result'] ?? null);
+
+        $hiddenTagSearch = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/search',
+            'params' => [
+                'authToken' => $searchTok->getToken(),
+                'text' => 'API Hidden NonPrivate',
+                'tagsId' => [1],
+                'globalSearch' => 1,
+            ],
+            'id' => 317,
+        ], true);
+        self::assertSame([], $hiddenTagSearch['json']['result']['result'] ?? null);
 
         $visibleSearchRes = $this->dispatchJsonRpc([
             'jsonrpc' => '2.0',
@@ -458,7 +807,7 @@ final class AccountBoundaryTest extends TestCase
                 'authToken' => $searchTok->getToken(),
                 'text' => 'api-child-notes',
             ],
-            'id' => 305,
+            'id' => 318,
         ]);
         self::assertSame(0, $visibleSearchRes['json']['result']['resultCode'] ?? null);
         self::assertCount(1, $visibleSearchRes['json']['result']['result'] ?? []);
@@ -541,15 +890,17 @@ final class AccountBoundaryTest extends TestCase
         int    $isPrivateGroup = 0,
         string $url = 'https://example.test',
         string $notes = 'synthetic api notes',
-        string $plainPass = 'parent-secret-pass'
+        string $plainPass = 'parent-secret-pass',
+        int    $parentId = 0,
+        int    $passDateChange = 0
     ): int {
         $crypt = new Crypt();
         $key = $crypt->makeSecuredKey(self::MASTER_PASS);
         $encPass = $crypt->encrypt($plainPass, $key, self::MASTER_PASS);
 
         $stmt = $pdo->prepare(
-            'INSERT INTO Account (userGroupId, userId, userEditId, clientId, name, categoryId, login, url, pass, `key`, notes, dateAdd, isPrivate, isPrivateGroup, passDate, parentId)
-             VALUES (?, ?, ?, 1, ?, 1, ?, ?, ?, ?, ?, NOW(), ?, ?, UNIX_TIMESTAMP(), 0)'
+            'INSERT INTO Account (userGroupId, userId, userEditId, clientId, name, categoryId, login, url, pass, `key`, notes, dateAdd, isPrivate, isPrivateGroup, passDate, passDateChange, parentId)
+             VALUES (?, ?, ?, 1, ?, 1, ?, ?, ?, ?, ?, NOW(), ?, ?, UNIX_TIMESTAMP(), ?, ?)'
         );
         $stmt->execute([
             $userGroupId,
@@ -563,6 +914,8 @@ final class AccountBoundaryTest extends TestCase
             $notes,
             $isPrivate,
             $isPrivateGroup,
+            $passDateChange,
+            $parentId,
         ]);
 
         return (int)$pdo->lastInsertId();
@@ -648,5 +1001,68 @@ final class AccountBoundaryTest extends TestCase
         } finally {
             @unlink($requestFile);
         }
+    }
+
+    #[Test]
+    public function apiDeleteRejectsLinkedParentAndPerformsAtomicSnapshotAndCleanup(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+
+        $profile = (new ProfileData())
+            ->setAccView(true)
+            ->setAccDelete(true)
+            ->setAccViewPass(true);
+        $userId = $this->insertUserWithGroup($pdo, 'api_del_owner', 5, $profile);
+        $deleteToken = $this->seedTokenForUser($userId, AclActionsInterface::ACCOUNT_DELETE);
+
+        $parentId = $this->seedAccount($pdo, 'API Parent Del', $userId, 5, 'api-parent');
+        $childId = $this->seedAccount($pdo, 'API Child Del', $userId, 5, 'api-child', 0, 0, 'https://example.test', 'notes', 'p', $parentId);
+
+        // 1. Reject deleting parent while child exists
+        $parentRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/delete',
+            'params' => [
+                'authToken' => $deleteToken->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $parentId,
+            ],
+            'id' => 401,
+        ]);
+        self::assertArrayHasKey('error', $parentRes['json']);
+        self::assertSame(1, (int)$this->fetchValue('SELECT COUNT(*) FROM Account WHERE id = ' . $parentId));
+
+        // 2. Attach child associations & delete child cleanly
+        $pdo->prepare('INSERT INTO AccountToTag (accountId, tagId) VALUES (?, 1)')->execute([$childId]);
+        $pdo->prepare('INSERT INTO CustomFieldData (itemId, moduleId, definitionId, data, `key`) VALUES (?, 1, 1, ?, NULL)')
+            ->execute([$childId, 'api-cf-val']);
+        $pdo->prepare(
+            'INSERT INTO PublicLink (itemId, hash, data, userId, typeId, dateAdd, dateExpire, countViews, maxCountViews, totalCountViews, notify)
+             VALUES (?, ?, ?, ?, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP() + 600, 0, 5, 0, 0)'
+        )->execute([$childId, 'api-child-link', 'payload', $userId]);
+
+        $childRes = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0',
+            'method' => 'account/delete',
+            'params' => [
+                'authToken' => $deleteToken->getToken(),
+                'tokenPass' => self::TOKEN_PASS,
+                'id' => $childId,
+            ],
+            'id' => 402,
+        ]);
+        self::assertArrayHasKey('result', $childRes['json']);
+        self::assertSame(0, (int)$this->fetchValue('SELECT COUNT(*) FROM Account WHERE id = ' . $childId));
+        $snapId = (int)$this->fetchValue('SELECT id FROM AccountHistory WHERE accountId = ' . $childId . ' AND isDeleted = 1');
+        self::assertGreaterThan(0, $snapId);
+        self::assertSame(0, (int)$this->fetchValue('SELECT COUNT(*) FROM AccountToTag WHERE accountId = ' . $childId));
+        self::assertSame(0, (int)$this->fetchValue('SELECT COUNT(*) FROM PublicLink WHERE itemId = ' . $childId));
+        self::assertSame(0, (int)$this->fetchValue('SELECT COUNT(*) FROM CustomFieldData WHERE moduleId = 1 AND itemId = ' . $childId));
+        self::assertSame(
+            'api-cf-val',
+            $this->fetchValue(
+                'SELECT data FROM CustomFieldData WHERE moduleId = ' . AclActionsInterface::ACCOUNT_HISTORY_VIEW . ' AND itemId = ' . $snapId
+            )
+        );
     }
 }

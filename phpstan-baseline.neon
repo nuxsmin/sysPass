@@ -649,30 +649,6 @@ parameters:
 			path: lib/SP/Domain/Account/Models/Account.php
 
 		-
-			message: '#^Method SP\\Domain\\Account\\Models\\AccountHistory\:\:getDateAdd\(\) never returns int so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: lib/SP/Domain/Account/Models/AccountHistory.php
-
-		-
-			message: '#^Method SP\\Domain\\Account\\Models\\AccountHistory\:\:getDateAdd\(\) should return int\|null but returns string\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: lib/SP/Domain/Account/Models/AccountHistory.php
-
-		-
-			message: '#^Method SP\\Domain\\Account\\Models\\AccountHistory\:\:getDateEdit\(\) never returns int so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: lib/SP/Domain/Account/Models/AccountHistory.php
-
-		-
-			message: '#^Method SP\\Domain\\Account\\Models\\AccountHistory\:\:getDateEdit\(\) should return int\|null but returns string\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: lib/SP/Domain/Account/Models/AccountHistory.php
-
-		-
 			message: '#^Method SP\\Domain\\Account\\Ports\\AccountAdapter\:\:transform\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1160,12 +1136,6 @@ parameters:
 
 		-
 			message: '#^Method SP\\Domain\\Account\\Services\\AccountReader\:\:getByIdEnriched\(\) should return SP\\Domain\\Account\\Models\\AccountView but returns SP\\Domain\\Common\\Models\\Model\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: lib/SP/Domain/Account/Services/AccountReader.php
-
-		-
-			message: '#^Method SP\\Domain\\Account\\Services\\AccountReader\:\:getDataForLink\(\) should return SP\\Domain\\Common\\Models\\Simple but returns SP\\Domain\\Common\\Models\\Model\|null\.$#'
 			identifier: return.type
 			count: 1
 			path: lib/SP/Domain/Account/Services/AccountReader.php

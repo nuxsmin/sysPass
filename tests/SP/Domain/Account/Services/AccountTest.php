@@ -101,7 +101,13 @@ class AccountTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
-        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
+        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto()->mutate([
+            'clientId' => self::$faker->numberBetween(1, 999),
+            'categoryId' => self::$faker->numberBetween(1, 999),
+            'userId' => self::$faker->numberBetween(1, 999),
+            'userGroupId' => self::$faker->numberBetween(1, 999),
+            'parentId' => 0,
+        ]);
 
         $this->context->setUserData(
             UserDto::fromModel(
@@ -115,9 +121,9 @@ class AccountTest extends UnitaryTestCase
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
                                 ->willReturn(null);
-        $this->accountRepository->expects(self::exactly(2))->method('getById')
+        $this->accountRepository->expects(self::once())->method('getById')
                                 ->with($id)
-                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()->mutate(['parentId' => 0])]));
         $this->accountRepository->expects(self::once())->method('update')
             ->with($id, AccountModel::update($accountUpdateDto), true, true);
         $this->accountItemsService->expects(self::once())->method('updateItems')
@@ -136,7 +142,16 @@ class AccountTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
-        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
+        $account = $accountDataGenerator->buildAccount()->mutate(['parentId' => 0]);
+        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto()->mutate([
+            'clientId' => self::$faker->numberBetween(1, 999),
+            'categoryId' => self::$faker->numberBetween(1, 999),
+            'userId' => self::$faker->numberBetween(1, 999),
+            'userGroupId' => self::$faker->numberBetween(1, 999),
+            'parentId' => 0,
+            'isPrivate' => (bool)$account->getIsPrivate(),
+            'isPrivateGroup' => (bool)$account->getIsPrivateGroup(),
+        ]);
 
         $this->context->setUserData(
             UserDto::fromModel(
@@ -156,7 +171,7 @@ class AccountTest extends UnitaryTestCase
                                 ->willReturn(null);
         $this->accountRepository->expects(self::once())->method('getById')
                                 ->with($id)
-                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+                                ->willReturn(new QueryResult([$account]));
         $this->accountRepository->expects(self::once())->method('update')
             ->with($id, AccountModel::update($accountUpdateDto), false, false);
         $this->accountItemsService->expects(self::once())->method('updateItems')
@@ -175,7 +190,16 @@ class AccountTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
-        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
+        $account = $accountDataGenerator->buildAccount()->mutate(['parentId' => 0]);
+        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto()->mutate([
+            'clientId' => self::$faker->numberBetween(1, 999),
+            'categoryId' => self::$faker->numberBetween(1, 999),
+            'userId' => self::$faker->numberBetween(1, 999),
+            'userGroupId' => self::$faker->numberBetween(1, 999),
+            'parentId' => 0,
+            'isPrivate' => (bool)$account->getIsPrivate(),
+            'isPrivateGroup' => (bool)$account->getIsPrivateGroup(),
+        ]);
 
         $this->context->setUserData(
             UserDto::fromModel(
@@ -193,9 +217,9 @@ class AccountTest extends UnitaryTestCase
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
                                 ->willReturn(null);
-        $this->accountRepository->expects(self::exactly(2))->method('getById')
+        $this->accountRepository->expects(self::once())->method('getById')
                                 ->with($id)
-                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+                                ->willReturn(new QueryResult([$account]));
         $this->accountRepository->expects(self::once())->method('update')
             ->with($id, AccountModel::update($accountUpdateDto), true, true);
         $this->accountItemsService->expects(self::once())->method('updateItems')
@@ -214,9 +238,17 @@ class AccountTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
-        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
         $account = $accountDataGenerator->buildAccount()
-                                        ->mutate(['userId' => 101, 'userGroupId' => 201]);
+                                        ->mutate(['userId' => 101, 'userGroupId' => 201, 'parentId' => 0]);
+        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto()->mutate([
+            'clientId' => self::$faker->numberBetween(1, 999),
+            'categoryId' => self::$faker->numberBetween(1, 999),
+            'userId' => self::$faker->numberBetween(1, 999),
+            'userGroupId' => self::$faker->numberBetween(1, 999),
+            'parentId' => 0,
+            'isPrivate' => (bool)$account->getIsPrivate(),
+            'isPrivateGroup' => (bool)$account->getIsPrivateGroup(),
+        ]);
 
         $this->context->setUserData(
             UserDto::fromModel(
@@ -241,7 +273,7 @@ class AccountTest extends UnitaryTestCase
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
                                 ->willReturn(null);
-        $this->accountRepository->expects(self::exactly(2))->method('getById')
+        $this->accountRepository->expects(self::once())->method('getById')
                                 ->with($id)
                                 ->willReturn(new QueryResult([$account]));
         $this->accountRepository->expects(self::once())->method('update')
@@ -262,7 +294,13 @@ class AccountTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
-        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
+        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto()->mutate([
+            'clientId' => self::$faker->numberBetween(1, 999),
+            'categoryId' => self::$faker->numberBetween(1, 999),
+            'userId' => self::$faker->numberBetween(1, 999),
+            'userGroupId' => self::$faker->numberBetween(1, 999),
+            'parentId' => 0,
+        ]);
         $itemPreset = new ItemPreset([
                                          'id' => self::$faker->randomNumber(),
                                          'type' => self::$faker->colorName,
@@ -302,13 +340,9 @@ class AccountTest extends UnitaryTestCase
             ]
         );
 
-        $this->accountRepository->expects(self::exactly(3))->method('getById')
+        $this->accountRepository->expects(self::once())->method('getById')
                                 ->with($id)
-                                ->willReturnOnConsecutiveCalls(
-                                    new QueryResult([$accountDataGenerator->buildAccount()]),
-                                    new QueryResult([$accountDataGenerator->buildAccount()]),
-                                    new QueryResult([$account]),
-                                );
+                                ->willReturn(new QueryResult([$account]));
         $this->accountRepository->expects(self::once())->method('update')
                                 ->with(
                                     $id,
@@ -341,7 +375,13 @@ class AccountTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
-        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
+        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto()->mutate([
+            'clientId' => self::$faker->numberBetween(1, 999),
+            'categoryId' => self::$faker->numberBetween(1, 999),
+            'userId' => self::$faker->numberBetween(1, 999),
+            'userGroupId' => self::$faker->numberBetween(1, 999),
+            'parentId' => 0,
+        ]);
         $itemPreset = new ItemPreset([
                                          'id' => self::$faker->randomNumber(),
                                          'type' => self::$faker->colorName,
@@ -381,13 +421,9 @@ class AccountTest extends UnitaryTestCase
             ]
         );
 
-        $this->accountRepository->expects(self::exactly(3))->method('getById')
+        $this->accountRepository->expects(self::once())->method('getById')
                                 ->with($id)
-                                ->willReturnOnConsecutiveCalls(
-                                    new QueryResult([$accountDataGenerator->buildAccount()]),
-                                    new QueryResult([$accountDataGenerator->buildAccount()]),
-                                    new QueryResult([$account]),
-                                );
+                                ->willReturn(new QueryResult([$account]));
         $this->accountRepository->expects(self::once())->method('update')
                                 ->with(
                                     $id,
@@ -450,7 +486,9 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testGetPasswordForId()
     {
-        $account = AccountPassItemWithIdAndName::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccount());
+        $account = AccountPassItemWithIdAndName::buildFromSimpleModel(
+            AccountDataGenerator::factory()->buildAccount()->mutate(['parentId' => 0])
+        );
 
         $this->accountRepository->expects(self::once())
                                 ->method('getPasswordForId')
@@ -620,11 +658,8 @@ class AccountTest extends UnitaryTestCase
             )
         );
 
-        $consecutive = array_merge($accountsId, $accountsId);
-        sort($consecutive);
-
-        $this->accountRepository->expects(self::exactly(count($consecutive)))->method('getById')
-                                ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $consecutive)))
+        $this->accountRepository->expects(self::exactly(count($accountsId)))->method('getById')
+                                ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $accountsId)))
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
@@ -733,11 +768,8 @@ class AccountTest extends UnitaryTestCase
 
         $this->context->setUserProfile(new ProfileData(['accPermission' => false]));
 
-        $consecutive = array_merge($accountsId, $accountsId);
-        sort($consecutive);
-
-        $this->accountRepository->expects(self::exactly(count($consecutive)))->method('getById')
-                                ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $consecutive)))
+        $this->accountRepository->expects(self::exactly(count($accountsId)))->method('getById')
+                                ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $accountsId)))
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
@@ -780,11 +812,8 @@ class AccountTest extends UnitaryTestCase
 
         $this->context->setUserProfile(new ProfileData(['accPermission' => true]));
 
-        $consecutive = array_merge($accountsId, $accountsId);
-        sort($consecutive);
-
-        $this->accountRepository->expects(self::exactly(count($consecutive)))->method('getById')
-                                ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $consecutive)))
+        $this->accountRepository->expects(self::exactly(count($accountsId)))->method('getById')
+                                ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $accountsId)))
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password);
@@ -968,7 +997,9 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testRestoreRemoved()
     {
-        $accountHistoryDto = AccountDataGenerator::factory()->buildAccountHistoryDto();
+        $accountHistoryDto = AccountDataGenerator::factory()
+            ->buildAccountHistoryDto()
+            ->mutate(['isDeleted' => true]);
 
         $this->accountRepository->expects(self::once())->method('createRemoved')
                                 ->with(
@@ -990,7 +1021,9 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testRestoreRemovedError()
     {
-        $accountHistoryDto = AccountDataGenerator::factory()->buildAccountHistoryDto();
+        $accountHistoryDto = AccountDataGenerator::factory()
+            ->buildAccountHistoryDto()
+            ->mutate(['isDeleted' => true]);
 
         $queryResult = new QueryResult();
 
@@ -1070,11 +1103,20 @@ class AccountTest extends UnitaryTestCase
         $this->accountHistoryService->expects(self::once())->method('create')
                                     ->with($accountHistoryCreateDto);
 
+        $expectedDto = $accountHistoryDto->mutate([
+            'userId' => $account->getUserId(),
+            'userGroupId' => $account->getUserGroupId(),
+            'isPrivate' => (bool)$account->getIsPrivate(),
+            'isPrivateGroup' => (bool)$account->getIsPrivateGroup(),
+            'otherUserEdit' => (bool)$account->getOtherUserEdit(),
+            'otherUserGroupEdit' => (bool)$account->getOtherUserGroupEdit(),
+        ]);
+
         $this->accountRepository->expects(self::once())->method('restoreModified')
                                 ->with(
                                     $accountHistoryDto->accountId,
                                     AccountModel::restoreModified(
-                                        $accountHistoryDto,
+                                        $expectedDto,
                                         $this->context->getUserData()->id
                                     )
                                 )
@@ -1107,12 +1149,20 @@ class AccountTest extends UnitaryTestCase
         $this->accountHistoryService->expects(self::once())->method('create')
                                     ->with($accountHistoryCreateDto);
 
+        $expectedDto = $accountHistoryDto->mutate([
+            'userId' => $account->getUserId(),
+            'userGroupId' => $account->getUserGroupId(),
+            'isPrivate' => (bool)$account->getIsPrivate(),
+            'isPrivateGroup' => (bool)$account->getIsPrivateGroup(),
+            'otherUserEdit' => (bool)$account->getOtherUserEdit(),
+            'otherUserGroupEdit' => (bool)$account->getOtherUserGroupEdit(),
+        ]);
 
         $this->accountRepository->expects(self::once())->method('restoreModified')
                                 ->with(
                                     $accountHistoryDto->accountId,
                                     AccountModel::restoreModified(
-                                        $accountHistoryDto,
+                                        $expectedDto,
                                         $this->context->getUserData()->id
                                     )
                                 )
@@ -1165,7 +1215,13 @@ class AccountTest extends UnitaryTestCase
         $notBefore = time();
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
-        $accountCreateDto = $accountDataGenerator->buildAccountCreateDto();
+        $accountCreateDto = $accountDataGenerator->buildAccountCreateDto()->mutate([
+            'clientId' => self::$faker->numberBetween(1, 999),
+            'categoryId' => self::$faker->numberBetween(1, 999),
+            'userId' => self::$faker->numberBetween(1, 999),
+            'userGroupId' => self::$faker->numberBetween(1, 999),
+            'parentId' => 0,
+        ]);
 
         $this->context->setUserData(
             UserDto::fromModel(
@@ -1220,10 +1276,18 @@ class AccountTest extends UnitaryTestCase
         $notBefore = time();
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
-        $userData = $this->context->getUserData();
+        $userId = self::$faker->numberBetween(1, 999);
+        $userGroupId = self::$faker->numberBetween(1, 999);
         $accountCreateDto = $accountDataGenerator->buildAccountCreateDto()
-            ->withUserId($userData->id)
-            ->withUserGroupId($userData->userGroupId);
+            ->mutate([
+                'clientId' => self::$faker->numberBetween(1, 999),
+                'categoryId' => self::$faker->numberBetween(1, 999),
+                'parentId' => 0,
+            ])
+            ->withUserId($userId)
+            ->withUserGroupId($userGroupId)
+            ->withPrivate(false)
+            ->withPrivateGroup(false);
 
         $this->context->setUserData(
             UserDto::fromModel(
@@ -1231,8 +1295,8 @@ class AccountTest extends UnitaryTestCase
                                  ->buildUserData()
                                  ->mutate(
                                      [
-                                         'id' => $userData->id,
-                                         'userGroupId' => $userData->userGroupId,
+                                         'id' => $userId,
+                                         'userGroupId' => $userGroupId,
                                          'isAdminApp' => false,
                                          'isAdminAcc' => false
                                      ]
@@ -1279,7 +1343,13 @@ class AccountTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
-        $accountCreateDto = $accountDataGenerator->buildAccountCreateDto();
+        $accountCreateDto = $accountDataGenerator->buildAccountCreateDto()->mutate([
+            'clientId' => self::$faker->numberBetween(1, 999),
+            'categoryId' => self::$faker->numberBetween(1, 999),
+            'userId' => self::$faker->numberBetween(1, 999),
+            'userGroupId' => self::$faker->numberBetween(1, 999),
+            'parentId' => 0,
+        ]);
         $itemPreset = new ItemPreset([
                                          'id' => self::$faker->randomNumber(),
                                          'type' => self::$faker->colorName,
@@ -1299,6 +1369,7 @@ class AccountTest extends UnitaryTestCase
                                  ->mutate(
                                      [
                                          'id' => $accountCreateDto->userId,
+                                         'userGroupId' => $accountCreateDto->userGroupId + 1,
                                          'isAdminApp' => true,
                                          'isAdminAcc' => false
                                      ]
@@ -1348,7 +1419,13 @@ class AccountTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
-        $accountCreateDto = $accountDataGenerator->buildAccountCreateDto();
+        $accountCreateDto = $accountDataGenerator->buildAccountCreateDto()->mutate([
+            'clientId' => self::$faker->numberBetween(1, 999),
+            'categoryId' => self::$faker->numberBetween(1, 999),
+            'userId' => self::$faker->numberBetween(1, 999),
+            'userGroupId' => self::$faker->numberBetween(1, 999),
+            'parentId' => 0,
+        ]);
         $itemPreset = new ItemPreset([
                                          'id' => self::$faker->randomNumber(),
                                          'type' => self::$faker->colorName,
@@ -1366,6 +1443,7 @@ class AccountTest extends UnitaryTestCase
                                  ->buildUserData()
                                  ->mutate(
                                      [
+                                         'id' => $accountCreateDto->userId + 1,
                                          'userGroupId' => $accountCreateDto->userGroupId,
                                          'isAdminApp' => true,
                                          'isAdminAcc' => false
@@ -1406,6 +1484,128 @@ class AccountTest extends UnitaryTestCase
         $this->account->create($accountCreateDto);
     }
 
+    #[Test]
+    public function testGetPasswordForIdInheritsParentPasswordWhenLinked(): void
+    {
+        $child = new AccountPassItemWithIdAndName([
+            'id' => 20,
+            'name' => 'Child Account',
+            'login' => 'child-login',
+            'pass' => '',
+            'key' => '',
+            'parentId' => 10,
+        ]);
+        $parent = new AccountPassItemWithIdAndName([
+            'id' => 10,
+            'name' => 'Parent Account',
+            'login' => 'parent-login',
+            'pass' => 'parent-enc-pass',
+            'key' => 'parent-enc-key',
+            'parentId' => 0,
+        ]);
+
+        $this->accountRepository->expects(self::exactly(2))
+            ->method('getPasswordForId')
+            ->willReturnCallback(static fn(int $id) => new QueryResult([$id === 20 ? $child : $parent]));
+
+        $resolved = $this->account->getPasswordForId(20);
+
+        self::assertSame(20, $resolved->getId());
+        self::assertSame('Child Account', $resolved->getName());
+        self::assertSame('child-login', $resolved->getLogin());
+        self::assertSame('parent-enc-pass', $resolved->getPass());
+        self::assertSame('parent-enc-key', $resolved->getKey());
+        self::assertSame(10, $resolved->getParentId());
+    }
+
+    #[Test]
+    public function testGetPasswordForIdFailsClosedWhenParentInaccessible(): void
+    {
+        $child = new AccountPassItemWithIdAndName([
+            'id' => 20,
+            'name' => 'Child Account',
+            'login' => 'child-login',
+            'pass' => 'stale-child-pass',
+            'key' => 'stale-child-key',
+            'parentId' => 10,
+        ]);
+
+        $this->accountRepository->expects(self::exactly(2))
+            ->method('getPasswordForId')
+            ->willReturnCallback(static fn(int $id) => $id === 20 ? new QueryResult([$child]) : new QueryResult([]));
+
+        $this->expectException(AccountPermissionException::class);
+
+        $this->account->getPasswordForId(20);
+    }
+
+    #[Test]
+    public function testCreateRejectsWhitespaceNameAndNotesOver5000(): void
+    {
+        $baseDto = AccountDataGenerator::factory()->buildAccountCreateDto()->mutate([
+            'clientId' => 1,
+            'categoryId' => 1,
+            'userId' => $this->context->getUserData()->id,
+            'userGroupId' => $this->context->getUserData()->userGroupId,
+            'parentId' => 0,
+        ]);
+
+        $this->expectException(\SP\Domain\Core\Exceptions\ValidationException::class);
+        $this->account->create($baseDto->mutate(['name' => " \t\n "]));
+    }
+
+    #[Test]
+    public function testCreateRejectsNotesOver5000Chars(): void
+    {
+        $baseDto = AccountDataGenerator::factory()->buildAccountCreateDto()->mutate([
+            'clientId' => 1,
+            'categoryId' => 1,
+            'userId' => $this->context->getUserData()->id,
+            'userGroupId' => $this->context->getUserData()->userGroupId,
+            'parentId' => 0,
+            'notes' => str_repeat('a', 5001),
+        ]);
+
+        $this->expectException(\SP\Domain\Core\Exceptions\ValidationException::class);
+        $this->account->create($baseDto);
+    }
+
+    #[Test]
+    public function testCreateRejectsChainedParent(): void
+    {
+        $this->context->setUserData(
+            UserDto::fromModel(
+                UserDataGenerator::factory()->buildUserData()->mutate([
+                    'id' => 1,
+                    'userGroupId' => 1,
+                    'isAdminApp' => true,
+                ])
+            )
+        );
+
+        $parent = (new AccountModel(['id' => 10, 'parentId' => 5]));
+        $this->accountRepository->expects(self::once())
+            ->method('getById')
+            ->with(10)
+            ->willReturn(new QueryResult([$parent]));
+
+        $dto = AccountDataGenerator::factory()->buildAccountCreateDto()->mutate([
+            'name' => 'Child',
+            'login' => 'child-login',
+            'url' => 'https://example.test',
+            'notes' => '',
+            'clientId' => 1,
+            'categoryId' => 1,
+            'userId' => 1,
+            'userGroupId' => 1,
+            'parentId' => 10,
+            'pass' => '',
+        ]);
+
+        $this->expectException(\SP\Domain\Core\Exceptions\ValidationException::class);
+        $this->account->create($dto);
+    }
+
     /**
      * @throws ConstraintException
      * @throws QueryException
@@ -1431,7 +1631,9 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testGetPasswordHistoryForId()
     {
-        $account = AccountPassItemWithIdAndName::buildFromSimpleModel(AccountDataGenerator::factory()->buildAccount());
+        $account = AccountPassItemWithIdAndName::buildFromSimpleModel(
+            AccountDataGenerator::factory()->buildAccount()->mutate(['parentId' => 0])
+        );
 
         $this->accountRepository->expects(self::once())
                                 ->method('getPasswordHistoryForId')
@@ -1482,7 +1684,7 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testDeleteByIdBatch()
     {
-        $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
+        $ids = [101, 102, 103, 104, 105];
 
         $this->accountRepository->expects(self::once())->method('deleteByIdBatch')
             ->with($ids)->willReturn(new QueryResult(null, 1));
@@ -1497,7 +1699,7 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testDeleteByIdBatchError()
     {
-        $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
+        $ids = [101, 102, 103, 104, 105];
 
         $this->accountRepository->expects(self::once())->method('deleteByIdBatch')
             ->with($ids)->willReturn(new QueryResult(null, 0));
@@ -1515,7 +1717,7 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testDeleteByIdBatchRejectsInvisibleAccountAtomically()
     {
-        $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
+        $ids = [101, 102, 103, 104, 105];
         $invisibleId = $ids[2];
         $this->invisibleAccountIds = [$invisibleId];
 
@@ -1633,7 +1835,7 @@ class AccountTest extends UnitaryTestCase
             $this->accountToUserGroupRepository,
             $this->accountToUserRepository,
             $this->accountToTagRepository,
-            new AccountReader($this->accountRepository),
+            new AccountReader($this->accountRepository, null, null, null),
             new AccountWriter(
                 $this->config,
                 $this->eventDispatcherStub,
@@ -1645,7 +1847,16 @@ class AccountTest extends UnitaryTestCase
                 $this->accountPresetService,
                 $this->configService,
                 $this->accountCryptService,
-                new AccountReader($this->accountRepository)
+                new AccountReader($this->accountRepository, null, null, null),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
             )
         );
     }

@@ -65,7 +65,7 @@ class CustomFieldDataTest extends UnitaryTestCase
     #[Test]
     public function testDeleteBatch()
     {
-        $itemIds = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
+        $itemIds = [101, 202, 303];
         $moduleId = self::$faker->randomNumber();
 
         $callback = new Callback(
@@ -73,11 +73,13 @@ class CustomFieldDataTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $bindValues = $query->getBindValues();
 
-                return count($bindValues) === 2
-                       && $bindValues['itemIds'] === $itemIds
+                return count($bindValues) === 4
+                       && $bindValues['id0'] === $itemIds[0]
+                       && $bindValues['id1'] === $itemIds[1]
+                       && $bindValues['id2'] === $itemIds[2]
                        && $bindValues['moduleId'] === $moduleId
                        && is_a($query, DeleteInterface::class)
-                       && !empty($query->getStatement());
+                       && str_contains($query->getStatement(), 'itemId IN (:id0, :id1, :id2)');
             }
         );
 

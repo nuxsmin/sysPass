@@ -398,6 +398,56 @@ class AccountFilterUserTest extends UnitaryTestCase
         $this->accountFilter->buildFilter();
     }
 
+    #[Test]
+    public function testIsGlobalDiscoveryActive(): void
+    {
+        $this->setNonAdminContext();
+        $this->config->getConfigData()->setGlobalSearch(true);
+        $this->context->getUserProfile()->setAccGlobalSearch(true);
+
+        $filter = $this->buildRealFilter();
+        self::assertTrue($filter->isGlobalDiscoveryActive(true));
+        self::assertFalse($filter->isGlobalDiscoveryActive(false));
+
+        $this->context->getUserProfile()->setAccGlobalSearch(false);
+        self::assertFalse($filter->isGlobalDiscoveryActive(true));
+
+        $this->context->getUserProfile()->setAccGlobalSearch(true);
+        $this->config->getConfigData()->setGlobalSearch(false);
+        self::assertFalse($filter->isGlobalDiscoveryActive(true));
+
+        $this->config->getConfigData()->setGlobalSearch(true);
+        $this->context->setUserData(new UserDto(id: 7, userGroupId: 9, isAdminApp: true, isAdminAcc: false));
+        self::assertFalse($filter->isGlobalDiscoveryActive(true));
+
+        $this->context->setUserData(new UserDto(id: 7, userGroupId: 9, isAdminApp: false, isAdminAcc: true));
+        self::assertFalse($filter->isGlobalDiscoveryActive(true));
+    }
+
+    #[Test]
+    public function testBuildVisibilityPredicate(): void
+    {
+        $this->setNonAdminContext();
+        $this->config->getConfigData()->setAccountFullGroupAccess(false);
+
+        $filter = $this->buildRealFilter();
+        $predicate = $filter->buildVisibilityPredicate('vis');
+
+        self::assertStringContainsString(':visUserIdOwner', $predicate['sql']);
+        self::assertStringContainsString(':visUserGroupIdOwner', $predicate['sql']);
+        self::assertStringContainsString(':visUserIdAccountUser', $predicate['sql']);
+        self::assertStringContainsString(':visUserGroupIdAccountGroup', $predicate['sql']);
+        self::assertStringContainsString(':visUserIdGroupMembership', $predicate['sql']);
+        self::assertArrayNotHasKey('visUserIdFullGroup', $predicate['bindValues']);
+        self::assertSame(7, $predicate['bindValues']['visUserIdOwner']);
+        self::assertSame(9, $predicate['bindValues']['visUserGroupIdOwner']);
+
+        $this->config->getConfigData()->setAccountFullGroupAccess(true);
+        $fullPredicate = $filter->buildVisibilityPredicate('vis');
+        self::assertStringContainsString(':visUserIdFullGroup', $fullPredicate['sql']);
+        self::assertSame(7, $fullPredicate['bindValues']['visUserIdFullGroup']);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
