@@ -144,13 +144,12 @@ final class UserLifecycleDbIntegrationTest extends DatabaseIntegrationTestCase
     }
 
     /**
-     * Characterization:
      * - UserGroupViewBase omits `disabled`/`readonly` on input elements in `userGroup/view/1`.
-     * - UserProfileViewBase evaluates `$this->view->isView === true` (unset magic property) in `setViewDataForUserProfile()`,
-     *   omitting `disabled`/`readonly` and leaving `usedBy` empty even for profile id=1 (used by 4 users).
+     * - UserProfileViewBase evaluates `$this->view->isView === true` in `setViewData()`,
+     *   rendering bare `disabled`/`readonly` attributes and populating `usedBy` for profile id=1 (4 users).
      */
     #[Test]
-    public function userGroupAndProfileViewRoutesOmitDisabledReadonlyAndProfileUsedBy(): void
+    public function userGroupViewOmitsDisabledReadonlyWhileProfileViewRendersAttrsAndUsedBy(): void
     {
         $groupView = $this->dispatch('get', 'userGroup/view/1');
         $groupJson = $this->assertJsonOk($groupView);
@@ -159,15 +158,20 @@ final class UserLifecycleDbIntegrationTest extends DatabaseIntegrationTestCase
         self::assertStringContainsString('Admins', $groupHtml);
         self::assertStringNotContainsString('disabled="disabled"', $groupHtml);
         self::assertStringNotContainsString('readonly="readonly"', $groupHtml);
+        self::assertStringNotContainsString('readonly>', $groupHtml);
 
         $profileView = $this->dispatch('get', 'userProfile/view/1');
         $profileJson = $this->assertJsonOk($profileView);
         $profileHtml = $profileJson['data']['html'] ?? '';
 
         self::assertStringContainsString('Admin', $profileHtml);
-        self::assertStringNotContainsString('disabled="disabled"', $profileHtml);
-        self::assertStringNotContainsString('readonly="readonly"', $profileHtml);
-        self::assertMatchesRegularExpression('/<ul class="mdl-list">\s*<\/ul>/', $profileHtml);
+        self::assertStringContainsString('disabled/>', $profileHtml);
+        self::assertStringContainsString('readonly>', $profileHtml);
+        self::assertDoesNotMatchRegularExpression('/<ul class="mdl-list">\s*<\/ul>/', $profileHtml);
+        self::assertStringContainsString('admin', $profileHtml);
+        self::assertStringContainsString('user_a', $profileHtml);
+        self::assertStringContainsString('user_b', $profileHtml);
+        self::assertStringContainsString('user_c', $profileHtml);
     }
 
     #[Test]

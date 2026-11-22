@@ -222,31 +222,23 @@ final class NotificationAuthorizationDbIntegrationTest extends DatabaseIntegrati
         self::assertSame('ERROR', $viewMissingJson['status'] ?? null);
         self::assertSame('Notification not found', $viewMissingJson['description'] ?? null);
 
-        // 2. Under production DI (CoreDefinitions QueryFactory::COMMON), setCheckedById()->limit(1) throws
-        //    uncaught \Error (Update::limit() undefined), returning HTTP 500 "Internal error" without updating DB
-        $checkCommonCrash = $this->dispatchAsUser('post', 'notification/check/' . $nPrivateB, $userA, $emptyProfile);
-        self::assertSame(500, $checkCommonCrash['code']);
-        $checkCommonJson = $this->decodeJson($checkCommonCrash['body']);
-        self::assertSame('ERROR', $checkCommonJson['status'] ?? null);
-        self::assertSame('Internal error', $checkCommonJson['description'] ?? null);
-        self::assertSame(0, (int)$pdo->query('SELECT checked FROM Notification WHERE id = ' . $nPrivateB)->fetchColumn());
-
-        // 3. With QueryFactory('mysql'), User A marks User B's private notification AND onlyAdmin=1 notification checked=1
-        $checkB = $this->dispatchAsUser('post', 'notification/check/' . $nPrivateB, $userA, $emptyProfile, [], [], [], [], true);
+        // 2. Under production DI (QueryFactory::mysql), non-admin User A marks User B's private notification
+        //    AND onlyAdmin=1 notification checked=1 without cross-user or onlyAdmin isolation
+        $checkB = $this->dispatchAsUser('post', 'notification/check/' . $nPrivateB, $userA, $emptyProfile);
         $this->assertJsonOk($checkB, 'Notification read');
         self::assertSame(1, (int)$pdo->query('SELECT checked FROM Notification WHERE id = ' . $nPrivateB)->fetchColumn());
 
-        $checkAdmin = $this->dispatchAsUser('post', 'notification/check/' . $nOnlyAdmin, $userA, $emptyProfile, [], [], [], [], true);
+        $checkAdmin = $this->dispatchAsUser('post', 'notification/check/' . $nOnlyAdmin, $userA, $emptyProfile);
         $this->assertJsonOk($checkAdmin, 'Notification read');
         self::assertSame(1, (int)$pdo->query('SELECT checked FROM Notification WHERE id = ' . $nOnlyAdmin)->fetchColumn());
 
-        // 4. Shared broadcast read state: User B sees sticky broadcast before User A checks it; after User A checks it,
+        // 3. Shared broadcast read state: User B sees sticky broadcast before User A checks it; after User A checks it,
         //    checked=1 mutates the shared row so User B polling items/notifications returns count=0
         $pollBBefore = $this->dispatchAsUser('get', 'items/notifications', $userB, $emptyProfile);
         $pollBBeforeJson = $this->assertJsonOk($pollBBefore);
         self::assertSame(1, $pollBBeforeJson['data']['count'] ?? null);
 
-        $checkSticky = $this->dispatchAsUser('post', 'notification/check/' . $nStickyBroadcast, $userA, $emptyProfile, [], [], [], [], true);
+        $checkSticky = $this->dispatchAsUser('post', 'notification/check/' . $nStickyBroadcast, $userA, $emptyProfile);
         $this->assertJsonOk($checkSticky, 'Notification read');
         self::assertSame(
             1,
@@ -257,8 +249,8 @@ final class NotificationAuthorizationDbIntegrationTest extends DatabaseIntegrati
         $pollBAfterJson = $this->assertJsonOk($pollBAfter);
         self::assertSame(0, $pollBAfterJson['data']['count'] ?? null);
 
-        // 5. Repeated check on already checked=1 row returns OK "Notification read" (PDO FOUND_ROWS matches 1 row)
-        $recheck = $this->dispatchAsUser('post', 'notification/check/' . $nStickyBroadcast, $userA, $emptyProfile, [], [], [], [], true);
+        // 4. Repeated check on already checked=1 row returns OK "Notification read" (PDO FOUND_ROWS matches 1 row)
+        $recheck = $this->dispatchAsUser('post', 'notification/check/' . $nStickyBroadcast, $userA, $emptyProfile);
         $this->assertJsonOk($recheck, 'Notification read');
         self::assertSame(
             1,
@@ -285,35 +277,27 @@ final class NotificationAuthorizationDbIntegrationTest extends DatabaseIntegrati
         $nAdminVictim1 = $this->seedNotification($pdo, 'AdmV1', 'System', 'Admin batch victim 1', $userB->id, 0, 0, 0);
         $nAdminVictim2 = $this->seedNotification($pdo, 'AdmV2', 'System', 'Admin batch victim 2', $userB->id, 0, 0, 0);
 
-        // 1. Under production DI (QueryFactory::COMMON), single delete($id)->limit(1) crashes HTTP 500 "Internal error"
-        $delCommonCrash = $this->dispatchAsUser('post', 'notification/delete/' . $nB1, $userA, $emptyProfile);
-        self::assertSame(500, $delCommonCrash['code']);
-        $delCommonJson = $this->decodeJson($delCommonCrash['body']);
-        self::assertSame('ERROR', $delCommonJson['status'] ?? null);
-        self::assertSame('Internal error', $delCommonJson['description'] ?? null);
-        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM Notification WHERE id = ' . $nB1)->fetchColumn());
+        // 1. Under production DI (QueryFactory::mysql), single delete($id) lacks NOTIFICATION_DELETE ACL check:
+        //    non-admin User A deletes User B's notification
+        $delB1 = $this->dispatchAsUser('post', 'notification/delete/' . $nB1, $userA, $emptyProfile);
+        $this->assertJsonOk($delB1, 'Notification deleted');
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Notification WHERE id = ' . $nB1)->fetchColumn());
 
-        // 2. Yet batch delete (no ->limit(1)) SUCCEEDS under production DI (QueryFactory::COMMON) AND lacks
-        //    NOTIFICATION_DELETE ACL check: User A deletes User B's row and onlyAdmin=1 row
+        // 2. Batch delete also lacks NOTIFICATION_DELETE ACL check: User A deletes User B's row and onlyAdmin=1 row
         $batchDelCommon = $this->dispatchAsUser(
             'post',
             'notification/delete',
             $userA,
             $emptyProfile,
             [],
-            ['items' => [$nB1, $nOnlyAdmin]]
+            ['items' => [$nB2, $nOnlyAdmin]]
         );
         $this->assertJsonOk($batchDelCommon, 'Notifications deleted');
-        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Notification WHERE id = ' . $nB1)->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Notification WHERE id = ' . $nB2)->fetchColumn());
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Notification WHERE id = ' . $nOnlyAdmin)->fetchColumn());
 
-        // 3. With QueryFactory('mysql'), single delete($id) also lacks ACL check and deletes User B's notification,
-        //    while non-admin cannot delete sticky=1 row (WHERE id = :id AND sticky = 0)
-        $delB = $this->dispatchAsUser('post', 'notification/delete/' . $nB2, $userA, $emptyProfile, [], [], [], [], true);
-        $this->assertJsonOk($delB, 'Notification deleted');
-        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM Notification WHERE id = ' . $nB2)->fetchColumn());
-
-        $delSticky = $this->dispatchAsUser('post', 'notification/delete/' . $nSticky, $userA, $emptyProfile, [], [], [], [], true);
+        // 3. Non-admin cannot delete sticky=1 row (WHERE id = :id AND sticky = 0)
+        $delSticky = $this->dispatchAsUser('post', 'notification/delete/' . $nSticky, $userA, $emptyProfile);
         $delStickyJson = $this->decodeJson($delSticky['body']);
         self::assertSame('ERROR', $delStickyJson['status'] ?? null);
         self::assertSame('Notification not found', $delStickyJson['description'] ?? null);
@@ -560,32 +544,8 @@ final class NotificationAuthorizationDbIntegrationTest extends DatabaseIntegrati
             (int)$pdo->query('SELECT COUNT(*) FROM Notification WHERE userId = ' . $nonAdmin->id)->fetchColumn()
         );
 
-        // 5. Under production DI (QueryFactory::COMMON), saveEdit->limit(1) crashes HTTP 500 "Internal error"
-        $editCommonCrash = $this->dispatchAsUser(
-            'post',
-            'notification/saveEdit/' . $existingCheckedId,
-            $admin,
-            $emptyProfile,
-            [],
-            [
-                'notification_type' => 'ExistingEdited',
-                'notification_component' => 'Accounts',
-                'notification_description' => 'Should crash on QueryFactory::COMMON',
-                'notification_user' => (string)$nonAdmin->id,
-            ]
-        );
-        self::assertSame(500, $editCommonCrash['code']);
-        $editCommonJson = $this->decodeJson($editCommonCrash['body']);
-        self::assertSame('ERROR', $editCommonJson['status'] ?? null);
-        self::assertSame('Internal error', $editCommonJson['description'] ?? null);
-        self::assertSame(
-            'Already checked content',
-            $pdo->query('SELECT description FROM Notification WHERE id = ' . $existingCheckedId)->fetchColumn()
-        );
-
-        // 6. Even with QueryFactory('mysql'), NotificationRepository::update() excludes only ['id'] (not ['id', 'date'])
-        //    in cols() while overriding ->set('date', 'UNIX_TIMESTAMP()'), leaving an unused :date bind parameter ->
-        //    SQLSTATE[HY093]: Invalid parameter number: parameter was not defined (row remains checked=1, unedited)
+        // 5. Under production DI (QueryFactory::mysql) and fixed NotificationRepository::update(), saveEdit succeeds,
+        //    updates fields, and resets checked=1 back to checked=0 when notification_checkout is omitted
         $editRes = $this->dispatchAsUser(
             'post',
             'notification/saveEdit/' . $existingCheckedId,
@@ -595,25 +555,21 @@ final class NotificationAuthorizationDbIntegrationTest extends DatabaseIntegrati
             [
                 'notification_type' => 'ExistingEdited',
                 'notification_component' => 'Accounts',
-                'notification_description' => 'Updated content blocked by HY093',
+                'notification_description' => 'Updated content resets checked state',
                 'notification_user' => (string)$nonAdmin->id,
-            ],
-            [],
-            [],
-            true
+            ]
         );
-        $editJson = $this->decodeJson($editRes['body']);
-        self::assertSame('ERROR', $editJson['status'] ?? null);
-        self::assertStringContainsString('SQLSTATE[HY093]', (string)($editJson['description'] ?? ''));
+        $this->assertJsonOk($editRes, 'Notification updated');
 
         $editedRow = $pdo->query(
-            'SELECT checked, description FROM Notification WHERE id = ' . $existingCheckedId
+            'SELECT type, checked, description FROM Notification WHERE id = ' . $existingCheckedId
         )->fetch(PDO::FETCH_ASSOC);
         self::assertIsArray($editedRow);
-        self::assertSame(1, (int)$editedRow['checked']);
-        self::assertSame('Already checked content', $editedRow['description']);
+        self::assertSame('ExistingEdited', $editedRow['type']);
+        self::assertSame(0, (int)$editedRow['checked']);
+        self::assertSame('Updated content resets checked state', $editedRow['description']);
 
-        // 7. Editing non-existent ID with QueryFactory('mysql') also hits SQLSTATE[HY093] before matching rows
+        // 6. Editing non-existent ID returns OK "Notification updated" with 0 affected rows
         $editMissingRes = $this->dispatchAsUser(
             'post',
             'notification/saveEdit/999999',
@@ -625,14 +581,9 @@ final class NotificationAuthorizationDbIntegrationTest extends DatabaseIntegrati
                 'notification_component' => 'Accounts',
                 'notification_description' => 'Missing notification',
                 'notification_user' => (string)$nonAdmin->id,
-            ],
-            [],
-            [],
-            true
+            ]
         );
-        $editMissingJson = $this->decodeJson($editMissingRes['body']);
-        self::assertSame('ERROR', $editMissingJson['status'] ?? null);
-        self::assertStringContainsString('SQLSTATE[HY093]', (string)($editMissingJson['description'] ?? ''));
+        $this->assertJsonOk($editMissingRes, 'Notification updated');
     }
 
     /**

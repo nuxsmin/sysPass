@@ -127,11 +127,13 @@
             <?php
             printf('<b>%s</b>: %d MB/s', __('Download rate'), $_getvar('downloadRate')); ?>
             <?php
-            if (function_exists('opcache_get_status') && PHP_VERSION_ID >= 50600): ?>
+            $opcacheStatus = function_exists('opcache_get_status') ? opcache_get_status(false) : false;
+
+            if (is_array($opcacheStatus) && isset($opcacheStatus['opcache_statistics']) && PHP_VERSION_ID >= 50600): ?>
                 <br>
                 <?php
                 printf('<b>%s</b>', __('OP Cache'));
-                foreach (opcache_get_status(false)['opcache_statistics'] as $key => $value):
+                foreach ($opcacheStatus['opcache_statistics'] as $key => $value):
                     printf('<br/>%s : %s', $key, $value);
                 endforeach;
                 ?>

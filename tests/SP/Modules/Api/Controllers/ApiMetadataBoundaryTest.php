@@ -268,7 +268,7 @@ final class ApiMetadataBoundaryTest extends TestCase
         ]);
         self::assertArrayHasKey('error', $clientErr['json'], $clientErr['raw']);
 
-        // 2. In-use Tag delete cascades AccountToTag and succeeds (suppressing CustomFieldData::deleteBatch() array-binding warning)
+        // 2. In-use Tag delete cascades AccountToTag and succeeds without CustomFieldData::deleteBatch() array-binding warning
         $tagDel = $this->seedTokenForUser(1, AclActionsInterface::TAG_DELETE);
         $warningSeen = false;
         set_error_handler(static function (int $severity, string $message) use (&$warningSeen): bool {
@@ -288,7 +288,7 @@ final class ApiMetadataBoundaryTest extends TestCase
         } finally {
             restore_error_handler();
         }
-        self::assertTrue($warningSeen);
+        self::assertFalse($warningSeen);
         self::assertArrayHasKey('result', $tagOk['json'], $tagOk['raw']);
         self::assertSame(0, $tagOk['json']['result']['resultCode']);
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM AccountToTag WHERE tagId = 1')->fetchColumn());
