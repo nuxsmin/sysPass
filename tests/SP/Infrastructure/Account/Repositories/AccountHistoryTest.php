@@ -396,15 +396,13 @@ class AccountHistoryTest extends UnitaryTestCase
     #[Test]
     public function testDeleteByAccountIdBatch(): void
     {
-        $ids = [self::$faker->randomNumber(), self::$faker->randomNumber(), self::$faker->randomNumber()];
+        $ids = [101, 202, 303];
 
         $callback = new Callback(
             static function (QueryData $arg) use ($ids) {
                 $values = $arg->getQuery()->getBindValues();
 
-                return array_shift($values) === array_shift($ids)
-                       && array_shift($values) === array_shift($ids)
-                       && array_shift($values) === array_shift($ids)
+                return array_values($values) === $ids
                        && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
@@ -416,6 +414,29 @@ class AccountHistoryTest extends UnitaryTestCase
                        ->willReturn(new QueryResult());
 
         $this->accountHistory->deleteByAccountIdBatch($ids);
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    #[Test]
+    public function testDeleteByAccountIdBatchNormalizesAndDeduplicatesIds(): void
+    {
+        $callback = new Callback(
+            static function (QueryData $arg) {
+                return $arg->getQuery()->getBindValues() === ['id0' => 87, 'id1' => 4]
+                       && $arg->getMapClassName() === Simple::class
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->database->expects(self::once())
+            ->method('runQuery')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountHistory->deleteByAccountIdBatch([0, 87, -5, 87, 4]);
     }
 
     /**
