@@ -3,6 +3,8 @@ import path from 'node:path';
 import { defineConfig } from '@playwright/test';
 
 const outputDir = process.env.SP_UI_OUTPUT_DIR ?? path.join(import.meta.dirname, 'test-results');
+const chromiumExecutable = process.env.SP_UI_CHROMIUM_EXECUTABLE;
+const launchOptions = chromiumExecutable ? { executablePath: chromiumExecutable } : undefined;
 
 process.env.PLAYWRIGHT_NO_COPY_PROMPT = '1';
 
@@ -23,6 +25,7 @@ export default defineConfig({
     video: 'off',
     screenshot: 'off',
     serviceWorkers: 'block',
+    ...(launchOptions ? { launchOptions } : {}),
   },
   projects: [{ name: 'chromium' }],
 });
