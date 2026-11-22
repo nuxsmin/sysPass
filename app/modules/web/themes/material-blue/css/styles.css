@@ -2044,6 +2044,14 @@ body.logout footer .sp-auth-connection-warning {
   font-weight: 400;
 }
 
+body.login #box-pub-noheader .sp-auth-brand {
+  margin-bottom: var(--sp-space-4);
+}
+body.login #box-pub-noheader .sp-auth-logo {
+  width: 140px;
+  max-width: 100%;
+}
+
 body.logout .sp-auth-brand {
   gap: var(--sp-space-3);
 }

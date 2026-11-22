@@ -1,4 +1,6 @@
 import { expect, test } from '../src/session';
+import { writeFile } from 'node:fs/promises';
+import path from 'node:path';
 
 import { loginContract } from '../src/contracts';
 import {
@@ -12,6 +14,101 @@ import { ADMIN_CREDENTIALS } from '../src/fixture';
 import { loginThroughUi } from '../src/login';
 
 const LOGIN_ROUTE = 'login/index';
+
+test('login logo is centered and balanced at supported viewport sizes', async ({ isolatedPage: { page } }) => {
+  await page.goto(`/index.php?r=${LOGIN_ROUTE}`, { waitUntil: 'domcontentloaded' });
+  const logo = page.locator('.sp-auth-logo');
+  const card = page.locator('#box-login');
+
+  const geometry = await logo.evaluate(async (image: HTMLImageElement) => {
+    const response = await fetch(image.src);
+    if (!response.ok) throw new Error(`Logo request failed: ${response.status}`);
+    const svg = new DOMParser().parseFromString(await response.text(), 'image/svg+xml').documentElement;
+    svg.setAttribute('width', '280');
+    svg.setAttribute('height', '205');
+    svg.setAttribute('style', 'position:absolute;visibility:hidden');
+    document.body.appendChild(svg);
+    try {
+      const children = Array.from(svg.children) as SVGGraphicsElement[];
+      const symbolElement = children[0];
+      if (!symbolElement || children.length < 2) throw new Error('Logo geometry is incomplete');
+      const symbol = symbolElement.getBBox();
+      const wordmark = children.slice(1).map((child) => {
+        const box = child.getBBox();
+        const matrix = child.transform.baseVal.consolidate()?.matrix;
+        return { left: box.x + (matrix?.e ?? 0), right: box.x + box.width + (matrix?.e ?? 0), bottom: box.y + box.height };
+      });
+      return {
+        symbolCenter: symbol.x + symbol.width / 2 + (symbolElement.transform.baseVal.consolidate()?.matrix.e ?? 0),
+        wordmarkCenter: (Math.min(...wordmark.map((box) => box.left)) + Math.max(...wordmark.map((box) => box.right))) / 2,
+        wordmarkBottom: Math.max(...wordmark.map((box) => box.bottom)),
+      };
+    } finally {
+      svg.remove();
+    }
+  });
+
+  const layouts = [];
+  for (const [width, height, label] of [
+    [1440, 900, 'desktop'],
+    [768, 812, 'tablet'],
+    [375, 812, 'mobile'],
+    [375, 500, 'short'],
+    [720, 450, 'zoom-200-reflow'],
+  ] as const) {
+    await page.setViewportSize({ width, height });
+    const logoBox = await logo.boundingBox();
+    const cardBox = await card.boundingBox();
+    expect(logoBox && cardBox).toBeTruthy();
+
+    if (process.env.SP_UI_LOGIN_CAPTURE_DIR) {
+      await page.screenshot({
+        path: path.join(process.env.SP_UI_LOGIN_CAPTURE_DIR, `${process.env.SP_UI_LOGIN_CAPTURE_PREFIX ?? ''}${label}.png`),
+        animations: 'disabled',
+      });
+    }
+
+    layouts.push({
+      logoBox: logoBox!,
+      cardBox: cardBox!,
+      noOverflow: await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    });
+  }
+  for (const { logoBox, cardBox, noOverflow } of layouts) {
+    expect(logoBox.width).toBeCloseTo(140, 0);
+    expect(logoBox.x + logoBox.width / 2).toBeCloseTo(cardBox.x + cardBox.width / 2, 0);
+    const visibleGap = cardBox.y - (logoBox.y + logoBox.height * geometry.wordmarkBottom / 205);
+    expect(visibleGap).toBeGreaterThanOrEqual(24);
+    expect(visibleGap).toBeLessThanOrEqual(28);
+    expect(logoBox.y).toBeGreaterThanOrEqual(0);
+    expect(noOverflow).toBe(true);
+  }
+  expect(Math.abs(geometry.symbolCenter - geometry.wordmarkCenter)).toBeLessThan(1);
+
+  const cdp = await page.context().newCDPSession(page);
+  try {
+    await cdp.send('Emulation.setDeviceMetricsOverride', {
+      width: 720,
+      height: 450,
+      deviceScaleFactor: 2,
+      mobile: false,
+    });
+    if (process.env.SP_UI_LOGIN_CAPTURE_DIR) {
+      const { data } = await cdp.send('Page.captureScreenshot', { format: 'png' });
+      await writeFile(
+        path.join(process.env.SP_UI_LOGIN_CAPTURE_DIR, `${process.env.SP_UI_LOGIN_CAPTURE_PREFIX ?? ''}zoom-200-hidpi.png`),
+        Buffer.from(data, 'base64'),
+      );
+    }
+    expect(await page.evaluate(() => window.devicePixelRatio)).toBe(2);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await card.scrollIntoViewIfNeeded();
+    await expect(page.locator('#btnLogin')).toBeInViewport();
+  } finally {
+    await cdp.send('Emulation.clearDeviceMetricsOverride');
+    await cdp.detach();
+  }
+});
 
 test('the configured fixed user agent wins over the desktop device descriptor', ({}, testInfo) => {
   expect(testInfo.project.use.userAgent).toBe(FIXED_USER_AGENT);

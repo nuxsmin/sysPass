@@ -40,6 +40,7 @@ The identity combines a geometric outline padlock, a custom radial six-arm aster
 | Single-color / print | `*-monochrome-black.svg`, `*-monochrome-white.svg` | Use supplied variant; never simulate with CSS filters |
 
 - **Clear space:** Maintain at least **24% of the symbol width** around all logos.
+- The stacked primary asset centers the original v1.0.1 wordmark beneath its symbol without changing the paths; the unmodified reference is retained in Git at `452717e01:public/images/brand/syspass-stacked-primary.svg`.
 - **Alternative text:** If the logo links to the application home, give the interactive control an accessible name such as `sysPass home`; hide duplicate decorative icons from assistive technology (`aria-hidden="true"`).
 - **Subpath & caching:** Resolve all asset, favicon, `apple-touch-icon`, and `manifest.webmanifest` URLs through sysPass's base URL / `UriContextInterface` so reverse-proxy and subpath deployments work cleanly, and update cache-busting parameters when assets change.
 
