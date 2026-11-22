@@ -54,7 +54,7 @@ class ThemeIconsTest extends UnitaryTestCase
 
         $this->assertInstanceOf(FontIcon::class, $out);
         $this->assertEquals('test', $out->getIcon());
-        $this->assertEquals('mdl-color-text--indigo-A200', $out->getClass());
+        $this->assertEquals('sp-color-text--accent', $out->getClass());
     }
 
     #[Test]
@@ -114,4 +114,25 @@ class ThemeIconsTest extends UnitaryTestCase
 
         ThemeIcons::loadIcons($context, $fileCache, $themeContext, $fileLoader);
     }
+
+    #[Test]
+    public function testMaterialBlueIconsUseSemanticContrastClasses(): void
+    {
+        if (!defined('APP_ROOT')) {
+            define('APP_ROOT', dirname(__DIR__, 4));
+        }
+
+        /** @var ThemeIcons $icons */
+        $icons = require dirname(__DIR__, 4) . '/app/modules/web/themes/material-blue/inc/Icons.php';
+
+        self::assertInstanceOf(ThemeIcons::class, $icons);
+        self::assertSame('sp-color-text--accent', $icons->add()->getClass());
+        self::assertSame('sp-color--accent', $icons->add()->getClassButton());
+        self::assertSame('sp-color-text--warning', $icons->warning()->getClass());
+        self::assertSame('sp-color-text--error', $icons->delete()->getClass());
+        self::assertSame('sp-color-text--success', $icons->save()->getClass());
+        self::assertStringNotContainsString('mdl-color', $icons->appAdmin()->getClass());
+        self::assertStringNotContainsString('mdl-color', $icons->clear()->getClass());
+    }
+
 }

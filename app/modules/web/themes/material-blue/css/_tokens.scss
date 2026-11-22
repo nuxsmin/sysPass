@@ -1,0 +1,387 @@
+:root,
+.sp-app,
+.sp-app[data-theme="light"] {
+  --sp-brand-core: #3949AB;
+  --sp-brand-heritage: #5C6BC0;
+  --sp-brand-ink: #263544;
+  --sp-brand-slate: #526977;
+  --sp-brand-mist: #E8EAF6;
+  --sp-brand-white: #FFFFFF;
+
+  --sp-background: #FFFFFF;
+  --sp-surface: #F5F7FC;
+  --sp-surface-alt: #E8EAF6;
+  --sp-text: #263544;
+  --sp-muted: #526977;
+  --sp-border: #D7DEEC;
+  --sp-accent: #3949AB;
+  --sp-on-accent: #FFFFFF;
+  --sp-focus: #3949AB;
+
+  --sp-success: #2E7D32;
+  --sp-success-bg: #EBF5EE;
+  --sp-error: #C62828;
+  --sp-error-bg: #FDECEC;
+  --sp-warning: #8A5800;
+  --sp-warning-bg: #FFF6E5;
+  --sp-info: #0369A1;
+  --sp-info-bg: #EBF6FC;
+
+  --sp-space-1: 4px;
+  --sp-space-2: 8px;
+  --sp-space-3: 12px;
+  --sp-space-4: 16px;
+  --sp-space-6: 24px;
+  --sp-space-8: 32px;
+
+  --sp-radius-sm: 6px;
+  --sp-radius-md: 10px;
+  --sp-radius-lg: 16px;
+
+  --sp-motion-quick: 120ms;
+  --sp-motion-standard: 180ms;
+
+  --sp-font-sans: Inter, Roboto, system-ui, sans-serif;
+  --sp-font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.sp-app {
+  background-color: var(--sp-background);
+  color: var(--sp-text);
+  font-family: var(--sp-font-sans);
+  line-height: 1.5;
+
+  :focus-visible {
+    outline: 3px solid var(--sp-focus);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.sp-header-primary {
+  background-color: var(--sp-accent) !important;
+  color: var(--sp-on-accent) !important;
+
+  .mdl-layout__drawer-button,
+  .mdl-navigation__link,
+  .mdl-button {
+    color: var(--sp-on-accent) !important;
+  }
+
+  .mdl-navigation__link {
+    border-radius: var(--sp-radius-sm);
+    transition: background-color var(--sp-motion-quick) ease;
+
+    &:hover,
+    &.sp-nav-active {
+      background-color: rgba(255, 255, 255, 0.16);
+    }
+
+    &.sp-nav-active {
+      font-weight: 600;
+      box-shadow: inset 0 -2px 0 var(--sp-on-accent);
+    }
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--sp-on-accent);
+    outline-offset: 2px;
+  }
+
+  .sp-color-text--warning {
+    color: #FFD27A !important;
+  }
+}
+
+.sp-header-brand {
+  display: inline-flex;
+  align-items: center;
+  width: auto !important;
+  height: auto !important;
+}
+
+.sp-brand-home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  padding: 6px 10px;
+  margin: 0;
+  cursor: pointer;
+  border-radius: var(--sp-radius-sm);
+  min-height: 40px;
+
+  img.logo {
+    display: block;
+    width: auto;
+    height: auto;
+  }
+
+  .sp-brand-logo--wide {
+    width: 168px;
+    min-width: 160px;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .sp-brand-logo--compact {
+    display: none;
+    width: 28px;
+    min-width: 24px;
+    height: 28px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .sp-brand-home {
+    padding: 6px;
+
+    .sp-brand-logo--wide {
+      display: none;
+    }
+
+    .sp-brand-logo--compact {
+      display: block;
+    }
+  }
+}
+
+.mdl-layout__drawer {
+  background-color: var(--sp-background);
+  color: var(--sp-text);
+  border-right: 1px solid var(--sp-border);
+
+  .mdl-layout-title {
+    color: var(--sp-accent);
+    font-weight: 600;
+  }
+
+  .mdl-navigation .mdl-navigation__link {
+    color: var(--sp-text);
+    border-left: 3px solid transparent;
+    transition: background-color var(--sp-motion-quick) ease;
+
+    &:hover,
+    &.sp-nav-active {
+      background-color: var(--sp-surface-alt);
+      color: var(--sp-accent);
+    }
+
+    &.sp-nav-active {
+      font-weight: 600;
+      border-left-color: var(--sp-accent);
+    }
+  }
+}
+
+.sp-auth-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-space-3);
+  margin-bottom: var(--sp-space-4);
+  padding: var(--sp-space-4) var(--sp-space-4) 0;
+  text-align: center;
+}
+
+.sp-auth-logo {
+  display: block;
+  width: min(192px, 60vw);
+  height: auto;
+}
+
+.sp-auth-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--sp-text);
+}
+
+.sp-panel {
+  background-color: var(--sp-background);
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius-lg) !important;
+}
+
+.sp-btn-primary,
+.mdl-button--colored.sp-btn-primary,
+.mdl-button--fab.sp-btn-primary,
+.mdl-button--raised.sp-btn-primary {
+  background-color: var(--sp-accent) !important;
+  color: var(--sp-on-accent) !important;
+  border-radius: var(--sp-radius-md);
+  transition: background-color var(--sp-motion-quick) ease;
+
+  &:hover,
+  &:focus-visible {
+    background-color: #2E3B94 !important;
+  }
+}
+
+.mdl-button--fab.sp-btn-primary {
+  border-radius: 50%;
+}
+
+.sp-btn-secondary {
+  background-color: var(--sp-surface) !important;
+  color: var(--sp-text) !important;
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius-md);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--sp-surface-alt) !important;
+  }
+}
+
+.sp-password-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--sp-radius-sm);
+  padding: 4px;
+  margin-right: var(--sp-space-2);
+  color: var(--sp-muted);
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--sp-accent);
+    background-color: var(--sp-surface-alt);
+  }
+}
+
+.sp-color-text--accent {
+  color: var(--sp-accent) !important;
+}
+
+.sp-color-text--heritage {
+  color: var(--sp-brand-heritage) !important;
+}
+
+.sp-color-text--success {
+  color: var(--sp-success) !important;
+}
+
+.sp-color-text--warning {
+  color: var(--sp-warning) !important;
+}
+
+.sp-color-text--error {
+  color: var(--sp-error) !important;
+}
+
+.sp-color-text--info {
+  color: var(--sp-info) !important;
+}
+
+.sp-color-text--muted {
+  color: var(--sp-muted) !important;
+}
+
+.sp-color--accent {
+  background-color: var(--sp-accent) !important;
+  color: var(--sp-on-accent) !important;
+}
+
+.sp-color--heritage {
+  background-color: var(--sp-brand-heritage) !important;
+  color: var(--sp-on-accent) !important;
+}
+
+.sp-color--success {
+  background-color: var(--sp-success) !important;
+  color: var(--sp-on-accent) !important;
+}
+
+.sp-color--warning {
+  background-color: var(--sp-warning) !important;
+  color: var(--sp-on-accent) !important;
+}
+
+.sp-color--error {
+  background-color: var(--sp-error) !important;
+  color: var(--sp-on-accent) !important;
+}
+
+.sp-color--info {
+  background-color: var(--sp-info) !important;
+  color: var(--sp-on-accent) !important;
+}
+
+.sp-color--muted {
+  background-color: var(--sp-muted) !important;
+  color: var(--sp-on-accent) !important;
+}
+
+.sp-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.sp-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-space-1);
+  padding: 2px 8px;
+  border-radius: var(--sp-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  border: 1px solid var(--sp-border);
+  background-color: var(--sp-background);
+  color: var(--sp-text);
+
+  .material-icons {
+    font-size: 16px;
+  }
+
+  &--success {
+    background-color: var(--sp-success-bg);
+    border-color: var(--sp-success);
+    color: var(--sp-success);
+  }
+
+  &--error {
+    background-color: var(--sp-error-bg);
+    border-color: var(--sp-error);
+    color: var(--sp-error);
+  }
+
+  &--warning {
+    background-color: var(--sp-warning-bg);
+    border-color: var(--sp-warning);
+    color: var(--sp-warning);
+  }
+
+  &--info {
+    background-color: var(--sp-info-bg);
+    border-color: var(--sp-info);
+    color: var(--sp-info);
+  }
+
+  &--muted {
+    background-color: var(--sp-surface);
+    border-color: var(--sp-border);
+    color: var(--sp-muted);
+  }
+}
+
+#actions-bar.is-fixed {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border-bottom: 1px solid var(--sp-border) !important;
+}

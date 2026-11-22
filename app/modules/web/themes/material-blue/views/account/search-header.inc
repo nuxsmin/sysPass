@@ -60,10 +60,10 @@ if (!isset($data)) {
                 <?php
                 $classDown = ($data->getPager()->getSortKey() == $field->getSortKey()
                               && $data->getPager()->getSortOrder() ===
-                                 0) ? 'mdl-color--amber-A200' : 'md-dark md-inactive';
+                                 0) ? 'sp-color--accent' : 'md-dark md-inactive';
                 $classUp = ($data->getPager()->getSortKey() == $field->getSortKey()
                             &&
-                            $data->getPager()->getSortOrder() === 1) ? 'mdl-color--amber-A200' : 'md-dark md-inactive';
+                            $data->getPager()->getSortOrder() === 1) ? 'sp-color--accent' : 'md-dark md-inactive';
                 ?>
                 <div
                         class="icon material-icons sort-down cursor-pointer <?php

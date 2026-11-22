@@ -1,33 +1,32 @@
-@mixin background-logo-outline() {
-  background: transparent url($public-path + "/images/logo_full_nobg_outline.png") no-repeat top center;
-  background-size: 75% auto;
-}
-
 body.login,
 body.logout,
 body.userpassreset {
-  background: $color-bluegrey-fg;
+  background: var(--sp-surface);
+  color: var(--sp-text);
 
   #wrap {
     background: transparent;
   }
 
   #container {
-    padding-top: 5%;
+    padding-top: var(--sp-space-8);
   }
 
   footer {
-    background: #78909C;
+    background: var(--sp-surface);
+    color: var(--sp-muted);
+    border-top: 1px solid var(--sp-border);
 
-    a {
-      color: #f2f2f2;
+    a,
+    a:visited {
+      color: var(--sp-accent);
     }
   }
 }
 
 #box-pub-noheader {
-  @include background-logo-outline;
-  width: 40em;
+  width: min(40em, 92vw);
+  max-width: 100%;
   min-height: 20em;
   margin: 0 auto;
 
@@ -37,59 +36,60 @@ body.userpassreset {
     margin: 0 auto;
   }
 
-  .box-spacer {
-    height: 15em;
-    background-color: transparent;
-  }
-
   .box-header {
     width: 100%;
-    color: #f2f2f2;
-    font-size: 16px;
-    font-weight: bold;
+    color: var(--sp-text);
+    font-size: 18px;
+    font-weight: 600;
     text-align: center;
     margin: 1em 0;
-    letter-spacing: .1em;
     padding: 0.2em 0;
   }
 
   .box-form {
     @include shadow-full();
-    background-color: #f2f2f2;
+    background-color: var(--sp-background);
+    border: 1px solid var(--sp-border);
+    border-radius: var(--sp-radius-lg) !important;
 
     form {
       fieldset#box-data {
         height: 100%;
-        min-height: 14em;
+        min-height: 12em;
         text-align: left;
         background-color: transparent;
 
         legend {
           width: 100%;
-          color: $color-bluegrey-fg;
+          color: var(--sp-muted);
           font-size: 14px;
-          font-weight: bold;
+          font-weight: 600;
           text-align: center;
           margin: 1em 0;
-          letter-spacing: .1em;
           padding: 0.2em 0;
         }
 
+        .form-control {
+          display: flex;
+          align-items: center;
+          gap: var(--sp-space-2);
+        }
+
         .form-control > i {
-          margin-right: .5em;
-          opacity: .5;
+          color: var(--sp-muted);
+          flex-shrink: 0;
         }
 
         .extra-hidden {
           display: none;
         }
 
-        margin-bottom: 2em;
+        margin-bottom: 1.5em;
       }
     }
 
     div#box-buttons {
-      margin-top: 2em;
+      margin-top: 1.5em;
       text-align: center;
     }
   }
@@ -97,11 +97,7 @@ body.userpassreset {
 
 @media screen and (max-width: 600px) {
   #box-pub-noheader {
-    width: 25em;
-
-    .box-spacer {
-      height: 10em;
-    }
+    width: min(25em, 94vw);
 
     form {
       fieldset#box-data {
@@ -112,4 +108,3 @@ body.userpassreset {
     }
   }
 }
-

@@ -1821,6 +1821,9 @@ class AccountTest extends IntegrationTestCase
         self::assertCount(4, $filter);
         self::assertFalse($json->data->useimage);
         self::assertEquals('OK', $json->status);
+        self::assertStringNotContainsString('mdl-color-text--amber-A200', $json->data->html);
+        self::assertStringNotContainsString('mdl-color-text--amber-A100', $json->data->html);
+        self::assertStringNotContainsString('mdl-color--amber-A200', $json->data->html);
     }
 
     /**
@@ -1839,6 +1842,9 @@ class AccountTest extends IntegrationTestCase
         self::assertCount(4, $filter);
         self::assertFalse($json->data->useimage);
         self::assertEquals('OK', $json->status);
+        self::assertStringNotContainsString('mdl-color-text--amber-A200', $json->data->html);
+        self::assertStringNotContainsString('mdl-color-text--amber-A100', $json->data->html);
+        self::assertStringNotContainsString('mdl-color--amber-A200', $json->data->html);
     }
 
     /**
@@ -1853,6 +1859,8 @@ class AccountTest extends IntegrationTestCase
         )->extract(['id']);
 
         self::assertCount(2, $filter);
+        self::assertCount(1, $crawler->filterXPath('//button[@id="btnClipPass" and contains(@class, "sp-btn-primary") and @aria-label]'));
+        self::assertStringNotContainsString('mdl-color--indigo-A200', $output);
     }
 
     /**
@@ -1963,6 +1971,7 @@ class AccountTest extends IntegrationTestCase
         )->extract(['id']);
 
         self::assertCount(2, $filter);
+        self::assertStringNotContainsString('mdl-color--indigo-A200', $output);
     }
 
     /**
@@ -1978,6 +1987,9 @@ class AccountTest extends IntegrationTestCase
 
         self::assertCount(4, $filter);
         self::assertEquals('OK', $json->status);
+        self::assertStringNotContainsString('mdl-color-text--amber-A200', $json->data->html);
+        self::assertStringNotContainsString('mdl-color-text--amber-A100', $json->data->html);
+        self::assertStringNotContainsString('mdl-color--amber-A200', $json->data->html);
     }
 
     /**
@@ -2006,6 +2018,7 @@ class AccountTest extends IntegrationTestCase
         )->extract(['id']);
 
         self::assertCount(2, $filter);
+        self::assertStringNotContainsString('mdl-color--indigo-A200', $output);
     }
 
     /**
@@ -2034,6 +2047,7 @@ class AccountTest extends IntegrationTestCase
         )->extract(['id']);
 
         self::assertCount(2, $filter);
+        self::assertStringNotContainsString('mdl-color--indigo-A200', $output);
     }
 
     /**

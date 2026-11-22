@@ -2,9 +2,10 @@ html, body {
   margin: 0;
   padding: 0;
   text-align: left;
-  background-color: #f5f5f5;
-  color: #555;
-  font-size: 12px;
+  background-color: var(--sp-background);
+  color: var(--sp-text);
+  font-size: 16px;
+  line-height: 1.5;
   font-weight: normal;
   box-sizing: border-box;
   max-width: 100%;
@@ -20,7 +21,7 @@ html, body {
 }
 
 table {
-  font-size: 11px;
+  font-size: 14px;
   border-spacing: 0;
 
   th {
@@ -35,15 +36,15 @@ table {
 
   tr {
     &.odd {
-      background-color: #f9f9f9;
+      background-color: var(--sp-surface);
     }
 
     &.even > td, &.odd > td {
-      border-bottom: 1px solid #d9d9d9 !important;
+      border-bottom: 1px solid var(--sp-border) !important;
     }
 
     &.even:hover, &.odd:hover {
-      background-color: #e8ff99;
+      background-color: var(--sp-surface-alt);
     }
 
     height: 20px;
@@ -60,7 +61,7 @@ table {
 }
 
 form {
-  font-size: 11px;
+  font-size: 14px;
   margin: 0;
 }
 
@@ -155,9 +156,11 @@ pre, code, samp, kbd {
   font-size: 1em;
   direction: ltr;
   text-align: left;
-  background-color: #fbfaf9;
-  color: #333;
-  box-shadow: inset 0 0 .3em #ccc;
-  border-radius: 2px;
+  background-color: var(--sp-surface);
+  color: var(--sp-text);
+  border: 1px solid var(--sp-border);
+  box-shadow: none;
+  border-radius: var(--sp-radius-sm);
+  padding: 2px 6px;
 }
 

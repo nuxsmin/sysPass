@@ -185,7 +185,9 @@ $accountView = $_getvar('accountData');
                 if (!$_getvar('useImage')): ?>
                     <li>
                         <button id="btnClipPass"
-                                class="clip-pass-icon mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
+                                class="clip-pass-icon mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored sp-btn-primary"
+                                aria-label="<?php echo htmlspecialchars(__('Copy Password'), ENT_QUOTES); ?>"
+                                title="<?php echo htmlspecialchars(__('Copy Password'), ENT_QUOTES); ?>"
                                 data-clipboard-target="#password"
                                 data-item-id="<?php
                                 echo $accountView->getId(); ?>"

@@ -41,7 +41,7 @@ use function SP\__;
 if ($_getvar('numNotices', 0) > 0): ?>
     <a href="https://github.com/nuxsmin/sysPass/labels/Notices" target="_blank">
         <div id="notices-info"
-             class="material-icons mdl-badge mdl-badge--overlap mdl-color-text--amber-200"
+             class="material-icons mdl-badge mdl-badge--overlap sp-color-text--warning"
              data-badge="<?php
              echo $_getvar('numNotices'); ?>">feedback
         </div>
@@ -60,7 +60,7 @@ if ($_getvar('hasUpdates')): ?>
         echo $_getvar('title'); ?>
         &nbsp;&nbsp;
         <div id="help-hasupdates"
-             class="icon material-icons mdl-color-text--indigo-200">
+             class="icon material-icons sp-color-text--accent">
             cloud_download
         </div>
     </a>
@@ -69,7 +69,7 @@ if ($_getvar('hasUpdates')): ?>
         echo $_getvar('description'); ?></span>
 <?php
 elseif ($_getvar('updateStatus') === true): ?>
-    <div id="updates-info" class="icon material-icons mdl-color-text--teal-200">
+    <div id="updates-info" class="icon material-icons sp-color-text--success">
         check_circle
     </div>
     <span for="updates-info"
@@ -78,7 +78,7 @@ elseif ($_getvar('updateStatus') === true): ?>
 <?php
 elseif ($_getvar('updateStatus') === false): ?>
     <div id="updates-info"
-         class="icon material-icons mdl-color-text--amber-200">
+         class="icon material-icons sp-color-text--warning">
         warning
     </div>
     <span for="updates-info"

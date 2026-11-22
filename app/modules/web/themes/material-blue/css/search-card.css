@@ -18,8 +18,10 @@
   height: auto;
   text-align: left;
   margin: 0.5em 0.5em;
-  color: #696969;
-  background-color: #fcfcfc;
+  color: var(--sp-text);
+  background-color: var(--sp-surface);
+  border: 1px solid var(--sp-border);
+  border-radius: var(--sp-radius-md);
   padding: 0 0.5em;
 }
 #content #data-search .account-label .label-row-up,
@@ -60,16 +62,16 @@
   word-wrap: break-word;
 }
 #content #data-search .account-label .field-text a {
-  color: #5c6bc0;
+  color: var(--sp-accent);
 }
 #content #data-search .account-label .field-customer {
   flex-grow: 2;
 }
 #content #data-search .account-label .field-name {
   padding: 0.3em 0.2em;
-  color: #b9b9b9;
+  color: var(--sp-muted);
   text-align: left;
-  border-bottom: 1px solid #d9d9d9;
+  border-bottom: 1px solid var(--sp-border);
 }
 #content #data-search .account-label .field-name-hidden {
   display: none;
@@ -86,7 +88,7 @@
 #content #data-search .account-info {
   padding: 0.5em 0 0.5em 0;
   text-align: left;
-  opacity: 0.3;
+  opacity: 0.85;
   min-height: 4em;
 }
 #content #data-search .account-info:hover {
@@ -96,10 +98,10 @@
   align-self: baseline;
   padding: 0.5em 0;
   text-align: right;
-  border-top: 1px solid #c9c9c9;
+  border-top: 1px solid var(--sp-border);
 }
 #content #data-search .account-actions i {
-  opacity: 0.5;
+  opacity: 0.85;
 }
 #content #data-search .account-actions i:hover {
   opacity: 1;
@@ -115,7 +117,7 @@
 }
 #content #data-search .tags-box span.tag {
   cursor: pointer;
-  opacity: 0.3;
+  opacity: 0.85;
 }
 #content #data-search .tags-box span.tag:hover {
   opacity: 1;

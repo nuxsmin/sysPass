@@ -108,7 +108,7 @@ final class ThemeIcons implements ThemeIconsInterface
      */
     public function getIconByName(string $name): IconInterface
     {
-        return $this->icons[$name] ?? new FontIcon($name, 'mdl-color-text--indigo-A200');
+        return $this->icons[$name] ?? new FontIcon($name, 'sp-color-text--accent');
     }
 
     /**

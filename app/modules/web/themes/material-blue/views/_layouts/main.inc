@@ -17,9 +17,11 @@ echo $_getvar('lang'); ?>">
         printf('%s :: %s', $_getvar('app_name'), $_getvar('app_desc')); ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png"
-          href="<?php
-          echo $_getvar('logo_icon'); ?>">
+    <meta name="theme-color" content="#3949AB"/>
+    <link rel="icon" href="<?php echo $_getvar('favicon_ico'); ?>" sizes="any"/>
+    <link rel="icon" type="image/svg+xml" href="<?php echo $_getvar('favicon_svg'); ?>"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo $_getvar('apple_touch_icon'); ?>"/>
+    <link rel="manifest" href="<?php echo $_getvar('manifest_url'); ?>"/>
     <?php
     foreach ($_getvar('cssLinks') as $cssLink) : ?>
         <link rel="stylesheet" href="<?php
@@ -27,8 +29,8 @@ echo $_getvar('lang'); ?>">
     <?php
     endforeach; ?>
 </head>
-<body class="<?php
-echo $_getvar('page'); ?>">
+<body class="sp-app <?php
+echo $_getvar('page'); ?>" data-theme="light">
 <div id="wrap">
     <noscript>
         <div id="nojs"><?php

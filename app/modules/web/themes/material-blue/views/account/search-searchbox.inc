@@ -134,7 +134,7 @@ $pager = $data->getPager();
                     <button type="button" id="btn-favorite"
                             class="icon-searchfav mdl-button mdl-js-button mdl-button--icon"
                             tabindex="5">
-                        <i class="material-icons mdl-color-text--amber-A200"
+                        <i class="material-icons sp-color-text--warning"
                            title="<?php
                            echo __('Display All'); ?>">star</i>
                     </button>

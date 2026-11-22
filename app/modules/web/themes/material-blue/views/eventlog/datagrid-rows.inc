@@ -53,7 +53,7 @@ if ($data->getData()->getDataCount() > 0):
                 ) : $dataItem->{$rowSrc['name']}; ?>
                 <?php
                 $value = isset($rowSrc['filter']) ? $rowSrc['filter']($value) : $value; ?>
-                <td class="cell-data"><?php
+                <td class="cell-data sp-tabular"><?php
                     echo $value !== '' ? $value : '&nbsp;'; // Fix height ?></td>
             <?php
             endforeach; ?>

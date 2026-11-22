@@ -371,11 +371,21 @@ final class UserPassResetTest extends IntegrationTestCase
     public function checkIndex(string $output): void
     {
         self::assertStringContainsString('frmPassReset', $output);
+        self::assertStringContainsString('sp-auth-brand', $output);
+        self::assertStringContainsString('syspass-stacked-primary.svg', $output);
+        self::assertStringContainsString('sp-panel', $output);
+        self::assertStringContainsString('sp-btn-primary', $output);
+        self::assertStringNotContainsString('box-spacer', $output);
     }
 
     public function checkReset(string $output): void
     {
         self::assertStringContainsString('frmUserPassReset', $output);
+        self::assertStringContainsString('sp-auth-brand', $output);
+        self::assertStringContainsString('syspass-stacked-primary.svg', $output);
+        self::assertStringContainsString('sp-panel', $output);
+        self::assertStringContainsString('sp-btn-primary', $output);
+        self::assertStringNotContainsString('box-spacer', $output);
     }
 
     public function checkRequested(string $output): void

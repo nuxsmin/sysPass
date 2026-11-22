@@ -38,8 +38,13 @@ use function SP\__;
 ?>
 
 <div id="box-pub-noheader">
-    <div class="box-spacer"></div>
-    <div id="box-login" class="box-form round">
+    <div class="sp-auth-brand">
+        <img class="sp-auth-logo"
+             src="<?php echo $_getvar('logo_stacked_primary'); ?>"
+             alt="<?php echo htmlspecialchars($_getvar('app_name'), ENT_QUOTES); ?>"/>
+        <h1 class="sp-auth-title"><?php echo __('Sign in'); ?></h1>
+    </div>
+    <div id="box-login" class="box-form sp-panel round">
         <form method="post" name="frmLogin" id="frmLogin" class="form-action"
               data-onsubmit="main/login"
               data-route="login/login">
@@ -108,7 +113,7 @@ use function SP\__;
             </fieldset>
             <div id="box-buttons">
                 <button id="btnLogin" type="submit" form="frmLogin"
-                        class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--indigo-400"
+                        class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored sp-btn-primary"
                         title="<?php
                         echo __('Sign in'); ?>">
                     <i class="material-icons">play_arrow</i>

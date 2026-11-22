@@ -278,4 +278,38 @@ final class ResourceTest extends IntegrationTestCase
         self::assertSame(500, $cMissing->get(Response::class)->code());
         self::assertSame('', $outMissing);
     }
+
+    #[Test]
+    public function themeCssServesCanonicalBrandTokensWithoutLegacyAssets(): void
+    {
+        $uri = new Uri('http://localhost/index.php');
+        $uri->addParams([
+            'r' => 'resource/css',
+            'b' => 'app/modules/web/themes/material-blue/css',
+            'f' => 'styles.css,material-custom.css,search-card.css,search-grid.css',
+        ]);
+        $query = (string) parse_url($uri->getUriSigned($this->passwordSalt), PHP_URL_QUERY);
+        parse_str($query, $params);
+
+        $dispatchContainer = $this->buildContainer(
+            self::buildRequest('get', 'index.php', $params, [], [], ['QUERY_STRING' => $query])
+        );
+        ob_start();
+        try {
+            self::runApp($dispatchContainer);
+        } finally {
+            $css = (string) ob_get_clean();
+        }
+
+        self::assertSame(200, $dispatchContainer->get(Response::class)->code());
+        self::assertStringContainsString('--sp-background', $css);
+        self::assertStringContainsString('#3949ab', strtolower($css));
+        self::assertStringContainsString('.sp-header-primary', $css);
+        self::assertStringContainsString('.sp-color-text--accent', $css);
+        self::assertStringContainsString('.sp-color--accent', $css);
+        self::assertStringNotContainsString('var(--sp-bg)', $css);
+        self::assertStringNotContainsString('logo_full_nobg_outline', $css);
+        self::assertStringNotContainsString('logo_full_bg.png', $css);
+        self::assertStringNotContainsString('#e8ff99', strtolower($css));
+    }
 }

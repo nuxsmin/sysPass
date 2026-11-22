@@ -11,9 +11,9 @@
   background: rgba(0, 0, 0, 0.4);
   z-index: 9999;
   opacity: 0;
-  -webkit-transition: opacity 400ms ease-in;
-  -moz-transition: opacity 400ms ease-in;
-  transition: opacity 400ms ease-in;
+  -webkit-transition: opacity 180ms ease-in;
+  -moz-transition: opacity 180ms ease-in;
+  transition: opacity 180ms ease-in;
 }
 
 .dialog-container > div {
@@ -35,8 +35,8 @@
   font-weight: 500;
   letter-spacing: 0.02em;
   line-height: 1;
-  background-color: $color-bluegrey-fg;
-  color: $color-bluegrey-bg;
+  background-color: $color-indigo-fg-accent;
+  color: #FFFFFF;
   padding: .5em;
   text-align: center;
 }

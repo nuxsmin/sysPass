@@ -12,16 +12,25 @@ use function SP\__;
 
 ?>
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--no-desktop-drawer-button">
-    <header class="mdl-layout__header mdl-color--indigo-400">
+    <header class="mdl-layout__header sp-header-primary">
         <div class="mdl-layout__header-row">
             <!-- Title -->
-            <span class="mdl-layout-icon">
-                <img class="logo btn-menu"
-                     src="<?php echo $_getvar('logo_no_bg_color'); ?>"
-                     alt="logo"
-                     data-route="<?php echo $_getvar('homeRoute'); ?>"
-                     data-view="search"
-                     data-historyReset="1"/>
+            <span class="mdl-layout-icon sp-header-brand">
+                <button type="button"
+                        class="sp-brand-home btn-menu"
+                        aria-label="<?php echo htmlspecialchars(__('sysPass home'), ENT_QUOTES); ?>"
+                        data-route="<?php echo $_getvar('homeRoute'); ?>"
+                        data-view="search"
+                        data-historyReset="1">
+                    <img class="logo sp-brand-logo--wide"
+                         src="<?php echo $_getvar('logo_horizontal_reversed'); ?>"
+                         alt=""
+                         aria-hidden="true"/>
+                    <img class="logo sp-brand-logo--compact"
+                         src="<?php echo $_getvar('logo_symbol_reversed'); ?>"
+                         alt=""
+                         aria-hidden="true"/>
+                </button>
             </span>
 
             <?php if ($_getvar('useMenu') && $_getvar('loggedIn')): ?>
@@ -43,12 +52,13 @@ use function SP\__;
                     <?php endforeach; ?>
 
                     <a id="notifications" class="btn-menu mdl-navigation__link"
+                       aria-label="<?php echo htmlspecialchars(__('Notifications'), ENT_QUOTES); ?>"
                        data-route="notification/index"
                        data-historyreset="1"
                        data-view="notifications">
                         <i class="material-icons mdl-badge mdl-badge--overlap notifications-badge"
                            data-badge="0"
-                           data-color-class="mdl-color-text--amber-200">notifications</i>
+                           data-color-class="sp-color-text--warning">notifications</i>
                     </a>
 
                     <span for="notifications"
@@ -58,6 +68,7 @@ use function SP\__;
                     <!-- User's menu -->
                     <!-- Right aligned menu below button -->
                     <button id="users-menu-lower-right"
+                            aria-label="<?php echo htmlspecialchars(__('User menu'), ENT_QUOTES); ?>"
                             class="mdl-button mdl-js-button mdl-button--icon">
                         <i class="material-icons">more_vert</i>
                     </button>
@@ -116,7 +127,7 @@ use function SP\__;
                    data-view="notifications">
                     <i class="material-icons mdl-badge mdl-badge--overlap notifications-badge"
                        data-badge="0"
-                       data-color-class="mdl-color-text--amber-200">notifications</i>
+                       data-color-class="sp-color-text--warning">notifications</i>
                     <?php echo __('Notifications'); ?>
                 </a>
 
@@ -171,10 +182,10 @@ use function SP\__;
                 <a class="mdl-navigation__link" href="#">
                     <?php
                     if ($_getvar('httpsEnabled')) : ?>
-                        <i class="material-icons mdl-color-text--teal-500">lock</i>
+                        <i class="material-icons sp-color-text--success" aria-hidden="true">lock</i><span>HTTPS</span>
                     <?php
                     else : ?>
-                        <i class="material-icons mdl-color-text--red-900">lock_open</i>
+                        <i class="material-icons sp-color-text--error" aria-hidden="true">lock_open</i><span>HTTP</span>
                     <?php endif; ?>
 
                     <?php

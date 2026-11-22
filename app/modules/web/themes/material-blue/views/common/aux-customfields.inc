@@ -44,21 +44,21 @@ foreach ($customFields as $index => $field):?>
             echo htmlspecialchars($field->definitionName, ENT_QUOTES); ?>
             <?php
             if ($field->isEncrypted && $field->isValueEncrypted === true): ?>
-                <i class="icon material-icons mdl-color-text--teal-500"
+                <i class="icon material-icons sp-color-text--success"
                    title="<?php
                    echo __('Encrypted'); ?>">
                     lock_outline
                 </i>
             <?php
             elseif ($field->isEncrypted && $field->isValueEncrypted === false): ?>
-                <i class="icon material-icons mdl-color-text--amber-500"
+                <i class="icon material-icons sp-color-text--warning"
                    title="<?php
                    echo __('Data will be encrypted after saving'); ?>">
                     lock_outline
                 </i>
             <?php
             elseif ($field->isEncrypted === 0 && $field->isValueEncrypted === true): ?>
-                <i class="icon material-icons mdl-color-text--red-500"
+                <i class="icon material-icons sp-color-text--error"
                    title="<?php
                    echo __('Data will be unencrypted after saving'); ?>">
                     lock_open

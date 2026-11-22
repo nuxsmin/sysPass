@@ -23,8 +23,10 @@
       height: auto;
       text-align: left;
       margin: 0 auto 0.5em;
-      color: #696969;
-      background-color: #fcfcfc;
+      color: var(--sp-text);
+      background-color: var(--sp-surface);
+      border: 1px solid var(--sp-border);
+      border-radius: var(--sp-radius-md);
       padding: 0 .5em;
 
       .label-row-up,
@@ -70,7 +72,7 @@
         word-wrap: break-word;
 
         a {
-          color: $color-indigo-fg;
+          color: var(--sp-accent);
         }
       }
 
@@ -80,7 +82,7 @@
 
       .field-name {
         padding: 0.3em 0.2em;
-        color: #b9b9b9;
+        color: var(--sp-muted);
         display: none
       }
 
@@ -103,7 +105,7 @@
     .account-info {
       padding: .5em 0 .5em 0;
       text-align: left;
-      opacity: 0.3;
+      opacity: 0.85;
       min-height: 4em;
 
       &:hover {
@@ -115,7 +117,7 @@
       align-self: baseline;
       padding: .5em 0;
       text-align: right;
-      border-top: 1px solid #c9c9c9;
+      border-top: 1px solid var(--sp-border);
     }
 
     .account-spacer {
@@ -130,7 +132,7 @@
 
       span.tag {
         cursor: pointer;
-        opacity: 0.3;
+        opacity: 0.85;
 
         &:hover {
           opacity: 1;
@@ -156,8 +158,8 @@
           .field-name {
             display: block;
             text-align: left;
-            border-bottom: 1px solid #d9d9d9;
-            color: $color-bluegrey-fg;
+            border-bottom: 1px solid var(--sp-border);
+            color: var(--sp-muted);
           }
         }
 

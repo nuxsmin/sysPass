@@ -4,163 +4,163 @@
 }
 
 .fg-blue20 {
-    color: rgba(83, 109, 254, .2)
+    color: rgba(57, 73, 171, .2)
 }
 
 .fg-blue40 {
-    color: rgba(83, 109, 254, .4)
+    color: rgba(57, 73, 171, .4)
 }
 
 .fg-blue60 {
-    color: rgba(83, 109, 254, .6)
+    color: rgba(57, 73, 171, .6)
 }
 
 .fg-blue80 {
-    color: rgba(83, 109, 254, .8)
+    color: rgba(57, 73, 171, .8)
 }
 
 .fg-blue100 {
-    color: rgb(83, 109, 254)
+    color: rgb(57, 73, 171)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-blue20 {
-    background-color: rgba(83, 109, 254, .2)
+    background-color: rgba(57, 73, 171, .2)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-blue40 {
-    background-color: rgba(83, 109, 254, .4)
+    background-color: rgba(57, 73, 171, .4)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-blue60 {
-    background-color: rgba(83, 109, 254, .6)
+    background-color: rgba(57, 73, 171, .6)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-blue80 {
-    background-color: rgba(83, 109, 254, .8)
+    background-color: rgba(57, 73, 171, .8)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-blue100 {
-    background-color: rgb(83, 109, 254)
+    background-color: rgb(57, 73, 171)
 }
 
 .fg-orange20 {
-    color: rgba(255, 193, 7, .2)
+    color: rgba(138, 88, 0, .2)
 }
 
 .fg-orange40 {
-    color: rgba(255, 193, 7, .4)
+    color: rgba(138, 88, 0, .4)
 }
 
 .fg-orange60 {
-    color: rgba(255, 193, 7, .6)
+    color: rgba(138, 88, 0, .6)
 }
 
 .fg-orange80 {
-    color: rgba(255, 193, 7, .8)
+    color: rgba(138, 88, 0, .8)
 }
 
 .fg-orange100 {
-    color: rgba(255, 193, 7, 1)
+    color: rgba(138, 88, 0, 1)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-orange20 {
-    background-color: rgba(255, 193, 7, .2)
+    background-color: rgba(138, 88, 0, .2)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-orange40 {
-    background-color: rgba(255, 193, 7, .4)
+    background-color: rgba(138, 88, 0, .4)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-orange60 {
-    background-color: rgba(255, 193, 7, .6)
+    background-color: rgba(138, 88, 0, .6)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-orange80 {
-    background-color: rgba(255, 193, 7, .8)
+    background-color: rgba(138, 88, 0, .8)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-orange100 {
-    background-color: rgba(255, 193, 7, 1)
+    background-color: rgba(138, 88, 0, 1)
 }
 
 .fg-red20 {
-    color: rgba(244, 67, 54, .2)
+    color: rgba(198, 40, 40, .2)
 }
 
 .fg-red40 {
-    color: rgba(244, 67, 54, .4)
+    color: rgba(198, 40, 40, .4)
 }
 
 .fg-red60 {
-    color: rgba(244, 67, 54, .6)
+    color: rgba(198, 40, 40, .6)
 }
 
 .fg-red80 {
-    color: rgba(244, 67, 54, .8)
+    color: rgba(198, 40, 40, .8)
 }
 
 .fg-red100 {
-    color: rgb(244, 67, 54)
+    color: rgb(198, 40, 40)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-red20 {
-    background-color: rgba(244, 67, 54, .2)
+    background-color: rgba(198, 40, 40, .2)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-red40 {
-    background-color: rgba(244, 67, 54, .4)
+    background-color: rgba(198, 40, 40, .4)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-red60 {
-    background-color: rgba(244, 67, 54, .6)
+    background-color: rgba(198, 40, 40, .6)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-red80 {
-    background-color: rgba(244, 67, 54, .8)
+    background-color: rgba(198, 40, 40, .8)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-red100 {
-    background-color: rgb(244, 67, 54)
+    background-color: rgb(198, 40, 40)
 }
 
 .fg-green20 {
-    color: rgba(0, 150, 136, .2)
+    color: rgba(46, 125, 50, .2)
 }
 
 .fg-green40 {
-    color: rgba(0, 150, 136, .4)
+    color: rgba(46, 125, 50, .4)
 }
 
 .fg-green60 {
-    color: rgba(0, 150, 136, .6)
+    color: rgba(46, 125, 50, .6)
 }
 
 .fg-green80 {
-    color: rgba(0, 150, 136, .8)
+    color: rgba(46, 125, 50, .8)
 }
 
 .fg-green100 {
-    color: rgb(0, 150, 136)
+    color: rgb(46, 125, 50)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-green20 {
-    background-color: rgba(0, 150, 136, 0.2)
+    background-color: rgba(46, 125, 50, 0.2)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-green40 {
-    background-color: rgba(0, 150, 136, 0.4)
+    background-color: rgba(46, 125, 50, 0.4)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-green60 {
-    background-color: rgba(0, 150, 136, .6)
+    background-color: rgba(46, 125, 50, .6)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-green80 {
-    background-color: rgba(0, 150, 136, .8)
+    background-color: rgba(46, 125, 50, .8)
 }
 
 .mdl-button--fab.mdl-button--colored.bg-green100 {
-    background-color: rgb(0, 150, 136)
+    background-color: rgb(46, 125, 50)
 }
 
 .mdl-tooltip {
@@ -189,4 +189,48 @@ label.mdl-switch {
 .mdl-list__item--two-line .mdl-list__item-primary-content {
     height: auto;
     min-height: 36px;
+}
+.mdl-textfield--floating-label.is-focused .mdl-textfield__label,
+.mdl-textfield--floating-label.is-dirty .mdl-textfield__label {
+    color: var(--sp-accent, #3949AB);
+}
+
+.mdl-textfield__label:after {
+    background-color: var(--sp-accent, #3949AB);
+}
+
+.mdl-checkbox.is-checked .mdl-checkbox__box-outline {
+    border-color: var(--sp-accent, #3949AB);
+}
+
+.mdl-checkbox.is-checked .mdl-checkbox__tick-outline,
+.mdl-switch.is-checked .mdl-switch__thumb {
+    background: var(--sp-accent, #3949AB);
+}
+
+.sp-app .mdl-color-text--indigo-400,
+.sp-app .mdl-color-text--indigo-A200 {
+    color: var(--sp-text, #263544) !important;
+}
+
+.sp-app .mdl-color--indigo-400,
+.sp-app .mdl-color--indigo-A200 {
+    background-color: var(--sp-accent, #3949AB) !important;
+    color: var(--sp-on-accent, #FFFFFF) !important;
+}
+
+.sp-app .mdl-color-text--teal-500 {
+    color: var(--sp-success, #2E7D32) !important;
+}
+
+.sp-app .mdl-color-text--red-500,
+.sp-app .mdl-color-text--red-900,
+.sp-app .mdl-color-text--red-A200 {
+    color: var(--sp-error, #C62828) !important;
+}
+
+.sp-app .mdl-color-text--amber-500,
+.sp-app .mdl-color-text--amber-A100,
+.sp-app .mdl-color-text--amber-A200 {
+    color: var(--sp-warning, #8A5800) !important;
 }

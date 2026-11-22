@@ -20,8 +20,10 @@
       height: auto;
       text-align: left;
       margin: .5em .5em;
-      color: #696969;
-      background-color: #fcfcfc;
+      color: var(--sp-text);
+      background-color: var(--sp-surface);
+      border: 1px solid var(--sp-border);
+      border-radius: var(--sp-radius-md);
       padding: 0 .5em;
 
       .label-row-up,
@@ -68,7 +70,7 @@
         word-wrap: break-word;
 
         a {
-          color: $color-indigo-fg;
+          color: var(--sp-accent);
         }
       }
 
@@ -78,9 +80,9 @@
 
       .field-name {
         padding: 0.3em 0.2em;
-        color: #b9b9b9;
+        color: var(--sp-muted);
         text-align: left;
-        border-bottom: 1px solid #d9d9d9
+        border-bottom: 1px solid var(--sp-border)
       }
 
       .field-name-hidden {
@@ -102,7 +104,7 @@
     .account-info {
       padding: .5em 0 .5em 0;
       text-align: left;
-      opacity: 0.3;
+      opacity: 0.85;
       min-height: 4em;
 
       &:hover {
@@ -114,10 +116,10 @@
       align-self: baseline;
       padding: .5em 0;
       text-align: right;
-      border-top: 1px solid #c9c9c9;
+      border-top: 1px solid var(--sp-border);
 
       i {
-        opacity: .5;
+        opacity: 0.85;
 
         &:hover {
           opacity: 1;
@@ -137,7 +139,7 @@
 
       span.tag {
         cursor: pointer;
-        opacity: 0.3;
+        opacity: 0.85;
 
         &:hover {
           opacity: 1;

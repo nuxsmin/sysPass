@@ -217,12 +217,15 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                     if ($accountSearchItem->isShow()): ?>
                         <?php
                         if ($accountSearchItem->isPasswordExpired()): ?>
-                            <i id="icon-expired-<?php
+                            <span id="icon-expired-<?php
                             echo $accountSearchData->getId(); ?>"
-                               class="material-icons <?php
-                               echo $icons->warning()->getClass(); ?>">
-                                <?php
-                                echo $icons->warning()->getIcon(); ?></i>
+                                  class="sp-status-badge sp-status-badge--warning">
+                                <i class="material-icons <?php
+                                echo $icons->warning()->getClass(); ?>" aria-hidden="true">
+                                    <?php
+                                    echo $icons->warning()->getIcon(); ?></i>
+                                <span><?php echo __('Expired'); ?></span>
+                            </span>
                             <span
                                     for="icon-expired-<?php
                                     echo $accountSearchData->getId(); ?>"
@@ -235,9 +238,12 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
 
                         <?php
                         if ($accountSearchData->getIsPrivate() === 1): ?>
-                            <i id="icon-private-<?php
+                            <span id="icon-private-<?php
                             echo $accountSearchData->getId(); ?>"
-                               class="material-icons">lock</i>
+                                  class="sp-status-badge sp-status-badge--muted">
+                                <i class="material-icons" aria-hidden="true">lock</i>
+                                <span><?php echo __('Private'); ?></span>
+                            </span>
                             <span
                                     for="icon-private-<?php
                                     echo $accountSearchData->getId(); ?>"
@@ -247,9 +253,12 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                             </span>
                         <?php
                         elseif ($accountSearchData->getIsPrivateGroup() === 1): ?>
-                            <i id="icon-private-<?php
+                            <span id="icon-private-<?php
                             echo $accountSearchData->getId(); ?>"
-                               class="material-icons">lock_open</i>
+                                  class="sp-status-badge sp-status-badge--muted">
+                                <i class="material-icons" aria-hidden="true">lock_open</i>
+                                <span><?php echo __('Private (Group)'); ?></span>
+                            </span>
                             <span
                                     for="icon-private-<?php
                                     echo $accountSearchData->getId(); ?>"
@@ -259,9 +268,12 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                             </span>
                         <?php
                         else: ?>
-                            <i id="accesses-<?php
+                            <span id="accesses-<?php
                             echo $accountSearchData->getId(); ?>"
-                               class="material-icons">face</i>
+                                  class="sp-status-badge sp-status-badge--info">
+                                <i class="material-icons" aria-hidden="true">face</i>
+                                <span><?php echo __('Shared'); ?></span>
+                            </span>
 
                             <div class="mdl-tooltip mdl-tooltip--top"
                                  for="accesses-<?php
@@ -282,7 +294,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         if ($accountSearchItem->isFavorite()): ?>
                             <i id="btn-favorite-<?php
                             echo $accountSearchData->getId(); ?>"
-                               class="material-icons icon-favorite mdl-color-text--amber-A100"
+                               class="material-icons icon-favorite sp-color-text--warning"
                                data-action-route-on="<?php
                                echo $favoriteRouteOn; ?>"
                                data-action-route-off="<?php

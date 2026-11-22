@@ -56,7 +56,7 @@ $index = $index ?? 0;
                             id="btn-add-<?php
                             echo $action->getId(); ?>"
                             type="button"
-                            class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200 mdl-js-ripple-effect"
+                            class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored sp-btn-primary mdl-js-ripple-effect"
                             data-nextaction="<?php
                             echo $data->getOnCloseAction(); ?>"
                             data-onclick="<?php

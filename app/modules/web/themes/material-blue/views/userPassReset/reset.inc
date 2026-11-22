@@ -38,12 +38,13 @@ use function SP\__;
 ?>
 
 <div id="box-pub-noheader">
-    <div class="box-spacer"></div>
-    <div class="box-header">
-        <?php
-        echo __('Request Password Change'); ?>
+    <div class="sp-auth-brand">
+        <img class="sp-auth-logo"
+             src="<?php echo $_getvar('logo_stacked_primary'); ?>"
+             alt="<?php echo htmlspecialchars($_getvar('app_name'), ENT_QUOTES); ?>"/>
+        <h1 class="sp-auth-title"><?php echo __('Request Password Change'); ?></h1>
     </div>
-    <div id="box-passreset" class="box-form round">
+    <div id="box-passreset" class="box-form sp-panel round">
         <form id="frmUserPassReset" action="" method="post" class="form-action"
               data-onsubmit="user/passreset"
               data-action-route="userPassReset/saveReset">
@@ -82,7 +83,7 @@ use function SP\__;
 
             <div id="box-buttons">
                 <button id="btnBack" type="button"
-                        class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+                        class="mdl-button mdl-js-button mdl-button--raised sp-btn-secondary">
                     <i class="material-icons"
                        title="<?php
                        echo __('Go back to login'); ?>"><?php
@@ -92,7 +93,7 @@ use function SP\__;
                 </button>
 
                 <button id="btnChange"
-                        class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+                        class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored sp-btn-primary">
                     <?php
                     echo __('Change'); ?>
                     <i class="material-icons"

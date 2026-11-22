@@ -431,6 +431,7 @@ test("main.getUpdates renders remote release values as text and attributes", fun
     assert.equal(link.attrs.rel, "noopener noreferrer");
     assert.equal(link.textContent, "<img src=x onerror=alert(1)>");
     assert.equal(link.children[0].textContent, "cloud_download");
+    assert.equal(link.children[0].className, "icon material-icons sp-color-text--accent");
     assert.equal(tooltip.textContent, "<script>alert(1)</script>");
     assert.deepEqual(context.updates.htmlValues, []);
 });
@@ -443,6 +444,7 @@ test("main.getUpdates displays a warning without update content on failure", fun
 
     assert.equal(context.updates.children.length, 2);
     assert.equal(context.updates.children[0].textContent, "warning");
+    assert.equal(context.updates.children[0].className, "icon material-icons sp-color-text--warning");
     assert.equal(context.updates.children[1].textContent, "Unable to check for updates");
     assert.deepEqual(context.updates.htmlValues, []);
 });
@@ -663,4 +665,19 @@ test("appMgmt.delete cancel reports cancellation without dispatching a request",
 
     assert.equal(context.record.calls.length, 0);
     assert.deepEqual(context.record.errors, ["Cancel"]);
+});
+
+test("main.getNotices renders notice badge with semantic warning class", function () {
+    const notices = makeElement();
+    const context = setup({elements: {"#notices": notices}});
+
+    context.actions.main.getNotices();
+    context.record.calls[0].callback({
+        status: 0,
+        data: [{title: "Notice 1"}]
+    });
+
+    assert.equal(notices.htmlValues.length, 1);
+    assert.match(notices.htmlValues[0], /sp-color-text--warning/);
+    assert.doesNotMatch(notices.htmlValues[0], /mdl-color-text--amber-200/);
 });

@@ -54,5 +54,22 @@ final class IndexTest extends IntegrationTestCase
     {
         self::assertStringContainsString('<body', $output);
         self::assertStringContainsString('id="content"', $output);
+        self::assertStringContainsString('data-theme="light"', $output);
+        self::assertStringContainsString('sp-app', $output);
+        self::assertStringContainsString('favicon.svg', $output);
+        self::assertStringContainsString('icon-180.png', $output);
+        self::assertStringContainsString('manifest.webmanifest', $output);
+        self::assertStringContainsString('name="theme-color" content="#3949AB"', $output);
+        self::assertStringContainsString('sp-header-primary', $output);
+        self::assertStringContainsString('syspass-horizontal-reversed.svg', $output);
+        self::assertStringContainsString('syspass-symbol-reversed.svg', $output);
+        self::assertStringNotContainsString('mdl-color--indigo-400', $output);
+        self::assertStringNotContainsString('logo_full_nobg_outline', $output);
+        self::assertStringNotContainsString('logo_icon.png', $output);
+        self::assertStringContainsString('sp-color-text--error', $output);
+        self::assertStringContainsString('<span>HTTP</span>', $output);
+        self::assertStringNotContainsString('mdl-color-text--red-900', $output);
+        self::assertStringNotContainsString('mdl-color-text--teal-500', $output);
+        self::assertStringNotContainsString('mdl-color-text--amber-200', $output);
     }
 }

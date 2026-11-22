@@ -118,7 +118,8 @@ final class LayoutHelper extends HelperBase
      */
     public function initBody(): void
     {
-        $baseUrl = $this->configData->getApplicationUrl() ?? $this->uriContext->getWebUri();
+        $baseUrl = rtrim($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri(), '/');
+        $brandUrl = $baseUrl . '/public/images/brand';
 
         $this->view->assign('isInstalled', $this->configData->isInstalled());
         $this->view->assign('app_name', AppInfoInterface::APP_NAME);
@@ -126,9 +127,15 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('app_website_url', AppInfoInterface::APP_WEBSITE_URL);
         $this->view->assign('app_blog_url', AppInfoInterface::APP_BLOG_URL);
         $this->view->assign('app_version', InstallerService::VERSION_TEXT);
-        $this->view->assign('logo_icon', $baseUrl . '/public/images/logo_icon.png');
-        $this->view->assign('logo_no_bg_color', $baseUrl . '/public/images/logo_full_nobg_outline_color.png');
-        $this->view->assign('logo_no_bg', $baseUrl . '/public/images/logo_full_nobg_outline.png');
+        $this->view->assign('logo_horizontal_primary', $brandUrl . '/syspass-horizontal-primary.svg');
+        $this->view->assign('logo_horizontal_reversed', $brandUrl . '/syspass-horizontal-reversed.svg');
+        $this->view->assign('logo_stacked_primary', $brandUrl . '/syspass-stacked-primary.svg');
+        $this->view->assign('logo_symbol_primary', $brandUrl . '/syspass-symbol-primary.svg');
+        $this->view->assign('logo_symbol_reversed', $brandUrl . '/syspass-symbol-reversed.svg');
+        $this->view->assign('favicon_svg', $brandUrl . '/favicon.svg');
+        $this->view->assign('favicon_ico', $brandUrl . '/favicon.ico');
+        $this->view->assign('apple_touch_icon', $brandUrl . '/icon-180.png');
+        $this->view->assign('manifest_url', $baseUrl . '/public/manifest.webmanifest');
         $this->view->assign('httpsEnabled', $this->request->isHttps());
         $this->view->assign('homeRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT));
 

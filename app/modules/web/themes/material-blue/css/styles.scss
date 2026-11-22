@@ -1,4 +1,5 @@
 @import "base";
+@import "tokens";
 @import "elements";
 @import "noheader";
 
@@ -20,7 +21,7 @@
   /*min-width: 1024px;*/
   /*height: 100%;*/
   width: 100%;
-  background-color: #f5f5f5;
+  background-color: var(--sp-background);
   padding-bottom: 5em;
 }
 
@@ -124,7 +125,7 @@
       width: 100%;
       padding: 7px;
       background-color: $color-bluegrey-bg;
-      color: $color-bluegrey-fg;
+      color: var(--sp-muted);
       font-size: 17px;
       letter-spacing: .2em;
       font-weight: bold;
@@ -135,8 +136,8 @@
     text-align: right;
     padding-right: 20px;
     width: 25%;
-    border-right: 1px solid #d9d9d9;
-    color: #999;
+    border-right: 1px solid var(--sp-border);
+    color: var(--sp-muted);
     font-size: 12px;
     font-weight: bold;
   }
@@ -148,7 +149,7 @@
     .lowres-title {
       display: none;
       width: 100%;
-      color: $color-bluegrey-fg;
+      color: var(--sp-muted);
       font-size: 12px;
     }
 
@@ -161,8 +162,8 @@
       }
 
       .event-description {
-        color: $color-indigo-fg;
-        border-bottom: 1px solid #e9e9e9;
+        color: var(--sp-accent);
+        border-bottom: 1px solid var(--sp-border);
       }
 
       .event-details {
@@ -195,8 +196,8 @@
     margin-top: 15px;
     padding: .5em;
     font-size: 11px;
-    color: #999;
-    background-color: #fcfcfc;
+    color: var(--sp-muted);
+    background-color: var(--sp-surface);
 
     img {
       margin-left: 5px;
@@ -206,20 +207,20 @@
     a {
       margin-left: 5px;
       font-size: 12px;
-      color: #999;
+      color: var(--sp-muted);
     }
   }
 
   #title {
     width: 100%;
     padding: 7px;
-    background-color: #d9d9d9;
-    color: #fff;
+    background-color: var(--sp-accent);
+    color: var(--sp-on-accent);
     font-size: 17px;
     letter-spacing: .2em;
 
     &.titleNormal {
-      background-color: $color-bluegrey-fg;
+      background-color: var(--sp-accent);
       color: #fff;
     }
   }
@@ -234,7 +235,7 @@
 
     > {
       legend {
-        color: $color-bluegrey-fg;
+        color: var(--sp-muted);
         padding: 0 .5em;
         font-size: 1.5em;
       }
@@ -254,7 +255,7 @@
     padding: 10px;
     //border: 1px solid #d9d9d9;
     margin: 0 auto;
-    background-color: #fff;
+    background-color: var(--sp-background);
     @include box-shadow();
 
     #history-icon {
@@ -291,7 +292,7 @@
       padding: 1em;
       border: 2px dashed $color-teal-fg;
       text-align: center;
-      opacity: .3;
+      opacity: .85;
 
       img {
         vertical-align: middle;
@@ -313,7 +314,7 @@
 
   #tabs {
     fieldset {
-      border: 1px solid #c9c9c9;
+      border: 1px solid var(--sp-border);
     }
 
     #frmConfig label {
@@ -333,13 +334,13 @@
 
       &.rowHeader {
         padding: 5px 0 5px 0;
-        background-color: #f5f5f5;
+        background-color: var(--sp-surface);
         text-align: center;
         font-weight: bold;
-        border-top: 15px solid #f9f9f9;
-        border-bottom: 3px solid #a9c1d7;
+        border-top: 12px solid var(--sp-background);
+        border-bottom: 2px solid var(--sp-accent);
         letter-spacing: .5em;
-        color: #696969;
+        color: var(--sp-text);
       }
     }
 
@@ -362,22 +363,22 @@
     height: 1.5em;
     font-size: 18px;
     color: white;
-    background-color: #a9c1d7;
+    background-color: var(--sp-accent);
     margin: 0;
     padding-top: 0.1em;
   }
 
   .section {
     margin-top: 2.5em;
-    border-bottom: 1px solid #d9d9d9;
+    border-bottom: 1px solid var(--sp-border);
     text-align: left;
     font-size: 14px;
     font-weight: bold;
-    color: $color-indigo-fg;
+    color: var(--sp-accent);
   }
 
   .row_even > td {
-    background-color: #f5f5f5;
+    background-color: var(--sp-surface);
   }
 
   .row_odd > td {
@@ -431,7 +432,7 @@
       letter-spacing: normal;
 
       a {
-        color: #b9b9b9;
+        color: var(--sp-muted);
         padding: 0.3em 0.8em;
       }
     }
@@ -450,7 +451,7 @@
     }
 
     thead th {
-      background-color: $color-bluegrey-fg;
+      background-color: var(--sp-accent);
       color: #fff;
     }
 
@@ -485,14 +486,14 @@
       width: 100%;
       margin: 0 0 10px 0;
       padding: 0;
-      background-color: #fcfcfc;
+      background-color: var(--sp-surface);
     }
 
     li {
       float: left;
       display: block;
       padding: 1em;
-      color: #696969;
+      color: var(--sp-text);
       text-align: center;
       min-height: 2em;
 
@@ -507,7 +508,7 @@
         min-height: 2em;
         padding: 1em 0;
         text-align: left;
-        background-color: #fcfcfc;
+        background-color: var(--sp-surface);
         width: 15em;
       }
 
@@ -535,7 +536,7 @@
     }
 
     td {
-      border-bottom: 1px solid #d9d9d9;
+      border-bottom: 1px solid var(--sp-border);
     }
 
     .cell {
@@ -548,7 +549,7 @@
   }
 
   #searchbox {
-    background-color: #fcfcfc;
+    background-color: var(--sp-surface);
     vertical-align: middle;
     position: relative;
     height: auto;
@@ -630,15 +631,15 @@
 
     li {
       display: flex;
-      background: #f2f2f2;
+      background: var(--sp-surface);
       padding: .5em;
       font-size: 1em;
       margin-bottom: .5em;
     }
 
     li:hover {
-      background: #e8eaf6;
-      color: #000;
+      background: var(--sp-surface-alt);
+      color: var(--sp-text);
     }
 
     div.files-item-info {
@@ -670,7 +671,7 @@
   min-width: 50em;
   margin: 5em auto;
   padding: 0;
-  background-color: #fff;
+  background-color: var(--sp-background);
 
   &.box-password-view {
     @include fit-ccntent();
@@ -684,7 +685,7 @@
       width: 100%;
       font-size: 18px;
       color: #fff;
-      background-color: $color-bluegrey-fg;
+      background-color: var(--sp-accent);
       margin: 0;
       padding: .5em 0;
       line-height: 1em;
@@ -730,7 +731,7 @@
     }
 
     > div.title {
-      background-color: $color-bluegrey-fg;
+      background-color: var(--sp-accent);
       color: #fff;
       padding: .5em;
     }
@@ -738,7 +739,7 @@
 
   &.help {
     min-height: 100px;
-    background-color: #f5f5f5;
+    background-color: var(--sp-surface);
 
     p {
       font-size: 14px;
@@ -799,8 +800,8 @@ footer {
   z-index: 100;
   width: 100%;
   padding: .5em 0;
-  background-color: #f5f5f5;
-  color: #b9b9b9;
+  background-color: var(--sp-surface);
+  color: var(--sp-muted);
   font-size: 1em;
   @include box-shadow-top();
 
@@ -829,7 +830,7 @@ footer {
 
   #notices .notices-title {
     font-weight: bold;
-    border-bottom: 1px solid #c9c9c9;
+    border-bottom: 1px solid var(--sp-border);
     margin-bottom: 1em;
   }
 
@@ -847,25 +848,25 @@ footer {
 
   #session {
     text-align: left;
-    color: #999;
+    color: var(--sp-text);
     font-size: .8em;
   }
 
   a {
-    color: #b9b9b9;
+    color: var(--sp-accent);
 
     &:visited {
-      color: #b9b9b9;
+      color: var(--sp-accent);
     }
   }
 
   #project a:hover {
-    color: #a9c1d7;
-    border-bottom: 1px solid #a9c1d7;
+    color: var(--sp-accent);
+    border-bottom: 1px solid var(--sp-accent);
   }
 
   #updates a:hover {
-    color: #a9c1d7;
+    color: var(--sp-accent);
   }
 
   img {
@@ -910,7 +911,7 @@ footer {
   padding: 5px;
   margin: .2em 0;
   width: 30em;
-  border-bottom: 1px solid #c9c9c9;
+  border-bottom: 1px solid var(--sp-border);
 }
 
 .shadow {
@@ -920,7 +921,7 @@ footer {
 .noRes {
   width: 60%;
   padding: 15px;
-  background-color: #f9f9f9;
+  background-color: var(--sp-surface);
   color: #a9a9a9;
   border: #c9c9c9 1px solid;
   margin: 20px auto;
@@ -929,7 +930,7 @@ footer {
 }
 
 .header-grey {
-  background-color: $color-bluegrey-fg;
+  background-color: var(--sp-accent);
   color: #fff;
   min-height: 2em;
 }
@@ -996,7 +997,7 @@ footer {
 
 h5.datagrid-header-title {
   padding: .7em;
-  border-bottom: 1px solid #d9d9d9;
+  border-bottom: 1px solid var(--sp-border);
 }
 
 .fullWidth {
@@ -1071,8 +1072,8 @@ h5.datagrid-header-title {
     width: 50%;
     padding: 10px;
     margin: 15px auto;
-    border: 1px solid #c9c9c9;
-    color: #555;
+    border: 1px solid var(--sp-border);
+    color: var(--sp-text);
     font-weight: bold;
   }
 }
@@ -1086,8 +1087,8 @@ h5.datagrid-header-title {
 
 .dialog-user-text {
   @extend .dialog-text;
-  border-bottom: #d9d9d9 1px solid;
-  color: #a9a9a9;
+  border-bottom: 1px solid var(--sp-border);
+  color: var(--sp-muted);
 }
 
 .dialog-pass-text {
@@ -1103,7 +1104,7 @@ h5.datagrid-header-title {
 .dialog-buttons {
   text-align: center;
   padding: .5em;
-  border-top: 1px solid #c9c9c9;
+  border-top: 1px solid var(--sp-border);
   line-height: 2.5em;
 }
 
@@ -1119,7 +1120,7 @@ h5.datagrid-header-title {
 .help-box {
   display: none;
   background-color: #fff !important;
-  color: $color-bluegrey-fg;
+  color: var(--sp-muted);
 
   > * {
     font-weight: bold;
@@ -1157,7 +1158,7 @@ h5.datagrid-header-title {
   .tooltip-header {
     text-transform: capitalize;
     font-weight: bold;
-    border-bottom: 1px solid #c9c9c9;
+    border-bottom: 1px solid var(--sp-border);
   }
 }
 
@@ -1226,16 +1227,14 @@ fieldset.warning {
     display: flex;
     width: 100%;
     margin-bottom: 30px;
-    color: $color-bluegrey-fg;
+    color: var(--sp-muted);
     align-items: center;
-    background: url($public-path + "/images/logo_full_bg.png") left no-repeat;
-    background-size: auto 150px;
-    height: 150px;
+    min-height: 48px;
   }
 
   #page-title {
     width: 100%;
-    color: $color-bluegrey-fg;
+    color: var(--sp-muted);
     text-align: center;
 
     h1 {
@@ -1263,7 +1262,7 @@ fieldset.warning {
 
       &.msg-warning {
         @include color-amber();
-        color: #555;
+        color: var(--sp-text);
       }
 
       &.msg-ok {
@@ -1271,7 +1270,7 @@ fieldset.warning {
       }
 
       > p.hint {
-        color: #555;
+        color: var(--sp-text);
         font-size: 12px;
 
         i {
@@ -1295,7 +1294,7 @@ fieldset.warning {
         font-size: 14px;
         font-weight: bold;
         text-align: center;
-        background-color: $color-bluegrey-fg;
+        background-color: var(--sp-accent);
         margin: 1em 0;
         letter-spacing: .2em;
         padding: 0.2em 0;
@@ -1339,8 +1338,8 @@ div.tag-list-box {
 
   .tag-list-header {
     text-align: left;
-    border-bottom: 1px solid #d9d9d9;
-    color: $color-bluegrey-fg;
+    border-bottom: 1px solid var(--sp-border);
+    color: var(--sp-muted);
     font-size: 12px;
     font-weight: bold;
     margin-bottom: .5em;
@@ -1359,7 +1358,7 @@ div.tag-list-box {
 
   i.select-icon {
     margin-right: .5em;
-    color: $color-bluegrey-fg;
+    color: var(--sp-muted);
     font-size: 18px;
   }
 }
@@ -1368,7 +1367,7 @@ div.tag-list-box, div.tags-box {
   span.tag {
     margin: 0 3px 3px 0;
     padding: 3px;
-    background: $color-indigo-fg;
+    background: var(--sp-accent);
     color: #fff;
     border: none;
     @include border-radius(3px);

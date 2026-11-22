@@ -38,28 +38,34 @@ use function SP\__;
     <div id="footer-right" class="footer-parts">
         <div id="status">
             <?php if ($_getvar('httpsEnabled')): ?>
-                <span id="secure-info" class="status-info">
-                    <i class="material-icons mdl-color-text--teal-500">https</i>
+                <span id="secure-info" class="status-info sp-status-badge sp-status-badge--success">
+                    <i class="material-icons sp-color-text--success" aria-hidden="true">https</i>
+                    <span>HTTPS</span>
                 </span>
                 <span for="secure-info"
                       class="mdl-tooltip mdl-tooltip--top"><?php echo 'HTTPS'; ?></span>
             <?php else: ?>
-                <span id="secure-info" class="status-info">
-                    <i class="material-icons mdl-color-text--red-900">http</i>
+                <span id="secure-info" class="status-info sp-status-badge sp-status-badge--error">
+                    <i class="material-icons sp-color-text--error" aria-hidden="true">http</i>
+                    <span>HTTP</span>
                 </span>
                 <span for="secure-info"
                       class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Tells whether the connection uses HTTPS or not.') . '<br><br>' . __('Passwords sent from forms are encrypted using PKI, the remain data don\'t.'); ?></span>
             <?php endif; ?>
 
             <?php if (DEBUG): ?>
-                <i class="material-icons mdl-color-text--red-900"
-                   title="Debug ON">bug_report</i>
+                <span class="status-info sp-status-badge sp-status-badge--error">
+                    <i class="material-icons sp-color-text--error" aria-hidden="true"
+                       title="Debug ON">bug_report</i>
+                    <span>Debug</span>
+                </span>
             <?php endif; ?>
 
             <?php if ($_getvar('isDemo')): ?>
-                <span class="status-info">
-                    <i class="material-icons mdl-color-text--teal-500"
+                <span class="status-info sp-status-badge sp-status-badge--info">
+                    <i class="material-icons sp-color-text--info" aria-hidden="true"
                        title="<?php echo __('Demo'); ?>">play_circle_outline</i>
+                    <span><?php echo __('Demo'); ?></span>
                 </span>
             <?php endif; ?>
 

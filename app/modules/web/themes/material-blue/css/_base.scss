@@ -1,19 +1,19 @@
-$font-stack: "Roboto Regular", Verdana, Tahoma, sans-serif;
-$font-stack-mono: Consolas, "Andale Mono WT", "Andale Mono", "Bitstream Vera Sans Mono", "Nimbus Mono L", Monaco, "Courier New", monospace;
-$color-teal-bg: #e0f2f1;
-$color-teal-fg: #26a69a;
-$color-red-bg: #ffebee;
-$color-red-fg: #ef5350;
-$color-amber-bg: #fff8e1;
-$color-amber-fg: #ffca28;
-$color-indigo-bg: #e8eaf6;
-$color-indigo-fg: #5c6bc0;
-$color-indigo-fg-accent: #536dfe;
-$color-bluegrey-bg: #eceff1;
-$color-bluegrey-fg: #607d8b;
-$color-blue-bg: #e3f2fd;
-$color-blue-fg: #2196f3;
-$color-grey: #555;
+$font-stack: Inter, Roboto, system-ui, sans-serif;
+$font-stack-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+$color-teal-bg: #EBF5EE;
+$color-teal-fg: #2E7D32;
+$color-red-bg: #FDECEC;
+$color-red-fg: #C62828;
+$color-amber-bg: #FFF6E5;
+$color-amber-fg: #8A5800;
+$color-indigo-bg: #E8EAF6;
+$color-indigo-fg: #5C6BC0;
+$color-indigo-fg-accent: #3949AB;
+$color-bluegrey-bg: #F5F7FC;
+$color-bluegrey-fg: #526977;
+$color-blue-bg: #EBF6FC;
+$color-blue-fg: #0369A1;
+$color-grey: #263544;
 $public-path: 'public';
 
 @mixin box-shadow() {

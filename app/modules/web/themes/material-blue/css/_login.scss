@@ -14,7 +14,7 @@
       text-align: right;
 
       a {
-        color: #c9c9c9;
+        color: var(--sp-accent);
       }
     }
   }
@@ -31,9 +31,9 @@
   #demo-info {
     padding: .5em;
     margin: 3em auto 0 auto;
-    color: #c9c9c9;
-    border-top: 1px solid #d9d9d9;
-    border-bottom: 1px solid #d9d9d9;
+    color: var(--sp-muted);
+    border-top: 1px solid var(--sp-border);
+    border-bottom: 1px solid var(--sp-border);
 
     ul {
       display: flex;

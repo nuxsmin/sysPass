@@ -714,7 +714,7 @@ sysPass.Actions = function (log) {
             const renderStatus = function (message) {
                 const icon = document.createElement("div");
                 icon.id = "updates-info";
-                icon.className = "icon material-icons mdl-color-text--amber-200";
+                icon.className = "icon material-icons sp-color-text--warning";
                 icon.textContent = "warning";
 
                 const tooltip = document.createElement("span");
@@ -737,7 +737,7 @@ sysPass.Actions = function (log) {
 
                         const icon = document.createElement("div");
                         icon.id = "help-hasupdates";
-                        icon.className = "icon material-icons mdl-color-text--indigo-200";
+                        icon.className = "icon material-icons sp-color-text--accent";
                         icon.textContent = "cloud_download";
                         link.appendChild(icon);
 
@@ -782,7 +782,7 @@ sysPass.Actions = function (log) {
                         $notices.html(
                             `<a href="https://github.com/nuxsmin/sysPass/labels/Notices" target="_blank">
                             <div id="notices-info" 
-                            class="material-icons mdl-badge mdl-badge--overlap mdl-color-text--amber-200" 
+                            class="material-icons mdl-badge mdl-badge--overlap sp-color-text--warning" 
                             data-badge="${json.data.length}">feedback</div>
                             </a>
                             <span for="notices-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">

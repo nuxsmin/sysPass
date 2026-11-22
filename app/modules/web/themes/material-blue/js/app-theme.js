@@ -81,7 +81,8 @@ sysPass.Theme = function (log) {
             const mdl = new MaterialTextfield();
 
             // Poner la clave en los input y actualizar MDL
-            $dstParent.find("input:password").val(password);
+            delete $target[0].dataset.encryptedPass;
+            $target.removeAttr("data-length").val(password);
             $dstParent
                 .addClass(mdl.CssClasses_.IS_DIRTY)
                 .removeClass(mdl.CssClasses_.IS_INVALID);
@@ -160,7 +161,96 @@ sysPass.Theme = function (log) {
     /**
      * Detectar los campos de clave y añadir funciones
      */
+    const getPasswordLabels = function () {
+        const lang = (typeof sysPassApp !== "undefined" && sysPassApp.config && sysPassApp.config.LANG) || {};
+        return {
+            show: lang[32] || "Show Password",
+            hide: lang[76] || "Hide Password",
+            copy: lang[34] || "Copy Password"
+        };
+    };
+
+    const bindPasswordToggle = function ($input, $toggleBtn) {
+        const labels = getPasswordLabels();
+        const inputEl = $input[0];
+
+        const hidePassword = function () {
+            if ($input.attr("type") === "password") {
+                return;
+            }
+
+            const plainVal = $input.val();
+            const prevPass = inputEl.dataset.pass;
+            const encryptedPass = inputEl.dataset.encryptedPass;
+
+            inputEl.dataset.pass = plainVal;
+            $input.attr("type", "password");
+
+            if (encryptedPass !== undefined && plainVal === prevPass) {
+                $input.val(encryptedPass);
+                $input.attr("data-length", encryptedPass.length);
+            } else {
+                delete inputEl.dataset.encryptedPass;
+                $input.removeAttr("data-length");
+
+                if (plainVal !== ""
+                    && typeof sysPassApp !== "undefined"
+                    && sysPassApp.config
+                    && sysPassApp.config.PKI
+                    && sysPassApp.config.PKI.AVAILABLE
+                    && !$input.hasClass("passwordfield__no-pki")
+                    && typeof sysPassApp.encryptFormValue === "function"
+                ) {
+                    try {
+                        sysPassApp.encryptFormValue($input);
+                    } catch (err) {
+                        log.error(err);
+                    }
+                }
+            }
+
+            $toggleBtn
+                .attr("aria-pressed", "false")
+                .attr("aria-label", labels.show)
+                .attr("title", $toggleBtn.attr("data-level-msg") || labels.show);
+            $toggleBtn.find("i.material-icons").text("visibility");
+        };
+
+        $toggleBtn.on("click", function () {
+            if ($input.attr("type") === "password") {
+                const val = $input.val();
+                const encryptedLen = parseInt($input.attr("data-length"), 10);
+                const isEncrypted = !Number.isNaN(encryptedLen) && encryptedLen === val.length;
+
+                if (isEncrypted && inputEl.dataset.pass !== undefined) {
+                    inputEl.dataset.encryptedPass = val;
+                    $input.val(inputEl.dataset.pass);
+                } else if (inputEl.dataset.pass === undefined) {
+                    inputEl.dataset.pass = val;
+                }
+
+                $input.attr("type", "text");
+                $toggleBtn
+                    .attr("aria-pressed", "true")
+                    .attr("aria-label", labels.hide)
+                    .attr("title", labels.hide);
+                $toggleBtn.find("i.material-icons").text("visibility_off");
+            } else {
+                hidePassword();
+            }
+        });
+
+        const $form = $input.closest("form");
+        if ($form.length > 0) {
+            $form.on("submit.spPasswordToggle", function () {
+                hidePassword();
+            });
+        }
+    };
+
     const passwordDetect = function ($container) {
+        const labels = getPasswordLabels();
+
         // Crear los iconos de acciones sobre claves
         $container.find(".passwordfield__input").each(function () {
             const $this = $(this);
@@ -190,16 +280,20 @@ sysPass.Theme = function (log) {
             $thisParent.after(`<div class="password-actions" />`);
 
             $thisParent.next(".password-actions")
-                .prepend(`<i id='password-level-${targetId}' class="showpass material-icons clip-pass-field password-level" data-clipboard-target='${targetId}' data-level-msg= '' title="${sysPassApp.config.LANG[32]}">remove_red_eye</i>`)
+                .prepend(`<button type="button" id="password-level-${targetId}" class="sp-password-toggle showpass clip-pass-field password-level" data-clipboard-target="${targetId}" data-level-msg="" aria-label="${labels.show}" aria-pressed="false" title="${labels.show}"><i class="material-icons" aria-hidden="true">visibility</i></button>`)
                 .prepend(btnMenu);
 
             $this.on("keyup", function () {
                 sysPassApp.util.password.checkLevel($this);
 
                 this.dataset.pass = $this.val();
+                delete this.dataset.encryptedPass;
             });
 
             const $passwordActions = $this.parent().next();
+            const $toggleBtn = $passwordActions.find(".showpass");
+
+            bindPasswordToggle($this, $toggleBtn);
 
             // Crear evento para generar clave aleatoria
             $passwordActions
@@ -216,26 +310,28 @@ sysPass.Theme = function (log) {
                     complexityDialog();
                 });
 
-            // Crear evento para mostrar clave generada/introducida
-            $passwordActions
-                .find(".showpass")
-                .on("mouseover", function () {
-                    if (this.dataset.levelMsg !== "") {
-                        $(this).attr("title", this.dataset.levelMsg + "\n\n" + $this[0].dataset.pass);
-                    } else {
-                        $(this).attr("title", $this[0].dataset.pass);
-                    }
-                });
+            // Mostrar nivel de fortaleza en tooltip sin sobrescribir aria-label
+            $toggleBtn.on("mouseover", function () {
+                const isPressed = $(this).attr("aria-pressed") === "true";
+                const stateLabel = isPressed ? labels.hide : labels.show;
+
+                if (this.dataset.levelMsg) {
+                    $(this).attr("title", this.dataset.levelMsg + " (" + stateLabel + ")");
+                } else {
+                    $(this).attr("title", stateLabel);
+                }
+            });
 
             // Reset de los campos de clave
             $passwordActions
                 .find(".reset")
                 .on("click", function () {
-                    $this.val("");
+                    $this.val("").removeAttr("data-length");
                     $this[0].dataset.pass = "";
+                    delete $this[0].dataset.encryptedPass;
 
                     if ($passwordRepeat.length > 0) {
-                        $passwordRepeat.val("");
+                        $passwordRepeat.val("").removeAttr("data-length");
                     }
 
                     // Actualizar objetos de MDL
@@ -251,19 +347,29 @@ sysPass.Theme = function (log) {
         // Crear los iconos de acciones sobre claves (sólo mostrar clave)
         $container.find(".passwordfield__input-show").each(function () {
             const $this = $(this);
-            const $icon = $("<i class=\"showpass material-icons\" title=\"" + sysPassApp.config.LANG[32] + "\">remove_red_eye</i>");
 
-            if ($this.data("clipboard") === 1) {
-                const $clip = $("<i class=\"clip-pass-icon material-icons\" title=\"" + sysPassApp.config.LANG[34] + "\" data-clipboard-target=\"#" + $this.attr("id") + "\">content_paste</i>");
-                $this.parent().after($clip).after($icon);
-            } else {
-                $this.parent().after($icon);
+            if ($this.attr("data-pass-upgraded") === "true") {
+                return;
             }
 
-            // Crear evento para mostrar clave generada/introducida
-            $icon.on("mouseover", function () {
-                $icon.attr("title", $this[0].dataset.pass);
+            $this.attr("data-pass", $this.val());
+
+            const $toggleBtn = $(`<button type="button" class="sp-password-toggle showpass" aria-label="${labels.show}" aria-pressed="false" title="${labels.show}"><i class="material-icons" aria-hidden="true">visibility</i></button>`);
+
+            if ($this.data("clipboard") === 1) {
+                const $clip = $(`<button type="button" class="sp-password-toggle clip-pass-icon" aria-label="${labels.copy}" title="${labels.copy}" data-clipboard-target="#${$this.attr("id")}"><i class="material-icons" aria-hidden="true">content_paste</i></button>`);
+                $this.parent().after($clip).after($toggleBtn);
+            } else {
+                $this.parent().after($toggleBtn);
+            }
+
+            $this.on("keyup", function () {
+                this.dataset.pass = $this.val();
+                delete this.dataset.encryptedPass;
             });
+
+            bindPasswordToggle($this, $toggleBtn);
+            $this.attr("data-pass-upgraded", "true");
         });
     };
 
@@ -332,7 +438,7 @@ sysPass.Theme = function (log) {
             const $resContent = $("#res-content");
 
             $frmSearch.find("button.btn-clear").on("click", function (e) {
-                $(".icon-searchfav").find("i").removeClass("mdl-color-text--amber-A200");
+                $(".icon-searchfav").find("i").removeClass("sp-color-text--warning");
             });
 
             $frmSearch.find(".icon-searchfav").on("click", function () {
@@ -340,12 +446,12 @@ sysPass.Theme = function (log) {
                 const $searchfav = $frmSearch.find("input[name='searchfav']");
 
                 if ($searchfav.val() == 0) {
-                    $icon.addClass("mdl-color-text--amber-A200");
+                    $icon.addClass("sp-color-text--warning");
                     $icon.attr("title", sysPassApp.config.LANG[53]);
 
                     $searchfav.val(1);
                 } else {
-                    $icon.removeClass("mdl-color-text--amber-A200");
+                    $icon.removeClass("sp-color-text--warning");
                     $icon.attr("title", sysPassApp.config.LANG[52]);
 
                     $searchfav.val(0);
@@ -356,11 +462,11 @@ sysPass.Theme = function (log) {
 
             const checkFavorite = function ($obj) {
                 if ($obj.data("status") === "on") {
-                    $obj.addClass("mdl-color-text--amber-A100");
+                    $obj.addClass("sp-color-text--warning");
                     $obj.attr("title", sysPassApp.config.LANG[50]);
                     $obj.html("star");
                 } else {
-                    $obj.removeClass("mdl-color-text--amber-A100");
+                    $obj.removeClass("sp-color-text--warning");
                     $obj.attr("title", sysPassApp.config.LANG[49]);
                     $obj.html("star_border");
                 }
@@ -426,18 +532,12 @@ sysPass.Theme = function (log) {
 
             var scroll = {
                 on: function () {
-                    $actionBar.css({
-                        backgroundColor: "rgba(255, 255, 255, .75)",
-                        borderBottom: "1px solid #ccc"
-                    });
+                    $actionBar.addClass("is-fixed");
                     $actionBarLogo.show();
                     isFixed = true;
                 },
                 off: function () {
-                    $actionBar.css({
-                        backgroundColor: "transparent",
-                        borderBottom: "none"
-                    });
+                    $actionBar.removeClass("is-fixed");
                     $actionBarLogo.hide();
                     isFixed = false;
                 }
@@ -533,6 +633,7 @@ sysPass.Theme = function (log) {
         viewsTriggers: viewsTriggers,
         loading: loading,
         ajax: ajax,
-        html: html
+        html: html,
+        setFixedMenu: setFixedMenu
     };
 };

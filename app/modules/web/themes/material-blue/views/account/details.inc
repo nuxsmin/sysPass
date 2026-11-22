@@ -45,7 +45,7 @@ use function SP\__;
         <tr>
             <td class="descField"><?php
                 echo __('Visits'); ?></td>
-            <td class="valField">
+            <td class="valField sp-tabular">
                 <div class="lowres-title"><?php
                     echo __('Visits'); ?></div>
 
@@ -56,7 +56,7 @@ use function SP\__;
         <tr>
             <td class="descField"><?php
                 echo __('Date Added'); ?></td>
-            <td class="valField">
+            <td class="valField sp-tabular">
                 <div class="lowres-title"><?php
                     echo __('Date Added'); ?></div>
 
@@ -70,7 +70,7 @@ use function SP\__;
             <tr>
                 <td class="descField"><?php
                     echo __('Last Modification'); ?></td>
-                <td class="valField">
+                <td class="valField sp-tabular">
                     <div class="lowres-title"><?php
                         echo __('Last Modification'); ?></div>
 
@@ -88,7 +88,7 @@ use function SP\__;
         <tr>
             <td class="descField"><?php
                 echo __('Owner'); ?></td>
-            <td class="valField">
+            <td class="valField sp-tabular">
                 <div class="lowres-title"><?php
                     echo __('Owner'); ?></div>
 
@@ -102,7 +102,7 @@ use function SP\__;
         <tr>
             <td class="descField"><?php
                 echo __('Main Group'); ?></td>
-            <td class="valField">
+            <td class="valField sp-tabular">
                 <div class="lowres-title"><?php
                     echo __('Main Group'); ?></div>
 
@@ -116,7 +116,7 @@ use function SP\__;
             <tr>
                 <td class="descField"><?php
                     echo __('Date Modified'); ?></td>
-                <td class="valField">
+                <td class="valField sp-tabular">
                     <div class="lowres-title"><?php
                         echo __('Date Modified'); ?></div>
 
@@ -127,7 +127,7 @@ use function SP\__;
             <tr>
                 <td class="descField"><?php
                     echo __('Editor'); ?></td>
-                <td class="valField">
+                <td class="valField sp-tabular">
                     <div class="lowres-title"><?php
                         echo __('Editor'); ?></div>
 
@@ -144,7 +144,7 @@ use function SP\__;
         <tr>
             <td class="descField"><?php
                 echo __('Password Date'); ?></td>
-            <td class="valField">
+            <td class="valField sp-tabular">
                 <div class="lowres-title"><?php
                     echo __('Password Date'); ?></div>
 
@@ -158,7 +158,7 @@ use function SP\__;
             <tr>
                 <td class="descField"><?php
                     echo __('Password Expiry Date'); ?></td>
-                <td class="valField">
+                <td class="valField sp-tabular">
                     <div class="lowres-title"><?php
                         echo __('Password Expiry Date'); ?></div>
 
@@ -171,7 +171,7 @@ use function SP\__;
         <tr>
             <td class="descField"><?php
                 echo __('ID'); ?></td>
-            <td class="valField">
+            <td class="valField sp-tabular">
                 <div class="lowres-title"><?php
                     echo __('ID'); ?></div>
 

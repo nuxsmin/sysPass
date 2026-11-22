@@ -503,6 +503,10 @@ final class LoginTest extends IntegrationTestCase
         $crawler = new Crawler($output);
 
         self::assertCount(1, $crawler->filterXPath('//form[@id="frmLogin"]'));
+        self::assertCount(1, $crawler->filterXPath('//body[contains(@class, "sp-app") and @data-theme="light"]'));
+        self::assertCount(1, $crawler->filterXPath('//div[@id="box-pub-noheader"]//img[contains(@src, "syspass-stacked-primary.svg")]'));
+        self::assertCount(1, $crawler->filterXPath('//div[@id="box-pub-noheader"]//h1'));
+        self::assertStringNotContainsString('logo_icon.png', $output);
     }
 
     private function outputCheckerLogin(string $output): void
@@ -528,6 +532,7 @@ final class LoginTest extends IntegrationTestCase
         $crawler = new Crawler($output);
 
         self::assertCount(1, $crawler->filterXPath('//div[@id="box-pub-noheader"]'));
+        self::assertCount(1, $crawler->filterXPath('//div[@id="box-pub-noheader"]//div[contains(@class, "sp-auth-brand")]//img[contains(@src, "syspass-stacked-primary.svg")]'));
     }
 
     /**
