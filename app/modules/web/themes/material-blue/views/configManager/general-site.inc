@@ -64,8 +64,8 @@ endif; ?>
 <table id="tblSite" class="data tblConfig">
     <tr>
         <td class="descField">
-            <?php
-            echo __('Language'); ?>
+            <label for="sel-sitelang"><?php
+                echo __('Language'); ?></label>
             <div id="help-sitelang"
                  class="icon material-icons <?php
                  echo $icons->help()->getClass(); ?>"><?php
@@ -105,8 +105,8 @@ endif; ?>
     </tr>
     <tr>
         <td class="descField">
-            <?php
-            echo __('Visual Theme'); ?>
+            <label for="sel-sitetheme"><?php
+                echo __('Visual Theme'); ?></label>
             <div id="help-sitetheme"
                  class="icon material-icons <?php
                  echo $icons->help()->getClass(); ?>"><?php

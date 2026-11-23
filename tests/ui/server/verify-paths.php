@@ -69,6 +69,7 @@ $checkOwnedPath('CACHE_PATH', $cachePath);
 $checkOwnedPath('LOG_FILE', $logFile);
 $checkOwnedPath('session.save_path', $sessionPath);
 $checkMarker('CONFIG_PATH', $configPath);
+$checkMarker('app/config', $repoRoot . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'config');
 $checkMarker('CACHE_PATH', $cachePath);
 $checkMarker('session.save_path', $sessionPath);
 

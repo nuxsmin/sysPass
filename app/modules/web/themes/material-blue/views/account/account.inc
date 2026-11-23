@@ -142,8 +142,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         </td>
                     </tr>
                     <tr>
-                        <td class="descField"><?php
-                            echo __('Client'); ?></td>
+                        <td class="descField"><label for="client_id"><?php
+                            echo __('Client'); ?></label></td>
                         <td class="valField">
                             <div class="lowres-title"><?php
                                 echo __('Client'); ?></div>
@@ -188,8 +188,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         </td>
                     </tr>
                     <tr>
-                        <td class="descField"><?php
-                            echo __('Category'); ?></td>
+                        <td class="descField"><label for="category_id"><?php
+                            echo __('Category'); ?></label></td>
                         <td class="valField">
                             <div class="lowres-title"><?php
                                 echo __('Category'); ?></div>
@@ -364,7 +364,9 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                     </tr>
                     <tr class="sp-account-field--wide">
                         <td class="descField"><?php
-                            echo __('Tags'); ?></td>
+                            if (!$_getvar('isView')): ?><label for="tags"><?php
+                            echo __('Tags'); ?></label><?php
+                            else: echo __('Tags'); endif; ?></td>
                         <td class="valField">
                             <div class="lowres-title"><?php
                                 echo __('Tags'); ?></div>
@@ -438,8 +440,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                     <?php
                     if (!$showLinked): ?>
                         <tr>
-                            <td class="descField"><?php
-                                echo __('Linked Account'); ?></td>
+                            <td class="descField"><label for="parent_account_id"><?php
+                                echo __('Linked Account'); ?></label></td>
                             <td class="valField">
                                 <div class="lowres-title"><?php
                                     echo __('Linked Account'); ?></div>
@@ -468,8 +470,8 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                         && count($_getvar('historyData', [])) > 0
                     ): ?>
                         <tr>
-                            <td class="descField"><?php
-                                echo __('History'); ?></td>
+                            <td class="descField"><label for="history_id"><?php
+                                echo __('History'); ?></label></td>
                             <td class="valField">
                                 <div class="lowres-title"><?php
                                     echo __('History'); ?></div>

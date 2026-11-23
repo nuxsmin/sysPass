@@ -435,7 +435,7 @@ for _ in $(seq 1 120); do
   if "$DOCKER_BIN" run --rm \
     --network "$NETWORK_NAME" \
     --env-file "$RUN_ROOT/env/db.env" \
-    -v "$REPO_ROOT:$REPO_ROOT" \
+    -v "$REPO_ROOT:$REPO_ROOT:ro" \
     -w "$REPO_ROOT" \
     "$PHP_IMAGE" \
     php "$REPO_ROOT/tests/ui/server/check-db.php" >/dev/null 2>&1
@@ -466,6 +466,7 @@ PHP_ARGS=(
   -v "$REPO_ROOT:$REPO_ROOT"
   -v "$RUN_ROOT:$RUN_ROOT"
   -v "$RUN_ROOT/env/app.env:$REPO_ROOT/.env:ro"
+  -v "$RUN_ROOT/config:$REPO_ROOT/app/config"
   -v "$RUN_ROOT/app-cache:$REPO_ROOT/app/cache"
   -v "$RUN_ROOT/app-temp:$REPO_ROOT/app/temp"
   "$PHP_IMAGE"
@@ -527,6 +528,7 @@ set +e
   -v "$REPO_ROOT:$REPO_ROOT" \
   -v "$RUN_ROOT:$RUN_ROOT" \
   -v "$RUN_ROOT/env/app.env:$REPO_ROOT/.env:ro" \
+  -v "$RUN_ROOT/config:$REPO_ROOT/app/config" \
   -v "$RUN_ROOT/app-cache:$REPO_ROOT/app/cache" \
   -v "$RUN_ROOT/app-temp:$REPO_ROOT/app/temp" \
   "$PHP_IMAGE" \
@@ -628,7 +630,7 @@ seeded_database_digest() {
     -e HOME=/tmp \
     --env-file "$RUN_ROOT/env/fingerprint.env" \
     -w "$REPO_ROOT" \
-    -v "$REPO_ROOT:$REPO_ROOT" \
+    -v "$REPO_ROOT:$REPO_ROOT:ro" \
     "$PHP_IMAGE" \
     php "$REPO_ROOT/tests/ui/server/db-fingerprint.php" > "$output_file"
 
@@ -774,7 +776,7 @@ prepare_install_instance() {
     if "$DOCKER_BIN" run --rm \
       --network "$INSTALL_NETWORK_NAME" \
       --env-file "$INSTALL_ROOT/env/db.env" \
-      -v "$REPO_ROOT:$REPO_ROOT" \
+      -v "$REPO_ROOT:$REPO_ROOT:ro" \
       -w "$REPO_ROOT" \
       "$PHP_IMAGE" \
       php "$REPO_ROOT/tests/ui/server/check-db.php" >/dev/null 2>&1
@@ -805,6 +807,7 @@ prepare_install_instance() {
     -v "$REPO_ROOT:$REPO_ROOT"
     -v "$INSTALL_ROOT:$INSTALL_ROOT"
     -v "$INSTALL_ROOT/env/app.env:$REPO_ROOT/.env:ro"
+    -v "$INSTALL_ROOT/config:$REPO_ROOT/app/config"
     -v "$INSTALL_ROOT/app-cache:$REPO_ROOT/app/cache"
     -v "$INSTALL_ROOT/app-temp:$REPO_ROOT/app/temp"
     "$PHP_IMAGE"
@@ -853,6 +856,7 @@ prepare_install_instance() {
     -v "$REPO_ROOT:$REPO_ROOT" \
     -v "$INSTALL_ROOT:$INSTALL_ROOT" \
     -v "$INSTALL_ROOT/env/app.env:$REPO_ROOT/.env:ro" \
+    -v "$INSTALL_ROOT/config:$REPO_ROOT/app/config" \
     -v "$INSTALL_ROOT/app-cache:$REPO_ROOT/app/cache" \
     -v "$INSTALL_ROOT/app-temp:$REPO_ROOT/app/temp" \
     "$PHP_IMAGE" \

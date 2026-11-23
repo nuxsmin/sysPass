@@ -6,6 +6,7 @@
  */
 
 use SP\Domain\Common\Providers\Html;
+use SP\Modules\Web\Html\DataGrid\Action\DataGridActionType;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
 
 if (!isset($data)) {
@@ -98,10 +99,11 @@ if ($dataGridData->getDataCount() > 0):
                                     $nodeData = $action->getData();
                                 endif;
                                 ?>
-                                <i id="<?php
+                                <button type="button" id="<?php
                                 echo $actionUid; ?>"
-                                   class="btn-action material-icons <?php
-                                   echo $action->getIcon()->getClass(); ?>"
+                                   class="btn-action sp-row-action<?php
+                                   echo $action->getType() === DataGridActionType::DELETE_ITEM ? ' sp-row-action--destructive' : ''; ?>"
+                                   aria-label="<?php echo htmlspecialchars($action->getTitle() ?? $action->getIcon()->getTitle() ?? '', ENT_QUOTES); ?>"
                                    data-item-id="<?php
                                    echo $itemId; ?>"
                                    data-onclick="<?php
@@ -109,8 +111,8 @@ if ($dataGridData->getDataCount() > 0):
                                     <?php
                                     foreach ($nodeData as $dataName => $dataValue):
                                         echo 'data-', $dataName, '=', '"', $dataValue, '"';
-                                    endforeach; ?>><?php
-                                    echo $action->getIcon()->getIcon(); ?></i>
+                                    endforeach; ?>><i class="material-icons <?php echo $action->getIcon()->getClass(); ?>" aria-hidden="true"><?php
+                                    echo $action->getIcon()->getIcon(); ?></i></button>
                                 <span
                                         for="<?php
                                         echo $actionUid; ?>"

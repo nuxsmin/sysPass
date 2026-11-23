@@ -184,7 +184,7 @@ already installed instance.
 | Node / Playwright | Host Node 20+, `tests/ui/node_modules` | Installed once |
 | Chromium | `tests/ui/.browsers` | Installed once |
 | Run root | `/tmp/sp-ui-smoke.XXXXXX` (or `$TMPDIR`) | Per run, removed afterwards |
-| Configuration | `<run root>/config` via `CONFIG_PATH` / `CONFIG_FILE` | Per run, removed afterwards |
+| Configuration | `<run root>/config` via `CONFIG_PATH` / `CONFIG_FILE`, also bind-mounted over `<repo>/app/config` | Per run, removed afterwards |
 | DI cache | `<run root>/cache` via `CACHE_PATH` | Per run, removed afterwards |
 | Application cache | `<run root>/app-cache` bind-mounted over `<repo>/app/cache` (`Path::CACHE/config.cache`) | Per run, removed afterwards |
 | Application temp | `<run root>/app-temp` bind-mounted over `<repo>/app/temp` | Per run, removed afterwards |
@@ -229,6 +229,7 @@ that:
 - `CONFIG_PATH`, `CONFIG_FILE`, `CACHE_PATH`, `LOG_FILE` and
   `session.save_path` resolve inside the run root;
 - the owned directories carry the run-id marker;
+- the fixed `app/config` path carries the run-id marker through its bind mount;
 - `Path::CACHE` and `Path::TMP` are the application cache/temp paths and carry
   the marker through their bind mounts;
 - `Path::CONFIG`, `Path::CONFIG_FILE` and `Path::LOG_FILE` match the

@@ -57,14 +57,15 @@ $index = $index ?? 0;
                             echo $action->getId(); ?>"
                             type="button"
                             class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored sp-btn-primary mdl-js-ripple-effect"
+                            aria-label="<?php echo htmlspecialchars($action->getTitle(), ENT_QUOTES); ?>"
                             data-nextaction="<?php
                             echo $data->getOnCloseAction(); ?>"
                             data-onclick="<?php
                             echo $action->getOnClick(); ?>"
-                        <?php
-                        foreach (
-                            $action->getData() as $dataName => $dataValue
-                        ): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
+                            <?php
+                            foreach (
+                                    $action->getData() as $dataName => $dataValue
+                            ): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
                         <i class="material-icons"><?php
                             echo $action->getIcon()->getIcon(); ?></i>
                     </button>
@@ -87,11 +88,10 @@ $index = $index ?? 0;
                           echo $data->getId(); ?>"
                           data-onsubmit="<?php
                           echo $action->getOnSubmit(); ?>"
-                        <?php
-                        foreach (
-                            $action->getData() as $dataName => $dataValue
-                        ): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
-
+                            <?php
+                            foreach (
+                                    $action->getData() as $dataName => $dataValue
+                            ): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
                             <label class="mdl-button mdl-js-button mdl-button--icon"
                                    id="btn-search-<?php
@@ -112,8 +112,7 @@ $index = $index ?? 0;
                                        name="search"/>
                                 <label class="mdl-textfield__label"
                                        for="search-<?php
-                                       echo $index; ?>"><?php
-                                    echo $action->getTitle(); ?></label>
+                                       echo $index; ?>"></label>
                             </div>
                         </div>
 
@@ -171,7 +170,8 @@ $index = $index ?? 0;
             <li>
                 <button id="menu-<?php
                 echo $data->getId(); ?>-menu-lower-right"
-                        class="mdl-button mdl-js-button mdl-button--icon">
+                        class="mdl-button mdl-js-button mdl-button--icon"
+                        aria-label="<?php echo htmlspecialchars(\SP\__('More Actions'), ENT_QUOTES); ?>">
                     <i class="material-icons">more_vert</i>
                 </button>
 
@@ -183,18 +183,18 @@ $index = $index ?? 0;
                         <li class="btn-action mdl-menu__item"
                             title="<?php
                             echo $action->getTitle(); ?>"
-                            <?php
-                            if ($action->isSelection()): ?>
-                                data-selection="#data-table-<?php
-                                echo $data->getId(); ?>"
-                            <?php
-                            endif; ?>
+                                <?php
+                                if ($action->isSelection()): ?>
+                                    data-selection="#data-table-<?php
+                                    echo $data->getId(); ?>"
+                                <?php
+                                endif; ?>
                             data-onclick="<?php
                             echo $action->getOnClick(); ?>"
-                            <?php
-                            foreach (
-                                $action->getData() as $dataName => $dataValue
-                            ): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
+                                <?php
+                                foreach (
+                                        $action->getData() as $dataName => $dataValue
+                                ): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
                             <i class="material-icons <?php
                             echo $action->getIcon()->getClass(); ?>"><?php
                                 echo $action->getIcon()->getIcon(); ?></i>

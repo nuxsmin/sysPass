@@ -11,27 +11,29 @@ use SP\Modules\Web\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Modules\Web\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Mvc\View\Template;
 
+use function SP\__;
+
 if (!isset($data)) {
     $data = $_getvar('data');
 }
 ?>
-    <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable table-responsive data-table">
-        <thead>
-        <tr>
-            <?php foreach ($data->getHeader()->getHeaders() as $header): ?>
-                <th class="mdl-data-table__cell--non-numeric"><?php echo $header; ?></th>
-            <?php endforeach; ?>
-
-            <?php if ($data->getDataActionsCount() > 0): ?>
-                <th class="mdl-data-table__cell--non-numeric">&nbsp;</th>
-            <?php endif; ?>
-        </tr>
-        </thead>
-
-        <tbody id="data-rows-<?php echo $data->getId(); ?>">
-        <?php include $data->getDataRowTemplate(); ?>
-        </tbody>
-    </table>
+    <div class="sp-table-scroll" role="region" tabindex="0" aria-label="<?php echo __('Results'); ?>">
+        <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable table-responsive data-table">
+            <thead>
+            <tr>
+                <?php foreach ($data->getHeader()->getHeaders() as $header): ?>
+                    <th class="mdl-data-table__cell--non-numeric"><?php echo $header; ?></th>
+                <?php endforeach; ?>
+                <?php if ($data->getDataActionsCount() > 0): ?>
+                    <th class="mdl-data-table__cell--non-numeric">&nbsp;</th>
+                <?php endif; ?>
+            </tr>
+            </thead>
+            <tbody id="data-rows-<?php echo $data->getId(); ?>">
+            <?php include $data->getDataRowTemplate(); ?>
+            </tbody>
+        </table>
+    </div>
 
     <!-- Pager -->
 <?php include $data->getDataPagerTemplate(); ?>

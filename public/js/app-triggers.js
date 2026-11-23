@@ -393,6 +393,18 @@ sysPass.Triggers = function (log) {
         config: function () {
             log.info("views:config");
 
+            const $configTabs = $("#tabsHeader").closest(".mdl-tabs").addClass("sp-config-tabs");
+
+            $configTabs.find(".mdl-switch__input").each(function () {
+                const $input = $(this);
+                const label = $input.closest(".mdl-list__item")
+                    .find(".mdl-list__item-primary-content > span").first().text().trim();
+
+                if (label && !$input.attr("aria-label") && !$input.attr("aria-labelledby")) {
+                    $input.attr("aria-label", label);
+                }
+            });
+
             const $dropFiles = $("#drop-import-files");
 
             if ($dropFiles.length > 0) {

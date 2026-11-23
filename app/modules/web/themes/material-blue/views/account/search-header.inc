@@ -28,6 +28,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Modules\Web\Html\DataGrid\DataGridTab;
 
+use function SP\__;
+
 /**
  * @var ThemeIconsInterface $icons
  * @var callable $_getvar
@@ -65,9 +67,11 @@ if (!isset($data)) {
                             &&
                             $data->getPager()->getSortOrder() === 1) ? 'sp-color--accent' : 'md-dark md-inactive';
                 ?>
-                <div
+                <button type="button"
                         class="icon material-icons sort-down cursor-pointer <?php
                         echo $classDown; ?>"
+                        aria-label="<?php echo htmlspecialchars($field->getTitle() . ' - ' . __('Ascending'), ENT_QUOTES); ?>"
+                        aria-pressed="<?php echo $classDown === 'sp-color--accent' ? 'true' : 'false'; ?>"
                         data-start="<?php
                         echo $data->getPager()->getLimitStart(); ?>"
                         data-key="<?php
@@ -75,10 +79,12 @@ if (!isset($data)) {
                         data-dir="0">
                     <?php
                     echo $field->getIconDown()->getIcon(); ?>
-                </div>
-                <div
+                </button>
+                <button type="button"
                         class="icon material-icons sort-up cursor-pointer <?php
                         echo $classUp; ?>"
+                        aria-label="<?php echo htmlspecialchars($field->getTitle() . ' - ' . __('Descending'), ENT_QUOTES); ?>"
+                        aria-pressed="<?php echo $classUp === 'sp-color--accent' ? 'true' : 'false'; ?>"
                         data-start="<?php
                         echo $data->getPager()->getLimitStart(); ?>"
                         data-key="<?php
@@ -86,7 +92,7 @@ if (!isset($data)) {
                         data-dir="1">
                     <?php
                     echo $field->getIconUp()->getIcon(); ?>
-                </div>
+                </button>
             </li>
         <?php
         endforeach; ?>
