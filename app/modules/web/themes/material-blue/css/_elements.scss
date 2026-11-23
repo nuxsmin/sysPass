@@ -13,6 +13,7 @@ html, body {
 * {
   font-family: $font-stack;
   box-sizing: inherit;
+
   &:before, &:after {
     box-sizing: inherit;
   }
@@ -21,28 +22,36 @@ html, body {
 table {
   font-size: 11px;
   border-spacing: 0;
+
   th {
     border-bottom: 2px solid transparent;
     vertical-align: middle;
+
     .icon {
       width: 24px;
       height: 24px;
     }
   }
+
   tr {
     &.odd {
       background-color: #f9f9f9;
     }
+
     &.even > td, &.odd > td {
       border-bottom: 1px solid #d9d9d9 !important;
     }
+
     &.even:hover, &.odd:hover {
       background-color: #e8ff99;
     }
+
     height: 20px;
   }
+
   td {
     padding: 3px;
+
     &.txtCliente {
       font-weight: bold;
       text-align: center;
@@ -68,6 +77,7 @@ input {
   &.txtFile {
     width: 200px;
   }
+
   &.txtLong {
     width: 300px;
   }
@@ -90,6 +100,7 @@ img {
   padding: 0;
   border: 0;
   cursor: pointer;
+
   &.inputImgMini {
     background-color: transparent !important;
     width: 16px !important;
@@ -107,6 +118,7 @@ i {
 form .form-field {
   display: flex;
   justify-content: space-between;
+
   > {
     label {
       min-width: 12em;
@@ -114,6 +126,7 @@ form .form-field {
       font-size: 16px;
       align-self: center;
     }
+
     div {
       width: 100%;
       align-self: center;
@@ -124,10 +137,12 @@ form .form-field {
 a {
   text-decoration: none;
   color: $color-indigo-fg-accent;
+
   &:visited {
     text-decoration: none;
     color: $color-indigo-fg-accent;
   }
+
   &:hover, &:active, &:focus {
     text-decoration: none;
     /*color: rgba(83, 109, 254, .6);*/

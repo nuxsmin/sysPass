@@ -1,5 +1,9 @@
 <div id="help-account_search"
-     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?> btn-help"
+     class="icon material-icons <?php
+
+     use function SP\__;
+
+     echo $icons->getIconHelp()->getClass(); ?> btn-help"
      data-help="help-account-search"><?php echo $icons->getIconHelp()->getIcon(); ?>
 </div>
 

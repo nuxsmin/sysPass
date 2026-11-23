@@ -1,0 +1,68 @@
+# 0011 - Keep server-side rendering and move it to an auto-escaping, view-model-fed renderer
+
+Status: Accepted (2026-11-02)
+Issue: #2089
+Related: ADR-0001 (superseded for template files), ADR-0002, ADR-0004, ADR-0006 (precondition), ADR-0007, ADR-0008, ADR-0009
+
+## Context
+
+sysPass renders HTML in three different ways that have always been described by one phrase. **Page SSR** wraps content templates in `_layouts/main.inc` through `ControllerBase::upgradeView()` (`app/modules/web/Controllers/ControllerBase.php:153-164`). **Fragments** are HTML fetched over AJAX and injected into `#content` (`public/js/app-actions.js:41-70`), which is the normal path: a fresh authenticated shell loads its first content this way (`public/js/app-triggers.js:269-270`). **In-envelope HTML** is a server-rendered string inside `ActionResponse.data`, e.g. `data.html` from `Account/SearchController.php:51-59`. Nine Actions carry both a page and a fragment contract behind an `isAjax` flag.
+
+The renderer is a bespoke engine that is not a sandbox and does not escape. `Template::assign()` stores values raw and the render path only reads them back (`app/modules/web/Mvc/View/Template.php:208-211,245`). Consequences measured on this tree: 85 template files, 15,439 lines, 2,963 PHP logic tags, **290 `use` imports inside `.inc` files** reaching Domain ports, models and DTOs, 1,048 `__()` calls, 506 `$_getvar()` reads, **107 echo sites with no `htmlspecialchars`**, and only 38 of 85 files escaping at all.
+
+Nothing checks any of it. `LayerRules::phpFiles()` skips every non-`.php` file (`tests/SP/Architecture/LayerRules.php:388-417`), and ADR-0008's deprecation gate and lint gate include `suffix=".php"` too. ADR-0001 permits Presentation to depend on Domain ports and models, so the imports are legal today — but they are legal inside files no tool can parse, which means the layering of the presentation tier has never been enforced rather than merely permissive.
+
+The leak has already happened once: `lib/SP/Domain/Account/Adapters/AccountSearchItem.php:221` returns `nl2br(htmlspecialchars($notes, ENT_QUOTES))` from a Domain adapter. ADR-0001 rule 3 bans only `__()` and `processException()` calls, so it passes. Under any auto-escaping renderer it becomes a visible defect, because already-escaped markup is escaped twice.
+
+Two questions had to be answered before choosing a renderer, and both are about the secret boundary rather than about templates. The Master Key is unwrapped server-side into a session-scoped store (`lib/SP/Core/Crypt/SessionMasterKeyStore.php:69-75`) and never crosses to the browser, which holds only an RSA public key used to protect form fields in transit (`public/js/app-config.js:32-80`, `lib/SP/Core/Crypt/CryptPKI.php:44-45`). And deployment is plain PHP: build tooling is dev-only (`package.json`, `scripts/build-assets.sh`) and minified bundles are committed.
+
+## Decision
+
+**Keep server-side rendering as the Web module's presentation strategy, and replace how it is implemented.** Full assessment and option matrix: `.kilo/plans/1793632898572-ssr-architecture-assessment.md`.
+
+1. **SSR is retained for stated reasons.** It keeps the Master Key server-resident, keeps plaintext secret material confined to explicit ACL-checked Actions, and keeps production deployment free of a build step. These are properties of the application, not of the engine, so they hold for any renderer.
+2. **The three render targets are named and constrained to two.** Page SSR and Fragment remain; in-envelope HTML is no longer a separate mechanism but a typed Rendered-Markup payload inside the one `ActionResponse` envelope. `ResponseType::PLAIN_TEXT` — which has always carried HTML — is renamed `HTML`, and `isAjax` branching is deleted by giving pages and fragments separate Routes. Route splitting depends on ADR-0006 clean URLs and is therefore sequenced behind it.
+3. **The renderer becomes `latte/latte` `^3.1`**, added to `require` with `ext-tokenizer`. It is chosen because it is the only candidate that satisfies all three hard requirements at once: context-sensitive auto-escaping by default (`Latte\Runtime\Html` / `HtmlStringable` mark already-rendered markup, so nested rendering does not double-escape), a compile-time sandbox policy, and PHP-syntax expressions inside tags. Its supported range (PHP 8.2–8.6) fits the `>=8.3 <8.6` window.
+4. **Auto-escaping is a hard requirement, not an axis.** Options that cannot make unescaped output impossible by default were disqualified before scoring.
+5. **Templates receive view models only** and call no application code. Enforcement is the renderer's sandbox policy, not a scanner over template sources: a compile-time refusal is strictly stronger than the import check ADR-0001 relies on, and `.latte` files are not PHP for any scanner to read. **ADR-0001's Presentation row is superseded for template files**, which permitted Domain imports.
+6. **Unescaped markup has a closed list of producers**: the renderer's own output and explicitly allowlisted Presentation helpers. A test fails when a value able to bypass escaping is constructed elsewhere, and `Latte\Runtime\Html` must never appear under `lib/SP/Domain`. `AccountSearchItem::getNotes()` is fixed to return plain text with line breaks owned by the template.
+7. **Translations stay in templates.** `__()` is registered as a template function. Moving 1,048 calls into view models would fill view models with copy and relocate the gettext extraction problem instead of solving it; no template `__()` call contains markup, so escaping and translation do not interact.
+8. **Compiled templates use the existing cache path** (`CACHE_PATH`, default `app/cache`), warmed at deploy with `warmupCache()` and `setAutoRefresh(false)` in production. The DI container already compiles there (`lib/Base.php:59`), so no new writable path is introduced; deployers still need only `CONFIG_PATH`, `CACHE_PATH`, `app/backup` and `app/temp`.
+9. **DataGrid stops being a second composition system**: its `.inc` path resolution (`app/modules/web/Html/DataGrid/DataGridBase.php:196-225`) becomes ordinary template components.
+10. **Fragment responses declare the View Binder name** the browser must attach, instead of relying on a positional `getContent(data, view)` argument and a separate server-stamped `data-page`. The binder mapping currently exists twice, in `app-triggers.js:242-394` and in controllers.
+11. **`bootstrap/getEnvironment` is folded into the shell render.** Every page currently pays one AJAX round trip before binding any behaviour (`app-main.js:410-435`), and ADR-0009 built Page Readiness around detecting failures of that request. This amends the Page Readiness definition in `CONTEXT.md` and ADR-0009's boot path.
+12. **The theme mechanism survives; the theme promise does not.** `ConfigData::getSiteTheme()` is persisted config and per-user overridable (`lib/SP/Core/UI/Theme.php:56-62`), so the resolver keeps resolving through the theme path and stored preferences keep working. `material-blue` is the only supported theme, and no plugin view API is promised: `Plugin::getThemeDir()` is never set or consumed and `app/modules/web/Init.php:248` is still `//TODO:Load plugins`.
+13. **Migration is per-area behind a dual runtime, gated by a Ratchet.** An explicit allowlist of not-yet-migrated view directories may only shrink, mirroring ADR-0009's Known Failure and ADR-0001's absolute-rule logic; migration is complete when it is empty and the test is deleted. `LayerDependencyTest` cannot express this rule because it is about renderers, not namespaces, so it gets its own test.
+14. **The ratchet is the existing HTTP integration layer, not the browser suite.** 157 `#[BodyChecker]` assertions over 33 web controller test files already assert rendered bodies; each migrated area extends them to Render Contract roots **and** the `data-*` dispatch attributes, because those attributes are the PHP-to-JS contract and are asserted behaviour, not styling. ADR-0009's tier A is a precondition for the transport changes in point 2 and point 11 only — `tests/ui/` does not exist yet and CI runs `unitary` and `integration` alone, so an unbuilt suite cannot gate the whole rewrite. The ADR-0009 premise still holds: in-process tests cannot see a page that boots and then fails its first request.
+15. **Sequencing.** After the PHP 8.5 train (#1977), dependent on ADR-0006, independent of ADR-0007.
+
+## Considered options
+
+- **Client-side rendering over a full REST API.** Rejected at the constraint level, not the effort level: it requires plaintext secret material to reach the browser for rendering rather than for one explicit view action, and it puts a Node build toolchain into the install path of a plain-PHP deployment. Costing it would also mean expanding the 29 JSON-RPC Actions to cover ~172 Actions and rewriting 15,439 lines of templates for a decision the constraints already make.
+- **Hand-harden `Template.php`.** Rejected: context-sensitive escaping is a compiler, so this means maintaining a compiler, and it leaves 2,963 logic tags and 290 imports reachable by review alone. Its only advantage — zero new dependencies — is paid for by keeping every measured defect possible.
+- **A Plates-style PHP wrapper with explicit `$this->esc()`.** Rejected: opt-in escaping converts 107 silent omissions into 107 deliberate ones and offers no sandbox, while costing the same template rewrite as the chosen engine.
+- **Twig.** Rejected: `htmlspecialchars`-only escaping fails the context-sensitivity requirement, and Python-like expressions raise migration error rate against 15k lines of PHP-shaped templates for no compensating guarantee.
+- **Renderer snippet regions as the fragment mechanism.** Rejected: it moves "which region renders" into markup where no Route-level test, ACL manifest or `BodyChecker` assertion can see it. The Render Contract is asserted per Route today, so fragments stay per Route.
+- **Byte-identical HTML as the migration's assertion level.** Rejected: it would silently veto the rewrite. The observable contract is Render Contract roots plus dispatch attributes.
+- **Remove the theme setting entirely.** Rejected: it is persisted, per-user, upgrade-surviving state, and cutting a user-visible feature should not ride along with a rendering decision.
+- **Make ADR-0009's browser suite the precondition for all of it.** Rejected: the suite is unimplemented, and the layer that already exists covers template migration better than an unbuilt one would.
+- **Big-bang template rewrite.** Rejected in favour of per-area dual runtime behind a shrinking allowlist, consistent with how the hexagonal migration was run.
+
+## Consequences
+
+- The presentation tier's guarantee changes kind: it is no longer "PHP files that a gate cannot read" but "a renderer that refuses unsafe output at compile time". ADR-0008's PHP deprecation gate will cover even less of the presentation layer than it does today, and the ADR must say so plainly rather than implying coverage that never existed.
+- 85 template files and their presenters will be rewritten, in stages, over multiple releases. `Template.php`, `TemplateResolver`, `TemplateCollection`, `OutputHandler`, `assignWithScope()` and the DataGrid path resolver are deleted at the end.
+- Latte 3.1 compiles templates with `strict_types` and deprecates `$this` in templates, so the 33 `$this->` uses (mostly partial inclusion) become `{include}` with explicit parameters rather than porting literally.
+- New ADRs and rules must be written for things the architecture test cannot see: the raw-HTML producer allowlist, the shrinking legacy-view allowlist, and "no renderer types in Domain".
+- `CONTEXT.md` gains the three render-target terms and amends Page Readiness and Render Contract; ADR-0001 gains a pointer that its Presentation row no longer applies to template files; ADR-0004 and ADR-0009 are amended for the ratchet division and the removed boot request.
+- `CACHE_PATH` becomes a hard runtime requirement for compiled templates, and deploy tooling gains a warm-up step. An installation with an unwritable cache path fails to render instead of degrading, so this is an install-time check, not a runtime fallback.
+- Stored `siteTheme` and per-user theme preferences must keep resolving across the migration, which is what forces the theme path to stay the resolution root even with one theme.
+- The `data-*` dispatch attributes become test-visible contract. Renaming an attribute or a binder is now a breaking change to a Render Contract, not a refactor.
+
+## References
+
+- Assessment and option matrix: `.kilo/plans/1793632898572-ssr-architecture-assessment.md`.
+- Code: `app/modules/web/Mvc/View/Template.php:208-211,245`, `app/modules/web/Controllers/ControllerBase.php:153-164`, `app/modules/web/Controllers/Account/SearchController.php:51-59`, `app/modules/web/Presenters/Helpers/Account/AccountPasswordHelper.php:77-104,132-150`, `app/modules/web/Html/DataGrid/DataGridBase.php:196-225`, `lib/SP/Domain/Account/Adapters/AccountSearchItem.php:221`, `lib/SP/Core/UI/Theme.php:56-62,68-93`, `lib/SP/Core/Definitions/CoreDefinitions.php:537-562`, `lib/Base.php:59`, `lib/SP/Core/Crypt/SessionMasterKeyStore.php:69-75`, `lib/SP/Core/Crypt/CryptPKI.php:44-45`.
+- Client: `public/js/app-actions.js:41-70,395-420,1162-1201`, `public/js/app-triggers.js:108-163,242-394`, `public/js/app-main.js:410-435`, `public/js/app-config.js:32-80`.
+- Tests: `tests/SP/Architecture/LayerRules.php:388-417`, `tests/SP/IntegrationTestCase.php:365-384`, `tests/SP/Modules/Web/Controllers/Account/AccountTest.php:1287-1300`.
+- Related decisions: ADR-0001, ADR-0002, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0009.

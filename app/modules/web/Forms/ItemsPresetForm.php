@@ -1,10 +1,10 @@
 <?php
-/**
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,22 +19,23 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Modules\Web\Forms;
 
-use SP\Core\Acl\ActionsInterface;
-use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\ItemPreset\AccountPermission;
-use SP\DataModel\ItemPreset\AccountPrivate;
-use SP\DataModel\ItemPreset\Password;
-use SP\DataModel\ItemPreset\SessionTimeout;
-use SP\DataModel\ItemPresetData;
-use SP\Mvc\Controller\Validators\Validator;
-use SP\Services\ItemPreset\ItemPresetInterface;
-use SP\Services\ItemPreset\ItemPresetRequest;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\ItemPreset\Models\AccountPermission;
+use SP\Domain\ItemPreset\Models\AccountPrivate;
+use SP\Domain\ItemPreset\Models\ItemPreset;
+use SP\Domain\ItemPreset\Models\Password;
+use SP\Domain\ItemPreset\Models\SessionTimeout;
+use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
+use SP\Modules\Web\Mvc\Controller\Validators\Validator;
+
+use function SP\__u;
 
 /**
  * Class ItemsPresetForm
@@ -43,24 +44,26 @@ use SP\Services\ItemPreset\ItemPresetRequest;
  */
 final class ItemsPresetForm extends FormBase implements FormInterface
 {
-    /**
-     * @var ItemPresetRequest
-     */
-    protected $itemPresetRequest;
+    protected ?ItemPreset $itemPreset = null;
 
     /**
      * Validar el formulario
      *
-     * @param $action
+     * @param  int  $action
+     * @param  int|null  $id
      *
-     * @return ItemsPresetForm
+     * @return ItemsPresetForm|FormInterface
      * @throws ValidationException
      */
-    public function validate($action)
+    public function validateFor(int $action, ?int $id = null): FormInterface
     {
+        if ($id !== null) {
+            $this->itemId = $id;
+        }
+
         switch ($action) {
-            case ActionsInterface::ITEMPRESET_CREATE:
-            case ActionsInterface::ITEMPRESET_EDIT:
+            case AclActionsInterface::ITEMPRESET_CREATE:
+            case AclActionsInterface::ITEMPRESET_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -75,59 +78,50 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      * @return void
      * @throws ValidationException
      */
-    protected function analyzeRequestData()
+    protected function analyzeRequestData(): void
     {
-        $itemPresetData = new ItemPresetData();
-
-        if ($this->itemId > 0) {
-            $itemPresetData->setId($this->itemId);
-        }
-
-        if ($userId = $this->request->analyzeInt('user_id')) {
-            $itemPresetData->setUserId($userId);
-        }
-
-        if ($userGroupId = $this->request->analyzeInt('user_group_id')) {
-            $itemPresetData->setUserGroupId($userGroupId);
-        }
-
-        if ($userProfileId = $this->request->analyzeInt('user_profile_id')) {
-            $itemPresetData->setUserProfileId($userProfileId);
-        }
-
-        $itemPresetData->setFixed((int)$this->request->analyzeBool('fixed_enabled', false));
-        $itemPresetData->setPriority($this->request->analyzeInt('priority', 0));
-        $itemPresetData->setType($this->request->analyzeString('type'));
+        $itemPresetData = new ItemPreset([
+            'id' => $this->itemId > 0 ? $this->itemId : null,
+            'userId' => $this->request->analyzeInt('user_id') ?: null,
+            'userGroupId' => $this->request->analyzeInt('user_group_id') ?: null,
+            'userProfileId' => $this->request->analyzeInt('user_profile_id') ?: null,
+            'fixed' => (int)$this->request->analyzeBool('fixed_enabled', false),
+            'priority' => $this->request->analyzeInt('priority', 0),
+            'type' => $this->request->analyzeString('type'),
+        ]);
 
         switch ($itemPresetData->getType()) {
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePermissionPreset());
+                $preset = $this->makePermissionPreset();
                 break;
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePrivatePreset());
+                $preset = $this->makePrivatePreset();
                 break;
             case ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makeSessionTimeoutPreset());
+                $preset = $this->makeSessionTimeoutPreset();
                 break;
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD:
-                $this->itemPresetRequest = new ItemPresetRequest($itemPresetData, $this->makePasswordPreset());
+                $preset = $this->makePasswordPreset();
                 break;
             default:
                 throw new ValidationException(__u('Value type not set or incorrect'));
         }
+
+        $this->itemPreset = $itemPresetData->dehydrate($preset);
     }
 
     /**
-     * @return AccountPermission
+     * @return \SP\Domain\ItemPreset\Models\AccountPermission
      * @throws ValidationException
      */
-    private function makePermissionPreset()
+    private function makePermissionPreset(): AccountPermission
     {
-        $accountPermission = new AccountPermission();
-        $accountPermission->setUsersView($this->request->analyzeArray('users_view', null, []));
-        $accountPermission->setUsersEdit($this->request->analyzeArray('users_edit', null, []));
-        $accountPermission->setUserGroupsView($this->request->analyzeArray('user_groups_view', null, []));
-        $accountPermission->setUserGroupsEdit($this->request->analyzeArray('user_groups_edit', null, []));
+        $accountPermission = new AccountPermission(
+            $this->request->analyzeArray('users_view', null, []),
+            $this->request->analyzeArray('users_edit', null, []),
+            $this->request->analyzeArray('user_groups_view', null, []),
+            $this->request->analyzeArray('user_groups_edit', null, [])
+        );
 
         if (!$accountPermission->hasItems()) {
             throw new ValidationException(__u('There aren\'t any defined permissions'));
@@ -139,20 +133,19 @@ final class ItemsPresetForm extends FormBase implements FormInterface
     /**
      * @return AccountPrivate
      */
-    private function makePrivatePreset()
+    private function makePrivatePreset(): AccountPrivate
     {
-        $accountPrivate = new AccountPrivate();
-        $accountPrivate->setPrivateUser($this->request->analyzeBool('private_user_enabled', false));
-        $accountPrivate->setPrivateGroup($this->request->analyzeBool('private_group_enabled', false));
-
-        return $accountPrivate;
+        return new AccountPrivate(
+            $this->request->analyzeBool('private_user_enabled', false),
+            $this->request->analyzeBool('private_group_enabled', false)
+        );
     }
 
     /**
      * @return SessionTimeout
      * @throws ValidationException
      */
-    private function makeSessionTimeoutPreset()
+    private function makeSessionTimeoutPreset(): SessionTimeout
     {
         try {
             return new SessionTimeout(
@@ -165,41 +158,37 @@ final class ItemsPresetForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return Password
+     * @return \SP\Domain\ItemPreset\Models\Password
      * @throws ValidationException
      */
-    private function makePasswordPreset()
+    private function makePasswordPreset(): Password
     {
-        $password = new Password();
-        $password->setLength($this->request->analyzeInt('length', 1));
-        $password->setExpireTime($this->request->analyzeInt('expire_time', 0));
-        $password->setScore($this->request->analyzeInt('score', 0));
-
         $regex = $this->request->analyzeUnsafeString('regex');
 
-        if (!empty($regex)) {
-            if (Validator::isRegex($regex) === false) {
-                throw new ValidationException(__u('Invalid regular expression'));
-            }
+        if (!empty($regex) && Validator::isRegex($regex) === false) {
+            throw new ValidationException(__u('Invalid regular expression'));
         }
 
-        $password->setRegex($regex);
-        $password->setUseNumbers($this->request->analyzeBool('use_numbers_enabled', false));
-        $password->setUseLetters($this->request->analyzeBool('use_letters_enabled', false));
-        $password->setUseSymbols($this->request->analyzeBool('use_symbols_enabled', false));
-        $password->setUseLower($this->request->analyzeBool('use_lower_enabled', false));
-        $password->setUseUpper($this->request->analyzeBool('use_upper_enabled', false));
-        $password->setUseImage($this->request->analyzeBool('use_image_enabled', false));
-
-        return $password;
+        return new Password(
+            $this->request->analyzeInt('length', 1),
+            $this->request->analyzeBool('use_numbers_enabled', false),
+            $this->request->analyzeBool('use_letters_enabled', false),
+            $this->request->analyzeBool('use_symbols_enabled', false),
+            $this->request->analyzeBool('use_upper_enabled', false),
+            $this->request->analyzeBool('use_lower_enabled', false),
+            $this->request->analyzeBool('use_image_enabled', false),
+            $this->request->analyzeInt('expire_time', 0),
+            $this->request->analyzeInt('score', 0),
+            $regex
+        );
     }
 
     /**
      * @throws ValidationException
      */
-    protected function checkCommon()
+    protected function checkCommon(): void
     {
-        $itemPresetData = $this->itemPresetRequest->getItemPresetData();
+        $itemPresetData = $this->itemPreset;
 
         if (!$itemPresetData->getUserId()
             && !$itemPresetData->getUserGroupId()
@@ -209,11 +198,8 @@ final class ItemsPresetForm extends FormBase implements FormInterface
         }
     }
 
-    /**
-     * @return ItemPresetRequest
-     */
-    public function getItemData()
+    public function getItemData(): ?ItemPreset
     {
-        return $this->itemPresetRequest;
+        return $this->itemPreset;
     }
 }

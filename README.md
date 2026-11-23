@@ -1,6 +1,6 @@
 ## sysPass - Systems Password Manager
 
-[![Build Status](https://travis-ci.org/nuxsmin/sysPass.svg?branch=master)](https://travis-ci.org/nuxsmin/sysPass)  [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nuxsmin/sysPass/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nuxsmin/sysPass/?branch=master) [![Backers on Open Collective](https://opencollective.com/sysPass/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/sysPass/sponsors/badge.svg)](#sponsors)
+[![Build & Test](https://github.com/nuxsmin/sysPass/actions/workflows/feature.yaml/badge.svg?branch=master)](https://github.com/nuxsmin/sysPass/actions/workflows/feature.yaml)  [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nuxsmin/sysPass/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nuxsmin/sysPass/?branch=master) [![Backers on Open Collective](https://opencollective.com/sysPass/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/sysPass/sponsors/badge.svg)](#sponsors)
 
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/nuxsmin/sysPass.svg)](http://isitmaintained.com/project/nuxsmin/sysPass "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/nuxsmin/sysPass.svg)](http://isitmaintained.com/project/nuxsmin/sysPass "Percentage of issues still open")
 
@@ -20,6 +20,11 @@ PHP web based Password Manager for business and personal use.
 - [x] Activity notifications by email and in-app, and event log
 - [x] Multilanguage
 - [x] JSON-RPC API
+
+## Requirements
+
+- PHP 8.3, 8.4 or 8.5 (`>=8.3 <8.6`), with the `mbstring`, `intl`, `gd`, `ldap`, `gettext` and `pdo_mysql` extensions.
+- MySQL or MariaDB.
 
 Installation instructions and documentation at Doc https://doc.syspass.org
 

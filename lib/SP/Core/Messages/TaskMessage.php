@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2019, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +20,15 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\Messages;
 
 use JsonSerializable;
+use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Messages\MessageInterface;
 
 /**
  * Class TaskMessage
@@ -33,137 +37,69 @@ use JsonSerializable;
  */
 final class TaskMessage implements MessageInterface, JsonSerializable
 {
-    /**
-     * @var string
-     */
-    protected $taskId;
-    /**
-     * @var string
-     */
-    protected $task;
-    /**
-     * @var string
-     */
-    protected $message;
-    /**
-     * @var int
-     */
-    protected $time = 0;
-    /**
-     * @var int
-     */
-    protected $progress = 0;
-    /**
-     * @var int
-     */
-    protected $end = 0;
+    protected ?string $message  = null;
+    protected int     $time     = 0;
+    protected int     $progress = 0;
+    protected int     $end      = 0;
 
-    /**
-     * TaskMessage constructor.
-     *
-     * @param string $taskId
-     * @param string $task
-     */
-    public function __construct($taskId, $task)
+    public function __construct(private string $taskId, private string $task)
     {
-        $this->taskId = $taskId;
-        $this->task = $task;
     }
 
-    /**
-     * @return string
-     */
-    public function getTask()
+    public function getTask(): string
     {
         return $this->task;
     }
 
-    /**
-     * @param string $task
-     *
-     * @return TaskMessage
-     */
-    public function setTask($task)
+    public function setTask(string $task): TaskMessage
     {
         $this->task = $task;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getMessage()
+    public function getMessage(): ?string
     {
         return $this->message;
     }
 
-    /**
-     * @param string $message
-     *
-     * @return TaskMessage
-     */
-    public function setMessage($message)
+    public function setMessage(string $message): TaskMessage
     {
         $this->message = $message;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getTime()
+    public function getTime(): int
     {
         return $this->time;
     }
 
-    /**
-     * @param int $time
-     *
-     * @return TaskMessage
-     */
-    public function setTime($time)
+    public function setTime(int $time): TaskMessage
     {
         $this->time = $time;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getProgress()
+    public function getProgress(): int
     {
         return $this->progress;
     }
 
-    /**
-     * @param int $progress
-     *
-     * @return TaskMessage
-     */
-    public function setProgress($progress)
+    public function setProgress(int $progress): TaskMessage
     {
         $this->progress = $progress;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getEnd()
+    public function getEnd(): int
     {
         return $this->end;
     }
 
-    /**
-     * @param int $end
-     *
-     * @return TaskMessage
-     */
-    public function setEnd($end)
+    public function setEnd(int $end): TaskMessage
     {
         $this->end = $end;
 
@@ -171,13 +107,17 @@ final class TaskMessage implements MessageInterface, JsonSerializable
     }
 
     /**
-     * Componer un mensaje en formato texto
-     *
-     * @param string $delimiter
-     *
-     * @return string
+     * Componer un mensaje en formato HTML
      */
-    public function composeText($delimiter = ';')
+    public function composeHtml(): string
+    {
+        return $this->composeText();
+    }
+
+    /**
+     * Componer un mensaje en formato texto
+     */
+    public function composeText(string $delimiter = ';'): string
     {
         return implode($delimiter, [
             'taskId' => $this->taskId,
@@ -185,62 +125,39 @@ final class TaskMessage implements MessageInterface, JsonSerializable
             'message' => $this->message,
             'time' => $this->time,
             'progress' => $this->progress,
-            'end' => $this->end
+            'end' => $this->end,
         ]);
     }
 
     /**
-     * Componer un mensaje en formato HTML
-     *
-     * @return mixed
-     */
-    public function composeHtml()
-    {
-        return [
-            'taskId' => $this->taskId,
-            'task' => $this->task,
-            'message' => $this->message,
-            'time' => $this->time,
-            'progress' => $this->progress,
-            'end' => $this->end
-        ];
-    }
-
-    /**
      * Componer un mensaje en formato JSON
+     *
+     * @throws SPException
      */
-    public function composeJson()
+    public function composeJson(): bool|string
     {
-        return json_encode($this);
+        return Serde::serializeJson($this);
     }
 
     /**
      * Specify data which should be serialized to JSON
      *
      * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * @return array data which can be serialized by <b>json_encode</b>,
      *        which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }
 
-    /**
-     * @return string
-     */
-    public function getTaskId()
+    public function getTaskId(): string
     {
         return $this->taskId;
     }
 
-    /**
-     * @param string $taskId
-     *
-     * @return TaskMessage
-     */
-    public function setTaskId($taskId)
+    public function setTaskId(string $taskId): TaskMessage
     {
         $this->taskId = $taskId;
 

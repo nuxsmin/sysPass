@@ -1,0 +1,85 @@
+<?php
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Modules\Web\Controllers\PublicLink;
+
+use SP\Domain\Account\UseCases\Dtos\SearchPublicLinksCommand;
+use SP\Domain\Account\UseCases\SearchPublicLinksUseCase;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Presenters\Helpers\Grid\PublicLinkGrid;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
+
+/**
+ * Class SearchController
+ */
+final class SearchController extends ControllerBase
+{
+    use ItemTrait;
+
+    public function __construct(
+        WebControllerHelper $webControllerHelper,
+        private readonly SearchPublicLinksUseCase $searchPublicLinksUseCase,
+        private readonly PublicLinkGrid $publicLinkGrid
+    ) {
+        parent::__construct($webControllerHelper);
+
+        $this->checkLoggedIn();
+    }
+
+    #[Action(ResponseType::JSON)]
+    public function searchAction(): ActionResponse
+    {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_SEARCH)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
+        $this->view->addTemplate('datagrid-table', 'grid');
+        $this->view->assign('index', $this->request->analyzeInt('activetab', 0));
+        $this->view->assign('data', $this->getSearchGrid());
+
+        return ActionResponse::ok('', ['html' => $this->render()]);
+    }
+
+    private function getSearchGrid(): \SP\Modules\Web\Html\DataGrid\DataGridInterface
+    {
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
+
+        $result = $this->searchPublicLinksUseCase->execute(new SearchPublicLinksCommand($itemSearchData));
+
+        return $this->publicLinkGrid->updatePager(
+            $this->publicLinkGrid->getGrid(
+                QueryResult::withTotalNumRows($result->publicLinks, $result->total)
+            ),
+            $itemSearchData
+        );
+    }
+}

@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# ai-run — bounded, logged command runner for AI sessions.
+#
+# Usage:
+#   .ai-cli/bin/ai-run [--timeout SECS] -- <command> [args...]
+#
+# Examples:
+#   .ai-cli/bin/ai-run --timeout 60 -- "$GH_BIN" issue list --state open --limit 10
+#   .ai-cli/bin/ai-run -- "$GH_BIN" issue view 1 --comments
+#
+# Behaviour: runs under `timeout`, tees output to .ai-cli/logs/<ts>-<slug>.log,
+# echoes exit code. Never prompts.
+
+set -euo pipefail
+
+TIMEOUT=120
+if [ "${1:-}" = "--timeout" ]; then
+  TIMEOUT="${2:?--timeout needs a value}"
+  shift 2
+fi
+if [ "${1:-}" = "--" ]; then
+  shift
+fi
+if [ "$#" -eq 0 ]; then
+  echo "Usage: ai-run [--timeout SECS] -- <command> [args...]" >&2
+  exit 2
+fi
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+LOG_DIR="$REPO_ROOT/.ai-cli/logs"
+mkdir -p "$LOG_DIR"
+
+# Slug from command name: ~/.local/bin/gh + "issue" -> gh-issue
+_slug="$(basename "${1:-cmd}")"
+if [ -n "${2:-}" ]; then
+  case "$2" in
+    -*) ;;
+    *) _slug="$_slug-$2" ;;
+  esac
+fi
+_slug="$(echo "$_slug" | tr -c 'a-zA-Z0-9-' '-')"
+
+TS="$(date -u +%Y%m%dT%H%M%SZ)"
+LOG="$LOG_DIR/$TS-$_slug.log"
+
+echo "=== ai-run ===" | tee "$LOG"
+echo "+ timeout ${TIMEOUT}s $*" | tee -a "$LOG"
+echo "--- started: $(date -u +%FT%TZ) ---" | tee -a "$LOG"
+
+set +e
+timeout "${TIMEOUT}s" "$@" 2>&1 | tee -a "$LOG"
+CODE="${PIPESTATUS[0]}"
+set -e
+
+echo "--- exit: $CODE ---" | tee -a "$LOG"
+echo "log: $LOG"
+exit "$CODE"

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# gh — pinned entry point for the AI kit ($GH_BIN in ../env.sh points here).
+# Inside the Flatpak sandbox: exec host gh via host-spawn.
+# Outside: exec /usr/bin/gh directly, falling back to PATH.
+# AI sessions must invoke gh ONLY via $GH_BIN, never bare `gh`.
+set -euo pipefail
+
+if [ "${FLATPAK_IDE_ENV:-}" = "1" ] && [ -x /app/bin/host-spawn ]; then
+  exec /app/bin/host-spawn gh "$@"
+fi
+
+if [ -x /usr/bin/gh ]; then
+  exec /usr/bin/gh "$@"
+fi
+exec gh "$@"

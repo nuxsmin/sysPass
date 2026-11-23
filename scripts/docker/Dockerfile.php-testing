@@ -1,0 +1,35 @@
+# Shared PHP testing image used by local contributors, CI and the AI command kit.
+# It pins PHP 8.3 through the Composer 2.7 image and installs the extensions
+# required by sysPass and the UI smoke harness. Build from the scripts/docker
+# context (the workflow and the shared Makefile use the same context):
+#   make -C scripts/docker build
+#   docker build --build-arg COMPOSER_VERSION=2.7 -t php-testing-composer:latest \
+#     -f scripts/docker/Dockerfile.php-testing scripts/docker
+ARG COMPOSER_VERSION
+
+FROM composer:${COMPOSER_VERSION}
+
+RUN apk add --no-cache \
+  mariadb-client \
+  icu-dev \
+  autoconf \
+  gcc \
+  g++ \
+  gettext-dev \
+  zlib-dev \
+  libjpeg-turbo-dev \
+  libpng-dev \
+  freetype-dev \
+  libxml2-dev \
+  openldap-dev \
+  linux-headers \
+  font-freefont
+
+RUN pecl install xdebug \
+  && docker-php-ext-configure gd \
+    --with-jpeg \
+    --with-freetype \
+  && docker-php-ext-install -j$(nproc) intl gettext pdo_mysql opcache gd xmlwriter simplexml ldap \
+  && docker-php-ext-enable xdebug intl pdo_mysql gettext gd xmlwriter simplexml ldap
+
+USER 1000

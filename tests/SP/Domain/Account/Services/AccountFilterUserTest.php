@@ -1,0 +1,463 @@
+<?php
+
+declare(strict_types=1);
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Tests\Domain\Account\Services;
+
+use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\QueryFactory;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
+use SP\Domain\Account\Services\Builders\AccountFilter;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\ProfileData;
+use SP\Tests\Generators\UserDataGenerator;
+use SP\Tests\UnitaryTestCase;
+
+/**
+ * Class AccountFilterUserTest
+ *
+ */
+#[Group('unitary')]
+class AccountFilterUserTest extends UnitaryTestCase
+{
+    private const WHERE_HASHES = [
+        'Account' => [
+            'withoutGlobalSearch' => 'd126ac4f84c296e18b9b125e6fa22504bb34691c',
+            'withoutGlobalSearchAndFullGroupAccess' => '2024419d245628ea23e142540c3d97943075e111',
+            'withGlobalSearchPrivate' => '0213f7fd63d743b480dea2760bd0f952e1f022af',
+            'withGlobalSearchPrivateGroup' => '4a87f998abe0e0bd423496fb61a0a8abc1ac1be6',
+        ],
+        'AccountHistory' => [
+            'withoutGlobalSearch' => 'f18b1d964528675a82c2f5c72ee7d096162ddac0',
+            'withoutGlobalSearchAndFullGroupAccess' => '08c76c4ca85b2949d4c5408edc5361c823f8cc4f',
+            'withGlobalSearchPrivate' => '1579e1c2fb88f57c5fe8613870043e3f19bdea8a',
+            'withGlobalSearchPrivateGroup' => 'd3214ff2771ddd85aba2108bfc48da20b1c0064d',
+        ],
+    ];
+    private AccountFilter $accountFilter;
+    private QueryFactory|MockObject $queryFactory;
+
+    #[Test]
+    public function testBuildFilter()
+    {
+        $this->setExpectationWithoutGlobalSearch('Account');
+
+        $this->accountFilter->buildFilter();
+    }
+
+    /**
+     * @param string $tableName
+     * @param array|null $whereConsecutiveArgs
+     *
+     * @return void
+     * @throws Exception
+     */
+    private function setExpectationWithoutGlobalSearch(
+        string $tableName,
+        ?array $whereConsecutiveArgs = null,
+        bool   $fullGroupAccess = false
+    ): void
+    {
+        $whereConsecutiveArgs = $whereConsecutiveArgs ?? $this->buildConsecutiveArgsFor($tableName);
+
+        $select = $this->createMock(SelectInterface::class);
+        $this->queryFactory->expects(self::once())->method('newSelect')->willReturn($select);
+
+        $select->expects(self::exactly(1))->method('from')->with($tableName)->willReturnSelf();
+        $select->expects(self::exactly(3))
+               ->method('where')
+               ->with(...self::withConsecutive(...$whereConsecutiveArgs))
+               ->willReturnSelf();
+        $select->expects(self::exactly(1))->method('bindValues')
+               ->with($this->buildBindValues($fullGroupAccess));
+    }
+
+    private function buildConsecutiveArgsFor(string $tableName): array
+    {
+        return [
+            [
+                new Callback(static fn($where) => sha1($where)
+                                                  === self::WHERE_HASHES[$tableName]['withoutGlobalSearch']),
+            ],
+            [
+                new Callback(static fn($where) => sha1($where)
+                                                  === self::WHERE_HASHES[$tableName]['withGlobalSearchPrivate']),
+            ],
+            [
+                new Callback(static fn($where) => sha1($where)
+                                                  === self::WHERE_HASHES[$tableName]['withGlobalSearchPrivateGroup']),
+            ],
+        ];
+    }
+
+    private function buildBindValues(bool $fullGroupAccess = false): array
+    {
+        $values = [
+            'userIdOwner' => $this->context->getUserData()->id,
+            'userGroupIdOwner' => $this->context->getUserData()->userGroupId,
+            'userIdAccountUser' => $this->context->getUserData()->id,
+            'userGroupIdAccountGroup' => $this->context->getUserData()->userGroupId,
+            'userIdGroupMembership' => $this->context->getUserData()->id,
+            'userIdPrivate' => $this->context->getUserData()->id,
+            'userGroupIdPrivate' => $this->context->getUserData()->userGroupId,
+        ];
+
+        if ($fullGroupAccess) {
+            $values['userIdFullGroup'] = $this->context->getUserData()->id;
+        }
+
+        return $values;
+    }
+
+    private function buildPrivateBindValues(): array
+    {
+        return [
+            'userIdPrivate' => $this->context->getUserData()->id,
+            'userGroupIdPrivate' => $this->context->getUserData()->userGroupId,
+        ];
+    }
+
+    #[Test]
+    public function testBuildFilterWithFullGroupAccess()
+    {
+        $this->config->getConfigData()->setAccountFullGroupAccess(true);
+
+        $whereConsecutiveArgs = $this->buildConsecutiveArgsFor('Account');
+
+        $whereConsecutiveArgsWithFullGroupAccess = array_replace(
+            $whereConsecutiveArgs,
+            [
+                [
+                    new Callback(static fn($where) => sha1($where)
+                                                      ===
+                                                      self::WHERE_HASHES['Account']['withoutGlobalSearchAndFullGroupAccess']
+                    ),
+                ],
+            ]
+        );
+
+        $this->setExpectationWithoutGlobalSearch('Account', $whereConsecutiveArgsWithFullGroupAccess, true);
+
+        $this->accountFilter->buildFilter();
+    }
+
+    #[Test]
+    public function testBuildFilterWithQueryProvided()
+    {
+        $this->queryFactory->expects(self::never())->method('newSelect');
+
+        $select = $this->createMock(SelectInterface::class);
+        $select->expects(self::never())->method('from');
+        $select->expects(self::exactly(3))->method('where')->willReturnSelf();
+        $select->expects(self::exactly(1))->method('bindValues')
+               ->with($this->buildBindValues());
+
+        $this->accountFilter->buildFilter(false, $select);
+    }
+
+    #[Test]
+    public function testBuildFilterKeepsAccountIdSubqueryIntactForNonAdminUser(): void
+    {
+        $this->setNonAdminContext();
+
+        $statement = $this->buildRealFilter()->buildFilter()->cols(['Account.id'])->getStatement();
+
+        self::assertStringContainsString('SELECT accountId FROM AccountToUser WHERE', $statement);
+        self::assertStringContainsString('SELECT accountId FROM AccountToUserGroup WHERE', $statement);
+        self::assertStringNotContainsString('AS `accountId FROM', $statement);
+    }
+
+    #[Test]
+    public function testBuildFilterHistoryKeepsAccountIdSubqueryIntactForNonAdminUser(): void
+    {
+        $this->setNonAdminContext();
+
+        $statement = $this->buildRealFilter()->buildFilterHistory()->cols(['AccountHistory.id'])->getStatement();
+
+        self::assertStringContainsString('SELECT accountId FROM AccountToUser WHERE', $statement);
+        self::assertStringContainsString('SELECT accountId FROM AccountToUserGroup WHERE', $statement);
+        self::assertStringNotContainsString('AS `accountId FROM', $statement);
+    }
+
+    private function setNonAdminContext(): void
+    {
+        $this->context->setUserData(
+            new UserDto(id: 7, userGroupId: 9, isAdminApp: false, isAdminAcc: false)
+        );
+        $this->context->setUserProfile(new ProfileData());
+    }
+
+    private function buildRealFilter(): AccountFilter
+    {
+        return new AccountFilter(
+            $this->context,
+            $this->config->getConfigData(),
+            new QueryFactory('mysql')
+        );
+    }
+
+    /**
+     * @throws Exception
+     * @throws SPException
+     */
+    #[Test]
+    public function testBuildFilterWithGlobalSearchForAdminAcc()
+    {
+        $this->context->setUserData(
+            UserDto::fromModel(UserDataGenerator::factory()->buildUserData()->mutate(['isAdminAcc' => true]))
+        );
+
+        $this->setExpectationForGlobalSearch('Account');
+
+        $this->accountFilter->buildFilter();
+    }
+
+    /**
+     * @param string $tableName
+     *
+     * @return void
+     * @throws Exception
+     */
+    private function setExpectationForGlobalSearch(string $tableName): void
+    {
+        $whereConsecutiveArgs = array_slice($this->buildConsecutiveArgsFor($tableName), 1, 2);
+
+        $select = $this->createMock(SelectInterface::class);
+        $this->queryFactory->expects(self::once())->method('newSelect')->willReturn($select);
+
+        $select->expects(self::exactly(1))->method('from')->with($tableName)->willReturnSelf();
+        $select->expects(self::exactly(2))
+               ->method('where')
+               ->with(...self::withConsecutive(...$whereConsecutiveArgs))
+               ->willReturnSelf();
+        $select->expects(self::exactly(1))->method('bindValues')
+               ->with($this->buildPrivateBindValues());
+    }
+
+    /**
+     * @throws Exception
+     * @throws SPException
+     */
+    #[Test]
+    public function testBuildFilterWithGlobalSearchForAdminApp()
+    {
+        $this->context->setUserData(
+            UserDto::fromModel(UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true]))
+        );
+
+        $this->setExpectationForGlobalSearch('Account');
+
+        $this->accountFilter->buildFilter();
+    }
+
+    #[Test]
+    public function testBuildFilterWithGlobalSearchForGlobalSearch()
+    {
+        $this->config->getConfigData()->setGlobalSearch(true);
+        $this->context->getUserProfile()->setAccGlobalSearch(true);
+
+        $this->setExpectationForGlobalSearch('Account');
+
+        $this->accountFilter->buildFilter(true);
+    }
+
+    #[Test]
+    public function testBuildFilterHistory()
+    {
+        $this->setExpectationWithoutGlobalSearch('AccountHistory');
+
+        $this->accountFilter->buildFilterHistory();
+    }
+
+    /**
+     * @throws Exception
+     * @throws SPException
+     */
+    #[Test]
+    public function testBuildFilterHistoryWithGlobalSearchForAdminAcc()
+    {
+        $this->context->setUserData(
+            UserDto::fromModel(UserDataGenerator::factory()->buildUserData()->mutate(['isAdminAcc' => true]))
+        );
+
+        $this->setExpectationForGlobalSearch('AccountHistory');
+
+        $this->accountFilter->buildFilterHistory();
+    }
+
+    /**
+     * @throws Exception
+     * @throws SPException
+     */
+    #[Test]
+    public function testBuildFilterHistoryWithGlobalSearchForAdminApp()
+    {
+        $this->context->setUserData(
+            UserDto::fromModel(UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true]))
+        );
+
+        $this->setExpectationForGlobalSearch('AccountHistory');
+
+        $this->accountFilter->buildFilterHistory();
+    }
+
+    #[Test]
+    public function testBuildFilterHistoryWithGlobalSearchForGlobalSearch()
+    {
+        $this->config->getConfigData()->setGlobalSearch(true);
+        $this->context->getUserProfile()->setAccGlobalSearch(true);
+
+        $this->setExpectationForGlobalSearch('AccountHistory');
+
+        $this->accountFilter->buildFilterHistory(true);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Test]
+    public function testBuildFilterHistoryWithQueryProvided()
+    {
+        $this->queryFactory->expects(self::never())->method('newSelect');
+
+        $select = $this->createMock(SelectInterface::class);
+        $select->expects(self::never())->method('from');
+        $select->expects(self::exactly(3))->method('where')->willReturnSelf();
+        $select->expects(self::exactly(1))->method('bindValues')
+               ->with($this->buildBindValues());
+
+        $this->accountFilter->buildFilterHistory(false, $select);
+    }
+
+    #[Test]
+    public function testBuildFilterHistoryWithFullGroupAccess()
+    {
+        $this->config->getConfigData()->setAccountFullGroupAccess(true);
+
+        $whereConsecutiveArgs = $this->buildConsecutiveArgsFor('AccountHistory');
+
+        $whereConsecutiveArgsWithFullGroupAccess = array_replace(
+            $whereConsecutiveArgs,
+            [
+                [
+                    new Callback(static fn($where) => sha1($where)
+                                                      ===
+                                                      self::WHERE_HASHES['AccountHistory']['withoutGlobalSearchAndFullGroupAccess']
+                    ),
+                ],
+            ]
+        );
+
+        $this->setExpectationWithoutGlobalSearch('AccountHistory', $whereConsecutiveArgsWithFullGroupAccess, true);
+
+        $this->accountFilter->buildFilterHistory();
+    }
+
+    /**
+     * Documents that app admins do not bypass the private-account predicate.
+     *
+     * @throws Exception
+     * @throws SPException
+     */
+    #[Test]
+    public function testPrivatePredicateStillAppliesToAdminApp(): void
+    {
+        $this->context->setUserData(
+            UserDto::fromModel(UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true]))
+        );
+
+        $this->setExpectationForGlobalSearch('Account');
+
+        $this->accountFilter->buildFilter();
+    }
+
+    #[Test]
+    public function testIsGlobalDiscoveryActive(): void
+    {
+        $this->setNonAdminContext();
+        $this->config->getConfigData()->setGlobalSearch(true);
+        $this->context->getUserProfile()->setAccGlobalSearch(true);
+
+        $filter = $this->buildRealFilter();
+        self::assertTrue($filter->isGlobalDiscoveryActive(true));
+        self::assertFalse($filter->isGlobalDiscoveryActive(false));
+
+        $this->context->getUserProfile()->setAccGlobalSearch(false);
+        self::assertFalse($filter->isGlobalDiscoveryActive(true));
+
+        $this->context->getUserProfile()->setAccGlobalSearch(true);
+        $this->config->getConfigData()->setGlobalSearch(false);
+        self::assertFalse($filter->isGlobalDiscoveryActive(true));
+
+        $this->config->getConfigData()->setGlobalSearch(true);
+        $this->context->setUserData(new UserDto(id: 7, userGroupId: 9, isAdminApp: true, isAdminAcc: false));
+        self::assertFalse($filter->isGlobalDiscoveryActive(true));
+
+        $this->context->setUserData(new UserDto(id: 7, userGroupId: 9, isAdminApp: false, isAdminAcc: true));
+        self::assertFalse($filter->isGlobalDiscoveryActive(true));
+    }
+
+    #[Test]
+    public function testBuildVisibilityPredicate(): void
+    {
+        $this->setNonAdminContext();
+        $this->config->getConfigData()->setAccountFullGroupAccess(false);
+
+        $filter = $this->buildRealFilter();
+        $predicate = $filter->buildVisibilityPredicate('vis');
+
+        self::assertStringContainsString(':visUserIdOwner', $predicate['sql']);
+        self::assertStringContainsString(':visUserGroupIdOwner', $predicate['sql']);
+        self::assertStringContainsString(':visUserIdAccountUser', $predicate['sql']);
+        self::assertStringContainsString(':visUserGroupIdAccountGroup', $predicate['sql']);
+        self::assertStringContainsString(':visUserIdGroupMembership', $predicate['sql']);
+        self::assertArrayNotHasKey('visUserIdFullGroup', $predicate['bindValues']);
+        self::assertSame(7, $predicate['bindValues']['visUserIdOwner']);
+        self::assertSame(9, $predicate['bindValues']['visUserGroupIdOwner']);
+
+        $this->config->getConfigData()->setAccountFullGroupAccess(true);
+        $fullPredicate = $filter->buildVisibilityPredicate('vis');
+        self::assertStringContainsString(':visUserIdFullGroup', $fullPredicate['sql']);
+        self::assertSame(7, $fullPredicate['bindValues']['visUserIdFullGroup']);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->queryFactory = $this->createMock(QueryFactory::class);
+
+        $this->accountFilter = new AccountFilter(
+            $this->context,
+            $this->config->getConfigData(),
+            $this->queryFactory
+        );
+    }
+}

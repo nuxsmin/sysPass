@@ -1,10 +1,12 @@
 <?php
-/**
+
+declare(strict_types=1);
+/*
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
- * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,170 +21,183 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\SP\Core\Crypt;
+namespace SP\Tests\Core\Crypt;
 
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use phpseclib\Crypt\RSA;
-use PHPUnit\Framework\TestCase;
+use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Crypt\RSA;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Core\Crypt\CryptPKI;
-use SP\Core\Exceptions\SPException;
-use SP\Storage\File\FileException;
-use SP\Util\PasswordUtil;
+use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\File\Ports\FileHandlerInterface;
+use SP\Tests\Stubs\InMemoryFileHandler;
+use SP\Tests\UnitaryTestCase;
+
+use function PHPUnit\Framework\once;
 
 /**
  * Class CryptPKITest
- *
- * @package SP\Tests\SP\Core\Crypt
  */
-class CryptPKITest extends TestCase
+#[Group('unitary')]
+class CryptPKITest extends UnitaryTestCase
 {
-    /**
-     * @var CryptPKI
-     */
-    private $cryptPki;
+    private CryptPKI           $cryptPki;
+    private InMemoryFileHandler $privateKey;
+    private InMemoryFileHandler $publicKey;
 
     /**
-     * @throws EnvironmentIsBrokenException
      * @throws FileException
      */
-    public function testDecryptRSA()
+    #[Test]
+    public function testDecryptRSA(): void
     {
-        $length = (CryptPKI::KEY_SIZE / 8) - 11;
+        $plainText = 'test plain text';
 
-        $random = PasswordUtil::generateRandomBytes($length);
+        $this->cryptPki->createKeys();
 
-        $data = $this->cryptPki->encryptRSA($random);
+        $publicKey = PublicKeyLoader::load($this->cryptPki->getPublicKey());
 
-        $this->assertNotEmpty($data);
+        $this->assertInstanceOf(RSA\PublicKey::class, $publicKey);
 
-        $this->assertEquals($random, $this->cryptPki->decryptRSA($data));
+        $encrypted = $publicKey->withPadding(RSA::ENCRYPTION_PKCS1)->encrypt($plainText);
 
-        $this->assertFalse($this->cryptPki->decryptRSA('test123'));
+        $this->assertSame($plainText, $this->cryptPki->decryptRSA($encrypted));
     }
 
     /**
      * @throws FileException
      */
-    public function testDecryptRSAPassword()
-    {
-        $length = (CryptPKI::KEY_SIZE / 8) - 11;
-
-        $random = PasswordUtil::randomPassword($length);
-
-        $data = $this->cryptPki->encryptRSA($random);
-
-        $this->assertNotEmpty($data);
-
-        $this->assertEquals($random, $this->cryptPki->decryptRSA($data));
-    }
-
-    /**
-     * @throws EnvironmentIsBrokenException
-     * @throws FileException
-     */
-    public function testDecryptRSAWrongLength()
-    {
-        $length = ((CryptPKI::KEY_SIZE / 8) - 11) + 1;
-
-        $random = PasswordUtil::generateRandomBytes($length);
-
-        $data = $this->cryptPki->encryptRSA($random);
-
-        $this->assertEquals($random, $this->cryptPki->decryptRSA($data));
-    }
-
-    /**
-     * @throws FileException
-     */
-    public function testGetPublicKey()
-    {
-        $key = $this->cryptPki->getPublicKey();
-
-        $this->assertNotEmpty($key);
-
-        $this->assertRegExp('/^-----BEGIN PUBLIC KEY-----.*/', $key);
-    }
-
-    /**
-     * @throws FileException
-     */
-    public function testGetPrivateKey()
-    {
-        $key = $this->cryptPki->getPrivateKey();
-
-        $this->assertNotEmpty($key);
-
-        $this->assertRegExp('/^-----BEGIN RSA PRIVATE KEY-----.*/', $key);
-    }
-
-    /**
-     * @throws EnvironmentIsBrokenException
-     * @throws FileException
-     */
-    public function testEncryptRSA()
-    {
-        $length = (CryptPKI::KEY_SIZE / 8) - 11;
-
-        $random = PasswordUtil::generateRandomBytes($length);
-
-        $data = $this->cryptPki->encryptRSA($random);
-
-        $this->assertNotEmpty($data);
-
-        $this->assertEquals($random, $this->cryptPki->decryptRSA($data));
-
-        // Encrypt a long message
-        $random = PasswordUtil::generateRandomBytes(128);
-
-        $data = $this->cryptPki->encryptRSA($random);
-
-        $this->assertNotEmpty($data);
-
-        $this->assertEquals($random, $this->cryptPki->decryptRSA($data));
-    }
-
-    /**
-     * @throws SPException
-     */
-    public function testCreateKeys()
+    #[Test]
+    public function testDecryptRSAWithInvalidInput(): void
     {
         $this->cryptPki->createKeys();
 
-        $this->assertFileExists(CryptPKI::PUBLIC_KEY_FILE);
-        $this->assertFileExists(CryptPKI::PRIVATE_KEY_FILE);
+        // Ubuntu 24.04's OpenSSL 3.0.13 backports PKCS#1 v1.5 implicit rejection
+        // (random plaintext instead of a padding error) while phpseclib only
+        // detects it from OpenSSL >=3.2, so invalid input would not deterministically
+        // return null. Force the pure-PHP engine for these cases (see #2113).
+        RSA::forceEngine('PHP');
+
+        try {
+            $this->assertNull($this->cryptPki->decryptRSA('invalid'));
+            $this->assertNull(
+                $this->cryptPki->decryptRSA(str_repeat("\0", CryptPKI::KEY_SIZE / 8))
+            );
+            $this->assertNull(
+                $this->cryptPki->decryptRSA(str_repeat("\xff", CryptPKI::KEY_SIZE / 8))
+            );
+        } finally {
+            RSA::forceEngine(null);
+        }
     }
 
     /**
      * @throws FileException
      */
-    public function testGetKeySize()
+    #[Test]
+    public function testDecryptRSAWithNonBlockLengthInput(): void
     {
-        $this->assertEquals(CryptPKI::KEY_SIZE, $this->cryptPki->getKeySize());
+        $this->cryptPki->createKeys();
+
+        $this->assertNull($this->cryptPki->decryptRSA((string)base64_decode('new-password')));
+        $this->assertNull($this->cryptPki->decryptRSA(''));
+        $this->assertNull(
+            $this->cryptPki->decryptRSA(str_repeat('a', CryptPKI::KEY_SIZE / 8 - 1))
+        );
+        $this->assertNull(
+            $this->cryptPki->decryptRSA(str_repeat('a', CryptPKI::KEY_SIZE / 8 + 1))
+        );
     }
 
     /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     *
-     * @throws SPException
+     * @throws FileException
      */
-    protected function setUp()
+    #[Test]
+    public function testGetPublicKey(): void
     {
-        $this->cryptPki = new CryptPKI(new RSA());
+        $this->publicKey->save('test');
+
+        $this->assertSame('test', $this->cryptPki->getPublicKey());
     }
 
     /**
-     * Tears down the fixture, for example, close a network connection.
-     * This method is called after a test is executed.
+     * @throws FileException
      */
-    protected function tearDown()
+    #[Test]
+    public function testCreateKeys(): void
     {
-        unlink(CryptPKI::PUBLIC_KEY_FILE);
-        unlink(CryptPKI::PRIVATE_KEY_FILE);
+        $this->cryptPki->createKeys();
+
+        $this->assertStringStartsWith('-----BEGIN PUBLIC KEY-----', $this->cryptPki->getPublicKey());
+        $this->assertStringStartsWith(
+            '-----BEGIN RSA PRIVATE KEY-----',
+            $this->privateKey->readToString()
+        );
     }
 
+    /**
+     * @throws FileException
+     */
+    #[Test]
+    public function testCreateKeysProducesCompatiblePair(): void
+    {
+        $this->cryptPki->createKeys();
 
+        $publicKey = PublicKeyLoader::load($this->cryptPki->getPublicKey());
+        $privateKey = PublicKeyLoader::loadPrivateKey($this->privateKey->readToString());
+
+        $this->assertInstanceOf(RSA\PublicKey::class, $publicKey);
+        $this->assertInstanceOf(RSA\PrivateKey::class, $privateKey);
+        $this->assertSame(
+            $privateKey->getPublicKey()->toString('PKCS8'),
+            $publicKey->toString('PKCS8')
+        );
+    }
+
+    /**
+     * @throws FileException
+     */
+    #[Test]
+    public function testCreateKeysWhenFilesAreMissing(): void
+    {
+        $publicKey = $this->createMock(FileHandlerInterface::class);
+        $privateKey = $this->createMock(FileHandlerInterface::class);
+
+        $publicKey->expects(once())
+                  ->method('getFileSize')
+                  ->with(true)
+                  ->willThrowException(new FileException('test'));
+
+        $publicKey->expects(once())
+                  ->method('save')
+                  ->with($this->stringContains('-----BEGIN PUBLIC KEY-----'));
+
+        $privateKey->expects(once())
+                   ->method('save')
+                   ->with($this->stringContains('-----BEGIN RSA PRIVATE KEY-----'))
+                   ->willReturnSelf();
+
+        $privateKey->expects(once())
+                   ->method('chmod')
+                   ->with(0600);
+
+        new CryptPKI($publicKey, $privateKey);
+    }
+
+    #[Test]
+    public function testGetMaxDataSize(): void
+    {
+        $this->assertEquals(117, CryptPKI::getMaxDataSize());
+    }
+
+    protected function setUp(): void
+    {
+        $this->privateKey = new InMemoryFileHandler('key.pem');
+        $this->publicKey = new InMemoryFileHandler('pubkey.pem');
+
+        $this->cryptPki = new CryptPKI($this->publicKey, $this->privateKey);
+    }
 }

@@ -22,6 +22,8 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use function SP\__;
+
 return [
     0 => __('Error while querying'),
     1 => __('There was an error'),
@@ -94,5 +96,8 @@ return [
     69 => __('Error while checking for updates'),
     70 => __('sysPass Notices'),
     71 => __('Clear the tracks out?'),
-    72 => __('File downloaded')
+    72 => __('File downloaded'),
+    73 => __('API Token'),
+    74 => __('Copy and store this token now. It will not be shown again.'),
+    75 => __('Copy Token')
 ];

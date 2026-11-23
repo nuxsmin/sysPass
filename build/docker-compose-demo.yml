@@ -1,0 +1,86 @@
+name: syspass-demo
+
+services:
+  db:
+    image: mariadb:10.3
+    container_name: ${DB_CONTAINER_NAME:-syspass-uw-db}
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_PASS:?DB_PASS is required}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db-data:/var/lib/mysql
+
+  app:
+    image: ${PHP_IMAGE:-php-testing-composer:latest}
+    container_name: ${APP_CONTAINER_NAME:-syspass-uw-app}
+    user: "${APP_UID:-1000}:${APP_GID:-1000}"
+    working_dir: ${REPO_ROOT:?REPO_ROOT is required; run through scripts/setup-demo.sh}
+    environment:
+      HOME: /tmp
+      PHP_CLI_SERVER_WORKERS: ${PHP_CLI_SERVER_WORKERS:-4}
+      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+      XDEBUG_CONFIG: ${XDEBUG_CONFIG:-}
+    volumes:
+      - ${REPO_ROOT:?REPO_ROOT is required}:${REPO_ROOT:?REPO_ROOT is required}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command:
+      - php
+      - -d
+      - session.save_path=/tmp
+      - -d
+      - upload_tmp_dir=/tmp
+      - -d
+      - error_reporting=E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED
+      - -S
+      - 0.0.0.0:8080
+      - -t
+      - ${REPO_ROOT:?REPO_ROOT is required}
+      - index.php
+
+  api:
+    image: ${PHP_IMAGE:-php-testing-composer:latest}
+    container_name: ${API_CONTAINER_NAME:-syspass-uw-api}
+    user: "${APP_UID:-1000}:${APP_GID:-1000}"
+    working_dir: ${REPO_ROOT:?REPO_ROOT is required; run through scripts/setup-demo.sh}
+    environment:
+      HOME: /tmp
+      PHP_CLI_SERVER_WORKERS: ${PHP_CLI_SERVER_WORKERS:-4}
+      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+      XDEBUG_CONFIG: ${XDEBUG_CONFIG:-}
+    volumes:
+      - ${REPO_ROOT:?REPO_ROOT is required}:${REPO_ROOT:?REPO_ROOT is required}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command:
+      - php
+      - -d
+      - session.save_path=/tmp
+      - -d
+      - upload_tmp_dir=/tmp
+      - -d
+      - error_reporting=E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED
+      - -S
+      - 0.0.0.0:8080
+      - -t
+      - ${REPO_ROOT:?REPO_ROOT is required}
+      - api.php
+
+  web:
+    image: nginx:1.27-alpine
+    container_name: ${WEB_CONTAINER_NAME:-syspass-uw-web}
+    depends_on:
+      - app
+      - api
+    environment:
+      REPO_ROOT: ${REPO_ROOT:?REPO_ROOT is required}
+    volumes:
+      - ./demo/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ${REPO_ROOT:?REPO_ROOT is required}:${REPO_ROOT:?REPO_ROOT is required}:ro
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:80"
+
+volumes:
+  db-data:

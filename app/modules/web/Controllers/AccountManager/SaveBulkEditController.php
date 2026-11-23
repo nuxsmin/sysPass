@@ -1,0 +1,135 @@
+<?php
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Modules\Web\Controllers\AccountManager;
+
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
+use SP\Domain\Account\Ports\AccountPresetService;
+use SP\Domain\Account\Ports\AccountService;
+use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Forms\AccountForm;
+use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Util\Util;
+
+use function SP\__u;
+
+/**
+ * Class AccountManagerController
+ *
+ * @package SP\Modules\Web\Controllers
+ */
+final class SaveBulkEditController extends ControllerBase
+{
+    use ItemTrait;
+
+    private readonly AccountForm $accountForm;
+
+    /**
+     * @throws AuthException
+     * @throws SessionTimeout
+     */
+    public function __construct(
+        WebControllerHelper             $webControllerHelper,
+        private readonly AccountService $accountService,
+        AccountPresetService            $accountPresetService
+    ) {
+        parent::__construct($webControllerHelper);
+
+        $this->accountForm = new AccountForm($this->config, $this->session, $this->request, $accountPresetService);
+
+        $this->checkLoggedIn();
+    }
+
+    /**
+     * saveBulkEditAction
+     *
+     * @return ActionResponse
+     * @throws SPException
+     */
+    #[Action(ResponseType::JSON)]
+    public function saveBulkEditAction(): ActionResponse
+    {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR_BULK_EDIT)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
+        $itemsId = array_values(array_unique(array_filter(
+            Util::itemsIdAdapter($this->request->analyzeString('itemsId')),
+            static fn(int $id): bool => $id > 0
+        )));
+
+        if ($itemsId === []) {
+            return ActionResponse::error(__u('You don\'t have permission to access this account'));
+        }
+
+        $editableIds = [];
+        $skippedCount = 0;
+
+        foreach ($itemsId as $itemId) {
+            if ($this->accountService->canEdit($itemId)) {
+                $editableIds[] = $itemId;
+            } else {
+                $skippedCount++;
+            }
+        }
+
+        if ($editableIds === []) {
+            return ActionResponse::error(__u('You don\'t have permission to access this account'));
+        }
+
+        $accountBulkDto = new AccountUpdateBulkDto(
+            $editableIds,
+            array_map(
+                fn(int $id) => $this->accountForm
+                    ->validateFor(AclActionsInterface::ACCOUNTMGR_BULK_EDIT, $id)
+                    ->getItemData(),
+                $editableIds
+            ),
+            $this->request->analyzeBool('delete_history', false)
+        );
+
+        $this->accountService->updateBulk($accountBulkDto);
+
+        $this->eventDispatcher->notify(
+            'edit.account.bulk',
+            new Event($this, EventMessage::build(__u('Accounts updated')))
+        );
+
+        if ($skippedCount > 0) {
+            return ActionResponse::warning(__u('Accounts updated'));
+        }
+
+        return ActionResponse::ok(__u('Accounts updated'));
+    }
+}
