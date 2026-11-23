@@ -948,11 +948,16 @@ final class AccountBoundaryTest extends TestCase
                             $databaseConnectionData,
                             $globalSearchEnabled
                         ) {
+                            $version = \SP\Domain\Common\Providers\Version::getVersionStringNormalized();
                             $configData = $config->getConfigData()
                                 ->setDbHost($databaseConnectionData->getDbHost())
                                 ->setDbName($databaseConnectionData->getDbName())
                                 ->setDbUser($databaseConnectionData->getDbUser())
                                 ->setDbPass($databaseConnectionData->getDbPass())
+                                ->setAppVersion($version)
+                                ->setDatabaseVersion($version)
+                                ->setConfigVersion($version)
+                                ->setUpgradeKey(null)
                                 ->setGlobalSearch($globalSearchEnabled)
                                 ->setInstalled(true);
                             $config->save($configData, false);

@@ -182,6 +182,7 @@ abstract class ApiTestCase extends TestCase
                                 ->setAppVersion($version)
                                 ->setDatabaseVersion($version)
                                 ->setConfigVersion($version)
+                                ->setUpgradeKey(null)
                                 ->setInstalled(true);
 
                             // Update the in-memory config without touching the file

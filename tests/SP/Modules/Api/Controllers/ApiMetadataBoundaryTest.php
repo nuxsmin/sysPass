@@ -529,12 +529,17 @@ final class ApiMetadataBoundaryTest extends TestCase
         return [
             DatabaseConnectionData::class => $dbData,
             ConfigDataInterface::class => static function (ConfigFileService $config) use ($dbData): ConfigDataInterface {
+                $version = \SP\Domain\Common\Providers\Version::getVersionStringNormalized();
                 $configData = $config->getConfigData()
                     ->setDbHost($dbData->getDbHost())
                     ->setDbPort($dbData->getDbPort())
                     ->setDbName($dbData->getDbName())
                     ->setDbUser($dbData->getDbUser())
                     ->setDbPass($dbData->getDbPass())
+                    ->setAppVersion($version)
+                    ->setDatabaseVersion($version)
+                    ->setConfigVersion($version)
+                    ->setUpgradeKey(null)
                     ->setInstalled(true)
                     ->setDemoEnabled(false)
                     ->setLogEnabled(false)

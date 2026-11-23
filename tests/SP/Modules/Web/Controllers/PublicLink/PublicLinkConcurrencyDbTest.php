@@ -376,6 +376,7 @@ use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
 use SP\Core\UI\ThemeContext;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -408,9 +409,13 @@ $coreDefs = CoreDefinitions::getDefinitions('__ROOT__', 'web');
 $domainDefs = DomainDefinitions::getDefinitions();
 
 $connData = DatabaseConnectionData::getFromEnvironment();
+$version = Version::getVersionStringNormalized();
 $configData = (new ConfigData())
     ->setInstalled(true)
     ->setMaintenance(false)
+    ->setAppVersion($version)
+    ->setDatabaseVersion($version)
+    ->setConfigVersion($version)
     ->setDbHost($connData->getDbHost())
     ->setDbPort($connData->getDbPort())
     ->setDbName($connData->getDbName())
