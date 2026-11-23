@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,11 +24,9 @@
 
 namespace SP;
 
-use Exception;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileSystem;
 use Throwable;
-
 use const APP_PATH;
 
 /**

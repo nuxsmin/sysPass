@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,18 +22,18 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Domain\Auth\Providers\Ldap;
+declare(strict_types=1);
 
-use SP\Domain\Auth\Dtos\LdapParams;
-use SP\Domain\Auth\Exceptions\LdapException;
+namespace SP\Domain\Auth\Providers\Ldap;
 
 use Laminas\Ldap\Exception\LdapException as LaminasLdapException;
 use Laminas\Ldap\Ldap as LaminasLdap;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Auth\Exceptions\LdapException;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
-
+use SP\Domain\Core\Events\EventMessage;
 use function SP\__u;
 
 /**

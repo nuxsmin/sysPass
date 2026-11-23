@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,11 +24,9 @@
 
 namespace SP\Modules\Web\Controllers\AccountFile;
 
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Account\Models\File;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
+use SP\Domain\Account\Models\File;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountService;
@@ -36,15 +34,16 @@ use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
-use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Domain\File\Ports\FileHandlerFactoryInterface;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
+use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
-
 use function SP\__;
 use function SP\__u;
 

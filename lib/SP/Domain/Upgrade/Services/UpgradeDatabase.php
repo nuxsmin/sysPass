@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,6 +27,9 @@ declare(strict_types=1);
 namespace SP\Domain\Upgrade\Services;
 
 use Exception;
+use SP\Domain\Common\Attributes\UpgradeVersion;
+use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
@@ -34,13 +37,9 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Log\LoggerInterface;
 use SP\Domain\Core\Log\NullLogger;
-use SP\Domain\Common\Attributes\UpgradeVersion;
-use SP\Domain\Common\Services\Service;
-use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Database\Ports\DatabaseFileFactoryInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
-use SP\Domain\Database\Ports\DatabaseFileFactoryInterface;
-
 use function SP\__u;
 
 /**

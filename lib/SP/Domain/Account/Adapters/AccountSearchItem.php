@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,15 +22,17 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Account\Adapters;
 
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Services\PublicLink;
 use SP\Domain\Common\Dtos\ItemDataTrait;
 use SP\Domain\Common\Models\Item;
+use SP\Domain\Common\Providers\Html;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Domain\Common\Providers\Html;
 
 /**
  * Class AccountSearchItem

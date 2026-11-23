@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers\AccessManager;
 
-use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Ports\PublicLinkService;
 use SP\Domain\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Services\AuthException;
@@ -33,6 +32,7 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
@@ -41,13 +41,13 @@ use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
 use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use SP\Modules\Web\Presenters\Helpers\Grid\AuthTokenGrid;
 use SP\Modules\Web\Presenters\Helpers\Grid\PublicLinkGrid;
 use SP\Modules\Web\Presenters\Helpers\Grid\UserGrid;
 use SP\Modules\Web\Presenters\Helpers\Grid\UserGroupGrid;
 use SP\Modules\Web\Presenters\Helpers\Grid\UserProfileGrid;
 use SP\Modules\Web\Presenters\Helpers\TabsGridHelper;
-use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class IndexController

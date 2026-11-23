@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,19 +22,17 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 
 namespace SP\Domain\CustomField\UseCases;
 
 use LogicException;
 use SP\Domain\Common\Dtos\Command;
 use SP\Domain\Common\Ports\UseCase;
-use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Domain\CustomField\UseCases\Dtos\SearchCustomFieldsCommand;
 use SP\Domain\CustomField\UseCases\Dtos\SearchCustomFieldsResult;
-use SP\Domain\Core\Dtos\ItemSearchDto;
-use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Search CustomField use case.

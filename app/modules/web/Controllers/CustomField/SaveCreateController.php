@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,10 +29,9 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use SP\Domain\CustomField\UseCases\CreateCustomFieldUseCase;
 use SP\Domain\CustomField\UseCases\Dtos\CreateCustomFieldCommand;
-
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use function SP\__u;
 
 /**

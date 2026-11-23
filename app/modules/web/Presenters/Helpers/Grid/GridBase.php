@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,10 +25,10 @@
 namespace SP\Modules\Web\Presenters\Helpers\Grid;
 
 use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
@@ -37,8 +37,8 @@ use SP\Modules\Web\Html\DataGrid\DataGridData;
 use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Html\DataGrid\Layout\DataGridHeader;
 use SP\Modules\Web\Html\DataGrid\Layout\DataGridPager;
-use SP\Modules\Web\Presenters\Helpers\HelperBase;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Presenters\Helpers\HelperBase;
 
 /**
  * Class GridBase

@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,9 +32,9 @@ use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\Crypt\Ports\MasterPassService;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Cli\Commands\CommandBase;
 use SP\Modules\Cli\Commands\Validators;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -44,7 +44,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\StyleInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-
 use function SP\__;
 use function SP\__u;
 

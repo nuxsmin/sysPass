@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,9 +28,10 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\UseCases\Dtos\SearchCustomFieldsCommand;
 use SP\Domain\CustomField\UseCases\SearchCustomFieldsUseCase;
 use SP\Modules\Web\Controllers\SearchGridControllerBase;
-use SP\Modules\Web\Presenters\Helpers\Grid\CustomFieldGrid;
 use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Presenters\Helpers\Grid\CustomFieldGrid;
 
 /**
  * Class SearchController
@@ -40,7 +41,7 @@ final class SearchController extends SearchGridControllerBase
     use ItemTrait;
 
     public function __construct(
-        \SP\Modules\Web\Mvc\Controller\WebControllerHelper $webControllerHelper,
+        WebControllerHelper $webControllerHelper,
         private readonly SearchCustomFieldsUseCase $searchCustomFieldsUseCase,
         private readonly CustomFieldGrid $customFieldGrid
     ) {

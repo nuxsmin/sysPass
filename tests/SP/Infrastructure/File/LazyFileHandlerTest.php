@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin

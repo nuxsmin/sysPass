@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -30,13 +30,12 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Tag\UseCases\DeleteTagUseCase;
 use SP\Domain\Tag\UseCases\DeleteTagsUseCase;
+use SP\Domain\Tag\UseCases\DeleteTagUseCase;
 use SP\Domain\Tag\UseCases\Dtos\DeleteTagCommand;
 use SP\Domain\Tag\UseCases\Dtos\DeleteTagsCommand;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
-
 use function SP\__u;
 
 /**

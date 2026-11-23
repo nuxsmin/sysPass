@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,8 +25,8 @@
 namespace SP\Modules\Web\Controllers\PublicLink;
 
 use Exception;
-use SP\Domain\Account\UseCases\DeletePublicLinkUseCase;
 use SP\Domain\Account\UseCases\DeletePublicLinksUseCase;
+use SP\Domain\Account\UseCases\DeletePublicLinkUseCase;
 use SP\Domain\Account\UseCases\Dtos\DeletePublicLinkCommand;
 use SP\Domain\Account\UseCases\Dtos\DeletePublicLinksCommand;
 use SP\Domain\Common\Attributes\Action;
@@ -35,7 +35,6 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
-
 use function SP\__u;
 
 /**

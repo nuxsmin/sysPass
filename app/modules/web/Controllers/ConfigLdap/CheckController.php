@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,8 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\ConfigLdap;
 
-use SP\Domain\Auth\Ports\LdapCheckService;
 use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Auth\Ports\LdapCheckService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -35,7 +35,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\SimpleControllerBase;
 use SP\Modules\Web\Mvc\Controller\SimpleControllerHelper;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
-
 use function SP\__;
 use function SP\__u;
 

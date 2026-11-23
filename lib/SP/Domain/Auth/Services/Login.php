@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,13 +22,10 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Auth\Services;
 
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Dtos\LoginResponseDto;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LoginAuthHandlerService;
@@ -40,8 +35,14 @@ use SP\Domain\Auth\Ports\LoginUserService;
 use SP\Domain\Auth\Providers\AuthProviderService;
 use SP\Domain\Auth\Providers\AuthResult;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
@@ -51,8 +52,6 @@ use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
-
 use function SP\__u;
 
 /**

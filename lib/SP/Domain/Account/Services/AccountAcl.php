@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,20 +22,23 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Account\Services;
 
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Log\LoggerInterface;
 use SP\Domain\Core\Log\NullLogger;
@@ -47,7 +48,6 @@ use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserToUserGroupService;
-use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class AccountAcl

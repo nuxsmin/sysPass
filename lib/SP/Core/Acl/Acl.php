@@ -1,13 +1,10 @@
 <?php
-
-declare(strict_types=1);
-
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,17 +22,18 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Core\Acl;
 
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
-
+use SP\Domain\Core\Events\EventMessage;
 use function SP\__;
 use function SP\__u;
 use function SP\processException;

@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,17 +24,17 @@
 
 namespace SP\Modules\Web\Presenters\Helpers\Account;
 
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Domain\Account\Ports\AccountSearchService;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -50,10 +50,9 @@ use SP\Modules\Web\Html\DataGrid\DataGridData;
 use SP\Modules\Web\Html\DataGrid\DataGridSort;
 use SP\Modules\Web\Html\DataGrid\Layout\DataGridHeaderSort;
 use SP\Modules\Web\Html\DataGrid\Layout\DataGridPager;
-use SP\Modules\Web\Presenters\Helpers\HelperBase;
 use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
-
+use SP\Modules\Web\Presenters\Helpers\HelperBase;
 use function SP\__;
 use function SP\getElapsedTime;
 

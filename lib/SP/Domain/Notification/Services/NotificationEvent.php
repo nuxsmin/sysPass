@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,12 +36,11 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventReceiver;
-use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Core\Log\LoggerInterface;
 use SP\Domain\Core\Log\NullLogger;
+use SP\Domain\Core\Messages\EventMessageFormatterInterface;
 use SP\Domain\Notification\Models\Notification;
 use SP\Domain\Notification\Ports\NotificationService;
-
 use function SP\__u;
 
 /**

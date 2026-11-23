@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,17 +24,17 @@
 
 namespace SP\Modules\Web\Presenters\Helpers;
 
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Domain\Core\Events\Event;
 use SP\Core\Language;
 use SP\Domain\Common\Providers\Version;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
@@ -42,7 +42,6 @@ use SP\Domain\Http\Providers\Uri;
 use SP\Domain\Install\Ports\InstallerService;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
-
 use function SP\__;
 use function SP\processException;
 

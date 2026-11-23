@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
@@ -23,6 +21,8 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+declare(strict_types=1);
 
 $host = getenv('SP_UI_DB_HOST') ?: 'db';
 $port = (int)(getenv('SP_UI_DB_PORT') ?: 3306);

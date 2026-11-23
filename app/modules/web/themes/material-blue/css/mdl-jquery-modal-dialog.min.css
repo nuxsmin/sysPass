@@ -1,1 +1,22 @@
-.dialog-container,.loading-container{position:absolute;top:0;right:0;bottom:0;left:0;overflow:scroll;background:rgba(0,0,0,0.4);z-index:9999;opacity:0;-webkit-transition:opacity 400ms ease-in;-moz-transition:opacity 400ms ease-in;transition:opacity 400ms ease-in}.dialog-container>div{position:relative;width:90%;max-width:500px;min-height:25px;margin:10% auto;z-index:9999;padding-bottom:1em}.dialog-container>div>*{padding:0 1em}.dialog-container header{font-size:20px;font-weight:500;letter-spacing:.02em;line-height:1;background-color:#607d8b;color:#eceff1;padding:.5em;text-align:center}.dialog-button-bar{text-align:right;margin-top:8px}.loading-container>div{position:relative;width:50px;height:50px;margin:10% auto;z-index:9999}.loading-container>div>div{width:100%;height:100%}
+@charset "UTF-8";/*!*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */.dialog-container,.loading-container{position:absolute;top:0;right:0;bottom:0;left:0;overflow:scroll;background:rgba(0,0,0,0.4);z-index:9999;opacity:0;-webkit-transition:opacity 400ms ease-in;-moz-transition:opacity 400ms ease-in;transition:opacity 400ms ease-in}.dialog-container>div{position:relative;width:90%;max-width:500px;min-height:25px;margin:10% auto;z-index:9999;padding-bottom:1em}.dialog-container>div>*{padding:0 1em}.dialog-container header{font-size:20px;font-weight:500;letter-spacing:.02em;line-height:1;background-color:#607d8b;color:#eceff1;padding:.5em;text-align:center}.dialog-button-bar{text-align:right;margin-top:8px}.loading-container>div{position:relative;width:50px;height:50px;margin:10% auto;z-index:9999}.loading-container>div>div{width:100%;height:100%}

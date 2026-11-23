@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,11 +22,13 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Auth\Ports;
 
 use SP\Domain\Auth\Dtos\LdapCheckResults;
-use SP\Domain\Auth\Exceptions\LdapException;
 use SP\Domain\Auth\Dtos\LdapParams;
+use SP\Domain\Auth\Exceptions\LdapException;
 
 /**
  * Class LdapCheckService

@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,10 +24,10 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Account\Ports\AccountService;
-use SP\Modules\Web\Presenters\Helpers\Account\AccountHelper;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountHelper;
+use SP\Modules\Web\UI\ThemeIcons;
 
 /**
  * A class for al viewable actions

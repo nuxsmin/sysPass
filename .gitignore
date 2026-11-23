@@ -89,5 +89,7 @@ app/modules/web/themes/material-blue/js/*.min.js.map
 app/modules/web/themes/material-blue/css/*.css.map
 
 .idea/
+/.kilo/
+/skills/
 .kilo/plans/
 .phpactor.json

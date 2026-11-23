@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,9 +25,8 @@
 namespace SP\Modules\Web\Controllers\Error;
 
 use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Modules\Web\Presenters\Helpers\LayoutHelper;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
-
+use SP\Modules\Web\Presenters\Helpers\LayoutHelper;
 use function SP\processException;
 
 /**

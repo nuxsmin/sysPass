@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,20 +24,19 @@
 
 namespace SP\Modules\Web\Presenters\Helpers\Account;
 
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Adapters\AccountSearchItem;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridActionType;
-use SP\Modules\Web\Presenters\Helpers\HelperBase;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
-
+use SP\Modules\Web\Presenters\Helpers\HelperBase;
 use function SP\__;
 
 /**

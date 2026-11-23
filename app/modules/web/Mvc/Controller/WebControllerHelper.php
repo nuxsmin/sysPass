@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Modules\Web\Mvc\Controller;
 
 use Klein\Klein;
@@ -38,8 +38,8 @@ use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Modules\Web\Presenters\Helpers\LayoutHelper;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
+use SP\Modules\Web\Presenters\Helpers\LayoutHelper;
 
 /**
  * Class WebControllerHelper

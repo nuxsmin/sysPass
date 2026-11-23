@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,17 +22,17 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\File;
+declare(strict_types=1);
 
-use SP\Domain\Core\Exceptions\FileException;
+namespace SP\Infrastructure\File;
 
 use SP\Domain\Common\Adapters\PersistedClassRegistry;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Adapters\SerializedPayloadReader;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Storage\Ports\FileCacheService;
-
 use function SP\__;
 
 /**

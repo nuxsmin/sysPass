@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,13 +22,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 
 namespace SP\Domain\User\UseCases;
 
 use LogicException;
 use SP\Domain\Common\Dtos\Command;
 use SP\Domain\Common\Ports\UseCase;
-use SP\Domain\User\Models\User;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\User\UseCases\Dtos\GetUserCommand;
 use SP\Domain\User\UseCases\Dtos\GetUserResult;

@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,15 +35,15 @@ use ReflectionException;
 use ReflectionMethod;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Domain\Auth\Services\AuthException;
-use SP\Domain\Core\Acl\AccountPermissionException;
-use SP\Domain\Core\Acl\UnauthorizedActionException;
-use SP\Domain\Core\Acl\UnauthorizedPageException;
-use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AccountPermissionException;
+use SP\Domain\Core\Acl\UnauthorizedActionException;
+use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -54,11 +54,10 @@ use SP\Domain\Http\Code;
 use SP\Domain\Http\Header;
 use SP\Util\Util;
 use Throwable;
-
-use function SP\logger;
-use function SP\processException;
 use function SP\__;
 use function SP\__u;
+use function SP\logger;
+use function SP\processException;
 
 /**
  * Class Bootstrap

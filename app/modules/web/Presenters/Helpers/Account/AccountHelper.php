@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +24,6 @@
 
 namespace SP\Modules\Web\Presenters\Helpers\Account;
 
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
@@ -38,13 +35,17 @@ use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Common\Providers\Link;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -60,7 +61,6 @@ use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 use SP\Modules\Web\Mvc\View\TemplateInterface;

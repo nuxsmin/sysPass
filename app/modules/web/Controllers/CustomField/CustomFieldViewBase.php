@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,20 +24,20 @@
 
 namespace SP\Modules\Web\Controllers\CustomField;
 
-use SP\Modules\Web\Presenters\Helpers\CustomFields;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Domain\CustomField\Ports\CustomFieldTypeService;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\CustomField\UseCases\Dtos\GetCustomFieldCommand;
 use SP\Domain\CustomField\UseCases\GetCustomFieldUseCase;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
+use SP\Modules\Web\Presenters\Helpers\CustomFields;
 
 /**
  * Class CustomFieldViewBase

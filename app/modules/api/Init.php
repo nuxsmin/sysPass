@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,19 +25,18 @@
 namespace SP\Modules\Api;
 
 use Klein\Klein;
-use SP\Domain\Core\Context\ContextException;
 use SP\Core\HttpModuleBase;
-use SP\Core\ModuleDependencies;
 use SP\Core\Language;
+use SP\Core\ModuleDependencies;
 use SP\Core\ProvidersHelper;
 use SP\Domain\Common\Providers\Http;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
-use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Database\Ports\DatabaseUtilInterface;
-
+use SP\Domain\Http\Ports\RequestService;
 use function SP\logger;
 
 /**

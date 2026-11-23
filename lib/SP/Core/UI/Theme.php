@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,17 +22,18 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Core\UI;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\File\Ports\PhpFileLoaderInterface;
-
 use function SP\processException;
 
 /**
