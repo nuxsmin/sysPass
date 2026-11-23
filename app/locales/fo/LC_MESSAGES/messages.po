@@ -7556,3 +7556,8 @@ msgstr ""
 #~ msgstr ""
 #~ "Skriva víðkingina og trýst á Enter fyri at skoyta uppí. Minst til at "
 #~ "goyma uppsetanina."
+msgid "No notifications found."
+msgstr "Ongar fráboðanir funnar."
+
+msgid "No notifications match your filters."
+msgstr "Ongar fráboðanir samsvara við tínum filtrum."

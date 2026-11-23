@@ -7640,3 +7640,8 @@ msgid ""
 msgstr ""
 "Konfiguriert die Anwendungs-URL, falls der Zugriff über einen Reverse Proxy "
 "oder einen Load Balancer erfolgt."
+msgid "No notifications found."
+msgstr "Keine Benachrichtigungen gefunden."
+
+msgid "No notifications match your filters."
+msgstr "Keine Benachrichtigungen entsprechen Ihren Filtern."

@@ -7828,3 +7828,8 @@ msgstr "Clear the tracks out"
 #~ msgstr ""
 #~ "Podaj rozszerzenie i wciśnij enter aby dodać. Pamiętaj aby zapisać "
 #~ "konfigurację."
+msgid "No notifications found."
+msgstr "Nie znaleziono powiadomień."
+
+msgid "No notifications match your filters."
+msgstr "Żadne powiadomienia nie pasują do filtrów."

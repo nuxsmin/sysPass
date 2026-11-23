@@ -7656,3 +7656,8 @@ msgid ""
 msgstr ""
 "Définit l'URL de l'application lors de l'accès via un proxy inverse ou un "
 "répartiteur de charge."
+msgid "No notifications found."
+msgstr "Aucune notification trouvée."
+
+msgid "No notifications match your filters."
+msgstr "Aucune notification ne correspond à vos filtres."

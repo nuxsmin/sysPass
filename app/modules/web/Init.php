@@ -28,27 +28,29 @@ use Exception;
 use Klein\Klein;
 use SessionHandlerInterface;
 use SP\Core\Context\ContextBase;
-use SP\Domain\Core\Context\ContextException;
 use SP\Core\Context\Session;
 use SP\Core\Context\SessionLifecycleHandler;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\HttpModuleBase;
 use SP\Core\ModuleDependencies;
 use SP\Core\ProvidersHelper;
+use SP\Domain\Common\Providers\Address;
 use SP\Domain\Common\Providers\Http;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Core\Crypt\CsrfHandler;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
-use SP\Domain\Common\Providers\Address;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Providers\Uri;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
@@ -56,8 +58,6 @@ use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserProfileService;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Modules\Web\Controllers\Bootstrap\GetEnvironmentController;
 use SP\Modules\Web\Controllers\Error\DatabaseConnectionController;
 use SP\Modules\Web\Controllers\Error\DatabaseErrorController;
@@ -77,7 +77,7 @@ use SP\Modules\Web\Controllers\Status\CheckNoticesController;
 use SP\Modules\Web\Controllers\Status\CheckReleaseController;
 use SP\Modules\Web\Controllers\Upgrade\IndexController as UpgradeIndexController;
 use SP\Modules\Web\Controllers\Upgrade\UpgradeController;
-
+use SP\Modules\Web\Controllers\UserSettingsGeneral\SaveController;
 use function SP\logger;
 use function SP\processException;
 
@@ -119,7 +119,10 @@ final class Init extends HttpModuleBase
     /**
      * List of controllers that needs to keep the session opened
      */
-    private const NO_SESSION_CLOSE = [LoginController::class];
+    private const NO_SESSION_CLOSE = [
+        LoginController::class,
+        SaveController::class,
+    ];
     /**
      * Routes
      */

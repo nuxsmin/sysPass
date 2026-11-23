@@ -30,6 +30,11 @@ if (!isset($data)) {
             </tr>
             </thead>
             <tbody id="data-rows-<?php echo $data->getId(); ?>">
+            <?php if ($data->getId() === 'tblNotifications' && $_getvar('notificationEmpty')): ?>
+                <tr><td colspan="<?php echo count($data->getHeader()->getHeaders()) + ($data->getDataActionsCount() > 0 ? 1 : 0); ?>"><?php
+                    echo $_getvar('notificationFiltered') ? __('No notifications match your filters.') : __('No notifications found.');
+                ?></td></tr>
+            <?php endif; ?>
             <?php include $data->getDataRowTemplate(); ?>
             </tbody>
         </table>

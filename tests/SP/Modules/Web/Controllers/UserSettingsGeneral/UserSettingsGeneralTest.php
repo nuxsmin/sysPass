@@ -116,6 +116,28 @@ final class UserSettingsGeneralTest extends IntegrationTestCase
         self::assertNull($persistedPreferences->toArray()['theme']);
     }
 
+    #[Test]
+    public function saveAcceptsCheckedBrowserCheckbox(): void
+    {
+        $saved = null;
+        $service = $this->createMock(UserService::class);
+        $service->expects(self::once())->method('updatePreferencesById')
+            ->willReturnCallback(static function (int $id, UserPreferences $preferences) use (&$saved): int {
+                $saved = $preferences;
+                return 1;
+            });
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'userSettingsGeneral/save'], [
+                'userlang' => 'en_US', 'usertheme' => 'material-blue', 'resultsperpage' => 12,
+                'account_link' => 'on',
+            ]),
+            [UserService::class => $service]
+        );
+        IntegrationTestCase::runApp($container);
+        self::assertInstanceOf(UserPreferences::class, $saved);
+        self::assertTrue($saved->isAccountLink());
+    }
+
     private function outputCheckerSave(string $output): void
     {
         $json = json_decode($output, true);

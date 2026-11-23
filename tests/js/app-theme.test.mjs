@@ -518,7 +518,7 @@ function setupThemeEnv(options = {}) {
             }
         },
         util: {
-            uniqueId: () => "u1",
+            uniqueId: () => options.uniqueId || "u1",
             password: {
                 output: () => {},
                 random: (cb) => cb("Generated#Pass123", {score: 4})
@@ -762,13 +762,13 @@ test("passwordDetect synchronizes label[for], sets options menu aria-label, and 
     assert.equal(passDescLabel.getAttribute("for"), "password-u2");
     assert.equal(passFloatLabel.getAttribute("for"), "password-u2");
 
-    assert.equal(repeatInput.getAttribute("id"), "password_repeat-u2");
-    assert.equal(repeatDescLabel.getAttribute("for"), "password_repeat-u2");
-    assert.equal(repeatFloatLabel.getAttribute("for"), "password_repeat-u2");
+    assert.equal(repeatInput.getAttribute("id"), "password-u2_repeat");
+    assert.equal(repeatDescLabel.getAttribute("for"), "password-u2_repeat");
+    assert.equal(repeatFloatLabel.getAttribute("for"), "password-u2_repeat");
 
     const menuBtn = form.queryAll("#menu-password-password-u2")[0];
     assert.ok(menuBtn);
-    assert.equal(menuBtn.getAttribute("aria-label"), "More Actions");
+    assert.equal(menuBtn.getAttribute("aria-label"), "Password Actions");
 
     passInput.value = "Secret123!";
     dom.$fn(passInput).trigger("keyup");

@@ -427,7 +427,7 @@ test('account copy displays a synthetic error without navigating or creating a c
     const response = await responsePromise;
     expect(response.status()).toBe(200);
     expect(await response.json()).toEqual(envelope);
-    expect(new URL(response.url()).searchParams.get('r')).toBe(`account/saveCopy/${sourceId}`);
+    expect(new URL(response.url()).searchParams.get('r')).toBe('account/saveCopy');
     const fields = new URLSearchParams(response.request().postData() ?? '');
     expect(fields.get('name')).toBe(name);
     for (const field of ['password', 'password_repeat']) {

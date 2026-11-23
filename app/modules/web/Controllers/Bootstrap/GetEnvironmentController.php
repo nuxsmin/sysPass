@@ -75,7 +75,7 @@ final class GetEnvironmentController extends SimpleControllerBase
 
         $data = [
             'lang' => $this->getJsLang(),
-            'locale' => $this->configData->getSiteLang(),
+            'locale' => $this->session->getLocale() ?: $this->configData->getSiteLang() ?: 'en_US',
             'app_root' => $this->uriContext->getWebUri(),
             'max_file_size' => $this->configData->getFilesAllowedSize(),
             'check_updates' => $checkStatus && $this->configData->isCheckUpdates(),

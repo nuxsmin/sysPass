@@ -7623,3 +7623,8 @@ msgid ""
 msgstr ""
 "Imposta l'URL dell'applicazione quando effettua l'accesso tramite un reverse "
 "proxy o load balancer."
+msgid "No notifications found."
+msgstr "Nessuna notifica trovata."
+
+msgid "No notifications match your filters."
+msgstr "Nessuna notifica corrisponde ai filtri."

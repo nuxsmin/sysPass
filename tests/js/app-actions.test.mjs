@@ -694,7 +694,8 @@ test("main.getNotices renders notice badge with semantic warning class", functio
     assert.equal(notices.htmlValues.length, 1);
     assert.match(notices.htmlValues[0], /sp-color-text--warning/);
     assert.doesNotMatch(notices.htmlValues[0], /mdl-color-text--amber-200/);
-  
+});
+
 test("notification.save closes popup, refreshes list, and reloads badge after list resolves on status 0", async function () {
     for (const route of ["notification/saveCreate", "notification/saveEdit/42"]) {
         const context = setup();

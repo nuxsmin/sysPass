@@ -252,7 +252,7 @@ sysPass.Triggers = function (log) {
                     title: title,
                     text: $helpSrc[0].innerHTML,
                     positive: {
-                        title: sysPassApp.config.LANG[43]
+                        title: $helpSrc[0].getAttribute("data-close-label") || sysPassApp.config.LANG[43]
                     }
                 });
             }

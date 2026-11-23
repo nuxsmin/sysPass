@@ -7234,3 +7234,8 @@ msgstr "Page"
 
 #~ msgid "Text"
 #~ msgstr "Text"
+msgid "No notifications found."
+msgstr "No notifications found."
+
+msgid "No notifications match your filters."
+msgstr "No notifications match your filters."

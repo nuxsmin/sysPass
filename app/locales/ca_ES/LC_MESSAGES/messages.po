@@ -7218,3 +7218,8 @@ msgstr "Pàgina"
 
 #~ msgid "Text"
 #~ msgstr "Text"
+msgid "No notifications found."
+msgstr "No s'han trobat notificacions."
+
+msgid "No notifications match your filters."
+msgstr "Cap notificació no coincideix amb els filtres."

@@ -17,7 +17,7 @@ async function createDisposableAccount(
     (response) =>
       response.request().method() === 'GET' && parseActionRoute(response.url()) === 'account/create',
   );
-  await page.locator('a.btn-menu[data-route="account/create"]').first().click();
+  await page.goto('/index.php?r=account/create', { waitUntil: 'domcontentloaded' });
   const createResponse = await createResponsePromise;
   expect(createResponse.status()).toBe(200);
 

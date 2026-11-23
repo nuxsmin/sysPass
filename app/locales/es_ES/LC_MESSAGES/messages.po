@@ -7956,3 +7956,8 @@ msgstr "Vaciar tracks"
 
 #~ msgid "Text"
 #~ msgstr "Texto"
+msgid "No notifications found."
+msgstr "No se encontraron notificaciones."
+
+msgid "No notifications match your filters."
+msgstr "Ninguna notificación coincide con los filtros."

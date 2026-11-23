@@ -14,6 +14,7 @@
 </div>
 
 <div for="help-account-search" class="help-box"
+     data-close-label="<?php echo htmlspecialchars(__('Close'), ENT_QUOTES); ?>"
      title="<?php echo ucwords(__('Special parameters')); ?>">
     <div class="help-container">
         <p class="help-text"><?php echo __('You could use either one or several special parameters separated by blank spaces'); ?></p>

@@ -75,6 +75,14 @@ test('stabilize user details, password change dialogs and user preferences acros
     await expect(popup.locator('.mdl-tabs__tab', { hasText: 'Options' })).toBeVisible();
     await expect(popup.locator('.mdl-tabs__tab', { hasText: 'Details' })).toBeVisible();
 
+    // Keyboard focus must remain inside the open modal in both directions.
+    for (const key of ['Tab', 'Shift+Tab'] as const) {
+      for (let i = 0; i < 12; i++) {
+        await page.keyboard.press(key);
+        expect(await popup.evaluate(el => el.contains(document.activeElement)), `Focus stays in user dialog after ${key}`).toBe(true);
+      }
+    }
+
     for (const [width, label] of [[1440, 'desktop'], [768, 'tablet'], [375, 'mobile']] as const) {
       await page.setViewportSize({ width, height: 900 });
       const fitsViewport = await popup.evaluate((el) => {
@@ -373,6 +381,7 @@ test('stabilize user details, password change dialogs and user preferences acros
     expect(helpDialogState.headerColor).toBe('rgb(38, 53, 68)');
     expect(helpDialogState.headerFontWeight).toBe('600');
     expect(helpDialogState.hasPositiveBtn).toBe(true);
+    await expect(helpDialog.locator('#positive')).toHaveText(/close/i);
     await capture('help-overlay', 'desktop');
 
     await helpDialog.locator('#positive').click();

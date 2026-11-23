@@ -7273,3 +7273,8 @@ msgstr "Page"
 #~ msgstr ""
 #~ "Write the extension and press enter to add. Remember to save the "
 #~ "configuration."
+msgid "No notifications found."
+msgstr "Nenhuma notificação encontrada."
+
+msgid "No notifications match your filters."
+msgstr "Nenhuma notificação corresponde aos filtros."

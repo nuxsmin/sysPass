@@ -77,6 +77,8 @@ final class IndexController extends ControllerBase
         );
 
         $result = $this->searchNotificationsUseCase->execute(new SearchNotificationsCommand($itemSearchData));
+        $this->view->assign('notificationEmpty', $result->total === 0);
+        $this->view->assign('notificationFiltered', trim((string)$itemSearchData->getSeachString()) !== '');
 
         return $this->notificationGrid->updatePager(
             $this->notificationGrid->getGrid(

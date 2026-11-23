@@ -88,7 +88,7 @@ endif; ?>
             <div class="lowres-title"><?php
                 echo __('Language'); ?></div>
 
-            <select name="sitelang" id="sel-sitelang" size="1"
+            <select name="site_lang" id="sel-sitelang" size="1"
                     class="select-box sel-chosen-ns">
                 <?php
                 /** @var SelectItem $lang */
@@ -124,7 +124,7 @@ endif; ?>
             <div class="lowres-title"><?php
                 echo __('Visual Theme'); ?></div>
 
-            <select name="sitetheme" id="sel-sitetheme" size="1"
+            <select name="site_theme" id="sel-sitetheme" size="1"
                     class="select-box sel-chosen-ns">
                 <?php
                 /** @var SelectItem $theme */

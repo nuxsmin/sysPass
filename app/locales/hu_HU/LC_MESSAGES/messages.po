@@ -7919,3 +7919,8 @@ msgstr "Clear the tracks out"
 #~ "Write the extension and press enter to add. Remember to save the "
 #~ "configuration."
 #~ msgstr "Írj kiterjesztést, majd nyomj entert a hozzáadáshoz"
+msgid "No notifications found."
+msgstr "Nem találhatók értesítések."
+
+msgid "No notifications match your filters."
+msgstr "Nincs a szűrőknek megfelelő értesítés."

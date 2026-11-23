@@ -7652,3 +7652,8 @@ msgstr "Clear tracks out"
 #~ msgstr ""
 #~ "Typ de extensie en druk op enter. Vergeet hierna niet de configuratie op "
 #~ "te slaan."
+msgid "No notifications found."
+msgstr "Geen meldingen gevonden."
+
+msgid "No notifications match your filters."
+msgstr "Geen meldingen komen overeen met uw filters."

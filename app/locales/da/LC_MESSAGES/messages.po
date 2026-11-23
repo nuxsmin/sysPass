@@ -7722,3 +7722,8 @@ msgstr "Clear the tracks out"
 #~ msgstr ""
 #~ "Indtast filendelsen og tryk [Enter] for at tilføje. Husk at gemme "
 #~ "konfigurationen."
+msgid "No notifications found."
+msgstr "Ingen notifikationer fundet."
+
+msgid "No notifications match your filters."
+msgstr "Ingen notifikationer matcher dine filtre."

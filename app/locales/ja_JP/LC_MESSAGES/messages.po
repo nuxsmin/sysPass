@@ -7678,3 +7678,8 @@ msgid ""
 msgstr ""
 "sysPassにアクセスできるURLを設定してください、リバースプロキシやロードバラン"
 "サを用いている場合に必要な設定です。"
+msgid "No notifications found."
+msgstr "通知が見つかりません。"
+
+msgid "No notifications match your filters."
+msgstr "フィルターに一致する通知はありません。"
