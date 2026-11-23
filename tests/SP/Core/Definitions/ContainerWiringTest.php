@@ -139,7 +139,7 @@ final class ContainerWiringTest extends IntegrationTestCase
         $durable = $this->createMock(UpgradeHandlerService::class);
         $durable->expects(self::once())
                 ->method('apply')
-                ->with('320.0', self::isInstanceOf(ConfigDataInterface::class))
+                ->with('4.0.0', self::isInstanceOf(ConfigDataInterface::class))
                 ->willReturnCallback(static function () use (&$order): bool {
                     $order[] = 'durable';
 
@@ -149,7 +149,7 @@ final class ContainerWiringTest extends IntegrationTestCase
         $database = $this->createMock(UpgradeHandlerService::class);
         $database->expects(self::once())
                  ->method('apply')
-                 ->with('320.0', self::isInstanceOf(ConfigDataInterface::class))
+                 ->with('400.24210101', self::isInstanceOf(ConfigDataInterface::class))
                  ->willReturnCallback(static function () use (&$order): bool {
                      $order[] = 'database';
 

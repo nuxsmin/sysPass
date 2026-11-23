@@ -42,7 +42,6 @@ use SP\Domain\Http\Providers\Uri;
 use SP\Domain\Install\Ports\InstallerService;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
-use SP\Plugin\PluginManager;
 
 use function SP\__;
 use function SP\processException;

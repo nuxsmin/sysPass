@@ -1009,7 +1009,7 @@ sysPass.Actions = function (log) {
                         }
 
                         opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data('action-route')});
-                        opts.method = "get";
+                        opts.method = "post";
                         opts.data = $obj.serialize();
 
                         sysPassApp.requests.getActionCall(opts, function (json) {

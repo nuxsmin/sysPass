@@ -373,6 +373,8 @@ final class MailOperationsBoundaryTest extends IntegrationTestCase
 
         return new \SP\Domain\Config\Adapters\ConfigData([
             ConfigDataInterface::INSTALLED => true,
+            ConfigDataInterface::APP_VERSION => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
+            ConfigDataInterface::DATABASE_VERSION => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
             ConfigDataInterface::DB_NAME => 'syspass_test',
             ConfigDataInterface::PASSWORD_SALT => 'salt',
             ConfigDataInterface::AUTH_BASIC_ENABLED => false,

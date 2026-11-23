@@ -312,6 +312,10 @@ $configData->setDbPort(1);
 $configData->setDbName('syspass_synthetic');
 $configData->setDbUser('sp_synthetic');
 $configData->setDbPass('sp_synthetic_pass');
+$currentVersion = \SP\Domain\Common\Providers\Version::getVersionStringNormalized();
+$configData->setAppVersion($currentVersion);
+$configData->setDatabaseVersion($currentVersion);
+$configData->setConfigVersion($currentVersion);
 $configData->setInstalled($scenario !== 'uninstalled');
 $configData->setMaintenance($scenario === 'maintenance_loop');
 

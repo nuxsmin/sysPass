@@ -129,11 +129,28 @@ class UpgradeTest extends UnitaryTestCase
     public function testUpgradeWithHandler()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
+        $configData->expects($this->once())
+                   ->method('setAppVersion')
+                   ->with(\SP\Domain\Common\Providers\Version::getVersionStringNormalized())
+                   ->willReturnSelf();
+        $configData->expects($this->once())
+                   ->method('setConfigVersion')
+                   ->with(\SP\Domain\Common\Providers\Version::getVersionStringNormalized())
+                   ->willReturnSelf();
+
+        $appliedVersions = [];
         $handler = $this->createMock(UpgradeHandlerService::class);
         $handler->expects($this->exactly(2))
                 ->method('apply')
-                ->with('400.00000000', $configData)
-                ->willReturn(true);
+                ->willReturnCallback(static function (string $version, ConfigDataInterface $passedConfig) use (
+                    $configData,
+                    &$appliedVersions
+                ): bool {
+                    self::assertSame($configData, $passedConfig);
+                    $appliedVersions[] = $version;
+
+                    return true;
+                });
 
         $this->container
             ->expects($this->exactly(2))
@@ -141,12 +158,14 @@ class UpgradeTest extends UnitaryTestCase
             ->with(UpgradeHandlerStub::class)
             ->willReturn($handler);
 
-        $this->config->expects($this->exactly(2))
+        $this->config->expects($this->exactly(3))
                      ->method('save')
-            ->with($configData, true);
+                     ->with($configData, true);
 
         $this->upgrade->registerUpgradeHandler(UpgradeHandlerStub::class);
         $this->upgrade->upgrade('400.00000000', $configData);
+
+        self::assertSame(['400.00000002', '400.00000001'], $appliedVersions);
     }
 
     #[Test]
@@ -160,10 +179,13 @@ class UpgradeTest extends UnitaryTestCase
 
         $configData = $this->createMock(ConfigDataInterface::class);
         $handler = $this->createMock(UpgradeHandlerService::class);
-        $handler->expects($this->exactly(2))->method('apply')->with('400.00000000', $configData)->willReturn(true);
+        $handler->expects($this->exactly(2))
+                ->method('apply')
+                ->with($this->logicalOr('400.00000002', '400.00000001'), $configData)
+                ->willReturn(true);
 
         $this->container->expects($this->exactly(2))->method('get')->with(UpgradeHandlerStub::class)->willReturn($handler);
-        $this->config->expects($this->exactly(2))->method('save')->with($configData, true);
+        $this->config->expects($this->exactly(3))->method('save')->with($configData, true);
 
         $this->upgrade->registerUpgradeHandler(UpgradeHandlerStub::class);
         $this->upgrade->upgrade('400.00000000', $configData);
@@ -191,10 +213,13 @@ class UpgradeTest extends UnitaryTestCase
     public function testUpgradeWithHandlerWithFailedApply()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
+        $configData->expects($this->never())->method('setAppVersion');
+        $configData->expects($this->never())->method('setConfigVersion');
+
         $handler = $this->createMock(UpgradeHandlerService::class);
         $handler->expects($this->once())
                 ->method('apply')
-                ->with('400.00000000', $configData)
+                ->with('400.00000002', $configData)
                 ->willReturn(false);
 
         $this->container
@@ -212,6 +237,81 @@ class UpgradeTest extends UnitaryTestCase
         $this->expectExceptionMessage('Error while applying the update');
 
         $this->upgrade->upgrade('400.00000000', $configData);
+    }
+
+    public static function pre32VersionsProvider(): array
+    {
+        return [
+            'empty' => [''],
+            'malformed' => ['invalid'],
+            'v2.1' => ['2.1'],
+            'v3.0 semver' => ['3.0'],
+            'v3.1 semver' => ['3.1.9'],
+            'v3.0 normalized' => ['300.18111901'],
+            'v3.1 normalized' => ['310.19042701'],
+        ];
+    }
+
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('pre32VersionsProvider')]
+    public function testUpgradeRejectsVersionsBelow32(string $version): void
+    {
+        $configData = $this->createMock(ConfigDataInterface::class);
+        $configData->expects($this->never())->method('setAppVersion');
+        $configData->expects($this->never())->method('setConfigVersion');
+
+        $this->container->expects($this->never())->method('get');
+        $this->config->expects($this->never())->method('save');
+
+        $this->upgrade->registerUpgradeHandler(UpgradeHandlerStub::class);
+
+        $this->expectException(UpgradeException::class);
+        $this->expectExceptionMessage('Unsupported version for direct upgrade');
+
+        $this->upgrade->upgrade($version, $configData);
+    }
+
+    public static function supported32VersionsProvider(): array
+    {
+        return [
+            'v3.2 semver' => ['3.2'],
+            'v3.2.11 semver' => ['3.2.11'],
+            'v3.2.0 normalized' => ['320.20071701'],
+            'v3.2.11 normalized' => ['3211.22070201'],
+        ];
+    }
+
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('supported32VersionsProvider')]
+    public function testUpgradeAccepts32VersionsAndPassesTargetVersionToHandlers(string $version): void
+    {
+        $configData = $this->createMock(ConfigDataInterface::class);
+        $configData->expects($this->once())
+                   ->method('setAppVersion')
+                   ->with(\SP\Domain\Common\Providers\Version::getVersionStringNormalized())
+                   ->willReturnSelf();
+        $configData->expects($this->once())
+                   ->method('setConfigVersion')
+                   ->with(\SP\Domain\Common\Providers\Version::getVersionStringNormalized())
+                   ->willReturnSelf();
+
+        $appliedVersions = [];
+        $handler = $this->createMock(UpgradeHandlerService::class);
+        $handler->expects($this->exactly(3))
+                ->method('apply')
+                ->willReturnCallback(static function (string $targetVersion) use (&$appliedVersions): bool {
+                    $appliedVersions[] = $targetVersion;
+
+                    return true;
+                });
+
+        $this->container->expects($this->exactly(3))->method('get')->with(UpgradeHandlerStub::class)->willReturn($handler);
+        $this->config->expects($this->exactly(4))->method('save')->with($configData, true);
+
+        $this->upgrade->registerUpgradeHandler(UpgradeHandlerStub::class);
+        $this->upgrade->upgrade($version, $configData);
+
+        self::assertSame(['400.00000002', '400.00000001', '400.00000000'], $appliedVersions);
     }
 
     /**

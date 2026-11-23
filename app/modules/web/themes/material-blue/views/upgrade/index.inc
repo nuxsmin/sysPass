@@ -52,7 +52,7 @@ use function SP\__;
         </li>
     </ul>
 
-    <form id="frmUpgrade" method="get" class="form-action"
+    <form id="frmUpgrade" method="post" class="form-action"
           data-onsubmit="main/upgrade"
           data-action-route="upgrade/upgrade">
         <fieldset>
