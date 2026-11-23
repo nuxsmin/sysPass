@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or support
+    url: https://github.com/nuxsmin/sysPass/discussions/new?category=q-a
+    about: Ask questions and get help in Discussions (Q&A).
+  - name: Idea or general discussion
+    url: https://github.com/nuxsmin/sysPass/discussions/new?category=ideas
+    about: Propose early ideas in Discussions (Ideas) before opening a feature request.
+  - name: Security vulnerability
+    url: https://github.com/nuxsmin/sysPass/security/advisories/new
+    about: Report vulnerabilities privately. Do not open a public issue.
