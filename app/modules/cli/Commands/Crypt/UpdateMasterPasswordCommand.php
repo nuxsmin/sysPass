@@ -22,6 +22,8 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Modules\Cli\Commands\Crypt;
 
 use Exception;
@@ -32,9 +34,10 @@ use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
-use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
-use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
+use SP\Domain\Crypt\Exceptions\MasterPasswordChangeCommittedException;
+use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Modules\Cli\Commands\CommandBase;
 use SP\Modules\Cli\Commands\Validators;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -44,7 +47,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\StyleInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-
 use function SP\__;
 use function SP\__u;
 
@@ -65,6 +67,7 @@ final class UpdateMasterPasswordCommand extends CommandBase
         'currentMasterPassword' => 'CURRENT_MASTER_PASSWORD',
         'masterPassword'        => 'MASTER_PASSWORD',
         'update'                => 'UPDATE',
+        'acknowledge-backup' => 'ACKNOWLEDGE_BACKUP',
     ];
     private MasterPassService $masterPassService;
     private ConfigService $configService;
@@ -105,6 +108,12 @@ final class UpdateMasterPasswordCommand extends CommandBase
                 null,
                 InputOption::VALUE_NONE,
                 __('Skip asking to confirm the update')
+            )
+            ->addOption(
+                'acknowledge-backup',
+                null,
+                InputOption::VALUE_NONE,
+                __('Acknowledge that a recoverable backup exists')
             );
     }
 
@@ -117,12 +126,27 @@ final class UpdateMasterPasswordCommand extends CommandBase
         if (!$this->lock()) {
             $style->warning(__('The command is already running in another process'));
 
-            return self::SUCCESS;
+            return self::FAILURE;
         }
 
         try {
             $this->checkInstalled();
             $this->checkMaintenance();
+
+            $envAcknowledgement = self::getEnvVarForOption('acknowledge-backup');
+            $acknowledged = $envAcknowledgement !== false
+                ? Filter::getBool($envAcknowledgement)
+                : (bool)$input->getOption('acknowledge-backup');
+
+            if (!$acknowledged) {
+                if ($this->isUpdateRequested($input) || !$input->isInteractive()) {
+                    throw new RuntimeException(__u('Acknowledge that a recoverable backup exists with --acknowledge-backup'));
+                }
+
+                if (!$style->confirm(__('Have you verified a recoverable database and configuration backup?'), false)) {
+                    throw new RuntimeException(__u('A recoverable backup must be acknowledged'));
+                }
+            }
 
             $masterPassword = $this->getMasterPassword($input, $style);
             $currentMasterPassword = $this->getCurrentMasterPassword($input, $style);
@@ -175,6 +199,9 @@ final class UpdateMasterPasswordCommand extends CommandBase
             $style->info(__('Please, restart any browser session to update it'));
 
             return self::SUCCESS;
+        } catch (MasterPasswordChangeCommittedException $e) {
+            $this->logger->error($e->getMessage());
+            $style->warning(__('Master password changed, but a completion audit or notification failed. Use the new password and investigate the audit log.'));
         } catch (Exception $e) {
             $this->logger->error($e->getTraceAsString());
             $this->logger->error($e->getMessage());

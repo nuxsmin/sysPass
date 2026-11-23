@@ -1,7 +1,5 @@
 <?php
-
-declare(strict_types=1);
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -24,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Modules\Web\Presenters;
 
 use RuntimeException;
@@ -31,7 +31,6 @@ use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Language;
-use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Auth\Enums\LdapTypeEnum;
 use SP\Domain\Auth\Providers\Ldap\LdapMsAds;
 use SP\Domain\Auth\Providers\Ldap\LdapStd;
@@ -40,28 +39,28 @@ use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\Core\File\MimeType;
 use SP\Domain\Core\File\MimeTypesService;
-use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
+use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
 use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Dtos\BackupType;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
 use SP\Domain\Log\Providers\LogInterface;
 use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\Plugin\Ports\PluginManagerService;
+use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
-use SP\Domain\Database\Ports\DatabaseUtilInterface;
-use SP\Domain\File\Ports\FileHandlerFactoryInterface;
 use SP\Modules\Web\Mvc\View\Components\DataTab;
 use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
 use SP\Util\Util;
-
 use function SP\__;
 
 /**
@@ -69,6 +68,7 @@ use function SP\__;
  */
 final readonly class ConfigManagerPresenter
 {
+    /** @param UserGroupService<UserGroup> $userGroupService */
     public function __construct(
         private TemplateInterface        $view,
         private ThemeInterface           $theme,
@@ -81,7 +81,6 @@ final readonly class ConfigManagerPresenter
         private MimeTypesService         $mimeTypes,
         private DatabaseUtilInterface    $databaseUtil,
         private ConfigService            $configService,
-        private AccountService           $accountService,
         private BackupFiles              $backupFiles,
         private PathsContext             $pathsContext,
         private FileHandlerFactoryInterface $fileHandlerFactory,
@@ -282,9 +281,6 @@ final readonly class ConfigManagerPresenter
     {
         $template = clone $this->view;
         $template->addTemplate('encryption');
-
-        $numAccounts = $this->accountService->getTotalNumAccounts();
-        $template->assign('numAccounts', $numAccounts);
 
         $template->assign(
             'lastUpdateMPass',

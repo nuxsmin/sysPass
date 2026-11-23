@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -23,11 +22,20 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Tests\Modules\Cli;
 
 use PHPUnit\Framework\Attributes\Group;
+use SP\Core\ProvidersHelper;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Modules\Cli\CliCommandHelper;
+use SP\Modules\Cli\Init;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class CliApplicationTest
@@ -35,6 +43,16 @@ use Symfony\Component\Console\Application;
 #[Group('integration')]
 final class CliApplicationTest extends CliTestCase
 {
+    public function testCliInitializesEventHandlers(): void
+    {
+        $application = self::$dic->get(Application::class);
+        $application->setAutoExit(false);
+        self::$dic->set(InputInterface::class, new ArrayInput(['command' => 'list']));
+        self::$dic->set(OutputInterface::class, new NullOutput());
+        self::$dic->get(Init::class)->initialize('');
+        self::assertTrue(self::$dic->get(EventDispatcherInterface::class)->has(self::$dic->get(ProvidersHelper::class)->getLogHandler()));
+    }
+
     public function testCommandsAreRegisteredWithTheirNames(): void
     {
         $application = self::$dic->get(Application::class);

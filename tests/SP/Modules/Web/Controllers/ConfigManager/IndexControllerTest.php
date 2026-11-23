@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -85,10 +85,13 @@ class IndexControllerTest extends IntegrationTestCase
 
         $forms = $crawler->filterXPath('//div[starts-with(@id, \'tabs-\')]//form')->extract(['id']);
 
-        self::assertCount(9, $forms);
+        self::assertCount(8, $forms);
 
-        foreach (['frmConfig', 'frmAccounts', 'frmWiki', 'frmLdap', 'frmMail', 'frmCrypt', 'frmExport', 'fileUploadForm'] as $formId) {
+        foreach (['frmConfig', 'frmAccounts', 'frmWiki', 'frmLdap', 'frmMail', 'frmTempMasterPass', 'frmExport', 'fileUploadForm'] as $formId) {
             self::assertContains($formId, $forms);
         }
+        self::assertNotContains('frmCrypt', $forms);
+        self::assertStringNotContainsString('configEncryption/save"', $output);
+        self::assertStringContainsString('sp:crypt:update-master-password', $output);
     }
 }

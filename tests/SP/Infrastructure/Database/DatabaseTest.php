@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -23,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Tests\Infrastructure\Database;
 
 use Aura\SqlQuery\Common\SelectInterface;
@@ -39,11 +40,11 @@ use RuntimeException;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Database\Enums\DbStorageDriver;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Database\Ports\QueryDataInterface;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\PdoMysqlAttributes;
-use SP\Domain\Database\Enums\DbStorageDriver;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -108,7 +109,24 @@ class DatabaseTest extends UnitaryTestCase
         $pdo->expects($this->never())
             ->method('beginTransaction');
 
+        $pdo->expects($this->once())
+            ->method('exec')
+            ->with('SAVEPOINT sp_scope_0')
+            ->willReturn(0);
+
         self::assertTrue($this->database->beginTransaction());
+    }
+
+    #[Test]
+    public function testBeginTransactionReturnsFalseWhenSavepointCreationFails(): void
+    {
+        $pdo = $this->createMock(PDO::class);
+        $this->dbStorageHandler->method('getConnection')->willReturn($pdo);
+        $pdo->method('inTransaction')->willReturn(true);
+        $pdo->expects(self::once())->method('exec')->with('SAVEPOINT sp_scope_0')->willReturn(false);
+        $pdo->expects(self::never())->method('beginTransaction');
+
+        self::assertFalse($this->database->beginTransaction());
     }
 
     /**

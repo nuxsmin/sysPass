@@ -1,11 +1,10 @@
 <?php
-declare(strict_types=1);
 /*
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,6 +21,8 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+declare(strict_types=1);
 
 namespace SP\Tests\Domain\Crypt\Services;
 
@@ -121,6 +122,7 @@ class HashTest extends UnitaryTestCase
     {
         $this->assertSame(Hash::MAX_KEY_LENGTH, strlen(self::KEY_72));
         $this->assertTrue(Hash::checkHashKey(self::KEY_72, self::KEY_72_HASH));
+        $this->assertTrue(Hash::checkHashKey(self::KEY_72, Hash::hashKey(self::KEY_72)));
 
         $this->assertSame(Hash::MAX_KEY_LENGTH + 1, strlen(self::KEY_73));
         $this->assertTrue(Hash::checkHashKey(self::KEY_73, self::KEY_73_HASH));
@@ -136,6 +138,51 @@ class HashTest extends UnitaryTestCase
             $this->assertSame(PASSWORD_BCRYPT, password_get_info($hash)['algo']);
             $this->assertTrue(Hash::checkHashKey($key, $hash));
         }
+    }
+
+    #[Test]
+    public function testMultibytePasswordsBeyondBcryptByteLimitRemainDistinct()
+    {
+        $first = str_repeat('é', 36) . 'A';
+        $second = str_repeat('é', 36) . 'B';
+        $hash = Hash::hashMasterKey($first);
+
+        self::assertTrue(Hash::checkMasterKey($first, $hash));
+        self::assertFalse(Hash::checkMasterKey($second, $hash));
+    }
+
+    #[Test]
+    public function testAmbiguousLegacyMultibyteBcryptFailsClosed()
+    {
+        $password = str_repeat('é', 36) . 'A';
+        $legacyHash = password_hash($password, PASSWORD_BCRYPT);
+
+        self::assertFalse(Hash::checkMasterKey($password, $legacyHash));
+        self::assertFalse(Hash::checkMasterKey(str_repeat('é', 36), $legacyHash));
+        self::assertTrue(Hash::checkHashKey($password, $legacyHash));
+    }
+
+    #[Test]
+    public function testLongMasterPasswordDoesNotAcceptItsDigestAsAnotherKey()
+    {
+        $password = str_repeat('x', 73);
+        $hash = Hash::hashMasterKey($password);
+        self::assertTrue(Hash::checkMasterKey($password, $hash));
+        self::assertFalse(Hash::checkMasterKey(hash('sha256', $password), $hash));
+        $legacy = Hash::hashKey($password);
+        self::assertTrue(Hash::checkMasterKey($password, $legacy));
+        self::assertFalse(Hash::checkMasterKey(hash('sha256', $password), $legacy));
+    }
+
+    #[Test]
+    public function testPreviouslyVersionedMasterHashRemainsReadable(): void
+    {
+        $password = str_repeat('é', 36) . 'A';
+        $hash = '$sp-sha256$' . password_hash(hash('sha256', $password), PASSWORD_BCRYPT, ['cost' => 4]);
+
+        self::assertTrue(Hash::checkMasterKey($password, $hash));
+        self::assertFalse(Hash::checkMasterKey(str_repeat('é', 36) . 'B', $hash));
+        self::assertTrue(Hash::needsRehash($hash));
     }
 
     #[Test]

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -28,128 +28,54 @@ namespace SP\Tests\Modules\Web\Controllers\ConfigEncryption;
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Config\Ports\ConfigService;
-use SP\Domain\Core\Crypt\CryptPKIHandler;
-use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Crypt\Ports\MasterPassService;
-use SP\Domain\Crypt\Services\Hash;
-use SP\Domain\Crypt\Services\MasterPass;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Tests\InjectVault;
 use SP\Tests\IntegrationTestCase;
 
 /**
- * Class RefreshControllerTest
+ * Encryption settings boundary tests.
  */
 #[Group('integration')]
 #[InjectVault]
 class ConfigEncryptionTest extends IntegrationTestCase
 {
-
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     */
     #[Test]
-    public function refresh()
+    public function removedHashOnlySaveRouteReturnsNotFound(): void
     {
+        $master = $this->createMock(MasterPassService::class);
+        $master->expects(self::never())->method('updateConfig');
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configEncryption/refresh'])
+            self::buildRequest('post', 'index.php', ['r' => 'configEncryption/save'], [
+                'no_account_change' => '1', 'confirm_masterpass_change' => '1',
+                'current_masterpass' => 'synthetic-old', 'new_masterpass' => 'synthetic-new',
+                'new_masterpass_repeat' => 'synthetic-new', 'isAjax' => '1',
+            ]),
+            [MasterPassService::class => $master]
         );
-
-        $this->expectOutputString('{"status":"OK","description":"Master password hash updated","data":null}');
-
-        IntegrationTestCase::runApp($container);
+        ob_start();
+        try {
+            self::runApp($container);
+        } finally {
+            ob_end_clean();
+        }
+        self::assertSame(404, $container->get(\Klein\Response::class)->code());
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     */
     #[Test]
-    #[TestWith([false], 'Change accounts encryption')]
-    #[TestWith([true], 'Change only hash')]
-    public function save(bool $noAccountChange)
+    public function removedRefreshRouteReturnsNotFound(): void
     {
-        $data = [
-            'current_masterpass' => 'a_password',
-            'new_masterpass' => 'a_new_password',
-            'new_masterpass_repeat' => 'a_new_password',
-            'confirm_masterpass_change' => 'true',
-            'no_account_change' => $noAccountChange,
-            'isAjax' => 1
-        ];
-
-        $configData = $this->getConfigData();
-        $configData['isMaintenance'] = true;
-
-        $appLockHandler = self::createStub(AppLockHandler::class);
-        $appLockHandler
-            ->method('getLock')
-            ->willReturn(100);
-
-        $configData = self::createConfiguredStub(ConfigDataInterface::class, $configData);
-        $configFileService = self::createStub(ConfigFileService::class);
-        $configFileService
-            ->method('getConfigData')
-            ->willReturn($configData);
-
-        $masterPassHash = Hash::hashKey('a_password');
-        $configService = self::createStub(ConfigService::class);
-        $configService
-            ->method('getByParam')
-            ->willReturnCallback(
-                static fn(string $parameter, mixed $default = null): ?string => match ($parameter) {
-                    MasterPassService::PARAM_MASTER_PASS_HASH => $masterPassHash,
-                    MasterPass::PARAM_MASTER_PASS_TIME => '0',
-                    default => $default,
-                }
-            );
-        $configService
-            ->method('save')
-            ->willReturn(true);
-
-        $cryptPKI = self::createStub(CryptPKIHandler::class);
-        $cryptPKI
-            ->method('decryptRSA')
-            ->willReturn(null);
-
-        $definitions = [
-            ConfigFileService::class => $configFileService,
-            AppLockHandler::class => $appLockHandler,
-            ConfigService::class => $configService,
-            CryptPKIHandler::class => $cryptPKI,
-        ];
-
-        $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest(
-                'post',
-                'index.php',
-                ['r' => 'configEncryption/save'],
-                $data
-            ),
-            $definitions
-        );
-
-        if ($noAccountChange) {
-            $this->expectOutputString(
-                '{"status":"OK","description":"Master password updated","data":["No accounts updated, only hash","Please, restart the session to update it"]}'
-            );
-        } else {
-            $this->expectOutputString(
-                '{"status":"OK","description":"Master password updated","data":"Please, restart the session to update it"}'
-            );
+        $container = $this->buildContainer(self::buildRequest('get', 'index.php', ['r' => 'configEncryption/refresh']));
+        ob_start();
+        try {
+            self::runApp($container);
+        } finally {
+            ob_end_clean();
         }
-
-        IntegrationTestCase::runApp($container);
+        self::assertSame(404, $container->get(\Klein\Response::class)->code());
     }
 
     /**

@@ -1,7 +1,5 @@
 <?php
-
-declare(strict_types=1);
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -24,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Crypt\Ports;
 
 /**
@@ -34,6 +34,10 @@ interface HashService
     public function checkHashKey(string $key, string $hash): bool;
 
     public function hashKey(string $key): string;
+
+    public function checkMasterKey(string $key, string $hash): bool;
+
+    public function hashMasterKey(string $key): string;
 
     public function checkMessage(string $message, string $key, string $hash): bool;
 

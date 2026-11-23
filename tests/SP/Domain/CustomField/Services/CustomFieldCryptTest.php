@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -22,6 +21,8 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+declare(strict_types=1);
 
 namespace SP\Tests\Domain\CustomField\Services;
 
@@ -84,7 +85,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
                     return $customFieldData->getData() === $data;
                 }),
                 $request->getNewMasterPass()
-            );
+            )->willReturn(1);
 
         $this->customFieldCrypt->updateMasterPassword($request);
     }
@@ -146,7 +147,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
                     return $customFieldData->getData() === $data;
                 }),
                 $request->getNewMasterPass()
-            );
+            )->willReturn(1);
 
         $this->customFieldCrypt->updateMasterPassword($request);
     }
@@ -175,6 +176,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('updateMasterPass');
 
+        $this->expectException(ServiceException::class);
         $this->customFieldCrypt->updateMasterPassword($request);
     }
 

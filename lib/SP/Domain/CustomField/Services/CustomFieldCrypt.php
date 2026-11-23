@@ -1,6 +1,5 @@
 <?php
-declare(strict_types=1);
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -23,22 +22,24 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\CustomField\Services;
 
 use Exception;
+use RuntimeException;
+use SP\Domain\Common\Services\Service;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Common\Services\Service;
-use SP\Domain\Common\Services\ServiceException;
-use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\CustomField\Ports\CustomFieldCryptService;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-
 use function SP\__u;
 
 /**
@@ -76,6 +77,10 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
             );
         } catch (Exception $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
+
+            if ($e instanceof ServiceException) {
+                throw $e;
+            }
 
             throw ServiceException::error(
                 __u('Error while updating the custom fields data'),
@@ -124,16 +129,20 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
 
         foreach ($customFieldsData as $customFieldData) {
             try {
-                $this->customFieldService->updateMasterPass(
+                $updated = $this->customFieldService->updateMasterPass(
                     $customFieldData->mutate(['data' => $decryptor($customFieldData)]),
                     $request->getNewMasterPass()
                 );
+
+                if ($updated !== 1) {
+                    throw new RuntimeException('Custom field update did not affect one record');
+                }
 
                 $success[] = $customFieldData->getItemId();
             } catch (Exception $e) {
                 $this->eventDispatcher->notify('exception', new Event($e));
 
-                $errors[] = $customFieldData->getItemId();
+                throw ServiceException::error(sprintf(__u('Error updating custom field for item ID %d'), $customFieldData->getItemId()), null, $e->getCode(), $e);
             }
         }
 

@@ -1,7 +1,5 @@
 <?php
-
-declare(strict_types=1);
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -24,25 +22,26 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Infrastructure\Common\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use Closure;
-use Exception;
-use Throwable;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Database\Dtos\QueryResult;
+use SP\Domain\Database\Exceptions\TransactionCommittedException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Database\QueryData;
-use SP\Domain\Database\Dtos\QueryResult;
-
+use Throwable;
 use function SP\__u;
 use function SP\logger;
 
@@ -74,10 +73,15 @@ abstract class BaseRepository implements Repository
             try {
                 $result = $closure->call($newThis);
 
-                $this->db->endTransaction();
+                if (!$this->db->endTransaction()) {
+                    throw new ServiceException(__u('Unable to commit the transaction'));
+                }
 
                 return $result;
             } catch (Throwable $e) {
+                if ($e instanceof TransactionCommittedException) {
+                    throw $e;
+                }
                 $this->db->rollbackTransaction();
 
                 logger('Transaction:Rollback');
@@ -92,7 +96,8 @@ abstract class BaseRepository implements Repository
                     throw $e;
                 }
 
-                throw new ServiceException(__u('Rollback'), SPException::ERROR, null, $e->getCode(), $e);
+                $code = $e->getCode();
+                throw new ServiceException(__u('Rollback'), SPException::ERROR, null, is_int($code) ? $code : 0, $e);
             }
         } else {
             throw new ServiceException(__u('Unable to start a transaction'));

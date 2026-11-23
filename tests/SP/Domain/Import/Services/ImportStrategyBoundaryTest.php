@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -215,17 +215,49 @@ XML;
         self::assertStringContainsString('Error while checking integrity hash', (string)$verifyEvents[0]['desc']);
     }
 
+    #[Test]
+    public function versionedMasterHashDecryptsImportedCredential(): void
+    {
+        $crypt = new \SP\Domain\Core\Crypt\Crypt();
+        $key = $crypt->makeSecuredKey('synthetic master');
+        $ciphertext = $crypt->encrypt('synthetic credential', $key, 'synthetic master');
+        $doc = new DOMDocument();
+        $doc->preserveWhiteSpace = false;
+        $doc->loadXML('<Root><Meta><Generator>sysPass</Generator><Version>3200</Version></Meta>'
+            . '<Categories><Category id="1"><name>Cat</name><description/></Category></Categories>'
+            . '<Clients><Client id="2"><name>Cli</name><description/></Client></Clients>'
+            . '<Accounts><Account><name>Entry</name><categoryId>1</categoryId><clientId>2</clientId>'
+            . '<login>user</login><pass>' . htmlspecialchars($ciphertext, ENT_XML1) . '</pass><key>'
+            . htmlspecialchars($key, ENT_XML1) . '</key><tags/></Account></Accounts></Root>');
+        $category = $this->createStub(CategoryService::class);
+        $category->method('getByName')->willThrowException(NoSuchItemException::error('missing'));
+        $category->method('create')->willReturn(11);
+        $client = $this->createStub(ClientService::class);
+        $client->method('getByName')->willThrowException(NoSuchItemException::error('missing'));
+        $client->method('create')->willReturn(22);
+        $config = $this->createStub(ConfigService::class);
+        $config->method('getByParam')->willReturn(\SP\Domain\Crypt\Services\Hash::hashMasterKey('synthetic master'));
+        $account = $this->createMock(AccountService::class);
+        $account->expects(self::once())->method('create')->with(self::callback(
+            static fn(AccountCreateDto $dto): bool => $dto->pass === 'synthetic credential' && $dto->key === ''
+        ))->willReturn(99);
+        $importer = new SyspassImport($this->config, $this->eventDispatcherStub, $this->context,
+            $this->makeImportHelper($account, $category, $client, $this->createStub(TagService::class), $config),
+            $crypt, new HashServiceAdapter(), $doc);
+        $importer->doImport(new ImportParamsDto($this->createStub(FileHandlerInterface::class), 1, 1, null, 'synthetic master'));
+        self::assertSame(1, $importer->getCounter());
+    }
+
     /**
      * Characterization:
-     * 1) When `importMasterPwd` mismatches current DB `masterPwd`, ImportBase::validateHash() returns false and
-     *    addAccount() forwards the raw encrypted `pass` and `key` verbatim to AccountService::create().
+     * 1) A mismatched master password must not create an account.
      * 2) When `<Account>` omits `<tags>`, SyspassImport::processAccounts() passes null $data['tags'] into
      *    AccountCreateDto::withTags(array $tags), raising uncaught TypeError (not caught by catch(Exception)).
      * 3) Pretty-printed XML parsed without `preserveWhiteSpace=false` fails CallbackFilterIterator parameter
      *    type `(DOMElement $element)` with TypeError when encountering DOMText whitespace nodes.
      */
     #[Test]
-    public function syspassImportMismatchedMasterPasswordSkipsDecryptAndMissingTagsOrWhitespaceThrowsTypeError(): void
+    public function syspassImportRejectsMismatchedMasterPasswordAndMissingTagsOrWhitespaceThrowsTypeError(): void
     {
         $xmlWithTags = <<<'XML'
 <?xml version="1.0" encoding="utf-8"?>
@@ -264,21 +296,13 @@ XML;
         $configService->method('getByParam')->with('masterPwd')->willReturn('db-master-hash');
 
         $hashService = $this->createStub(HashService::class);
-        $hashService->method('checkHashKey')->willReturn(false); // imported MP != DB MP
+        $hashService->method('checkMasterKey')->willReturn(false); // imported MP != DB MP
 
         $crypt = $this->createMock(CryptInterface::class);
         $crypt->expects(self::never())->method('decrypt');
 
-        $capturedDto = null;
         $accountService = $this->createMock(AccountService::class);
-        $accountService->expects(self::once())
-            ->method('create')
-            ->with(self::callback(static function (AccountCreateDto $dto) use (&$capturedDto): bool {
-                $capturedDto = $dto;
-
-                return true;
-            }))
-            ->willReturn(99);
+        $accountService->expects(self::never())->method('create');
 
         $importer = new SyspassImport(
             $this->config,
@@ -296,11 +320,12 @@ XML;
             $doc
         );
 
-        $importer->doImport(new ImportParamsDto($this->createStub(FileHandlerInterface::class), 1, 1, null, 'foreign-mp'));
-
-        self::assertInstanceOf(AccountCreateDto::class, $capturedDto);
-        self::assertSame('FOREIGN_CIPHERTEXT', $capturedDto->pass);
-        self::assertSame('FOREIGN_KEY', $capturedDto->key);
+        try {
+            $importer->doImport(new ImportParamsDto($this->createStub(FileHandlerInterface::class), 1, 1, null, 'foreign-mp'));
+            self::fail('Expected invalid master password to fail');
+        } catch (ImportException $e) {
+            self::assertSame(0, $importer->getCounter());
+        }
 
         // Missing <tags> child triggers TypeError uncaught by `catch (Exception)`
         $xmlWithoutTags = str_replace('<tags></tags>', '', $xmlWithTags);

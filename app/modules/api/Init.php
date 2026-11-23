@@ -22,22 +22,23 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Modules\Api;
 
 use Klein\Klein;
-use SP\Domain\Core\Context\ContextException;
 use SP\Core\HttpModuleBase;
 use SP\Core\ModuleDependencies;
-use SP\Core\Language;
 use SP\Core\ProvidersHelper;
 use SP\Domain\Common\Providers\Http;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
 use SP\Domain\Database\Ports\DatabaseUtilInterface;
-
+use SP\Domain\Http\Ports\RequestService;
 use function SP\logger;
 
 /**
@@ -45,7 +46,7 @@ use function SP\logger;
  */
 final class Init extends HttpModuleBase
 {
-    private Language     $language;
+    private LanguageInterface $language;
     private DatabaseUtilInterface $databaseUtil;
 
     public function __construct(
@@ -55,7 +56,8 @@ final class Init extends HttpModuleBase
         Klein              $router,
         LanguageInterface  $language,
         DatabaseUtilInterface $databaseUtil,
-        AppLockHandler     $appLock
+        AppLockHandler                             $appLock,
+        private readonly MasterPasswordRequestLock $masterPasswordRequestLock
     ) {
         parent::__construct(
             $dependencies,
@@ -90,6 +92,8 @@ final class Init extends HttpModuleBase
 
         // Checks if sysPass is installed
         $this->checkInstalled();
+
+        $this->masterPasswordRequestLock->acquire();
 
         // Checks if maintenance mode is turned on
         if ($this->checkMaintenanceMode()) {

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -114,7 +114,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
      * @throws ServiceException
      */
     #[Test]
-    public function testUpdateMasterPasswordDoesNotThrowException(): void
+    public function testUpdateMasterPasswordFailsOnDecryptionError(): void
     {
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
@@ -122,10 +122,11 @@ class AccountMasterPasswordTest extends UnitaryTestCase
         $this->account->expects(self::once())
                       ->method('getAccountsPassData')
                       ->willReturn($accountData);
-        $this->crypt->expects(self::exactly(10))
+        $this->crypt->expects(self::once())
                     ->method('decrypt')
                     ->willThrowException(new SPException('test'));
 
+        $this->expectException(ServiceException::class);
         $this->accountMasterPassword->updateMasterPassword($request);
     }
 
@@ -223,7 +224,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
      * @throws ServiceException
      */
     #[Test]
-    public function testUpdateHistoryMasterPasswordDoesNotThrowException(): void
+    public function testUpdateHistoryMasterPasswordFailsOnDecryptionError(): void
     {
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
@@ -231,10 +232,11 @@ class AccountMasterPasswordTest extends UnitaryTestCase
         $this->accountHistory->expects(self::once())
                              ->method('getAccountsPassData')
                              ->willReturn($accountData);
-        $this->crypt->expects(self::exactly(10))
+        $this->crypt->expects(self::once())
                     ->method('decrypt')
                     ->willThrowException(new SPException('test'));
 
+        $this->expectException(ServiceException::class);
         $this->accountMasterPassword->updateHistoryMasterPassword($request);
     }
 

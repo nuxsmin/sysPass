@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -27,13 +27,6 @@ declare(strict_types=1);
 namespace SP\Domain\Account\Services;
 
 use Exception;
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Domain\Core\Events\EventMessage;
-use SP\Domain\Core\Log\LoggerInterface;
-use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Ports\AccountCryptService;
@@ -42,10 +35,17 @@ use SP\Domain\Account\Ports\AccountMasterPasswordService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Log\LoggerInterface;
+use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
-
+use SP\Domain\Crypt\Services\Hash;
 use function SP\__u;
 
 /**
@@ -99,6 +99,10 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
         } catch (Exception $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 
+            if ($e instanceof ServiceException) {
+                throw $e;
+            }
+
             throw ServiceException::error(
                 __u('Error while updating the accounts\' passwords'),
                 null,
@@ -130,6 +134,10 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
 
         $eventMessage = EventMessage::build();
 
+        if ($this->config->getConfigData()->isDemoEnabled()) {
+            throw new ServiceException(__u('Master password change is unavailable in demo mode'));
+        }
+
         if ($numAccounts === 0) {
             $eventMessage->addDescription(__u('There are no accounts for processing'));
             $eventMessage->addDetail(__u('Accounts updated'), __u('N/A'));
@@ -138,16 +146,8 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
             return $eventMessage;
         }
 
-        $configData = $this->config->getConfigData();
-        $currentMasterPassHash = $updateMasterPassRequest->getCurrentHash();
-
+        $verifiedHashes = [];
         foreach ($accounts as $account) {
-            // No realizar cambios si está en modo demo
-            if ($configData->isDemoEnabled()) {
-                $accountsOk[] = $account->id;
-                continue;
-            }
-
             if ($counter % 100 === 0) {
                 $eta = self::getETA($startTime, $counter, $numAccounts);
 
@@ -163,10 +163,12 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 );
             }
 
-            if (isset($account->mPassHash) && $account->mPassHash !== $currentMasterPassHash) {
-                $eventMessage->addDescription(__u('The record\'s master password does not match'));
-                $eventMessage->addDetail($account->name, $account->id);
-                continue;
+            if (isset($account->mPassHash)) {
+                $hash = $account->mPassHash;
+                $verifiedHashes[$hash] ??= Hash::checkMasterKey($updateMasterPassRequest->getCurrentMasterPass(), $hash);
+                if (!$verifiedHashes[$hash]) {
+                    throw new ServiceException(sprintf(__u('Master password mismatch for record ID %d'), $account->id));
+                }
             }
 
             try {
@@ -188,10 +190,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
             } catch (SPException $e) {
                 $this->eventDispatcher->notify('exception', new Event($e));
 
-                $errorCount++;
-
-                $eventMessage->addDescription(__u('Error while updating the account\'s password'));
-                $eventMessage->addDetail($account->name, $account->id);
+                throw new ServiceException(sprintf(__u('Error updating record ID %d'), $account->id), SPException::ERROR, null, $e->getCode(), $e);
             }
         }
 
@@ -212,7 +211,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
             $runtime = time() - $startTime;
             $eta = (int)((($totalItems * $runtime) / $numItems) - $runtime);
 
-            return [$eta, $numItems / $runtime];
+            return [$eta, $runtime > 0 ? $numItems / $runtime : 0];
         }
 
         return [0, 0];
@@ -237,8 +236,11 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
 
             $eventMessage = $this->processAccounts(
                 $this->accountHistoryService->getAccountsPassData(),
-                function (int $accountId, EncryptedPassword $encryptedPassword) {
-                    $this->accountHistoryService->updatePasswordMasterPass($accountId, $encryptedPassword);
+                function (int $accountId, EncryptedPassword $encryptedPassword) use ($updateMasterPassRequest) {
+                    $this->accountHistoryService->updatePasswordMasterPass(
+                        $accountId,
+                        new EncryptedPassword($encryptedPassword->getPass(), $encryptedPassword->getKey(), $updateMasterPassRequest->getHash())
+                    );
                 },
                 $updateMasterPassRequest
             );
@@ -249,6 +251,10 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
             );
         } catch (Exception $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
+
+            if ($e instanceof ServiceException) {
+                throw $e;
+            }
 
             throw ServiceException::error(
                 __u('Error while updating the accounts\' passwords in history'),

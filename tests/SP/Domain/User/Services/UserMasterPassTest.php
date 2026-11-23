@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -24,25 +22,29 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Tests\Domain\User\Services;
 
-use SP\Domain\Crypt\Adapters\HashServiceAdapter;
-use SP\Core\Context\StatelessMasterKeyStore;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Domain\Crypt\Services\Hash;
+use SP\Core\Context\StatelessMasterKeyStore;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\UserMasterPassStatus;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Domain\User\Services\UserMasterPass;
-use SP\Domain\User\Models\UserMasterPassStatus;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -57,6 +59,18 @@ class UserMasterPassTest extends UnitaryTestCase
     private MockObject|ConfigService  $configService;
     private MockObject|CryptInterface $crypt;
     private UserMasterPass            $userMasterPass;
+    private MockObject|MasterPasswordRequestLock $masterPasswordRequestLock;
+
+    #[Test]
+    public function userMasterPasswordCopyRequiresCurrentRequestKey(): void
+    {
+        $this->masterPasswordRequestLock->method('isActive')->willReturn(true);
+        $this->masterPasswordRequestLock->expects(self::once())->method('assertCurrentMasterPassword')
+            ->with('old synthetic')->willThrowException(ServiceException::error('stale key'));
+        $this->crypt->expects(self::never())->method('encrypt');
+        $this->expectException(ServiceException::class);
+        $this->userMasterPass->create('old synthetic', 'synthetic user', 'synthetic password');
+    }
 
     /**
      * @throws ServiceException
@@ -538,53 +552,28 @@ class UserMasterPassTest extends UnitaryTestCase
      * @throws ServiceException
      */
     #[Test]
-    public function testUpdateOnLoginWithSaveHash()
+    public function testUpdateOnLoginWithMissingHashFailsClosed(): void
     {
-        $userLoginDto = new UserLoginDto(self::$faker->userName(), self::$faker->password());
+        $this->configService->method('getByParam')->with('masterPwd')->willReturn(null);
+        $this->configService->expects(self::never())->method('save');
+        $this->userRepository->expects(self::never())->method('updateMasterPassById');
+        $this->crypt->expects(self::never())->method('encrypt');
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('documented recovery procedure');
+        $this->userMasterPass->updateOnLogin('synthetic master', new UserLoginDto('user', 'password'), 100);
+    }
 
-        $this->configService
-            ->expects($this->once())
-            ->method('getByParam')
-            ->with('masterPwd')
-            ->willReturn(null);
-
-        $this->configService
-            ->expects($this->once())
-            ->method('save')
-            ->with(
-                'masterPwd',
-                self::callback(static function (string $hash) {
-                    return Hash::checkHashKey('a_master_pass', $hash);
-                })
-            );
-
-        $key = $userLoginDto->getLoginPass() .
-               $userLoginDto->getLoginUser() .
-               $this->config->getConfigData()->getPasswordSalt();
-
-        $this->crypt
-            ->expects($this->once())
-            ->method('makeSecuredKey')
-            ->with($key)
-            ->willReturn('a_secure_key');
-
-        $this->crypt
-            ->expects($this->once())
-            ->method('encrypt')
-            ->with('a_master_pass', 'a_secure_key', $key)
-            ->willReturn('encrypted');
-
-        $this->userRepository
-            ->expects($this->once())
-            ->method('updateMasterPassById')
-            ->with(100, 'encrypted', 'a_secure_key');
-
-        $out = $this->userMasterPass->updateOnLogin('a_master_pass', $userLoginDto, 100);
-
-        $this->assertEquals(UserMasterPassStatus::Ok, $out->getUserMasterPassStatus());
-        $this->assertEquals('encrypted', $out->getCryptMasterPass());
-        $this->assertEquals('a_secure_key', $out->getCryptSecuredKey());
-        $this->assertEquals('a_master_pass', $out->getClearMasterPass());
+    #[Test]
+    public function testUpdateOnLoginWithAbsentHashFailsClosed(): void
+    {
+        $this->configService->method('getByParam')->with('masterPwd')
+            ->willThrowException(NoSuchItemException::error('missing'));
+        $this->configService->expects(self::never())->method('save');
+        $this->userRepository->expects(self::never())->method('updateMasterPassById');
+        $this->crypt->expects(self::never())->method('encrypt');
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('documented recovery procedure');
+        $this->userMasterPass->updateOnLogin('synthetic master', new UserLoginDto('user', 'password'), 100);
     }
 
     /**
@@ -599,17 +588,7 @@ class UserMasterPassTest extends UnitaryTestCase
             ->expects($this->once())
             ->method('getByParam')
             ->with('masterPwd')
-            ->willReturn(null);
-
-        $this->configService
-            ->expects($this->once())
-            ->method('save')
-            ->with(
-                'masterPwd',
-                self::callback(static function (string $hash) {
-                    return Hash::checkHashKey('a_master_pass', $hash);
-                })
-            );
+            ->willReturn(Hash::hashMasterKey('a_master_pass'));
 
         $key = $userLoginDto->getLoginPass() .
                $userLoginDto->getLoginUser() .
@@ -760,6 +739,7 @@ class UserMasterPassTest extends UnitaryTestCase
         $this->userRepository = $this->createMock(UserRepository::class);
         $this->configService = $this->createMock(ConfigService::class);
         $this->crypt = $this->createMock(CryptInterface::class);
+        $this->masterPasswordRequestLock = $this->createMock(MasterPasswordRequestLock::class);
 
         $this->userMasterPass = new UserMasterPass(
             $this->config,
@@ -769,7 +749,8 @@ class UserMasterPassTest extends UnitaryTestCase
             $this->configService,
             $this->crypt,
             new StatelessMasterKeyStore($this->context),
-            new HashServiceAdapter()
+            new HashServiceAdapter(),
+            $this->masterPasswordRequestLock
         );
     }
 }

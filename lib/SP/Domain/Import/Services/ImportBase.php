@@ -1,7 +1,5 @@
 <?php
-
-declare(strict_types=1);
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -24,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Import\Services;
 
 use SP\Domain\Account\Dtos\AccountCreateDto;
@@ -38,21 +38,20 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Ports\ImportService;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Domain\Core\Exceptions\DuplicatedItemException;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
-
 use function SP\__u;
 
 /**
@@ -132,7 +131,11 @@ abstract class ImportBase extends Service implements ImportService
                 fn() => $this->validateHash($importParams)
             );
 
-            if ($hasValidHash === true && !empty($importParams->getMasterPassword())) {
+            if (!$hasValidHash || (!empty($accountCreateDto->key) && empty($importParams->getMasterPassword()))) {
+                throw ImportException::error(__u('Invalid or missing master password'));
+            }
+
+            if (!empty($importParams->getMasterPassword())) {
                 if ($this->version >= 210) {
                     $pass = $this->crypt->decrypt(
                         $accountCreateDto->pass,
@@ -175,9 +178,10 @@ abstract class ImportBase extends Service implements ImportService
     {
         if (!empty($importParams->getMasterPassword())) {
             try {
-                return $this->hashService->checkHashKey(
+                $hash = $this->configService->getByParam('masterPwd');
+                return is_string($hash) && $hash !== '' && $this->hashService->checkMasterKey(
                     $importParams->getMasterPassword(),
-                    $this->configService->getByParam('masterPwd')
+                        $hash
                 );
             } catch (NoSuchItemException) {
                 return false;

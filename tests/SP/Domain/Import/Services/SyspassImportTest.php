@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -24,9 +22,10 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Tests\Domain\Import\Services;
 
-use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -34,7 +33,6 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use RuntimeException;
-use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
@@ -42,15 +40,18 @@ use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Client\Ports\ClientService;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\Import\Services\SyspassImport;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -133,26 +134,10 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('decrypt');
 
-        $accountCounter = new InvokedCount(5);
-
-        $this->accountService
-            ->expects($accountCounter)
-            ->method('create')
-            ->with(
-                self::callback(function (AccountCreateDto $dto) use ($accountCounter) {
-                    return $dto->clientId > 0
-                           && $dto->categoryId > 0
-                           && $dto->userId === 100
-                           && $dto->userGroupId === 200
-                           && !empty($dto->pass)
-                           && !empty($dto->key)
-                           && $this->getCommonAccountMatcher($accountCounter, $dto);
-                })
-            );
-
-        $out = $this->sysPassImport->doImport($importParamsDto);
-
-        $this->assertEquals(5, $out->getCounter());
+        $this->accountService->expects(self::never())->method('create');
+        $this->expectException(ImportException::class);
+        $this->expectExceptionMessage('Invalid or missing master password');
+        $this->sysPassImport->doImport($importParamsDto);
     }
 
     /**
@@ -294,6 +279,10 @@ class SyspassImportTest extends UnitaryTestCase
         $importParamsDto = $this->createStub(ImportParamsDto::class);
         $importParamsDto->method('getDefaultUser')->willReturn(100);
         $importParamsDto->method('getDefaultGroup')->willReturn(200);
+        $importParamsDto->method('getMasterPassword')->willReturn('synthetic master');
+        $this->configService->method('getByParam')->with('masterPwd')
+            ->willReturn(Hash::hashMasterKey('synthetic master'));
+
 
         $this->clientService
             ->expects(self::exactly(4))
@@ -330,8 +319,9 @@ class SyspassImportTest extends UnitaryTestCase
             ->method('create');
 
         $this->crypt
-            ->expects(self::never())
-            ->method('decrypt');
+            ->expects(self::exactly(5))
+            ->method('decrypt')
+            ->willReturn('synthetic credential');
 
         $accountCounter = new InvokedCount(5);
 
@@ -345,7 +335,7 @@ class SyspassImportTest extends UnitaryTestCase
                            && $dto->userId === 100
                            && $dto->userGroupId === 200
                            && !empty($dto->pass)
-                           && !empty($dto->key)
+                        && $dto->key === ''
                            && $this->getCommonAccountMatcher($accountCounter, $dto);
                 })
             );
@@ -365,7 +355,7 @@ class SyspassImportTest extends UnitaryTestCase
         $importParamsDto = $this->createMock(ImportParamsDto::class);
         $importParamsDto->method('getDefaultUser')->willReturn(100);
         $importParamsDto->method('getDefaultGroup')->willReturn(200);
-        $importParamsDto->expects(self::atLeast(2))
+        $importParamsDto->expects(self::atLeastOnce())
                         ->method('getMasterPassword')
                         ->willReturn('a_password');
 
@@ -422,26 +412,10 @@ class SyspassImportTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('decrypt');
 
-        $accountCounter = new InvokedCount(5);
-
-        $this->accountService
-            ->expects($accountCounter)
-            ->method('create')
-            ->with(
-                self::callback(function (AccountCreateDto $dto) use ($accountCounter) {
-                    return $dto->clientId > 0
-                           && $dto->categoryId > 0
-                           && $dto->userId === 100
-                           && $dto->userGroupId === 200
-                           && !empty($dto->pass)
-                           && !empty($dto->key)
-                           && $this->getCommonAccountMatcher($accountCounter, $dto);
-                })
-            );
-
-        $out = $this->sysPassImport->doImport($importParamsDto);
-
-        $this->assertEquals(5, $out->getCounter());
+        $this->accountService->expects(self::never())->method('create');
+        $this->expectException(ImportException::class);
+        $this->expectExceptionMessage('Invalid or missing master password');
+        $this->sysPassImport->doImport($importParamsDto);
     }
 
     /**
@@ -627,6 +601,10 @@ class SyspassImportTest extends UnitaryTestCase
         $importParamsDto->method('getPassword')->willReturn('test_encrypt');
         $importParamsDto->method('getDefaultUser')->willReturn(100);
         $importParamsDto->method('getDefaultGroup')->willReturn(200);
+        $importParamsDto->method('getMasterPassword')->willReturn('synthetic master');
+        $this->configService->method('getByParam')->with('masterPwd')
+            ->willReturn(Hash::hashMasterKey('synthetic master'));
+
 
         $this->clientService
             ->expects(self::exactly(3))
@@ -672,11 +650,12 @@ class SyspassImportTest extends UnitaryTestCase
             ->willReturn(...range(3001, 3007));
 
         $this->crypt
-            ->expects(self::exactly(4))
+            ->expects(self::exactly(6))
             ->method('decrypt')
-            ->with(self::anything(), self::anything(), 'test_encrypt')
-            ->willReturnCallback(static function (string $encrypted, string $key) {
-                return (new Crypt())->decrypt($encrypted, $key, 'test_encrypt');
+            ->willReturnCallback(static function (string $encrypted, string $key, string $password) {
+                return $password === 'test_encrypt'
+                    ? (new Crypt())->decrypt($encrypted, $key, $password)
+                    : 'synthetic credential';
             });
 
         $accountCounter = new InvokedCount(2);
@@ -706,7 +685,7 @@ class SyspassImportTest extends UnitaryTestCase
                            && $dto->userId === 100
                            && $dto->userGroupId === 200
                            && !empty($dto->pass)
-                           && !empty($dto->key)
+                        && $dto->key === ''
                            && $accountMatcher;
                 })
             );
@@ -808,6 +787,10 @@ class SyspassImportTest extends UnitaryTestCase
         $importParamsDto = $this->createStub(ImportParamsDto::class);
         $importParamsDto->method('getDefaultUser')->willReturn(100);
         $importParamsDto->method('getDefaultGroup')->willReturn(200);
+        $importParamsDto->method('getMasterPassword')->willReturn('synthetic master');
+        $this->configService->method('getByParam')->with('masterPwd')
+            ->willReturn(Hash::hashMasterKey('synthetic master'));
+
 
         $this->clientService
             ->expects(self::exactly(4))
@@ -853,8 +836,9 @@ class SyspassImportTest extends UnitaryTestCase
             ->willReturn(3001, 3002, 3003, 3004, 3005, 3006, 3007);
 
         $this->crypt
-            ->expects(self::never())
-            ->method('decrypt');
+            ->expects(self::exactly(5))
+            ->method('decrypt')
+            ->willReturn('synthetic credential');
 
         $this->accountService
             ->expects(self::exactly(5))

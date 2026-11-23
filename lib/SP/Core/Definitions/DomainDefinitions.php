@@ -1,7 +1,5 @@
 <?php
-
-declare(strict_types=1);
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -24,14 +22,12 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Core\Definitions;
 
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
-use SP\Domain\Common\Ports\Repository;
-use SP\Domain\Common\Providers\Image;
-use SP\Domain\Export\Ports\XmlVerifyService;
-use SP\Domain\Export\Services\XmlVerify;
 use SP\Domain\Account\Adapters\Account;
 use SP\Domain\Account\Ports\AccountAdapter;
 use SP\Domain\Account\Ports\AccountHistoryRepository;
@@ -46,18 +42,21 @@ use SP\Domain\Category\Adapters\Category;
 use SP\Domain\Category\Ports\CategoryAdapter;
 use SP\Domain\Client\Adapters\Client;
 use SP\Domain\Client\Ports\ClientAdapter;
+use SP\Domain\Common\Ports\Repository;
+use SP\Domain\Common\Providers\Image;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\Export\Ports\XmlVerifyService;
+use SP\Domain\Export\Services\XmlVerify;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Domain\Import\Ports\ImportHelperInterface;
 use SP\Domain\Import\Services\ImportHelper;
 use SP\Domain\User\Ports\UserToUserGroupRepository;
 use SP\Infrastructure\Common\Repositories\SimpleRepository;
 use SP\Infrastructure\File\FileSystem;
-
 use function DI\autowire;
 use function DI\factory;
 use function DI\get;
@@ -133,6 +132,8 @@ final class DomainDefinitions
 
         // Crypt
         'SP\Domain\Crypt\Ports\MasterPassService' => 'SP\Domain\Crypt\Services\MasterPass',
+        'SP\Domain\Crypt\Ports\MasterPasswordStorageGuard' => 'SP\Infrastructure\Crypt\MasterPasswordStorageGuard',
+        'SP\Domain\Crypt\Ports\MasterPasswordRequestLock' => 'SP\Infrastructure\Crypt\MasterPasswordRequestLock',
         'SP\Domain\Crypt\Ports\TemporaryMasterPassService' => 'SP\Domain\Crypt\Services\TemporaryMasterPass',
 
         // CustomField

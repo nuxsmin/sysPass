@@ -1,8 +1,5 @@
 <?php
-
-declare(strict_types=1);
-
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -25,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Install\Services;
 
 use Exception;
@@ -34,10 +33,12 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerService;
@@ -49,9 +50,6 @@ use SP\Domain\User\Models\UserProfile;
 use SP\Domain\User\Ports\UserGroupService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
-use SP\Domain\Database\Dtos\DatabaseConnectionData;
-use SP\Domain\Core\Exceptions\FileException;
-
 use function SP\__u;
 
 /**
@@ -329,7 +327,7 @@ final class Installer implements InstallerService
                 new Config(
                     [
                         'parameter' => 'masterPwd',
-                        'value' => $this->hashService->hashKey($this->installData->getMasterPassword())
+                        'value' => $this->hashService->hashMasterKey($this->installData->getMasterPassword())
                     ]
                 )
             );

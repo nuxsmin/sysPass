@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -23,6 +23,7 @@
  */
 
 declare(strict_types=1);
+
 /**
  * sysPass
  *
@@ -48,26 +49,26 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Database;
 
-use SP\Domain\Core\Exceptions\DatabaseException;
-
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryInterface;
 use Exception;
 use PDO;
 use PDOStatement;
 use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\DatabaseException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\Database\Enums\DbStorageDriver;
+use SP\Domain\Database\Exceptions\TransactionCommittedException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Database\Ports\QueryDataInterface;
-
+use Throwable;
 use function SP\__u;
-use function SP\logger;
 use function SP\processException;
 
 /**
@@ -76,6 +77,8 @@ use function SP\processException;
 final class Database implements DatabaseInterface
 {
     private ?int $lastId = null;
+    /** @var list<string|null> */
+    private array $transactionScopes = [];
 
     /**
      * DB constructor.
@@ -85,7 +88,8 @@ final class Database implements DatabaseInterface
      */
     public function __construct(
         private readonly DbStorageHandler         $dbStorageHandler,
-        private readonly EventDispatcherInterface $eventDispatcher
+        private readonly EventDispatcherInterface   $eventDispatcher,
+        private readonly ?MasterPasswordRequestLock $masterPasswordRequestLock = null
     ) {
     }
 
@@ -104,7 +108,7 @@ final class Database implements DatabaseInterface
                 throw QueryException::error($queryData->getOnErrorMessage(), __u('Blank query'));
             }
 
-            $stmt = $this->prepareAndRunQuery($query);
+            $stmt = $this->prepareWithWriteFence($query);
 
             $this->eventDispatcher->notify(
                 'database.query',
@@ -126,6 +130,34 @@ final class Database implements DatabaseInterface
         } catch (ConstraintException|QueryException $e) {
             processException($e);
 
+            throw $e;
+        }
+    }
+
+    /** Hold the rotation fence on the connection committing the mutation. */
+    private function prepareWithWriteFence(QueryInterface $query): PDOStatement
+    {
+        if ($query instanceof SelectInterface || $this->masterPasswordRequestLock === null
+            || !$this->masterPasswordRequestLock->isActive()) {
+            return $this->prepareAndRunQuery($query);
+        }
+
+        $connection = $this->dbStorageHandler->getConnection();
+        $ownTransaction = !$connection->inTransaction();
+        if ($ownTransaction) {
+            $connection->beginTransaction();
+        }
+        try {
+            $this->masterPasswordRequestLock->protectWrite($connection);
+            $statement = $this->prepareAndRunQuery($query);
+            if ($ownTransaction) {
+                $connection->commit();
+            }
+            return $statement;
+        } catch (Throwable $e) {
+            if ($ownTransaction && $connection->inTransaction()) {
+                $connection->rollBack();
+            }
             throw $e;
         }
     }
@@ -251,6 +283,9 @@ final class Database implements DatabaseInterface
 
         if (!$conn->inTransaction()) {
             $result = $conn->beginTransaction();
+            if ($result) {
+                $this->transactionScopes[] = null;
+            }
 
             $this->eventDispatcher->notify(
                 'database.transaction.begin',
@@ -263,8 +298,11 @@ final class Database implements DatabaseInterface
             return $result;
         }
 
-        logger('beginTransaction: already in transaction');
-
+        $savepoint = 'sp_scope_' . count($this->transactionScopes);
+        if ($conn->exec('SAVEPOINT ' . $savepoint) === false) {
+            return false;
+        }
+        $this->transactionScopes[] = $savepoint;
         return true;
     }
 
@@ -277,17 +315,44 @@ final class Database implements DatabaseInterface
     {
         $conn = $this->dbStorageHandler->getConnection();
 
-        $result = $conn->inTransaction() && $conn->commit();
+        $scope = end($this->transactionScopes);
+        $committing = $this->transactionScopes === [] || $scope === null || $scope === false;
+        if ($this->transactionScopes !== [] && $scope !== null && $scope !== false) {
+            if (!$conn->inTransaction()) {
+                return false;
+            }
+            // Keep the savepoint available if a completion listener fails.
+            $this->notifyTransactionEnd(true);
+            $result = $conn->exec('RELEASE SAVEPOINT ' . $scope) !== false;
+            if ($result) {
+                array_pop($this->transactionScopes);
+            }
+            return $result;
+        } else {
+            $result = $conn->inTransaction() && $conn->commit();
+        }
+        if ($result && $this->transactionScopes !== []) {
+            array_pop($this->transactionScopes);
+        }
 
-        $this->eventDispatcher->notify(
-            'database.transaction.end',
-            new Event(
-                $this,
-                EventMessage::build()->addExtra('result', $result)
-            )
-        );
+        try {
+            $this->notifyTransactionEnd($result);
+        } catch (Throwable $e) {
+            if ($result && $committing) {
+                throw new TransactionCommittedException('Transaction committed, but its completion event failed', 0, $e);
+            }
+            throw $e;
+        }
 
         return $result;
+    }
+
+    private function notifyTransactionEnd(bool $result): void
+    {
+        $this->eventDispatcher->notify(
+            'database.transaction.end',
+            new Event($this, EventMessage::build()->addExtra('result', $result))
+        );
     }
 
     /**
@@ -299,7 +364,18 @@ final class Database implements DatabaseInterface
     {
         $conn = $this->dbStorageHandler->getConnection();
 
-        $result = $conn->inTransaction() && $conn->rollBack();
+        $scope = end($this->transactionScopes);
+        if ($this->transactionScopes !== [] && $scope !== null && $scope !== false) {
+            $result = $conn->inTransaction() && $conn->exec('ROLLBACK TO SAVEPOINT ' . $scope) !== false;
+            if ($result) {
+                $result = $conn->exec('RELEASE SAVEPOINT ' . $scope) !== false;
+            }
+        } else {
+            $result = $conn->inTransaction() && $conn->rollBack();
+        }
+        if ($result && $this->transactionScopes !== []) {
+            array_pop($this->transactionScopes);
+        }
 
         $this->eventDispatcher->notify(
             'database.transaction.rollback',

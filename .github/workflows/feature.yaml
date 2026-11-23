@@ -194,6 +194,68 @@ jobs:
       - name: PHPCS (PSR2, changed lib files, errors only)
         run: bash scripts/ci/check-phpcs-changed.sh "${{ steps.changed-files.outputs.base }}"
 
+  master-password-regressions:
+    name: Master password database regressions
+    runs-on: ubuntu-latest
+    env:
+      DB_SERVER: sp-masterpass-verify-db
+      DB_NAME: syspass_masterpass_test
+      DB_USER: root
+      DB_PASS: syspass
+      DB_PORT: 3306
+    services:
+      mariadb:
+        image: mariadb:10.3
+        env:
+          MYSQL_ROOT_PASSWORD: syspass
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+      - run: npm ci && bash scripts/build-assets.sh
+      - name: Setup locales and test font
+        run: |
+          sudo locale-gen es_ES.UTF-8 en_US.UTF-8 && sudo update-locale
+          sudo apt-get update && sudo apt-get install -y fonts-freefont-otf || sudo apt-get install -y fonts-freefont-ttf
+          sudo mkdir -p /usr/share/fonts/freefont
+          font=$(find /usr/share/fonts \( -name 'FreeSans.otf' -o -name 'FreeSans.ttf' \) -print -quit)
+          test -n "$font"
+          sudo ln -sf "$font" /usr/share/fonts/freefont/FreeSans.otf
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, gd, ldap, gettext, pdo_mysql, pdo_sqlite
+          coverage: none
+          ini-values: zend.assertions=1
+        env:
+          fail-fast: true
+      - run: composer install --prefer-dist --no-interaction --no-plugins --no-scripts
+      - name: Run isolated database regressions
+        env:
+          MYSQL_PWD: ${{ env.DB_PASS }}
+        run: |
+          set -euo pipefail
+          echo '127.0.0.1 sp-masterpass-verify-db' | sudo tee -a /etc/hosts >/dev/null
+          mysql -h "$DB_SERVER" -u "$DB_USER" -e 'CREATE DATABASE `syspass_masterpass_test` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci'
+          mysql -h "$DB_SERVER" -u "$DB_USER" "$DB_NAME" < ./schemas/dbstructure.sql
+          ./vendor/bin/phpunit -c ./tests/phpunit.xml --no-coverage --fail-on-skipped \
+            tests/SP/Infrastructure/Crypt/MasterPasswordTransactionTest.php \
+            tests/SP/Infrastructure/Crypt/MasterPasswordMariaDbTest.php \
+            tests/SP/Infrastructure/Crypt/MasterPasswordDatabaseAuditTest.php \
+            tests/SP/Infrastructure/Crypt/MasterPasswordLockInitializationTest.php \
+            tests/SP/Infrastructure/Crypt/MasterPasswordActivityLockTest.php \
+            tests/SP/Infrastructure/Crypt/MasterPasswordConcurrencyTest.php \
+            tests/SP/Modules/Web/Controllers/Account/MasterPasswordConcurrentWriteTest.php \
+            tests/SP/Modules/Cli/CliDatabaseAuditFlowTest.php
+          ./vendor/bin/phpunit -c ./tests/phpunit.xml --no-coverage --fail-on-skipped \
+            --filter accountWriteExcludesConcurrentMasterPasswordRotation \
+            tests/SP/Modules/Api/Controllers/ConfigBoundaryDbIntegrationTest.php
+
   integration:
     name: Build & Test (IT) ${{ matrix.php }}/${{ matrix.platform }}
     if: ${{ vars.TESTS_INTEGRATION_ENABLED  == 'true' }}
