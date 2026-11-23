@@ -1,6 +1,7 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Request a feature that solves a concrete problem. For early ideas, use Discussions (Ideas).
+labels: ["kind/fr", "needs-triage"]
 
 ---
 
