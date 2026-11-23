@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 
 namespace SP\Domain\User\UseCases;
 
@@ -31,11 +31,10 @@ use LogicException;
 use SP\Domain\Common\Dtos\Command;
 use SP\Domain\Common\Ports\EventEmitter;
 use SP\Domain\Common\Ports\UseCase;
-use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
-use SP\Domain\User\Models\UserProfile;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\UseCases\Dtos\DeleteUserProfileCommand;
 use SP\Domain\User\UseCases\Dtos\DeleteUserProfileResult;

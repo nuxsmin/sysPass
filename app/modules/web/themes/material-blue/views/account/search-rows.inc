@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,11 +26,9 @@
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridActionBase;
 use SP\Modules\Web\Html\DataGrid\DataGridTab;
-
 use function SP\__;
 
 /**

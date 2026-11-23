@@ -1,11 +1,10 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Infrastructure\User\Repositories;
 
 use Exception;
@@ -33,7 +34,9 @@ use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\User\Models\UserPreferences;
@@ -41,10 +44,7 @@ use SP\Domain\User\Models\UserProfile as UserProfileModel;
 use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Infrastructure\Common\Repositories\BaseRepository;
-use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
-use SP\Domain\Database\Dtos\QueryResult;
-
 use function SP\__u;
 
 /**

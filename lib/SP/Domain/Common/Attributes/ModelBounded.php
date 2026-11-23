@@ -1,12 +1,10 @@
 <?php
-/** @noinspection PhpMultipleClassDeclarationsInspection */
-
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,6 +21,8 @@
  * You should have received a copy of the GNU General Public License
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/** @noinspection PhpMultipleClassDeclarationsInspection */
 
 declare(strict_types=1);
 

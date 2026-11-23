@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,9 +25,6 @@
 namespace SP\Modules\Web\Controllers\Account;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
-use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Account\Dtos\AccountViewDto;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Account\Ports\PublicLinkService;
@@ -39,17 +36,19 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Crypt\Vault;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Providers\Uri;
 use SP\Domain\Image\Ports\ImageService;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Modules\Web\Util\ErrorUtil;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
-
+use SP\Modules\Web\UI\ThemeIcons;
+use SP\Modules\Web\Util\ErrorUtil;
 use function SP\__;
 use function SP\__u;
 use function SP\logger;

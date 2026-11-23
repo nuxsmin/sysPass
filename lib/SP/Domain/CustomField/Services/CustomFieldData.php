@@ -1,11 +1,10 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\CustomField\Services;
 
 use Exception;
@@ -32,15 +33,14 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
 use SP\Domain\CustomField\Ports\CustomFieldDataRepository;
 use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionRepository;
-
 use function SP\__u;
 
 /**

@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,26 +25,26 @@
 namespace SP\Modules\Web\Presenters\Helpers\Account;
 
 use DateTime;
-use SP\Domain\Account\Models\Account as AccountModel;
-use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
-use SP\Domain\Account\Ports\AccountHistoryRepository;
-use SP\Domain\Account\Ports\AccountRepository;
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountHistoryViewDto;
+use SP\Domain\Account\Models\Account as AccountModel;
+use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Account\Ports\AccountAclService;
+use SP\Domain\Account\Ports\AccountHistoryRepository;
 use SP\Domain\Account\Ports\AccountHistoryService;
+use SP\Domain\Account\Ports\AccountRepository;
 use SP\Domain\Account\Ports\AccountToUserGroupService;
 use SP\Domain\Account\Ports\AccountToUserService;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AccountPermissionException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -52,6 +52,7 @@ use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Modules\Web\Mvc\View\Components\SelectItemAdapter;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
+use ValueError;
 
 /**
  * Class AccountHistoryHelper
@@ -160,7 +161,7 @@ final class AccountHistoryHelper extends AccountHelperBase
         if ($dateEdit !== null) {
             try {
                 $parsed = DateTime::createFromFormat('Y-m-d H:i:s', $dateEdit);
-            } catch (\ValueError) {
+            } catch (ValueError) {
                 throw new AccountPermissionException(SPException::INFO);
             }
             if ($parsed === false || $parsed->format('Y-m-d H:i:s') !== $dateEdit) {

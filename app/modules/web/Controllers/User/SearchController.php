@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,11 +28,11 @@ namespace SP\Modules\Web\Controllers\User;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\UseCases\Dtos\SearchUsersCommand;
 use SP\Domain\User\UseCases\SearchUsersUseCase;
-use SP\Modules\Web\Presenters\Helpers\Grid\UserGrid;
 use SP\Modules\Web\Controllers\SearchGridControllerBase;
 use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Presenters\Helpers\Grid\UserGrid;
 
 /**
  * Class SearchController

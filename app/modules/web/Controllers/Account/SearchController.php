@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,13 +24,13 @@
 
 namespace SP\Modules\Web\Controllers\Account;
 
-use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Modules\Web\Presenters\Helpers\Account\AccountSearchHelper;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountSearchHelper;
 
 /**
  * SearchController

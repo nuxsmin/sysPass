@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,9 +22,9 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\File;
+declare(strict_types=1);
 
-use SP\Domain\Core\Exceptions\FileException;
+namespace SP\Infrastructure\File;
 
 use CallbackFilterIterator;
 use DOMDocument;
@@ -36,9 +34,9 @@ use DOMNode;
 use DOMNodeList;
 use ReflectionObject;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
-
 use function SP\__u;
 use function SP\logger;
 

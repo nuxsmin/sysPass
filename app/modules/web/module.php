@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -38,12 +38,11 @@ use SP\Domain\Html\Ports\JsMinifyService;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
-use SP\Modules\Web\Presenters\Helpers\Account\AccountHistoryHelper;
-use SP\Modules\Web\Presenters\Helpers\Account\AccountSearchData;
 use SP\Modules\Web\Controllers\Resource\CssController;
 use SP\Modules\Web\Controllers\Resource\JsController;
 use SP\Modules\Web\Init;
-
+use SP\Modules\Web\Presenters\Helpers\Account\AccountHistoryHelper;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountSearchData;
 use function DI\add;
 use function DI\autowire;
 use function DI\factory;

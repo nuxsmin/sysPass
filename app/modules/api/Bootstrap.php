@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,12 +25,12 @@
 namespace SP\Modules\Api;
 
 use Closure;
-use Exception;
 use Klein\Request;
 use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionAttribute;
+use ReflectionException;
 use ReflectionMethod;
 use ReflectionNamedType;
 use SP\Core\Bootstrap\BootstrapBase;
@@ -39,14 +39,13 @@ use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Modules\Api\Adapters\ActionResponseAdapter;
-use SP\Modules\Api\Controllers\ControllerBase;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Code;
+use SP\Modules\Api\Adapters\ActionResponseAdapter;
+use SP\Modules\Api\Controllers\ControllerBase;
 use Throwable;
-
 use function SP\logger;
 use function SP\processException;
 
@@ -230,7 +229,7 @@ final class Bootstrap extends BootstrapBase
 
     /**
      * @return ReflectionMethod|null
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function getActionMethod(string $controllerClass, string $methodName): ?ReflectionMethod
     {

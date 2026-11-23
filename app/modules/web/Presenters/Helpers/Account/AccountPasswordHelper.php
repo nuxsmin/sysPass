@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,22 +24,21 @@
 
 namespace SP\Modules\Web\Presenters\Helpers\Account;
 
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Image\Ports\ImageService;
+use SP\Modules\Web\Mvc\View\TemplateInterface;
 use SP\Modules\Web\Presenters\Helpers\HelperBase;
 use SP\Modules\Web\Presenters\Helpers\HelperException;
-use SP\Modules\Web\Mvc\View\TemplateInterface;
-
 use function SP\__;
 use function SP\__u;
 

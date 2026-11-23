@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,12 +22,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 
 namespace SP\Domain\CustomField\UseCases\Dtos;
 
 use SP\Domain\Common\Dtos\Result;
-use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;
+use SP\Domain\Database\Dtos\QueryResult;
 
 /**
  * Output of the CustomField search use case.

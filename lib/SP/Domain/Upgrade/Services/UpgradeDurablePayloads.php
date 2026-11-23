@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,15 +22,17 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Upgrade\Services;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use ReflectionProperty;
-use SP\Domain\Common\Attributes\UpgradeVersion;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Adapters\SerializedPayloadReader;
 use SP\Domain\Common\Adapters\SerializedPayloadRewriter;
+use SP\Domain\Common\Attributes\UpgradeVersion;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -55,7 +55,6 @@ use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserPreferences;
 use Throwable;
-
 use function SP\__u;
 
 /**

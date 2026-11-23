@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Export\Services;
 
 use DOMDocument;
@@ -40,10 +40,11 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CheckException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\Core\PhpExtensionCheckerService;
+use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
 use SP\Domain\Export\Dtos\BackupType;
 use SP\Domain\Export\Ports\XmlAccountExportService;
@@ -52,8 +53,6 @@ use SP\Domain\Export\Ports\XmlClientExportService;
 use SP\Domain\Export\Ports\XmlExportService;
 use SP\Domain\Export\Ports\XmlTagExportService;
 use SP\Domain\File\Ports\DirectoryHandlerService;
-use SP\Domain\Core\Exceptions\FileException;
-
 use function SP\__u;
 
 /**

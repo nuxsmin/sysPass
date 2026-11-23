@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,6 +21,8 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+declare(strict_types=1);
 
 namespace SP\Domain\Account\Services;
 
@@ -50,7 +50,6 @@ use SP\Domain\Category\Ports\CategoryRepository;
 use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Client\Ports\ClientRepository;
 use SP\Domain\Common\Models\Item;
-use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -81,7 +80,6 @@ use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
 use SP\Domain\User\Ports\UserGroupRepository;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Domain\User\Ports\UserToUserGroupRepository;
-
 use function SP\__u;
 
 /**

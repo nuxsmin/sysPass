@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Presenters\Helpers\Grid;
 
 
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridAction;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridActionSearch;
 use SP\Modules\Web\Html\DataGrid\Action\DataGridActionType;
@@ -33,8 +34,6 @@ use SP\Modules\Web\Html\DataGrid\DataGridData;
 use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Html\DataGrid\Layout\DataGridHeader;
-use SP\Domain\Database\Dtos\QueryResult;
-
 use function SP\__;
 use function SP\getElapsedTime;
 

@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -32,10 +32,10 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Presenters\Helpers\Grid\PublicLinkGrid;
+use SP\Modules\Web\Html\DataGrid\DataGridInterface;
 use SP\Modules\Web\Mvc\Controller\ItemTrait;
 use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
-
+use SP\Modules\Web\Presenters\Helpers\Grid\PublicLinkGrid;
 use function SP\__u;
 
 /**
@@ -69,7 +69,7 @@ final class SearchController extends ControllerBase
         return ActionResponse::ok('', ['html' => $this->render()]);
     }
 
-    private function getSearchGrid(): \SP\Modules\Web\Html\DataGrid\DataGridInterface
+    private function getSearchGrid(): DataGridInterface
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 

@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,24 +24,25 @@
 
 namespace SP\Modules\Web\Controllers\ItemManager;
 
-use SP\Domain\Common\Attributes\Action;
-use SP\Domain\Common\Dtos\ActionResponse;
-use SP\Domain\Common\Enums\ResponseType;
-use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Ports\AccountFileService;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountService;
 use SP\Domain\Category\Ports\CategoryService;
 use SP\Domain\Client\Ports\ClientService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Domain\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\Tag\Ports\TagService;
-use SP\Modules\Web\Html\DataGrid\DataGridTab;
 use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Modules\Web\Html\DataGrid\DataGridTab;
+use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 use SP\Modules\Web\Presenters\Helpers;
 use SP\Modules\Web\Presenters\Helpers\Grid\AccountGrid;
 use SP\Modules\Web\Presenters\Helpers\Grid\AccountHistoryGrid;
@@ -52,7 +53,6 @@ use SP\Modules\Web\Presenters\Helpers\Grid\FileGrid;
 use SP\Modules\Web\Presenters\Helpers\Grid\ItemPresetGrid;
 use SP\Modules\Web\Presenters\Helpers\Grid\TagGrid;
 use SP\Modules\Web\Presenters\Helpers\TabsGridHelper;
-use SP\Modules\Web\Mvc\Controller\WebControllerHelper;
 
 /**
  * Class ItemManagerController

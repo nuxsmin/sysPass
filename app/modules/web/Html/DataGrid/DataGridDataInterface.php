@@ -1,11 +1,10 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,10 +22,12 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Modules\Web\Html\DataGrid;
 
-use SP\Modules\Web\Html\Assets\IconInterface;
 use SP\Domain\Database\Dtos\QueryResult;
+use SP\Modules\Web\Html\Assets\IconInterface;
 
 /**
  * Interface DataGridDataInterface

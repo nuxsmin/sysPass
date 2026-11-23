@@ -1,11 +1,10 @@
 <?php
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,12 +22,13 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Auth\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
-use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Ports\AuthTokenRepository;
 use SP\Domain\Auth\Ports\AuthTokenService;
@@ -40,23 +40,24 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Domain\Crypt\Ports\HashService;
-use SP\Domain\Crypt\Ports\MasterKeyStore;
-use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
+use SP\Domain\CustomField\Models\CustomFieldData;
+use SP\Domain\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Database\Dtos\QueryResult;
 use Throwable;
-
 use function SP\__u;
 
 /**
@@ -71,7 +72,7 @@ final class AuthToken extends Service implements AuthTokenService
     /**
      * @param AuthTokenRepository<AuthToken> $authTokenRepository
      * @param CryptInterface $crypt
-     * @param CustomFieldDataService<\SP\Domain\CustomField\Models\CustomFieldData> $customFieldDataService
+     * @param CustomFieldDataService<CustomFieldData> $customFieldDataService
      */
     public function __construct(
         ConfigFileService $config,

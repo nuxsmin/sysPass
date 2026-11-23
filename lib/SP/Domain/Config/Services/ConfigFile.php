@@ -1,12 +1,10 @@
 <?php
-
-declare(strict_types=1);
 /**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Config\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
@@ -39,12 +39,12 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConfigException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Log\LoggerInterface;
 use SP\Domain\Core\Log\NullLogger;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
-use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class ConfigFile
