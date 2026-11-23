@@ -6,7 +6,7 @@ declare(strict_types=1);
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
