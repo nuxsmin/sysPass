@@ -8,8 +8,12 @@
 # settings and admin/master credentials are then applied.
 #
 # Usage:
+#   scripts/setup-demo.sh [--start|--stop|--down]
 #   scripts/setup-demo.sh [--build-image] [--reset] [--no-fixtures]
 #
+#   --start         Start the existing Compose stack.
+#   --stop          Stop the Compose stack without removing its containers.
+#   --down          Stop and remove Compose containers and networks.
 #   --build-image   Rebuild the PHP image with make -C scripts/docker build.
 #   --reset         Drop and recreate the application database (destructive).
 #   --no-fixtures   Do not load demo fixture data after a fresh install.
@@ -48,6 +52,7 @@ export APP_PORT APP_URL DB_NAME DB_PASS APP_UID APP_GID REPO_ROOT
 BUILD_IMAGE=0
 RESET_DB=0
 LOAD_FIXTURES=1
+ACTION=setup
 
 usage() {
   cat <<'EOF'
@@ -59,8 +64,12 @@ CLI (sp:install), optionally followed by the demo fixtures; application
 settings and admin/master credentials are then applied.
 
 Usage:
+  scripts/setup-demo.sh [--start|--stop|--down]
   scripts/setup-demo.sh [--build-image] [--reset] [--no-fixtures]
 
+  --start         Start the existing Compose stack.
+  --stop          Stop the Compose stack without removing its containers.
+  --down          Stop and remove Compose containers and networks.
   --build-image   Rebuild the PHP image with make -C scripts/docker build.
   --reset         Drop and recreate the application database (destructive).
   --no-fixtures   Do not load demo fixture data after a fresh install.
@@ -75,6 +84,27 @@ EOF
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
+    --start)
+      if [ "$ACTION" != setup ]; then
+        echo "Choose only one lifecycle action: --start, --stop, or --down" >&2
+        exit 2
+      fi
+      ACTION=start
+      ;;
+    --stop)
+      if [ "$ACTION" != setup ]; then
+        echo "Choose only one lifecycle action: --start, --stop, or --down" >&2
+        exit 2
+      fi
+      ACTION=stop
+      ;;
+    --down)
+      if [ "$ACTION" != setup ]; then
+        echo "Choose only one lifecycle action: --start, --stop, or --down" >&2
+        exit 2
+      fi
+      ACTION=down
+      ;;
     --build-image)
       BUILD_IMAGE=1
       ;;
@@ -97,19 +127,9 @@ while [ "$#" -gt 0 ]; do
   shift
 done
 
-if [[ ! "$DB_NAME" =~ ^[A-Za-z0-9_]+$ ]]; then
-  echo "DB_NAME may only contain letters, digits, and underscores" >&2
-  exit 1
-fi
-
-if [ -z "$DB_PASS" ]; then
-  echo "DB_PASS must not be empty" >&2
-  exit 1
-fi
-
-if [[ ! "$APP_PORT" =~ ^[0-9]+$ ]]; then
-  echo "APP_PORT must be a number" >&2
-  exit 1
+if [ "$ACTION" != setup ] && { [ "$BUILD_IMAGE" -eq 1 ] || [ "$RESET_DB" -eq 1 ] || [ "$LOAD_FIXTURES" -eq 0 ]; }; then
+  echo "Lifecycle actions cannot be combined with setup options" >&2
+  exit 2
 fi
 
 if "$DOCKER" compose version >/dev/null 2>&1; then
@@ -124,6 +144,41 @@ fi
 compose() {
   "${COMPOSE[@]}" -f "$COMPOSE_FILE" "$@"
 }
+
+compose config >/dev/null
+
+if [ "$ACTION" = start ]; then
+  compose start
+  echo "sysPass demo stack started"
+  exit 0
+fi
+
+if [ "$ACTION" = stop ]; then
+  compose stop
+  echo "sysPass demo stack stopped"
+  exit 0
+fi
+
+if [ "$ACTION" = down ]; then
+  compose down
+  echo "sysPass demo stack removed"
+  exit 0
+fi
+
+if [[ ! "$DB_NAME" =~ ^[A-Za-z0-9_]+$ ]]; then
+  echo "DB_NAME may only contain letters, digits, and underscores" >&2
+  exit 1
+fi
+
+if [ -z "$DB_PASS" ]; then
+  echo "DB_PASS must not be empty" >&2
+  exit 1
+fi
+
+if [[ ! "$APP_PORT" =~ ^[0-9]+$ ]]; then
+  echo "APP_PORT must be a number" >&2
+  exit 1
+fi
 
 for file in \
   "$COMPOSE_FILE" \
@@ -177,7 +232,12 @@ if [ ! -f "$ROOT/vendor/autoload.php" ]; then
     "$PHP_IMAGE" install --no-interaction --no-progress
 fi
 
-compose config >/dev/null
+for owned in "$ROOT/app/config/key.pem" "$ROOT/app/config/pubkey.pem" "$ROOT/app/config/syspass.log"; do
+  if [ -e "$owned" ] && [ "$(stat -c '%u:%g' "$owned")" != "$APP_UID:$APP_GID" ]; then
+    echo "$owned is not owned by $APP_UID:$APP_GID; fix with: sudo chown $APP_UID:$APP_GID \"$owned\"" >&2
+    exit 1
+  fi
+done
 
 if [ "$RESET_DB" -eq 1 ]; then
   echo "WARNING: dropping database '$DB_NAME' (--reset)"
@@ -232,9 +292,9 @@ if [ "$RESET_DB" -eq 1 ] || [ "$TABLE_COUNT" = "0" ]; then
   mkdir -p "$ROOT/app/config" "$ROOT/app/cache"
   cp "$ROOT/tests/res/config/config.xml" "$ROOT/app/config/config.xml"
   chmod 0640 "$ROOT/app/config/config.xml"
-  rm -f "$ROOT/app/cache/config.cache"
+  rm -f "$ROOT/app/cache/config.cache" "$ROOT/app/cache/colors.cache"
 
-  compose run --rm -T --no-deps \
+  compose run --rm -T --no-deps --remove-orphans \
     -e ADMIN_LOGIN="$ADMIN_LOGIN" \
     -e ADMIN_PASSWORD="$ADMIN_PASSWORD" \
     -e DATABASE_HOST=db \
@@ -249,6 +309,15 @@ if [ "$RESET_DB" -eq 1 ] || [ "$TABLE_COUNT" = "0" ]; then
     --entrypoint php \
     app -d display_errors=0 -d log_errors=1 cli.php sp:install --no-ansi --no-interaction
 
+  SCHEMA_TABLE_COUNT="$("$DOCKER" exec -e MYSQL_PWD="$DB_PASS" "$DB_CONTAINER_NAME" \
+    mysql -N -B -u"$DB_USER" \
+    -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_name IN ('Account', 'Config')")"
+
+  if [ "$SCHEMA_TABLE_COUNT" != "2" ]; then
+    echo "Installation did not create the required schema in database '$DB_NAME'" >&2
+    exit 1
+  fi
+
   if [ "$LOAD_FIXTURES" -eq 1 ]; then
     echo "Loading demo fixtures"
     mysql_exec "$DB_NAME" < "$ROOT/tests/res/datasets/truncate.sql"
@@ -259,6 +328,7 @@ else
 fi
 
 echo "Writing application config and credentials"
+rm -f "$ROOT/app/cache/colors.cache"
 compose run --rm -T --no-deps \
   -e APP_URL="$APP_URL" \
   -e APP_DB_HOST=db \
@@ -305,7 +375,13 @@ sysPass is ready.
   Database:        $DB_NAME on $DB_CONTAINER_NAME
 
 Stop the stack:
-  docker compose -f "$COMPOSE_FILE" down
+  $0 --stop
+
+Remove the stack containers and network:
+  $0 --down
+
+Start the stack again:
+  $0 --start
 
 Recreate the database and fixtures:
   $0 --reset

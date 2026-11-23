@@ -181,7 +181,7 @@ already installed instance.
 | --- | --- | --- |
 | PHP / web server | `php-testing-composer:latest` container, `<repo>` mounted at the same absolute path | Per run, removed afterwards |
 | MariaDB | `mariadb:10.3` container on a run-owned Docker network, no pre-created database | Per run, removed afterwards |
-| Node / Playwright | Host Node 20+, `tests/ui/node_modules` | Installed once |
+| Node / Playwright | Host Node 24+, `tests/ui/node_modules` | Installed once |
 | Chromium | `tests/ui/.browsers` | Installed once |
 | Run root | `/tmp/sp-ui-smoke.XXXXXX` (or `$TMPDIR`) | Per run, removed afterwards |
 | Configuration | `<run root>/config` via `CONFIG_PATH` / `CONFIG_FILE`, also bind-mounted over `<repo>/app/config` | Per run, removed afterwards |

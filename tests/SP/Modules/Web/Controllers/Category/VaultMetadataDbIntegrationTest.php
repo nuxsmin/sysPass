@@ -175,12 +175,12 @@ final class VaultMetadataDbIntegrationTest extends DatabaseIntegrationTestCase
     }
 
     /**
-     * Characterization: ItemTrait::updateCustomFieldsForItem() calls CustomFieldDataService::delete([$itemId], $moduleId)
-     * whenever any submitted custom field is empty, but CustomFieldDataRepository::deleteBatch() binds `:itemIds` as an
-     * unexpanded array -> PHP Warning (`Array to string conversion`) -> `'Array'` -> `0` rows deleted, preserving `'keep-this-value'`.
+     * ItemTrait::updateCustomFieldsForItem() calls CustomFieldDataService::delete([$itemId], $moduleId)
+     * whenever any submitted custom field is empty, and CustomFieldDataRepository::deleteBatch() binds
+     * scalar `:itemId` without PHP Warning (`Array to string conversion`) while preserving `'keep-this-value'`.
      */
     #[Test]
-    public function emptyCustomFieldInCategorySaveEditTriggersArrayToStringDeleteBatchNoop(): void
+    public function emptyCustomFieldInCategorySaveEditDoesNotEmitWarningAndPreservesOtherField(): void
     {
         $pdo = getDbHandler()->getConnection();
 
@@ -207,7 +207,7 @@ final class VaultMetadataDbIntegrationTest extends DatabaseIntegrationTestCase
         }
 
         $this->assertJsonOk($result, 'Category updated');
-        self::assertTrue($warningSeen);
+        self::assertFalse($warningSeen);
         self::assertSame(
             'keep-this-value',
             $this->fetchValue('SELECT data FROM CustomFieldData WHERE moduleId = 101 AND itemId = 1 AND definitionId = 2')

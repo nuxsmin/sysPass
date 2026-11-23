@@ -237,6 +237,19 @@ final class ClientDbTest extends DatabaseRepositoryTestCase
             ): SelectInterface {
                 return ($query ?? $this->queryFactory->newSelect())->from('Account');
             }
+
+            public function isGlobalDiscoveryActive(bool $useGlobalSearch): bool
+            {
+                return false;
+            }
+
+            /**
+             * @return array{sql: string, bindValues: array<string, mixed>}
+             */
+            public function buildVisibilityPredicate(string $prefix = 'vis'): array
+            {
+                return ['sql' => '1 = 1', 'bindValues' => []];
+            }
         };
     }
 }
