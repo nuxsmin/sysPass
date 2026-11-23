@@ -4,6 +4,54 @@ The full master password change is performed with `sp:crypt:update-master-passwo
 in the CLI. The Web interface does not provide a master-password change or a
 manual hash-only update.
 
+## Change sequence
+
+The diagram shows the current CLI rotation flow. The operator prepares and
+verifies the backup; the command requires acknowledgement but does not verify it.
+
+```mermaid
+sequenceDiagram
+    actor Operator
+    participant CLI as Rotation command
+    participant Master as Master password service
+    participant Guard as Storage guard
+    participant DB as Database transaction
+    participant Events as Event dispatcher
+
+    Operator->>Operator: Verify backup, enable maintenance, stop other writers
+    Operator->>CLI: Start rotation and acknowledge backup
+    CLI->>CLI: Acquire command lock and check installation and maintenance
+    CLI->>Operator: Request passwords and confirmation
+    Operator->>CLI: Provide passwords and confirm
+    CLI->>CLI: Check passwords differ and verify current password
+    CLI->>Master: Change master password
+    Master->>Events: Emit start event
+    Master->>DB: Begin transaction
+    Master->>Guard: Lock and reverify current password and check storage
+    Guard-->>Master: Storage and password verified
+    Master->>DB: Re-encrypt accounts, history and custom fields
+    Master->>DB: Save new hash and timestamp and invalidate temporary password
+    alt Conversion or transaction fails before commit
+        DB-->>Master: Roll back or report failure
+        Master-->>CLI: Report failure
+        CLI-->>Operator: Keep maintenance enabled and investigate
+    else Transaction commits
+        DB-->>Master: Commit
+        Master->>Events: Emit completion event
+        alt Completion notification or audit fails
+            Master-->>CLI: Report committed change with event failure
+            CLI-->>Operator: Use new password and investigate audit failure
+        else Completion succeeds
+            Master-->>CLI: Success
+            CLI-->>Operator: Restart browser sessions with new password
+        end
+    end
+    CLI->>CLI: Release command lock
+```
+
+If the commit outcome is uncertain, follow the recovery guidance below before
+retrying. Preflight failures stop the operation before conversion.
+
 Before starting, take and verify a recoverable database and configuration backup,
 enable maintenance mode, and wait for other requests and jobs to finish. Ensure
 that the database account can see triggers on the affected tables. The command
