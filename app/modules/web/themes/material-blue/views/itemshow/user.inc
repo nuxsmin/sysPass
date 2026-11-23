@@ -39,12 +39,16 @@ use SP\Modules\Web\Mvc\View\TemplateInterface;
 use function SP\__;
 
 $user = $_getvar('user');
+$isView = (bool)$_getvar('isView');
 ?>
 
-<div id="box-popup">
-    <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
-                class="btn-popup-close material-icons">close</i></h2>
+<div id="box-popup"
+     class="sp-dialog sp-dialog--user <?php echo $isView ? 'sp-dialog--view' : ''; ?>"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="box-popup-title">
+    <h2 class="center" id="box-popup-title"><?php
+        echo $_getvar('header'); ?></h2>
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
         <div class="mdl-tabs__tab-bar">
@@ -56,7 +60,7 @@ $user = $_getvar('user');
                 echo __('Options'); ?></a>
 
             <?php
-            if ($_getvar('isView')): ?>
+            if ($isView): ?>
                 <a href="#details-panel"
                    class="mdl-tabs__tab"><?php
                     echo __('Details'); ?></a>
@@ -74,10 +78,9 @@ $user = $_getvar('user');
                 <table class="popup-data">
                     <tbody>
                     <tr>
-                        <td class="descField"><?php
-                            echo __('Name') ?></td>
+                        <td class="descField"><label for="name"><?php
+                            echo __('Name'); ?></label></td>
                         <td class="valField">
-
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="name" name="name" type="text"
                                        required
@@ -94,8 +97,8 @@ $user = $_getvar('user');
                     </tr>
 
                     <tr>
-                        <td class="descField"><?php
-                            echo __('Login'); ?></td>
+                        <td class="descField"><label for="login"><?php
+                            echo __('Login'); ?></label></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="login" name="login" type="text"
@@ -124,15 +127,15 @@ $user = $_getvar('user');
                     <?php
                     if ($_getvar('isUseSSO')): ?>
                         <tr>
-                            <td class="descField"><?php
-                                echo __('SSO Login '); ?></td>
+                            <td class="descField"><label for="login_sso"><?php
+                                echo __('SSO Login'); ?></label></td>
                             <td class="valField">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <input id="login_sso" name="login_sso"
                                            type="text"
                                            class="mdl-textfield__input mdl-color-text--indigo-400"
                                            value="<?php
-                                           echo htmlspecialchars($user->getSsoLogin(), ENT_QUOTES); ?>"
+                                           echo htmlspecialchars((string)$user->getSsoLogin(), ENT_QUOTES); ?>"
                                            maxlength="100" <?php
                                     echo $_getvar('readonly'); ?>>
                                     <label class="mdl-textfield__label"
@@ -145,21 +148,21 @@ $user = $_getvar('user');
                     endif; ?>
 
                     <tr>
-                        <td class="descField"><?php
-                            echo __('Email'); ?></td>
+                        <td class="descField"><label for="email"><?php
+                            echo __('Email'); ?></label></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="email" name="email" type="email"
                                        required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        value="<?php
-                                       echo htmlspecialchars($user->getEmail(), ENT_QUOTES); ?>"
+                                       echo htmlspecialchars((string)$user->getEmail(), ENT_QUOTES); ?>"
                                        maxlength="50" <?php
                                 echo $_getvar('readonly'); ?>>
                                 <label class="mdl-textfield__label"
                                        for="email"><?php
                                     echo __('Email address'); ?></label>
-                            </div
+                            </div>
                         </td>
 
                     </tr>
@@ -167,15 +170,15 @@ $user = $_getvar('user');
                     <?php
                     if ($_getvar('createAction')): ?>
                         <tr>
-                            <td class="descField"><?php
-                                echo __('Password'); ?></td>
+                            <td class="descField"><label for="password"><?php
+                                echo __('Password'); ?></label></td>
                             <td class="valField">
                                 <div class="form-control">
                                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                         <input id="password" name="password"
                                                type="password" required
-                                               class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
-                                               maxlength="50">
+                                               autocomplete="new-password"
+                                               class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400">
                                         <label class="mdl-textfield__label"
                                                for="password"><?php
                                             echo __('Password'); ?></label>
@@ -185,31 +188,33 @@ $user = $_getvar('user');
                         </tr>
 
                         <tr>
-                            <td class="descField"><?php
-                                echo __('Password (repeat)'); ?></td>
+                            <td class="descField"><label for="password_repeat"><?php
+                                echo __('Password (repeat)'); ?></label></td>
                             <td class="valField">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <input id="password_repeat"
                                            name="password_repeat"
                                            type="password" required
-                                           class="mdl-textfield__input mdl-color-text--indigo-400"
-                                           maxlength="50">
+                                           autocomplete="new-password"
+                                           data-mismatch-msg="<?php echo htmlspecialchars(__('Passwords do not match'), ENT_QUOTES); ?>"
+                                           class="mdl-textfield__input mdl-color-text--indigo-400">
                                     <label class="mdl-textfield__label"
                                            for="password_repeat"><?php
                                         echo __('Password (repeat)'); ?></label>
                                 </div>
+                                <div class="sp-field-error sp-password-match-error"
+                                     role="alert"
+                                     aria-live="polite"
+                                     hidden></div>
                             </td>
                         </tr>
                     <?php
                     endif; ?>
 
                     <tr>
-                        <td class="descField"><?php
-                            echo __('Profile'); ?></td>
+                        <td class="descField"><label for="userprofile_id"><?php
+                            echo __('Profile'); ?></label></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php
-                                echo __('Profile'); ?></div>
-
                             <select id="userprofile_id" name="userprofile_id"
                                     class="select-box"
                                     required <?php
@@ -231,12 +236,9 @@ $user = $_getvar('user');
                     </tr>
 
                     <tr>
-                        <td class="descField"><?php
-                            echo __('Group'); ?></td>
+                        <td class="descField"><label for="usergroup_id"><?php
+                            echo __('Group'); ?></label></td>
                         <td class="valField">
-                            <div class="lowres-title"><?php
-                                echo __('Group'); ?></div>
-
                             <select id="usergroup_id" name="usergroup_id"
                                     class="select-box"
                                     required <?php
@@ -258,17 +260,16 @@ $user = $_getvar('user');
                     </tr>
 
                     <tr>
-                        <td class="descField"><?php
-                            echo __('Notes') ?></td>
+                        <td class="descField"><label for="notes"><?php
+                            echo __('Notes'); ?></label></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <textarea class="mdl-textfield__input" rows="3"
-                                  id="notes" name="notes"
-                                  maxlength="1000" <?php
-                        echo $_getvar('readonly'); ?>>
-                            <?php
-                            echo htmlspecialchars($user->getNotes(), ENT_QUOTES); ?>
-                        </textarea>
+                                <textarea class="mdl-textfield__input" rows="3"
+                                          id="notes" name="notes"
+                                          placeholder="<?php echo $isView && empty($user->getNotes()) ? '—' : ''; ?>"
+                                          maxlength="1000" <?php
+                                echo $_getvar('readonly'); ?>><?php
+                                    echo htmlspecialchars((string)$user->getNotes(), ENT_QUOTES); ?></textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php
                                     echo __('Notes'); ?></label>
@@ -396,7 +397,7 @@ $user = $_getvar('user');
             </div>
 
             <?php
-            if ($_getvar('isView')): ?>
+            if ($isView): ?>
                 <div class="mdl-tabs__panel" id="details-panel">
                     <table class="popup-data">
                         <tbody>
@@ -404,11 +405,8 @@ $user = $_getvar('user');
                             <td class="descField"><?php
                                 echo __('Entries'); ?></td>
                             <td class="valField">
-                                <div class="lowres-title"><?php
-                                    echo __('Entries'); ?></div>
-
-                                <?php
-                                echo $user->getLoginCount(); ?>
+                                <span class="sp-readonly-value sp-tabular"><?php
+                                    echo $user->getLoginCount(); ?></span>
                             </td>
                         </tr>
 
@@ -416,11 +414,8 @@ $user = $_getvar('user');
                             <td class="descField"><?php
                                 echo __('Last Access'); ?></td>
                             <td class="valField">
-                                <div class="lowres-title"><?php
-                                    echo __('Last Access'); ?></div>
-
-                                <?php
-                                echo $user->getLastLogin(); ?>
+                                <span class="sp-readonly-value sp-tabular"><?php
+                                    echo $user->getLastLogin() ?: '—'; ?></span>
                             </td>
                         </tr>
 
@@ -428,11 +423,8 @@ $user = $_getvar('user');
                             <td class="descField"><?php
                                 echo __('Last Modification'); ?></td>
                             <td class="valField">
-                                <div class="lowres-title"><?php
-                                    echo __('Last Modification'); ?></div>
-
-                                <?php
-                                echo $user->getLastUpdate(); ?>
+                                <span class="sp-readonly-value sp-tabular"><?php
+                                    echo $user->getLastUpdate() ?: '—'; ?></span>
                             </td>
                         </tr>
 
@@ -440,11 +432,10 @@ $user = $_getvar('user');
                             <td class="descField"><?php
                                 echo __('Master Password Date'); ?></td>
                             <td class="valField">
-                                <div class="lowres-title"><?php
-                                    echo __('Master Password Date'); ?></div>
-
-                                <?php
-                                echo gmdate('Y-m-d H:i:s', $user->getLastUpdateMPass()); ?>
+                                <span class="sp-readonly-value sp-tabular"><?php
+                                    echo $user->getLastUpdateMPass()
+                                        ? gmdate('Y-m-d H:i:s', $user->getLastUpdateMPass())
+                                        : '—'; ?></span>
                             </td>
                         </tr>
 
@@ -452,13 +443,11 @@ $user = $_getvar('user');
                             <td class="descField"><?php
                                 echo __('Used in'); ?></td>
                             <td class="valField">
-                                <div class="lowres-title"><?php
-                                    echo __('Used in'); ?></div>
                                 <div class="list-wrap">
                                     <ul class="mdl-list">
                                         <?php
                                         foreach ($_getvar('usage') as $item): ?>
-                                            <li class="mdl-list__item mdl-list__item"
+                                            <li class="mdl-list__item"
                                                 title="<?php
                                                 echo $item->ref; ?>">
                                                 <span class="mdl-list__item-primary-content">
@@ -468,7 +457,7 @@ $user = $_getvar('user');
                                                     printf(
                                                         '%s: %s',
                                                         $item->ref,
-                                                        htmlspecialchars($item->name, ENT_QUOTES) ?: $item->id
+                                                        htmlspecialchars((string)$item->name, ENT_QUOTES) ?: $item->id
                                                     ); ?>
                                                 </span>
                                             </li>
@@ -492,18 +481,25 @@ $user = $_getvar('user');
         </form>
     </div>
 
-    <?php
-    if (!$_getvar('isView')): ?>
-        <div class="action-in-box">
-            <button form="frmUsers"
-                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
+    <div class="action-in-box sp-dialog-footer">
+        <?php if ($isView): ?>
+            <button type="button"
+                    class="btn-popup-close mdl-button mdl-js-button sp-btn-secondary">
+                <?php echo __('Close'); ?>
+            </button>
+        <?php else: ?>
+            <button type="button"
+                    class="btn-popup-close mdl-button mdl-js-button sp-btn-secondary">
+                <?php echo __('Cancel'); ?>
+            </button>
+            <button type="submit"
+                    form="frmUsers"
+                    class="mdl-button mdl-js-button sp-btn-primary <?php
                     echo $icons->save()->getClassButton(); ?>"
                     title="<?php
                     echo $icons->save()->getTitle(); ?>">
-                <i class="material-icons"><?php
-                    echo $icons->save()->getIcon(); ?></i>
+                <?php echo __('Save'); ?>
             </button>
-        </div>
-    <?php
-    endif; ?>
+        <?php endif; ?>
+    </div>
 </div>

@@ -2851,6 +2851,8 @@
      */
     MaterialTextfield.prototype.onBlur_ = function (event) {
         this.element_.classList.remove(this.CssClasses_.IS_FOCUSED);
+        this.element_.classList.add('is-touched');
+        this.checkValidity();
     };
     /**
      * Handle reset event from out side.
@@ -2859,6 +2861,7 @@
      * @private
      */
     MaterialTextfield.prototype.onReset_ = function (event) {
+        this.element_.classList.remove('is-touched');
         this.updateClasses_();
     };
     /**
@@ -2906,7 +2909,10 @@
      */
     MaterialTextfield.prototype.checkValidity = function () {
         if (this.input_.validity) {
-            if (this.input_.validity.valid) {
+            var hasValue = Boolean(this.input_.value && this.input_.value.length > 0);
+            var isTouched = this.element_.classList.contains('is-touched')
+                || (this.element_.closest && Boolean(this.element_.closest('form.sp-form-validated')));
+            if (this.input_.validity.valid || (!hasValue && !isTouched)) {
                 this.element_.classList.remove(this.CssClasses_.IS_INVALID);
             } else {
                 this.element_.classList.add(this.CssClasses_.IS_INVALID);

@@ -716,3 +716,73 @@ test("setFixedMenu toggles .is-fixed class rather than hardcoded inline colors",
     dom.$fn(dom.windowEl).trigger("scroll");
     assert.equal(actionBar.classes.has("is-fixed"), false);
 });
+
+test("passwordDetect synchronizes label[for], sets options menu aria-label, and validates repeat password mismatch", function () {
+    const {dom, theme} = setupThemeEnv({uniqueId: "u2"});
+    const form = new dom.FakeElement("form", {id: "frmUpdUsrPass"});
+
+    const passDescLabel = new dom.FakeElement("label", {for: "password"});
+    const passWrap = new dom.FakeElement("div", {class: "mdl-textfield"});
+    const passInput = new dom.FakeElement("input", {
+        id: "password",
+        name: "password",
+        type: "password",
+        class: "mdl-textfield__input passwordfield__input",
+        value: ""
+    });
+    const passFloatLabel = new dom.FakeElement("label", {for: "password", class: "mdl-textfield__label"});
+    passWrap.appendChild(passInput);
+    passWrap.appendChild(passFloatLabel);
+
+    const repeatDescLabel = new dom.FakeElement("label", {for: "password_repeat"});
+    const repeatWrap = new dom.FakeElement("div", {class: "mdl-textfield"});
+    const repeatInput = new dom.FakeElement("input", {
+        id: "password_repeat",
+        name: "password_repeat",
+        type: "password",
+        "data-mismatch-msg": "Passwords do not match",
+        class: "mdl-textfield__input",
+        value: ""
+    });
+    const repeatFloatLabel = new dom.FakeElement("label", {for: "password_repeat", class: "mdl-textfield__label"});
+    const matchError = new dom.FakeElement("div", {class: "sp-field-error sp-password-match-error", hidden: "hidden"});
+    repeatWrap.appendChild(repeatInput);
+    repeatWrap.appendChild(repeatFloatLabel);
+
+    form.appendChild(passDescLabel);
+    form.appendChild(passWrap);
+    form.appendChild(repeatDescLabel);
+    form.appendChild(repeatWrap);
+    form.appendChild(matchError);
+    dom.root.appendChild(form);
+
+    theme.passwordDetect(dom.$fn(form));
+
+    assert.equal(passInput.getAttribute("id"), "password-u2");
+    assert.equal(passDescLabel.getAttribute("for"), "password-u2");
+    assert.equal(passFloatLabel.getAttribute("for"), "password-u2");
+
+    assert.equal(repeatInput.getAttribute("id"), "password_repeat-u2");
+    assert.equal(repeatDescLabel.getAttribute("for"), "password_repeat-u2");
+    assert.equal(repeatFloatLabel.getAttribute("for"), "password_repeat-u2");
+
+    const menuBtn = form.queryAll("#menu-password-password-u2")[0];
+    assert.ok(menuBtn);
+    assert.equal(menuBtn.getAttribute("aria-label"), "More Actions");
+
+    passInput.value = "Secret123!";
+    dom.$fn(passInput).trigger("keyup");
+    repeatInput.value = "Mismatch!";
+    dom.$fn(repeatInput).trigger("keyup");
+
+    assert.equal(matchError.textContent, "Passwords do not match");
+    assert.equal(matchError.getAttribute("hidden"), undefined);
+    assert.equal(repeatWrap.classes.has("is-invalid"), true);
+
+    repeatInput.value = "Secret123!";
+    dom.$fn(repeatInput).trigger("keyup");
+    assert.equal(matchError.textContent, "");
+    assert.equal(matchError.getAttribute("hidden"), "hidden");
+    assert.equal(repeatWrap.classes.has("is-invalid"), false);
+});
+

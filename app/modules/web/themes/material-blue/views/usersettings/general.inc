@@ -55,10 +55,10 @@ $userPreferences = $_getvar('userPreferences');
       data-reload="1"
       data-hash="">
 
-    <table id="tblSite" class="data tblConfig round">
+    <table id="tblSite" class="data tblConfig">
         <tr>
-            <td class="descField"><?php
-                echo __('Language'); ?></td>
+            <td class="descField"><label for="sel-userlang"><?php
+                echo __('Language'); ?></label></td>
             <td class="valField">
                 <div class="lowres-title"><?php
                     echo __('Language'); ?></div>
@@ -79,8 +79,8 @@ $userPreferences = $_getvar('userPreferences');
             </td>
         </tr>
         <tr>
-            <td class="descField"><?php
-                echo __('Visual Theme'); ?></td>
+            <td class="descField"><label for="sel-usertheme"><?php
+                echo __('Visual Theme'); ?></label></td>
             <td class="valField">
                 <div class="lowres-title"><?php
                     echo __('Visual Theme'); ?></div>
@@ -102,8 +102,8 @@ $userPreferences = $_getvar('userPreferences');
         </tr>
         <tr>
             <td class="descField">
-                <?php
-                echo __('Results per page'); ?>
+                <label for="resultsperpage"><?php
+                    echo __('Results per page'); ?></label>
                 <div id="help-account_count"
                      class="icon material-icons <?php
                      echo $icons->help()->getClass(); ?>"><?php

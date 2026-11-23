@@ -1,8 +1,8 @@
 <div id="help-account_search"
+     role="button"
+     tabindex="0"
+     aria-label="<?php use function SP\__; echo htmlspecialchars(ucwords(__('Special parameters')), ENT_QUOTES); ?>"
      class="icon material-icons <?php
-
-     use function SP\__;
-
      echo $icons->getIconHelp()->getClass(); ?> btn-help"
      data-help="help-account-search"><?php echo $icons->getIconHelp()->getIcon(); ?>
 </div>

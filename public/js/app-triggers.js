@@ -142,6 +142,10 @@ sysPass.Triggers = function (log) {
             return false;
         }
 
+        if (typeof $obj.addClass === "function") {
+            $obj.addClass("sp-form-validated");
+        }
+
         const plugin = $obj.data("plugin");
         let actions;
 
@@ -160,6 +164,53 @@ sysPass.Triggers = function (log) {
         } else {
             actions[onsubmit[0]]($obj);
         }
+    };
+
+    let switchSubtitleCounter = 0;
+
+    const initAccessibleSwitches = function ($container) {
+        if (!$container || $container.length === 0 || typeof $container.find !== "function") {
+            return;
+        }
+
+        $container.find(".mdl-switch__input").each(function () {
+            const $input = $(this);
+            const $item = $input.closest(".mdl-list__item");
+
+            if ($item.length === 0) {
+                return;
+            }
+
+            const $primary = $item.find(".mdl-list__item-primary-content");
+            const label = $primary.children("span").first().text().trim();
+
+            if (label && !$input.attr("aria-label") && !$input.attr("aria-labelledby")) {
+                $input.attr("aria-label", label);
+            }
+
+            const $subTitle = $primary.find(".mdl-list__item-sub-title").first();
+
+            if ($subTitle.length > 0 && $subTitle.text().trim() !== "") {
+                let subId = $subTitle.attr("id");
+
+                if (!subId) {
+                    const inputId = $input.attr("id");
+                    switchSubtitleCounter += 1;
+                    subId = inputId ? (inputId + "-desc") : ("sp-switch-desc-" + switchSubtitleCounter);
+                    $subTitle.attr("id", subId);
+                }
+
+                if (!$input.attr("aria-describedby")) {
+                    $input.attr("aria-describedby", subId);
+                }
+            }
+        });
+    };
+
+    const initConfigTabs = function () {
+        const $configTabs = $("#tabsHeader").closest(".mdl-tabs").addClass("sp-config-tabs");
+        initAccessibleSwitches($configTabs);
+        return $configTabs;
     };
 
     const bodyHooks = function () {
@@ -204,6 +255,11 @@ sysPass.Triggers = function (log) {
                         title: sysPassApp.config.LANG[43]
                     }
                 });
+            }
+        }).on("keydown", ".btn-help[data-help]", function (e) {
+            if (e.target.tagName !== "BUTTON" && (e.key === "Enter" || e.key === " ")) {
+                e.preventDefault();
+                $(this).trigger("click");
             }
         }).on("reset", ".form-action", function (e) {
             e.preventDefault();
@@ -366,6 +422,7 @@ sysPass.Triggers = function (log) {
             log.info("views:common");
 
             selectDetect($container);
+            initAccessibleSwitches($container);
 
             const $sk = $container.find(":input[name='sk']");
 
@@ -393,17 +450,7 @@ sysPass.Triggers = function (log) {
         config: function () {
             log.info("views:config");
 
-            const $configTabs = $("#tabsHeader").closest(".mdl-tabs").addClass("sp-config-tabs");
-
-            $configTabs.find(".mdl-switch__input").each(function () {
-                const $input = $(this);
-                const label = $input.closest(".mdl-list__item")
-                    .find(".mdl-list__item-primary-content > span").first().text().trim();
-
-                if (label && !$input.attr("aria-label") && !$input.attr("aria-labelledby")) {
-                    $input.attr("aria-label", label);
-                }
-            });
+            initConfigTabs();
 
             const $dropFiles = $("#drop-import-files");
 
@@ -426,6 +473,16 @@ sysPass.Triggers = function (log) {
                     });
                 };
             }
+        },
+        userSettings: function () {
+            log.info("views:userSettings");
+
+            initConfigTabs();
+        },
+        usersettings: function () {
+            log.info("views:usersettings");
+
+            initConfigTabs();
         },
         account: function () {
             log.info("views:account");

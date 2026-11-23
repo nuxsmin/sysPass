@@ -89,6 +89,12 @@ sysPass.Theme = function (log) {
 
             // Poner la clave en el input de repetición y encriptarla
             if ($targetR.length > 0) {
+                if ($targetR[0]) {
+                    $targetR[0].dataset.pass = password;
+                    if (typeof $targetR[0].setCustomValidity === "function") {
+                        $targetR[0].setCustomValidity("");
+                    }
+                }
                 $targetR.val(password).parent()
                     .addClass(mdl.CssClasses_.IS_DIRTY)
                     .removeClass(mdl.CssClasses_.IS_INVALID);
@@ -262,16 +268,22 @@ sysPass.Theme = function (log) {
             const uniqueId = sysPassApp.util.uniqueId();
             const $thisParent = $this.parent();
             const $form = $this.closest("form");
-            const targetId = $this.attr("id") + "-" + uniqueId;
+            const originalId = $this.attr("id");
+            const targetId = originalId + "-" + uniqueId;
+            const originalRepeatId = originalId + "_repeat";
+            const targetRepeatId = targetId + "_repeat";
 
-            const $passwordRepeat = $form.find("#" + $this.attr("id") + "_repeat");
-            $passwordRepeat.attr("id", targetId + "_repeat");
+            const $passwordRepeat = $form.find("#" + originalRepeatId);
+            $passwordRepeat.attr("id", targetRepeatId);
+            $form.find("label[for='" + originalRepeatId + "']").attr("for", targetRepeatId);
 
             $this.attr("id", targetId);
+            $form.find("label[for='" + originalId + "']").attr("for", targetId);
             $this.attr("data-pass", $this.val());
 
+            const optionsLabel = sysPassApp.config.LANG[27] || "Password options";
             let btnMenu =
-                `<button id="menu-password-${targetId}" class="mdl-button mdl-js-button mdl-button--icon" type="button" title="${sysPassApp.config.LANG[27]}"><i class="material-icons">more_vert</i></button>
+                `<button id="menu-password-${targetId}" class="mdl-button mdl-js-button mdl-button--icon" type="button" aria-label="${optionsLabel}" title="${optionsLabel}"><i class="material-icons" aria-hidden="true">more_vert</i></button>
                 <ul class="mdl-menu mdl-js-menu" for="menu-password-${targetId}">
                 <li class="mdl-menu__item passGen"><i class="material-icons">settings</i>${sysPassApp.config.LANG[28]}</li>
                 <li class="mdl-menu__item passComplexity"><i class="material-icons">vpn_key</i>${sysPassApp.config.LANG[29]}</li>
@@ -283,12 +295,83 @@ sysPass.Theme = function (log) {
                 .prepend(`<button type="button" id="password-level-${targetId}" class="sp-password-toggle showpass clip-pass-field password-level" data-clipboard-target="${targetId}" data-level-msg="" aria-label="${labels.show}" aria-pressed="false" title="${labels.show}"><i class="material-icons" aria-hidden="true">visibility</i></button>`)
                 .prepend(btnMenu);
 
-            $this.on("keyup", function () {
-                sysPassApp.util.password.checkLevel($this);
+            const getPlainPassword = function ($field) {
+                if (!$field || $field.length === 0) {
+                    return "";
+                }
+                const el = $field[0];
+                const rawVal = $field.val() || "";
+                if (el && el.dataset && el.dataset.pass !== undefined && el.dataset.pass !== "") {
+                    return el.dataset.pass;
+                }
+                const encryptedLen = parseInt($field.attr("data-length"), 10);
+                const isEncrypted = !Number.isNaN(encryptedLen) && encryptedLen === rawVal.length;
+                if (isEncrypted && el && el.dataset && el.dataset.pass !== undefined) {
+                    return el.dataset.pass;
+                }
+                return rawVal;
+            };
 
-                this.dataset.pass = $this.val();
-                delete this.dataset.encryptedPass;
+            const syncPasswordRepeatState = function (forceCheck) {
+                if ($passwordRepeat.length === 0) {
+                    return;
+                }
+                const $repeatWrap = $passwordRepeat.parent();
+                const $errorNode = $form.find(".sp-password-match-error");
+                const primaryPlain = getPlainPassword($this);
+                const repeatPlain = getPlainPassword($passwordRepeat);
+                const mismatchMsg = $passwordRepeat.attr("data-mismatch-msg") || "Passwords do not match";
+
+                if (repeatPlain === "" && !forceCheck) {
+                    $repeatWrap.removeClass("is-invalid");
+                    $errorNode.text("").attr("hidden", "hidden");
+                    return;
+                }
+
+                if (repeatPlain !== "" && primaryPlain !== "" && repeatPlain !== primaryPlain) {
+                    $repeatWrap.addClass("is-invalid");
+                    $errorNode.text(mismatchMsg).removeAttr("hidden");
+                } else {
+                    if (repeatPlain !== "") {
+                        $repeatWrap.removeClass("is-invalid");
+                    }
+                    $errorNode.text("").attr("hidden", "hidden");
+                }
+            };
+
+            $this.on("keyup input", function () {
+                if (sysPassApp.util.password && typeof sysPassApp.util.password.checkLevel === "function") {
+                    sysPassApp.util.password.checkLevel($this);
+                }
+
+                const rawVal = $this.val() || "";
+                const encryptedLen = parseInt($this.attr("data-length"), 10);
+                if (Number.isNaN(encryptedLen) || encryptedLen !== rawVal.length) {
+                    this.dataset.pass = rawVal;
+                    delete this.dataset.encryptedPass;
+                }
+                syncPasswordRepeatState(false);
             });
+
+            if ($passwordRepeat.length > 0) {
+                $passwordRepeat.on("keyup input", function () {
+                    const rawVal = $passwordRepeat.val() || "";
+                    const encryptedLen = parseInt($passwordRepeat.attr("data-length"), 10);
+                    if (Number.isNaN(encryptedLen) || encryptedLen !== rawVal.length) {
+                        this.dataset.pass = rawVal;
+                        delete this.dataset.encryptedPass;
+                    }
+                    syncPasswordRepeatState(false);
+                });
+                $passwordRepeat.on("blur", function () {
+                    const rawVal = $passwordRepeat.val() || "";
+                    const encryptedLen = parseInt($passwordRepeat.attr("data-length"), 10);
+                    if (this.dataset.pass === undefined && (Number.isNaN(encryptedLen) || encryptedLen !== rawVal.length)) {
+                        this.dataset.pass = rawVal;
+                    }
+                    syncPasswordRepeatState(false);
+                });
+            }
 
             const $passwordActions = $this.parent().next();
             const $toggleBtn = $passwordActions.find(".showpass");
@@ -300,6 +383,7 @@ sysPass.Theme = function (log) {
                 .find(".passGen")
                 .on("click", function () {
                     randomPassword($this);
+                    $form.find(".sp-password-match-error").text("").attr("hidden", "hidden");
 
                     $this.blur();
                 });
@@ -329,10 +413,19 @@ sysPass.Theme = function (log) {
                     $this.val("").removeAttr("data-length");
                     $this[0].dataset.pass = "";
                     delete $this[0].dataset.encryptedPass;
+                    $this.parent().removeClass("is-dirty is-invalid is-touched");
 
                     if ($passwordRepeat.length > 0) {
                         $passwordRepeat.val("").removeAttr("data-length");
+                        if ($passwordRepeat[0]) {
+                            $passwordRepeat[0].dataset.pass = "";
+                            if (typeof $passwordRepeat[0].setCustomValidity === "function") {
+                                $passwordRepeat[0].setCustomValidity("");
+                            }
+                        }
+                        $passwordRepeat.parent().removeClass("is-dirty is-invalid is-touched");
                     }
+                    $form.find(".sp-password-match-error").text("").attr("hidden", "hidden");
 
                     // Actualizar objetos de MDL
                     componentHandler.upgradeDom();

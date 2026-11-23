@@ -178,14 +178,12 @@ class ThemeTest extends UnitaryTestCase
      * @throws Exception
      */
     #[Test]
-    public function testGetAvailable()
+    public function testGetAvailable(): void
     {
-        $originalCwd = getcwd();
         $tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'syspass_theme_' . bin2hex(random_bytes(8));
         $themes = ['theme-a' => 'Theme A', 'theme-b' => 'Theme B'];
 
         try {
-            self::assertNotFalse($originalCwd);
             self::assertTrue(mkdir($tempDir));
 
             foreach ($themes as $themeDir => $themeName) {
@@ -196,19 +194,10 @@ class ThemeTest extends UnitaryTestCase
                 );
             }
 
-            self::assertTrue(chdir($tempDir));
-
-            $directory = dir($tempDir);
-            self::assertNotFalse($directory);
-
             $this->themeContext
                 ->expects(self::once())
-                ->method('getViewsDirectory')
-                ->willReturn($directory);
-
-            $this->themeContext
-                ->method('getViewsPath')
-                ->willReturn($tempDir);
+                ->method('getFullPath')
+                ->willReturn($tempDir . DIRECTORY_SEPARATOR . 'theme-a');
 
             $this->fileLoader
                 ->method('load')
@@ -235,15 +224,46 @@ class ThemeTest extends UnitaryTestCase
 
             $this->assertSame($themes, $available);
         } finally {
-            if ($originalCwd !== false) {
-                chdir($originalCwd);
-            }
-
             foreach (array_keys($themes) as $themeDir) {
                 @unlink($tempDir . DIRECTORY_SEPARATOR . $themeDir . DIRECTORY_SEPARATOR . 'index.php');
                 @rmdir($tempDir . DIRECTORY_SEPARATOR . $themeDir);
             }
 
+            @rmdir($tempDir);
+        }
+    }
+
+    #[Test]
+    public function testGetAvailableDiscoversThemesFromThemeRootWithoutChdir(): void
+    {
+        $tempDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'syspass_theme_root_' . bin2hex(random_bytes(8));
+        $activeThemePath = $tempDir . DIRECTORY_SEPARATOR . 'material-blue';
+        $activeViewsPath = $activeThemePath . DIRECTORY_SEPARATOR . 'views';
+
+        try {
+            self::assertTrue(mkdir($activeViewsPath, 0777, true));
+            file_put_contents(
+                $activeThemePath . DIRECTORY_SEPARATOR . 'index.php',
+                '<?php return ["name" => "Material Blue"];'
+            );
+
+            $this->themeContext
+                ->method('getFullPath')
+                ->willReturn($activeThemePath);
+            $this->themeContext
+                ->method('getViewsPath')
+                ->willReturn($activeViewsPath);
+
+            $this->fileLoader
+                ->method('load')
+                ->with($activeThemePath . DIRECTORY_SEPARATOR . 'index.php')
+                ->willReturn(['name' => 'Material Blue']);
+
+            $this->assertSame(['material-blue' => 'Material Blue'], $this->theme->getAvailable());
+        } finally {
+            @unlink($activeThemePath . DIRECTORY_SEPARATOR . 'index.php');
+            @rmdir($activeViewsPath);
+            @rmdir($activeThemePath);
             @rmdir($tempDir);
         }
     }

@@ -1304,3 +1304,55 @@ test("config.mailCheck handles null, undefined, and non-object responses without
         assert.equal(context.record.magnificClosed, 0);
     }
 });
+
+test("user.savePassword prevents duplicate submission while in flight, toggles button loading state, and closes dialog on OK", function () {
+    const submitBtn = makeElement();
+    submitBtn.removeAttr = function (key) {
+        delete this.attrs[key];
+        return this;
+    };
+    submitBtn.prop = function (key, value) {
+        this[key] = value;
+        return this;
+    };
+    const context = setup({
+        elements: {
+            "button[form='frmUpdUsrPass']": submitBtn
+        }
+    });
+    const $form = makeElement({"action-route": "user/saveEditPass/1"});
+    $form.attr("id", "frmUpdUsrPass");
+    $form.removeAttr = function (key) {
+        delete this.attrs[key];
+        return this;
+    };
+    $form.serialize = function () {
+        return "password=enc1&password_repeat=enc1&isAjax=1";
+    };
+
+    context.actions.user.savePassword($form);
+    assert.equal(context.record.calls.length, 1);
+    assert.equal($form.attr("data-submitting"), "1");
+    assert.equal(submitBtn.attr("disabled"), "disabled");
+    assert.equal(submitBtn.attr("aria-busy"), "true");
+    assert.equal(submitBtn.classesAdded.includes("is-loading"), true);
+
+    // Second invocation while in-flight is ignored
+    context.actions.user.savePassword($form);
+    assert.equal(context.record.calls.length, 1);
+
+    // Error response re-enables form and button without closing dialog
+    context.record.calls[0].callback({status: 1, description: "Passwords do not match"});
+    assert.equal($form.attr("data-submitting"), undefined);
+    assert.equal(submitBtn.attr("disabled"), undefined);
+    assert.equal(submitBtn.attr("aria-busy"), undefined);
+    assert.equal(context.record.magnificClosed, 0);
+
+    // Re-submit and resolve with OK
+    context.actions.user.savePassword($form);
+    assert.equal(context.record.calls.length, 2);
+    context.record.calls[1].callback({status: 0, description: "Password updated"});
+    assert.equal($form.attr("data-submitting"), undefined);
+    assert.equal(context.record.magnificClosed, 1);
+});
+

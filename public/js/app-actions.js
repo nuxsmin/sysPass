@@ -70,6 +70,82 @@ sysPass.Actions = function (log) {
         });
     };
 
+    let lastPopupTrigger = null;
+
+    const getFocusablePopupElements = function ($boxPopup) {
+        if (!$boxPopup || $boxPopup.length === 0 || !$boxPopup[0] || typeof $boxPopup[0].querySelectorAll !== "function") {
+            return [];
+        }
+
+        const nodes = Array.from(
+            $boxPopup[0].querySelectorAll(
+                "a[href], button:not([disabled]), input:not([disabled]):not([type='hidden']), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])"
+            )
+        );
+
+        return nodes.filter(function (el) {
+            return !el.hasAttribute("disabled")
+                && el.getAttribute("aria-hidden") !== "true"
+                && (el.offsetWidth > 0 || el.offsetHeight > 0 || el.getClientRects().length > 0);
+        });
+    };
+
+    const isPopupDirty = function ($boxPopup) {
+        if (!$boxPopup || $boxPopup.length === 0 || typeof $boxPopup.find !== "function") {
+            return false;
+        }
+
+        const $form = $boxPopup.find("form.form-action");
+
+        if (!$form || $form.length === 0 || typeof $form.attr !== "function") {
+            return false;
+        }
+
+        const route = $form.attr("data-action-route") || $form.attr("data-route");
+
+        if (!route) {
+            return false;
+        }
+
+        const domForm = $form[0];
+        if (domForm && typeof domForm.querySelectorAll === "function") {
+            const fields = domForm.querySelectorAll("input, textarea, select");
+            for (let i = 0; i < fields.length; i++) {
+                const field = fields[i];
+                if (field.disabled || field.readOnly || field.type === "hidden") {
+                    continue;
+                }
+                if (field.type === "checkbox" || field.type === "radio") {
+                    if (field.checked !== field.defaultChecked) {
+                        return true;
+                    }
+                } else if (field.tagName === "SELECT") {
+                    for (let j = 0; j < field.options.length; j++) {
+                        if (field.options[j].selected !== field.options[j].defaultSelected) {
+                            return true;
+                        }
+                    }
+                } else if (field.value !== field.defaultValue || (field.dataset && field.dataset.pass)) {
+                    return true;
+                }
+            }
+        }
+
+        const initialHash = $form.attr("data-hash");
+
+        if (!initialHash
+            || typeof $form.serialize !== "function"
+            || typeof sysPassApp === "undefined"
+            || !sysPassApp.util
+            || !sysPassApp.util.hash
+            || typeof sysPassApp.util.hash.md5 !== "function"
+        ) {
+            return false;
+        }
+
+        return initialHash !== sysPassApp.util.hash.md5($form.serialize());
+    };
+
     /**
      * Mostrar el contenido en una caja flotante
      *
@@ -81,24 +157,129 @@ sysPass.Actions = function (log) {
     const showFloatingBox = function (response, callback) {
         response = response || "";
 
+        if (typeof document !== "undefined" && document.activeElement && document.activeElement !== document.body) {
+            lastPopupTrigger = document.activeElement;
+        } else {
+            lastPopupTrigger = null;
+        }
+
         $.magnificPopup.open({
             items: {
                 src: response,
                 type: "inline"
             },
+            closeOnBgClick: false,
+            enableEscapeKey: true,
             callbacks: {
                 open: function () {
                     const $boxPopup = $("#box-popup");
+
+                    if ($boxPopup && $boxPopup.length > 0 && typeof $boxPopup.attr === "function") {
+                        if (!$boxPopup.attr("role")) {
+                            $boxPopup.attr("role", "dialog");
+                        }
+                        $boxPopup.attr("aria-modal", "true");
+
+                        if (typeof $boxPopup.find === "function") {
+                            const $heading = $boxPopup.find("h2").first();
+                            if ($heading && $heading.length > 0 && typeof $heading.attr === "function") {
+                                if (!$heading.attr("id")) {
+                                    $heading.attr("id", "box-popup-title");
+                                }
+                                if (!$boxPopup.attr("aria-labelledby")) {
+                                    $boxPopup.attr("aria-labelledby", $heading.attr("id"));
+                                }
+                            }
+                        }
+
+                        if (typeof $boxPopup.on === "function") {
+                            $boxPopup.off("keydown.spModalTrap").on("keydown.spModalTrap", function (e) {
+                                if (e.key === "Escape") {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    closeFloatingBox();
+                                    return;
+                                }
+
+                                if (e.key !== "Tab") {
+                                    return;
+                                }
+
+                                const focusables = getFocusablePopupElements($boxPopup);
+
+                                if (focusables.length === 0) {
+                                    e.preventDefault();
+                                    return;
+                                }
+
+                                const first = focusables[0];
+                                const last = focusables[focusables.length - 1];
+                                const active = typeof document !== "undefined" ? document.activeElement : null;
+
+                                if (e.shiftKey) {
+                                    if (active === first || !$boxPopup[0].contains(active)) {
+                                        e.preventDefault();
+                                        last.focus();
+                                    }
+                                } else if (active === last || !$boxPopup[0].contains(active)) {
+                                    e.preventDefault();
+                                    first.focus();
+                                }
+                            });
+                        }
+                    }
 
                     sysPassApp.triggers.views.common($boxPopup);
 
                     if (callback !== undefined && typeof callback.open === "function") {
                         callback.open();
                     }
+
+                    if ($boxPopup && $boxPopup.length > 0) {
+                        const focusables = getFocusablePopupElements($boxPopup);
+                        if (focusables.length > 0 && typeof focusables[0].focus === "function") {
+                            focusables[0].focus();
+                        }
+                    }
+
+                    const mfpInstance = $.magnificPopup.instance;
+                    const handleBgClick = function (e) {
+                        const $popup = $("#box-popup");
+                        if ($popup && $popup.length > 0 && e && e.target) {
+                            if (e.target === $popup[0] || (typeof $.contains === "function" && $.contains($popup[0], e.target))) {
+                                return;
+                            }
+                        }
+                        if (!isPopupDirty($popup)) {
+                            closeFloatingBox();
+                        }
+                    };
+                    if (mfpInstance && mfpInstance.bgOverlay && typeof mfpInstance.bgOverlay.off === "function") {
+                        mfpInstance.bgOverlay.off("click.mfp click.spModalBg").on("click.spModalBg", handleBgClick);
+                    }
+                    if (mfpInstance && mfpInstance.wrap && typeof mfpInstance.wrap.off === "function") {
+                        mfpInstance.wrap.off("click.spModalBg").on("click.spModalBg", handleBgClick);
+                    }
                 },
                 close: function () {
+                    const $boxPopup = $("#box-popup");
+                    if ($boxPopup && $boxPopup.length > 0 && typeof $boxPopup.off === "function") {
+                        $boxPopup.off("keydown.spModalTrap");
+                    }
+
                     if (callback !== undefined && typeof callback.close === "function") {
                         callback.close();
+                    }
+
+                    const triggerToFocus = lastPopupTrigger;
+                    lastPopupTrigger = null;
+
+                    if (triggerToFocus && typeof triggerToFocus.focus === "function") {
+                        setTimeout(function () {
+                            if (typeof document === "undefined" || !document.contains || document.contains(triggerToFocus)) {
+                                triggerToFocus.focus();
+                            }
+                        }, 0);
                     }
                 }
             },
@@ -662,21 +843,71 @@ sysPass.Actions = function (log) {
         savePassword: function ($obj) {
             log.info("user:savepassword");
 
+            if (typeof $obj.attr === "function" && $obj.attr("data-submitting") === "1") {
+                return;
+            }
+
+            const formId = typeof $obj.attr === "function" ? $obj.attr("id") : null;
+            const $submitBtn = formId ? $("button[form='" + formId + "']") : null;
+
+            const setSubmittingState = function (submitting) {
+                if (typeof $obj.attr === "function") {
+                    if (submitting) {
+                        $obj.attr("data-submitting", "1");
+                    } else if (typeof $obj.removeAttr === "function") {
+                        $obj.removeAttr("data-submitting");
+                    } else {
+                        $obj.attr("data-submitting", "0");
+                    }
+                }
+
+                if ($submitBtn && typeof $submitBtn.attr === "function") {
+                    if (typeof $submitBtn.prop === "function") {
+                        $submitBtn.prop("disabled", submitting);
+                    }
+                    if (submitting) {
+                        $submitBtn.attr("disabled", "disabled");
+                        $submitBtn.attr("aria-busy", "true");
+                        if (typeof $submitBtn.addClass === "function") {
+                            $submitBtn.addClass("is-loading");
+                        }
+                    } else {
+                        if (typeof $submitBtn.removeAttr === "function") {
+                            $submitBtn.removeAttr("disabled");
+                            $submitBtn.removeAttr("aria-busy");
+                        }
+                        if (typeof $submitBtn.removeClass === "function") {
+                            $submitBtn.removeClass("is-loading");
+                        }
+                    }
+                }
+            };
+
+            setSubmittingState(true);
+
             const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.method = "post";
             opts.data = $obj.serialize();
             opts.data += "&sk=" + sysPassApp.sk.get();
 
-            sysPassApp.requests.getActionCall(opts, function (json) {
+            const req = sysPassApp.requests.getActionCall(opts, function (json) {
+                setSubmittingState(false);
+
                 if (json && typeof json === "object") {
                     sysPassApp.msg.out(json);
                 }
 
-                if (json && json.status === 0) {
+                if (json && (json.status === 0 || json.status === "OK")) {
                     closeFloatingBox();
                 }
             });
+
+            if (req && typeof req.fail === "function") {
+                req.fail(function () {
+                    setSubmittingState(false);
+                });
+            }
         }
     };
 

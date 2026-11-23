@@ -67,18 +67,35 @@ final readonly class Theme implements ThemeInterface
      */
     public function getAvailable(): array
     {
-        $directory = $this->themeContext->getViewsDirectory();
+        $themesPath = dirname($this->themeContext->getFullPath());
+
+        if ($themesPath === '' || !is_dir($themesPath)) {
+            return [];
+        }
+
+        $directory = dir($themesPath);
+
+        if ($directory === false) {
+            return [];
+        }
+
         $themesAvailable = [];
 
-        while (false !== ($themeDir = $directory->read())) {
-            if (is_dir($themeDir) && $themeDir !== '.' && $themeDir !== '..') {
+        try {
+            while (false !== ($themeDir = $directory->read())) {
+                if ($themeDir === '.' || $themeDir === '..') {
+                    continue;
+                }
+
+                $themePath = $themesPath . DIRECTORY_SEPARATOR . $themeDir;
+                $themeIndex = $themePath . DIRECTORY_SEPARATOR . 'index.php';
+
+                if (!is_dir($themePath) || !is_file($themeIndex)) {
+                    continue;
+                }
+
                 try {
-                    $themeInfo = $this->fileLoader->load(
-                        implode(
-                            DIRECTORY_SEPARATOR,
-                            [$this->themeContext->getViewsPath(), $themeDir, 'index.php']
-                        )
-                    );
+                    $themeInfo = $this->fileLoader->load($themeIndex);
 
                     if (is_array($themeInfo) && isset($themeInfo['name'])) {
                         $themesAvailable[$themeDir] = $themeInfo['name'];
@@ -87,9 +104,11 @@ final readonly class Theme implements ThemeInterface
                     processException($e);
                 }
             }
+        } finally {
+            $directory->close();
         }
 
-        $directory->close();
+        ksort($themesAvailable);
 
         return $themesAvailable;
     }

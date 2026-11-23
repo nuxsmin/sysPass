@@ -56,5 +56,8 @@ final class UserSettingsManagerTest extends IntegrationTestCase
         $crawler = new Crawler($output);
 
         self::assertCount(1, $crawler->filterXPath('//form[@id="frmPreferences"]'));
+        $themeOption = $crawler->filterXPath('//select[@id="sel-usertheme"]/option[@value="material-blue"]');
+        self::assertCount(1, $themeOption);
+        self::assertSame('Material Blue', trim($themeOption->text()));
     }
 }

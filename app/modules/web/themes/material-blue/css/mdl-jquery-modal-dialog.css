@@ -1,12 +1,12 @@
 .dialog-container,
 .loading-container {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  overflow: scroll;
-  background: rgba(0, 0, 0, 0.4);
+  overflow: auto;
+  background: rgba(38, 53, 68, 0.45);
   z-index: 9999;
   opacity: 0;
   -webkit-transition: opacity 180ms ease-in;
@@ -15,33 +15,82 @@
 }
 
 .dialog-container > div {
+  box-sizing: border-box;
   position: relative;
-  width: 90%;
-  max-width: 500px;
+  width: min(100vw - 32px, 580px);
+  max-width: 580px;
   min-height: 25px;
-  margin: 10% auto;
+  margin: 5vh auto;
+  padding: 24px;
+  background-color: var(--sp-background, #FFFFFF);
+  border: 1px solid var(--sp-border, #D7DEEC);
+  border-radius: var(--sp-radius-md, 10px);
+  box-shadow: 0 12px 32px rgba(38, 53, 68, 0.16);
   z-index: 9999;
-  padding-bottom: 1em;
 }
 
 .dialog-container > div > * {
-  padding: 0 1em;
+  padding: 0;
+}
+
+.dialog-container .sp-modal-body {
+  max-height: min(62vh, 520px);
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .dialog-container header {
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  line-height: 1;
-  background-color: #3949AB;
-  color: #FFFFFF;
-  padding: 0.5em;
-  text-align: center;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: normal;
+  line-height: 1.35;
+  background-color: transparent;
+  color: var(--sp-text, #263544);
+  margin: 0 0 12px 0;
+  padding: 0 0 12px 0;
+  text-align: left;
+  border-bottom: 1px solid var(--sp-border, #D7DEEC);
 }
 
 .dialog-button-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 16px 0 0 0 !important;
+  border-top: 1px solid var(--sp-border, #D7DEEC);
   text-align: right;
-  margin-top: 8px;
+}
+.dialog-button-bar .mdl-button {
+  height: 38px;
+  line-height: 36px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
+  border-radius: var(--sp-radius-sm, 6px);
+}
+.dialog-button-bar #negative,
+.dialog-button-bar #neutral {
+  background-color: var(--sp-background, #FFFFFF) !important;
+  color: var(--sp-text, #263544) !important;
+  border: 1px solid var(--sp-border, #D7DEEC);
+}
+.dialog-button-bar #negative:hover, .dialog-button-bar #negative:focus-visible,
+.dialog-button-bar #neutral:hover,
+.dialog-button-bar #neutral:focus-visible {
+  background-color: var(--sp-surface-alt, #EBF0F9) !important;
+}
+.dialog-button-bar #positive {
+  background-color: var(--sp-accent, #3949AB) !important;
+  color: var(--sp-on-accent, #FFFFFF) !important;
+  border: 1px solid var(--sp-accent, #3949AB);
+}
+.dialog-button-bar #positive:hover, .dialog-button-bar #positive:focus-visible {
+  background-color: var(--sp-accent-hover, #303F9F) !important;
+  border-color: var(--sp-accent-hover, #303F9F);
 }
 
 .loading-container > div {
