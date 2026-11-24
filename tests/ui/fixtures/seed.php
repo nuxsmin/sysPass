@@ -572,7 +572,7 @@ function verifyFixture(
     $masterHash->execute(['parameter' => 'masterPwd']);
     $masterHashValue = $masterHash->fetchColumn();
     $check(
-        is_string($masterHashValue) && $hashService->checkHashKey($masterPassword, $masterHashValue),
+        is_string($masterHashValue) && $hashService->checkMasterKey($masterPassword, $masterHashValue),
         'admin Master Password metadata does not match the fixture'
     );
 

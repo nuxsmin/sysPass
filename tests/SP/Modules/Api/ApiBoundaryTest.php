@@ -593,12 +593,18 @@ final class ApiBoundaryTest extends TestCase
 
         /** @var AuthTokenService $service */
         $service = $dic->get(AuthTokenService::class);
-        $id = $service->create(new AuthTokenModel([
-            'actionId' => $actionId,
-            'createdBy' => 1,
-            'hash' => self::TOKEN_PASS,
-            'userId' => $userId,
-        ]));
+        $lock = $dic->get(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class);
+        $lock->acquire();
+        try {
+            $id = $service->create(new AuthTokenModel([
+                'actionId' => $actionId,
+                'createdBy' => 1,
+                'hash' => self::TOKEN_PASS,
+                'userId' => $userId,
+            ]));
+        } finally {
+            $lock->release();
+        }
 
         return $service->getById($id);
     }

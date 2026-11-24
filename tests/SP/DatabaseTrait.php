@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -22,6 +21,8 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+declare(strict_types=1);
 
 namespace SP\Tests;
 
@@ -71,6 +72,10 @@ trait DatabaseTrait
 
     protected static function loadFixtures(): void
     {
+        // In-process requests can leave cyclic containers holding request-scoped
+        // database locks until PHP collects them. Release them before TRUNCATE.
+        gc_collect_cycles();
+
         $dbServer = getenv('DB_SERVER');
         $dbUser = getenv('DB_USER');
         $dbPass = getenv('DB_PASS');

@@ -181,7 +181,7 @@ abstract class ImportBase extends Service implements ImportService
                 $hash = $this->configService->getByParam('masterPwd');
                 return is_string($hash) && $hash !== '' && $this->hashService->checkMasterKey(
                     $importParams->getMasterPassword(),
-                        $hash
+                    $hash
                 );
             } catch (NoSuchItemException) {
                 return false;

@@ -1799,7 +1799,7 @@ class AccountTest extends IntegrationTestCase
     {
         $crawler = new Crawler($output);
         $filter = $crawler->filterXPath(
-            '//div[@class="data-container"]//form[@name="frmaccount"]|//div[@class="item-actions"]//button'
+            '//div[contains(concat(" ", normalize-space(@class), " "), " data-container ")]//form[@name="frmaccount"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
         self::assertCount(3, $filter);
@@ -1953,7 +1953,7 @@ class AccountTest extends IntegrationTestCase
     {
         $crawler = new Crawler($output);
         $filter = $crawler->filterXPath(
-            '//div[@class="data-container"]//form[@name="frmaccount"]|//div[@class="item-actions"]//button'
+            '//div[contains(concat(" ", normalize-space(@class), " "), " data-container ")]//form[@name="frmaccount"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
         self::assertCount(3, $filter);
@@ -1967,7 +1967,7 @@ class AccountTest extends IntegrationTestCase
     {
         $crawler = new Crawler($output);
         $filter = $crawler->filterXPath(
-            '//div[@class="data-container"]//form[@name="frmaccount"]|//div[@class="item-actions"]//button'
+            '//div[contains(concat(" ", normalize-space(@class), " "), " data-container ")]//form[@name="frmaccount"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
         self::assertCount(2, $filter);
@@ -2000,7 +2000,7 @@ class AccountTest extends IntegrationTestCase
     {
         $crawler = new Crawler($output);
         $filter = $crawler->filterXPath(
-            '//div[@class="data-container"]//form[@name="requestmodify" and @data-action-route="account/saveRequest"]|//div[@class="item-actions"]//button'
+            '//div[contains(concat(" ", normalize-space(@class), " "), " data-container ")]//form[@name="requestmodify" and @data-action-route="account/saveRequest"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
         self::assertCount(3, $filter);
@@ -2014,7 +2014,7 @@ class AccountTest extends IntegrationTestCase
     {
         $crawler = new Crawler($output);
         $filter = $crawler->filterXPath(
-            '//div[@class="data-container"]//form[@name="frmaccount" and @data-action-route="account/saveDelete"]|//div[@class="item-actions"]//button'
+            '//div[contains(concat(" ", normalize-space(@class), " "), " data-container ")]//form[@name="frmaccount" and @data-action-route="account/saveDelete"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
         self::assertCount(2, $filter);
@@ -2029,7 +2029,7 @@ class AccountTest extends IntegrationTestCase
     {
         $crawler = new Crawler($output);
         $filter = $crawler->filterXPath(
-            '//div[@class="data-container"]//form[@name="frmaccount" and @data-action-route="account/saveEdit"]|//div[@class="item-actions"]//button'
+            '//div[contains(concat(" ", normalize-space(@class), " "), " data-container ")]//form[@name="frmaccount" and @data-action-route="account/saveEdit"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
         self::assertCount(3, $filter);
@@ -2058,7 +2058,7 @@ class AccountTest extends IntegrationTestCase
     {
         $crawler = new Crawler($output);
         $filter = $crawler->filterXPath(
-            '//div[@class="data-container"]//form[@name="frmaccount" and @data-action-route="account/saveCreate"]|//div[@class="item-actions"]//button'
+            '//div[contains(concat(" ", normalize-space(@class), " "), " data-container ")]//form[@name="frmaccount" and @data-action-route="account/saveCreate"]|//div[@class="item-actions"]//button'
         )->extract(['id']);
 
         self::assertCount(3, $filter);

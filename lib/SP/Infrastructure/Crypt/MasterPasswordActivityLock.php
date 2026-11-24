@@ -78,8 +78,11 @@ final class MasterPasswordActivityLock
         $stmt->execute(['masterPwd']);
         $hash = $stmt->fetchColumn();
         if (!is_string($hash) || !Hash::checkMasterKey($password, $hash)) {
-            throw ServiceException::error('The master password has changed; restart the session', null,
-                \SP\Domain\Crypt\Ports\MasterPasswordRequestLock::STALE_MASTER_PASSWORD);
+            throw ServiceException::error(
+                'The master password has changed; restart the session',
+                null,
+                \SP\Domain\Crypt\Ports\MasterPasswordRequestLock::STALE_MASTER_PASSWORD
+            );
         }
         $this->verificationKey = random_bytes(32);
         $this->verifiedPasswordDigest = hash_hmac('sha256', $password, $this->verificationKey, true);

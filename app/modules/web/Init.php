@@ -236,6 +236,7 @@ final class Init extends HttpModuleBase
 
         if ($this->configData->isInstalled()
             && !in_array($controller, [CssController::class, JsController::class, DatabaseErrorController::class,
+                DatabaseConnectionController::class,
                 MaintenanceErrorController::class, ErrorIndexController::class], true)) {
             $this->masterPasswordRequestLock->acquire();
         }
