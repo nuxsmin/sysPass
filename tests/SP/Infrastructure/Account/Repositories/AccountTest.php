@@ -635,16 +635,13 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testDeleteByIdBatch(): void
     {
-        $ids = [self::$faker->randomNumber(2), self::$faker->randomNumber(2), self::$faker->randomNumber(2)];
+        $ids = [44, 63, 44];
 
         $callback = new Callback(
-            static function (QueryData $arg) use ($ids) {
+            static function (QueryData $arg) {
                 $values = $arg->getQuery()->getBindValues();
 
-                return count($values) === 3
-                       && array_shift($values) === array_shift($ids)
-                       && array_shift($values) === array_shift($ids)
-                       && array_shift($values) === array_shift($ids)
+                return array_values($values) === [44, 63]
                        && $arg->getMapClassName() === Simple::class
                        && !empty($arg->getQuery()->getStatement());
             }
