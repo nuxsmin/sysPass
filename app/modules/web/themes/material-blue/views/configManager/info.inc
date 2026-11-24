@@ -257,10 +257,16 @@
                                     echo $name; ?>
                                     <br>
                                     <?php
-                                    printf('Version: %s', implode('.', $plugin->getVersion())); ?>
-                                    <br>
+                                    if ($plugin->getVersionLevel() !== null): ?>
+                                        <br>
+                                        <?php
+                                        printf('Version: %s', htmlspecialchars(
+                                            $plugin->getVersionLevel(),
+                                            ENT_QUOTES | ENT_SUBSTITUTE,
+                                            'UTF-8'
+                                        )); ?>
                                     <?php
-                                    printf('Autor: %s', $plugin->getAuthor()); ?>
+                                    endif; ?>
                                 </span>
                     </li>
                 <?php
