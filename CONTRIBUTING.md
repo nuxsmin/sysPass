@@ -1,5 +1,8 @@
 # Contributing
 
+For the CI static-analysis checks and PHP formatting instructions, see the
+[linting guide](docs/agents/linting.md).
+
 ## Where to post
 
 | Need | Where |
