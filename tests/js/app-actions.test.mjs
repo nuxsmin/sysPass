@@ -1530,6 +1530,8 @@ test("main.upgrade prevents duplicate execution, toggles running state, clears s
     assert.equal(running.attr("hidden"), "hidden");
     assert.equal(feedback.attr("hidden"), undefined);
     assert.equal(feedbackTitle.textContent, "Wrong security code");
+    assert.equal(context.record.out.length, 0);
+    assert.equal(keyInput.attr("aria-invalid"), "true");
     assert.equal(keyWrap.classesAdded.includes("is-invalid"), true);
 
     // Re-run and succeed

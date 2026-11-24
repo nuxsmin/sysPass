@@ -1280,15 +1280,10 @@ sysPass.Actions = function (log) {
                             clearKeyInput();
                             const fallbackMsg = (sysPassApp.config && sysPassApp.config.LANG && sysPassApp.config.LANG[1]) || "There was an error";
                             setFlowFeedback($feedback, "error", fallbackMsg, null);
-                            sysPassApp.msg.error(fallbackMsg);
                             focusErrorControl();
                         };
 
                         const req = sysPassApp.requests.getActionCall(opts, function (json) {
-                            if (json && typeof json === "object") {
-                                sysPassApp.msg.out(json);
-                            }
-
                             if (!json || (json.status !== 0 && json.status !== "OK")) {
                                 task.end();
                                 setFlowSubmitting($obj, $submitBtn, $running, false);

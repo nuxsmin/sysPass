@@ -62,7 +62,7 @@ use function SP\__;
                     <input id="key" name="key" type="text" required
                            class="mdl-textfield__input"
                            autocomplete="off" spellcheck="false"
-                           aria-describedby="key-hint" autofocus>
+                           aria-describedby="key-hint upgrade-feedback" autofocus>
                 </div>
                 <p id="key-hint" class="sp-field-hint"><?php
                     echo __('This code is set in sysPass config file within the tag name "upgradekey"'); ?></p>
