@@ -142,7 +142,11 @@ class AccountTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
-        $account = $accountDataGenerator->buildAccount()->mutate(['parentId' => 0]);
+        $account = $accountDataGenerator->buildAccount()->mutate([
+            'parentId' => 0,
+            'isPrivate' => 0,
+            'isPrivateGroup' => 0,
+        ]);
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto()->mutate([
             'clientId' => self::$faker->numberBetween(1, 999),
             'categoryId' => self::$faker->numberBetween(1, 999),
