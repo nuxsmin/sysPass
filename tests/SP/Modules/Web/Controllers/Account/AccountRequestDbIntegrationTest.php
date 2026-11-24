@@ -87,7 +87,11 @@ final class AccountRequestDbIntegrationTest extends DatabaseIntegrationTestCase
                 $actorProfile,
                 ['isAjax' => '1']
             );
-            self::assertSame('', $formRes['body'], "$label GET requestAccess body");
+            self::assertSame(
+                '<script>sysPassApp.actions.main.logout();</script>',
+                $formRes['body'],
+                "$label GET requestAccess body"
+            );
             self::assertStringNotContainsString('Gate Request Target', $formRes['body']);
 
             $saveRes = $this->dispatchSessionState(

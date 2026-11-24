@@ -3,7 +3,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -385,6 +385,10 @@ sysPass.Actions = function (log) {
 
                         sysPassApp.requests.getActionCall(opts, function (json) {
                             sysPassApp.msg.out(json);
+
+                            if (json && Number(json.status) === 10) {
+                                return;
+                            }
 
                             account.search($obj);
                         });
@@ -1847,6 +1851,10 @@ sysPass.Actions = function (log) {
                 sysPassApp.requests.getActionCall(opts, function (json) {
                     sysPassApp.msg.out(json);
 
+                    if (json && Number(json.status) === 10) {
+                        return;
+                    }
+
                     getContent({
                         r: tabs.state.tab.route,
                         tabIndex: tabs.state.tab.index
@@ -2078,6 +2086,11 @@ sysPass.Actions = function (log) {
                 });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
+                if (json && Number(json.status) === 10) {
+                    sysPassApp.msg.out(json);
+                    return;
+                }
+
                 if (json.status === 0) {
                     getContent({r: $obj.data("action-next")});
                 }
@@ -2130,6 +2143,10 @@ sysPass.Actions = function (log) {
 
                 sysPassApp.requests.getActionCall(opts, function (json) {
                     sysPassApp.msg.out(json);
+
+                    if (json && Number(json.status) === 10) {
+                        return;
+                    }
 
                     getContent({r: $obj.data("action-next")}).then(function () {
                         notification.getActive();
@@ -2424,6 +2441,10 @@ sysPass.Actions = function (log) {
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 sysPassApp.msg.out(json);
+
+                if (json && Number(json.status) === 10) {
+                    return;
+                }
 
                 tabs.refresh($obj);
             });

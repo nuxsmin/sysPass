@@ -173,6 +173,8 @@ abstract class ControllerBase
     {
         if ($this->session->isLoggedIn() === false || $this->session->getAuthCompleted() !== $requireAuthCompleted
         ) {
+            $this->handleSessionTimeout();
+
             throw new SessionTimeout();
         }
 

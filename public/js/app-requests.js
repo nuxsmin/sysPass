@@ -3,7 +3,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,6 +27,7 @@ sysPass.Requests = function (sysPassApp) {
     const log = sysPassApp.log;
 
     const RESPONSE_STATUS_CODES = {OK: 0, ERROR: 1, WARNING: 2};
+    let loggingOut = false;
 
     /**
      * Historial de consultas AJAX
@@ -118,6 +119,68 @@ sysPass.Requests = function (sysPassApp) {
         return (url.indexOf("http") === -1 && url.indexOf("https") === -1) ? sysPassApp.config.APP_ROOT + url : url;
     };
 
+    const isSessionTimeoutStatus = function (value) {
+        return value === 10 || value === "10";
+    };
+
+    const isSessionTimeoutResponse = function (response) {
+        if (response !== null && typeof response === "object" && !Array.isArray(response)) {
+            return isSessionTimeoutStatus(response.status);
+        }
+
+        if (typeof response !== "string") {
+            return false;
+        }
+
+        const trimmed = response.trim();
+
+        if (/^<script>\s*sysPassApp\.actions\.main\.logout\s*\(\s*\)\s*;?\s*<\/script>$/.test(trimmed)) {
+            return true;
+        }
+
+        if (trimmed.startsWith("{")) {
+            try {
+                const parsed = JSON.parse(trimmed);
+
+                if (parsed !== null && typeof parsed === "object" && isSessionTimeoutStatus(parsed.status)) {
+                    return true;
+                }
+            } catch (e) {
+                // Non-JSON payload; fall through to login HTML check
+            }
+        }
+
+        return /\bid=["']frmLogin["']/.test(response);
+    };
+
+    const triggerLogout = function () {
+        if (loggingOut) {
+            return;
+        }
+
+        loggingOut = true;
+        log.info("Session expired; redirecting to login");
+
+        if (sysPassApp.actions
+            && sysPassApp.actions.main
+            && typeof sysPassApp.actions.main.logout === "function"
+        ) {
+            sysPassApp.actions.main.logout();
+        }
+    };
+
+    const getNoopPromise = function () {
+        if (typeof $.Deferred === "function") {
+            return $.Deferred().promise();
+        }
+
+        const noop = function () {
+            return this;
+        };
+
+        return {done: noop, fail: noop, then: noop};
+    };
+
     /**
      * Llama a una acción mediante AJAX
      *
@@ -127,6 +190,10 @@ sysPass.Requests = function (sysPassApp) {
      */
     const getActionCall = function (opts, callbackOk, callbackError) {
         log.info("getActionCall");
+
+        if (loggingOut) {
+            return getNoopPromise();
+        }
 
         let headers = {};
         let method = opts.method.toUpperCase();
@@ -154,6 +221,11 @@ sysPass.Requests = function (sysPassApp) {
                 }
             },
             success: function (response) {
+                if (loggingOut || isSessionTimeoutResponse(response)) {
+                    triggerLogout();
+                    return;
+                }
+
                 if (typeof callbackOk !== "function") {
                     return true;
                 }
@@ -171,6 +243,15 @@ sysPass.Requests = function (sysPassApp) {
                 callbackOk(response);
             },
             error: function (jqXHR, textStatus, errorThrown) {
+                if (jqXHR && (isSessionTimeoutResponse(jqXHR.responseJSON) || isSessionTimeoutResponse(jqXHR.responseText))) {
+                    triggerLogout();
+                    return;
+                }
+
+                if (loggingOut || textStatus === "abort") {
+                    return;
+                }
+
                 if (typeof callbackError !== "function") {
                     let txt;
 
@@ -198,7 +279,11 @@ sysPass.Requests = function (sysPassApp) {
                     sysPassApp.theme.loading.hide();
                 }
 
-                const responseJSON = response.responseJSON;
+                if (loggingOut) {
+                    return;
+                }
+
+                const responseJSON = response ? response.responseJSON : undefined;
                 const data = (responseJSON !== undefined && responseJSON !== null)
                     ? responseJSON.data
                     : undefined;

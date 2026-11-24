@@ -37,6 +37,7 @@ enum Header: string
     case CACHE_CONTROL          = 'Cache-Control';
     case IF_NONE_MATCH          = 'If-None-Match';
     case CONTENT_TYPE_JSON      = 'application/json; charset=utf-8';
+    case CONTENT_TYPE_HTML      = 'text/html; charset=utf-8';
     case CONTENT_TYPE_CSS       = 'text/css; charset: UTF-8';
     case CONTENT_TYPE_JS        = 'application/javascript; charset: UTF-8';
     case ACCEPT                 = 'Accept';

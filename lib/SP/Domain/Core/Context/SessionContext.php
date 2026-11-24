@@ -192,4 +192,9 @@ interface SessionContext extends Context
      * @return int
      */
     public function setStartActivity(int $time): int;
+
+    /**
+     * Invalidate and reinitialize the session context for the current request
+     */
+    public function restart(): void;
 }

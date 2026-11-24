@@ -242,10 +242,10 @@ final class Init extends HttpModuleBase
         $this->initEventHandlers($partialInit);
 
         if ($partialInit === false) {
-            if (!in_array($controller, self::NO_SESSION_ACTIVITY)) {
-                // Initialize user session context
-                $this->initUserSession();
-            }
+            $updateActivity = !in_array($controller, self::NO_SESSION_ACTIVITY, true);
+
+            // Initialize user session context (always check expiration, only bump activity when allowed)
+            $this->initUserSession($updateActivity);
 
             // Runtime plugin loading is intentionally disabled and deferred to a follow-up task
 
@@ -296,7 +296,7 @@ final class Init extends HttpModuleBase
      *
      * @throws SPException
      */
-    private function initUserSession(): void
+    private function initUserSession(bool $updateActivity = true): void
     {
         $lastActivity = $this->context->getLastActivity();
         $inMaintenance = $this->configData->isMaintenance();
@@ -306,31 +306,50 @@ final class Init extends HttpModuleBase
             && !$inMaintenance
             && time() > $lastActivity + $this->getSessionLifeTime()
         ) {
-            SessionLifecycleHandler::restart();
-        } else {
-            $sidStartTime = $this->context->getSidStartTime();
+            $this->restartSessionContext();
 
-            // Regenerate session's ID frequently to avoid fixation
-            if ($sidStartTime === 0) {
-                // Try to set PHP's session lifetime
-                @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
-            } elseif (!$inMaintenance
-                      && SessionLifecycleHandler::needsRegenerate($sidStartTime)
-                      && $this->context->isLoggedIn()
-            ) {
-                try {
-                    CryptSession::reKey($this->context);
-                } catch (CryptException $e) {
-                    logger($e->getMessage());
+            return;
+        }
 
-                    SessionLifecycleHandler::restart();
+        $sidStartTime = $this->context->getSidStartTime();
 
-                    return;
-                }
+        // Regenerate session's ID frequently to avoid fixation
+        if ($sidStartTime === 0) {
+            // Try to set PHP's session lifetime
+            @ini_set('session.gc_maxlifetime', (string)$this->getSessionLifeTime());
+        } elseif ($updateActivity
+                  && !$inMaintenance
+                  && SessionLifecycleHandler::needsRegenerate($sidStartTime)
+                  && $this->context->isLoggedIn()
+        ) {
+            try {
+                CryptSession::reKey($this->context);
+            } catch (CryptException $e) {
+                logger($e->getMessage());
+
+                $this->restartSessionContext();
+
+                return;
             }
+        }
 
+        if ($updateActivity) {
             $this->context->setLastActivity(time());
         }
+    }
+
+    /**
+     * @throws SPException
+     */
+    private function restartSessionContext(): void
+    {
+        if ($this->context instanceof \SP\Domain\Core\Context\SessionContext) {
+            $this->context->restart();
+
+            return;
+        }
+
+        SessionLifecycleHandler::restart();
     }
 
     /**

@@ -3,7 +3,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2020, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -510,7 +510,11 @@ sysPass.Main = function () {
             configHandler.initialize();
 
             oPublic.config = configHandler.getConfig();
-        }).fail(function () {
+        }).fail(function (_jqXHR, textStatus) {
+            if (textStatus === "abort") {
+                return;
+            }
+
             msg.error("Error while getting sysPass config<br/>Please try again or check web server logs");
         });
     };

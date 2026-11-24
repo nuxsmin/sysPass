@@ -92,6 +92,19 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
+     * Invalidates the active session and reinitializes a clean in-memory context.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function restart(): void
+    {
+        $this->invalidate();
+        $this->resetContext();
+        $this->initialize();
+    }
+
+    /**
      * Devuelve el tema visual utilizado en sysPass
      */
     public function getTheme(): string

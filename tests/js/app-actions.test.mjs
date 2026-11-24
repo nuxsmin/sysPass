@@ -1520,3 +1520,62 @@ test("main.upgrade prevents duplicate execution, toggles running state, clears s
     assert.equal(timeouts.includes(5000), true);
 });
 
+test("account.delete, appMgmt.delete, notification.check, notification.delete, and track.unlock do not issue follow-up requests on status 10", function () {
+    // account.delete
+    {
+        const ctx = setup();
+        const control = makeElement({"action-route": "account/delete", "item-id": 5});
+        ctx.actions.account.delete(control);
+        ctx.record.dialogs[0].positive.onClick({preventDefault: function () {}});
+        assert.equal(ctx.record.calls.length, 1);
+        ctx.record.calls[0].callback({status: 10, description: "session"});
+        assert.equal(ctx.record.out.length, 1);
+        assert.equal(ctx.record.calls.length, 1);
+    }
+
+    // appMgmt.delete
+    {
+        const ctx = setup({activeTab: {"tab-route": "config/index", "tab-index": 0}});
+        const control = makeElement({"action-route": "user/delete", "item-id": 5});
+        ctx.actions.appMgmt.delete(control);
+        ctx.record.dialogs[0].positive.onClick({preventDefault: function () {}});
+        assert.equal(ctx.record.calls.length, 1);
+        ctx.record.calls[0].callback({status: 10, description: "session"});
+        assert.equal(ctx.record.out.length, 1);
+        assert.equal(ctx.record.calls.length, 1);
+    }
+
+    // notification.check
+    {
+        const ctx = setup();
+        const control = makeElement({"action-route": "notification/check", "item-id": 5, "action-next": "notification/index"});
+        ctx.actions.notification.check(control);
+        ctx.record.calls[0].callback({status: 10, description: "session"});
+        assert.equal(ctx.record.out.length, 1);
+        assert.equal(ctx.record.calls.length, 1);
+    }
+
+    // notification.delete
+    {
+        const ctx = setup();
+        const control = makeElement({"action-route": "notification/delete", "item-id": 5, "action-next": "notification/index"});
+        ctx.actions.notification.delete(control);
+        ctx.record.dialogs[0].positive.onClick({preventDefault: function () {}});
+        assert.equal(ctx.record.calls.length, 1);
+        ctx.record.calls[0].callback({status: 10, description: "session"});
+        assert.equal(ctx.record.out.length, 1);
+        assert.equal(ctx.record.calls.length, 1);
+    }
+
+    // track.unlock
+    {
+        const ctx = setup({activeTab: {"tab-route": "track/index", "tab-index": 0}});
+        const control = makeElement({"action-route": "track/unlock", "item-id": 5});
+        ctx.actions.track.unlock(control);
+        ctx.record.calls[0].callback({status: 10, description: "session"});
+        assert.equal(ctx.record.out.length, 1);
+        assert.equal(ctx.record.calls.length, 1);
+    }
+});
+
+

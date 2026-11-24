@@ -27,6 +27,8 @@ namespace SP\Modules\Web\Controllers\Index;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\ControllerBase;
 
 /**
@@ -38,15 +40,14 @@ final class IndexController extends ControllerBase
 {
     /**
      * Index action
+     *
+     * @throws SessionTimeout
+     * @throws SPException
      */
     #[Action(ResponseType::PLAIN_TEXT)]
     public function indexAction(): ActionResponse
     {
-        if ($this->session->isLoggedIn() === false || $this->session->getAuthCompleted() === false) {
-            $this->router->response()->redirect('index.php?r=login');
-
-            return ActionResponse::ok('');
-        }
+        $this->checkLoggedIn();
 
         $this->layoutHelper->getFullLayout('main', $this->acl);
 

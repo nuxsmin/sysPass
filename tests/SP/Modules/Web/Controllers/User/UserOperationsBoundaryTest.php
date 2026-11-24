@@ -66,7 +66,8 @@ use function DI\factory;
  * - UserForm::checkCommon() skipping name/login/email checks when isLdap=1
  * - Fatal PHP Errors in UserForm::isDemo() (getIsAdminApp()), UserSaveBase (unimported __()), and SaveEdit (processException())
  * - UserSettingsGeneral/SaveController accepting invalid theme/locale & non-positive resultsPerPage
- * - Items/* controllers lacking ACL checks (categories, clients, tags, accountsUser) and skipping NO_SESSION_ACTIVITY timeout
+ * - Items/* controllers lacking ACL checks (categories, clients, tags, accountsUser) while invalidating
+ *   expired sessions under NO_SESSION_ACTIVITY
  */
 #[Group('integration')]
 final class UserOperationsBoundaryTest extends IntegrationTestCase
@@ -394,11 +395,11 @@ final class UserOperationsBoundaryTest extends IntegrationTestCase
     }
 
     #[Test]
-    public function itemsEndpointsLackAclChecksAndIgnoreExpiredSessionTimeoutViaNoSessionActivity(): void
+    public function itemsEndpointsLackAclChecksOnActiveSessionAndRejectExpiredSessions(): void
     {
         $this->sessionUser = $this->makeUserDto(50, false);
         $this->sessionProfile = new ProfileData(); // zero permissions
-        $this->sessionLastActivity = 1; // expired hours ago vs timeout=10
+        $this->sessionLastActivity = time();
         $this->sessionTimeout = 10;
 
         $categoryService = $this->createMock(CategoryService::class);
@@ -434,6 +435,44 @@ final class UserOperationsBoundaryTest extends IntegrationTestCase
         self::assertSame([], $accountsJson['data'] ?? null);
 
         self::assertSame(200, $this->dispatchWeb('get', 'items/notifications', [], $overrides)['code']);
+
+        // Expired session under NO_SESSION_ACTIVITY still triggers restart() and is rejected before service calls.
+        $this->sessionLastActivity = 1;
+
+        $expiredCategoryService = $this->createMock(CategoryService::class);
+        $expiredCategoryService->expects(self::never())->method('getAll');
+
+        $expiredClientService = $this->createMock(ClientService::class);
+        $expiredClientService->expects(self::never())->method('getAllForUser');
+
+        $expiredTagService = $this->createMock(TagService::class);
+        $expiredTagService->expects(self::never())->method('getAll');
+
+        $expiredAccountService = $this->createMock(AccountService::class);
+        $expiredAccountService->expects(self::never())->method('getForUser');
+
+        $expiredNotificationService = $this->createMock(NotificationService::class);
+        $expiredNotificationService->expects(self::never())->method('getAllActiveForCurrentUser');
+
+        $expiredOverrides = [
+            CategoryService::class => $expiredCategoryService,
+            ClientService::class => $expiredClientService,
+            TagService::class => $expiredTagService,
+            AccountService::class => $expiredAccountService,
+            NotificationService::class => $expiredNotificationService,
+        ];
+
+        foreach ([
+            'items/categories',
+            'items/clients',
+            'items/tags',
+            'items/accountsUser',
+            'items/notifications',
+        ] as $route) {
+            $expiredRes = $this->dispatchWeb('get', $route, [], $expiredOverrides);
+            self::assertSame(302, $expiredRes['code'], $route);
+            self::assertSame('', $expiredRes['body'], $route);
+        }
     }
 
     #[Test]
@@ -489,14 +528,27 @@ final class UserOperationsBoundaryTest extends IntegrationTestCase
         $sessionTimeout = $this->sessionTimeout;
 
         $sessionStub = $this->createStub(SessionContext::class);
-        $sessionStub->method('isLoggedIn')->willReturn($loggedIn);
-        $sessionStub->method('getAuthCompleted')->willReturn($authCompleted);
+        $sessionStub->method('isLoggedIn')->willReturnCallback(static function () use (&$loggedIn): bool {
+            return $loggedIn;
+        });
+        $sessionStub->method('getAuthCompleted')->willReturnCallback(static function () use (&$authCompleted): bool {
+            return $authCompleted;
+        });
         $sessionStub->method('getUserData')->willReturn($user);
         $sessionStub->method('getUserProfile')->willReturn($profile);
         $sessionStub->method('getLocale')->willReturn('en_US');
         $sessionStub->method('getCSRF')->willReturn(null);
-        $sessionStub->method('getLastActivity')->willReturn($lastActivity);
+        $sessionStub->method('getLastActivity')->willReturnCallback(static function () use (&$lastActivity): int {
+            return $lastActivity;
+        });
         $sessionStub->method('getSessionTimeout')->willReturn($sessionTimeout);
+        $sessionStub->method('restart')->willReturnCallback(
+            static function () use (&$loggedIn, &$authCompleted, &$lastActivity): void {
+                $loggedIn = false;
+                $authCompleted = false;
+                $lastActivity = 0;
+            }
+        );
 
         $baseOverrides = [
             Context::class => $sessionStub,

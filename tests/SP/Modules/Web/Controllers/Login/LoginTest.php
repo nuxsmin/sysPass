@@ -325,6 +325,13 @@ final class LoginTest extends IntegrationTestCase
         $acl = $this->createMock(AclInterface::class);
         $acl->expects(self::never())->method('checkUserAccess');
 
+        $expectedChunk = json_encode([
+            'status' => 10,
+            'description' => 'Session not started or timed out',
+            'data' => [],
+            'messages' => [],
+        ], JSON_THROW_ON_ERROR);
+
         foreach (['account/search', 'publicLink/search'] as $route) {
             $result = $this->dispatchRoute(
                 'get',
@@ -338,10 +345,10 @@ final class LoginTest extends IntegrationTestCase
                 ['HTTP_ACCEPT' => 'application/json']
             );
 
-            // Characterization: ControllerBase::checkLoggedIn() throws SessionTimeout without calling
-            // sessionLogout(), and Bootstrap::manageWebRequest() catches SessionTimeout and emits empty 200.
+            // ControllerBase::checkLoggedIn() calls handleSessionTimeout() and emits the locked
+            // JSON timeout envelope for incomplete sessions.
             self::assertSame(200, $result['code'], $route);
-            self::assertSame('', $result['body'], $route);
+            self::assertSame($expectedChunk, $result['body'], $route);
         }
 
         // SimpleControllerBase returns one JSON timeout envelope for an incomplete session.
@@ -357,12 +364,6 @@ final class LoginTest extends IntegrationTestCase
             ['HTTP_ACCEPT' => 'application/json']
         );
         self::assertSame(200, $statusResult['code']);
-        $expectedChunk = json_encode([
-            'status' => 10,
-            'description' => 'Session not started or timed out',
-            'data' => [],
-            'messages' => [],
-        ], JSON_THROW_ON_ERROR);
         self::assertSame($expectedChunk, $statusResult['echoed']);
     }
 
