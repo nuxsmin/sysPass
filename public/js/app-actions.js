@@ -911,6 +911,144 @@ sysPass.Actions = function (log) {
         }
     };
 
+    const showFlowRunning = function ($running) {
+        if ($running && ($running.length === undefined || $running.length > 0)) {
+            if (typeof $running.removeAttr === "function") {
+                $running.removeAttr("hidden");
+            } else if (typeof $running.attr === "function") {
+                $running.attr("hidden", false);
+            }
+            if (typeof $running.show === "function") {
+                $running.show();
+            }
+        }
+    };
+
+    const hideFlowRunning = function ($running) {
+        if ($running && ($running.length === undefined || $running.length > 0)) {
+            if (typeof $running.attr === "function") {
+                $running.attr("hidden", "hidden");
+            }
+            if (typeof $running.hide === "function") {
+                $running.hide();
+            }
+        }
+    };
+
+    const setFlowSubmitting = function ($form, $btn, $running, submitting) {
+        if ($form && typeof $form.attr === "function") {
+            if (submitting) {
+                $form.attr("data-submitting", "1");
+            } else if (typeof $form.removeAttr === "function") {
+                $form.removeAttr("data-submitting");
+            } else {
+                $form.attr("data-submitting", "0");
+            }
+        }
+
+        if ($btn && typeof $btn.attr === "function") {
+            if (typeof $btn.prop === "function") {
+                $btn.prop("disabled", submitting);
+            }
+            if (submitting) {
+                $btn.attr("disabled", "disabled");
+                $btn.attr("aria-busy", "true");
+                if (typeof $btn.addClass === "function") {
+                    $btn.addClass("is-loading");
+                }
+            } else {
+                if (typeof $btn.removeAttr === "function") {
+                    $btn.removeAttr("disabled");
+                    $btn.removeAttr("aria-busy");
+                } else {
+                    $btn.attr("disabled", false);
+                    $btn.attr("aria-busy", "false");
+                }
+                if (typeof $btn.removeClass === "function") {
+                    $btn.removeClass("is-loading");
+                }
+            }
+        }
+
+        if (submitting) {
+            showFlowRunning($running);
+        } else {
+            hideFlowRunning($running);
+        }
+    };
+
+    const setFlowFeedback = function ($feedback, type, title, details) {
+        if (!$feedback || ($feedback.length !== undefined && $feedback.length === 0)) {
+            return;
+        }
+
+        if (!type) {
+            if (typeof $feedback.attr === "function") {
+                $feedback.attr("hidden", "hidden");
+            }
+            if (typeof $feedback.hide === "function") {
+                $feedback.hide();
+            }
+            return;
+        }
+
+        const isSuccess = type === "success";
+        if (typeof $feedback.removeClass === "function") {
+            $feedback.removeClass("sp-alert--error sp-alert--success sp-alert--info sp-alert--warning");
+        }
+        if (typeof $feedback.addClass === "function") {
+            $feedback.addClass(isSuccess ? "sp-alert--success" : "sp-alert--error");
+        }
+
+        if (typeof $feedback.find === "function") {
+            const $icon = $feedback.find(".sp-alert__icon");
+            if ($icon && $icon !== $feedback && ($icon.length === undefined || $icon.length > 0) && typeof $icon.text === "function") {
+                $icon.text(isSuccess ? "check_circle_outline" : "error_outline");
+            }
+
+            const $title = $feedback.find(".sp-alert__title");
+            if ($title && $title !== $feedback && ($title.length === undefined || $title.length > 0) && typeof $title.text === "function") {
+                $title.text(title || "");
+            } else if (typeof $feedback.text === "function") {
+                $feedback.text(title || "");
+            }
+
+            const $text = $feedback.find(".sp-alert__text");
+            if ($text && $text !== $feedback && ($text.length === undefined || $text.length > 0)) {
+                let detailText = "";
+                if (Array.isArray(details)) {
+                    detailText = details.filter(Boolean).join(" ");
+                } else if (typeof details === "string") {
+                    detailText = details;
+                }
+                if (detailText) {
+                    if (typeof $text.text === "function") {
+                        $text.text(detailText);
+                    }
+                    if (typeof $text.removeAttr === "function") {
+                        $text.removeAttr("hidden");
+                    }
+                } else {
+                    if (typeof $text.text === "function") {
+                        $text.text("");
+                    }
+                    if (typeof $text.attr === "function") {
+                        $text.attr("hidden", "hidden");
+                    }
+                }
+            }
+        }
+
+        if (typeof $feedback.removeAttr === "function") {
+            $feedback.removeAttr("hidden");
+        } else if (typeof $feedback.attr === "function") {
+            $feedback.attr("hidden", false);
+        }
+        if (typeof $feedback.show === "function") {
+            $feedback.show();
+        }
+    };
+
     /**
      * Objeto con las acciones principales
      *
@@ -968,22 +1106,125 @@ sysPass.Actions = function (log) {
         install: function ($obj) {
             log.info("main:install");
 
+            if (typeof $obj.attr === "function" && $obj.attr("data-submitting") === "1") {
+                return;
+            }
+
+            const $submitBtn = $("#btnInstall");
+            const $feedback = $("#install-feedback");
+            const $running = $("#install-running-status");
+
+            setFlowFeedback($feedback, null);
+            setFlowSubmitting($obj, $submitBtn, $running, true);
+
             const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("route");
             opts.data = $obj.serialize();
 
-            sysPassApp.requests.getActionCall(opts, function (json) {
-                sysPassApp.msg.out(json);
+            let errorHandled = false;
+            const handleError = function () {
+                if (errorHandled) {
+                    return;
+                }
+                errorHandled = true;
+                setFlowSubmitting($obj, $submitBtn, $running, false);
+                const fallbackMsg = (sysPassApp.config && sysPassApp.config.LANG && sysPassApp.config.LANG[1]) || "There was an error";
+                setFlowFeedback($feedback, "error", fallbackMsg, null);
+                sysPassApp.msg.error(fallbackMsg);
+            };
 
-                if (json.status === 0) {
+            const req = sysPassApp.requests.getActionCall(opts, function (json) {
+                if (json && typeof json === "object") {
+                    sysPassApp.msg.out(json);
+                }
+
+                if (json && (json.status === 0 || json.status === "OK")) {
+                    hideFlowRunning($running);
+                    const okTitle = Array.isArray(json.description)
+                        ? json.description.filter(Boolean).join(" ")
+                        : (json.description || "");
+                    setFlowFeedback($feedback, "success", okTitle, json.data || json.messages);
+
                     setTimeout(function () {
                         sysPassApp.util.redirect("index.php?r=login/index");
                     }, 1000);
+                } else {
+                    setFlowSubmitting($obj, $submitBtn, $running, false);
+                    const errTitle = json && json.description
+                        ? (Array.isArray(json.description) ? json.description.filter(Boolean).join(" ") : json.description)
+                        : ((sysPassApp.config && sysPassApp.config.LANG && sysPassApp.config.LANG[1]) || "There was an error");
+                    setFlowFeedback($feedback, "error", errTitle, json ? (json.data || json.messages) : null);
                 }
-            });
+            }, handleError);
+
+            if (req && typeof req.fail === "function") {
+                req.fail(handleError);
+            }
         },
         upgrade: function ($obj) {
             log.info("main:upgrade");
+
+            if (typeof $obj.attr === "function" && $obj.attr("data-submitting") === "1") {
+                return;
+            }
+
+            if (typeof document !== "undefined" && typeof document.getElementById === "function" && document.getElementById("orrsDiag")) {
+                return;
+            }
+
+            const $submitBtn = $("#btnChange");
+            const $feedback = $("#upgrade-feedback");
+            const $running = $("#upgrade-running-status");
+
+            const focusErrorControl = function () {
+                const $chk = $("#chkConfirm");
+                const $key = typeof $obj.find === "function" ? $obj.find(":input[name=key]") : $("#key");
+                let target = null;
+
+                if ($chk && ($chk.length === undefined || $chk.length > 0) && $chk[0] && !$chk[0].checked) {
+                    const $confirmBox = typeof $chk.closest === "function" ? $chk.closest(".sp-upgrade-confirm") : null;
+                    if ($confirmBox && typeof $confirmBox.addClass === "function") {
+                        $confirmBox.addClass("is-invalid");
+                    }
+                    target = $chk[0];
+                } else if ($key && ($key.length === undefined || $key.length > 0)) {
+                    if (typeof $key.parent === "function") {
+                        const $wrap = $key.parent();
+                        if ($wrap && typeof $wrap.addClass === "function") {
+                            $wrap.addClass("is-invalid");
+                        }
+                    }
+                    if (typeof $key.attr === "function") {
+                        $key.attr("aria-invalid", "true");
+                    }
+                    target = $key[0] || $key;
+                }
+
+                if (target && typeof target.focus === "function") {
+                    target.focus();
+                    setTimeout(function () {
+                        if (typeof document === "undefined" || !document.contains || document.contains(target)) {
+                            target.focus();
+                        }
+                    }, 420);
+                }
+            };
+
+            const clearKeyInput = function () {
+                if (typeof $obj.find !== "function") {
+                    return;
+                }
+                const $key = $obj.find(":input[name=key]");
+                if ($key && typeof $key.val === "function") {
+                    $key.val("");
+                }
+                if ($key && typeof $key.parent === "function") {
+                    const $wrap = $key.parent();
+                    if ($wrap && typeof $wrap.removeClass === "function") {
+                        $wrap.removeClass("is-dirty");
+                    }
+                }
+            };
 
             const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[59] + "</p></div>";
 
@@ -1000,7 +1241,17 @@ sysPass.Actions = function (log) {
                 positive: {
                     title: sysPassApp.config.LANG[43],
                     onClick: function (e) {
-                        const taskId = $obj.find("input[name='taskId']").val();
+                        if (typeof $obj.attr === "function" && $obj.attr("data-submitting") === "1") {
+                            return;
+                        }
+
+                        setFlowFeedback($feedback, null);
+                        setFlowSubmitting($obj, $submitBtn, $running, true);
+
+                        const $taskInput = typeof $obj.find === "function" ? $obj.find("input[name='taskId']") : null;
+                        const taskId = $taskInput && $taskInput !== $obj && typeof $taskInput.val === "function"
+                            ? $taskInput.val()
+                            : undefined;
                         const opts = sysPassApp.requests.getRequestOpts();
 
                         if (taskId) {
@@ -1012,19 +1263,52 @@ sysPass.Actions = function (log) {
                         opts.method = "post";
                         opts.data = $obj.serialize();
 
-                        sysPassApp.requests.getActionCall(opts, function (json) {
-                            sysPassApp.msg.out(json);
+                        let errorHandled = false;
+                        const handleError = function () {
+                            if (errorHandled) {
+                                return;
+                            }
+                            errorHandled = true;
+                            task.end();
+                            setFlowSubmitting($obj, $submitBtn, $running, false);
+                            clearKeyInput();
+                            const fallbackMsg = (sysPassApp.config && sysPassApp.config.LANG && sysPassApp.config.LANG[1]) || "There was an error";
+                            setFlowFeedback($feedback, "error", fallbackMsg, null);
+                            sysPassApp.msg.error(fallbackMsg);
+                            focusErrorControl();
+                        };
 
-                            if (json.status !== 0) {
-                                $obj.find(":input[name=key]").val("");
+                        const req = sysPassApp.requests.getActionCall(opts, function (json) {
+                            if (json && typeof json === "object") {
+                                sysPassApp.msg.out(json);
+                            }
+
+                            if (!json || (json.status !== 0 && json.status !== "OK")) {
+                                task.end();
+                                setFlowSubmitting($obj, $submitBtn, $running, false);
+                                clearKeyInput();
+                                const errTitle = json && json.description
+                                    ? (Array.isArray(json.description) ? json.description.filter(Boolean).join(" ") : json.description)
+                                    : ((sysPassApp.config && sysPassApp.config.LANG && sysPassApp.config.LANG[1]) || "There was an error");
+                                setFlowFeedback($feedback, "error", errTitle, json ? (json.data || json.messages) : null);
+                                focusErrorControl();
                             } else {
                                 task.end();
+                                hideFlowRunning($running);
+                                const okTitle = Array.isArray(json.description)
+                                    ? json.description.filter(Boolean).join(" ")
+                                    : (json.description || "");
+                                setFlowFeedback($feedback, "success", okTitle, json.data || json.messages);
 
                                 setTimeout(function () {
                                     sysPassApp.util.redirect("index.php");
                                 }, 5000);
                             }
-                        });
+                        }, handleError);
+
+                        if (req && typeof req.fail === "function") {
+                            req.fail(handleError);
+                        }
                     }
                 }
             });

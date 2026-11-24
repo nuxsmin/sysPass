@@ -538,6 +538,24 @@ sysPass.Triggers = function (log) {
 
             sysPassApp.theme.passwordDetect($form);
             selectDetect($form);
+        },
+        upgrade: function () {
+            log.info("views:upgrade");
+
+            const $form = $("#frmUpgrade");
+            const $feedback = $("#upgrade-feedback");
+
+            $form.find("#key").on("input keyup", function () {
+                const $input = $(this);
+                $input.removeAttr("aria-invalid");
+                $input.parent().removeClass("is-invalid");
+                $feedback.attr("hidden", "hidden");
+            });
+
+            $form.find("#chkConfirm").on("change", function () {
+                $(this).closest(".sp-upgrade-confirm").removeClass("is-invalid");
+                $feedback.attr("hidden", "hidden");
+            });
         }
     };
 

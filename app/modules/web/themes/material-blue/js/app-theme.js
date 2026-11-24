@@ -73,7 +73,11 @@ sysPass.Theme = function (log) {
 
             // if ($target) {
             const $dstParent = $target.parent();
-            const $targetR = $("#" + $target.attr("id") + "_repeat");
+            let $targetR = $("#" + $target.attr("id") + "_repeat");
+
+            if ($targetR.length === 0) {
+                $targetR = $("#" + $target.attr("id") + "R");
+            }
 
             sysPassApp.util.password.output(level, $target);
 
@@ -270,10 +274,16 @@ sysPass.Theme = function (log) {
             const $form = $this.closest("form");
             const originalId = $this.attr("id");
             const targetId = originalId + "-" + uniqueId;
-            const originalRepeatId = originalId + "_repeat";
-            const targetRepeatId = targetId + "_repeat";
+            let originalRepeatId = originalId + "_repeat";
+            let targetRepeatId = targetId + "_repeat";
+            let $passwordRepeat = $form.find("#" + originalRepeatId);
 
-            const $passwordRepeat = $form.find("#" + originalRepeatId);
+            if ($passwordRepeat.length === 0) {
+                originalRepeatId = originalId + "R";
+                targetRepeatId = targetId + "R";
+                $passwordRepeat = $form.find("#" + originalRepeatId);
+            }
+
             $passwordRepeat.attr("id", targetRepeatId);
             $form.find("label[for='" + originalRepeatId + "']").attr("for", targetRepeatId);
 
@@ -284,7 +294,7 @@ sysPass.Theme = function (log) {
             const optionsLabel = sysPassApp.config.LANG[27] || "Password options";
             let btnMenu =
                 `<button id="menu-password-${targetId}" class="mdl-button mdl-js-button mdl-button--icon" type="button" aria-label="${optionsLabel}" title="${optionsLabel}"><i class="material-icons" aria-hidden="true">more_vert</i></button>
-                <ul class="mdl-menu mdl-js-menu" for="menu-password-${targetId}">
+                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu" for="menu-password-${targetId}">
                 <li class="mdl-menu__item passGen"><i class="material-icons">settings</i>${sysPassApp.config.LANG[28]}</li>
                 <li class="mdl-menu__item passComplexity"><i class="material-icons">vpn_key</i>${sysPassApp.config.LANG[29]}</li>
                 <li class="mdl-menu__item reset"><i class="material-icons">refresh</i>${sysPassApp.config.LANG[30]}</li></ul>`;
@@ -324,16 +334,19 @@ sysPass.Theme = function (log) {
 
                 if (repeatPlain === "" && !forceCheck) {
                     $repeatWrap.removeClass("is-invalid");
+                    $passwordRepeat.removeAttr("aria-invalid");
                     $errorNode.text("").attr("hidden", "hidden");
                     return;
                 }
 
                 if (repeatPlain !== "" && primaryPlain !== "" && repeatPlain !== primaryPlain) {
                     $repeatWrap.addClass("is-invalid");
+                    $passwordRepeat.attr("aria-invalid", "true");
                     $errorNode.text(mismatchMsg).removeAttr("hidden");
                 } else {
                     if (repeatPlain !== "") {
                         $repeatWrap.removeClass("is-invalid");
+                        $passwordRepeat.removeAttr("aria-invalid");
                     }
                     $errorNode.text("").attr("hidden", "hidden");
                 }
@@ -456,9 +469,13 @@ sysPass.Theme = function (log) {
                 $this.parent().after($toggleBtn);
             }
 
-            $this.on("keyup", function () {
-                this.dataset.pass = $this.val();
-                delete this.dataset.encryptedPass;
+            $this.on("keyup input", function () {
+                const rawVal = $this.val() || "";
+                const encryptedLen = parseInt($this.attr("data-length"), 10);
+                if (Number.isNaN(encryptedLen) || encryptedLen !== rawVal.length) {
+                    this.dataset.pass = rawVal;
+                    delete this.dataset.encryptedPass;
+                }
             });
 
             bindPasswordToggle($this, $toggleBtn);

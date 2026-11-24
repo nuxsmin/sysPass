@@ -33,68 +33,85 @@ use SP\Modules\Web\Mvc\View\TemplateInterface;
 use function SP\__;
 
 ?>
-<div id="actions" class="installer" align="center">
-    <ul class="errors round">
-        <li class="msg-warning">
-            <i class="material-icons <?php
-            echo $icons->warning()->getClass(); ?>"><?php
-                echo $icons->warning()->getIcon(); ?></i>
-            <strong><?php
+<div id="actions" class="installer sp-flow-page sp-panel">
+    <div id="page-title">
+        <h1><?php
+            echo __('Update Application'); ?></h1>
+    </div>
+
+    <div class="sp-alert sp-alert--warning" role="note">
+        <i class="material-icons sp-alert__icon" aria-hidden="true"><?php
+            echo $icons->warning()->getIcon(); ?></i>
+        <div class="sp-alert__body">
+            <strong class="sp-alert__title"><?php
                 echo __('The application needs to be updated'); ?></strong>
-            <p class="hint">
-                <?php
-                echo __('Please contact to the administrator'); ?>
-            </p>
-            <p class="hint">
-                <?php
-                echo __('Please enter the security code to start the upgrade'); ?>
-            </p>
-        </li>
-    </ul>
+            <p class="sp-alert__text"><?php
+                echo __('Please contact to the administrator'); ?></p>
+        </div>
+    </div>
 
     <form id="frmUpgrade" method="post" class="form-action"
           data-onsubmit="main/upgrade"
           data-action-route="upgrade/upgrade">
         <fieldset>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="key" name="key" type="text" required
-                       class="mdl-textfield__input mdl-color-text--indigo-400"
-                       autocomplete="off" autofocus>
-                <label class="mdl-textfield__label"
-                       for="key"><?php
-                    echo __('Security Code'); ?></label>
+            <div class="sp-flow-field">
+                <div class="mdl-textfield mdl-js-textfield">
+                    <label class="mdl-textfield__label"
+                           for="key"><?php
+                        echo __('Security Code'); ?></label>
+                    <input id="key" name="key" type="text" required
+                           class="mdl-textfield__input"
+                           autocomplete="off" spellcheck="false"
+                           aria-describedby="key-hint" autofocus>
+                </div>
+                <p id="key-hint" class="sp-field-hint"><?php
+                    echo __('Please enter the security code to start the upgrade'); ?></p>
             </div>
 
-            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
-                   for="chkConfirm">
-                <input type="checkbox" id="chkConfirm"
-                       class="mdl-checkbox__input" name="chkConfirm" required>
-                <span class="mdl-checkbox__label"><?php
-                    echo __('I\'ve done a full sysPass backup'); ?></span>
-            </label>
+            <div class="sp-flow-field sp-upgrade-confirm">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect sp-flow-checkbox"
+                       for="chkConfirm">
+                    <input type="checkbox" id="chkConfirm"
+                           class="mdl-checkbox__input" name="chkConfirm" required>
+                    <span class="mdl-checkbox__label"><?php
+                        echo __('I\'ve done a full sysPass backup'); ?></span>
+                </label>
+            </div>
         </fieldset>
 
-        <div>
-            <ul class="errors">
-                <li class="msg-warning">
-                    <i class="icon material-icons <?php
-                    echo $icons->warning()->getClass(); ?>"><?php
-                        echo $icons->warning()->getIcon(); ?></i>
-                    <?php
-                    echo __('Please, wait while the process is running'); ?>
-                </li>
-            </ul>
+        <div id="upgrade-feedback"
+             class="sp-alert sp-alert--error sp-flow-status"
+             role="alert"
+             aria-live="polite"
+             hidden>
+            <i class="material-icons sp-alert__icon" aria-hidden="true">error_outline</i>
+            <div class="sp-alert__body">
+                <strong class="sp-alert__title"></strong>
+                <p class="sp-alert__text" hidden></p>
+            </div>
         </div>
 
-        <div class="buttons">
+        <div id="upgrade-running-status"
+             class="sp-alert sp-alert--info sp-flow-status"
+             role="status"
+             aria-live="polite"
+             hidden>
+            <i class="material-icons sp-alert__icon" aria-hidden="true">hourglass_empty</i>
+            <div class="sp-alert__body">
+                <span class="sp-alert__text"><?php
+                    echo __('Please, wait while the process is running'); ?></span>
+            </div>
+        </div>
+
+        <div class="buttons sp-flow-actions">
             <button id="btnChange"
-                    class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored sp-btn-primary"
                     type="submit">
-                <?php
-                echo __('Update'); ?>
-                <i class="material-icons"
+                <span><?php
+                    echo __('Update'); ?></span>
+                <i class="material-icons" aria-hidden="true"
                    title="<?php
-                   echo __('Start Update'); ?>"><?php
+                   echo htmlspecialchars(__('Start Update'), ENT_QUOTES); ?>"><?php
                     echo $icons->play()->getIcon(); ?></i>
             </button>
         </div>

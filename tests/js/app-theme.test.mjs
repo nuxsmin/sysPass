@@ -786,3 +786,69 @@ test("passwordDetect synchronizes label[for], sets options menu aria-label, and 
     assert.equal(repeatWrap.classes.has("is-invalid"), false);
 });
 
+test("passwordDetect supports R-suffix repeat field (masterpasswordR) for mismatch, generator, and reset", function () {
+    const {dom, theme} = setupThemeEnv({uniqueId: "u3"});
+    const form = new dom.FakeElement("form", {id: "frmInstall"});
+
+    const passWrap = new dom.FakeElement("div", {class: "mdl-textfield"});
+    const passLabel = new dom.FakeElement("label", {for: "masterpassword", class: "mdl-textfield__label"});
+    const passInput = new dom.FakeElement("input", {
+        id: "masterpassword",
+        name: "masterpassword",
+        type: "password",
+        class: "mdl-textfield__input passwordfield__input",
+        value: ""
+    });
+    passWrap.appendChild(passLabel);
+    passWrap.appendChild(passInput);
+
+    const repeatWrap = new dom.FakeElement("div", {class: "mdl-textfield"});
+    const repeatLabel = new dom.FakeElement("label", {for: "masterpasswordR", class: "mdl-textfield__label"});
+    const repeatInput = new dom.FakeElement("input", {
+        id: "masterpasswordR",
+        name: "masterpasswordr",
+        type: "password",
+        "data-mismatch-msg": "Passwords do not match",
+        class: "mdl-textfield__input",
+        value: ""
+    });
+    const matchError = new dom.FakeElement("div", {class: "sp-field-error sp-password-match-error", hidden: "hidden"});
+    repeatWrap.appendChild(repeatLabel);
+    repeatWrap.appendChild(repeatInput);
+
+    form.appendChild(passWrap);
+    form.appendChild(repeatWrap);
+    form.appendChild(matchError);
+    dom.root.appendChild(form);
+
+    theme.passwordDetect(dom.$fn(form));
+
+    assert.equal(passInput.getAttribute("id"), "masterpassword-u3");
+    assert.equal(passLabel.getAttribute("for"), "masterpassword-u3");
+    assert.equal(repeatInput.getAttribute("id"), "masterpassword-u3R");
+    assert.equal(repeatLabel.getAttribute("for"), "masterpassword-u3R");
+
+    passInput.value = "MasterPass#2026";
+    dom.$fn(passInput).trigger("input");
+    repeatInput.value = "WrongRepeat";
+    dom.$fn(repeatInput).trigger("input");
+
+    assert.equal(matchError.textContent, "Passwords do not match");
+    assert.equal(matchError.getAttribute("hidden"), undefined);
+    assert.equal(repeatWrap.classes.has("is-invalid"), true);
+    assert.equal(repeatInput.getAttribute("aria-invalid"), "true");
+
+    const passGenItem = form.queryAll("li.passGen")[0];
+    dom.$fn(passGenItem).trigger("click");
+    assert.equal(passInput.value, "Generated#Pass123");
+    assert.equal(repeatInput.value, "ENC:Generated#Pass123");
+    assert.equal(matchError.getAttribute("hidden"), "hidden");
+    assert.equal(repeatWrap.classes.has("is-invalid"), false);
+
+    const resetItem = form.queryAll("li.reset")[0];
+    dom.$fn(resetItem).trigger("click");
+    assert.equal(passInput.value, "");
+    assert.equal(repeatInput.value, "");
+    assert.equal(matchError.getAttribute("hidden"), "hidden");
+});
+
