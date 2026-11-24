@@ -1,4 +1,26 @@
 <?php
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 declare(strict_types=1);
 
@@ -20,6 +42,7 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Ports\UserMasterPassService;
@@ -572,7 +595,7 @@ function verifyFixture(
     $masterHash->execute(['parameter' => 'masterPwd']);
     $masterHashValue = $masterHash->fetchColumn();
     $check(
-        is_string($masterHashValue) && $hashService->checkHashKey($masterPassword, $masterHashValue),
+        is_string($masterHashValue) && $hashService->checkMasterKey($masterPassword, $masterHashValue),
         'admin Master Password metadata does not match the fixture'
     );
 
@@ -764,25 +787,31 @@ try {
     $hashService = $container->get(HashService::class);
     $crypt = $container->get(CryptInterface::class);
 
-    if ($verify) {
-        verifyFixture(
-            $pdo,
-            $configFileService,
-            $hashService,
-            $crypt,
-            $container->get(UserService::class),
-            $fixture
-        );
-    } else {
-        resetFixture(
-            $pdo,
-            $configFileService,
-            $hashService,
-            $container->get(CryptPKIHandler::class),
-            $container->get(UserMasterPassService::class),
-            $container->get(AccountCryptService::class),
-            $fixture
-        );
+    $requestLock = $container->get(MasterPasswordRequestLock::class);
+    $requestLock->acquire();
+    try {
+        if ($verify) {
+            verifyFixture(
+                $pdo,
+                $configFileService,
+                $hashService,
+                $crypt,
+                $container->get(UserService::class),
+                $fixture
+            );
+        } else {
+            resetFixture(
+                $pdo,
+                $configFileService,
+                $hashService,
+                $container->get(CryptPKIHandler::class),
+                $container->get(UserMasterPassService::class),
+                $container->get(AccountCryptService::class),
+                $fixture
+            );
+        }
+    } finally {
+        $requestLock->release();
     }
 } catch (Throwable $e) {
     fwrite(STDERR, sprintf("E2E fixture task failed: %s\n", $e->getMessage()));

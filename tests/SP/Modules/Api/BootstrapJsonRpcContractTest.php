@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -69,6 +69,25 @@ final class BootstrapJsonRpcContractTest extends TestCase
                 FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'api', 'module.php')
             );
         }
+    }
+
+    #[Test]
+    public function installedApiRequestAcquiresSharedLockBeforeDispatch(): void
+    {
+        $lock = $this->createMock(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class);
+        $lock->expects(self::once())->method('acquire');
+        $api = $this->createStub(ApiService::class);
+        $api->method('getParamInt')->willReturn(50);
+        $tags = $this->createStub(TagRepository::class);
+        $tags->method('search')->willReturn(new QueryResult([]));
+        $result = $this->dispatch(json_encode([
+            'jsonrpc' => '2.0', 'method' => 'tag/search', 'params' => ['authToken' => 'synthetic-token'], 'id' => 1,
+        ], JSON_THROW_ON_ERROR), [
+            ApiService::class => $api,
+            TagRepository::class => $tags,
+            \SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class => $lock,
+        ]);
+        self::assertSame(200, $result['code']);
     }
 
     #[Test]
@@ -315,6 +334,7 @@ final class BootstrapJsonRpcContractTest extends TestCase
                         DatabaseUtilInterface::class => $databaseUtil,
                         DatabaseInterface::class => $database,
                         DbStorageHandler::class => $this->createStub(DbStorageHandler::class),
+                        \SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class => $this->createStub(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class),
                         ApiRequestService::class => static fn() => ApiRequestAdapter::buildFromRequest($requestFile),
                         Request::class => new Request(
                             [],

@@ -40,6 +40,69 @@ use SP\Tests\IntegrationTestCase;
 #[Group('integration')]
 class BootstrapTest extends IntegrationTestCase
 {
+    #[Test]
+    public function acquiredLockIsReleasedAfterSuccessfulDispatch(): void
+    {
+        $lock = $this->createMock(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class);
+        $lock->expects(self::once())->method('acquire');
+        $lock->expects(self::once())->method('release');
+        $module = $this->createStub(\SP\Domain\Core\Bootstrap\ModuleInterface::class);
+        $module->method('getName')->willReturn('web');
+        $module->method('initialize')->willReturnCallback(static function () use ($lock): void {
+            $lock->acquire();
+        });
+        $container = $this->buildContainer(
+            self::buildRequest('get', 'index.php', ['r' => 'bootstrap/getEnvironment']),
+            [\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class => $lock,
+                \SP\Domain\Core\Bootstrap\ModuleInterface::class => $module]
+        );
+        ob_start();
+        try {
+            self::runApp($container);
+        } finally {
+            ob_end_clean();
+        }
+    }
+    #[Test]
+    public function lockIsReleasedWhenInitializationFailsAfterAcquisition(): void
+    {
+        $lock = $this->createMock(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class);
+        $lock->expects(self::once())->method('acquire');
+        $lock->expects(self::once())->method('release');
+        $module = $this->createStub(\SP\Domain\Core\Bootstrap\ModuleInterface::class);
+        $module->method('getName')->willReturn('web');
+        $module->method('initialize')->willReturnCallback(static function () use ($lock): void {
+            $lock->acquire();
+            throw new \RuntimeException('synthetic initialization failure');
+        });
+        $container = $this->buildContainer(
+            self::buildRequest('get', 'index.php', ['r' => 'bootstrap/getEnvironment']),
+            [\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class => $lock,
+                \SP\Domain\Core\Bootstrap\ModuleInterface::class => $module]
+        );
+        ob_start();
+        try {
+            self::runApp($container);
+        } finally {
+            ob_end_clean();
+        }
+    }
+    #[Test]
+    public function requestReleasesTheMasterPasswordLock(): void
+    {
+        $lock = $this->createMock(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class);
+        $lock->expects(self::once())->method('release');
+        $container = $this->buildContainer(
+            self::buildRequest('get', 'index.php', ['r' => 'bootstrap/getEnvironment']),
+            [\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class => $lock]
+        );
+        ob_start();
+        try {
+            self::runApp($container);
+        } finally {
+            ob_end_clean();
+        }
+    }
 
     /**
      * @throws ContainerExceptionInterface
@@ -295,6 +358,9 @@ class BootstrapTest extends IntegrationTestCase
         ];
 
         foreach ($cases as $label => $case) {
+            $lock = $this->createMock(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class);
+            $lock->expects(self::once())->method('acquire');
+            $lock->expects(self::once())->method('release');
             $searchService = $this->createStub(\SP\Domain\Account\Ports\AccountSearchService::class);
             $throwFromInnerCall = static function (string $syntheticSecret) use ($case): never {
                 throw $case['exception'];
@@ -327,6 +393,7 @@ class BootstrapTest extends IntegrationTestCase
                     \SP\Domain\Account\Ports\AccountSearchService::class => $searchService,
                     \SP\Core\Events\EventDispatcher::class => $dispatcher,
                     \SP\Domain\Core\Events\EventDispatcherInterface::class => $dispatcher,
+                    \SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class => $lock,
                 ]
             );
 

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -26,13 +26,17 @@ declare(strict_types=1);
 
 namespace SP\Tests\Modules\Api\Controllers;
 
+use Closure;
 use DI\ContainerBuilder;
 use Klein\Request;
 use Klein\Response;
 use PDO;
+use PDOException;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use RuntimeException;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Definitions\CoreDefinitions;
@@ -43,23 +47,32 @@ use SP\Domain\Api\Services\Api as ApiServiceClass;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Services\AuthToken as AuthTokenService;
 use SP\Domain\Common\Adapters\Serde;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventReceiver;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
 use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Database\Dtos\DatabaseConnectionData;
+use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Export\Ports\XmlVerifyService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserPreferences;
+use SP\Infrastructure\Crypt\MasterPasswordActivityLock;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Api\Adapters\ApiRequestAdapter;
 use SP\Modules\Api\Bootstrap;
 use SP\Tests\DatabaseTrait;
 
+use SP\Tests\Infrastructure\Crypt\CliRotationProbe;
+use Throwable;
 use function DI\create;
 use function DI\decorate;
 use function SP\Tests\getDbHandler;
@@ -87,6 +100,99 @@ final class ConfigBoundaryDbIntegrationTest extends TestCase
     private bool $demoEnabled = false;
     private ?ConfigDataInterface $lastConfigData = null;
 
+    #[Test]
+    #[RunInSeparateProcess]
+    public function accountWriteExcludesConcurrentMasterPasswordRotation(): void
+    {
+        if (getenv('DB_SERVER') !== 'sp-masterpass-verify-db' || getenv('DB_NAME') !== 'syspass_masterpass_test') {
+            self::markTestSkipped('Requires the disposable master password verification database');
+        }
+        $token = $this->seedTokenForUser(1, AclActionsInterface::ACCOUNT_CREATE);
+        $pdo = new PDO('mysql:host=sp-masterpass-verify-db;dbname=syspass_masterpass_test', 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $pdo->exec('SET innodb_lock_wait_timeout = 1');
+        $cliData = $this->createConfiguredStub(ConfigDataInterface::class, [
+            'isInstalled' => true, 'isMaintenance' => true, 'isLogEnabled' => false,
+            'isMailEnabled' => false, 'getLogEvents' => [], 'getSiteLang' => 'en_US',
+        ]);
+        $cliConfig = $this->createStub(ConfigFileService::class);
+        $cliConfig->method('getConfigData')->willReturn($cliData);
+        $cliStorage = $this->createStub(DbStorageHandler::class);
+        $cliStorage->method('getConnection')->willReturn($pdo);
+        $probe = CliRotationProbe::build($cliStorage, $cliConfig, $cliData);
+        $receiver = new class($pdo, $probe) implements EventReceiver {
+            public bool $blocked = false;
+            public string $cliOutput = '';
+            public float $cliDuration = 0;
+
+            public function __construct(private PDO $pdo, private Closure $probe)
+            {
+            }
+
+            public function getEvents(): ?string
+            {
+                return '^create\.account$';
+            }
+
+            public function update(string $eventType, Event $event): void
+            {
+                $start = microtime(true);
+                try {
+                    $this->cliOutput = ($this->probe)();
+                } catch (Throwable $e) {
+                    $this->cliOutput = $e::class . ': ' . $e->getMessage();
+                }
+                $this->cliDuration = microtime(true) - $start;
+                $lock = new MasterPasswordActivityLock($this->pdo);
+                try {
+                    $lock->acquireExclusive();
+                } catch (PDOException $exception) {
+                    $this->blocked = ($exception->errorInfo[1] ?? null) === 1205;
+                } finally {
+                    $lock->release();
+                }
+            }
+        };
+        $response = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/create', 'id' => 1,
+            'params' => ['authToken' => $token->getToken(), 'tokenPass' => self::TOKEN_PASS,
+                'name' => 'Concurrent API Account', 'clientId' => 1, 'categoryId' => 1,
+                'login' => 'synthetic', 'pass' => 'synthetic-secret'],
+        ], $receiver);
+        self::assertStringContainsString('ERROR', $receiver->cliOutput, $receiver->cliOutput);
+        self::assertStringContainsString('Master password activity is busy', $receiver->cliOutput);
+        self::assertGreaterThanOrEqual(0.8, $receiver->cliDuration, 'The CLI should wait for the API request lock');
+        self::assertStringNotContainsString('Master password updated', $receiver->cliOutput);
+        self::assertArrayNotHasKey('error', $response['json'], $response['body']);
+        self::assertTrue($receiver->blocked, 'Rotation must wait for the API write to finish');
+        self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM Account WHERE name = 'Concurrent API Account'")->fetchColumn());
+        $exclusive = new MasterPasswordActivityLock($pdo);
+        $exclusive->acquireExclusive();
+        $exclusive->release();
+
+        // Rotation requires revoked tokens. Restore this synthetic old token
+        // afterwards to verify that a stale vault cannot authorize a write.
+        $tokenRow = $pdo->query('SELECT * FROM AuthToken ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_ASSOC);
+        self::assertIsArray($tokenRow);
+        $pdo->exec('DELETE FROM PluginData');
+        $pdo->exec('DELETE FROM AuthToken');
+        $rotationOutput = $probe();
+        self::assertStringContainsString('Master password updated', $rotationOutput, $rotationOutput);
+        $columns = array_keys($tokenRow);
+        $insert = $pdo->prepare('INSERT INTO AuthToken (`' . implode('`, `', $columns) . '`) VALUES ('
+            . implode(', ', array_fill(0, count($columns), '?')) . ')');
+        $insert->execute(array_values($tokenRow));
+        $stale = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/create', 'id' => 2,
+            'params' => ['authToken' => $token->getToken(), 'tokenPass' => self::TOKEN_PASS,
+                'name' => 'Stale API Account', 'clientId' => 1, 'categoryId' => 1,
+                'login' => 'synthetic', 'pass' => 'synthetic-secret'],
+        ]);
+        self::assertArrayHasKey('error', $stale['json'], $stale['body']);
+        self::assertSame(MasterPasswordRequestLock::STALE_MASTER_PASSWORD,
+            $stale['json']['error']['code'], $stale['body']);
+        self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM Account WHERE name = 'Stale API Account'")->fetchColumn());
+    }
+
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
@@ -100,6 +206,10 @@ final class ConfigBoundaryDbIntegrationTest extends TestCase
 
     protected function setUp(): void
     {
+        if ($this->name() === 'accountWriteExcludesConcurrentMasterPasswordRotation'
+            && (getenv('DB_SERVER') !== 'sp-masterpass-verify-db' || getenv('DB_NAME') !== 'syspass_masterpass_test')) {
+            self::markTestSkipped('Requires the disposable master password verification database');
+        }
         self::loadFixtures();
         self::truncateTable('AuthToken');
         self::truncateTable('Track');
@@ -114,7 +224,9 @@ final class ConfigBoundaryDbIntegrationTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->removeDirectory($this->backupDir);
+        if (isset($this->backupDir)) {
+            $this->removeDirectory($this->backupDir);
+        }
 
         parent::tearDown();
     }
@@ -345,12 +457,18 @@ final class ConfigBoundaryDbIntegrationTest extends TestCase
 
         /** @var AuthTokenService $service */
         $service = $dic->get(AuthTokenService::class);
-        $id = $service->create(new AuthTokenModel([
-            'actionId' => $actionId,
-            'createdBy' => 1,
-            'hash' => self::TOKEN_PASS,
-            'userId' => $userId,
-        ]));
+        $requestLock = $dic->get(MasterPasswordRequestLock::class);
+        $requestLock->acquire();
+        try {
+            $id = $service->create(new AuthTokenModel([
+                'actionId' => $actionId,
+                'createdBy' => 1,
+                'hash' => self::TOKEN_PASS,
+                'userId' => $userId,
+            ]));
+        } finally {
+            $requestLock->release();
+        }
 
         return $service->getById($id);
     }
@@ -409,7 +527,7 @@ final class ConfigBoundaryDbIntegrationTest extends TestCase
      * @param array<string, mixed> $payload
      * @return array{code: int, body: string, json: array<string, mixed>}
      */
-    private function dispatchJsonRpc(array $payload): array
+    private function dispatchJsonRpc(array $payload, ?EventReceiver $receiver = null): array
     {
         $rawBody = json_encode($payload, JSON_THROW_ON_ERROR);
         $requestFile = tempnam(TMP_PATH, 'api-cfg-boundary-');
@@ -422,11 +540,16 @@ final class ConfigBoundaryDbIntegrationTest extends TestCase
 
             $dic = $this->buildApiContainer($requestFile);
 
+            if ($receiver !== null) {
+                $dic->get(EventDispatcherInterface::class)->attach($receiver);
+            }
+
             ob_start();
             try {
                 Bootstrap::run($dic->get(BootstrapInterface::class), $dic->get(ModuleInterface::class));
             } finally {
                 $echoed = (string)ob_get_clean();
+                $dic->get(MasterPasswordRequestLock::class)->release();
             }
 
             /** @var Response $response */
@@ -446,7 +569,7 @@ final class ConfigBoundaryDbIntegrationTest extends TestCase
         }
     }
 
-    private function buildApiContainer(?string $requestFile = null): \Psr\Container\ContainerInterface
+    private function buildApiContainer(?string $requestFile = null): ContainerInterface
     {
         $databaseConnectionData = DatabaseConnectionData::getFromEnvironment();
 
@@ -470,7 +593,7 @@ final class ConfigBoundaryDbIntegrationTest extends TestCase
                     }),
                     DatabaseConnectionData::class => $databaseConnectionData,
                     ConfigDataInterface::class => function (ConfigFileService $config) use ($databaseConnectionData) {
-                        $version = \SP\Domain\Common\Providers\Version::getVersionStringNormalized();
+                        $version = Version::getVersionStringNormalized();
                         $configData = $config->getConfigData()
                             ->setDbHost($databaseConnectionData->getDbHost())
                             ->setDbName($databaseConnectionData->getDbName())

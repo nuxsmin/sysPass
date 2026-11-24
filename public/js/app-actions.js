@@ -1427,48 +1427,6 @@ sysPass.Actions = function (log) {
 
             tabs.save($obj);
         },
-        masterpass: function ($obj) {
-            log.info("config:masterpass");
-
-            const atext = `<div id="alert"><p id="alert-text">${sysPassApp.config.LANG[59]}</p></div>`;
-
-            mdlDialog().show({
-                text: atext,
-                negative: {
-                    title: sysPassApp.config.LANG[44],
-                    onClick: function (e) {
-                        e.preventDefault();
-
-                        sysPassApp.msg.error(sysPassApp.config.LANG[44]);
-
-                        $obj.find(":input[type=password]").val("");
-                    }
-                },
-                positive: {
-                    title: sysPassApp.config.LANG[43],
-                    onClick: function (e) {
-                        const taskId = $obj.find("input[name='taskId']").val();
-                        const opts = sysPassApp.requests.getRequestOpts();
-
-                        if (taskId) {
-                            opts.useFullLoading = true;
-                            task.run(taskId);
-                        }
-
-                        opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint, {r: $obj.data('action-route')});
-                        opts.data = $obj.serialize() + "&sk=" + sysPassApp.sk.get();
-
-                        sysPassApp.requests.getActionCall(opts, function (json) {
-                            sysPassApp.msg.out(json);
-
-                            $obj.find(":input[type=password]").val("");
-
-                            task.end();
-                        });
-                    }
-                }
-            });
-        },
         backup: function ($obj) {
             log.info("config:backup");
 
@@ -1501,24 +1459,6 @@ sysPass.Actions = function (log) {
             const opts = sysPassApp.requests.getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.data = $obj.serialize() + "&sk=" + sysPassApp.sk.get();
-
-            sysPassApp.requests.getActionCall(opts, function (json) {
-                if (json && typeof json === "object") {
-                    sysPassApp.msg.out(json);
-                }
-            });
-        },
-        refreshMpass: function ($obj) {
-            log.info("config:import");
-
-            const opts = sysPassApp.requests.getRequestOpts();
-            opts.method = "get";
-            opts.url = sysPassApp.util.getUrl(ajaxUrl.entrypoint,
-                {
-                    r: $obj.data("action-route"),
-                    sk: sysPassApp.sk.get(),
-                    isAjax: 1
-                });
 
             sysPassApp.requests.getActionCall(opts, function (json) {
                 if (json && typeof json === "object") {

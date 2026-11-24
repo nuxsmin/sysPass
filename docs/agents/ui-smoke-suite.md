@@ -1,3 +1,5 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # UI Smoke Suite
 
 This is the contributor, triage and qualification runbook for the isolated
@@ -27,6 +29,13 @@ for this runner or any other human/CI entry point.
 
 Run these once from a clean checkout. The runner deliberately does not install
 prerequisites, build images, pull images or download Chromium.
+
+The following commands are contributor examples. In AI sessions, source
+`.ai-cli/env.sh`, check `.ai-cli/allowed-commands.txt` and request approval for
+commands not listed there. Run approved mutations through `.ai-cli/bin/ai-run`,
+and use `$DOCKER_BIN` for Docker commands. Image builds and pulls require
+explicit approval. Do not assume approval to run the smoke suite also approves
+installing dependencies or browsers.
 
 ### Runtime and assets
 
@@ -61,6 +70,15 @@ prerequisites, build images, pull images or download Chromium.
    not support for downloading Chromium, an explicit local fallback may be
    selected with `SP_UI_CHROMIUM_EXECUTABLE=/path/to/chromium`; it is not a
    substitute for the pinned-Chromium run before CI qualification.
+
+   For local troubleshooting on a host detected as Ubuntu 20.04 where the
+   pinned Playwright version refuses to download Chromium, this session
+   successfully downloaded the Ubuntu 22.04 build with
+   `PLAYWRIGHT_HOST_PLATFORM_OVERRIDE=ubuntu22.04-x64` alongside
+   `PLAYWRIGHT_BROWSERS_PATH="$PWD/.browsers"` in the install command above.
+   Set the same override when running the smoke suite. This is an unsupported
+   local compatibility workaround; use a supported CI platform and its pinned
+   browser for qualification.
 
 3. Make the pinned container images available. Building or pulling images are
    Docker mutations and need explicit human approval:

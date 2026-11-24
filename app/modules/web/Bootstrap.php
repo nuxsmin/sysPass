@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -74,7 +74,11 @@ final class Bootstrap extends BootstrapBase
 
         try {
             $bootstrap->module = $initModule;
-            $bootstrap->handleRequest();
+            try {
+                $bootstrap->handleRequest();
+            } finally {
+                $bootstrap->buildInstanceFor(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class)->release();
+            }
         } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
             processException($e);
 

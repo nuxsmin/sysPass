@@ -22,20 +22,22 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Modules\Cli;
 
 use Exception;
-use SP\Domain\Core\Context\ContextException;
-use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\ModuleDependencies;
 use SP\Core\ProvidersHelper;
 use SP\Domain\Common\Providers\Version;
+use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
 use Symfony\Component\Console\Application as ConsoleApplication;
+use Symfony\Component\Console\Exception\ExceptionInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
 use function SP\logger;
 
 /**
@@ -45,7 +47,7 @@ use function SP\logger;
  */
 final class Init extends ModuleBase
 {
-    private Language           $language;
+    private LanguageInterface $language;
     private InputInterface     $input;
     private OutputInterface    $output;
     private ConsoleApplication $consoleApplication;
@@ -58,7 +60,8 @@ final class Init extends ModuleBase
         ConsoleApplication $consoleApplication,
         InputInterface     $input,
         OutputInterface    $output,
-        CliCommandHelper   $cliCommandHelper
+        CliCommandHelper                           $cliCommandHelper,
+        private readonly MasterPasswordRequestLock $masterPasswordRequestLock
     ) {
         $this->language = $language;
         $this->consoleApplication = $consoleApplication;
@@ -86,7 +89,26 @@ final class Init extends ModuleBase
         // Load language
         $this->language->setLanguage();
 
-        $this->initCli();
+        $this->consoleApplication->addCommands($this->cliCommandHelper->getCommands());
+        $commandName = $this->input->getFirstArgument();
+        try {
+            $resolvedName = $commandName === null ? null : $this->consoleApplication->find($commandName)->getName();
+        } catch (ExceptionInterface) {
+            $resolvedName = null;
+        }
+        $requiresLock = $this->configData->isInstalled()
+            && $resolvedName !== 'sp:crypt:update-master-password';
+        if ($requiresLock) {
+            $this->masterPasswordRequestLock->acquire();
+        }
+        try {
+            $this->initEventHandlers();
+            $this->initCli();
+        } finally {
+            if ($requiresLock) {
+                $this->masterPasswordRequestLock->release();
+            }
+        }
     }
 
     public function getName(): string
@@ -101,8 +123,6 @@ final class Init extends ModuleBase
     {
         $this->consoleApplication->setName('sysPass CLI');
         $this->consoleApplication->setVersion(implode('.', Version::getVersionArray()));
-        $this->consoleApplication->addCommands($this->cliCommandHelper->getCommands());
-
         $this->consoleApplication->run(
             $this->input,
             $this->output

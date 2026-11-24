@@ -408,7 +408,13 @@ final class ApiMetadataBoundaryTest extends TestCase
             'userId' => $userId,
         ]);
 
-        $id = $tokenService->create($model);
+        $lock = $container->get(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class);
+        $lock->acquire();
+        try {
+            $id = $tokenService->create($model);
+        } finally {
+            $lock->release();
+        }
 
         return $tokenService->getById($id);
     }

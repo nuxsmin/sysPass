@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -23,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Tests\Domain\Export\Services;
 
 use DOMDocument;
@@ -31,15 +32,15 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Bootstrap\Path;
 use SP\Domain\Common\Providers\XmlIntegrity;
-use SP\Domain\Crypt\Adapters\HashServiceAdapter;
-use SP\Domain\Crypt\Ports\HashService;
-use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\Export\Services\XmlVerify;
 use SP\Tests\UnitaryTestCase;
 
@@ -230,6 +231,24 @@ class XmlVerifyTest extends UnitaryTestCase
         $this->assertEquals(1, $nodes['Tag']);
         $this->assertEquals(1, $nodes['Account']);
         $this->assertFalse($out->isEncrypted());
+    }
+
+    #[Test]
+    public function testVerifyLegacyExportWithSeventyTwoBytePassword(): void
+    {
+        $password = str_repeat('x', 72);
+        $document = new DOMDocument();
+        $document->load(self::VALID_ENCRYPTED_FILE);
+        $document->getElementsByTagName('Encrypted')->item(0)->setAttribute('hash', password_hash($password, PASSWORD_BCRYPT));
+        $hashNode = $document->getElementsByTagName('Hash')->item(0);
+        $hashNode->setAttribute('sign', Hash::signMessage($hashNode->nodeValue, $password));
+        $path = RESOURCE_PATH . '/import/legacy_long_password_test.xml';
+        file_put_contents($path, $document->saveXML());
+        $this->crypt->expects(self::exactly(4))->method('decrypt')->willReturn(
+            '<Categories/>', '<Clients/>', '<Tags/>', '<Accounts/>'
+        );
+
+        self::assertFalse($this->xmlVerify->verify($path, $password)->isEncrypted());
     }
 
     /**

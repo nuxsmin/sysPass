@@ -1,7 +1,5 @@
 <?php
-
-declare(strict_types=1);
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -24,27 +22,30 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\User\Services;
 
 use Exception;
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Events\Event;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
-use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Domain\Crypt\Ports\MasterKeyStore;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
 use SP\Domain\User\Dtos\UserDto;
-use SP\Domain\User\Models\UserMasterPassStatus;
 use SP\Domain\User\Dtos\UserMasterPassDto;
+use SP\Domain\User\Models\UserMasterPassStatus;
 use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Ports\UserRepository;
-
 use function SP\__u;
 
 /**
@@ -65,7 +66,8 @@ final class UserMasterPass extends Service implements UserMasterPassService
         private readonly ConfigService  $configService,
         private readonly CryptInterface $crypt,
         private readonly MasterKeyStore $masterKeyStore,
-        private readonly HashService $hashService
+        private readonly HashService               $hashService,
+        private readonly MasterPasswordRequestLock $masterPasswordRequestLock
     ) {
         parent::__construct($config, $eventDispatcher, $context);
     }
@@ -119,7 +121,7 @@ final class UserMasterPass extends Service implements UserMasterPassService
             $userMasterPass = $this->crypt->decrypt($userDataDto->mPass, $userDataDto->mKey, $key);
 
             // Comprobamos el hash de la clave del usuario con la guardada
-            if ($this->hashService->checkHashKey($userMasterPass, $systemMasterPassHash)) {
+            if ($this->hashService->checkMasterKey($userMasterPass, $systemMasterPassHash)) {
                 $this->masterKeyStore->set($userMasterPass);
 
                 return new UserMasterPassDto(
@@ -156,15 +158,17 @@ final class UserMasterPass extends Service implements UserMasterPassService
     public function updateOnLogin(string $userMasterPass, UserLoginDto $userLoginDto, int $userId): UserMasterPassDto
     {
         try {
-            $systemMasterPassHash = $this->configService->getByParam(self::PARAM_MASTER_PWD);
-
-            if (null === $systemMasterPassHash) {
-                $systemMasterPassHash = $this->hashService->hashKey($userMasterPass);
-
-                $this->configService->save(self::PARAM_MASTER_PWD, $systemMasterPassHash);
+            try {
+                $systemMasterPassHash = $this->configService->getByParam(self::PARAM_MASTER_PWD);
+            } catch (NoSuchItemException $e) {
+                throw ServiceException::error('Master password hash is missing. Follow the documented recovery procedure.');
             }
 
-            if ($this->hashService->checkHashKey($userMasterPass, $systemMasterPassHash)) {
+            if (empty($systemMasterPassHash)) {
+                throw ServiceException::error('Master password hash is missing. Follow the documented recovery procedure.');
+            }
+
+            if ($this->hashService->checkMasterKey($userMasterPass, $systemMasterPassHash)) {
                 $response = $this->create(
                     $userMasterPass,
                     $userLoginDto->getLoginUser(),
@@ -185,6 +189,8 @@ final class UserMasterPass extends Service implements UserMasterPassService
             }
 
             return new UserMasterPassDto(UserMasterPassStatus::Invalid);
+        } catch (ServiceException $e) {
+            throw $e;
         } catch (Exception $e) {
             throw ServiceException::from($e);
         }
@@ -195,6 +201,9 @@ final class UserMasterPass extends Service implements UserMasterPassService
      */
     public function create(string $masterPass, string $userLogin, string $userPass): UserMasterPassDto
     {
+        if ($this->config->getConfigData()->isInstalled() || $this->masterPasswordRequestLock->isActive()) {
+            $this->masterPasswordRequestLock->assertCurrentMasterPassword($masterPass);
+        }
         $key = $this->makeKeyForUser($userLogin, $userPass);
 
         try {

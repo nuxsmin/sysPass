@@ -13,6 +13,7 @@ set -euo pipefail
 
 BASE_REF="${1:-}"
 PHPCS_BIN="${PHPCS_BIN:-vendor/bin/phpcs}"
+PHP_RUNNER="${PHP_RUNNER:-}"
 
 if [ -z "$BASE_REF" ]; then
   echo "No changed-files base supplied; nothing to check."
@@ -39,6 +40,10 @@ fi
 echo "PHPCS (PSR2, errors only) on ${#files[@]} changed file(s) under lib/:"
 printf '  %s\n' "${files[@]}"
 
-if ! "$PHPCS_BIN" --standard=PSR2 --warning-severity=0 -- "${files[@]}"; then
+runner=()
+if [ -n "$PHP_RUNNER" ]; then
+  runner=("$PHP_RUNNER")
+fi
+if ! "${runner[@]}" "$PHPCS_BIN" --standard=PSR2 --warning-severity=0 -- "${files[@]}"; then
   exit 1
 fi
