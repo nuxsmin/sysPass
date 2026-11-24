@@ -6,7 +6,7 @@ declare(strict_types=1);
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -66,19 +66,20 @@ trait ControllerTrait
                     'description' => __u('Session not started or timed out'),
                     'data' => [],
                     'messages' => [],
-                ], JSON_THROW_ON_ERROR));
+                ], JSON_THROW_ON_ERROR))
+                ->lock();
         } elseif ($request->isAjax()) {
-            self::logout();
+            $this->renderLogoutScript();
         } else {
+            $uri = new Uri($this->uriContext->getWebRoot() . $this->uriContext->getSubUri());
+            $uri->addParam('_r', 'login');
+
             try {
                 // Analyzes if there is any direct route within the URL
                 // then it computes the route HMAC to build a signed URI
                 // which would be used during logging in
                 $route = $request->analyzeString('r');
                 $hash = $request->analyzeString('h');
-
-                $uri = new Uri($this->uriContext->getWebRoot() . $this->uriContext->getSubUri());
-                $uri->addParam('_r', 'login');
 
                 if ($route && $hash) {
                     $key = $configData->getPasswordSalt();
@@ -92,16 +93,24 @@ trait ControllerTrait
                 }
             } catch (SPException $e) {
                 processException($e);
+
+                $fallbackUri = new Uri($this->uriContext->getWebRoot() . $this->uriContext->getSubUri());
+                $fallbackUri->addParam('_r', 'login');
+
+                $onRedirect->call($this, $fallbackUri->getUri());
             }
         }
     }
 
     /**
-     * Realiza el proceso de logout.
+     * Renders the client-side logout trigger and locks the response so callers cannot overwrite it.
      */
-    private static function logout(): never
+    private function renderLogoutScript(): void
     {
-        exit('<script>sysPassApp.actions.main.logout();</script>');
+        $this->router->response()
+            ->header(Header::CONTENT_TYPE->value, Header::CONTENT_TYPE_HTML->value)
+            ->body('<script>sysPassApp.actions.main.logout();</script>')
+            ->lock();
     }
 
     /**

@@ -6,7 +6,7 @@ declare(strict_types=1);
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -121,6 +121,11 @@ abstract class ContextBase implements Context
         }
 
         $this->context = $contextCollection;
+    }
+
+    final protected function resetContext(): void
+    {
+        $this->context = null;
     }
 
     /**

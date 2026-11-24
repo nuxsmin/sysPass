@@ -526,6 +526,7 @@ $sessionContext = new class extends Stateless implements SessionContext {
     public function getSidStartTime(): int { return (int)$this->getContextKey('sidStartTime', 0); }
     public function setSidStartTime(int $time): int { $this->setContextKey('sidStartTime', $time); return $time; }
     public function setStartActivity(int $time): int { $this->setContextKey('startActivity', $time); return $time; }
+    public function restart(): void { $this->resetContext(); $this->setContext(new \SP\Core\Context\ContextCollection()); }
 };
 
 $request = new Request(
