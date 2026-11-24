@@ -128,9 +128,11 @@ class InstallerTest extends UnitaryTestCase
         $this->assertEquals(SELF_IP_ADDRESS, $params->getDbAuthHost());
         $this->assertNull($configData->getUpgradeKey());
         $this->assertNull($configData->getDbSocket());
-        // A fresh install must not inherit Basic Auth auto-login. The installer
-        // only writes the new configuration file; existing installed instances
-        // keep their stored configuration because no migration runs here.
+        // A fresh install must not enable Basic Auth enforcement or auto-login.
+        // The installer only writes the new configuration file; existing
+        // installed instances keep their stored configuration because no
+        // migration runs here.
+        $this->assertFalse($configData->isAuthBasicEnabled());
         $this->assertFalse($configData->isAuthBasicAutoLoginEnabled());
     }
 

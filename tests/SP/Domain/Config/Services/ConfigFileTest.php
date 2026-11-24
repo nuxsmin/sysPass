@@ -40,6 +40,8 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Domain\Core\Exceptions\FileException;
+use SP\Infrastructure\File\FileHandler;
+use SP\Infrastructure\File\XmlFileStorage;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -633,6 +635,72 @@ class ConfigFileTest extends UnitaryTestCase
         );
 
         $configFile->reload();
+    }
+
+    #[Test]
+    public function testFreshInstallBasicAuthFlagsRoundTripThroughXmlStorage(): void
+    {
+        $tempFile = tempnam(sys_get_temp_dir(), 'sp_config_');
+        self::assertNotFalse($tempFile);
+
+        try {
+            $cacheMiss = $this->createStub(FileCacheService::class);
+            $cacheMiss->method('exists')->willReturn(false);
+
+            $configData = (new ConfigData())
+                ->setInstalled(true)
+                ->setPasswordSalt(str_repeat('a', 32))
+                ->setAuthBasicEnabled(false)
+                ->setAuthBasicAutoLoginEnabled(false);
+
+            $storageForSave = new XmlFileStorage(new FileHandler($tempFile, 'c+'));
+            $configFile = new ConfigFile($storageForSave, $cacheMiss, $this->context, $configData);
+            $configFile->save($configData);
+
+            unset($configFile, $storageForSave);
+            clearstatcache(true, $tempFile);
+
+            $xml = file_get_contents($tempFile);
+            self::assertIsString($xml);
+            self::assertStringContainsString('<authBasicEnabled></authBasicEnabled>', $xml);
+            self::assertStringContainsString('<authBasicAutoLoginEnabled></authBasicAutoLoginEnabled>', $xml);
+
+            $storageForLoad = new XmlFileStorage(new FileHandler($tempFile, 'r'));
+            $reloadedConfig = new ConfigFile($storageForLoad, $cacheMiss, $this->context);
+            $reloadedData = $reloadedConfig->getConfigData();
+
+            $this->assertFalse($reloadedData->isAuthBasicEnabled());
+            $this->assertFalse($reloadedData->isAuthBasicAutoLoginEnabled());
+        } finally {
+            @unlink($tempFile);
+        }
+    }
+
+    #[Test]
+    public function testLegacyXmlOmittingBasicAuthFlagsPreservesDefaultEnabledBehavior(): void
+    {
+        $tempFile = tempnam(sys_get_temp_dir(), 'sp_config_legacy_');
+        self::assertNotFalse($tempFile);
+
+        try {
+            file_put_contents(
+                $tempFile,
+                "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<config><installed>1</installed></config>\n"
+            );
+
+            $cacheMiss = $this->createStub(FileCacheService::class);
+            $cacheMiss->method('exists')->willReturn(false);
+
+            $storageForLoad = new XmlFileStorage(new FileHandler($tempFile, 'r'));
+            $reloadedConfig = new ConfigFile($storageForLoad, $cacheMiss, $this->context);
+            $reloadedData = $reloadedConfig->getConfigData();
+
+            $this->assertTrue($reloadedData->isInstalled());
+            $this->assertTrue($reloadedData->isAuthBasicEnabled());
+            $this->assertTrue($reloadedData->isAuthBasicAutoLoginEnabled());
+        } finally {
+            @unlink($tempFile);
+        }
     }
 
     /**
