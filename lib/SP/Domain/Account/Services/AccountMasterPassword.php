@@ -122,7 +122,8 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
     private function processAccounts(
         array                   $accounts,
         callable                $passUpdater,
-        UpdateMasterPassRequest $updateMasterPassRequest
+        UpdateMasterPassRequest $updateMasterPassRequest,
+        bool $isHistory = false
     ): EventMessage {
         set_time_limit(0);
 
@@ -163,10 +164,12 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 );
             }
 
-            if (isset($account->mPassHash)) {
-                $hash = $account->mPassHash;
-                $verifiedHashes[$hash] ??= Hash::checkMasterKey($updateMasterPassRequest->getCurrentMasterPass(), $hash);
-                if (!$verifiedHashes[$hash]) {
+            if ($isHistory) {
+                $hash = $account->mPassHash ?? null;
+                if (is_string($hash) && $hash !== '') {
+                    $verifiedHashes[$hash] ??= Hash::checkMasterKey($updateMasterPassRequest->getCurrentMasterPass(), $hash);
+                }
+                if (!is_string($hash) || $hash === '' || !$verifiedHashes[$hash]) {
                     throw new ServiceException(sprintf(__u('Master password mismatch for record ID %d'), $account->id));
                 }
             }
@@ -242,7 +245,8 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                         new EncryptedPassword($encryptedPassword->getPass(), $encryptedPassword->getKey(), $updateMasterPassRequest->getHash())
                     );
                 },
-                $updateMasterPassRequest
+                $updateMasterPassRequest,
+                true
             );
 
             $this->eventDispatcher->notify(

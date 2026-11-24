@@ -70,6 +70,14 @@ final class MasterPasswordStorageGuard implements MasterPasswordStorageGuardPort
     public function assertTransactional(): void
     {
         $connection = $this->storage->getConnection();
+        if (!$connection->inTransaction()) {
+            throw ServiceException::error('Master password storage verification requires a transaction');
+        }
+        // Current reads take transaction-duration metadata locks without creating
+        // a repeatable-read snapshot before rotation starts.
+        foreach (['Account', 'AccountHistory', 'CustomFieldData', 'Config', 'PluginData', 'AuthToken'] as $table) {
+            $connection->query("SELECT 1 FROM `$table` LIMIT 1 FOR UPDATE");
+        }
         $statement = $connection->query("SELECT TABLE_NAME, ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN ('Account', 'AccountHistory', 'CustomFieldData', 'Config', 'PluginData', 'AuthToken')");
         $engines = $statement->fetchAll(PDO::FETCH_KEY_PAIR);
         foreach (['Account', 'AccountHistory', 'CustomFieldData', 'Config', 'PluginData', 'AuthToken'] as $table) {
@@ -78,28 +86,9 @@ final class MasterPasswordStorageGuard implements MasterPasswordStorageGuardPort
             }
         }
 
-        // SHOW TRIGGERS hides triggers the current user cannot see. Require explicit
-        // privileges on each written table so an empty result cannot mean hidden triggers.
-        $grantee = "CONCAT(QUOTE(SUBSTRING_INDEX(CURRENT_USER(), '@', 1)), '@', QUOTE(SUBSTRING_INDEX(CURRENT_USER(), '@', -1)))";
-        $privilege = $connection->prepare("SELECT (EXISTS (SELECT 1 FROM information_schema.USER_PRIVILEGES WHERE GRANTEE = $grantee AND PRIVILEGE_TYPE = 'TRIGGER') OR EXISTS (SELECT 1 FROM information_schema.SCHEMA_PRIVILEGES WHERE GRANTEE = $grantee AND TABLE_SCHEMA = DATABASE() AND PRIVILEGE_TYPE = 'TRIGGER') OR EXISTS (SELECT 1 FROM information_schema.TABLE_PRIVILEGES WHERE GRANTEE = $grantee AND TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND PRIVILEGE_TYPE = 'TRIGGER'))");
-        foreach (['Account', 'AccountHistory', 'CustomFieldData', 'Config'] as $table) {
-            $privilege->execute([$table]);
-            if ((int)$privilege->fetchColumn() !== 1) {
-                throw ServiceException::error('Master password change requires TRIGGER privileges to verify affected tables');
-            }
-        }
-
         foreach (['PluginData', 'AuthToken'] as $table) {
             if ($connection->query("SELECT 1 FROM `$table` LIMIT 1 FOR UPDATE")->fetchColumn() !== false) {
                 throw ServiceException::error("Master password change cannot run while $table records exist; see the recovery documentation");
-            }
-        }
-
-        // Triggers may write to tables outside the transaction's verified scope.
-        $triggers = $connection->query('SHOW TRIGGERS')->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($triggers as $trigger) {
-            if (in_array($trigger['Table'], ['Account', 'AccountHistory', 'CustomFieldData', 'Config'], true)) {
-                throw ServiceException::error('Master password change cannot run with triggers on affected tables');
             }
         }
     }

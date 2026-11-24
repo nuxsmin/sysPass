@@ -39,6 +39,125 @@ final class MasterPasswordLockInitializationTest extends UnitaryTestCase
 {
     use IsolatedMasterPasswordDatabase;
 
+    #[Test]
+    public function innodbDeadlockRollsBackNestedTransactionAndRejectsFurtherWrites(): void
+    {
+        $admin = $this->isolatedDatabase();
+        $admin->exec('CREATE TABLE deadlock_test (id INT PRIMARY KEY, value INT NOT NULL) ENGINE=InnoDB');
+        $admin->exec('INSERT INTO deadlock_test VALUES (1, 0), (2, 0)');
+        $name = $admin->query('SELECT DATABASE()')->fetchColumn();
+        $pdo = new PDO('mysql:host=' . getenv('DB_SERVER') . ';dbname=' . $name, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $storage = $this->createStub(\SP\Domain\Database\Ports\DbStorageHandler::class);
+        $storage->method('getConnection')->willReturn($pdo);
+        $database = new \SP\Infrastructure\Database\Database($storage, $this->eventDispatcherStub);
+        $pipes = [];
+        $worker = proc_open([PHP_BINARY, __DIR__ . '/DeadlockWorker.inc'], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+        self::assertIsResource($worker);
+        try {
+            stream_set_timeout($pipes[1], 10);
+            $database->beginTransaction();
+            $pdo->exec('UPDATE deadlock_test SET value = value + 1 WHERE id = 1');
+            $database->beginTransaction();
+            fwrite($pipes[0], $name . "\n");
+            self::assertSame("ready\n", fgets($pipes[1]));
+            fwrite($pipes[0], "continue\n");
+            $deadline = microtime(true) + 5;
+            do {
+                $waiting = (int)$admin->query('SELECT COUNT(*) FROM information_schema.INNODB_LOCK_WAITS')->fetchColumn();
+                if ($waiting === 0) {
+                    usleep(20000);
+                }
+            } while ($waiting === 0 && microtime(true) < $deadline);
+            self::assertGreaterThan(0, $waiting, 'The competing transaction must wait before completing the deadlock');
+            try {
+                $pdo->exec('UPDATE deadlock_test SET value = value + 1 WHERE id = 2');
+                self::fail('InnoDB must choose the smaller transaction as the deadlock victim');
+            } catch (\PDOException $e) {
+                self::assertSame(1213, $e->errorInfo[1]);
+            }
+            self::assertFalse($database->rollbackTransaction());
+            try {
+                $database->runQueryRaw('UPDATE deadlock_test SET value = 9 WHERE id = 1');
+                self::fail('A deadlocked transaction must reject subsequent writes');
+            } catch (\SP\Domain\Core\Exceptions\QueryException) {
+                self::assertTrue(true);
+            }
+            self::assertSame("done\n", fgets($pipes[1]));
+            self::assertSame([1, 1], array_map('intval', $admin->query('SELECT value FROM deadlock_test WHERE id IN (1, 2) ORDER BY id')->fetchAll(PDO::FETCH_COLUMN)));
+        } finally {
+            foreach ($pipes as $pipe) {
+                fclose($pipe);
+            }
+            proc_terminate($worker);
+            proc_close($worker);
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\TestWith([false])]
+    #[\PHPUnit\Framework\Attributes\TestWith([true])]
+    #[Test]
+    public function lostNestedTransactionDoesNotCommitEarlierWrites(bool $killConnection): void
+    {
+        $admin = $this->isolatedDatabase();
+        $admin->exec('CREATE TABLE changes_test (id INT PRIMARY KEY) ENGINE=InnoDB');
+        $dbName = $admin->query('SELECT DATABASE()')->fetchColumn();
+        $pdo = new PDO('mysql:host=' . getenv('DB_SERVER') . ';dbname=' . $dbName, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $storage = $this->createStub(\SP\Domain\Database\Ports\DbStorageHandler::class);
+        $storage->method('getConnection')->willReturn($pdo);
+        $database = new \SP\Infrastructure\Database\Database($storage, $this->eventDispatcherStub);
+        self::assertTrue($database->beginTransaction());
+        $pdo->exec('INSERT INTO changes_test VALUES (1)');
+        self::assertTrue($database->beginTransaction());
+        if ($killConnection) {
+            $connectionId = (int)$pdo->query('SELECT CONNECTION_ID()')->fetchColumn();
+            $admin->exec('KILL CONNECTION ' . $connectionId);
+        } else {
+            // Simulate a server-side rollback without unwinding PHP's scope stack.
+            $pdo->exec('ROLLBACK');
+        }
+        self::assertFalse($database->rollbackTransaction());
+        try {
+            $database->runQueryRaw('INSERT INTO changes_test VALUES (2)');
+            self::fail('Writes must be rejected after the transaction is lost');
+        } catch (\SP\Domain\Core\Exceptions\QueryException) {
+            self::assertTrue(true);
+        }
+        try {
+            self::assertFalse($database->endTransaction());
+        } catch (\PDOException) {
+            self::assertTrue($killConnection);
+        }
+        self::assertSame(0, (int)$admin->query('SELECT COUNT(*) FROM changes_test')->fetchColumn());
+    }
+
+    #[Test]
+    public function engineCannotChangeBetweenVerificationAndTransactionEnd(): void
+    {
+        $pdo = $this->isolatedDatabase();
+        foreach (['Account', 'AccountHistory', 'CustomFieldData', 'Config', 'PluginData', 'AuthToken'] as $table) {
+            $pdo->exec("CREATE TABLE `$table` (id INT PRIMARY KEY) ENGINE=InnoDB");
+        }
+        $dbName = $pdo->query('SELECT DATABASE()')->fetchColumn();
+        $other = new PDO('mysql:host=' . getenv('DB_SERVER') . ';dbname=' . $dbName, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $other->exec('SET lock_wait_timeout = 1');
+        $storage = $this->createStub(\SP\Domain\Database\Ports\DbStorageHandler::class);
+        $storage->method('getConnection')->willReturn($pdo);
+        $pdo->beginTransaction();
+        try {
+            (new \SP\Infrastructure\Crypt\MasterPasswordStorageGuard($storage))->assertTransactional();
+            try {
+                $other->exec('ALTER TABLE Account ENGINE=MyISAM');
+                self::fail('Changing a verified table must wait for the rotation transaction');
+            } catch (\PDOException $e) {
+                self::assertSame(1205, $e->errorInfo[1]);
+            }
+        } finally {
+            $pdo->rollBack();
+        }
+        $other->exec('ALTER TABLE Account ENGINE=MyISAM');
+        self::assertSame('MyISAM', $other->query("SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Account'")->fetchColumn());
+    }
+
     #[\PHPUnit\Framework\Attributes\TestWith([0])]
     #[\PHPUnit\Framework\Attributes\TestWith([1])]
     #[\PHPUnit\Framework\Attributes\TestWith([2])]
@@ -263,7 +382,7 @@ final class MasterPasswordLockInitializationTest extends UnitaryTestCase
     }
 
     #[Test]
-    public function testRehashSkipsConfigTriggersWithoutBlockingVerification(): void
+    public function testRehashAllowsOperatorManagedConfigTriggers(): void
     {
         $pdo = $this->isolatedDatabase();
         $pdo->exec('CREATE TABLE Config (parameter VARCHAR(50) PRIMARY KEY, value VARCHAR(255)) ENGINE=InnoDB');
@@ -274,15 +393,17 @@ final class MasterPasswordLockInitializationTest extends UnitaryTestCase
         $insert->execute(['masterPasswordActivityLock', '1']);
         $pdo->exec('CREATE TRIGGER config_update BEFORE UPDATE ON Config FOR EACH ROW INSERT INTO side_effect VALUES (1)');
         $dbName = $pdo->query('SELECT DATABASE()')->fetchColumn();
-        $writer = new PDO('mysql:host=sp-masterpass-verify-db;dbname=' . $dbName, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $writer = new PDO('mysql:host=' . getenv('DB_SERVER') . ';dbname=' . $dbName, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $wrapper = $this->createStub(PDOWrapper::class);
         $wrapper->method('build')->willReturnOnConsecutiveCalls($pdo, $writer);
         $lock = new MasterPasswordRequestLock($this->createStub(ConfigDataInterface::class), $wrapper);
         $lock->acquire();
         try {
             $lock->assertCurrentMasterPassword('synthetic');
-            self::assertSame($oldHash, $writer->query("SELECT value FROM Config WHERE parameter = 'masterPwd'")->fetchColumn());
-            self::assertSame(0, (int)$writer->query('SELECT COUNT(*) FROM side_effect')->fetchColumn());
+            $newHash = $writer->query("SELECT value FROM Config WHERE parameter = 'masterPwd'")->fetchColumn();
+            self::assertNotSame($oldHash, $newHash);
+            self::assertTrue(\SP\Domain\Crypt\Services\Hash::checkMasterKey('synthetic', $newHash));
+            self::assertSame(1, (int)$writer->query('SELECT COUNT(*) FROM side_effect')->fetchColumn());
         } finally {
             $lock->release();
         }
@@ -452,11 +573,12 @@ final class MasterPasswordLockInitializationTest extends UnitaryTestCase
     #[\PHPUnit\Framework\Attributes\TestWith([false])]
     #[\PHPUnit\Framework\Attributes\TestWith([true])]
     #[Test]
-    public function testMissingLockRowDoesNotFireConfigTriggers(bool $rotation): void
+    public function testMissingLockRowAllowsOperatorManagedConfigTriggers(bool $rotation): void
     {
         $pdo = $this->isolatedDatabase();
         $pdo->exec('CREATE TABLE Config (parameter VARCHAR(50) PRIMARY KEY, value VARCHAR(255)) ENGINE=InnoDB');
-        $pdo->exec("INSERT INTO Config VALUES ('masterPwd', 'synthetic')");
+        $insert = $pdo->prepare('INSERT INTO Config VALUES (?, ?)');
+        $insert->execute(['masterPwd', \SP\Domain\Crypt\Services\Hash::hashKey('synthetic')]);
         $pdo->exec('CREATE TABLE side_effect (id INT) ENGINE=MyISAM');
         $pdo->exec('CREATE TRIGGER config_insert BEFORE INSERT ON Config FOR EACH ROW INSERT INTO side_effect VALUES (1)');
         $wrapper = $this->createStub(PDOWrapper::class);
@@ -471,14 +593,12 @@ final class MasterPasswordLockInitializationTest extends UnitaryTestCase
             } else {
                 $lock->acquire();
             }
-        } catch (\Throwable) {
-            // Refusing initialization is safe when trigger side effects cannot be covered.
         } finally {
             $lock->release();
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
             }
         }
-        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM side_effect')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM side_effect')->fetchColumn());
     }
 }

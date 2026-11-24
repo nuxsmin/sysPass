@@ -46,6 +46,26 @@ use SP\Tests\UnitaryTestCase;
 #[Group('integration')]
 final class MasterPasswordTransactionTest extends UnitaryTestCase
 {
+    #[Test]
+    public function beginListenerFailureDoesNotLeaveTransactionOpen(): void
+    {
+        $pdo = new PDO('sqlite::memory:');
+        $storage = $this->createStub(DbStorageHandler::class);
+        $storage->method('getConnection')->willReturn($pdo);
+        $events = $this->createStub(EventDispatcherInterface::class);
+        $events->method('notify')->willReturnCallback(static function (string $name): void {
+            if ($name === 'database.transaction.begin') {
+                throw new \RuntimeException('synthetic listener failure');
+            }
+        });
+        $repository = new SimpleRepository(new Database($storage, $events), $this->context, $events, new QueryFactory('mysql'));
+        try {
+            $repository->transactionAware(static function (): void {}, $this);
+            self::fail('Expected begin notification failure');
+        } catch (\RuntimeException) {
+            self::assertFalse($pdo->inTransaction());
+        }
+    }
     #[\PHPUnit\Framework\Attributes\TestWith(['update.masterPassword.end'])]
     #[\PHPUnit\Framework\Attributes\TestWith(['database.transaction.end'])]
     #[Test]
@@ -179,8 +199,9 @@ final class MasterPasswordTransactionTest extends UnitaryTestCase
             }
         });
         $repository = new SimpleRepository(new Database($storage, $events), $this->context, $events, new QueryFactory('mysql'));
+        $continuedInsideTransaction = false;
         try {
-            $repository->transactionAware(function () use ($repository, $pdo): void {
+            $repository->transactionAware(function () use ($repository, $pdo, &$continuedInsideTransaction): void {
                 $pdo->exec("INSERT INTO changes_test VALUES ('outer')");
                 try {
                     $repository->transactionAware(function () use ($pdo): void {
@@ -188,8 +209,9 @@ final class MasterPasswordTransactionTest extends UnitaryTestCase
                     }, $this);
                     self::fail('Expected inner completion failure');
                 } catch (ServiceException) {
+                    $continuedInsideTransaction = $pdo->inTransaction();
                     self::assertTrue($pdo->inTransaction());
-                    self::assertSame(['outer'], $pdo->query('SELECT value FROM changes_test')->fetchAll(PDO::FETCH_COLUMN));
+                    self::assertSame(['outer', 'inner'], $pdo->query('SELECT value FROM changes_test')->fetchAll(PDO::FETCH_COLUMN));
                     $pdo->exec("INSERT INTO changes_test VALUES ('after failure')");
                 }
                 throw new \RuntimeException('outer failure');
@@ -198,6 +220,7 @@ final class MasterPasswordTransactionTest extends UnitaryTestCase
         } catch (ServiceException) {
             self::assertSame([], $pdo->query('SELECT value FROM changes_test')->fetchAll(PDO::FETCH_COLUMN));
         }
+        self::assertTrue($continuedInsideTransaction, 'The outer transaction must remain active after the nested completion failure');
     }
 
     #[Test]

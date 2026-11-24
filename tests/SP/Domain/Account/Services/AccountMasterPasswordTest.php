@@ -49,6 +49,19 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class AccountMasterPasswordTest extends UnitaryTestCase
 {
+    #[Test]
+    public function historyWithMissingMasterPasswordHashIsRejected(): void
+    {
+        $this->accountHistory->method('getAccountsPassData')->willReturn([
+            (object) ['id' => 42, 'pass' => 'ciphertext', 'key' => 'key', 'mPassHash' => null],
+        ]);
+        $this->accountHistory->expects(self::never())->method('updatePasswordMasterPass');
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Master password mismatch for record ID 42');
+        $this->accountMasterPassword->updateHistoryMasterPassword(
+            new UpdateMasterPassRequest('old synthetic', 'new synthetic', 'hash')
+        );
+    }
     private MockObject|AccountService        $account;
     private MockObject|AccountHistoryService $accountHistory;
     private AccountMasterPassword            $accountMasterPassword;
@@ -160,7 +173,10 @@ class AccountMasterPasswordTest extends UnitaryTestCase
             self::$faker->password,
             self::$faker->sha1
         );
-        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
+        $accountData = array_map(static fn($id) => (object) [
+            'id' => $id, 'pass' => 'ciphertext', 'key' => 'key',
+            'mPassHash' => \SP\Domain\Crypt\Services\Hash::hashKey($request->getCurrentMasterPass()),
+        ], range(0, 9));
 
         $this->accountHistory->expects(self::once())
                              ->method('getAccountsPassData')
@@ -227,7 +243,10 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     public function testUpdateHistoryMasterPasswordFailsOnDecryptionError(): void
     {
         $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
-        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
+        $accountData = array_map(static fn($id) => (object) [
+            'id' => $id, 'pass' => 'ciphertext', 'key' => 'key',
+            'mPassHash' => \SP\Domain\Crypt\Services\Hash::hashKey($request->getCurrentMasterPass()),
+        ], range(0, 9));
 
         $this->accountHistory->expects(self::once())
                              ->method('getAccountsPassData')

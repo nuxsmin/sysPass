@@ -36,10 +36,11 @@ trait IsolatedMasterPasswordDatabase
 
     private function isolatedDatabase(): PDO
     {
-        if (getenv('DB_SERVER') !== 'sp-masterpass-verify-db' || getenv('DB_NAME') !== 'syspass_masterpass_test') {
+        $host = getenv('DB_SERVER');
+        if (!in_array($host, ['sp-masterpass-verify-db', '127.0.0.1'], true) || getenv('DB_NAME') !== 'syspass_masterpass_test') {
             self::markTestSkipped('Requires the disposable master password verification database');
         }
-        $this->isolatedConnection = new PDO('mysql:host=sp-masterpass-verify-db', 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $this->isolatedConnection = new PDO('mysql:host=' . $host, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->isolatedDatabase = 'sp_masterpass_' . bin2hex(random_bytes(8));
         $this->isolatedConnection->exec('CREATE DATABASE `' . $this->isolatedDatabase . '`');
         $this->isolatedConnection->exec('USE `' . $this->isolatedDatabase . '`');

@@ -82,6 +82,9 @@ abstract class BaseRepository implements Repository
                 if ($e instanceof TransactionCommittedException) {
                     throw $e;
                 }
+                if ($e instanceof \SP\Domain\Database\Exceptions\SavepointReleasedException) {
+                    throw ServiceException::error($e->getMessage(), null, 0, $e);
+                }
                 $this->db->rollbackTransaction();
 
                 logger('Transaction:Rollback');

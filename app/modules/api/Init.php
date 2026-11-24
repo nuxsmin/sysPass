@@ -93,8 +93,6 @@ final class Init extends HttpModuleBase
         // Checks if sysPass is installed
         $this->checkInstalled();
 
-        $this->masterPasswordRequestLock->acquire();
-
         // Checks if maintenance mode is turned on
         if ($this->checkMaintenanceMode()) {
             throw new InitializationException('Maintenance mode');
@@ -115,6 +113,8 @@ final class Init extends HttpModuleBase
         if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
             throw new InitializationException('Database checking error');
         }
+
+        $this->masterPasswordRequestLock->acquire();
 
         // Initialize event handlers
         $this->initEventHandlers();

@@ -711,6 +711,11 @@ final class ApiBoundaryTest extends TestCase
                 $echoed = (string)ob_get_clean();
             }
 
+            self::assertFalse(
+                $dic->get(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class)->isActive(),
+                'The request must release its master password lock before returning'
+            );
+
             /** @var Response $response */
             $response = $dic->get(Response::class);
             $body = (string)$response->body();

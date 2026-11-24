@@ -43,6 +43,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Enums\DbStorageDriver;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Database\Ports\QueryDataInterface;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\PdoMysqlAttributes;
 use SP\Tests\UnitaryTestCase;
@@ -53,6 +54,115 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class DatabaseTest extends UnitaryTestCase
 {
+    #[Test]
+    public function unsuccessfulOuterRollbackKeepsTransactionPoisoned(): void
+    {
+        $pdo = $this->createMock(PDO::class);
+        $this->dbStorageHandler->method('getConnection')->willReturn($pdo);
+        $pdo->method('inTransaction')->willReturn(false, true, true, true);
+        $pdo->method('beginTransaction')->willReturn(true);
+        $pdo->method('exec')->willReturnCallback(static function (string $sql): int {
+            if (str_starts_with($sql, 'ROLLBACK TO')) {
+                throw new \PDOException('savepoint lost');
+            }
+            return 0;
+        });
+        $pdo->method('rollBack')->willReturn(false);
+        $this->database->beginTransaction();
+        $this->database->beginTransaction();
+        self::assertFalse($this->database->rollbackTransaction());
+        self::assertFalse($this->database->endTransaction());
+        $this->expectException(QueryException::class);
+        $this->database->runQueryRaw('UPDATE Config SET value = 1');
+    }
+    #[Test]
+    public function failedSavepointRollbackRejectsSubsequentWrites(): void
+    {
+        $pdo = $this->createMock(PDO::class);
+        $this->dbStorageHandler->method('getConnection')->willReturn($pdo);
+        $pdo->method('inTransaction')->willReturn(false, true, true);
+        $pdo->method('beginTransaction')->willReturn(true);
+        $pdo->method('exec')->willReturnCallback(static function (string $sql): int {
+            if (str_starts_with($sql, 'ROLLBACK TO')) {
+                throw new \PDOException('savepoint lost');
+            }
+            if (str_starts_with($sql, 'UPDATE')) {
+                self::fail('A poisoned transaction must not execute another write');
+            }
+            return 0;
+        });
+        $this->database->beginTransaction();
+        $this->database->beginTransaction();
+        self::assertFalse($this->database->rollbackTransaction());
+        $this->expectException(QueryException::class);
+        $this->database->runQueryRaw('UPDATE Config SET value = 1');
+    }
+    #[Test]
+    public function failedSavepointRollbackPreventsOuterCommit(): void
+    {
+        $pdo = $this->createMock(PDO::class);
+        $this->dbStorageHandler->method('getConnection')->willReturn($pdo);
+        $pdo->method('inTransaction')->willReturn(false, true, true, true);
+        $pdo->method('beginTransaction')->willReturn(true);
+        $pdo->method('exec')->willReturnCallback(static function (string $sql): int {
+            if (str_starts_with($sql, 'ROLLBACK TO')) {
+                throw new \PDOException('savepoint lost');
+            }
+            return 0;
+        });
+        $pdo->expects(self::never())->method('commit');
+        $pdo->expects(self::once())->method('rollBack')->willReturn(true);
+        self::assertTrue($this->database->beginTransaction());
+        self::assertTrue($this->database->beginTransaction());
+        self::assertFalse($this->database->rollbackTransaction());
+        self::assertFalse($this->database->endTransaction());
+    }
+    #[Test]
+    public function rawImplicitCommitStatementIsRejectedWhileRequestLockIsHeld(): void
+    {
+        $pdo = $this->createMock(PDO::class);
+        $this->dbStorageHandler->method('getConnection')->willReturn($pdo);
+        $pdo->expects(self::never())->method('exec');
+        $lock = $this->createStub(MasterPasswordRequestLock::class);
+        $lock->method('isActive')->willReturn(true);
+        $database = new Database($this->dbStorageHandler, $this->eventDispatcherStub, $lock);
+        $this->expectException(QueryException::class);
+        $database->runQueryRaw('ALTER TABLE Config ADD COLUMN synthetic INT');
+    }
+    #[Test]
+    public function rawMutationIsProtectedByRequestLock(): void
+    {
+        $pdo = $this->createMock(PDO::class);
+        $this->dbStorageHandler->method('getConnection')->willReturn($pdo);
+        $pdo->method('inTransaction')->willReturn(false);
+        $pdo->expects(self::once())->method('beginTransaction')->willReturn(true);
+        $pdo->expects(self::once())->method('commit')->willReturn(true);
+        $pdo->expects(self::once())->method('exec')->with('UPDATE Config SET value = 1')->willReturn(1);
+        $lock = $this->createMock(MasterPasswordRequestLock::class);
+        $lock->method('isActive')->willReturn(true);
+        $lock->expects(self::once())->method('protectWrite')->with($pdo);
+        $database = new Database($this->dbStorageHandler, $this->eventDispatcherStub, $lock);
+        $database->runQueryRaw('UPDATE Config SET value = 1');
+    }
+    #[Test]
+    public function failedSavepointRollbackLeavesOuterTransactionAvailable(): void
+    {
+        $pdo = $this->createMock(PDO::class);
+        $this->dbStorageHandler->method('getConnection')->willReturn($pdo);
+        $pdo->method('inTransaction')->willReturn(false, true, true, true);
+        $pdo->method('beginTransaction')->willReturn(true);
+        $pdo->method('exec')->willReturnCallback(static function (string $sql): int {
+            if (str_starts_with($sql, 'ROLLBACK TO')) {
+                throw new \PDOException('savepoint lost');
+            }
+            return 0;
+        });
+        $pdo->expects(self::once())->method('rollBack')->willReturn(true);
+        self::assertTrue($this->database->beginTransaction());
+        self::assertTrue($this->database->beginTransaction());
+        self::assertFalse($this->database->rollbackTransaction());
+        self::assertTrue($this->database->rollbackTransaction());
+    }
 
     private MockObject|DbStorageHandler $dbStorageHandler;
     private Database                    $database;

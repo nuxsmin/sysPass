@@ -48,8 +48,7 @@ final class MasterPasswordLockRow
             $pdo->beginTransaction();
         }
         try {
-            // This serializes initialization and holds a metadata lock on Config
-            // until commit, preventing a trigger from being added after inspection.
+            // Serialize initialization and hold a metadata lock on Config until commit.
             if ($pdo->query("SELECT value FROM Config WHERE parameter = 'masterPwd' FOR UPDATE")->fetchColumn() === false) {
                 throw ServiceException::error('Master password configuration is unavailable');
             }
@@ -74,11 +73,6 @@ final class MasterPasswordLockRow
         $engine = $pdo->query("SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Config'")->fetchColumn();
         if (!is_string($engine) || strcasecmp($engine, 'InnoDB') !== 0) {
             throw ServiceException::error('Master password configuration write requires InnoDB Config storage');
-        }
-        $grantee = "CONCAT(QUOTE(SUBSTRING_INDEX(CURRENT_USER(), '@', 1)), '@', QUOTE(SUBSTRING_INDEX(CURRENT_USER(), '@', -1)))";
-        $privilege = $pdo->query("SELECT (EXISTS (SELECT 1 FROM information_schema.USER_PRIVILEGES WHERE GRANTEE = $grantee AND PRIVILEGE_TYPE = 'TRIGGER') OR EXISTS (SELECT 1 FROM information_schema.SCHEMA_PRIVILEGES WHERE GRANTEE = $grantee AND TABLE_SCHEMA = DATABASE() AND PRIVILEGE_TYPE = 'TRIGGER') OR EXISTS (SELECT 1 FROM information_schema.TABLE_PRIVILEGES WHERE GRANTEE = $grantee AND TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'Config' AND PRIVILEGE_TYPE = 'TRIGGER'))")->fetchColumn();
-        if ((int)$privilege !== 1 || $pdo->query("SHOW TRIGGERS LIKE 'Config'")->fetch() !== false) {
-            throw ServiceException::error('Master password configuration write requires trigger-free Config storage and TRIGGER privilege');
         }
     }
 }

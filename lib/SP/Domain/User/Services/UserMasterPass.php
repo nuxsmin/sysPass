@@ -201,7 +201,7 @@ final class UserMasterPass extends Service implements UserMasterPassService
      */
     public function create(string $masterPass, string $userLogin, string $userPass): UserMasterPassDto
     {
-        if ($this->masterPasswordRequestLock->isActive()) {
+        if ($this->config->getConfigData()->isInstalled() || $this->masterPasswordRequestLock->isActive()) {
             $this->masterPasswordRequestLock->assertCurrentMasterPassword($masterPass);
         }
         $key = $this->makeKeyForUser($userLogin, $userPass);

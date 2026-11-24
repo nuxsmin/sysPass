@@ -123,6 +123,9 @@ final class MasterPasswordActivityLock
         if ($this->held || $this->connection->inTransaction()) {
             throw new RuntimeException('A dedicated connection without a transaction is required');
         }
+        // A fresh committed read avoids a stale REPEATABLE READ snapshot without
+        // holding a masterPwd row lock that would block the rehash connection.
+        $this->connection->exec('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
         $this->connection->beginTransaction();
         try {
             $stmt = $this->connection->prepare('SELECT value FROM Config WHERE parameter = ? ' . $mode);

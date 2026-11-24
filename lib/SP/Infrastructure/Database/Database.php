@@ -24,29 +24,6 @@
 
 declare(strict_types=1);
 
-/**
- * sysPass
- *
- * @author nuxsmin
- * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
- *
- * This file is part of sysPass.
- *
- * sysPass is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * sysPass is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 namespace SP\Infrastructure\Database;
 
 use Aura\SqlQuery\Common\SelectInterface;
@@ -64,6 +41,7 @@ use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\Database\Enums\DbStorageDriver;
 use SP\Domain\Database\Exceptions\TransactionCommittedException;
+use SP\Domain\Database\Exceptions\SavepointReleasedException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Database\Ports\QueryDataInterface;
@@ -79,6 +57,7 @@ final class Database implements DatabaseInterface
     private ?int $lastId = null;
     /** @var list<string|null> */
     private array $transactionScopes = [];
+    private bool $rollbackOnly = false;
 
     /**
      * DB constructor.
@@ -174,6 +153,7 @@ final class Database implements DatabaseInterface
      */
     private function prepareAndRunQuery(QueryInterface $query, array $options = []): PDOStatement
     {
+        $this->assertTransactionUsable();
         try {
             $connection = $this->dbStorageHandler->getConnection();
 
@@ -267,8 +247,34 @@ final class Database implements DatabaseInterface
      */
     public function runQueryRaw(string $query): void
     {
-        if ($this->dbStorageHandler->getConnection()->exec($query) === false) {
-            throw QueryException::error(__u('Error executing the query'));
+        $this->assertTransactionUsable();
+        $connection = $this->dbStorageHandler->getConnection();
+        $fence = $this->masterPasswordRequestLock !== null && $this->masterPasswordRequestLock->isActive();
+        // DDL and transaction-control statements can implicitly commit and release
+        // the fence before the statement completes. Fail closed during requests.
+        if ($fence && (!preg_match('/^\s*(INSERT|UPDATE|DELETE|REPLACE)\b/i', $query)
+            || str_contains($query, ';'))) {
+            throw QueryException::error('Raw statement is not permitted while the master password request lock is held');
+        }
+        $ownTransaction = $fence && !$connection->inTransaction();
+        if ($ownTransaction) {
+            $connection->beginTransaction();
+        }
+        try {
+            if ($fence) {
+                $this->masterPasswordRequestLock->protectWrite($connection);
+            }
+            if ($connection->exec($query) === false) {
+                throw QueryException::error(__u('Error executing the query'));
+            }
+            if ($ownTransaction) {
+                $connection->commit();
+            }
+        } catch (Throwable $e) {
+            if ($ownTransaction && $connection->inTransaction()) {
+                $connection->rollBack();
+            }
+            throw $e;
         }
     }
 
@@ -279,6 +285,7 @@ final class Database implements DatabaseInterface
      */
     public function beginTransaction(): bool
     {
+        $this->assertTransactionUsable();
         $conn = $this->dbStorageHandler->getConnection();
 
         if (!$conn->inTransaction()) {
@@ -287,13 +294,17 @@ final class Database implements DatabaseInterface
                 $this->transactionScopes[] = null;
             }
 
-            $this->eventDispatcher->notify(
-                'database.transaction.begin',
-                new Event(
-                    $this,
-                    EventMessage::build()->addExtra('result', $result)
-                )
-            );
+            try {
+                $this->eventDispatcher->notify(
+                    'database.transaction.begin',
+                    new Event($this, EventMessage::build()->addExtra('result', $result))
+                );
+            } catch (Throwable $e) {
+                if ($result) {
+                    $this->rollbackTransaction();
+                }
+                throw $e;
+            }
 
             return $result;
         }
@@ -315,17 +326,29 @@ final class Database implements DatabaseInterface
     {
         $conn = $this->dbStorageHandler->getConnection();
 
+        if ($this->rollbackOnly) {
+            $rolledBack = !$conn->inTransaction() || $conn->rollBack();
+            if ($rolledBack) {
+                $this->transactionScopes = [];
+                $this->rollbackOnly = false;
+            }
+            return false;
+        }
+
         $scope = end($this->transactionScopes);
         $committing = $this->transactionScopes === [] || $scope === null || $scope === false;
         if ($this->transactionScopes !== [] && $scope !== null && $scope !== false) {
             if (!$conn->inTransaction()) {
                 return false;
             }
-            // Keep the savepoint available if a completion listener fails.
-            $this->notifyTransactionEnd(true);
             $result = $conn->exec('RELEASE SAVEPOINT ' . $scope) !== false;
             if ($result) {
                 array_pop($this->transactionScopes);
+                try {
+                    $this->notifyTransactionEnd(true);
+                } catch (Throwable $e) {
+                    throw new SavepointReleasedException('Savepoint released, but its completion event failed', 0, $e);
+                }
             }
             return $result;
         } else {
@@ -355,6 +378,13 @@ final class Database implements DatabaseInterface
         );
     }
 
+    private function assertTransactionUsable(): void
+    {
+        if ($this->rollbackOnly) {
+            throw QueryException::error('Transaction must be rolled back after a failed savepoint rollback');
+        }
+    }
+
     /**
      * Rollback a transaction
      *
@@ -365,16 +395,30 @@ final class Database implements DatabaseInterface
         $conn = $this->dbStorageHandler->getConnection();
 
         $scope = end($this->transactionScopes);
-        if ($this->transactionScopes !== [] && $scope !== null && $scope !== false) {
-            $result = $conn->inTransaction() && $conn->exec('ROLLBACK TO SAVEPOINT ' . $scope) !== false;
-            if ($result) {
-                $result = $conn->exec('RELEASE SAVEPOINT ' . $scope) !== false;
+        $result = false;
+        try {
+            if (!$conn->inTransaction()) {
+                $this->transactionScopes = [];
+            } elseif ($this->transactionScopes !== [] && $scope !== null && $scope !== false) {
+                $result = $conn->exec('ROLLBACK TO SAVEPOINT ' . $scope) !== false;
+                if ($result) {
+                    $result = $conn->exec('RELEASE SAVEPOINT ' . $scope) !== false;
+                }
+            } else {
+                $result = $conn->rollBack();
             }
-        } else {
-            $result = $conn->inTransaction() && $conn->rollBack();
-        }
-        if ($result && $this->transactionScopes !== []) {
-            array_pop($this->transactionScopes);
+        } catch (\PDOException $e) {
+            $result = false;
+        } finally {
+            if (!$result && $scope !== null && $scope !== false) {
+                $this->rollbackOnly = true;
+            }
+            if ($this->transactionScopes !== []) {
+                array_pop($this->transactionScopes);
+            }
+            if ($result && $this->transactionScopes === []) {
+                $this->rollbackOnly = false;
+            }
         }
 
         $this->eventDispatcher->notify(

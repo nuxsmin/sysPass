@@ -1,3 +1,5 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # Changing the master password
 
 The full master password change is performed with `sp:crypt:update-master-password`
@@ -54,21 +56,21 @@ retrying. Preflight failures stop the operation before conversion.
 
 Before starting, take and verify a recoverable database and configuration backup,
 enable maintenance mode, and wait for other requests and jobs to finish. Ensure
-that the database account can see triggers on the affected tables. The command
-checks for InnoDB tables and requires explicit `TRIGGER` privileges on Account,
-AccountHistory, CustomFieldData and Config; it refuses to run if those tables have
-triggers. It also refuses to run if PluginData or AuthToken contains records:
+that sysPass-managed tables use InnoDB. The command does not inspect operator-managed
+triggers or require `TRIGGER` privilege. Operators are responsible for ensuring
+that custom triggers and their side effects support rollback: changes to
+nontransactional tables or external systems may survive a failed rotation.
+The transaction protects sysPass-managed database writes under the documented
+storage prerequisites; it cannot guarantee rollback of arbitrary trigger effects.
+The command also refuses to run if PluginData or AuthToken contains records:
 plugin data and API token vaults use the master password but are not yet migrated
 by this operation. Do not delete plugin data to bypass this safeguard; arrange a
 separate migration before changing the password. API authorizations must be
 revoked and recreated after the change if their loss is acceptable.
 
 The first request after upgrading initializes a coordination row in `Config`.
-This one-time step requires InnoDB, a trigger-free `Config` table, and `TRIGGER`
-privilege to verify that no hidden trigger exists. If these conditions are not
-met, requests fail closed; an administrator must resolve them before retrying.
-Once initialized, ordinary requests do not require `TRIGGER` privilege, although
-the rotation command still checks the privileges described above.
+This one-time step requires an InnoDB `Config` table. If that condition is not
+met, requests fail closed; an administrator must resolve it before retrying.
 
 Coordinated Web, API and CLI writes hold the shared activity lock for the write
 transaction. If the request's lock connection is lost, subsequent writes fail;
@@ -82,8 +84,7 @@ password-change timestamp, or encrypted data. A compare-and-swap update keeps
 concurrent changes intact; a concurrent hash for a different password makes the
 request fail rather than continue with a stale key. Stronger bcrypt hashes are not downgraded, and other
 hash algorithms are not migrated automatically. The upgrade is skipped, with a
-warning in the application log, if Config is not InnoDB, has triggers, cannot be
-inspected with the database account's TRIGGER privilege, or cannot be updated.
+warning in the application log, if Config is not InnoDB or cannot be updated.
 Successful verification continues to work with the existing hash in that case.
 
 New master-password hashes use a versioned full-input verifier. For unversioned

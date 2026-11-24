@@ -39,12 +39,50 @@ use SP\Infrastructure\Crypt\MasterPasswordStorageGuard;
 #[Group('unitary')]
 final class MasterPasswordStorageGuardTest extends TestCase
 {
+    #[Test]
+    public function managedTablesAreLockedBeforeEngineInspection(): void
+    {
+        $statement = $this->createStub(PDOStatement::class);
+        $statement->method('fetchColumn')->willReturn(false);
+        $statement->method('fetchAll')->willReturn(array_fill_keys(
+            ['Account', 'AccountHistory', 'CustomFieldData', 'Config', 'PluginData', 'AuthToken'], 'InnoDB'
+        ));
+        $seen = [];
+        $pdo = $this->createStub(PDO::class);
+        $pdo->method('inTransaction')->willReturn(true);
+        $pdo->method('query')->willReturnCallback(static function (string $sql) use (&$seen, $statement): PDOStatement {
+            if (str_contains($sql, 'information_schema.TABLES')) {
+                self::assertSame(['Account', 'AccountHistory', 'CustomFieldData', 'Config', 'PluginData', 'AuthToken'], $seen);
+            } elseif (preg_match('/^SELECT 1 FROM `([^`]+)` LIMIT 1/', $sql, $matches)) {
+                if (!in_array($matches[1], $seen, true)) {
+                    $seen[] = $matches[1];
+                }
+            }
+            return $statement;
+        });
+        $storage = $this->createStub(DbStorageHandler::class);
+        $storage->method('getConnection')->willReturn($pdo);
+        (new MasterPasswordStorageGuard($storage))->assertTransactional();
+    }
+    #[Test]
+    public function configWriteDoesNotRequireTriggerInspection(): void
+    {
+        $engine = $this->createStub(PDOStatement::class);
+        $engine->method('fetchColumn')->willReturn('InnoDB');
+        $pdo = $this->createMock(PDO::class);
+        $pdo->expects(self::once())->method('query')->willReturn($engine);
+        \SP\Infrastructure\Crypt\MasterPasswordLockRow::assertSafeConfigWrite($pdo);
+    }
+    #[Test]
+    public function operatorManagedTriggersDoNotPreventRotation(): void
+    {
+        $this->guard('InnoDB', 0, [['Table' => 'Account']], false, false)->assertTransactional();
+        self::assertTrue(true);
+    }
     public static function rejectedStorage(): array
     {
         return [
             'nontransactional table' => ['MyISAM', 1, [], false, false],
-            'unverifiable triggers' => ['InnoDB', 0, [], false, false],
-            'trigger present' => ['InnoDB', 1, [['Table' => 'Account']], false, false],
             'plugin data present' => ['InnoDB', 1, [], 1, false],
             'token present' => ['InnoDB', 1, [], false, 1],
         ];
@@ -82,6 +120,7 @@ final class MasterPasswordStorageGuardTest extends TestCase
         $tokenResult = $this->createStub(PDOStatement::class);
         $tokenResult->method('fetchColumn')->willReturn($token);
         $pdo = $this->createStub(PDO::class);
+        $pdo->method('inTransaction')->willReturn(true);
         $pdo->method('prepare')->willReturn($privileges);
         $pdo->method('query')->willReturnCallback(static function (string $sql) use ($engines, $triggerResult, $pluginResult, $tokenResult): PDOStatement {
             return match (true) {

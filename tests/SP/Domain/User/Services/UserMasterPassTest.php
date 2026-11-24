@@ -54,6 +54,17 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class UserMasterPassTest extends UnitaryTestCase
 {
+    #[Test]
+    public function installedInstanceRequiresRequestLockWhenCreatingCopy(): void
+    {
+        $this->config->getConfigData()->setInstalled(true);
+        $this->masterPasswordRequestLock->method('isActive')->willReturn(false);
+        $this->masterPasswordRequestLock->expects(self::once())->method('assertCurrentMasterPassword')
+            ->with('synthetic master')->willThrowException(ServiceException::error('lock not held'));
+        $this->crypt->expects(self::never())->method('encrypt');
+        $this->expectException(ServiceException::class);
+        $this->userMasterPass->create('synthetic master', 'user', 'password');
+    }
 
     private MockObject|UserRepository $userRepository;
     private MockObject|ConfigService  $configService;

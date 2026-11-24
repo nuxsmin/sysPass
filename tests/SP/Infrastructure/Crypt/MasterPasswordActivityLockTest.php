@@ -42,6 +42,58 @@ use SP\Infrastructure\Database\PDOWrapper;
 final class MasterPasswordActivityLockTest extends TestCase
 {
     #[Test]
+    public function requestRehashesLegacyPasswordWithoutWaitingForItsOwnLock(): void
+    {
+        if (getenv('DB_SERVER') !== '127.0.0.1' || getenv('DB_NAME') !== 'syspass') {
+            self::markTestSkipped('Requires the disposable test database');
+        }
+        $dsn = 'mysql:host=127.0.0.1;dbname=syspass';
+        $reader = new PDO($dsn, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $writer = new PDO($dsn, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $writer->exec('SET innodb_lock_wait_timeout = 1');
+        $stmt = $writer->prepare('REPLACE INTO Config (parameter, value) VALUES (?, ?)');
+        $stmt->execute(['masterPasswordActivityLock', '1']);
+        $oldHash = password_hash('synthetic', PASSWORD_BCRYPT, ['cost' => 4]);
+        $stmt->execute(['masterPwd', $oldHash]);
+        $wrapper = $this->createStub(PDOWrapper::class);
+        $wrapper->method('build')->willReturnOnConsecutiveCalls($reader, $writer);
+        $lock = new MasterPasswordRequestLock($this->createStub(ConfigDataInterface::class), $wrapper);
+        $lock->acquire();
+        try {
+            $lock->assertCurrentMasterPassword('synthetic');
+            $newHash = $writer->query("SELECT value FROM Config WHERE parameter = 'masterPwd'")->fetchColumn();
+            self::assertNotSame($oldHash, $newHash);
+            self::assertTrue(Hash::checkMasterKey('synthetic', $newHash));
+            self::assertFalse(Hash::needsRehash($newHash));
+        } finally {
+            $lock->release();
+        }
+    }
+    #[Test]
+    public function passwordCheckSeesCommittedRehashWithoutBlockingAnotherWriter(): void
+    {
+        if (getenv('DB_SERVER') !== '127.0.0.1' || getenv('DB_NAME') !== 'syspass') {
+            self::markTestSkipped('Requires the disposable test database');
+        }
+        $dsn = 'mysql:host=127.0.0.1;dbname=syspass';
+        $reader = new PDO($dsn, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $writer = new PDO($dsn, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $writer->exec('SET innodb_lock_wait_timeout = 1');
+        $stmt = $writer->prepare('REPLACE INTO Config (parameter, value) VALUES (?, ?)');
+        $stmt->execute(['masterPasswordActivityLock', '1']);
+        $stmt->execute(['masterPwd', Hash::hashKey('old synthetic')]);
+        $lock = new MasterPasswordActivityLock($reader);
+        $lock->acquireShared();
+        try {
+            $reader->query("SELECT value FROM Config WHERE parameter = 'masterPwd'")->fetchColumn();
+            $stmt->execute(['masterPwd', Hash::hashKey('new synthetic')]);
+            self::assertNotNull($lock->assertCurrentMasterPassword('new synthetic'));
+            $stmt->execute(['masterPwd', Hash::hashKey('new synthetic')]);
+        } finally {
+            $lock->release();
+        }
+    }
+    #[Test]
     public function testIndependentRequestLocksCanBeHeldTogether(): void
     {
         if (getenv('DB_SERVER') !== 'sp-masterpass-verify-db' || getenv('DB_NAME') !== 'syspass_masterpass_test') {
