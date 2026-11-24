@@ -65,7 +65,8 @@ final class MasterPasswordLockInitializationTest extends UnitaryTestCase
             do {
                 $waiting = (int)$admin->query('SELECT COUNT(*) FROM information_schema.INNODB_LOCK_WAITS')->fetchColumn();
                 if ($waiting === 0) {
-                    usleep(20000);
+                    // Allow InnoDB's cached lock snapshot to refresh between reads.
+                    usleep(200000);
                 }
             } while ($waiting === 0 && microtime(true) < $deadline);
             self::assertGreaterThan(0, $waiting, 'The competing transaction must wait before completing the deadlock');
@@ -85,6 +86,9 @@ final class MasterPasswordLockInitializationTest extends UnitaryTestCase
             self::assertSame("done\n", fgets($pipes[1]));
             self::assertSame([1, 1], array_map('intval', $admin->query('SELECT value FROM deadlock_test WHERE id IN (1, 2) ORDER BY id')->fetchAll(PDO::FETCH_COLUMN)));
         } finally {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             foreach ($pipes as $pipe) {
                 fclose($pipe);
             }

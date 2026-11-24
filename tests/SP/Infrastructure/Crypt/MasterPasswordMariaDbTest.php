@@ -135,7 +135,12 @@ final class MasterPasswordMariaDbTest extends UnitaryTestCase
         $events = $this->createStub(EventDispatcherInterface::class);
         $repository = new SimpleRepository(new Database($storage, $events), $this->context, $events, new QueryFactory('mysql'));
         $guard = new MasterPasswordStorageGuard($storage);
-        $guard->assertTransactional();
+        $pdo->beginTransaction();
+        try {
+            $guard->assertTransactional();
+        } finally {
+            $pdo->rollBack();
+        }
         $accounts = $this->createStub(AccountMasterPasswordService::class);
         $accounts->method('updateMasterPassword')->willReturnCallback(
             static fn() => $pdo->exec("UPDATE Account SET value = 'new' WHERE id = 1")
@@ -160,8 +165,13 @@ final class MasterPasswordMariaDbTest extends UnitaryTestCase
         }
 
         $pdo->exec("INSERT INTO PluginData VALUES (1, 'encrypted')");
-        $this->expectException(ServiceException::class);
-        $this->expectExceptionMessage('PluginData');
-        $guard->assertTransactional();
+        $pdo->beginTransaction();
+        try {
+            $this->expectException(ServiceException::class);
+            $this->expectExceptionMessage('PluginData');
+            $guard->assertTransactional();
+        } finally {
+            $pdo->rollBack();
+        }
     }
 }

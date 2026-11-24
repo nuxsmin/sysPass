@@ -41,14 +41,14 @@ use SP\Infrastructure\Database\PDOWrapper;
 #[Group('integration')]
 final class MasterPasswordActivityLockTest extends TestCase
 {
+    use IsolatedMasterPasswordDatabase;
+
     #[Test]
     public function requestRehashesLegacyPasswordWithoutWaitingForItsOwnLock(): void
     {
-        if (getenv('DB_SERVER') !== '127.0.0.1' || getenv('DB_NAME') !== 'syspass') {
-            self::markTestSkipped('Requires the disposable test database');
-        }
-        $dsn = 'mysql:host=127.0.0.1;dbname=syspass';
-        $reader = new PDO($dsn, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $reader = $this->isolatedDatabase();
+        $reader->exec('CREATE TABLE Config (parameter VARCHAR(50) PRIMARY KEY, value VARCHAR(255)) ENGINE=InnoDB');
+        $dsn = 'mysql:host=' . getenv('DB_SERVER') . ';dbname=' . $reader->query('SELECT DATABASE()')->fetchColumn();
         $writer = new PDO($dsn, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $writer->exec('SET innodb_lock_wait_timeout = 1');
         $stmt = $writer->prepare('REPLACE INTO Config (parameter, value) VALUES (?, ?)');
@@ -72,11 +72,9 @@ final class MasterPasswordActivityLockTest extends TestCase
     #[Test]
     public function passwordCheckSeesCommittedRehashWithoutBlockingAnotherWriter(): void
     {
-        if (getenv('DB_SERVER') !== '127.0.0.1' || getenv('DB_NAME') !== 'syspass') {
-            self::markTestSkipped('Requires the disposable test database');
-        }
-        $dsn = 'mysql:host=127.0.0.1;dbname=syspass';
-        $reader = new PDO($dsn, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $reader = $this->isolatedDatabase();
+        $reader->exec('CREATE TABLE Config (parameter VARCHAR(50) PRIMARY KEY, value VARCHAR(255)) ENGINE=InnoDB');
+        $dsn = 'mysql:host=' . getenv('DB_SERVER') . ';dbname=' . $reader->query('SELECT DATABASE()')->fetchColumn();
         $writer = new PDO($dsn, 'root', getenv('DB_PASS') ?: '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $writer->exec('SET innodb_lock_wait_timeout = 1');
         $stmt = $writer->prepare('REPLACE INTO Config (parameter, value) VALUES (?, ?)');
