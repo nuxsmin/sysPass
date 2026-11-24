@@ -31,9 +31,11 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
 use SP\Modules\Web\Presenters\Helpers\Account\AccountActionsHelper;
+use SP\Modules\Web\Presenters\Helpers\Account\AccountActionsDto;
 use SP\Modules\Web\UI\ThemeIcons;
 use SP\Tests\UnitaryTestCase;
 
@@ -45,6 +47,17 @@ use function PHPUnit\Framework\once;
 #[Group('unitary')]
 class AccountActionsHelperTest extends UnitaryTestCase
 {
+    #[Test]
+    public function linkedAccountDoesNotOfferPasswordEditing(): void
+    {
+        $helper = new AccountActionsHelper($this->config, $this->context, $this->eventDispatcherStub,
+            $this->createStub(TemplateInterface::class), $this->createStub(RequestService::class),
+            new ThemeIcons(), $this->acl);
+        $permission = (new AccountPermission(AclActionsInterface::ACCOUNT_VIEW))->setResultEdit(true)->setShowEditPass(true);
+        $actions = $helper->getActionsForAccount($permission, new AccountActionsDto(10, null, 20));
+        self::assertTrue($permission->isShowEditPass());
+        self::assertCount(1, $actions);
+    }
     /**
      * @var AclInterface|MockObject
      */

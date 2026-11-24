@@ -245,6 +245,10 @@ final class AccountHelper extends AccountHelperBase
                 : 0
         );
         $this->view->assign('linkedAccounts', $this->accountService->getLinked($this->accountId));
+        $parentId = (int)$accountData->getParentId();
+        $this->view->assign('passwordSourceName', $parentId > 0 && $this->accountService->isVisible($parentId)
+            ? $this->accountService->getById($parentId)->getName()
+            : null);
 
         $this->view->assign('accountId', $accountData->getId());
         $this->view->assign('accountData', $accountData);

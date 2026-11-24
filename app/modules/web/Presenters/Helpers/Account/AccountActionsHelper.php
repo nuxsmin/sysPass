@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -104,7 +104,7 @@ final class AccountActionsHelper extends HelperBase
 
         $actions[] = $actionBack;
 
-        if ($accountAcl->isShowEditPass()) {
+        if ($accountAcl->isShowEditPass() && !$accountActionsDto->isLinked()) {
             $actions[] = $this->getEditPassAction()->addData('item-id', $accountActionsDto->getAccountId());
         }
 
