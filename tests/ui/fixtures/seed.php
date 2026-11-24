@@ -42,6 +42,7 @@ use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Ports\UserMasterPassService;
@@ -786,25 +787,31 @@ try {
     $hashService = $container->get(HashService::class);
     $crypt = $container->get(CryptInterface::class);
 
-    if ($verify) {
-        verifyFixture(
-            $pdo,
-            $configFileService,
-            $hashService,
-            $crypt,
-            $container->get(UserService::class),
-            $fixture
-        );
-    } else {
-        resetFixture(
-            $pdo,
-            $configFileService,
-            $hashService,
-            $container->get(CryptPKIHandler::class),
-            $container->get(UserMasterPassService::class),
-            $container->get(AccountCryptService::class),
-            $fixture
-        );
+    $requestLock = $container->get(MasterPasswordRequestLock::class);
+    $requestLock->acquire();
+    try {
+        if ($verify) {
+            verifyFixture(
+                $pdo,
+                $configFileService,
+                $hashService,
+                $crypt,
+                $container->get(UserService::class),
+                $fixture
+            );
+        } else {
+            resetFixture(
+                $pdo,
+                $configFileService,
+                $hashService,
+                $container->get(CryptPKIHandler::class),
+                $container->get(UserMasterPassService::class),
+                $container->get(AccountCryptService::class),
+                $fixture
+            );
+        }
+    } finally {
+        $requestLock->release();
     }
 } catch (Throwable $e) {
     fwrite(STDERR, sprintf("E2E fixture task failed: %s\n", $e->getMessage()));
