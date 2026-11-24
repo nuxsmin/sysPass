@@ -7683,3 +7683,9 @@ msgstr "通知が見つかりません。"
 
 msgid "No notifications match your filters."
 msgstr "フィルターに一致する通知はありません。"
+
+msgid "Sets the default language for sysPass and the initial administrator account after installation"
+msgstr "インストール後の sysPass および初期管理者アカウントの既定の言語を設定します"
+
+msgid "An administrator must verify a full backup and enter the upgradekey security code from config.xml before updating."
+msgstr "更新する前に、管理者は完全なバックアップを確認し、config.xml の upgradekey セキュリティコードを入力する必要があります。"

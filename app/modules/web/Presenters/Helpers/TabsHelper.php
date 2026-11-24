@@ -76,4 +76,10 @@ final class TabsHelper extends HelperBase
     {
         $this->tabs[] = $tab;
     }
+
+    /** Start a new tab set when this helper is reused by the container. */
+    public function clearTabs(): void
+    {
+        $this->tabs = [];
+    }
 }

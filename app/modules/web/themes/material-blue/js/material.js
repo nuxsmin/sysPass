@@ -2851,6 +2851,9 @@
      */
     MaterialTextfield.prototype.onBlur_ = function (event) {
         this.element_.classList.remove(this.CssClasses_.IS_FOCUSED);
+        if (!this.element_.isConnected || (this.element_.closest && this.element_.closest('[data-mdl-reparenting]'))) {
+            return;
+        }
         this.element_.classList.add('is-touched');
         this.checkValidity();
     };
@@ -3397,12 +3400,14 @@
             var container = document.createElement('div');
             container.classList.add(this.CssClasses_.CONTAINER);
             var focusedElement = this.element_.querySelector(':focus');
+            this.element_.setAttribute('data-mdl-reparenting', '1');
             this.element_.parentElement.insertBefore(container, this.element_);
             this.element_.parentElement.removeChild(this.element_);
             container.appendChild(this.element_);
             if (focusedElement) {
                 focusedElement.focus();
             }
+            this.element_.removeAttribute('data-mdl-reparenting');
             var directChildren = this.element_.childNodes;
             var numChildren = directChildren.length;
             for (var c = 0; c < numChildren; c++) {

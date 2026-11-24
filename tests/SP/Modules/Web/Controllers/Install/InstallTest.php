@@ -233,4 +233,79 @@ final class InstallTest extends IntegrationTestCase
         self::assertSame('OK', $json['status']);
         self::assertSame('Installation finished', $json['description']);
     }
+
+    #[Test]
+    public function indexResolvesLanguageAndAccessibleHintsOnFreshInstall(): void
+    {
+        $freshConfig = self::createConfiguredStub(
+            \SP\Domain\Config\Ports\ConfigDataInterface::class,
+            array_merge(parent::getConfigData(), ['isInstalled' => false, 'getSiteLang' => null])
+        );
+        $configService = $this->createStub(\SP\Domain\Config\Ports\ConfigFileService::class);
+        $configService->method('getConfigData')->willReturn($freshConfig);
+
+        $storedLocale = '';
+        $context = $this->createStub(\SP\Domain\Core\Context\SessionContext::class);
+        $context->method('isLoggedIn')->willReturn(false);
+        $context->method('getAuthCompleted')->willReturn(false);
+        $context->method('getUserData')->willReturn(new \SP\Domain\User\Dtos\UserDto());
+        $context->method('setLocale')->willReturnCallback(
+            static function (string $locale) use (&$storedLocale): void {
+                $storedLocale = $locale;
+            }
+        );
+        $context->method('getLocale')->willReturnCallback(
+            static function () use (&$storedLocale): string {
+                return $storedLocale;
+            }
+        );
+
+        $outputs = [];
+
+        // Run twice in the same session to verify non-reload requests preserve <html lang="...">
+        for ($i = 0; $i < 2; $i++) {
+            $container = $this->buildContainer(
+                IntegrationTestCase::buildRequest(
+                    'get',
+                    'index.php',
+                    ['r' => 'install/index'],
+                    [],
+                    [],
+                    ['HTTP_ACCEPT_LANGUAGE' => 'en-GB,en;q=0.9']
+                ),
+                [
+                    \SP\Domain\Config\Ports\ConfigFileService::class => $configService,
+                    \SP\Domain\Config\Ports\ConfigDataInterface::class => $freshConfig,
+                    \SP\Domain\Core\Context\Context::class => $context,
+                ]
+            );
+
+            ob_start();
+            try {
+                IntegrationTestCase::runApp($container);
+            } finally {
+                $outputs[] = (string) ob_get_clean();
+            }
+        }
+
+        foreach ($outputs as $output) {
+            $crawler = new Crawler($output);
+
+            self::assertSame('en', $crawler->filterXPath('//html')->attr('lang'));
+            self::assertSame(
+                'en_US',
+                $crawler->filterXPath('//select[@id="sel-sitelang"]/option[@selected]')->attr('value')
+            );
+            self::assertSame(
+                'sitelang-hint',
+                $crawler->filterXPath('//select[@id="sel-sitelang"]')->attr('aria-describedby')
+            );
+            self::assertCount(1, $crawler->filterXPath('//p[@id="sitelang-hint"]'));
+            self::assertSame(
+                'masterpasswordR-error',
+                $crawler->filterXPath('//input[@id="masterpasswordR"]')->attr('aria-describedby')
+            );
+            self::assertCount(1, $crawler->filterXPath('//div[@id="masterpasswordR-error"]'));
+        }
+    }
 }

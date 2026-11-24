@@ -108,6 +108,14 @@ final class UpgradeTest extends IntegrationTestCase
         $crawler = new Crawler($output);
 
         self::assertCount(1, $crawler->filterXPath('//form[@id="frmUpgrade" and @method="post"]'));
+        $warningText = trim($crawler->filterXPath('//div[contains(@class, "sp-alert--warning")]//p[contains(@class, "sp-alert__text")]')->text());
+        self::assertStringNotContainsString('Please contact to the administrator', $warningText);
+        self::assertStringContainsString('upgradekey', $warningText);
+        self::assertStringContainsString('backup', strtolower($warningText));
+        self::assertStringContainsString(
+            'upgradekey',
+            $crawler->filterXPath('//p[@id="key-hint"]')->text()
+        );
     }
 
     private function outputCheckerUpgrade(string $output): void

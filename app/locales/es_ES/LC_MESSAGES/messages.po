@@ -7961,3 +7961,9 @@ msgstr "No se encontraron notificaciones."
 
 msgid "No notifications match your filters."
 msgstr "Ninguna notificación coincide con los filtros."
+
+msgid "Sets the default language for sysPass and the initial administrator account after installation"
+msgstr "Establece el idioma predeterminado de sysPass y de la cuenta de administrador inicial tras la instalación"
+
+msgid "An administrator must verify a full backup and enter the upgradekey security code from config.xml before updating."
+msgstr "Un administrador debe verificar una copia de seguridad completa e introducir el código de seguridad upgradekey de config.xml antes de actualizar."

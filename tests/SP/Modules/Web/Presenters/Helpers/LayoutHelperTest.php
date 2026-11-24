@@ -139,4 +139,65 @@ final class LayoutHelperTest extends UnitaryTestCase
         self::assertArrayNotHasKey('logo_no_bg_color', $assigned);
         self::assertArrayNotHasKey('logo_no_bg', $assigned);
     }
+
+    #[Test]
+    #[RunInSeparateProcess]
+    public function initBodyAssignsFallbackLangWhenStaticPropertiesAreEmpty(): void
+    {
+        \SP\Core\Language::$globalLang = '';
+        \SP\Core\Language::$userLang = '';
+
+        $assigned = [];
+
+        $template = $this->createMock(TemplateInterface::class);
+        $template->method('assign')
+                 ->willReturnCallback(static function (string $name, mixed $value) use (&$assigned): void {
+                     $assigned[$name] = $value;
+                 });
+
+        $configData = $this->config->getConfigData();
+        $configData->setApplicationUrl('https://vault.example.test/syspass/');
+        $configData->setPasswordSalt('0123456789abcdef0123456789abcdef');
+
+        $context = $this->createStub(SessionContext::class);
+        $context->method('isLoggedIn')->willReturn(false);
+        $context->method('getAuthCompleted')->willReturn(false);
+        $context->method('getLocale')->willReturn('es_ES');
+        $context->method('getUserData')->willReturn(
+            UserDto::fromModel(UserDataGenerator::factory()->buildUserData())
+        );
+
+        $uriContext = $this->createStub(UriContextInterface::class);
+        $uriContext->method('getWebUri')->willReturn('https://vault.example.test/syspass');
+        $uriContext->method('getSubUri')->willReturn('/index.php');
+
+        $theme = $this->createStub(ThemeInterface::class);
+        $theme->method('getInfo')->willReturn([]);
+        $theme->method('getPath')->willReturn('app/modules/web/themes/material-blue');
+
+        $cryptPKI = $this->createStub(CryptPKIHandler::class);
+        $cryptPKI->method('getPublicKey')->willReturn('PUBLIC-KEY');
+
+        $request = $this->createStub(RequestService::class);
+        $request->method('isHttps')->willReturn(true);
+
+        $acl = $this->createStub(AclInterface::class);
+        $acl->method('getRouteFor')->willReturn('account/index');
+
+        $helper = new LayoutHelper(
+            $this->config,
+            $context,
+            $this->eventDispatcherStub,
+            $template,
+            $request,
+            $theme,
+            $cryptPKI,
+            $uriContext,
+            $acl
+        );
+
+        $helper->initBody();
+
+        self::assertSame('es', $assigned['lang'] ?? null);
+    }
 }

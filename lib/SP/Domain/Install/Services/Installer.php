@@ -266,11 +266,14 @@ final class Installer implements InstallerService
                                    ->setDbPort($this->installData->getDbPort())
                                    ->setDbName($this->installData->getDbName())
                                    ->setSiteLang($this->installData->getSiteLang())
-                                   // Security-sensitive default: a fresh install must not
-                                   // auto-login from the web server's Basic Auth identity.
-                                   // Only the installer writes this; existing installs keep
-                                   // their stored configuration because no migration runs here.
-                                   ->setAuthBasicAutoLoginEnabled(false);
+            // Security-sensitive defaults: a fresh install does not use
+            // web-server Basic Auth enforcement or auto-login unless an
+            // administrator explicitly enables them. Only the installer writes
+            // these values; existing installs keep their stored configuration
+            // (and ConfigData's legacy omitted-key fallback) because no
+            // migration runs here.
+            ->setAuthBasicEnabled(false)
+            ->setAuthBasicAutoLoginEnabled(false);
 
         $this->config->save($configData, false);
 

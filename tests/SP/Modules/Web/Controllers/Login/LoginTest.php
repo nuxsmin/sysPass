@@ -608,6 +608,113 @@ final class LoginTest extends IntegrationTestCase
         self::assertSame(0, $session->getLastActivity());
     }
 
+    #[Test]
+    public function freshInstallConfigAllowsAuthenticatedShellRequestsWithoutBrowserAuthHeaders(): void
+    {
+        $version = \SP\Domain\Common\Providers\Version::getVersionStringNormalized();
+        $configData = (new \SP\Domain\Config\Adapters\ConfigData())
+            ->setInstalled(true)
+            ->setDbName('syspass_test')
+            ->setPasswordSalt($this->passwordSalt)
+            ->setAppVersion($version)
+            ->setDatabaseVersion($version)
+            ->setConfigVersion($version)
+            ->setAuthBasicEnabled(false)
+            ->setAuthBasicAutoLoginEnabled(false);
+
+        $configFile = $this->createStub(ConfigFileService::class);
+        $configFile->method('getConfigData')->willReturn($configData);
+
+        $session = new class extends \SP\Core\Context\Session {
+            public function initialize(): void
+            {
+                if (!$this->isInitialized()) {
+                    $this->setContext(new \SP\Core\Context\ContextCollection());
+                }
+            }
+        };
+        $session->initialize();
+        $session->setUserData($this->getUserDataDto()->mutate(['login' => 'admin', 'isAdminApp' => true]));
+        $session->setUserProfile($this->getUserProfile());
+        $session->setAuthCompleted(true);
+        $session->setAppStatus('active');
+        $session->setLastActivity(time());
+
+        $notificationService = $this->createStub(\SP\Domain\Notification\Ports\NotificationService::class);
+        $notificationService->method('getAllActiveForCurrentUser')->willReturn([]);
+
+        foreach (['items/notifications', 'account/search'] as $route) {
+            $result = $this->dispatchRoute(
+                'get',
+                $route,
+                [],
+                [],
+                [
+                    ConfigFileService::class => $configFile,
+                    Context::class => $session,
+                    \SP\Domain\Notification\Ports\NotificationService::class => $notificationService,
+                ],
+                ['HTTP_ACCEPT' => 'application/json']
+            );
+
+            self::assertSame(200, $result['code'], $route . ': ' . $result['body']);
+            $json = json_decode($result['body'], true, 512, JSON_THROW_ON_ERROR);
+            self::assertSame('OK', $json['status'] ?? null, $route . ': ' . $result['body']);
+            self::assertTrue($session->isLoggedIn(), $route);
+            self::assertTrue($session->getAuthCompleted(), $route);
+        }
+    }
+
+    #[Test]
+    public function legacyConfigOmittingAuthBasicKeyFailsClosedWithoutBrowserAuthHeaders(): void
+    {
+        // Legacy config.xml omitting authBasicEnabled preserves ConfigData's true default
+        $version = \SP\Domain\Common\Providers\Version::getVersionStringNormalized();
+        $configData = (new \SP\Domain\Config\Adapters\ConfigData())
+            ->setInstalled(true)
+            ->setDbName('syspass_test')
+            ->setPasswordSalt($this->passwordSalt)
+            ->setAppVersion($version)
+            ->setDatabaseVersion($version)
+            ->setConfigVersion($version);
+
+        $configFile = $this->createStub(ConfigFileService::class);
+        $configFile->method('getConfigData')->willReturn($configData);
+
+        $session = new class extends \SP\Core\Context\Session {
+            public function initialize(): void
+            {
+                if (!$this->isInitialized()) {
+                    $this->setContext(new \SP\Core\Context\ContextCollection());
+                }
+            }
+        };
+        $session->initialize();
+        $session->setUserData($this->getUserDataDto()->mutate(['login' => 'alice', 'isAdminApp' => true]));
+        $session->setUserProfile($this->getUserProfile());
+        $session->setAuthCompleted(true);
+        $session->setAppStatus('active');
+        $session->setLastActivity(time());
+
+        $result = $this->dispatchRoute(
+            'get',
+            'account/search',
+            [],
+            [],
+            [
+                ConfigFileService::class => $configFile,
+                Context::class => $session,
+            ],
+            ['HTTP_ACCEPT' => 'application/json']
+        );
+
+        self::assertNotSame(500, $result['code'], $result['body']);
+        $json = json_decode($result['body'], true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame(10, $json['status'] ?? null);
+        self::assertFalse($session->isLoggedIn());
+        self::assertFalse($session->getAuthCompleted());
+    }
+
     /**
      * @return array{body: string, echoed: string, code: int, headers: array<string, mixed>}
      * @throws ContainerExceptionInterface

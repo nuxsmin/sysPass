@@ -66,6 +66,8 @@ final class IndexController extends ControllerBase
      */
     protected function getGridTabs(): string
     {
+        $this->tabsHelper->clearTabs();
+
         if ($this->checkAccess(AclActionsInterface::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->presenter->getGeneral());
         }

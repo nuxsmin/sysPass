@@ -7924,3 +7924,9 @@ msgstr "Nem találhatók értesítések."
 
 msgid "No notifications match your filters."
 msgstr "Nincs a szűrőknek megfelelő értesítés."
+
+msgid "Sets the default language for sysPass and the initial administrator account after installation"
+msgstr "Beállítja a sysPass és a kezdeti rendszergazdai fiók alapértelmezett nyelvét a telepítés után"
+
+msgid "An administrator must verify a full backup and enter the upgradekey security code from config.xml before updating."
+msgstr "A frissítés előtt a rendszergazdának ellenőriznie kell a teljes biztonsági mentést, és meg kell adnia a config.xml fájlban található upgradekey biztonsági kódot."

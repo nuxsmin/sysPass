@@ -72,13 +72,45 @@ final class IndexController extends ControllerBase
             ];
         }
 
+        $availableLanguages = $this->languageList->getAvailableLanguages();
+
         $this->view->assign('errors', $errors);
         $this->view->assign(
             'langs',
-            SelectItemAdapter::factory($this->languageList->getAvailableLanguages())
-                             ->getItemsFromArraySelected([$this->configData->getSiteLang()])
+            SelectItemAdapter::factory($availableLanguages)
+                             ->getItemsFromArraySelected([$this->resolveSelectedLanguage($availableLanguages)])
         );
 
         return ActionResponse::ok($this->render());
+    }
+
+    /**
+     * @param array<string, string> $availableLanguages
+     */
+    private function resolveSelectedLanguage(array $availableLanguages): string
+    {
+        $candidates = array_filter([
+            $this->configData->getSiteLang(),
+            $this->session->getLocale(),
+            'en_US',
+        ]);
+
+        foreach ($candidates as $candidate) {
+            if (isset($availableLanguages[$candidate])) {
+                return $candidate;
+            }
+
+            $prefix = substr((string) $candidate, 0, 2);
+
+            if (strlen($prefix) === 2) {
+                foreach (array_keys($availableLanguages) as $code) {
+                    if (substr((string) $code, 0, 2) === $prefix) {
+                        return (string) $code;
+                    }
+                }
+            }
+        }
+
+        return 'en_US';
     }
 }

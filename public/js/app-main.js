@@ -132,7 +132,15 @@ sysPass.Main = function () {
                     msg.error(e);
                 }
 
-                $this.closest("form").submit();
+                const formEl = $this.closest("form")[0];
+
+                if (formEl) {
+                    if (typeof formEl.requestSubmit === "function") {
+                        formEl.requestSubmit();
+                    } else if (typeof formEl.reportValidity !== "function" || formEl.reportValidity()) {
+                        $this.closest("form").submit();
+                    }
+                }
             }
         });
     };

@@ -37,7 +37,7 @@ use SP\Modules\Web\Mvc\View\TemplateInterface;
 use function SP\__;
 
 ?>
-<div id="actions" class="installer" align="center">
+<div id="actions" class="installer sp-flow-page sp-panel">
     <div id="page-title">
         <h1><?php
             printf(__('Installation %s'), $_getvar('app_version')); ?></h1>
@@ -55,138 +55,135 @@ use function SP\__;
             <legend><?php
                 echo __('sysPass Admin'); ?></legend>
 
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="adminlogin" name="adminlogin" type="text" required
-                       class="mdl-textfield__input mdl-color-text--indigo-400"
-                       value="admin" maxlength="80" autocomplete="off"
-                       tabindex="0"
-                       autofocus>
-                <label class="mdl-textfield__label"
-                       for="adminlogin"><?php
-                    echo __('sysPass admin user'); ?></label>
+            <div class="sp-flow-field">
+                <div class="mdl-textfield mdl-js-textfield">
+                    <label class="mdl-textfield__label"
+                           for="adminlogin"><?php
+                        echo __('sysPass admin user'); ?></label>
+                    <input id="adminlogin" name="adminlogin" type="text" required
+                           class="mdl-textfield__input"
+                           value="admin" maxlength="80" autocomplete="username"
+                           aria-describedby="adminlogin-hint"
+                           autofocus>
+                </div>
+                <p id="adminlogin-hint" class="sp-field-hint"><?php
+                    echo __('sysPass administrator\'s login'); ?></p>
             </div>
 
-            <div id="help-login"
-                 class="icon material-icons <?php
-                 echo $icons->help()->getClass(); ?>">
-                <?php
-                echo $icons->help()->getIcon(); ?>
-            </div>
-            <div class="mdl-tooltip" for="help-login">
-                <?php
-                echo __('sysPass administrator\'s login'); ?>
-            </div>
-
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="adminpass" name="adminpass" type="password" required
-                       class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
-                       value="" maxlength="255" autocomplete="off">
-                <label class="mdl-textfield__label"
-                       for="adminlogin"><?php
-                    echo __('Password'); ?></label>
+            <div class="sp-flow-field">
+                <div class="form-control">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <label class="mdl-textfield__label"
+                               for="adminpass"><?php
+                            echo __('Password'); ?></label>
+                        <input id="adminpass" name="adminpass" type="password" required
+                               class="mdl-textfield__input passwordfield__input"
+                               value="" maxlength="255" autocomplete="new-password">
+                    </div>
+                </div>
             </div>
         </fieldset>
 
         <fieldset id="masterpwd">
             <legend><?php
                 echo __('Master Password'); ?></legend>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="masterpassword" name="masterpassword" type="password"
-                       required
-                       class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
-                       value="" maxlength="255" autocomplete="off">
-                <label class="mdl-textfield__label"
-                       for="masterpassword"><?php
-                    echo __('Master Password'); ?></label>
+
+            <div class="sp-flow-field">
+                <div class="form-control">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <label class="mdl-textfield__label"
+                               for="masterpassword"><?php
+                            echo __('Master Password'); ?></label>
+                        <input id="masterpassword" name="masterpassword" type="password"
+                               required
+                               class="mdl-textfield__input passwordfield__input"
+                               value="" maxlength="255" autocomplete="new-password"
+                               aria-describedby="masterpassword-hint">
+                    </div>
+                </div>
+                <p id="masterpassword-hint" class="sp-field-hint"><?php
+                    echo __('The Master Password length need to be at least 11 characters'); ?></p>
             </div>
 
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="masterpasswordR" name="masterpasswordr"
-                       type="password" required
-                       class="mdl-textfield__input mdl-color-text--indigo-400"
-                       value="" maxlength="255" autocomplete="off">
-                <label class="mdl-textfield__label"
-                       for="masterpasswordR"><?php
-                    echo __('Password (repeat)'); ?></label>
+            <div class="sp-flow-field">
+                <div class="mdl-textfield mdl-js-textfield">
+                    <label class="mdl-textfield__label"
+                           for="masterpasswordR"><?php
+                        echo __('Password (repeat)'); ?></label>
+                    <input id="masterpasswordR" name="masterpasswordr"
+                           type="password" required
+                           class="mdl-textfield__input"
+                           value="" maxlength="255" autocomplete="new-password"
+                           aria-describedby="masterpasswordR-error"
+                           data-mismatch-msg="<?php
+                           echo htmlspecialchars(__('Passwords do not match'), ENT_QUOTES); ?>">
+                </div>
+                <div id="masterpasswordR-error"
+                     class="sp-field-error sp-password-match-error"
+                     aria-live="polite"
+                     hidden></div>
             </div>
         </fieldset>
 
-        <fieldset id='databaseField'>
+        <fieldset id="databaseField">
             <legend><?php
                 echo __('DB Configuration'), ' (MySQL)'; ?></legend>
 
-            <input type='hidden' id='hasMySQL' value='true'/>
+            <input type="hidden" id="hasMySQL" value="true"/>
             <input type="hidden" id="dbtype" name="dbtype" value="mysql"/>
 
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="dbuser" name="dbuser" type="text" required
-                       class="mdl-textfield__input mdl-color-text--indigo-400"
-                       value="root" autocomplete="off" autofocus>
-                <label class="mdl-textfield__label"
-                       for="dbuser"><?php
-                    echo __('DB access user'); ?></label>
+            <div class="sp-flow-field">
+                <div class="mdl-textfield mdl-js-textfield">
+                    <label class="mdl-textfield__label"
+                           for="dbuser"><?php
+                        echo __('DB access user'); ?></label>
+                    <input id="dbuser" name="dbuser" type="text" required
+                           class="mdl-textfield__input"
+                           value="root" autocomplete="off"
+                           aria-describedby="dbuser-hint">
+                </div>
+                <p id="dbuser-hint" class="sp-field-hint"><?php
+                    echo __('An user with MySQL admin rights'); ?></p>
             </div>
 
-            <div id="help-dblogin"
-                 class="icon material-icons <?php
-                 echo $icons->help()->getClass(); ?>">
-                <?php
-                echo $icons->help()->getIcon(); ?>
-            </div>
-            <div class="mdl-tooltip" for="help-dblogin">
-                <?php
-                echo __('An user with MySQL admin rights'); ?>
-            </div>
-
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="dbpass" name="dbpass" type="password" required
-                       class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
-                       value="" autocomplete="off" autofocus>
-                <label class="mdl-textfield__label"
-                       for="dbpass"><?php
-                    echo __('DB access password'); ?></label>
+            <div class="sp-flow-field">
+                <div class="form-control">
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <label class="mdl-textfield__label"
+                               for="dbpass"><?php
+                            echo __('DB access password'); ?></label>
+                        <input id="dbpass" name="dbpass" type="password" required
+                               class="mdl-textfield__input passwordfield__input-show"
+                               value="" autocomplete="off">
+                    </div>
+                </div>
             </div>
 
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="dbname" name="dbname" type="text" required
-                       class="mdl-textfield__input mdl-color-text--indigo-400"
-                       value="syspass" autocomplete="off" autofocus
-                       pattern="[0-9a-zA-Z_$\-]+">
-                <label class="mdl-textfield__label"
-                       for="dbuser"><?php
-                    echo __('sysPass database name'); ?></label>
+            <div class="sp-flow-field">
+                <div class="mdl-textfield mdl-js-textfield">
+                    <label class="mdl-textfield__label"
+                           for="dbname"><?php
+                        echo __('sysPass database name'); ?></label>
+                    <input id="dbname" name="dbname" type="text" required
+                           class="mdl-textfield__input"
+                           value="syspass" autocomplete="off"
+                           pattern="[0-9a-zA-Z_$\-]+">
+                </div>
             </div>
 
-            <div id="help-dbname"
-                 class="icon material-icons <?php
-                 echo $icons->help()->getClass(); ?>">
-                <?php
-                echo $icons->help()->getIcon(); ?>
-            </div>
-            <div class="mdl-tooltip" for="help-dbname">
-                <?php
-                echo __('sysPass database name'); ?>
-            </div>
-
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input id="dbhost" name="dbhost" type="text" required
-                       class="mdl-textfield__input mdl-color-text--indigo-400"
-                       value="localhost" autocomplete="off" autofocus
-                       pattern="([0-9a-zA-Z._\-]+|([0-9]{1,3}\.)+)(:[0-9]{1,5})?|unix:.*">
-                <label class="mdl-textfield__label"
-                       for="dbhost"><?php
-                    echo __('sysPass database server'); ?></label>
-            </div>
-
-            <div id="help-dbhost"
-                 class="icon material-icons <?php
-                 echo $icons->help()->getClass(); ?>">
-                <?php
-                echo $icons->help()->getIcon(); ?>
-            </div>
-            <div class="mdl-tooltip" for="help-dbhost">
-                <?php
-                echo __('Server name to install sysPass database'); ?>
+            <div class="sp-flow-field">
+                <div class="mdl-textfield mdl-js-textfield">
+                    <label class="mdl-textfield__label"
+                           for="dbhost"><?php
+                        echo __('sysPass database server'); ?></label>
+                    <input id="dbhost" name="dbhost" type="text" required
+                           class="mdl-textfield__input"
+                           value="localhost" autocomplete="off"
+                           aria-describedby="dbhost-hint"
+                           pattern="([0-9a-zA-Z._\-]+|([0-9]{1,3}\.)+)(:[0-9]{1,5})?|unix:.*">
+                </div>
+                <p id="dbhost-hint" class="sp-field-hint"><?php
+                    echo __('Server name to install sysPass database'); ?></p>
             </div>
         </fieldset>
 
@@ -194,13 +191,14 @@ use function SP\__;
             <legend><?php
                 echo __('General'); ?></legend>
 
-            <div class="form-field">
-                <label for="sel-sitelang"><?php
+            <div class="sp-flow-field">
+                <label class="sp-flow-label" for="sel-sitelang"><?php
                     echo __('Language'); ?></label>
                 <select name="sitelang" id="sel-sitelang" size="1"
                         class="select-box"
+                        aria-describedby="sitelang-hint"
                         title="<?php
-                        echo __('Language'); ?>">
+                        echo htmlspecialchars(__('Language'), ENT_QUOTES); ?>">
                     <?php
                     /** @var SelectItem $lang */
                     foreach ($_getvar('langs') as $lang): ?>
@@ -211,43 +209,55 @@ use function SP\__;
                     <?php
                     endforeach; ?>
                 </select>
+                <p id="sitelang-hint" class="sp-field-hint"><?php
+                    echo __('Sets the default language for sysPass and the initial administrator account after installation'); ?></p>
             </div>
 
-            <div class="form-field">
-                <label for="hostingmode">
-                    <?php
-                    echo __('Hosting Mode'); ?>
-                    <div id="help-hostingmode"
-                         class="icon material-icons <?php
-                         echo $icons->help()->getClass(); ?>">
-                        <?php
-                        echo $icons->help()->getIcon(); ?>
-                    </div>
-
-                    <div class="mdl-tooltip" for="help-hostingmode">
-                        <?php
-                        echo __('It does not create or verify the user\'s permissions on the DB'); ?>
-                    </div>
+            <div class="sp-flow-field">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect sp-flow-checkbox"
+                       for="hostingmode">
+                    <input type="checkbox" id="hostingmode"
+                           class="mdl-checkbox__input" name="hostingmode"
+                           aria-describedby="hostingmode-hint">
+                    <span class="mdl-checkbox__label"><?php
+                        echo __('Hosting Mode'); ?></span>
                 </label>
-
-                <div>
-                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
-                           for="hostingmode">
-                        <input type="checkbox" id="hostingmode"
-                               class="mdl-checkbox__input" name="hostingmode">
-                    </label>
-                </div>
+                <p id="hostingmode-hint" class="sp-field-hint"><?php
+                    echo __('It does not create or verify the user\'s permissions on the DB'); ?></p>
             </div>
         </fieldset>
 
-        <div class="buttons">
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
+        <div id="install-feedback"
+             class="sp-alert sp-alert--error sp-flow-status"
+             role="alert"
+             aria-live="polite"
+             hidden>
+            <i class="material-icons sp-alert__icon" aria-hidden="true">error_outline</i>
+            <div class="sp-alert__body">
+                <strong class="sp-alert__title"></strong>
+                <p class="sp-alert__text" hidden></p>
+            </div>
+        </div>
+
+        <div id="install-running-status"
+             class="sp-alert sp-alert--info sp-flow-status"
+             role="status"
+             aria-live="polite"
+             hidden>
+            <i class="material-icons sp-alert__icon" aria-hidden="true">hourglass_empty</i>
+            <div class="sp-alert__body">
+                <span class="sp-alert__text"><?php
+                    echo __('Performing task. Please, do not close browser\'s window/tab.'); ?></span>
+            </div>
+        </div>
+
+        <div class="buttons sp-flow-actions">
+            <button id="btnInstall"
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored sp-btn-primary"
                     type="submit">
-                <?php
-                echo __('Install'); ?>
-                <i class="material-icons"
-                   title="<?php
-                   echo __('Install'); ?>"><?php
+                <span><?php
+                    echo __('Install'); ?></span>
+                <i class="material-icons" aria-hidden="true"><?php
                     echo $icons->play()->getIcon(); ?></i>
             </button>
         </div>

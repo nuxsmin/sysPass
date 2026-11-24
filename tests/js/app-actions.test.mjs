@@ -1310,3 +1310,213 @@ test("user.savePassword prevents duplicate submission while in flight, toggles b
     assert.equal(context.record.magnificClosed, 1);
 });
 
+function makeRichElement(dataMap) {
+    const el = makeElement(dataMap);
+    el.length = 1;
+    el.textValues = [];
+    el.focused = 0;
+    el.shown = null;
+    el.removeAttr = function (key) {
+        delete this.attrs[key];
+        return this;
+    };
+    el.prop = function (key, value) {
+        this[key] = value;
+        return this;
+    };
+    el.text = function (value) {
+        if (value !== undefined) {
+            this.textValues.push(value);
+            this.textContent = String(value);
+            return this;
+        }
+        return this.textContent || "";
+    };
+    el.show = function () {
+        this.shown = true;
+        return this;
+    };
+    el.hide = function () {
+        this.shown = false;
+        return this;
+    };
+    el.focus = function () {
+        this.focused += 1;
+    };
+    return el;
+}
+
+test("main.install locks duplicate submits, toggles running status, handles error/fail, and shows success", async function () {
+    const submitBtn = makeRichElement();
+    const feedbackTitle = makeRichElement();
+    const feedbackText = makeRichElement();
+    const feedbackIcon = makeRichElement();
+    const feedback = makeRichElement();
+    feedback.find = function (sel) {
+        if (sel === ".sp-alert__title") return feedbackTitle;
+        if (sel === ".sp-alert__text") return feedbackText;
+        if (sel === ".sp-alert__icon") return feedbackIcon;
+        return makeRichElement();
+    };
+    const running = makeRichElement();
+    running.attr("hidden", "hidden");
+
+    const context = setup({
+        elements: {
+            "#btnInstall": submitBtn,
+            "#install-feedback": feedback,
+            "#install-running-status": running
+        }
+    });
+
+    const $form = makeRichElement({"route": "install/install"});
+    $form.serialize = function () {
+        return "adminlogin=admin";
+    };
+
+    context.actions.main.install($form);
+    assert.equal(context.record.calls.length, 1);
+    assert.equal($form.attr("data-submitting"), "1");
+    assert.equal(submitBtn.attr("disabled"), "disabled");
+    assert.equal(submitBtn.attr("aria-busy"), "true");
+    assert.equal(running.attr("hidden"), undefined);
+
+    // Duplicate call while submitting is ignored
+    context.actions.main.install($form);
+    assert.equal(context.record.calls.length, 1);
+
+    // Validation error restores form and renders feedback text
+    context.record.calls[0].callback({status: 1, description: "DB connection failed", data: "Check host"});
+    assert.equal($form.attr("data-submitting"), undefined);
+    assert.equal(submitBtn.attr("disabled"), undefined);
+    assert.equal(running.attr("hidden"), "hidden");
+    assert.equal(feedback.attr("hidden"), undefined);
+    assert.equal(feedbackTitle.textContent, "DB connection failed");
+    assert.equal(feedbackText.textContent, "Check host");
+
+    // Transport error callback also recovers safely without leaking internals
+    context.actions.main.install($form);
+    assert.equal(context.record.calls.length, 2);
+    context.record.calls[1].callbackError();
+    assert.equal($form.attr("data-submitting"), undefined);
+    assert.equal(submitBtn.attr("disabled"), undefined);
+    assert.equal(running.attr("hidden"), "hidden");
+    assert.equal(feedbackTitle.textContent, "There was an error");
+
+    // Successful install clears loading/aria-busy while keeping disabled + data-submitting during redirect
+    context.actions.main.install($form);
+    const origInstallTimeout = globalThis.setTimeout;
+    globalThis.setTimeout = () => 1;
+    try {
+        context.record.calls[2].callback({status: "OK", description: "Installation finished", data: null});
+    } finally {
+        globalThis.setTimeout = origInstallTimeout;
+    }
+    assert.equal(submitBtn.attr("aria-busy"), undefined);
+    assert.equal(submitBtn.attr("disabled"), "disabled");
+    assert.equal($form.attr("data-submitting"), "1");
+});
+
+test("main.upgrade prevents duplicate execution, toggles running state, clears security code on error, and shows success", function () {
+    const submitBtn = makeRichElement();
+    const feedbackTitle = makeRichElement();
+    const feedbackText = makeRichElement();
+    const feedbackIcon = makeRichElement();
+    const feedback = makeRichElement();
+    feedback.find = function (sel) {
+        if (sel === ".sp-alert__title") return feedbackTitle;
+        if (sel === ".sp-alert__text") return feedbackText;
+        if (sel === ".sp-alert__icon") return feedbackIcon;
+        return makeRichElement();
+    };
+    const running = makeRichElement();
+    running.attr("hidden", "hidden");
+    const keyWrap = makeRichElement();
+    const keyInput = makeRichElement();
+    keyInput.val("bad-code");
+    keyInput.parent = function () {
+        return keyWrap;
+    };
+    const chkConfirm = makeRichElement();
+    chkConfirm[0] = {checked: true, focus: function () {}};
+
+    const context = setup({
+        elements: {
+            "#btnChange": submitBtn,
+            "#upgrade-feedback": feedback,
+            "#upgrade-running-status": running,
+            "#chkConfirm": chkConfirm
+        }
+    });
+
+    const $form = makeRichElement({"action-route": "upgrade/upgrade"});
+    $form.find = function (sel) {
+        if (sel === ":input[name=key]") return keyInput;
+        return {length: 0, val: function () {}};
+    };
+    $form.serialize = function () {
+        return "key=bad-code&chkConfirm=on";
+    };
+
+    context.actions.main.upgrade($form);
+    assert.equal(context.record.dialogs.length, 1);
+    assert.equal(context.record.calls.length, 0);
+    assert.equal(running.attr("hidden"), "hidden");
+
+    context.record.dialogs[0].positive.onClick({preventDefault: function () {}});
+    assert.equal(context.record.calls.length, 1);
+    assert.equal($form.attr("data-submitting"), "1");
+    assert.equal(submitBtn.attr("disabled"), "disabled");
+    assert.equal(running.attr("hidden"), undefined);
+
+    // Duplicate form trigger while in flight does not open another dialog or dispatch
+    context.actions.main.upgrade($form);
+    assert.equal(context.record.dialogs.length, 1);
+    assert.equal(context.record.calls.length, 1);
+
+    // Wrong key clears key value, restores button with aria-disabled, hides running, displays error
+    context.record.calls[0].callback({status: 1, description: "Wrong security code", data: null});
+    assert.equal(keyInput.val(), "");
+    assert.equal($form.attr("data-submitting"), undefined);
+    assert.equal(submitBtn.attr("disabled"), undefined);
+    assert.equal(submitBtn.attr("aria-disabled"), "true");
+    assert.equal(running.attr("hidden"), "hidden");
+    assert.equal(feedback.attr("hidden"), undefined);
+    assert.equal(feedbackTitle.textContent, "Wrong security code");
+    assert.equal(context.record.out.length, 0);
+    assert.equal(keyInput.attr("aria-invalid"), "true");
+    assert.equal(keyWrap.classesAdded.includes("is-invalid"), true);
+
+    // Re-run and succeed
+    keyInput.val("valid-code");
+    context.actions.main.upgrade($form);
+    assert.equal(context.record.dialogs.length, 2);
+    context.record.dialogs[1].positive.onClick({preventDefault: function () {}});
+    assert.equal(context.record.calls.length, 2);
+
+    const origSetTimeout = globalThis.setTimeout;
+    const timeouts = [];
+    globalThis.setTimeout = function (fn, ms) {
+        timeouts.push(ms);
+        return 1;
+    };
+    try {
+        context.record.calls[1].callback({
+            status: 0,
+            description: "Application successfully updated",
+            data: ["You will be redirected to log in within 5 seconds"]
+        });
+    } finally {
+        globalThis.setTimeout = origSetTimeout;
+    }
+
+    assert.equal(running.attr("hidden"), "hidden");
+    assert.equal(submitBtn.attr("aria-busy"), undefined);
+    assert.equal(submitBtn.attr("disabled"), "disabled");
+    assert.equal($form.attr("data-submitting"), "1");
+    assert.equal(feedback.classesAdded.includes("sp-alert--success"), true);
+    assert.equal(feedbackTitle.textContent, "Application successfully updated");
+    assert.equal(feedbackText.textContent, "You will be redirected to log in within 5 seconds");
+    assert.equal(timeouts.includes(5000), true);
+});
+

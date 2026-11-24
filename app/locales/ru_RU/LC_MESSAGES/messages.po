@@ -7875,3 +7875,9 @@ msgstr "Уведомления не найдены."
 
 msgid "No notifications match your filters."
 msgstr "Нет уведомлений, соответствующих фильтрам."
+
+msgid "Sets the default language for sysPass and the initial administrator account after installation"
+msgstr "Задает язык по умолчанию для sysPass и начальной учетной записи администратора после установки"
+
+msgid "An administrator must verify a full backup and enter the upgradekey security code from config.xml before updating."
+msgstr "Перед обновлением администратор должен проверить наличие полной резервной копии и ввести код безопасности upgradekey из файла config.xml."

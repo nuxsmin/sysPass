@@ -75,6 +75,22 @@ class LanguageTest extends UnitaryTestCase
         $this->assertEquals($locale . '.utf8', getenv('LANGUAGE'));
     }
 
+    #[Test]
+    public function testSetLanguagePopulatesStaticPropertiesWhenContextAlreadyInitialized(): void
+    {
+        $locale = 'es_ES';
+        Language::$globalLang = '';
+        Language::$userLang = 'stale_USER';
+
+        $this->context->setLocale($locale);
+        $this->context->setUserData(new UserDto());
+
+        $this->language->setLanguage(false);
+
+        $this->assertSame('', Language::$userLang);
+        $this->assertSame($locale, Language::$globalLang);
+    }
+
     /**
      * @throws SPException
      */
