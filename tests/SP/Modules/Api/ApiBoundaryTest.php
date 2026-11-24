@@ -593,12 +593,18 @@ final class ApiBoundaryTest extends TestCase
 
         /** @var AuthTokenService $service */
         $service = $dic->get(AuthTokenService::class);
-        $id = $service->create(new AuthTokenModel([
-            'actionId' => $actionId,
-            'createdBy' => 1,
-            'hash' => self::TOKEN_PASS,
-            'userId' => $userId,
-        ]));
+        $lock = $dic->get(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class);
+        $lock->acquire();
+        try {
+            $id = $service->create(new AuthTokenModel([
+                'actionId' => $actionId,
+                'createdBy' => 1,
+                'hash' => self::TOKEN_PASS,
+                'userId' => $userId,
+            ]));
+        } finally {
+            $lock->release();
+        }
 
         return $service->getById($id);
     }
@@ -704,6 +710,11 @@ final class ApiBoundaryTest extends TestCase
             } finally {
                 $echoed = (string)ob_get_clean();
             }
+
+            self::assertFalse(
+                $dic->get(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class)->isActive(),
+                'The request must release its master password lock before returning'
+            );
 
             /** @var Response $response */
             $response = $dic->get(Response::class);

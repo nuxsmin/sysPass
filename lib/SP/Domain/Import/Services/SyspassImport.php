@@ -1,7 +1,5 @@
 <?php
-
-declare(strict_types=1);
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -24,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Import\Services;
 
 use CallbackFilterIterator;
@@ -32,19 +32,18 @@ use DOMElement;
 use DOMNodeList;
 use DOMXPath;
 use Exception;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Providers\XmlIntegrity;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Domain\Import\Ports\ItemsImportService;
 use SP\Domain\Tag\Models\Tag;
-
 use function SP\__u;
 
 /**
@@ -372,6 +371,8 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                         EventMessage::build()->addDetail(__u('Account imported'), $data['name'])
                     )
                 );
+            } catch (ImportException $e) {
+                throw $e;
             } catch (Exception $e) {
                 $this->eventDispatcher->notify(
                     'exception',

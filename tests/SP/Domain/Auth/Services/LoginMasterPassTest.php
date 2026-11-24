@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -24,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Tests\Domain\Auth\Services;
 
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -31,22 +31,31 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Core\Context\ContextException;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Auth\Services\Login;
 use SP\Domain\Auth\Services\LoginMasterPass;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Context\ContextException;
+use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Dtos\UserMasterPassDto;
-use SP\Domain\User\Ports\UserMasterPassService;
 use SP\Domain\User\Models\UserMasterPassStatus;
+use SP\Domain\User\Ports\UserMasterPassService;
+use SP\Domain\User\Ports\UserRepository;
+use SP\Domain\User\Services\UserMasterPass;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
@@ -209,6 +218,51 @@ class LoginMasterPassTest extends UnitaryTestCase
             ->method('add');
 
         $this->loginMasterPass->loadMasterPass($userLoginDto, $userDto);
+    }
+
+    public static function missingMasterHashProvider(): array
+    {
+        return ['null' => [false], 'absent' => [true]];
+    }
+
+    #[Test]
+    #[DataProvider('missingMasterHashProvider')]
+    public function temporaryLoginFailsClosedWhenSystemHashIsMissing(bool $absent): void
+    {
+        $user = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
+        $login = new UserLoginDto('synthetic user', 'synthetic login password');
+        $this->request->method('analyzeEncrypted')->willReturn('temporary key', '');
+        $this->temporaryMasterPassService->method('checkKey')->with('temporary key')->willReturn(true);
+        $this->temporaryMasterPassService->method('getUsingKey')->with('temporary key')
+            ->willReturn('synthetic master');
+
+        $config = $this->createMock(ConfigService::class);
+        $lookup = $config->expects(self::once())->method('getByParam')->with('masterPwd');
+        if ($absent) {
+            $lookup->willThrowException(NoSuchItemException::error('missing'));
+        } else {
+            $lookup->willReturn(null);
+        }
+        $config->expects(self::never())->method('save');
+        $users = $this->createMock(UserRepository::class);
+        $users->expects(self::never())->method('updateMasterPassById');
+        $crypt = $this->createMock(CryptInterface::class);
+        $crypt->expects(self::never())->method('encrypt');
+        $store = $this->createMock(MasterKeyStore::class);
+        $store->expects(self::never())->method('set');
+        $userMasterPass = new UserMasterPass(
+            $this->config, $this->eventDispatcherStub, $this->context, $users, $config, $crypt, $store,
+            new HashServiceAdapter(),
+            $this->createStub(MasterPasswordRequestLock::class)
+        );
+        $boundary = new LoginMasterPass(
+            $this->config, $this->eventDispatcherStub, $this->context, $this->trackService,
+            $this->request, $userMasterPass, $this->temporaryMasterPassService
+        );
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('documented recovery procedure');
+        $boundary->loadMasterPass($login, $user);
     }
 
     /**
@@ -418,7 +472,7 @@ class LoginMasterPassTest extends UnitaryTestCase
         $this->trackService
             ->expects($this->atLeast(1))
             ->method('buildTrackRequest')
-            ->with(\SP\Domain\Auth\Services\Login::class)
+            ->with(Login::class)
             ->willReturn(
                 new TrackRequest(
                     self::$faker->unixTime(),

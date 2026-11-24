@@ -1,11 +1,10 @@
 <?php
-declare(strict_types=1);
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Crypt\Services;
 
 /**
@@ -37,6 +38,8 @@ final class Hash
      */
     public const  MAX_KEY_LENGTH = 72;
     private const HASH_ALGO      = 'sha256';
+    private const LONG_BYTES_PREFIX = '$sp-sha256$';
+    private const MASTER_PREFIX = '$sp-master-v1$';
 
     /**
      * Comprobar el hash de una clave.
@@ -46,7 +49,31 @@ final class Hash
      */
     public static function checkHashKey(string $key, string $hash): bool
     {
+        if (str_starts_with($hash, self::LONG_BYTES_PREFIX)) {
+            return password_verify(hash(self::HASH_ALGO, $key), substr($hash, strlen(self::LONG_BYTES_PREFIX)));
+        }
         return password_verify(self::getKey($key), $hash);
+    }
+
+    /** Verify a master key without accepting ambiguous legacy bcrypt inputs. */
+    public static function checkMasterKey(string $key, string $hash): bool
+    {
+        if (str_starts_with($hash, self::MASTER_PREFIX)) {
+            return password_verify(hash(self::HASH_ALGO, $key), substr($hash, strlen(self::MASTER_PREFIX)));
+        }
+        if (str_starts_with($hash, self::LONG_BYTES_PREFIX)) {
+            return self::checkHashKey($key, $hash);
+        }
+        if ((strlen($key) >= self::MAX_KEY_LENGTH && mb_strlen($key) <= self::MAX_KEY_LENGTH)
+            || preg_match('/\A[0-9a-f]{64}\z/D', $key) === 1) {
+            return false;
+        }
+        return self::checkHashKey($key, $hash);
+    }
+
+    public static function hashMasterKey(string $key): string
+    {
+        return self::MASTER_PREFIX . password_hash(hash(self::HASH_ALGO, $key), PASSWORD_BCRYPT);
     }
 
     /**
@@ -75,6 +102,23 @@ final class Hash
     public static function hashKey(string $key): string
     {
         return password_hash(self::getKey($key), PASSWORD_BCRYPT);
+    }
+
+    /** Rehash only when the current bcrypt work factor is weaker than the policy. */
+    public static function needsRehash(string $hash): bool
+    {
+        foreach ([self::LONG_BYTES_PREFIX, self::MASTER_PREFIX] as $prefix) {
+            if (str_starts_with($hash, $prefix)) {
+                $hash = substr($hash, strlen($prefix));
+                break;
+            }
+        }
+        $info = password_get_info($hash);
+        $defaultCost = defined('PASSWORD_BCRYPT_DEFAULT_COST') ? constant('PASSWORD_BCRYPT_DEFAULT_COST') : 10;
+
+        return $info['algoName'] === 'bcrypt'
+            && (int)($info['options']['cost'] ?? 0) < $defaultCost
+            && password_needs_rehash($hash, PASSWORD_BCRYPT);
     }
 
     /**

@@ -22,6 +22,8 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Modules\Web;
 
 use Exception;
@@ -50,6 +52,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
 use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Providers\Uri;
@@ -147,6 +150,7 @@ final class Init extends HttpModuleBase
         private readonly DatabaseUtilInterface $databaseUtil,
         private readonly UserProfileService  $userProfileService,
         private readonly UriContextInterface $uriContext,
+        private readonly MasterPasswordRequestLock $masterPasswordRequestLock,
         private readonly ?SessionHandlerInterface $sessionHandler = null,
     ) {
         parent::__construct(
@@ -201,55 +205,43 @@ final class Init extends HttpModuleBase
 
         $partialInit = in_array($controller, self::PARTIAL_INIT, true);
 
+        if (!$partialInit) {
+            if (!$this->checkInstalled()) {
+                logger('Not installed', 'ERROR');
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_INSTALL))->send();
+                throw new InitializationException('Not installed');
+            }
+            if (!$this->databaseUtil->checkDatabaseConnection()) {
+                logger('Database connection error', 'ERROR');
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_DATABASE_CONNECTION))->send();
+                throw new InitializationException('Database connection error');
+            }
+            if ($this->checkMaintenanceMode()) {
+                logger('Maintenance mode', 'INFO');
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_MAINTENANCE))->send();
+                throw new InitializationException('Maintenance mode');
+            }
+            if ($this->checkUpgradeNeeded()) {
+                logger('Upgrade needed', 'INFO');
+                $this->config->generateUpgradeKey();
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_UPGRADE))->send();
+                throw new InitializationException('Upgrade needed');
+            }
+            if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
+                logger('Database checking error', 'ERROR');
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_DATABASE))->send();
+                throw new InitializationException('Database checking error');
+            }
+        }
+
+        if (!$partialInit) {
+            $this->masterPasswordRequestLock->acquire();
+        }
+
         // Initialize event handlers
         $this->initEventHandlers($partialInit);
 
         if ($partialInit === false) {
-            // Checks if sysPass is installed
-            if (!$this->checkInstalled()) {
-                logger('Not installed', 'ERROR');
-
-                $this->router->response()->redirect($this->getUriFor(self::ROUTE_INSTALL))->send();
-
-                throw new InitializationException('Not installed');
-            }
-
-            // Checks if the database is set up
-            if (!$this->databaseUtil->checkDatabaseConnection()) {
-                logger('Database connection error', 'ERROR');
-
-                $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_DATABASE_CONNECTION))->send();
-
-                throw new InitializationException('Database connection error');
-            }
-
-            // Checks if maintenance mode is turned on
-            if ($this->checkMaintenanceMode()) {
-                logger('Maintenance mode', 'INFO');
-
-                $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_MAINTENANCE))->send();
-
-                throw new InitializationException('Maintenance mode');
-            }
-
-            if ($this->checkUpgradeNeeded()) {
-                logger('Upgrade needed', 'INFO');
-
-                $this->config->generateUpgradeKey();
-                $this->router->response()->redirect($this->getUriFor(self::ROUTE_UPGRADE))->send();
-
-                throw new InitializationException('Upgrade needed');
-            }
-
-            // Checks if the database is set up
-            if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
-                logger('Database checking error', 'ERROR');
-
-                $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_DATABASE))->send();
-
-                throw new InitializationException('Database checking error');
-            }
-
             if (!in_array($controller, self::NO_SESSION_ACTIVITY)) {
                 // Initialize user session context
                 $this->initUserSession();

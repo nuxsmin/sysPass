@@ -38,6 +38,8 @@
       <directory suffix="Test.php">./SP/Architecture</directory>
       <exclude>./SP/Domain/Account/Services/Builders/AccountSearchTokenizerDataTrait.php</exclude>
       <exclude>./SP/Domain/Export/Services/XmlTrait.php</exclude>
+      <exclude>./SP/Infrastructure/Crypt/CliRotationProbe.php</exclude>
+      <exclude>./SP/Infrastructure/Crypt/IsolatedMasterPasswordDatabase.php</exclude>
     </testsuite>
     <testsuite name="modules">
       <directory suffix=".php">./SP/Modules/Web</directory>

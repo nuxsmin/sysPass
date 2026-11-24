@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -49,6 +49,9 @@ use SP\Core\UI\ThemeContext;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
+use SP\Domain\Common\Models\Model;
+use SP\Domain\Common\Providers\Version;
+use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
@@ -62,6 +65,8 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeContextInterface;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
+use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
@@ -69,13 +74,11 @@ use SP\Domain\Notification\Ports\MailService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\QueryData;
-use SP\Domain\Database\Dtos\QueryResult;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileSystem;
 use SP\Modules\Web\Bootstrap;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserProfileDataGenerator;
-
 use function DI\autowire;
 use function DI\factory;
 
@@ -223,6 +226,7 @@ abstract class IntegrationTestCase extends TestCase
             Context::class => $this->getContext(),
             MailService::class => self::createStub(MailService::class),
             DbStorageHandler::class => self::createStub(DbStorageHandler::class),
+            MasterPasswordRequestLock::class => self::createStub(MasterPasswordRequestLock::class),
             DatabaseInterface::class => $database,
             ThemeContextInterface::class => autowire(ThemeContext::class)
                 ->constructorParameter(
@@ -239,7 +243,7 @@ abstract class IntegrationTestCase extends TestCase
 
     protected function getConfigData(): array
     {
-        $version = \SP\Domain\Common\Providers\Version::getVersionStringNormalized();
+        $version = Version::getVersionStringNormalized();
 
         return [
             'isInstalled' => true,
@@ -249,8 +253,8 @@ abstract class IntegrationTestCase extends TestCase
             'getConfigVersion' => $version,
             'getDbName' => self::$faker->colorName(),
             'getPasswordSalt' => $this->passwordSalt,
-            'getAuthTokenDefaultTime' => \SP\Domain\Config\Adapters\ConfigData::DEFAULT_AUTH_TOKEN_TIME,
-            'getAuthTokenMaxTime' => \SP\Domain\Config\Adapters\ConfigData::DEFAULT_AUTH_TOKEN_MAX_TIME,
+            'getAuthTokenDefaultTime' => ConfigData::DEFAULT_AUTH_TOKEN_TIME,
+            'getAuthTokenMaxTime' => ConfigData::DEFAULT_AUTH_TOKEN_MAX_TIME,
         ];
     }
 
@@ -268,7 +272,7 @@ abstract class IntegrationTestCase extends TestCase
     /**
      * Resolves a query result from the registered database mapper resolvers
      *
-     * @return QueryResult<\SP\Domain\Common\Models\Model>
+     * @return QueryResult<Model>
      */
     protected function resolveDatabaseQuery(QueryData $queryData): QueryResult
     {

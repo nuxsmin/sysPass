@@ -1,6 +1,10 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # Testing Workflow
 
 Read this guide before changing behavior, fixing a bug or verifying a refactor. Follow [ADR-0004](../adr/0004-test-strategy-and-ci-gating.md) when choosing unit fakes, database-backed repository tests or module integration tests. For CLI permissions, Docker runtime setup and command examples, read [the command kit guide](../../.ai-cli/README.md) before running commands.
+
+For a disposable MariaDB environment and workflow troubleshooting, follow [Testing environment](testing-environment.md). For browser prerequisites and the isolated smoke runner, see [UI smoke suite](ui-smoke-suite.md).
 
 ## Red-Green Development
 

@@ -1,6 +1,5 @@
 <?php
-declare(strict_types=1);
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -23,6 +22,8 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Domain\Crypt\Dtos;
 
 use SP\Domain\Crypt\Services\Hash;
@@ -39,7 +40,7 @@ final class UpdateMasterPassRequest
         private readonly string $newMasterPass,
         private readonly string $currentHash
     ) {
-        $this->hash = Hash::hashKey($newMasterPass);
+        $this->hash = Hash::hashMasterKey($newMasterPass);
     }
 
     public function getCurrentMasterPass(): string

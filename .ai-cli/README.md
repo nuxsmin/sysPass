@@ -108,6 +108,13 @@ source .ai-cli/env.sh
   scripts that shell out to `php`: use `"$PHP_BIN" <script>` so the container
   PHP is the interpreter.
 
+If Docker is available on the host but the sandbox cannot access it, the
+wrapper may report that Docker or the PHP image is missing. Retry the same
+approved PHP wrapper command with the execution tool's elevated sandbox
+permissions (for Codex, `sandbox_permissions: "require_escalated"`). This
+still runs PHP in the ephemeral container. Verify access before concluding
+that the image needs rebuilding; image builds still require human approval.
+
 ### Building / rebuilding the image
 
 The shared image definition and build entry point live in `scripts/docker/`
