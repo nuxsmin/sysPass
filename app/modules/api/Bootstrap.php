@@ -65,7 +65,11 @@ final class Bootstrap extends BootstrapBase
 
         try {
             $bootstrap->module = $initModule;
-            $bootstrap->handleRequest();
+            try {
+                $bootstrap->handleRequest();
+            } finally {
+                $bootstrap->buildInstanceFor(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class)->release();
+            }
         } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
             processException($e);
 

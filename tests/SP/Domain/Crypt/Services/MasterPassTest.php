@@ -1,6 +1,4 @@
 <?php
-
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -24,8 +22,11 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Tests\Domain\Crypt\Services;
 
+use Closure;
 use Dotenv\Repository\RepositoryInterface;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
@@ -36,11 +37,12 @@ use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
+use SP\Domain\Crypt\Ports\MasterPasswordStorageGuard;
 use SP\Domain\Crypt\Services\MasterPass;
 use SP\Domain\CustomField\Ports\CustomFieldCryptService;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -200,7 +202,7 @@ class MasterPassTest extends UnitaryTestCase
             ->with(
                 ...
                 self::withConsecutive(['masterPwd', $request->getHash()], ['lastupdatempass', self::anything()])
-            );
+            )->willReturn(true);
 
         $this->masterPass->changeMasterPassword($request);
     }
@@ -209,6 +211,29 @@ class MasterPassTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws QueryException
      */
+    #[Test]
+    public function testChangeClearsTemporaryPasswordMaterial(): void
+    {
+        $this->repository->method('transactionAware')->willReturnCallback(
+            static function (Closure $operation, object $service): void {
+                $operation->call($service);
+            }
+        );
+        $this->configService->method('getByParam')->willReturn('1');
+        $saved = [];
+        $this->configService->method('save')->willReturnCallback(
+            static function (string $key, string $value) use (&$saved): bool {
+                $saved[$key] = $value;
+                return true;
+            }
+        );
+        $this->masterPass->changeMasterPassword(new UpdateMasterPassRequest('old', 'new', 'hash'));
+        self::assertSame('', $saved['tempmaster_pass'] ?? null);
+        self::assertSame('', $saved['tempmaster_passkey'] ?? null);
+        self::assertSame('', $saved['tempmaster_passhash'] ?? null);
+        self::assertSame('0', $saved['tempmaster_maxtime'] ?? null);
+    }
+
     #[Test]
     public function testUpdateConfig()
     {
@@ -220,7 +245,7 @@ class MasterPassTest extends UnitaryTestCase
             ->with(
                 ...
                 self::withConsecutive(['masterPwd', $hash], ['lastupdatempass', self::anything()])
-            );
+            )->willReturn(true);
 
         $this->masterPass->updateConfig($hash);
     }
@@ -241,7 +266,8 @@ class MasterPassTest extends UnitaryTestCase
             $this->configService,
             $this->accountMasterPasswordService,
             $this->customFieldCryptService,
-            $this->repository
+            $this->repository,
+            $this->createStub(MasterPasswordStorageGuard::class)
         );
     }
 }

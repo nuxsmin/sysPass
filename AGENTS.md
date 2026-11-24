@@ -1,3 +1,5 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # Contributor and Agent Guide
 
 ## Project Purpose
@@ -59,6 +61,7 @@ Prefer enabled MCP servers over CLI equivalents for operations they cover. Use t
 
 ## Development Workflows
 
+- When creating or modifying a file, add or update its copyright notice to match [index.php](index.php), using the file's comment syntax and preserving existing third-party attribution.
 - Before changing behavior or fixing a bug, read [Testing](docs/agents/testing.md) and follow its red-green workflow. Read it before verification of refactors as well.
 - Before creating a commit, read [Commits](docs/agents/commits.md). Use Conventional Commits; create or amend commits only when explicitly requested.
 

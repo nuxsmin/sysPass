@@ -227,10 +227,13 @@ abstract class ApiTestCase extends TestCase
 
             self::$configData = $dic->get(ConfigDataInterface::class);
 
-            $token = self::createApiToken(
-                $dic->get(AuthToken::class),
-                $actionId
-            );
+            $lock = $dic->get(\SP\Domain\Crypt\Ports\MasterPasswordRequestLock::class);
+            $lock->acquire();
+            try {
+                $token = self::createApiToken($dic->get(AuthToken::class), $actionId);
+            } finally {
+                $lock->release();
+            }
 
             $data = [
                 'jsonrpc' => '2.0',

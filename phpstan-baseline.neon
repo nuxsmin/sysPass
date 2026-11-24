@@ -1071,19 +1071,13 @@ parameters:
 		-
 			message: '#^Access to protected property SP\\Domain\\Account\\Models\\Account\:\:\$id\.$#'
 			identifier: property.protected
-			count: 5
+			count: 4
 			path: lib/SP/Domain/Account/Services/AccountMasterPassword.php
 
 		-
 			message: '#^Access to protected property SP\\Domain\\Account\\Models\\Account\:\:\$key\.$#'
 			identifier: property.protected
 			count: 1
-			path: lib/SP/Domain/Account/Services/AccountMasterPassword.php
-
-		-
-			message: '#^Access to protected property SP\\Domain\\Account\\Models\\Account\:\:\$name\.$#'
-			identifier: property.protected
-			count: 2
 			path: lib/SP/Domain/Account/Services/AccountMasterPassword.php
 
 		-

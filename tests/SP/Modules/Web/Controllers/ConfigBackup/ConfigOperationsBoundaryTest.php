@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -35,13 +35,12 @@ use Psr\Container\ContainerInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\AppLock;
 use SP\Core\Bootstrap\Path;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Infrastructure\File\FileSystem;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
-use SP\Domain\Config\Services\ConfigBackup;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Context\Context;
@@ -49,7 +48,6 @@ use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
-use SP\Domain\Crypt\Ports\MasterPassService;
 use SP\Domain\Crypt\Ports\TemporaryMasterPassService;
 use SP\Domain\Export\Ports\BackupFileService;
 use SP\Domain\Export\Ports\XmlAccountExportService;
@@ -57,13 +55,15 @@ use SP\Domain\Export\Ports\XmlCategoryExportService;
 use SP\Domain\Export\Ports\XmlClientExportService;
 use SP\Domain\Export\Ports\XmlTagExportService;
 use SP\Domain\Export\Ports\XmlVerifyService;
+use SP\Domain\Export\Services\VerifyResult;
 use SP\Domain\File\Ports\ArchiveHandlerFactoryInterface;
 use SP\Domain\File\Ports\ArchiveHandlerInterface;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\File\FileHandlerFactory;
+use SP\Infrastructure\File\FileSystem;
 use SP\Tests\IntegrationTestCase;
-
+use Throwable;
 use function DI\decorate;
 use function DI\factory;
 
@@ -131,8 +131,6 @@ final class ConfigOperationsBoundaryTest extends IntegrationTestCase
             'configGeneral/save' => ['post', 'configGeneral/save', true],
             'configAccount/save' => ['post', 'configAccount/save', true],
             'configWiki/save' => ['post', 'configWiki/save', true],
-            'configEncryption/save' => ['post', 'configEncryption/save', true],
-            'configEncryption/refresh' => ['get', 'configEncryption/refresh', true],
             'configEncryption/saveTemp' => ['get', 'configEncryption/saveTemp', true],
         ];
     }
@@ -238,7 +236,7 @@ final class ConfigOperationsBoundaryTest extends IntegrationTestCase
 
     /**
      * Characterization: Demo mode behavior is inconsistent across Config/Backup/Export/Download:
-     * - fileBackup, configGeneral/save, configEncryption/save, configEncryption/refresh return JSON WARNING.
+     * - fileBackup and configGeneral/save return JSON WARNING.
      * - downloadBackupApp, downloadBackupDb, downloadConfigBackup/json, downloadLog emit empty HTTP 200 body.
      * - xmlExport, downloadExport, and configEncryption/saveTemp lack isDemoEnabled() checks and execute.
      */
@@ -255,7 +253,7 @@ final class ConfigOperationsBoundaryTest extends IntegrationTestCase
         file_put_contents($demoExportArchive, 'demo-export-gz-content');
 
         // 1. JSON controllers with demo check
-        foreach (['configBackup/fileBackup', 'configEncryption/refresh'] as $route) {
+        foreach (['configBackup/fileBackup'] as $route) {
             $res = $this->dispatchWeb('get', $route);
             self::assertSame(200, $res['code']);
             $json = json_decode($res['body'], true, 512, JSON_THROW_ON_ERROR);
@@ -295,7 +293,7 @@ final class ConfigOperationsBoundaryTest extends IntegrationTestCase
         $xmlVerify = $this->createMock(XmlVerifyService::class);
         $xmlVerify->expects(self::once())
             ->method('verify')
-            ->willReturn(new \SP\Domain\Export\Services\VerifyResult('330.0', false, [
+            ->willReturn(new VerifyResult('330.0', false, [
                 'Account' => 0,
                 'Client' => 0,
                 'Category' => 0,
@@ -361,8 +359,8 @@ final class ConfigOperationsBoundaryTest extends IntegrationTestCase
 
         $configData = new ConfigData([
             ConfigDataInterface::INSTALLED => true,
-            ConfigDataInterface::APP_VERSION => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
-            ConfigDataInterface::DATABASE_VERSION => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
+            ConfigDataInterface::APP_VERSION => Version::getVersionStringNormalized(),
+            ConfigDataInterface::DATABASE_VERSION => Version::getVersionStringNormalized(),
             ConfigDataInterface::DB_NAME => 'syspass_test',
             ConfigDataInterface::AUTH_BASIC_ENABLED => false,
             ConfigDataInterface::HTTPS_ENABLED => false,
@@ -487,32 +485,16 @@ final class ConfigOperationsBoundaryTest extends IntegrationTestCase
 
     /**
      * Characterization:
-     * - ConfigEncryption/SaveController checks checkUserUpdateMPass() BEFORE validating passwords,
-     *   confirmation, maintenance mode, or demo mode, returning OK immediately if stale.
      * - ConfigGeneral/SaveController creates and removes AppLock according to maintenance_enabled.
      */
     #[Test]
-    public function encryptionSaveShortCircuitsOnStaleMasterPassTimeAndGeneralSaveTogglesAppLock(): void
+    public function generalSaveTogglesAppLock(): void
     {
-        $masterPassService = $this->createMock(MasterPassService::class);
-        $masterPassService->expects(self::once())->method('checkUserUpdateMPass')->willReturn(false);
-        $masterPassService->expects(self::never())->method('changeMasterPassword');
-
-        $staleRes = $this->dispatchWeb('post', 'configEncryption/save', [
-            // Deliberately invalid/missing everything, no maintenance, no confirmation
-        ], [
-            MasterPassService::class => $masterPassService,
-        ]);
-        self::assertSame(200, $staleRes['code']);
-        $staleJson = json_decode($staleRes['body'], true, 512, JSON_THROW_ON_ERROR);
-        self::assertSame('OK', $staleJson['status']);
-        self::assertSame('Master password updated', $staleJson['description']);
-
         // ConfigGeneral/SaveController maintenance lock toggle with real AppLock in tempDir
         $configData = new ConfigData([
             ConfigDataInterface::INSTALLED => true,
-            ConfigDataInterface::APP_VERSION => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
-            ConfigDataInterface::DATABASE_VERSION => \SP\Domain\Common\Providers\Version::getVersionStringNormalized(),
+            ConfigDataInterface::APP_VERSION => Version::getVersionStringNormalized(),
+            ConfigDataInterface::DATABASE_VERSION => Version::getVersionStringNormalized(),
             ConfigDataInterface::DB_NAME => 'syspass_test',
             ConfigDataInterface::PASSWORD_SALT => 'salt-for-general',
             ConfigDataInterface::AUTH_BASIC_ENABLED => false,
@@ -612,7 +594,7 @@ final class ConfigOperationsBoundaryTest extends IntegrationTestCase
         try {
             IntegrationTestCase::runApp($container);
             $output = (string)ob_get_clean();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ob_end_clean();
             throw $e;
         }

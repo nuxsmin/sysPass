@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Tests\Modules\Cli\Commands;
 
-use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -69,11 +68,10 @@ final class CliOperationsBoundaryTest extends TestCase
     }
 
     /**
-     * Characterization: UpdateMasterPasswordCommand returns Command::SUCCESS (exit 0) with a
-     * warning message when another process holds the command lock, instead of returning non-zero.
+     * Lock contention must fail so automation does not mistake it for a completed change.
      */
     #[Test]
-    public function updateMasterPasswordCommandReturnsZeroOnCrossProcessLockContention(): void
+    public function updateMasterPasswordCommandFailsOnCrossProcessLockContention(): void
     {
         $autoload = REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
         $readySignal = $this->tempDir . DIRECTORY_SEPARATOR . 'lock-held';
@@ -144,8 +142,7 @@ PHP,
                 ['interactive' => false]
             );
 
-            // Actual behavior: exit code is 0 (SUCCESS) under lock contention
-            self::assertSame(Command::SUCCESS, $tester->getStatusCode());
+            self::assertSame(Command::FAILURE, $tester->getStatusCode());
             self::assertStringContainsString(
                 'The command is already running in another process',
                 $tester->getDisplay()
@@ -196,6 +193,7 @@ PHP,
             '--currentMasterPassword' => 'same-pass',
             '--masterPassword' => 'same-pass',
             '--update' => true,
+            '--acknowledge-backup' => true,
         ], ['interactive' => false]);
         self::assertSame(Command::FAILURE, $sameTester->getStatusCode());
         self::assertStringContainsString('Passwords are the same', $sameTester->getDisplay());
@@ -206,6 +204,7 @@ PHP,
             '--currentMasterPassword' => 'wrong-old',
             '--masterPassword' => 'new-pass',
             '--update' => true,
+            '--acknowledge-backup' => true,
         ], ['interactive' => false]);
         self::assertSame(Command::FAILURE, $wrongTester->getStatusCode());
         self::assertStringContainsString('The current master password does not match', $wrongTester->getDisplay());
@@ -215,6 +214,7 @@ PHP,
         $abortTester->execute([
             '--currentMasterPassword' => 'correct-old',
             '--masterPassword' => 'new-pass',
+            '--acknowledge-backup' => true,
         ], ['interactive' => false]);
         self::assertSame(Command::FAILURE, $abortTester->getStatusCode());
         self::assertStringContainsString('Master password update aborted', $abortTester->getDisplay());

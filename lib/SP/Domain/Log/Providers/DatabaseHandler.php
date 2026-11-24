@@ -1,7 +1,5 @@
 <?php
-
-declare(strict_types=1);
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -23,6 +21,8 @@ declare(strict_types=1);
  * You should have received a copy of the GNU General Public License
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+declare(strict_types=1);
 
 namespace SP\Domain\Log\Providers;
 
@@ -108,6 +108,9 @@ final class DatabaseHandler extends Provider implements EventReceiver
             $this->eventlogService->create(new Eventlog($properties));
         } catch (Exception $e) {
             $this->logger->error($e->getMessage());
+            if (in_array($eventType, ['update.masterPassword.start', 'update.masterPassword.end'], true)) {
+                throw $e;
+            }
         }
 
         $this->language->unsetAppLocales();

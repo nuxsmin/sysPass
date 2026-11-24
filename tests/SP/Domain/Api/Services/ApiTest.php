@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /*
  * sysPass
  *
@@ -23,21 +22,20 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Tests\Domain\Api\Services;
 
-use SP\Domain\Crypt\Adapters\HashServiceAdapter;
-use SP\Core\Context\StatelessMasterKeyStore;
 use Exception;
 use Faker\Factory;
 use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
-use SP\Domain\Core\Context\ContextException;
-use SP\Domain\Core\Crypt\Crypt;
-use SP\Domain\Core\Crypt\Vault;
+use SP\Core\Context\StatelessMasterKeyStore;
 use SP\Domain\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Services\Api;
 use SP\Domain\Auth\Models\AuthToken;
@@ -48,15 +46,19 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\ContextException;
+use SP\Domain\Core\Crypt\Crypt;
+use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Crypt\Adapters\HashServiceAdapter;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Ports\TrackService;
 use SP\Domain\User\Ports\UserProfileService;
 use SP\Domain\User\Ports\UserService;
-use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Modules\Api\Controllers\Help\AccountHelp;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserProfileDataGenerator;
@@ -659,10 +661,12 @@ class ApiTest extends UnitaryTestCase
      * @throws SPException
      */
     #[Test]
-    public function testRequireMasterPass()
+    #[TestWith([false])]
+    #[TestWith([true])]
+    public function testRequireMasterPass(bool $legacyLongToken)
     {
         $actionId = self::$faker->randomNumber(4);
-        $authToken = self::$faker->password;
+        $authToken = $legacyLongToken ? str_repeat('x', 72) : self::$faker->password;
         $authTokenHash = password_hash($authToken, PASSWORD_BCRYPT);
 
         $this->apiRequest->expects(self::exactly(3))

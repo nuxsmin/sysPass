@@ -1,7 +1,5 @@
 <?php
-
-declare(strict_types=1);
-/**
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -24,9 +22,12 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+declare(strict_types=1);
+
 namespace SP\Core\Definitions;
 
 use Aura\SqlQuery\QueryFactory;
+use GuzzleHttp\ClientInterface;
 use Klein\Request as KleinRequest;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
@@ -47,13 +48,12 @@ use SP\Core\Bootstrap\RouteContext;
 use SP\Core\Bootstrap\UriContext;
 use SP\Core\Context\Stateless;
 use SP\Core\Context\StatelessMasterKeyStore;
-use SP\Core\Translation\GettextTranslation;
-use SP\Domain\Core\Crypt\Crypt;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\RequestBasedPassword;
 use SP\Core\Crypt\SessionMasterKeyStore;
 use SP\Core\Crypt\UuidCookie;
+use SP\Core\Crypt\ValidatedMasterKeyStore;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventDispatcherEmitter;
 use SP\Core\Language;
@@ -64,10 +64,11 @@ use SP\Core\Messages\MailMessageFormatter;
 use SP\Core\MimeTypes;
 use SP\Core\PhpExtensionChecker;
 use SP\Core\ProvidersHelper;
+use SP\Core\Translation\GettextTranslation;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeContext;
-use SP\Modules\Web\UI\ThemeIcons;
 use SP\Domain\Account\Ports\PasswordValidator;
+use SP\Domain\Auth\Dtos\LdapParams;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
@@ -86,7 +87,6 @@ use SP\Domain\Auth\Providers\Ldap\LdapAuth;
 use SP\Domain\Auth\Providers\Ldap\LdapBase;
 use SP\Domain\Auth\Providers\Ldap\LdapConnection;
 use SP\Domain\Auth\Providers\Ldap\LdapFactory;
-use SP\Domain\Auth\Dtos\LdapParams;
 use SP\Domain\Common\Ports\EventEmitter;
 use SP\Domain\Common\Ports\TranslationService;
 use SP\Domain\Common\Providers\Filter;
@@ -99,6 +99,7 @@ use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
@@ -115,29 +116,36 @@ use SP\Domain\Core\Ports\LanguageList;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Domain\Crypt\Ports\MasterKeyStore;
-use SP\Domain\Crypt\Ports\HashService;
 use SP\Domain\Crypt\Adapters\HashServiceAdapter;
+use SP\Domain\Crypt\Ports\HashService;
+use SP\Domain\Crypt\Ports\MasterKeyStore;
+use SP\Domain\Crypt\Ports\MasterPasswordRequestLock;
 use SP\Domain\Crypt\Ports\SecureSessionService;
 use SP\Domain\Crypt\Services\SecureSession;
-use SP\Domain\Database\Ports\DatabaseFileInterface;
+use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Domain\Database\Ports\DatabaseFileFactoryInterface;
-use SP\Domain\Database\Ports\QueryFactoryInterface;
+use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DatabaseUtilInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
+use SP\Domain\Database\Ports\QueryFactoryInterface;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
 use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Dtos\BackupType;
 use SP\Domain\Export\Ports\BackupFileService;
 use SP\Domain\Export\Services\BackupFile;
-use SP\Domain\Http\Client;
-use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\Http\Services\Request;
+use SP\Domain\File\Ports\ArchiveHandlerFactoryInterface;
+use SP\Domain\File\Ports\DirectoryHandlerFactoryInterface;
+use SP\Domain\File\Ports\FileHandlerFactoryInterface;
+use SP\Domain\File\Ports\FileSystemService;
+use SP\Domain\File\Ports\PhpFileLoaderInterface;
 use SP\Domain\Html\Ports\CssMinifyService;
 use SP\Domain\Html\Ports\JsMinifyService;
 use SP\Domain\Html\Services\MinifyCss;
 use SP\Domain\Html\Services\MinifyJs;
+use SP\Domain\Http\Client;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Services\Request;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Services\DatabaseSetupService;
@@ -151,18 +159,12 @@ use SP\Domain\Notification\Services\Mail;
 use SP\Domain\Notification\Services\MailEvent;
 use SP\Domain\Notification\Services\NotificationEvent;
 use SP\Domain\Notification\Services\PhpMailerService;
-use SP\Domain\File\Ports\FileHandlerFactoryInterface;
-use SP\Domain\File\Ports\ArchiveHandlerFactoryInterface;
-use SP\Domain\File\Ports\DirectoryHandlerFactoryInterface;
-use SP\Domain\File\Ports\FileSystemService;
-use SP\Domain\File\Ports\PhpFileLoaderInterface;
-use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\FileCacheFactoryInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Upgrade\Ports\UpgradeService;
 use SP\Domain\Upgrade\Services\Upgrade;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Domain\Upgrade\Services\UpgradeDurablePayloads;
-use SP\Domain\Database\Dtos\DatabaseConnectionData;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\DatabaseFileFactory;
 use SP\Infrastructure\Database\DatabaseUtil;
@@ -182,14 +184,14 @@ use SP\Infrastructure\File\LazyFileHandler;
 use SP\Infrastructure\File\PhpFileLoader;
 use SP\Infrastructure\File\XmlFileStorage;
 use SP\Infrastructure\File\YamlFileStorage;
+use SP\Modules\Web\Mvc\Controller\Validators\PasswordValidator as PasswordValidatorImplementation;
 use SP\Modules\Web\Mvc\View\OutputHandler;
 use SP\Modules\Web\Mvc\View\OutputHandlerInterface;
 use SP\Modules\Web\Mvc\View\Template;
 use SP\Modules\Web\Mvc\View\TemplateInterface;
 use SP\Modules\Web\Mvc\View\TemplateResolver;
 use SP\Modules\Web\Mvc\View\TemplateResolverInterface;
-use SP\Modules\Web\Mvc\Controller\Validators\PasswordValidator as PasswordValidatorImplementation;
-
+use SP\Modules\Web\UI\ThemeIcons;
 use function DI\autowire;
 use function DI\create;
 use function DI\factory;
@@ -220,10 +222,11 @@ final class CoreDefinitions
             PasswordValidator::class => autowire(PasswordValidatorImplementation::class),
             UriContextInterface::class => autowire(UriContext::class),
             Context::class => create(Stateless::class),
-            MasterKeyStore::class => factory(static function (Context $context): MasterKeyStore {
-                return $context instanceof SessionContext
+            MasterKeyStore::class => factory(static function (Context $context, MasterPasswordRequestLock $requestLock, ConfigDataInterface $config): MasterKeyStore {
+                $inner = $context instanceof SessionContext
                     ? new SessionMasterKeyStore($context)
                     : new StatelessMasterKeyStore($context);
+                return new ValidatedMasterKeyStore($inner, $requestLock, $config);
             }),
             EventDispatcherInterface::class => create(EventDispatcher::class),
             EventEmitter::class => autowire(EventDispatcherEmitter::class),
@@ -380,7 +383,7 @@ final class CoreDefinitions
             DomainLoggerInterface::class => create(FunctionLogger::class),
             \GuzzleHttp\Client::class => create(\GuzzleHttp\Client::class)
                 ->constructor(factory([Client::class, 'getOptions'])),
-            \GuzzleHttp\ClientInterface::class => get(\GuzzleHttp\Client::class),
+            ClientInterface::class => get(\GuzzleHttp\Client::class),
             LanguageInterface::class => autowire(Language::class)->constructorParameter(
                 'localesPath',
                 factory(
@@ -388,7 +391,8 @@ final class CoreDefinitions
                 )
             ),
             LanguageList::class => autowire(LanguageListAdapter::class),
-            DatabaseInterface::class => autowire(Database::class),
+            DatabaseInterface::class => autowire(Database::class)
+                ->constructorParameter('masterPasswordRequestLock', get(MasterPasswordRequestLock::class)),
             PhpMailerService::class => autowire(PhpMailerService::class),
             MailerInterface::class => factory([PhpMailerService::class, 'configure'])
                 ->parameter(
