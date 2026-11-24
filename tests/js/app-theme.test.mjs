@@ -22,10 +22,15 @@ function createFakeDom() {
             this.value = "";
             this.textContent = "";
             this.hidden = false;
+            this.validationMessage = "";
 
             for (const [k, v] of Object.entries(attrs)) {
                 this.setAttribute(k, v);
             }
+        }
+
+        setCustomValidity(message) {
+            this.validationMessage = String(message || "");
         }
 
         setAttribute(key, value) {
@@ -557,6 +562,22 @@ test("passwordDetect creates accessible button toggle for .passwordfield__input 
     assert.equal(btn.getAttribute("aria-pressed"), "false");
     assert.equal(btn.getAttribute("id"), "password-level-pass-u1");
     assert.equal(btn.getAttribute("data-clipboard-target"), "pass-u1");
+    assert.equal(btn.classes.has("clip-pass-field"), false);
+
+    const menuBtn = form.queryAll("#menu-password-pass-u1")[0];
+    assert.equal(menuBtn.getAttribute("aria-haspopup"), "menu");
+    const menuList = form.queryAll("ul.mdl-menu")[0];
+    assert.equal(menuList.getAttribute("role"), "menu");
+    const menuItems = form.queryAll("li.mdl-menu__item");
+    assert.equal(menuItems.length, 3);
+    for (const item of menuItems) {
+        assert.equal(item.getAttribute("role"), "menuitem");
+        assert.equal(item.children[0].getAttribute("aria-hidden"), "true");
+    }
+
+    btn.dataset.levelMsg = "High level";
+    dom.$fn(btn).trigger("focus");
+    assert.equal(btn.getAttribute("title"), "High level (Show Password)");
 
     dom.$fn(btn).trigger("click");
     assert.equal(input.getAttribute("type"), "text");
@@ -837,6 +858,13 @@ test("passwordDetect supports R-suffix repeat field (masterpasswordR) for mismat
     assert.equal(matchError.getAttribute("hidden"), undefined);
     assert.equal(repeatWrap.classes.has("is-invalid"), true);
     assert.equal(repeatInput.getAttribute("aria-invalid"), "true");
+    assert.equal(repeatInput.validationMessage, "Passwords do not match");
+
+    // Clearing primary while repeat still has a value keeps mismatch error active
+    passInput.value = "";
+    dom.$fn(passInput).trigger("input");
+    assert.equal(matchError.textContent, "Passwords do not match");
+    assert.equal(repeatInput.validationMessage, "Passwords do not match");
 
     const passGenItem = form.queryAll("li.passGen")[0];
     dom.$fn(passGenItem).trigger("click");
@@ -844,11 +872,19 @@ test("passwordDetect supports R-suffix repeat field (masterpasswordR) for mismat
     assert.equal(repeatInput.value, "ENC:Generated#Pass123");
     assert.equal(matchError.getAttribute("hidden"), "hidden");
     assert.equal(repeatWrap.classes.has("is-invalid"), false);
+    assert.equal(repeatInput.getAttribute("aria-invalid"), undefined);
+    assert.equal(repeatInput.validationMessage, "");
+
+    repeatInput.value = "DifferentAfterGen";
+    dom.$fn(repeatInput).trigger("input");
+    assert.equal(repeatInput.validationMessage, "Passwords do not match");
 
     const resetItem = form.queryAll("li.reset")[0];
     dom.$fn(resetItem).trigger("click");
     assert.equal(passInput.value, "");
     assert.equal(repeatInput.value, "");
     assert.equal(matchError.getAttribute("hidden"), "hidden");
+    assert.equal(repeatInput.getAttribute("aria-invalid"), undefined);
+    assert.equal(repeatInput.validationMessage, "");
 });
 

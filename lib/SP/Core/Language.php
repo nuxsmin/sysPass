@@ -111,6 +111,11 @@ final class Language implements LanguageInterface
             $lang = self::$userLang ?: self::$globalLang;
 
             $this->context->setLocale($lang);
+        } else {
+            self::$userLang = $this->getUserLang();
+            self::$globalLang = self::$userLang !== ''
+                ? ($this->configData->getSiteLang() ?: $lang)
+                : $lang;
         }
 
         $this->setLocales($lang);
@@ -124,7 +129,7 @@ final class Language implements LanguageInterface
         $userDto = $this->context->getUserData();
 
         return ($userDto->id > 0)
-            ? $userDto->preferences->getLang()
+            ? ($userDto->preferences?->getLang() ?? '')
             : '';
     }
 

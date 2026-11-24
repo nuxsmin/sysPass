@@ -141,7 +141,14 @@ final class LayoutHelper extends HelperBase
         $this->loggedIn = $this->context->isLoggedIn();
 
         $this->view->assign('loggedIn', $this->loggedIn);
-        $this->view->assign('lang', $this->loggedIn ? Language::$userLang : substr(Language::$globalLang, 0, 2));
+
+        $resolvedLang = ($this->loggedIn ? Language::$userLang : Language::$globalLang)
+            ?: Language::$globalLang
+            ?: $this->context->getLocale()
+            ?: $this->configData->getSiteLang()
+            ?: 'en_US';
+
+        $this->view->assign('lang', substr($resolvedLang, 0, 2));
         $this->view->assign('loadApp', $this->context->getAuthCompleted());
 
         try {

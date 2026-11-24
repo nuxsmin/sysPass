@@ -46,7 +46,7 @@ use function SP\__;
             <strong class="sp-alert__title"><?php
                 echo __('The application needs to be updated'); ?></strong>
             <p class="sp-alert__text"><?php
-                echo __('Please contact to the administrator'); ?></p>
+                echo __('An administrator must verify a full backup and enter the upgradekey security code from config.xml before updating.'); ?></p>
         </div>
     </div>
 
@@ -65,7 +65,7 @@ use function SP\__;
                            aria-describedby="key-hint" autofocus>
                 </div>
                 <p id="key-hint" class="sp-field-hint"><?php
-                    echo __('Please enter the security code to start the upgrade'); ?></p>
+                    echo __('This code is set in sysPass config file within the tag name "upgradekey"'); ?></p>
             </div>
 
             <div class="sp-flow-field sp-upgrade-confirm">

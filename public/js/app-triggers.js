@@ -38,6 +38,14 @@ sysPass.Triggers = function (log) {
                 const $wrapper = $(this.$wrapper[0]);
                 const $input = $(this.$input[0]);
                 const $selectBoxAddIcon = $input.siblings(".btn-add-select");
+                const describedBy = $input.attr("aria-describedby");
+
+                if (describedBy && this.$control_input && this.$control_input.length > 0) {
+                    const $controlInput = $(this.$control_input[0] || this.$control_input);
+                    if (!$controlInput.attr("aria-describedby")) {
+                        $controlInput.attr("aria-describedby", describedBy);
+                    }
+                }
 
                 if ($selectBoxAddIcon.length === 1) {
                     $wrapper.append($selectBoxAddIcon);
@@ -544,17 +552,50 @@ sysPass.Triggers = function (log) {
 
             const $form = $("#frmUpgrade");
             const $feedback = $("#upgrade-feedback");
+            const $submitBtn = $("#btnChange");
+            const $key = $form.find("#key");
+            const $chkConfirm = $form.find("#chkConfirm");
 
-            $form.find("#key").on("input keyup", function () {
+            const syncUpdateActionState = function () {
+                if (!$submitBtn || $submitBtn.length === 0) {
+                    return;
+                }
+                const formEl = $form[0];
+                const isValid = formEl && typeof formEl.checkValidity === "function"
+                    ? formEl.checkValidity()
+                    : Boolean($key.val() && $chkConfirm[0] && $chkConfirm[0].checked);
+
+                if (isValid) {
+                    $submitBtn.removeAttr("aria-disabled");
+                } else {
+                    $submitBtn.attr("aria-disabled", "true");
+                }
+            };
+
+            syncUpdateActionState();
+
+            $key.on("input keyup change", function () {
                 const $input = $(this);
                 $input.removeAttr("aria-invalid");
                 $input.parent().removeClass("is-invalid");
                 $feedback.attr("hidden", "hidden");
+                syncUpdateActionState();
+            }).on("invalid", function () {
+                const $input = $(this);
+                $input.attr("aria-invalid", "true");
+                $input.parent().addClass("is-invalid");
             });
 
-            $form.find("#chkConfirm").on("change", function () {
-                $(this).closest(".sp-upgrade-confirm").removeClass("is-invalid");
+            $chkConfirm.on("change", function () {
+                const $input = $(this);
+                $input.removeAttr("aria-invalid");
+                $input.closest(".sp-upgrade-confirm").removeClass("is-invalid");
                 $feedback.attr("hidden", "hidden");
+                syncUpdateActionState();
+            }).on("invalid", function () {
+                const $input = $(this);
+                $input.attr("aria-invalid", "true");
+                $input.closest(".sp-upgrade-confirm").addClass("is-invalid");
             });
         }
     };

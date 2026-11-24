@@ -1140,6 +1140,9 @@ sysPass.Actions = function (log) {
 
                 if (json && (json.status === 0 || json.status === "OK")) {
                     hideFlowRunning($running);
+                    if ($submitBtn && typeof $submitBtn.removeAttr === "function") {
+                        $submitBtn.removeAttr("aria-busy").removeClass("is-loading");
+                    }
                     const okTitle = Array.isArray(json.description)
                         ? json.description.filter(Boolean).join(" ")
                         : (json.description || "");
@@ -1224,6 +1227,9 @@ sysPass.Actions = function (log) {
                         $wrap.removeClass("is-dirty");
                     }
                 }
+                if ($submitBtn && typeof $submitBtn.attr === "function") {
+                    $submitBtn.attr("aria-disabled", "true");
+                }
             };
 
             const atext = "<div id=\"alert\"><p id=\"alert-text\">" + sysPassApp.config.LANG[59] + "</p></div>";
@@ -1295,6 +1301,9 @@ sysPass.Actions = function (log) {
                             } else {
                                 task.end();
                                 hideFlowRunning($running);
+                                if ($submitBtn && typeof $submitBtn.removeAttr === "function") {
+                                    $submitBtn.removeAttr("aria-busy").removeClass("is-loading");
+                                }
                                 const okTitle = Array.isArray(json.description)
                                     ? json.description.filter(Boolean).join(" ")
                                     : (json.description || "");

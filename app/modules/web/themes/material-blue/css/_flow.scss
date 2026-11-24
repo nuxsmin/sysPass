@@ -43,8 +43,7 @@ body.upgrade {
   }
 
   .mdl-layout__header {
-    position: sticky;
-    top: 0;
+    position: static;
     z-index: 100;
     width: 100%;
     flex: 0 0 auto;
@@ -640,7 +639,7 @@ body.upgrade {
       &[aria-disabled="true"] {
         background-color: var(--sp-muted) !important;
         color: var(--sp-on-accent) !important;
-        opacity: 0.88;
+        opacity: 1;
         cursor: not-allowed;
       }
     }

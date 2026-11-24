@@ -7561,3 +7561,9 @@ msgstr "Ongar fráboðanir funnar."
 
 msgid "No notifications match your filters."
 msgstr "Ongar fráboðanir samsvara við tínum filtrum."
+
+msgid "Sets the default language for sysPass and the initial administrator account after installation"
+msgstr "Setur sjálvsetta málið fyri sysPass og fyrstu umsitarakontuna aftan á uppsetingina"
+
+msgid "An administrator must verify a full backup and enter the upgradekey security code from config.xml before updating."
+msgstr "Ein umsitari má vátta eitt fult trygdaravrit og skriva trygdarkotuna upgradekey úr config.xml áðrenn dagføring."

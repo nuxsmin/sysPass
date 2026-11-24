@@ -7657,3 +7657,9 @@ msgstr "Geen meldingen gevonden."
 
 msgid "No notifications match your filters."
 msgstr "Geen meldingen komen overeen met uw filters."
+
+msgid "Sets the default language for sysPass and the initial administrator account after installation"
+msgstr "Stelt de standaardtaal in voor sysPass en het eerste beheerdersaccount na de installatie"
+
+msgid "An administrator must verify a full backup and enter the upgradekey security code from config.xml before updating."
+msgstr "Een beheerder moet voor het bijwerken een volledige back-up controleren en de beveiligingscode upgradekey uit config.xml invoeren."

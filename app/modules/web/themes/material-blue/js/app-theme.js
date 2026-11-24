@@ -99,7 +99,9 @@ sysPass.Theme = function (log) {
                         $targetR[0].setCustomValidity("");
                     }
                 }
-                $targetR.val(password).parent()
+                $targetR.val(password)
+                    .removeAttr("aria-invalid")
+                    .parent()
                     .addClass(mdl.CssClasses_.IS_DIRTY)
                     .removeClass(mdl.CssClasses_.IS_INVALID);
                 sysPassApp.encryptFormValue($targetR);
@@ -293,16 +295,16 @@ sysPass.Theme = function (log) {
 
             const optionsLabel = sysPassApp.config.LANG[27] || "Password options";
             let btnMenu =
-                `<button id="menu-password-${targetId}" class="mdl-button mdl-js-button mdl-button--icon" type="button" aria-label="${optionsLabel}" title="${optionsLabel}"><i class="material-icons" aria-hidden="true">more_vert</i></button>
-                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu" for="menu-password-${targetId}">
-                <li class="mdl-menu__item passGen"><i class="material-icons">settings</i>${sysPassApp.config.LANG[28]}</li>
-                <li class="mdl-menu__item passComplexity"><i class="material-icons">vpn_key</i>${sysPassApp.config.LANG[29]}</li>
-                <li class="mdl-menu__item reset"><i class="material-icons">refresh</i>${sysPassApp.config.LANG[30]}</li></ul>`;
+                `<button id="menu-password-${targetId}" class="mdl-button mdl-js-button mdl-button--icon" type="button" aria-haspopup="menu" aria-label="${optionsLabel}" title="${optionsLabel}"><i class="material-icons" aria-hidden="true">more_vert</i></button>
+                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu" for="menu-password-${targetId}" role="menu">
+                <li class="mdl-menu__item passGen" role="menuitem"><i class="material-icons" aria-hidden="true">settings</i>${sysPassApp.config.LANG[28]}</li>
+                <li class="mdl-menu__item passComplexity" role="menuitem"><i class="material-icons" aria-hidden="true">vpn_key</i>${sysPassApp.config.LANG[29]}</li>
+                <li class="mdl-menu__item reset" role="menuitem"><i class="material-icons" aria-hidden="true">refresh</i>${sysPassApp.config.LANG[30]}</li></ul>`;
 
             $thisParent.after(`<div class="password-actions" />`);
 
             $thisParent.next(".password-actions")
-                .prepend(`<button type="button" id="password-level-${targetId}" class="sp-password-toggle showpass clip-pass-field password-level" data-clipboard-target="${targetId}" data-level-msg="" aria-label="${labels.show}" aria-pressed="false" title="${labels.show}"><i class="material-icons" aria-hidden="true">visibility</i></button>`)
+                .prepend(`<button type="button" id="password-level-${targetId}" class="sp-password-toggle showpass password-level" data-clipboard-target="${targetId}" data-level-msg="" aria-label="${labels.show}" aria-pressed="false" title="${labels.show}"><i class="material-icons" aria-hidden="true">visibility</i></button>`)
                 .prepend(btnMenu);
 
             const getPlainPassword = function ($field) {
@@ -331,24 +333,33 @@ sysPass.Theme = function (log) {
                 const primaryPlain = getPlainPassword($this);
                 const repeatPlain = getPlainPassword($passwordRepeat);
                 const mismatchMsg = $passwordRepeat.attr("data-mismatch-msg") || "Passwords do not match";
+                const repeatEl = $passwordRepeat[0];
+                const setValidity = function (message) {
+                    if (repeatEl && typeof repeatEl.setCustomValidity === "function") {
+                        repeatEl.setCustomValidity(message);
+                    }
+                };
 
                 if (repeatPlain === "" && !forceCheck) {
                     $repeatWrap.removeClass("is-invalid");
                     $passwordRepeat.removeAttr("aria-invalid");
                     $errorNode.text("").attr("hidden", "hidden");
+                    setValidity("");
                     return;
                 }
 
-                if (repeatPlain !== "" && primaryPlain !== "" && repeatPlain !== primaryPlain) {
+                if ((repeatPlain !== "" && repeatPlain !== primaryPlain)
+                    || (forceCheck && repeatPlain === "" && primaryPlain !== "")
+                ) {
                     $repeatWrap.addClass("is-invalid");
                     $passwordRepeat.attr("aria-invalid", "true");
                     $errorNode.text(mismatchMsg).removeAttr("hidden");
+                    setValidity(mismatchMsg);
                 } else {
-                    if (repeatPlain !== "") {
-                        $repeatWrap.removeClass("is-invalid");
-                        $passwordRepeat.removeAttr("aria-invalid");
-                    }
+                    $repeatWrap.removeClass("is-invalid");
+                    $passwordRepeat.removeAttr("aria-invalid");
                     $errorNode.text("").attr("hidden", "hidden");
+                    setValidity("");
                 }
             };
 
@@ -408,7 +419,7 @@ sysPass.Theme = function (log) {
                 });
 
             // Mostrar nivel de fortaleza en tooltip sin sobrescribir aria-label
-            $toggleBtn.on("mouseover", function () {
+            $toggleBtn.on("mouseover focus", function () {
                 const isPressed = $(this).attr("aria-pressed") === "true";
                 const stateLabel = isPressed ? labels.hide : labels.show;
 
@@ -429,7 +440,7 @@ sysPass.Theme = function (log) {
                     $this.parent().removeClass("is-dirty is-invalid is-touched");
 
                     if ($passwordRepeat.length > 0) {
-                        $passwordRepeat.val("").removeAttr("data-length");
+                        $passwordRepeat.val("").removeAttr("data-length").removeAttr("aria-invalid");
                         if ($passwordRepeat[0]) {
                             $passwordRepeat[0].dataset.pass = "";
                             if (typeof $passwordRepeat[0].setCustomValidity === "function") {

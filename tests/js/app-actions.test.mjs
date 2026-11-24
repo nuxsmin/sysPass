@@ -1449,6 +1449,19 @@ test("main.install locks duplicate submits, toggles running status, handles erro
     assert.equal(submitBtn.attr("disabled"), undefined);
     assert.equal(running.attr("hidden"), "hidden");
     assert.equal(feedbackTitle.textContent, "There was an error");
+
+    // Successful install clears loading/aria-busy while keeping disabled + data-submitting during redirect
+    context.actions.main.install($form);
+    const origInstallTimeout = globalThis.setTimeout;
+    globalThis.setTimeout = () => 1;
+    try {
+        context.record.calls[2].callback({status: "OK", description: "Installation finished", data: null});
+    } finally {
+        globalThis.setTimeout = origInstallTimeout;
+    }
+    assert.equal(submitBtn.attr("aria-busy"), undefined);
+    assert.equal(submitBtn.attr("disabled"), "disabled");
+    assert.equal($form.attr("data-submitting"), "1");
 });
 
 test("main.upgrade prevents duplicate execution, toggles running state, clears security code on error, and shows success", function () {
@@ -1508,11 +1521,12 @@ test("main.upgrade prevents duplicate execution, toggles running state, clears s
     assert.equal(context.record.dialogs.length, 1);
     assert.equal(context.record.calls.length, 1);
 
-    // Wrong key clears key value, restores button, hides running, displays error
+    // Wrong key clears key value, restores button with aria-disabled, hides running, displays error
     context.record.calls[0].callback({status: 1, description: "Wrong security code", data: null});
     assert.equal(keyInput.val(), "");
     assert.equal($form.attr("data-submitting"), undefined);
     assert.equal(submitBtn.attr("disabled"), undefined);
+    assert.equal(submitBtn.attr("aria-disabled"), "true");
     assert.equal(running.attr("hidden"), "hidden");
     assert.equal(feedback.attr("hidden"), undefined);
     assert.equal(feedbackTitle.textContent, "Wrong security code");
@@ -1542,6 +1556,9 @@ test("main.upgrade prevents duplicate execution, toggles running state, clears s
     }
 
     assert.equal(running.attr("hidden"), "hidden");
+    assert.equal(submitBtn.attr("aria-busy"), undefined);
+    assert.equal(submitBtn.attr("disabled"), "disabled");
+    assert.equal($form.attr("data-submitting"), "1");
     assert.equal(feedback.classesAdded.includes("sp-alert--success"), true);
     assert.equal(feedbackTitle.textContent, "Application successfully updated");
     assert.equal(feedbackText.textContent, "You will be redirected to log in within 5 seconds");

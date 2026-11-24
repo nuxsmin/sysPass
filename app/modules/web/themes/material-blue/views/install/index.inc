@@ -114,11 +114,12 @@ use function SP\__;
                            type="password" required
                            class="mdl-textfield__input"
                            value="" maxlength="255" autocomplete="new-password"
+                           aria-describedby="masterpasswordR-error"
                            data-mismatch-msg="<?php
                            echo htmlspecialchars(__('Passwords do not match'), ENT_QUOTES); ?>">
                 </div>
-                <div class="sp-field-error sp-password-match-error"
-                     role="alert"
+                <div id="masterpasswordR-error"
+                     class="sp-field-error sp-password-match-error"
                      aria-live="polite"
                      hidden></div>
             </div>
@@ -195,6 +196,7 @@ use function SP\__;
                     echo __('Language'); ?></label>
                 <select name="sitelang" id="sel-sitelang" size="1"
                         class="select-box"
+                        aria-describedby="sitelang-hint"
                         title="<?php
                         echo htmlspecialchars(__('Language'), ENT_QUOTES); ?>">
                     <?php
@@ -207,6 +209,8 @@ use function SP\__;
                     <?php
                     endforeach; ?>
                 </select>
+                <p id="sitelang-hint" class="sp-field-hint"><?php
+                    echo __('Sets the default language for sysPass and the initial administrator account after installation'); ?></p>
             </div>
 
             <div class="sp-flow-field">
