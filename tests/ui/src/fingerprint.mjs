@@ -1,3 +1,4 @@
+// Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, lstatSync, realpathSync } from 'node:fs';
 import path from 'node:path';
@@ -38,4 +39,9 @@ const canonicalRoot = realpathSync(root);
 const entries = collect(canonicalRoot);
 const digest = createHash('sha256').update(entries.join('\n')).digest('hex');
 
-process.stdout.write(`${JSON.stringify({ root: canonicalRoot, digest, count: entries.length })}\n`);
+const files = Object.fromEntries(entries.map((entry) => {
+  const [name] = entry.split('\0');
+  return [name, createHash('sha256').update(entry).digest('hex')];
+}));
+const details = process.argv[3] === '--details' && JSON.stringify(files).length <= 8192 ? { files } : {};
+process.stdout.write(`${JSON.stringify({ root: canonicalRoot, digest, count: entries.length, ...details })}\n`);

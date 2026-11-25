@@ -120,7 +120,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
             <div class="mdl-tabs__panel is-active" id="account-panel">
                 <table class="data">
                     <?php if ($_getvar('passwordSourceName')): ?>
-                        <tr>
+                        <tr class="sp-account-field--wide">
                             <td class="descField"><?php echo __('Password source'); ?></td>
                             <td class="valField" id="password-source-account"><?php echo htmlspecialchars($_getvar('passwordSourceName'), ENT_QUOTES); ?></td>
                         </tr>

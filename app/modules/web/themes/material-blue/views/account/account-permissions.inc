@@ -374,7 +374,7 @@ use function SP\__;
                         <input name="private_enabled" type="checkbox"
                                id="private_enabled"
                                class="mdl-switch__input" <?php
-                        echo $checked ? 'checked' : '';
+                        echo $checked ? 'checked ' : '';
                         echo $_getvar('disabled'); ?>/>
                         <span class="mdl-switch__label"><?php
                             echo __('Private'); ?></span>
@@ -398,7 +398,7 @@ use function SP\__;
                         <input name="private_group_enabled" type="checkbox"
                                id="private_group_enabled"
                                class="mdl-switch__input" <?php
-                        echo $checked ? 'checked' : '';
+                        echo $checked ? 'checked ' : '';
                         echo $_getvar('disabled'); ?>/>
                         <span class="mdl-switch__label"><?php
                             echo __('Private for Group'); ?></span>

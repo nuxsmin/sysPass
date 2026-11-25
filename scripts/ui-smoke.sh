@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
 # ui-smoke — isolated, single-command UI smoke run for sysPass.
 #
 # Usage:
@@ -275,7 +276,7 @@ echo "Running the UI harness unit tests..."
 
 fingerprint() {
   if [ -d "$1" ]; then
-    node "$UI_DIR/src/fingerprint.mjs" "$1"
+    node "$UI_DIR/src/fingerprint.mjs" "$1" "${2:-}"
   else
     printf '{"root":"%s","digest":"missing","count":0}\n' "$1"
   fi
@@ -291,7 +292,7 @@ finalize_run() {
   local temp_after
   local status=0
 
-  config_after="$(fingerprint "$REPO_ROOT/app/config")" || config_after="unavailable"
+  config_after="$(fingerprint "$REPO_ROOT/app/config" --details)" || config_after="unavailable"
   cache_after="$(fingerprint "$REPO_ROOT/app/cache")" || cache_after="unavailable"
   temp_after="$(fingerprint "$REPO_ROOT/app/temp")" || temp_after="unavailable"
 
@@ -309,7 +310,7 @@ finalize_run() {
   return "$status"
 }
 
-DEVELOPER_CONFIG_BEFORE="$(fingerprint "$REPO_ROOT/app/config")"
+DEVELOPER_CONFIG_BEFORE="$(fingerprint "$REPO_ROOT/app/config" --details)"
 DEVELOPER_CACHE_BEFORE="$(fingerprint "$REPO_ROOT/app/cache")"
 DEVELOPER_TEMP_BEFORE="$(fingerprint "$REPO_ROOT/app/temp")"
 

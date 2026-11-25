@@ -269,7 +269,7 @@ final class AccountHelper extends AccountHelperBase
             )
         );
 
-        $this->setViewCommon();
+        $this->setViewCommon($accountData);
     }
 
     /**
@@ -387,7 +387,7 @@ final class AccountHelper extends AccountHelperBase
             )
         );
 
-        $this->setViewCommon();
+        $this->setViewCommon($accountData);
         $this->view->assign('accountId', 0);
         $this->accountId = null;
     }
@@ -424,7 +424,7 @@ final class AccountHelper extends AccountHelperBase
      * @throws SPException
      * @throws ServiceException
      */
-    protected function setViewCommon(): void
+    protected function setViewCommon(?\SP\Domain\Account\Models\AccountView $accountData = null): void
     {
         $this->view->assign('isView', $this->isView);
 
@@ -443,10 +443,20 @@ final class AccountHelper extends AccountHelperBase
             'categories',
             SelectItemAdapter::factory($this->categoryService->getAll())->getItemsFromModel()
         );
-        $this->view->assign(
-            'clients',
-            SelectItemAdapter::factory($this->clientService->getAllForUser())->getItemsFromModel()
-        );
+        $clients = SelectItemAdapter::factory(
+                $this->acl->checkUserAccess(AclActionsInterface::CLIENT)
+                    ? $this->clientService->getAll()
+                    : $this->clientService->getAllForUser()
+            )->getItemsFromModel();
+        if ($accountData !== null && $accountData->getClientId() !== null
+            && !in_array($accountData->getClientId(), array_map(static fn($client) => $client->getId(), $clients), true)
+        ) {
+            $clients[] = new \SP\Modules\Web\Mvc\View\Components\SelectItem(
+                $accountData->getClientId(),
+                $accountData->getClientName() ?? ''
+            );
+        }
+        $this->view->assign('clients', $clients);
         $this->view->assign('mailRequestEnabled', $this->configData->isMailRequestsEnabled());
         $this->view->assign('passToImageEnabled', $this->configData->isAccountPassToImage());
         $this->view->assign('otherAccounts', $this->accountService->getForUser($this->accountId));

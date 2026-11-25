@@ -1,3 +1,4 @@
+// Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
 import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -58,6 +59,15 @@ test('fingerprint comparison names every changed path and returns non-zero', () 
   assert.match(changed.stdout, /^app\/cache$/m);
   assert.match(changed.stdout, /^app\/temp$/m);
   assert.doesNotMatch(changed.stdout, /app\/config/);
+});
+
+test('fingerprint comparison identifies changed files without revealing fingerprints', () => {
+  const before = JSON.stringify({ root: '/repo/app/config', digest: 'a', count: 2, files: { 'syspass.log': 'old', 'config.xml': 'same' } });
+  const after = JSON.stringify({ root: '/repo/app/config', digest: 'b', count: 2, files: { 'syspass.log': 'new', 'config.xml': 'same' } });
+  const result = runBash('source "$1"; ui_smoke_compare_fingerprints "$2" "$3" app/config', [before, after]);
+  assert.equal(result.status, 1);
+  assert.match(result.stdout, /app\/config\/"syspass\.log"/);
+  assert.doesNotMatch(result.stdout, /old|new|config\.xml/);
 });
 
 test('a failed seeded run still compares fingerprints and surfaces drift', () => {
