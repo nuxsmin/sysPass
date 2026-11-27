@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Account\Ports;
 
 use SP\Domain\Common\Ports\Repository;
+use SP\Domain\Account\Models\AccountItem;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Dtos\QueryResult;
@@ -83,4 +84,10 @@ interface AccountToUserRepository extends Repository
      * @throws QueryException
      */
     public function getUsersByAccountId(int $id): QueryResult;
+
+    /**
+     * @param int[] $ids
+     * @return QueryResult<AccountItem>
+     */
+    public function getUsersByAccountIds(array $ids): QueryResult;
 }

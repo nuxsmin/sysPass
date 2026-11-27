@@ -72,4 +72,29 @@ final class AccountCache extends Service implements AccountCacheService
             $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountId)->getDataAsArray()
         );
     }
+
+    public function getForAccounts(array $accountIds): array
+    {
+        $accountIds = array_values(array_unique($accountIds));
+        if ($accountIds === []) {
+            return [];
+        }
+        $users = [];
+        $groups = [];
+        foreach ($this->accountToUserRepository->getUsersByAccountIds($accountIds)->getDataAsArray() as $item) {
+            if ($item->getAccountId() !== null) {
+                $users[$item->getAccountId()][] = $item;
+            }
+        }
+        foreach ($this->accountToUserGroupRepository->getUserGroupsByAccountIds($accountIds)->getDataAsArray() as $item) {
+            if ($item->getAccountId() !== null) {
+                $groups[$item->getAccountId()][] = $item;
+            }
+        }
+        $result = [];
+        foreach ($accountIds as $id) {
+            $result[$id] = new AccountCacheDto($id, $users[$id] ?? [], $groups[$id] ?? []);
+        }
+        return $result;
+    }
 }

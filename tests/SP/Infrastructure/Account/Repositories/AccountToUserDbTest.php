@@ -58,4 +58,15 @@ final class AccountToUserDbTest extends DatabaseRepositoryTestCase
         self::assertSame('User A', $users[0]->getName());
         self::assertSame(1, $users[0]->getIsEdit());
     }
+
+    #[Test]
+    public function batchReturnsOnlyRequestedAccountsWithTheirGrants(): void
+    {
+        $users = $this->accountToUser->getUsersByAccountIds([1, 2])->getDataAsArray(AccountItem::class);
+        self::assertCount(2, $users);
+        $pairs = array_map(static fn(AccountItem $user): array => [$user->getAccountId(), $user->getId(), $user->getIsEdit()], $users);
+        self::assertContains([1, 3, 1], $pairs);
+        self::assertContains([2, 2, 0], $pairs);
+        self::assertCount(0, $this->accountToUser->getUsersByAccountIds([])->getDataAsArray());
+    }
 }

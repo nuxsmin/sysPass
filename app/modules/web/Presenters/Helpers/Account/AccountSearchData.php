@@ -138,17 +138,19 @@ final class AccountSearchData
         $accountLinkEnabled = (null !== $userPreferencesData && $userPreferencesData->isAccountLink())
                               || $this->configData->isAccountLink();
         $favorites = $this->accountToFavoriteService->getForUserId($this->context->getUserData()->id);
+        $grants = $this->accountCacheService->getForAccounts(array_map(
+            static fn(AccountSearchView $item): int => (int)$item->getId(),
+            $queryResult->getDataAsArray()
+        ));
 
         return $queryResult->mutateWithCallback(
             function (AccountSearchView $accountSearchView) use (
                 $maxTextLength,
                 $accountLinkEnabled,
-                $favorites
+                $favorites,
+                $grants
             ): AccountSearchItem {
-                $cache = $this->accountCacheService->getCacheForAccount(
-                    $accountSearchView->getId(),
-                    (int)(strtotime($accountSearchView->getDateEdit() ?? '') ?: 0)
-                );
+                $cache = $grants[(int)$accountSearchView->getId()];
 
                 // Obtener la ACL de la cuenta
                 $accountAcl = $this->accountAclService->getAcl(

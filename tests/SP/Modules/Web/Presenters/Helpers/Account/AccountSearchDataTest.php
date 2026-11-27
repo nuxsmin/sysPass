@@ -88,9 +88,11 @@ class AccountSearchDataTest extends UnitaryTestCase
             ->with($this->context->getUserData()->id);
 
         $this->accountCacheService
-            ->expects(exactly($numResults))
-            ->method('getCacheForAccount')
-            ->willReturn(new AccountCacheDto(100, [new Item(['id' => 200])], [new Item(['id' => 300])]));
+            ->expects(once())
+            ->method('getForAccounts')
+            ->willReturnCallback(static fn(array $ids): array => array_fill_keys(
+                $ids, new AccountCacheDto(100, [new Item(['id' => 200])], [new Item(['id' => 300])])
+            ));
 
         $invokedCount = new InvokedCount($numResults);
         $this->accountAclService
@@ -137,9 +139,9 @@ class AccountSearchDataTest extends UnitaryTestCase
             ->with($this->context->getUserData()->id);
 
         $this->accountCacheService
-            ->expects(exactly($numResults))
-            ->method('getCacheForAccount')
-            ->willReturn(new AccountCacheDto(0, [], []));
+            ->expects(once())
+            ->method('getForAccounts')
+            ->willReturnCallback(static fn(array $ids): array => array_fill_keys($ids, new AccountCacheDto(0, [], [])));
 
         $this->accountAclService
             ->expects(exactly($numResults))
@@ -184,8 +186,8 @@ class AccountSearchDataTest extends UnitaryTestCase
         ]);
 
         $this->accountToFavoriteService->method('getForUserId')->willReturn([42 => 1]);
-        $this->accountCacheService->method('getCacheForAccount')
-            ->willReturn(new AccountCacheDto(42, [new Item(['id' => 200])], [new Item(['id' => 300])]));
+        $this->accountCacheService->method('getForAccounts')
+            ->willReturn([42 => new AccountCacheDto(42, [new Item(['id' => 200])], [new Item(['id' => 300])])]);
         $this->accountAclService->method('getAcl')
             ->willReturn(new \SP\Domain\Account\Adapters\AccountPermission(AclActionsInterface::ACCOUNT_SEARCH));
         $this->accountToTagRepository->method('getTagsByAccountId')

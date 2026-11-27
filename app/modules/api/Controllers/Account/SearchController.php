@@ -62,13 +62,14 @@ final class SearchController extends ControllerBase
 
         $accountSearchFilter = $this->buildAccountSearchFilter();
         $items = $this->accountSearchService->getByFilter($accountSearchFilter)->getDataAsArray() ?? [];
+        $grants = $this->accountCacheService->getForAccounts(array_map(
+            static fn(AccountSearchView $item): int => (int)$item->getId(),
+            $items
+        ));
 
         $sanitized = array_map(
-            function (AccountSearchView $item): AccountSearchView {
-                $cache = $this->accountCacheService->getCacheForAccount(
-                    (int)$item->getId(),
-                    (int)(strtotime($item->getDateEdit() ?? '') ?: 0)
-                );
+            function (AccountSearchView $item) use ($grants): AccountSearchView {
+                $cache = $grants[(int)$item->getId()];
 
                 $accountAcl = $this->accountAclService->getAcl(
                     AclActionsInterface::ACCOUNT_SEARCH,

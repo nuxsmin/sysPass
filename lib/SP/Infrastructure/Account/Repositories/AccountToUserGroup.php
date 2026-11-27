@@ -71,6 +71,24 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
         return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountItem::class));
     }
 
+    public function getUserGroupsByAccountIds(array $ids): QueryResult
+    {
+        if ($ids === []) {
+            /** @var QueryResult<AccountItem> $empty */
+            $empty = new QueryResult();
+            return $empty;
+        }
+        $query = $this->queryFactory->newSelect()
+            ->cols(['AccountToUserGroup.accountId', 'UserGroup.id', 'UserGroup.name', 'AccountToUserGroup.isEdit'])
+            ->from('AccountToUserGroup')
+            ->join('INNER', 'UserGroup', 'UserGroup.id = AccountToUserGroup.userGroupId')
+            ->where('AccountToUserGroup.accountId IN (:accountIds)', ['accountIds' => $ids])
+            ->orderBy(['UserGroup.name ASC']);
+        /** @var QueryResult<AccountItem> $result */
+        $result = $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountItem::class));
+        return $result;
+    }
+
     /**
      * Obtiene el listado con el nombre de los grupos de una cuenta.
      *
