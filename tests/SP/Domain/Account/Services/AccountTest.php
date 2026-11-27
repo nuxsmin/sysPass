@@ -1001,19 +1001,13 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testRestoreRemoved()
     {
+        $this->account = $this->buildAccount(null);
         $accountHistoryDto = AccountDataGenerator::factory()
             ->buildAccountHistoryDto()
             ->mutate(['isDeleted' => true]);
 
-        $this->accountRepository->expects(self::once())->method('createRemoved')
-                                ->with(
-                                    AccountModel::restoreRemoved(
-                                        $accountHistoryDto,
-                                        $this->context->getUserData()->id
-                                    )
-                                )
-                                ->willReturn(new QueryResult(null, 1));
-
+        $this->accountRepository->expects(self::never())->method('createRemoved');
+        $this->expectException(AccountPermissionException::class);
         $this->account->restoreRemoved($accountHistoryDto);
     }
 
@@ -1025,23 +1019,13 @@ class AccountTest extends UnitaryTestCase
     #[Test]
     public function testRestoreRemovedError()
     {
+        $this->account = $this->buildAccount(null);
         $accountHistoryDto = AccountDataGenerator::factory()
             ->buildAccountHistoryDto()
             ->mutate(['isDeleted' => true]);
 
-        $queryResult = new QueryResult();
-
-        $this->accountRepository->expects(self::once())->method('createRemoved')
-                                ->with(
-                                    AccountModel::restoreRemoved(
-                                        $accountHistoryDto,
-                                        $this->context->getUserData()->id
-                                    )
-                                )
-                                ->willReturn($queryResult);
-
-        $this->expectException(ServiceException::class);
-        $this->expectExceptionMessage('Error on restoring the account');
+        $this->accountRepository->expects(self::never())->method('createRemoved');
+        $this->expectException(AccountPermissionException::class);
 
         $this->account->restoreRemoved($accountHistoryDto);
     }
@@ -1831,7 +1815,15 @@ class AccountTest extends UnitaryTestCase
         $this->accountItemsService = $this->createMock(AccountItemsService::class);
         $this->accountPresetService = $this->createMock(AccountPresetService::class);
 
-        $this->account = new Account(
+        $clientRepository = $this->createStub(\SP\Domain\Client\Ports\ClientRepository::class);
+        $clientRepository->method('getById')->willReturn(new QueryResult([new \SP\Domain\Common\Models\Item(['id' => 1])]));
+        $clientRepository->method('isEligibleForAccount')->willReturn(true);
+        $this->account = $this->buildAccount($clientRepository);
+    }
+
+    private function buildAccount(?\SP\Domain\Client\Ports\ClientRepository $clientRepository): Account
+    {
+        return new Account(
             $this->config,
             $this->eventDispatcherStub,
             $this->context,
@@ -1854,13 +1846,14 @@ class AccountTest extends UnitaryTestCase
                 new AccountReader($this->accountRepository, null, null, null),
                 null,
                 null,
+                $clientRepository,
                 null,
                 null,
                 null,
                 null,
                 null,
                 null,
-                null
+                $this->createStub(\SP\Domain\Account\Ports\AccountFilterBuilder::class)
             )
         );
     }

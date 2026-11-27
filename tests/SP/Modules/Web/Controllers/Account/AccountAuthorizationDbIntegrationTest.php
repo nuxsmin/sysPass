@@ -76,6 +76,71 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
     }
 
     #[Test]
+    public function accountCreationRejectsClientUsedOnlyByInaccessibleAccounts(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true)->setAccAdd(true)->setAccEdit(true);
+        $user = $this->seedUser($pdo, 'web_client_visibility', 5, $profile);
+        $pdo->exec("INSERT INTO Client (name, hash, description, isGlobal) VALUES ('Hidden Synthetic Client', 'hidden-client-hash', '', 0)");
+        $clientId = (int)$pdo->lastInsertId();
+        $hiddenId = $this->seedAccount($pdo, 'Hidden Client Owner', 1, 1, 'hidden-client-owner');
+        $pdo->prepare('UPDATE Account SET clientId = ? WHERE id = ?')->execute([$clientId, $hiddenId]);
+
+        $response = $this->dispatchAsUser('post', 'account/saveCreate', $user, $profile, [], [
+            'name' => 'Denied Client Selection', 'login' => 'denied-client-selection',
+            'client_id' => (string)$clientId, 'category_id' => '1',
+            'password' => 'synthetic-password', 'password_repeat' => 'synthetic-password',
+        ]);
+
+        self::assertSame('ERROR', $this->decodeJson($response['body'])['status'] ?? null);
+        self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM Account WHERE name = 'Denied Client Selection'")->fetchColumn());
+        $missing = $this->dispatchAsUser('post', 'account/saveCreate', $user, $profile, [], [
+            'name' => 'Missing Client Selection', 'login' => 'missing-client-selection',
+            'client_id' => '999999', 'category_id' => '1',
+            'password' => 'synthetic-password', 'password_repeat' => 'synthetic-password',
+        ]);
+        self::assertSame($this->decodeJson($missing['body'])['description'] ?? null, $this->decodeJson($response['body'])['description'] ?? null);
+
+        $managerProfile = (new ProfileData())->setAccView(true)->setAccAdd(true)->setMgmCustomers(true);
+        $manager = $this->seedUser($pdo, 'web_client_manager', 6, $managerProfile);
+        $managerCreate = $this->dispatchAsUser('post', 'account/saveCreate', $manager, $managerProfile, [], [
+            'name' => 'Manager Client Selection', 'login' => 'manager-client-selection',
+            'client_id' => (string)$clientId, 'category_id' => '1',
+            'password' => 'synthetic-password', 'password_repeat' => 'synthetic-password',
+        ]);
+        $this->assertJsonOk($managerCreate, 'Account created');
+
+        $pdo->exec("INSERT INTO Client (name, hash, description, isGlobal) VALUES ('Unused Synthetic Client', 'unused-client-hash', '', 0)");
+        $unusedId = (int)$pdo->lastInsertId();
+        $allowed = $this->dispatchAsUser('post', 'account/saveCreate', $user, $profile, [], [
+            'name' => 'Allowed Unused Client', 'login' => 'allowed-unused-client',
+            'client_id' => (string)$unusedId, 'category_id' => '1',
+            'password' => 'synthetic-password', 'password_repeat' => 'synthetic-password',
+        ]);
+        $created = $this->assertJsonOk($allowed, 'Account created');
+        $accountId = (int)$created['data']['itemId'];
+        self::assertSame($unusedId, (int)$pdo->query('SELECT clientId FROM Account WHERE id = ' . $accountId)->fetchColumn());
+
+        $deniedEdit = $this->dispatchAsUser('post', 'account/saveEdit/' . $accountId, $user, $profile, [], [
+            'name' => 'Denied Client Change', 'client_id' => (string)$clientId, 'category_id' => '1',
+        ]);
+        self::assertSame('ERROR', $this->decodeJson($deniedEdit['body'])['status'] ?? null);
+        self::assertSame($unusedId, (int)$pdo->query('SELECT clientId FROM Account WHERE id = ' . $accountId)->fetchColumn());
+        $sameClient = $this->dispatchAsUser('post', 'account/saveEdit/' . $accountId, $user, $profile, [], [
+            'name' => 'Retained Current Client', 'client_id' => (string)$unusedId, 'category_id' => '1',
+        ]);
+        $this->assertJsonOk($sameClient, 'Account updated');
+
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')->execute([$hiddenId, $user->id]);
+        $shared = $this->dispatchAsUser('post', 'account/saveCreate', $user, $profile, [], [
+            'name' => 'Allowed Shared Client', 'login' => 'allowed-shared-client',
+            'client_id' => (string)$clientId, 'category_id' => '1',
+            'password' => 'synthetic-password', 'password_repeat' => 'synthetic-password',
+        ]);
+        $this->assertJsonOk($shared, 'Account created');
+    }
+
+    #[Test]
     public function readOnlyAccountToUserAndGroupAreDeniedOnEditFormAndAllSaveMutations(): void
     {
         $pdo = getDbHandler()->getConnection();

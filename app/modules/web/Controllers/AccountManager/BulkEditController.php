@@ -114,7 +114,10 @@ final class BulkEditController extends ControllerBase
             'userGroups',
             SelectItemAdapter::factory($this->userGroupService->getAll())->getItemsFromModel()
         );
-        $this->view->assign('clients', SelectItemAdapter::factory($this->clientService->getAll())->getItemsFromModel());
+        $clients = $this->acl->checkUserAccess(AclActionsInterface::CLIENT)
+            ? $this->clientService->getAll()
+            : $this->clientService->getAllForUser();
+        $this->view->assign('clients', SelectItemAdapter::factory($clients)->getItemsFromModel());
         $this->view->assign(
             'categories',
             SelectItemAdapter::factory($this->categoryService->getAll())->getItemsFromModel()

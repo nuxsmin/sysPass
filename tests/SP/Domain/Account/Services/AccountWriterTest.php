@@ -382,6 +382,7 @@ class AccountWriterTest extends UnitaryTestCase
 
         $this->accountRepository->method('transactionAware')->willReturnCallback(static fn(callable $fn) => $fn());
         $this->clientRepository->method('getById')->willReturn(new QueryResult([new Item(['id' => 1])]));
+        $this->clientRepository->method('isEligibleForAccount')->willReturn(true);
         $this->categoryRepository->method('getById')->willReturn(new QueryResult([new Item(['id' => 2])]));
         $this->userRepository->method('getById')->willReturn(new QueryResult([new UserModel(['id' => 10, 'userGroupId' => 20])]));
         $this->userGroupRepository->method('getById')->willReturn(new QueryResult([new Item(['id' => 99])]));
@@ -931,6 +932,7 @@ class AccountWriterTest extends UnitaryTestCase
         $this->userToUserGroupRepository->method('getGroupsForUser')
             ->with(10)
             ->willReturn(new QueryResult([new UserToUserGroup(['userId' => 10, 'userGroupId' => 30])]));
+        $this->clientRepository->method('isEligibleForAccount')->willReturn(true);
 
         $this->clientRepository->method('getById')->willReturnOnConsecutiveCalls(
             new QueryResult([]),
@@ -1142,6 +1144,7 @@ class AccountWriterTest extends UnitaryTestCase
             $this->accountToTagRepository,
             $this->accountToUserRepository,
             $this->accountToUserGroupRepository,
+            $this->createStub(\SP\Domain\Account\Ports\AccountFilterBuilder::class),
             $this->acl,
             $this->crypt,
             new StatelessMasterKeyStore($this->context),

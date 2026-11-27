@@ -616,6 +616,38 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
     }
 
     #[Test]
+    public function bulkEditAndHistoryRestoreRejectAnIneligibleClient(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setMgmAccounts(true)->setAccView(true)->setAccEdit(true)->setAccViewHistory(true);
+        $user = $this->seedUser($pdo, 'bulk_client_visibility', 5, $profile);
+        $target = $this->seedAccount($pdo, 'Eligibility Target', $user->id, 5);
+        $other = $this->seedAccount($pdo, 'Hidden Client Owner', 1, 1);
+        $pdo->exec("INSERT INTO Client (name, hash, description, isGlobal) VALUES ('History Hidden Client', 'history-hidden-client', '', 0)");
+        $clientId = (int)$pdo->lastInsertId();
+        $pdo->prepare('UPDATE Account SET clientId = ? WHERE id = ?')->execute([$clientId, $other]);
+        $history = $this->seedAccountHistory($pdo, null, $target, 'Historical Target', $user->id, 5, 'synthetic-pass');
+        $pdo->prepare('UPDATE AccountHistory SET clientId = ? WHERE id = ?')->execute([$clientId, $history]);
+
+        $form = $this->dispatchAsUser('post', 'accountManager/bulkEdit', $user, $profile, [], [
+            'items' => [$target],
+        ]);
+        $formJson = $this->assertJsonOk($form);
+        self::assertStringNotContainsString('History Hidden Client', $formJson['data']['html'] ?? '');
+
+        $bulk = $this->dispatchAsUser('post', 'accountManager/saveBulkEdit', $user, $profile, [], [
+            'itemsId' => (string)$target, 'client_id' => (string)$clientId, 'delete_history' => 'true',
+        ]);
+        self::assertSame('ERROR', $this->decodeJson($bulk['body'])['status'] ?? null);
+        self::assertSame(1, (int)$this->fetchValue('SELECT clientId FROM Account WHERE id = ' . $target));
+        self::assertSame(1, (int)$this->fetchValue('SELECT COUNT(*) FROM AccountHistory WHERE id = ' . $history));
+
+        $restore = $this->dispatchAsUser('post', 'account/saveEditRestore/' . $history . '/' . $target, $user, $profile);
+        self::assertSame('ERROR', $this->decodeJson($restore['body'])['status'] ?? null);
+        self::assertSame(1, (int)$this->fetchValue('SELECT clientId FROM Account WHERE id = ' . $target));
+    }
+
+    #[Test]
     public function bulkEditAndBatchDeleteEnforceAtomicityPresetsChildLinksAndFullCleanup(): void
     {
         $pdo = getDbHandler()->getConnection();
@@ -629,6 +661,7 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
             ->setAccViewHistory(true);
         $mgrUser = $this->seedUser($pdo, 'bulk_mgr', 5, $mgrProfile);
         $otherUser = $this->seedUser($pdo, 'bulk_other', 6, $mgrProfile);
+        $pdo->exec('UPDATE Client SET isGlobal = 1 WHERE id = 2');
 
         $a1 = $this->seedAccount($pdo, 'Bulk A1', $mgrUser->id, 5);
         $a2 = $this->seedAccount($pdo, 'Bulk A2', $mgrUser->id, 5);

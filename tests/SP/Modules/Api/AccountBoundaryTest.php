@@ -98,6 +98,55 @@ final class AccountBoundaryTest extends TestCase
     }
 
     #[Test]
+    public function createRejectsClientUsedOnlyByInaccessibleAccounts(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true)->setAccAdd(true)->setAccEdit(true);
+        $userId = $this->insertUserWithGroup($pdo, 'api_client_visibility', 5, $profile);
+        $pdo->exec("INSERT INTO Client (name, hash, description, isGlobal) VALUES ('API Hidden Synthetic Client', 'api-hidden-client-hash', '', 0)");
+        $clientId = (int)$pdo->lastInsertId();
+        $hiddenId = $this->seedAccount($pdo, 'API Hidden Client Owner', 1, 1, 'api-hidden-client-owner');
+        $pdo->prepare('UPDATE Account SET clientId = ? WHERE id = ?')->execute([$clientId, $hiddenId]);
+        $token = $this->seedTokenForUser($userId, AclActionsInterface::ACCOUNT_CREATE);
+
+        $response = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/create', 'id' => 741,
+            'params' => [
+                'authToken' => $token->getToken(), 'tokenPass' => self::TOKEN_PASS,
+                'name' => 'API Denied Client Selection', 'login' => 'api-denied-client',
+                'clientId' => $clientId, 'categoryId' => 1, 'pass' => 'synthetic-password',
+            ],
+        ]);
+
+        self::assertArrayHasKey('error', $response['json']);
+        self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM Account WHERE name = 'API Denied Client Selection'")->fetchColumn());
+
+        $ownedId = $this->seedAccount($pdo, 'API Client Selection Target', $userId, 5, 'api-client-target');
+        $editToken = $this->seedTokenForUser($userId, AclActionsInterface::ACCOUNT_EDIT);
+        $edit = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/edit', 'id' => 742,
+            'params' => [
+                'authToken' => $editToken->getToken(), 'tokenPass' => self::TOKEN_PASS,
+                'id' => $ownedId, 'name' => 'API Client Selection Target',
+                'clientId' => $clientId, 'categoryId' => 1,
+            ],
+        ]);
+        self::assertArrayHasKey('error', $edit['json']);
+        self::assertSame(1, (int)$pdo->query('SELECT clientId FROM Account WHERE id = ' . $ownedId)->fetchColumn());
+
+        $pdo->prepare('UPDATE Client SET isGlobal = 1 WHERE id = ?')->execute([$clientId]);
+        $allowed = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/create', 'id' => 743,
+            'params' => [
+                'authToken' => $token->getToken(), 'tokenPass' => self::TOKEN_PASS,
+                'name' => 'API Allowed Global Client', 'login' => 'api-allowed-client',
+                'clientId' => $clientId, 'categoryId' => 1, 'pass' => 'synthetic-password',
+            ],
+        ]);
+        self::assertSame(0, $allowed['json']['result']['resultCode'] ?? null);
+    }
+
+    #[Test]
     public function readOnlyAccountToUserAndGroupAreRejectedByApiEditEditPassAndDelete(): void
     {
         $pdo = getDbHandler()->getConnection();
