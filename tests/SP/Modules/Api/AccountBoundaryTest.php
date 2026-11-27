@@ -172,6 +172,14 @@ final class AccountBoundaryTest extends TestCase
         self::assertSame(0, $search['json']['result']['resultCode'] ?? null);
         self::assertCount(1, $search['json']['result']['result'] ?? []);
         self::assertSame('API Both Matching', $search['json']['result']['result'][0]['name'] ?? null);
+        $privateSearch = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/search', 'id' => 805,
+            'params' => ['authToken' => $ownerSearch->getToken(), 'text' => 'is:private'],
+        ]);
+        self::assertSame(0, $privateSearch['json']['result']['resultCode'] ?? null);
+        $privateNames = array_column($privateSearch['json']['result']['result'] ?? [], 'name');
+        self::assertContains('API Both Matching', $privateNames);
+        self::assertNotContains('API Both Mismatch', $privateNames);
 
         foreach ([$ownerView, $peerView] as $token) {
             $denied = $this->dispatchJsonRpc([

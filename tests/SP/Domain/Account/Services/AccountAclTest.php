@@ -744,14 +744,19 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     #[Test]
-    public function historyWithKnownEditTimeRetainsCacheBehavior(): void
+    public function historyWithKnownEditTimeRejectsStalePrivacyGrant(): void
     {
-        $dto = new AccountAclDto(42, 999, [], 999, [], time() - 60);
+        $this->context->getUserProfile()->setAccViewHistory(true);
+        $this->context->setUserData(UserDto::fromModel(new User([
+            'id' => 200, 'userGroupId' => 50, 'isAdminApp' => false, 'isAdminAcc' => false,
+        ])));
+        $dto = new AccountAclDto(42, 100, [], 50, [], time() - 60, true, false);
         $groups = $this->createStub(UserToUserGroupService::class);
+        $groups->method('getGroupsForUser')->willReturn([]);
         $cache = $this->createMock(FileCacheService::class);
         $cached = new AccountPermission(AclActionsInterface::ACCOUNT_HISTORY_VIEW, true);
-        $cached->setTime(time() + 3600);
-        $cache->expects(self::once())->method('load')->willReturn($cached);
+        $cached->setCompiledAccountAccess(true)->setResultView(true)->setTime(time() + 3600);
+        $cache->expects(self::never())->method('load')->willReturn($cached);
         $cache->expects(self::never())->method('save');
         $actions = $this->createStub(ActionsInterface::class);
         $service = new AccountAcl(
@@ -759,7 +764,7 @@ class AccountAclTest extends UnitaryTestCase
             new Acl($this->context, $this->eventDispatcherStub, $actions),
             $groups, $this->appPaths, $this->fileSystem, $cache
         );
-        self::assertSame($cached, $service->getAcl(AclActionsInterface::ACCOUNT_HISTORY_VIEW, $dto, true));
+        self::assertFalse($service->getAcl(AclActionsInterface::ACCOUNT_HISTORY_VIEW, $dto, true)->isResultView());
     }
 
     #[Test]

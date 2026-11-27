@@ -95,8 +95,8 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountAclDto = $accountAclDto;
 
-        // Existing cache entries can contain grants computed before both privacy restrictions were combined.
-        $bypassCache = ($isHistory && $accountAclDto->getDateEdit() === null)
+        // History timestamps do not track changes to the live ACL; old both-private grants may also be stale.
+        $bypassCache = $isHistory
             || ($accountAclDto->isPrivate() && $accountAclDto->isPrivateGroup());
 
         if (null !== $this->fileCache && !$bypassCache) {

@@ -401,6 +401,13 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
         $allowed = $this->dispatchAsUser('get', 'account/view/' . $matching, $owner, $profile);
         $this->assertResponseWasDispatched($allowed);
         self::assertStringContainsString('Both Flags Matching', $allowed['body']);
+        $search = $this->dispatchAsUser('post', 'account/search', $owner, $profile, [], [
+            'search' => 'is:private', 'isAjax' => '1', 'start' => '0', 'skey' => '0', 'sorder' => '0',
+        ]);
+        $searchJson = $this->assertJsonOk($search);
+        $searchHtml = (string)($searchJson['data']['html'] ?? '');
+        self::assertStringContainsString('Both Flags Matching', $searchHtml);
+        self::assertStringNotContainsString('Both Flags Mismatch', $searchHtml);
 
         foreach ([[$owner, $mismatching], [$peer, $mismatching]] as [$actor, $id]) {
             $view = $this->dispatchAsUser('get', 'account/view/' . $id, $actor, $profile);

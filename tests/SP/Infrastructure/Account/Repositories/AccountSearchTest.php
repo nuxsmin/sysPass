@@ -94,7 +94,7 @@ class AccountSearchTest extends UnitaryTestCase
         $out = $this->accountSearch->withFilterForIsPrivate(123, 456);
 
         $bind = ['userId' => 123, 'userGroupId' => 456];
-        $query = '(`Account`.`isPrivate` = 1 AND `Account`.`userId` = :userId) OR (`Account`.`isPrivateGroup` = 1 AND `Account`.`userGroupId` = :userGroupId)';
+        $query = '((`Account`.`isPrivate` = 1 AND `Account`.`userId` = :userId) OR (`Account`.`isPrivateGroup` = 1 AND `Account`.`userGroupId` = :userGroupId))';
 
         $this->assertEquals($bind, $out->getBindValues());
         $this->checkQueryRegex($out->getStatement(), $query);

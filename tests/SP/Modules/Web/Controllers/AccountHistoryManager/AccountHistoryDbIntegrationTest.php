@@ -31,6 +31,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use SP\Core\Acl\Acl;
 use SP\Domain\Account\Ports\AccountAclService;
+use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -45,6 +46,7 @@ use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserPreferences;
@@ -78,6 +80,34 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
                 'getPublinksMaxViews' => 3,
             ]
         );
+    }
+
+    #[Test]
+    public function historyAccessTracksLivePrivacyAcrossTransitionsDespiteCachedGrant(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true)->setAccViewHistory(true);
+        $viewer = $this->seedUser($pdo, 'history_privacy_viewer', 5, $profile);
+        $owner = $this->seedUser($pdo, 'history_privacy_owner', 5, $profile);
+        $accountId = $this->seedAccount($pdo, 'History Privacy Live', $owner->id, 5, null, 0, 1);
+        $historyId = $this->seedAccountHistory($pdo, null, $accountId, 'Synthetic History Privacy', $owner->id, 5, 'synthetic-pass', 1, 0, '2026-01-10 00:00:00');
+        $stale = new AccountPermission(AclActionsInterface::ACCOUNT_HISTORY_VIEW, true);
+        $stale->setCompiledAccountAccess(true)->setResultView(true)->setTime(time() + 3600);
+        $cache = $this->createMock(FileCacheService::class);
+        $cache->expects(self::never())->method('load')->willReturn($stale);
+        $cache->expects(self::never())->method('save');
+
+        $allowed = $this->dispatchAsUser('get', 'account/viewHistory/' . $historyId, $viewer, $profile, [], [], $cache);
+        $this->assertResponseWasDispatched($allowed);
+        self::assertStringContainsString('Synthetic History Privacy', $allowed['body']);
+
+        foreach ([[1, 1], [1, 0]] as [$isPrivate, $isPrivateGroup]) {
+            $pdo->prepare('UPDATE Account SET isPrivate = ?, isPrivateGroup = ? WHERE id = ?')
+                ->execute([$isPrivate, $isPrivateGroup, $accountId]);
+            $denied = $this->dispatchAsUser('get', 'account/viewHistory/' . $historyId, $viewer, $profile, [], [], $cache);
+            self::assertStringContainsString(self::DENIED_ACCOUNT, $denied['body']);
+            self::assertStringNotContainsString('Synthetic History Privacy', $denied['body']);
+        }
     }
 
     #[Test]
@@ -813,7 +843,8 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
         UserDto     $user,
         ProfileData $profile,
         array       $paramsGet = [],
-        array       $paramsPost = []
+        array       $paramsPost = [],
+        ?FileCacheService $fileCache = null
     ): array {
         $context = $this->buildSessionContext($user, $profile);
         $configData = self::createConfiguredStub(ConfigDataInterface::class, $this->getConfigData());
@@ -832,7 +863,7 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
                 AclInterface::class => autowire(Acl::class)
                     ->constructorParameter('actions', get(ActionsInterface::class)),
                 AccountAclService::class => autowire(AccountAcl::class)
-                    ->constructorParameter('fileCache', null),
+                    ->constructorParameter('fileCache', $fileCache),
             ]
         );
     }
