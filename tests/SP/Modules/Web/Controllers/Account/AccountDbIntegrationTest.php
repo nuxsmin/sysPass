@@ -97,6 +97,20 @@ final class AccountDbIntegrationTest extends DatabaseIntegrationTestCase
         self::assertStringContainsString('Prueba', $result['body']);
     }
 
+    #[Test]
+    #[InjectCrypt]
+    public function createFiltersClientsWithoutClientManagementAccess(): void
+    {
+        $result = $this->dispatch('get', 'account/create', [], [], [
+            AclInterface::class => $this->denyAclFor(AclActionsInterface::CLIENT),
+        ]);
+
+        $this->assertResponseWasDispatched($result);
+        self::assertSame(1, preg_match('/<select\b[^>]*id="client_id"[^>]*>([\s\S]*?)<\/select>/', $result['body'], $matches));
+        self::assertStringContainsString('Microsoft', $matches[1]);
+        self::assertStringNotContainsString('Google', $matches[1]);
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -219,11 +233,11 @@ final class AccountDbIntegrationTest extends DatabaseIntegrationTestCase
         self::assertStringContainsString($name, $edit['body']);
 
         $accountAcl = self::createStub(AccountAclService::class);
-        $accountAcl->method('getAcl')->willReturnCallback(
-            static fn(int $actionId): AccountPermission => (new AccountPermission($actionId))
+        $accountAcl->method('getForSearch')->willReturn([
+            $itemId => (new AccountPermission(AclActionsInterface::ACCOUNT_SEARCH))
                 ->setResultView(true)
-                ->setShowView(true)
-        );
+                ->setShowView(true),
+        ]);
 
         $result = $this->dispatch(
             'post',

@@ -23,40 +23,16 @@
  */
 
 declare(strict_types=1);
-/**
- * sysPass
- *
- * @author nuxsmin
- * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
- *
- * This file is part of sysPass.
- *
- * sysPass is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * sysPass is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 namespace SP\Modules\Web\Presenters\Helpers\Account;
 
 use SP\Domain\Account\Adapters\AccountSearchItem;
-use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountCacheService;
 use SP\Domain\Account\Ports\AccountToFavoriteService;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -138,27 +114,24 @@ final class AccountSearchData
         $accountLinkEnabled = (null !== $userPreferencesData && $userPreferencesData->isAccountLink())
                               || $this->configData->isAccountLink();
         $favorites = $this->accountToFavoriteService->getForUserId($this->context->getUserData()->id);
+        $items = $queryResult->getDataAsArray();
+        $grants = $this->accountCacheService->getForAccounts(array_map(
+            static fn(AccountSearchView $item): int => (int)$item->getId(),
+            $items
+        ));
+        $permissions = $this->accountAclService->getForSearch($items, $grants);
 
         return $queryResult->mutateWithCallback(
             function (AccountSearchView $accountSearchView) use (
                 $maxTextLength,
                 $accountLinkEnabled,
-                $favorites
+                $favorites,
+                $grants,
+                $permissions
             ): AccountSearchItem {
-                $cache = $this->accountCacheService->getCacheForAccount(
-                    $accountSearchView->getId(),
-                    (int)(strtotime($accountSearchView->getDateEdit() ?? '') ?: 0)
-                );
-
-                // Obtener la ACL de la cuenta
-                $accountAcl = $this->accountAclService->getAcl(
-                    AclActionsInterface::ACCOUNT_SEARCH,
-                    AccountAclDto::makeFromAccountSearch(
-                        $accountSearchView,
-                        $cache->getUsers(),
-                        $cache->getUserGroups()
-                    )
-                );
+                $accountId = (int)$accountSearchView->getId();
+                $cache = $grants[$accountId];
+                $accountAcl = $permissions[$accountId];
 
                 $tags = $this->accountToTagRepository
                     ->getTagsByAccountId($accountSearchView->getId())

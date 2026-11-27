@@ -1060,7 +1060,7 @@ class AccountTest extends IntegrationTestCase
         $permission->setResultView(true);
         $permission->setShowView(true);
         $acl = self::createStub(AccountAclService::class);
-        $acl->method('getAcl')->willReturn($permission);
+        $acl->method('getForSearch')->willReturn([(int)$account->getId() => $permission]);
         $container = $this->buildContainer(
             self::buildRequest('post', 'index.php', ['r' => 'account/search']),
             [AccountAclService::class => $acl]

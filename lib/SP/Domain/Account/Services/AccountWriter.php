@@ -37,6 +37,7 @@ use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Account\Models\AccountItem;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Ports\AccountCryptService;
+use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountHistoryService;
 use SP\Domain\Account\Ports\AccountItemsService;
 use SP\Domain\Account\Ports\AccountPresetService;
@@ -50,7 +51,6 @@ use SP\Domain\Category\Ports\CategoryRepository;
 use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Client\Ports\ClientRepository;
 use SP\Domain\Common\Models\Item;
-use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigFileService;
@@ -119,12 +119,32 @@ final class AccountWriter extends Service
         private readonly ?AccountToTagRepository          $accountToTagRepository,
         private readonly ?AccountToUserRepository         $accountToUserRepository,
         private readonly ?AccountToUserGroupRepository    $accountToUserGroupRepository,
+        private readonly AccountFilterBuilder              $accountFilter,
         private readonly ?AclInterface                    $acl = null,
         private readonly ?CryptInterface                  $crypt = null,
         private readonly ?MasterKeyStore                  $masterKeyStore = null,
         private readonly ?UserToUserGroupRepository       $userToUserGroupRepository = null
     ) {
         parent::__construct($config, $eventDispatcher, $context);
+    }
+
+    private function assertClientEligible(?int $clientId, ?int $currentClientId = null): void
+    {
+        if ($clientId === null || $clientId <= 0 || $clientId === $currentClientId) {
+            return;
+        }
+        $user = $this->context->getUserData();
+        $profile = $this->context->getUserProfile();
+        if ($user->isAdminApp || ($profile !== null && $profile->isMgmCustomers())) {
+            return;
+        }
+        if ($this->clientRepository === null) {
+            throw new ValidationException(__u('A client is needed'));
+        }
+        if ($this->clientRepository->isEligibleForAccount($clientId, $this->accountFilter)) {
+            return;
+        }
+        throw new ValidationException(__u('A client is needed'));
     }
 
     /**
@@ -198,6 +218,7 @@ final class AccountWriter extends Service
                     $changeOwner = false;
                     $changeUserGroup = false;
                     $account = $this->accountReader->getById($accountId);
+                    $this->assertClientEligible($accountUpdateDto->clientId, $account->getClientId());
 
                     if ($userCanChangePermissions) {
                         $changeOwner = $this->userCanChangeOwner($userData, $userProfile, $account);
@@ -398,6 +419,7 @@ final class AccountWriter extends Service
                     $accountCreateDto->userGroupId,
                     $accountCreateDto->notes
                 );
+                $this->assertClientEligible($accountCreateDto->clientId);
 
                 $parentId = (int)($accountCreateDto->parentId ?? 0);
                 $this->validateParentLink($parentId);
@@ -734,6 +756,7 @@ final class AccountWriter extends Service
                     $effectiveUserGroupId,
                     $resolvedDto->notes
                 );
+                $this->assertClientEligible($resolvedDto->clientId, $account->getClientId());
 
                 [$resolvedDto, $presetApplied] = $this->applyPresetPrivate($resolvedDto, $account);
 
@@ -1166,6 +1189,7 @@ final class AccountWriter extends Service
         $this->accountRepository->transactionAware(
             function () use ($dto) {
                 $liveAccount = $this->accountReader->getById($dto->accountId);
+                $this->assertClientEligible($dto->clientId, $liveAccount->getClientId());
                 $this->addHistory($dto->accountId, false, $liveAccount);
 
                 $preservePass = $this->acl !== null
@@ -1222,15 +1246,7 @@ final class AccountWriter extends Service
         }
 
         if ($this->clientRepository === null) {
-            $result = $this->accountRepository->createRemoved(
-                AccountModel::restoreRemoved($accountHistoryDto, $this->context->getUserData()->id)
-            );
-
-            if ($result->getAffectedNumRows() === 0) {
-                throw new ServiceException('Error on restoring the account');
-            }
-
-            return;
+            throw new AccountPermissionException(SPException::INFO);
         }
 
         $oldId = (int)($accountHistoryDto->accountId ?? 0);
@@ -1267,6 +1283,7 @@ final class AccountWriter extends Service
         ) {
             throw new ValidationException(__u('A client is needed'));
         }
+        $this->assertClientEligible($accountHistoryDto->clientId, $snap->getClientId());
 
         if ($accountHistoryDto->categoryId === null
             || $accountHistoryDto->categoryId <= 0

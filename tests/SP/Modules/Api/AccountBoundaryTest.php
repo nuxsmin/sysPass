@@ -98,6 +98,124 @@ final class AccountBoundaryTest extends TestCase
     }
 
     #[Test]
+    public function createRejectsClientUsedOnlyByInaccessibleAccounts(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true)->setAccAdd(true)->setAccEdit(true);
+        $userId = $this->insertUserWithGroup($pdo, 'api_client_visibility', 5, $profile);
+        $pdo->exec("INSERT INTO Client (name, hash, description, isGlobal) VALUES ('API Hidden Synthetic Client', 'api-hidden-client-hash', '', 0)");
+        $clientId = (int)$pdo->lastInsertId();
+        $hiddenId = $this->seedAccount($pdo, 'API Hidden Client Owner', 1, 1, 'api-hidden-client-owner');
+        $pdo->prepare('UPDATE Account SET clientId = ? WHERE id = ?')->execute([$clientId, $hiddenId]);
+        $token = $this->seedTokenForUser($userId, AclActionsInterface::ACCOUNT_CREATE);
+
+        $response = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/create', 'id' => 741,
+            'params' => [
+                'authToken' => $token->getToken(), 'tokenPass' => self::TOKEN_PASS,
+                'name' => 'API Denied Client Selection', 'login' => 'api-denied-client',
+                'clientId' => $clientId, 'categoryId' => 1, 'pass' => 'synthetic-password',
+            ],
+        ]);
+
+        self::assertArrayHasKey('error', $response['json']);
+        self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM Account WHERE name = 'API Denied Client Selection'")->fetchColumn());
+
+        $ownedId = $this->seedAccount($pdo, 'API Client Selection Target', $userId, 5, 'api-client-target');
+        $editToken = $this->seedTokenForUser($userId, AclActionsInterface::ACCOUNT_EDIT);
+        $edit = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/edit', 'id' => 742,
+            'params' => [
+                'authToken' => $editToken->getToken(), 'tokenPass' => self::TOKEN_PASS,
+                'id' => $ownedId, 'name' => 'API Client Selection Target',
+                'clientId' => $clientId, 'categoryId' => 1,
+            ],
+        ]);
+        self::assertArrayHasKey('error', $edit['json']);
+        self::assertSame(1, (int)$pdo->query('SELECT clientId FROM Account WHERE id = ' . $ownedId)->fetchColumn());
+
+        $pdo->prepare('UPDATE Client SET isGlobal = 1 WHERE id = ?')->execute([$clientId]);
+        $allowed = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/create', 'id' => 743,
+            'params' => [
+                'authToken' => $token->getToken(), 'tokenPass' => self::TOKEN_PASS,
+                'name' => 'API Allowed Global Client', 'login' => 'api-allowed-client',
+                'clientId' => $clientId, 'categoryId' => 1, 'pass' => 'synthetic-password',
+            ],
+        ]);
+        self::assertSame(0, $allowed['json']['result']['resultCode'] ?? null);
+    }
+
+    #[Test]
+    public function bothPrivacyFlagsRequireOwnerAndPrimaryGroupForApiAccess(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true)->setAccEdit(true)->setAccGlobalSearch(true);
+        $ownerId = $this->insertUserWithGroup($pdo, 'api_both_private_owner', 5, $profile);
+        $peerId = $this->insertUserWithGroup($pdo, 'api_both_private_peer', 6, $profile);
+        $matching = $this->seedAccount($pdo, 'API Both Matching', $ownerId, 5, 'both-matching', 1, 1);
+        $mismatch = $this->seedAccount($pdo, 'API Both Mismatch', $ownerId, 6, 'both-mismatch', 1, 1);
+        foreach ([$matching, $mismatch] as $id) {
+            $pdo->prepare('INSERT INTO AccountToTag (accountId, tagId) VALUES (?, 1)')->execute([$id]);
+        }
+        $ownerView = $this->seedTokenForUser($ownerId, AclActionsInterface::ACCOUNT_VIEW);
+        $peerView = $this->seedTokenForUser($peerId, AclActionsInterface::ACCOUNT_VIEW);
+        $ownerEdit = $this->seedTokenForUser($ownerId, AclActionsInterface::ACCOUNT_EDIT);
+        $ownerSearch = $this->seedTokenForUser($ownerId, AclActionsInterface::ACCOUNT_SEARCH);
+
+        $allowed = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/view', 'id' => 801,
+            'params' => ['authToken' => $ownerView->getToken(), 'id' => $matching],
+        ]);
+        self::assertSame(0, $allowed['json']['result']['resultCode'] ?? null);
+        $search = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/search', 'id' => 804,
+            'params' => ['authToken' => $ownerSearch->getToken(), 'text' => 'API Both'],
+        ]);
+        self::assertSame(0, $search['json']['result']['resultCode'] ?? null);
+        self::assertCount(1, $search['json']['result']['result'] ?? []);
+        self::assertSame('API Both Matching', $search['json']['result']['result'][0]['name'] ?? null);
+        $privateSearch = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/search', 'id' => 805,
+            'params' => ['authToken' => $ownerSearch->getToken(), 'text' => 'is:private'],
+        ]);
+        self::assertSame(0, $privateSearch['json']['result']['resultCode'] ?? null);
+        $privateNames = array_column($privateSearch['json']['result']['result'] ?? [], 'name');
+        self::assertContains('API Both Matching', $privateNames);
+        self::assertNotContains('API Both Mismatch', $privateNames);
+
+        foreach (['is:private client:Google category:Web op:or', 'is:private client:Google category:Web op:and'] as $term) {
+            foreach ([false, true] as $global) {
+                $filtered = $this->dispatchJsonRpc([
+                    'jsonrpc' => '2.0', 'method' => 'account/search', 'id' => 806,
+                    'params' => ['authToken' => $ownerSearch->getToken(), 'text' => $term,
+                        'tagsId' => [1], 'globalSearch' => (int)$global, 'categoryId' => 1, 'clientId' => 1,
+                        'op' => str_ends_with($term, 'op:or') ? 'or' : 'and'],
+                ], $global);
+                self::assertSame(0, $filtered['json']['result']['resultCode'] ?? null);
+                $names = array_column($filtered['json']['result']['result'] ?? [], 'name');
+                self::assertContains('API Both Matching', $names, $term);
+                self::assertNotContains('API Both Mismatch', $names, $term);
+            }
+        }
+
+        foreach ([$ownerView, $peerView] as $token) {
+            $denied = $this->dispatchJsonRpc([
+                'jsonrpc' => '2.0', 'method' => 'account/view', 'id' => 802,
+                'params' => ['authToken' => $token->getToken(), 'id' => $mismatch],
+            ], true);
+            self::assertSame("You don't have permission to access this account", $denied['json']['error']['message'] ?? null);
+        }
+        $edit = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/edit', 'id' => 803,
+            'params' => ['authToken' => $ownerEdit->getToken(), 'tokenPass' => self::TOKEN_PASS,
+                'id' => $mismatch, 'name' => 'Denied Both Flags', 'clientId' => 1, 'categoryId' => 1],
+        ], true);
+        self::assertSame("You don't have permission to access this account", $edit['json']['error']['message'] ?? null);
+        self::assertSame('API Both Mismatch', $pdo->query('SELECT name FROM Account WHERE id = ' . $mismatch)->fetchColumn());
+    }
+
+    #[Test]
     public function readOnlyAccountToUserAndGroupAreRejectedByApiEditEditPassAndDelete(): void
     {
         $pdo = getDbHandler()->getConnection();

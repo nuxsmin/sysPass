@@ -42,6 +42,8 @@ use SP\Domain\Core\Exceptions\SPException;
  */
 final class AccountCache extends Service implements AccountCacheService
 {
+    private const GRANT_BATCH_SIZE = 1000;
+
     public function __construct(
         ConfigFileService $config,
         EventDispatcherInterface $eventDispatcher,
@@ -65,22 +67,36 @@ final class AccountCache extends Service implements AccountCacheService
      */
     public function getCacheForAccount(int $accountId, int $dateEdit): AccountCacheDto
     {
-        $cache = $this->context->getAccountsCache();
+        // Session timestamps cannot prove grants are current after concurrent updates or clock skew.
+        return new AccountCacheDto(
+            $accountId,
+            $this->accountToUserRepository->getUsersByAccountId($accountId)->getDataAsArray(),
+            $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountId)->getDataAsArray()
+        );
+    }
 
-        $cacheMiss = $cache === null
-                     || !isset($cache[$accountId])
-                     || $cache[$accountId]->getTime() < $dateEdit;
-
-        if ($cacheMiss) {
-            $cache[$accountId] = new AccountCacheDto(
-                $accountId,
-                $this->accountToUserRepository->getUsersByAccountId($accountId)->getDataAsArray(),
-                $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountId)->getDataAsArray()
-            );
-
-            $this->context->setAccountsCache($cache);
+    public function getForAccounts(array $accountIds): array
+    {
+        $accountIds = array_values(array_unique($accountIds));
+        $result = [];
+        foreach (array_chunk($accountIds, self::GRANT_BATCH_SIZE) as $batch) {
+            $users = [];
+            $groups = [];
+            foreach ($this->accountToUserRepository->getUsersByAccountIds($batch)->getDataAsArray() as $item) {
+                if ($item->getAccountId() !== null) {
+                    $users[$item->getAccountId()][] = $item;
+                }
+            }
+            foreach ($this->accountToUserGroupRepository->getUserGroupsByAccountIds($batch)->getDataAsArray() as $item) {
+                if ($item->getAccountId() !== null) {
+                    $groups[$item->getAccountId()][] = $item;
+                }
+            }
+            foreach ($batch as $id) {
+                $result[$id] = new AccountCacheDto($id, $users[$id] ?? [], $groups[$id] ?? []);
+            }
         }
 
-        return $cache[$accountId];
+        return $result;
     }
 }

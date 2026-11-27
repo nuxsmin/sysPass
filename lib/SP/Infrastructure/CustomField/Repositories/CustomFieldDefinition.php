@@ -206,6 +206,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
             ->from(sprintf('%s AS CF_Definition', CustomFieldDefinitionModel::TABLE))
             ->innerJoin('CustomFieldType AS CF_Type', 'CF_Type.id = CF_Definition.typeId')
             ->cols(CustomFieldDefinitionModel::getColsWithPreffix('CF_Definition'))
+            ->cols(['CF_Type.text AS typeName'])
             ->orderBy(['CF_Definition.moduleId ASC'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
@@ -218,7 +219,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
             $query->bindValues(['name' => $search, 'help' => $search]);
         }
 
-        $queryData = QueryData::build($query)->setMapClassName(CustomFieldDefinitionModel::class);
+        $queryData = QueryData::build($query)->setMapClassName(\SP\Domain\CustomField\Models\CustomFieldDefinitionSearchResult::class);
 
         return $this->db->runQuery($queryData, true);
     }

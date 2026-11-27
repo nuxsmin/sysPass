@@ -316,13 +316,16 @@ After installation, `tests/ui/fixtures/seed.php`:
 - pre-generates the run-owned PKI key pair with `CryptPKIHandler` so login
   encryption is deterministic;
 - writes user preferences needed by the session;
-- creates the demo user, group and profile plus a synthetic client, category,
-  parent account, child account and child account file;
-- derives the login hash with `HashService`, the user vault with
-  `UserMasterPassService` and the account ciphertext with `AccountCryptService`;
-- verifies the login hash, Master Password metadata, both user vaults, both
-  account ciphertexts, user preferences, the file row and the application
-  configuration before the server starts.
+- creates the demo and restricted users/groups/profiles plus synthetic clients,
+  category, tag, parent account, child account, group view links and child
+  account file;
+- derives the login hashes with `HashService`, the user vaults with
+  `UserMasterPassService` and the account ciphertexts with
+  `AccountCryptService`;
+- verifies the login hashes, Master Password metadata, user vaults and bindings,
+  account ciphertexts, user preferences, client/category/tag/file rows,
+  restricted profile permissions and the application configuration before the
+  server starts.
 
 The runner applies `--reset`, then `--verify`, then repeats the reset and
 verification to prove reset stability. `--reset` deletes only the stable
@@ -333,7 +336,8 @@ the run root or worker memory and are excluded from artifacts.
 For a `--keep` debugging run, invoke `tests/ui/fixtures/seed.php` with the same
 run-owned environment file, network and repository/run-root mounts as the
 runner, using `--reset` or `--verify`. Do not point it at a developer database
-or configuration. Run PHP only through the pinned container, not host PHP.
+or configuration. Run PHP only through the pinned container, not host PHP. For
+guidance on updating or extending fixtures, see [UI smoke fixtures](ui-fixtures.md).
 
 ## Isolation and refusal rules
 

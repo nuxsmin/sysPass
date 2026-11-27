@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountAclService;
@@ -62,24 +61,15 @@ final class SearchController extends ControllerBase
 
         $accountSearchFilter = $this->buildAccountSearchFilter();
         $items = $this->accountSearchService->getByFilter($accountSearchFilter)->getDataAsArray() ?? [];
+        $grants = $this->accountCacheService->getForAccounts(array_map(
+            static fn(AccountSearchView $item): int => (int)$item->getId(),
+            $items
+        ));
+        $permissions = $this->accountAclService->getForSearch($items, $grants);
 
         $sanitized = array_map(
-            function (AccountSearchView $item): AccountSearchView {
-                $cache = $this->accountCacheService->getCacheForAccount(
-                    (int)$item->getId(),
-                    (int)(strtotime($item->getDateEdit() ?? '') ?: 0)
-                );
-
-                $accountAcl = $this->accountAclService->getAcl(
-                    AclActionsInterface::ACCOUNT_SEARCH,
-                    AccountAclDto::makeFromAccountSearch(
-                        $item,
-                        $cache->getUsers(),
-                        $cache->getUserGroups()
-                    )
-                );
-
-                if ($accountAcl->isResultView()) {
+            static function (AccountSearchView $item) use ($permissions): AccountSearchView {
+                if ($permissions[(int)$item->getId()]->isResultView()) {
                     return $item;
                 }
 

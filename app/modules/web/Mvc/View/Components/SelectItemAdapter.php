@@ -53,10 +53,16 @@ final readonly class SelectItemAdapter implements ItemAdapterInterface
      */
     public static function getIdFromArrayOfObjects(array $items): array
     {
-        return array_map(
-            static fn(object $item) => $item->id,
-            array_filter($items, static fn(mixed $item) => is_object($item) && isset($item->id))
-        );
+        $ids = [];
+        foreach ($items as $item) {
+            if ($item instanceof ItemWithIdAndNameModel) {
+                $ids[] = $item->getId();
+            } elseif (is_object($item) && isset($item->id)) {
+                $ids[] = $item->id;
+            }
+        }
+
+        return $ids;
     }
 
     /**

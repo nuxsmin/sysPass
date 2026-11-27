@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Client\Repositories;
 
+use Aura\SqlQuery\Common\SelectInterface;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Client\Ports\ClientRepository;
@@ -313,15 +314,26 @@ final class Client extends BaseRepository implements ClientRepository
      */
     public function getAllForFilter(AccountFilterBuilder $accountFilterUser): QueryResult
     {
-        $query = $accountFilterUser
-            ->buildFilter()
-            ->cols(['Client.id', 'Client.name'])
-            ->join('right', 'Client', 'Account.clientId = Client.id')
-            ->where('Account.clientId IS NULL')
-            ->orWhere('Client.isGlobal = 1')
-            ->groupBy(['id'])
-            ->orderBy(['Client.name']);
+        return $this->db->runQuery(QueryData::build($this->eligibleClientsQuery($accountFilterUser)));
+    }
 
-        return $this->db->runQuery(QueryData::build($query));
+    public function isEligibleForAccount(int $clientId, AccountFilterBuilder $accountFilterUser): bool
+    {
+        $query = $this->eligibleClientsQuery($accountFilterUser)
+            ->where('Client.id = :eligibleClientId')
+            ->bindValue('eligibleClientId', $clientId);
+
+        return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
+    }
+
+    private function eligibleClientsQuery(AccountFilterBuilder $accountFilterUser): SelectInterface
+    {
+        $visibleAccounts = $accountFilterUser->buildFilter()->cols(['Account.clientId']);
+        return $this->queryFactory->newSelect()
+            ->from('Client')
+            ->cols(['Client.id', 'Client.name'])
+            ->where('(Client.isGlobal = 1 OR NOT EXISTS (SELECT 1 FROM Account WHERE Account.clientId = Client.id) OR Client.id IN (' . $visibleAccounts->getStatement() . '))')
+            ->bindValues($visibleAccounts->getBindValues())
+            ->orderBy(['Client.name']);
     }
 }

@@ -1,3 +1,4 @@
+// Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,8 +19,9 @@ export interface UiFixture {
     groups: { demo: number; restricted: number };
     profiles: { demo: number; restricted: number };
     users: { admin: number; demo: number; restricted: number };
-    clients: { primary: number };
+    clients: { primary: number; secondary: number };
     categories: { primary: number };
+    tags: { primary: number };
     accounts: { parent: number; child: number };
     files: { childDocument: number };
   };
@@ -29,6 +31,8 @@ export interface UiFixture {
     restrictedGroup: string;
     restrictedProfile: string;
     client: string;
+    secondClient: string;
+    tag: string;
     category: string;
     parentAccount: string;
     childAccount: string;

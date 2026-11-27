@@ -5,7 +5,7 @@ declare(strict_types=1);
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2022, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -36,4 +36,10 @@ interface AccountCacheService
      * Devolver los accesos desde la caché
      */
     public function getCacheForAccount(int $accountId, int $dateEdit): AccountCacheDto;
+
+    /**
+     * @param int[] $accountIds
+     * @return array<int, AccountCacheDto>
+     */
+    public function getForAccounts(array $accountIds): array;
 }

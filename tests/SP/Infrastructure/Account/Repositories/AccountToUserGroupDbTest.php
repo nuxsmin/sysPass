@@ -58,4 +58,16 @@ final class AccountToUserGroupDbTest extends DatabaseRepositoryTestCase
         self::assertSame('Demo', $groups[0]->getName());
         self::assertSame(1, $groups[0]->getIsEdit());
     }
+
+    #[Test]
+    public function batchReturnsOnlyRequestedAccountsWithTheirGroups(): void
+    {
+        $groups = $this->accountToUserGroup->getUserGroupsByAccountIds([1, 2])->getDataAsArray(AccountItem::class);
+        self::assertCount(3, $groups);
+        $pairs = array_map(static fn(AccountItem $group): array => [$group->getAccountId(), $group->getId(), $group->getIsEdit()], $groups);
+        self::assertContains([1, 2, 1], $pairs);
+        self::assertContains([2, 2, 0], $pairs);
+        self::assertContains([2, 3, 0], $pairs);
+        self::assertCount(0, $this->accountToUserGroup->getUserGroupsByAccountIds([])->getDataAsArray());
+    }
 }

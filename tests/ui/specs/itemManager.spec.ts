@@ -1,3 +1,4 @@
+// Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
 import { test } from '../src/session';
 
 import { ActionTracker } from '../src/readiness';

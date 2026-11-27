@@ -31,10 +31,14 @@
       "restricted": 3
     },
     "clients": {
-      "primary": 1
+      "primary": 1,
+      "secondary": 1001
     },
     "categories": {
       "primary": 1
+    },
+    "tags": {
+      "primary": 1001
     },
     "accounts": {
       "parent": 1001,
@@ -50,6 +54,8 @@
     "restrictedGroup": "E2E_Restricted_Users",
     "restrictedProfile": "E2E Restricted",
     "client": "E2E_Client",
+    "secondClient": "E2E_Second_Client",
+    "tag": "E2E_Tag",
     "category": "E2E_Category",
     "parentAccount": "E2E_Parent_Account",
     "childAccount": "E2E_Child_Account",

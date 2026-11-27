@@ -31,6 +31,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use SP\Core\Acl\Acl;
 use SP\Domain\Account\Ports\AccountAclService;
+use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -45,6 +46,7 @@ use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserPreferences;
@@ -78,6 +80,54 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
                 'getPublinksMaxViews' => 3,
             ]
         );
+    }
+
+    #[Test]
+    public function historyAccessTracksLivePrivacyAcrossTransitionsDespiteCachedGrant(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true)->setAccViewPass(true)->setAccViewHistory(true);
+        $viewer = $this->seedUser($pdo, 'history_privacy_viewer', 5, $profile);
+        $owner = $this->seedUser($pdo, 'history_privacy_owner', 5, $profile);
+        $accountId = $this->seedAccount($pdo, 'History Privacy Live', $owner->id, 5, null, 0, 1);
+        $historyId = $this->seedAccountHistory($pdo, null, $accountId, 'Synthetic History Privacy', $owner->id, 5, 'synthetic-pass', 1, 0, '2026-01-10 00:00:00');
+        $stale = new AccountPermission(AclActionsInterface::ACCOUNT_HISTORY_VIEW, true);
+        $stale->setCompiledAccountAccess(true)->setResultView(true)->setTime(time() + 3600);
+        $cache = $this->createMock(FileCacheService::class);
+        $cache->expects(self::never())->method('load')->willReturn($stale);
+        $cache->expects(self::never())->method('save');
+
+        $allowed = $this->dispatchAsUser('get', 'account/viewHistory/' . $historyId, $viewer, $profile, [], [], $cache);
+        $this->assertResponseWasDispatched($allowed);
+        self::assertStringContainsString('Synthetic History Privacy', $allowed['body']);
+        foreach (['viewPassHistory', 'copyPassHistory'] as $action) {
+            $pass = $this->dispatchAsUser('post', 'account/' . $action . '/' . $historyId, $viewer, $profile);
+            self::assertSame('OK', $this->decodeJson($pass['body'])['status'] ?? null);
+            self::assertStringContainsString('synthetic-pass', $pass['body']);
+        }
+
+        foreach ([[1, 1], [1, 0]] as [$isPrivate, $isPrivateGroup]) {
+            $pdo->prepare('UPDATE Account SET isPrivate = ?, isPrivateGroup = ? WHERE id = ?')
+                ->execute([$isPrivate, $isPrivateGroup, $accountId]);
+            $denied = $this->dispatchAsUser('get', 'account/viewHistory/' . $historyId, $viewer, $profile, [], [], $cache);
+            self::assertStringContainsString(self::DENIED_ACCOUNT, $denied['body']);
+            self::assertStringNotContainsString('Synthetic History Privacy', $denied['body']);
+            foreach (['viewPassHistory', 'copyPassHistory'] as $action) {
+                $pass = $this->dispatchAsUser('post', 'account/' . $action . '/' . $historyId, $viewer, $profile);
+                self::assertSame('ERROR', $this->decodeJson($pass['body'])['status'] ?? null);
+                self::assertStringNotContainsString('synthetic-pass', $pass['body']);
+            }
+        }
+
+        $deletedId = $this->seedAccountHistory($pdo, null, 9912, 'Deleted Privacy Snapshot', $owner->id, 5, 'synthetic-deleted-pass', 0, 1, null, 1, 0);
+        foreach (['viewPassHistory', 'copyPassHistory'] as $action) {
+            $denied = $this->dispatchAsUser('post', 'account/' . $action . '/' . $deletedId, $viewer, $profile);
+            self::assertSame('ERROR', $this->decodeJson($denied['body'])['status'] ?? null);
+            self::assertStringNotContainsString('synthetic-deleted-pass', $denied['body']);
+            $allowed = $this->dispatchAsUser('post', 'account/' . $action . '/' . $deletedId, $owner, $profile);
+            self::assertSame('OK', $this->decodeJson($allowed['body'])['status'] ?? null);
+            self::assertStringContainsString('synthetic-deleted-pass', $allowed['body']);
+        }
     }
 
     #[Test]
@@ -616,6 +666,38 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
     }
 
     #[Test]
+    public function bulkEditAndHistoryRestoreRejectAnIneligibleClient(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setMgmAccounts(true)->setAccView(true)->setAccEdit(true)->setAccViewHistory(true);
+        $user = $this->seedUser($pdo, 'bulk_client_visibility', 5, $profile);
+        $target = $this->seedAccount($pdo, 'Eligibility Target', $user->id, 5);
+        $other = $this->seedAccount($pdo, 'Hidden Client Owner', 1, 1);
+        $pdo->exec("INSERT INTO Client (name, hash, description, isGlobal) VALUES ('History Hidden Client', 'history-hidden-client', '', 0)");
+        $clientId = (int)$pdo->lastInsertId();
+        $pdo->prepare('UPDATE Account SET clientId = ? WHERE id = ?')->execute([$clientId, $other]);
+        $history = $this->seedAccountHistory($pdo, null, $target, 'Historical Target', $user->id, 5, 'synthetic-pass');
+        $pdo->prepare('UPDATE AccountHistory SET clientId = ? WHERE id = ?')->execute([$clientId, $history]);
+
+        $form = $this->dispatchAsUser('post', 'accountManager/bulkEdit', $user, $profile, [], [
+            'items' => [$target],
+        ]);
+        $formJson = $this->assertJsonOk($form);
+        self::assertStringNotContainsString('History Hidden Client', $formJson['data']['html'] ?? '');
+
+        $bulk = $this->dispatchAsUser('post', 'accountManager/saveBulkEdit', $user, $profile, [], [
+            'itemsId' => (string)$target, 'client_id' => (string)$clientId, 'delete_history' => 'true',
+        ]);
+        self::assertSame('ERROR', $this->decodeJson($bulk['body'])['status'] ?? null);
+        self::assertSame(1, (int)$this->fetchValue('SELECT clientId FROM Account WHERE id = ' . $target));
+        self::assertSame(1, (int)$this->fetchValue('SELECT COUNT(*) FROM AccountHistory WHERE id = ' . $history));
+
+        $restore = $this->dispatchAsUser('post', 'account/saveEditRestore/' . $history . '/' . $target, $user, $profile);
+        self::assertSame('ERROR', $this->decodeJson($restore['body'])['status'] ?? null);
+        self::assertSame(1, (int)$this->fetchValue('SELECT clientId FROM Account WHERE id = ' . $target));
+    }
+
+    #[Test]
     public function bulkEditAndBatchDeleteEnforceAtomicityPresetsChildLinksAndFullCleanup(): void
     {
         $pdo = getDbHandler()->getConnection();
@@ -629,6 +711,7 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
             ->setAccViewHistory(true);
         $mgrUser = $this->seedUser($pdo, 'bulk_mgr', 5, $mgrProfile);
         $otherUser = $this->seedUser($pdo, 'bulk_other', 6, $mgrProfile);
+        $pdo->exec('UPDATE Client SET isGlobal = 1 WHERE id = 2');
 
         $a1 = $this->seedAccount($pdo, 'Bulk A1', $mgrUser->id, 5);
         $a2 = $this->seedAccount($pdo, 'Bulk A2', $mgrUser->id, 5);
@@ -780,7 +863,8 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
         UserDto     $user,
         ProfileData $profile,
         array       $paramsGet = [],
-        array       $paramsPost = []
+        array       $paramsPost = [],
+        ?FileCacheService $fileCache = null
     ): array {
         $context = $this->buildSessionContext($user, $profile);
         $configData = self::createConfiguredStub(ConfigDataInterface::class, $this->getConfigData());
@@ -799,7 +883,7 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
                 AclInterface::class => autowire(Acl::class)
                     ->constructorParameter('actions', get(ActionsInterface::class)),
                 AccountAclService::class => autowire(AccountAcl::class)
-                    ->constructorParameter('fileCache', null),
+                    ->constructorParameter('fileCache', $fileCache),
             ]
         );
     }

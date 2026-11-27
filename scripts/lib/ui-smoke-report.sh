@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
 # Shared helpers for scripts/ui-smoke.sh. Sourced by the runner and runner tests.
 
 ui_smoke_remove_error_context() {
@@ -423,6 +424,17 @@ ui_smoke_compare_fingerprints() {
 
     if [ "$before" != "$after" ]; then
       printf '%s\n' "$label"
+      env -u NODE_TEST_CONTEXT node -e '
+        try {
+          const before = JSON.parse(process.argv[1]).files;
+          const after = JSON.parse(process.argv[2]).files;
+          if (before && after) {
+            for (const name of new Set([...Object.keys(before), ...Object.keys(after)])) {
+              if (before[name] !== after[name]) console.log(`${process.argv[3]}/${JSON.stringify(name)}`);
+            }
+          }
+        } catch (error) { console.error("Unable to compare file fingerprints:", error.message); }
+      ' "$before" "$after" "$label"
       changed=1
     fi
   done

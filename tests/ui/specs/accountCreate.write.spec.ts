@@ -1,3 +1,4 @@
+// Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
 import type { Page, Request as PlaywrightRequest } from '@playwright/test';
 
 import {
@@ -29,7 +30,7 @@ async function selectFixtureValue(page: Page, selector: string, value: number): 
       return false;
     }
 
-    select.selectize.setValue(String(selected), true);
+    select.selectize.setValue(String(selected));
 
     return true;
   }, value);
@@ -54,6 +55,12 @@ test('account create submits through the JS form and persists the account', asyn
 
     await openSeededShell(page, tracker, session);
 
+    await page.goto(`/index.php?r=account/view/${FIXTURE.ids.accounts.parent}`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#client_id + .selectize-control .item')).toHaveText(FIXTURE.names.client);
+    await page.goto(`/index.php?r=account/edit/${FIXTURE.ids.accounts.parent}`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#client_id')).toHaveValue(String(FIXTURE.ids.clients.primary));
+    await openSeededShell(page, tracker, session);
+
     const createLink = page.locator('.btn-menu[data-route="account/create"]').first();
     await expect(createLink).toHaveAttribute('data-view', 'account');
 
@@ -75,6 +82,12 @@ test('account create submits through the JS form and persists the account', asyn
     await page.locator('#login').fill(login);
     await selectFixtureValue(page, '#client_id', FIXTURE.ids.clients.primary);
     await selectFixtureValue(page, '#category_id', FIXTURE.ids.categories.primary);
+    await selectFixtureValue(page, '#tags', FIXTURE.ids.tags.primary);
+    await page.locator('a[href="#permission-panel"]').click();
+    await selectFixtureValue(page, '#other_users_view', FIXTURE.ids.users.demo);
+    await page.locator('label[for="private_enabled"]').click();
+    await page.locator('label[for="private_group_enabled"]').click();
+    await page.locator('a[href="#account-panel"]').click();
     await page.locator('#frmAccount input[name="password"]').fill(password);
     await page.locator('#frmAccount input[name="password_repeat"]').fill(password);
 
@@ -95,6 +108,9 @@ test('account create submits through the JS form and persists the account', asyn
     expect(response.status()).toBe(200);
     await tracker.waitForActions([SAVE_CREATE_ROUTE], submitSince, Date.now() + 15_000);
     expect(writeRequests).toHaveLength(1);
+    const submitted = new URLSearchParams(writeRequests[0]!.postData() ?? '');
+    expect(submitted.get('tags_update')).toBe('1');
+    expect(submitted.getAll('tags[]')).toContain(String(FIXTURE.ids.tags.primary));
 
     const dispatch = validateCreateDispatch({
       requests: writeRequests.map((recorded) => ({
@@ -127,6 +143,61 @@ test('account create submits through the JS form and persists the account', asyn
 
     await tracker.waitForActions([nextRoute], submitSince, Date.now() + 15_000);
     await tracker.waitForQuiet(submitSince);
+
+    await expect(page.locator('#client_id')).toHaveValue(String(FIXTURE.ids.clients.primary));
+    await expect(page.locator('#tags')).toHaveValues([String(FIXTURE.ids.tags.primary)]);
+    await expect(page.locator('#other_users_view')).toHaveValues([String(FIXTURE.ids.users.demo)]);
+    await expect(page.locator('#private_enabled')).toBeChecked();
+    await expect(page.locator('#private_group_enabled')).toBeChecked();
+
+    await page.goto(`/index.php?r=account/view/${accountId}`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#client_id')).toHaveValue(String(FIXTURE.ids.clients.primary));
+    await expect(page.locator('#client_id + .selectize-control')).toContainText(FIXTURE.names.client);
+    await expect(page.locator('#private_enabled')).toBeChecked();
+    await expect(page.locator('#private_enabled')).toBeDisabled();
+    await expect(page.locator('#private_group_enabled')).toBeChecked();
+    await expect(page.locator('#private_group_enabled')).toBeDisabled();
+    await page.goto(`/index.php?r=account/edit/${accountId}`, { waitUntil: 'domcontentloaded' });
+
+    await selectFixtureValue(page, '#client_id', FIXTURE.ids.clients.secondary);
+    await selectFixtureValue(page, '#other_users_view', FIXTURE.ids.users.restricted);
+    await page.locator('a[href="#permission-panel"]').click();
+    await page.locator('label[for="private_enabled"]').click();
+    await page.locator('label[for="private_group_enabled"]').click();
+    const updateSince = Date.now();
+    const updateRoute = `account/saveEdit/${accountId}`;
+    const updateResponse = page.waitForResponse((response) =>
+      response.request().method() === 'POST' && new URL(response.url()).searchParams.get('r') === updateRoute,
+    );
+    await page.locator('.item-actions button[type="submit"][form="frmAccount"]').first().click();
+    expect((await (await updateResponse).json()).status).toBe('OK');
+    await tracker.waitForActions(['account/view'], updateSince, Date.now() + 15_000);
+    await tracker.waitForQuiet(updateSince);
+    await expect(page.locator('#client_id + .selectize-control .item')).toBeVisible();
+    await expect(page.locator('#client_id + .selectize-control .item')).toHaveText(FIXTURE.names.secondClient);
+    await expect(page.locator('#data-accesses')).toContainText(FIXTURE.names.restrictedProfile);
+    await page.goto(`/index.php?r=account/edit/${accountId}`, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#client_id')).toHaveValue(String(FIXTURE.ids.clients.secondary));
+    await expect(page.locator('#tags')).toHaveValues([String(FIXTURE.ids.tags.primary)]);
+    await expect(page.locator('#other_users_view')).toHaveValues([String(FIXTURE.ids.users.restricted)]);
+    await expect(page.locator('#private_enabled')).not.toBeChecked();
+    await expect(page.locator('#private_group_enabled')).not.toBeChecked();
+
+    await page.locator('a[href="#permission-panel"]').click();
+    await page.locator('label[for="private_enabled"]').click();
+    await page.locator('label[for="private_group_enabled"]').click();
+    const privateSince = Date.now();
+    const privateResponse = page.waitForResponse((response) =>
+      response.request().method() === 'POST' && new URL(response.url()).searchParams.get('r') === updateRoute,
+    );
+    await page.locator('.item-actions button[type="submit"][form="frmAccount"]').first().click();
+    expect((await (await privateResponse).json()).status).toBe('OK');
+    await tracker.waitForActions(['account/view'], privateSince, Date.now() + 15_000);
+    await tracker.waitForQuiet(privateSince);
+    await expect(page.locator('#private_enabled')).toBeChecked();
+    await expect(page.locator('#private_enabled')).toBeDisabled();
+    await expect(page.locator('#private_group_enabled')).toBeChecked();
+    await expect(page.locator('#private_group_enabled')).toBeDisabled();
 
     await page.goto(`/index.php?r=account/view/${accountId}`, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('#frmAccount')).toHaveAttribute('data-item-id', String(accountId));

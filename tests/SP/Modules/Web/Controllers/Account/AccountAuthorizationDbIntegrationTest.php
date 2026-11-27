@@ -30,6 +30,9 @@ use PDO;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use SP\Core\Acl\Acl;
+use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Dtos\AccountCacheDto;
+use SP\Domain\Account\Models\AccountItem;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Common\Adapters\Serde;
@@ -41,6 +44,9 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Core\Crypt\Vault;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Infrastructure\File\FileCache;
 use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
@@ -73,6 +79,140 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
                 'getPublinksMaxViews' => 3,
             ]
         );
+    }
+
+    #[Test]
+    public function sharedFileCacheCannotReuseAnotherAccountsPermission(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true);
+        $viewer = $this->seedUser($pdo, 'cross_cache_viewer', 5, $profile);
+        $owner = $this->seedUser($pdo, 'cross_cache_owner', 6, $profile);
+        $allowedId = $this->seedAccount($pdo, 'Cache Allowed Account', $viewer->id, 5, 'allowed');
+        $deniedId = $this->seedAccount($pdo, 'Cache Denied Account', $owner->id, 6, 'denied', 1, 0);
+        $cache = new FileCache();
+
+        $allowed = $this->dispatchAsUser('get', 'account/view/' . $allowedId, $viewer, $profile, [], [], [], $cache);
+        self::assertStringContainsString('Cache Allowed Account', $allowed['body']);
+        $denied = $this->dispatchAsUser('get', 'account/view/' . $deniedId, $viewer, $profile, [], [], [], $cache);
+        self::assertStringContainsString(self::DENIED_ACCOUNT, $denied['body']);
+        self::assertStringNotContainsString('Cache Denied Account', $denied['body']);
+    }
+
+    #[Test]
+    public function globalSearchRedactsRevokedAccountWithStaleSessionGrant(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true)->setAccGlobalSearch(true);
+        $viewer = $this->seedUser($pdo, 'stale_search_viewer', 5, $profile);
+        $owner = $this->seedUser($pdo, 'stale_search_owner', 6, $profile);
+        $id = $this->seedAccount($pdo, 'Stale Search Account', $owner->id, 6, 'private-synthetic-login');
+        $pdo->prepare('UPDATE Account SET dateEdit = DATE_SUB(NOW(), INTERVAL 1 HOUR) WHERE id = ?')->execute([$id]);
+        $context = $this->buildSessionContext($viewer, $profile);
+        $context->setAccountsCache([$id => new AccountCacheDto($id, [new AccountItem(['id' => $viewer->id, 'isEdit' => 0])], [])]);
+
+        $result = $this->dispatchAsUser('post', 'account/search', $viewer, $profile, [], [
+            'search' => 'Stale Search Account', 'gsearch' => '1', 'isAjax' => '1',
+            'start' => '0', 'skey' => '0', 'sorder' => '0',
+        ], ['isGlobalSearch' => true], null, $context);
+        $html = (string)($this->assertJsonOk($result)['data']['html'] ?? '');
+        self::assertStringContainsString('Stale Search Account', $html);
+        self::assertStringNotContainsString('private-synthetic-login', $html);
+        self::assertStringContainsString('data-action-route="account/requestAccess"', $html);
+        self::assertStringNotContainsString('data-action-route="account/view"', $html);
+    }
+
+    #[Test]
+    public function equalTimestampCachedGrantCannotBypassLivePrivacyTransitions(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true);
+        $owner = $this->seedUser($pdo, 'cache_transition_owner', 5, $profile);
+        $viewer = $this->seedUser($pdo, 'cache_transition_viewer', 6, $profile);
+        $accountId = $this->seedAccount($pdo, 'Cache Transition Account', $owner->id, 5, 'synthetic');
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')
+            ->execute([$accountId, $viewer->id]);
+        $timestamp = time() - 20;
+        $pdo->prepare('UPDATE Account SET dateEdit = FROM_UNIXTIME(?) WHERE id = ?')->execute([$timestamp, $accountId]);
+        $stale = new AccountPermission(AclActionsInterface::ACCOUNT_VIEW);
+        $stale->setCompiledAccountAccess(true)->setResultView(true)->setTime($timestamp);
+        $cache = $this->createStub(FileCacheService::class);
+        $cache->method('load')->willReturn($stale);
+
+        $allowed = $this->dispatchAsUser('get', 'account/view/' . $accountId, $viewer, $profile, [], [], [], $cache);
+        self::assertStringContainsString('Cache Transition Account', $allowed['body']);
+        foreach ([[1, 0], [0, 1]] as [$private, $privateGroup]) {
+            $pdo->prepare('UPDATE Account SET isPrivate = ?, isPrivateGroup = ? WHERE id = ?')
+                ->execute([$private, $privateGroup, $accountId]);
+            $denied = $this->dispatchAsUser('get', 'account/view/' . $accountId, $viewer, $profile, [], [], [], $cache);
+            self::assertStringContainsString(self::DENIED_ACCOUNT, $denied['body']);
+            self::assertStringNotContainsString('Cache Transition Account', $denied['body']);
+        }
+    }
+
+    #[Test]
+    public function accountCreationRejectsClientUsedOnlyByInaccessibleAccounts(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true)->setAccAdd(true)->setAccEdit(true);
+        $user = $this->seedUser($pdo, 'web_client_visibility', 5, $profile);
+        $pdo->exec("INSERT INTO Client (name, hash, description, isGlobal) VALUES ('Hidden Synthetic Client', 'hidden-client-hash', '', 0)");
+        $clientId = (int)$pdo->lastInsertId();
+        $hiddenId = $this->seedAccount($pdo, 'Hidden Client Owner', 1, 1, 'hidden-client-owner');
+        $pdo->prepare('UPDATE Account SET clientId = ? WHERE id = ?')->execute([$clientId, $hiddenId]);
+
+        $response = $this->dispatchAsUser('post', 'account/saveCreate', $user, $profile, [], [
+            'name' => 'Denied Client Selection', 'login' => 'denied-client-selection',
+            'client_id' => (string)$clientId, 'category_id' => '1',
+            'password' => 'synthetic-password', 'password_repeat' => 'synthetic-password',
+        ]);
+
+        self::assertSame('ERROR', $this->decodeJson($response['body'])['status'] ?? null);
+        self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM Account WHERE name = 'Denied Client Selection'")->fetchColumn());
+        $missing = $this->dispatchAsUser('post', 'account/saveCreate', $user, $profile, [], [
+            'name' => 'Missing Client Selection', 'login' => 'missing-client-selection',
+            'client_id' => '999999', 'category_id' => '1',
+            'password' => 'synthetic-password', 'password_repeat' => 'synthetic-password',
+        ]);
+        self::assertSame($this->decodeJson($missing['body'])['description'] ?? null, $this->decodeJson($response['body'])['description'] ?? null);
+
+        $managerProfile = (new ProfileData())->setAccView(true)->setAccAdd(true)->setMgmCustomers(true);
+        $manager = $this->seedUser($pdo, 'web_client_manager', 6, $managerProfile);
+        $managerCreate = $this->dispatchAsUser('post', 'account/saveCreate', $manager, $managerProfile, [], [
+            'name' => 'Manager Client Selection', 'login' => 'manager-client-selection',
+            'client_id' => (string)$clientId, 'category_id' => '1',
+            'password' => 'synthetic-password', 'password_repeat' => 'synthetic-password',
+        ]);
+        $this->assertJsonOk($managerCreate, 'Account created');
+
+        $pdo->exec("INSERT INTO Client (name, hash, description, isGlobal) VALUES ('Unused Synthetic Client', 'unused-client-hash', '', 0)");
+        $unusedId = (int)$pdo->lastInsertId();
+        $allowed = $this->dispatchAsUser('post', 'account/saveCreate', $user, $profile, [], [
+            'name' => 'Allowed Unused Client', 'login' => 'allowed-unused-client',
+            'client_id' => (string)$unusedId, 'category_id' => '1',
+            'password' => 'synthetic-password', 'password_repeat' => 'synthetic-password',
+        ]);
+        $created = $this->assertJsonOk($allowed, 'Account created');
+        $accountId = (int)$created['data']['itemId'];
+        self::assertSame($unusedId, (int)$pdo->query('SELECT clientId FROM Account WHERE id = ' . $accountId)->fetchColumn());
+
+        $deniedEdit = $this->dispatchAsUser('post', 'account/saveEdit/' . $accountId, $user, $profile, [], [
+            'name' => 'Denied Client Change', 'client_id' => (string)$clientId, 'category_id' => '1',
+        ]);
+        self::assertSame('ERROR', $this->decodeJson($deniedEdit['body'])['status'] ?? null);
+        self::assertSame($unusedId, (int)$pdo->query('SELECT clientId FROM Account WHERE id = ' . $accountId)->fetchColumn());
+        $sameClient = $this->dispatchAsUser('post', 'account/saveEdit/' . $accountId, $user, $profile, [], [
+            'name' => 'Retained Current Client', 'client_id' => (string)$unusedId, 'category_id' => '1',
+        ]);
+        $this->assertJsonOk($sameClient, 'Account updated');
+
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')->execute([$hiddenId, $user->id]);
+        $shared = $this->dispatchAsUser('post', 'account/saveCreate', $user, $profile, [], [
+            'name' => 'Allowed Shared Client', 'login' => 'allowed-shared-client',
+            'client_id' => (string)$clientId, 'category_id' => '1',
+            'password' => 'synthetic-password', 'password_repeat' => 'synthetic-password',
+        ]);
+        $this->assertJsonOk($shared, 'Account created');
     }
 
     #[Test]
@@ -321,6 +461,55 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
         );
         $this->assertResponseWasDispatched($mainGrpEditForm);
         self::assertStringContainsString('Main Group Via Secondary Membership', $mainGrpEditForm['body']);
+    }
+
+    #[Test]
+    public function bothPrivacyFlagsRequireOwnerAndPrimaryGroupForWebAccountAccess(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true)->setAccEdit(true)->setAccGlobalSearch(true);
+        $owner = $this->seedUser($pdo, 'web_both_private_owner', 5, $profile);
+        $peer = $this->seedUser($pdo, 'web_both_private_peer', 6, $profile);
+        $matching = $this->seedAccount($pdo, 'Both Flags Matching', $owner->id, 5, 'matching', 1, 1);
+        $mismatching = $this->seedAccount($pdo, 'Both Flags Mismatch', $owner->id, 6, 'mismatch', 1, 1);
+        foreach ([$matching, $mismatching] as $id) {
+            $pdo->prepare('INSERT INTO AccountToTag (accountId, tagId) VALUES (?, 1)')->execute([$id]);
+            $pdo->prepare('INSERT INTO AccountToFavorite (accountId, userId) VALUES (?, ?)')->execute([$id, $owner->id]);
+        }
+
+        $allowed = $this->dispatchAsUser('get', 'account/view/' . $matching, $owner, $profile);
+        $this->assertResponseWasDispatched($allowed);
+        self::assertStringContainsString('Both Flags Matching', $allowed['body']);
+        $search = $this->dispatchAsUser('post', 'account/search', $owner, $profile, [], [
+            'search' => 'is:private', 'isAjax' => '1', 'start' => '0', 'skey' => '0', 'sorder' => '0',
+        ]);
+        $searchJson = $this->assertJsonOk($search);
+        $searchHtml = (string)($searchJson['data']['html'] ?? '');
+        self::assertStringContainsString('Both Flags Matching', $searchHtml);
+        self::assertStringNotContainsString('Both Flags Mismatch', $searchHtml);
+
+        foreach (['is:private client:Google category:Web op:or', 'is:private client:Google category:Web op:and'] as $term) {
+            foreach ([false, true] as $global) {
+                $filtered = $this->dispatchAsUser('post', 'account/search', $owner, $profile, [], [
+                    'search' => $term, 'tags' => ['1'], 'searchfav' => '1', 'gsearch' => $global ? '1' : '0',
+                    'isAjax' => '1', 'start' => '0', 'skey' => '0', 'sorder' => '0',
+                ], ['isGlobalSearch' => true]);
+                $html = (string)($this->assertJsonOk($filtered)['data']['html'] ?? '');
+                self::assertStringContainsString('Both Flags Matching', $html, $term);
+                self::assertStringNotContainsString('Both Flags Mismatch', $html, $term);
+            }
+        }
+
+        foreach ([[$owner, $mismatching], [$peer, $mismatching]] as [$actor, $id]) {
+            $view = $this->dispatchAsUser('get', 'account/view/' . $id, $actor, $profile);
+            self::assertStringContainsString(self::DENIED_ACCOUNT, $view['body']);
+            self::assertStringNotContainsString('Both Flags Mismatch', $view['body']);
+            $edit = $this->dispatchAsUser('post', 'account/saveEdit/' . $id, $actor, $profile, [], [
+                'name' => 'Denied Privacy Change', 'client_id' => '1', 'category_id' => '1',
+            ]);
+            $this->assertJsonDenied($edit, self::DENIED_ACCOUNT);
+        }
+        self::assertSame('Both Flags Mismatch', $this->fetchValue('SELECT name FROM Account WHERE id = ' . $mismatching));
     }
 
     #[Test]
@@ -1104,9 +1293,11 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
         ProfileData $profile,
         array       $paramsGet = [],
         array       $paramsPost = [],
-        array       $configOverrides = []
+        array       $configOverrides = [],
+        ?FileCacheService $fileCache = null,
+        ?SessionContext $sessionContext = null
     ): array {
-        $context = $this->buildSessionContext($user, $profile);
+        $context = $sessionContext ?? $this->buildSessionContext($user, $profile);
         $configData = self::createConfiguredStub(
             ConfigDataInterface::class,
             array_merge($this->getConfigData(), $configOverrides)
@@ -1126,7 +1317,7 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
                 AclInterface::class => autowire(Acl::class)
                     ->constructorParameter('actions', get(ActionsInterface::class)),
                 AccountAclService::class => autowire(AccountAcl::class)
-                    ->constructorParameter('fileCache', null),
+                    ->constructorParameter('fileCache', $fileCache),
             ]
         );
     }

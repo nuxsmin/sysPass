@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Services;
 
+use Closure;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
@@ -47,7 +48,6 @@ use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserToUserGroupService;
-use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class AccountAcl
@@ -58,16 +58,17 @@ final class AccountAcl extends Service implements AccountAclService
     private ?AccountPermission $accountPermission = null;
     private UserDto $userData;
 
-    public function __construct(
+    // Legacy cache dependencies remain accepted for existing callers; authorization no longer uses them.
+    public function __construct( // @phpstan-ignore-line
         ConfigFileService $config,
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly AclInterface           $acl,
         private readonly UserToUserGroupService $userToUserGroupService,
-        private readonly AppPaths               $appPaths,
-        private readonly FileSystemService      $fileSystem,
-        private readonly ?FileCacheService      $fileCache = null,
-        private readonly LoggerInterface        $logger = new NullLogger()
+        AppPaths $appPaths,
+        FileSystemService $fileSystem,
+        ?FileCacheService $fileCache = null,
+        LoggerInterface $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
@@ -87,6 +88,37 @@ final class AccountAcl extends Service implements AccountAclService
      */
     public function getAcl(int $actionId, AccountAclDto $accountAclDto, bool $isHistory = false): AccountPermission
     {
+        return $this->evaluateAcl($actionId, $accountAclDto, $isHistory, $this->loadUserGroups(...));
+    }
+
+    public function getForSearch(array $accounts, array $grants): array
+    {
+        $userGroups = null;
+        $loadUserGroups = function () use (&$userGroups): array {
+            return $userGroups ??= $this->loadUserGroups();
+        };
+
+        $permissions = [];
+        foreach ($accounts as $account) {
+            $accountId = (int)$account->getId();
+            $grant = $grants[$accountId];
+            $permissions[$accountId] = $this->evaluateAcl(
+                AclActionsInterface::ACCOUNT_SEARCH,
+                AccountAclDto::makeFromAccountSearch($account, $grant->getUsers(), $grant->getUserGroups()),
+                false,
+                $loadUserGroups
+            );
+        }
+
+        return $permissions;
+    }
+
+    private function evaluateAcl(
+        int $actionId,
+        AccountAclDto $accountAclDto,
+        bool $isHistory,
+        Closure $loadUserGroups
+    ): AccountPermission {
         $this->userData = $this->context->getUserData();
         $this->accountPermission = new AccountPermission($actionId, $isHistory);
         $this->accountPermission->setShowPermission(
@@ -95,28 +127,7 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountAclDto = $accountAclDto;
 
-        $bypassCache = $isHistory && $accountAclDto->getDateEdit() === null;
-
-        if (null !== $this->fileCache && !$bypassCache) {
-            $accountAcl = $this->getAclFromCache($accountAclDto->getAccountId(), $actionId);
-
-            if (null !== $accountAcl) {
-                $isModified = $accountAclDto->getDateEdit() > $accountAcl->getTime()
-                              || $this->userData->lastUpdate > $accountAcl->getTime();
-
-                if (!$isModified) {
-                    $this->eventDispatcher->notify(
-                        'get.acl',
-                        new Event($this, EventMessage::build()->addDescription('Account ACL HIT'))
-                    );
-
-                    return $accountAcl;
-                }
-
-                $this->accountPermission->setModified(true);
-            }
-        }
-
+        // A cache timestamp cannot establish which authorization state was read.
         $this->eventDispatcher->notify(
             'get.acl',
             new Event($this, EventMessage::build()->addDescription('Account ACL MISS'))
@@ -124,7 +135,7 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountPermission->setAccountId($accountAclDto->getAccountId());
 
-        return $this->buildAcl(!$bypassCache);
+        return $this->buildAcl($loadUserGroups);
     }
 
     /**
@@ -152,37 +163,8 @@ final class AccountAcl extends Service implements AccountAclService
      */
     public function getAclFromCache(int $accountId, int $actionId): ?AccountPermission
     {
-        try {
-            $acl = $this->fileCache->load($this->getCacheFileForAcl($accountId, $actionId));
-
-            if ($acl instanceof AccountPermission) {
-                return $acl;
-            }
-        } catch (FileException $e) {
-            $this->logger->error($e->getMessage());
-        }
-
+        // Kept for callers of the port; cached permissions are no longer trusted.
         return null;
-    }
-
-    /**
-     * @param int $accountId
-     * @param int $actionId
-     *
-     * @return string
-     */
-    private function getCacheFileForAcl(int $accountId, int $actionId): string
-    {
-        $userId = $this->context->getUserData()->id;
-
-        return $this->fileSystem->buildPath(
-            $this->appPaths->getCachePath(),
-            'accountAcl',
-            (string)$userId,
-            (string)$accountId,
-            md5($userId . $accountId . $actionId),
-            '.cache'
-        );
     }
 
     /**
@@ -191,19 +173,15 @@ final class AccountAcl extends Service implements AccountAclService
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function buildAcl(bool $cacheResult): AccountPermission
+    private function buildAcl(Closure $loadUserGroups): AccountPermission
     {
-        $this->compileAccountAccess();
+        $this->compileAccountAccess($loadUserGroups);
         $this->accountPermission->setCompiledAccountAccess(true);
 
         $this->compileShowAccess();
         $this->accountPermission->setCompiledShowAccess(true);
 
         $this->accountPermission->setTime(time());
-
-        if ($cacheResult) {
-            $this->saveAclInCache($this->accountPermission);
-        }
 
         return $this->accountPermission;
     }
@@ -212,22 +190,15 @@ final class AccountAcl extends Service implements AccountAclService
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function compileAccountAccess(): void
+    private function compileAccountAccess(Closure $loadUserGroups): void
     {
         $this->accountPermission->setResultView(false);
         $this->accountPermission->setResultEdit(false);
 
-        if ($this->accountAclDto->isPrivate()) {
-            if ($this->userData->id === $this->accountAclDto->getUserId()) {
-                $this->accountPermission->setResultView(true);
-                $this->accountPermission->setResultEdit(true);
-            }
-
-            return;
-        }
-
-        if ($this->accountAclDto->isPrivateGroup()) {
-            if ($this->userData->userGroupId === $this->accountAclDto->getUserGroupId()) {
+        if ($this->accountAclDto->isPrivate() || $this->accountAclDto->isPrivateGroup()) {
+            if ((!$this->accountAclDto->isPrivate() || $this->userData->id === $this->accountAclDto->getUserId())
+                && (!$this->accountAclDto->isPrivateGroup() || $this->userData->userGroupId === $this->accountAclDto->getUserGroupId())
+            ) {
                 $this->accountPermission->setResultView(true);
                 $this->accountPermission->setResultEdit(true);
             }
@@ -249,10 +220,7 @@ final class AccountAcl extends Service implements AccountAclService
 
         // Analyze user's groups
         // Groups in which the user is listed in
-        $userGroups = array_map(
-            static fn($value) => (int)($value['userGroupId'] ?? 0),
-            $this->userToUserGroupService->getGroupsForUser($this->userData->id)
-        );
+        $userGroups = $loadUserGroups();
 
         // Check out if user's secondary groups match account's main group before secondary user grants
         if ($this->getUserGroupsInMainGroup($userGroups)) {
@@ -305,6 +273,15 @@ final class AccountAcl extends Service implements AccountAclService
 
             $this->accountPermission->setResultEdit($canEdit);
         }
+    }
+
+    /** @return int[] */
+    private function loadUserGroups(): array
+    {
+        return array_map(
+            static fn($value) => (int)($value['userGroupId'] ?? 0),
+            $this->userToUserGroupService->getGroupsForUser($this->userData->id)
+        );
     }
 
     /**
@@ -405,28 +382,5 @@ final class AccountAcl extends Service implements AccountAclService
 
         // Mostrar acción de copiar cuenta
         $this->accountPermission->setShowCopy($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_COPY));
-    }
-
-    /**
-     * Saves the ACL
-     *
-     * @param AccountPermission $accountAcl
-     *
-     * @return void
-     */
-    private function saveAclInCache(AccountPermission $accountAcl): void
-    {
-        if (null === $this->fileCache) {
-            return;
-        }
-
-        try {
-            $this->fileCache->save(
-                $accountAcl,
-                $this->getCacheFileForAcl($accountAcl->getAccountId(), $accountAcl->getActionId())
-            );
-        } catch (FileException $e) {
-            $this->logger->error($e->getMessage());
-        }
     }
 }

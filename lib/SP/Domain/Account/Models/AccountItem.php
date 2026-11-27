@@ -32,8 +32,14 @@ use SP\Domain\Common\Models\Item;
  */
 final class AccountItem extends Item
 {
+    protected ?int          $accountId = null;
     protected ?string       $login  = null;
     protected bool|int|null $isEdit = null;
+
+    public function getAccountId(): ?int
+    {
+        return $this->accountId;
+    }
 
     public function getLogin(): ?string
     {

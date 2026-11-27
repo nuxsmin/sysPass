@@ -160,4 +160,22 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
 
         return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountItem::class));
     }
+
+    public function getUsersByAccountIds(array $ids): QueryResult
+    {
+        if ($ids === []) {
+            /** @var QueryResult<AccountItem> $empty */
+            $empty = new QueryResult();
+            return $empty;
+        }
+        $query = $this->queryFactory->newSelect()
+            ->cols(['AccountToUser.accountId', 'User.id', 'User.name', 'User.login', 'AccountToUser.isEdit'])
+            ->from('AccountToUser')
+            ->join('INNER', 'User', 'User.id = AccountToUser.userId')
+            ->where('AccountToUser.accountId IN (:accountIds)', ['accountIds' => $ids])
+            ->orderBy(['User.name ASC']);
+        /** @var QueryResult<AccountItem> $result */
+        $result = $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountItem::class));
+        return $result;
+    }
 }

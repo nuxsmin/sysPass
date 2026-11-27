@@ -543,7 +543,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
     {
         return $this->query
             ->where(
-                '(Account.isPrivate = 1 AND Account.userId = :userId) OR (Account.isPrivateGroup = 1 AND Account.userGroupId = :userGroupId)'
+                '((Account.isPrivate = 1 AND Account.userId = :userId) OR (Account.isPrivateGroup = 1 AND Account.userGroupId = :userGroupId))'
             )
             ->bindValues([
                              'userId' => $userId,

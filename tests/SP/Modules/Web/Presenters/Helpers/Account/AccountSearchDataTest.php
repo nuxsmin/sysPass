@@ -30,16 +30,17 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\MockObject\Rule\InvokedCount;
-use SP\Domain\Account\Dtos\AccountAclDto;
+use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Ports\AccountCacheService;
 use SP\Domain\Account\Ports\AccountToFavoriteService;
 use SP\Domain\Account\Ports\AccountToTagRepository;
+use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -47,6 +48,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Database\Dtos\QueryResult;
 use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\User\Ports\UserToUserGroupService;
 use SP\Modules\Web\Presenters\Helpers\Account\AccountSearchData;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\UnitaryTestCase;
@@ -87,24 +89,19 @@ class AccountSearchDataTest extends UnitaryTestCase
             ->method('getForUserId')
             ->with($this->context->getUserData()->id);
 
+        $ids = array_map(static fn(AccountSearchView $account): int => (int)$account->getId(), $accountSearchView);
+        $grants = array_fill_keys($ids, new AccountCacheDto(100, [new Item(['id' => 200])], [new Item(['id' => 300])]));
         $this->accountCacheService
-            ->expects(exactly($numResults))
-            ->method('getCacheForAccount')
-            ->willReturn(new AccountCacheDto(100, [new Item(['id' => 200])], [new Item(['id' => 300])]));
+            ->expects(once())
+            ->method('getForAccounts')
+            ->with($ids)
+            ->willReturn($grants);
 
-        $invokedCount = new InvokedCount($numResults);
         $this->accountAclService
-            ->expects($invokedCount)
-            ->method('getAcl')
-            ->with(
-                AclActionsInterface::ACCOUNT_SEARCH,
-                self::callback(static function (AccountAclDto $current) use ($accountSearchView, $invokedCount) {
-                    return $current->getAccountId() ===
-                           $accountSearchView[$invokedCount->numberOfInvocations() - 1]->getId()
-                           && $current->getUsersId() == [new Item(['id' => 200])]
-                           && $current->getUserGroupsId() == [new Item(['id' => 300])];
-                })
-            );
+            ->expects(once())
+            ->method('getForSearch')
+            ->with($accountSearchView, $grants)
+            ->willReturn(array_fill_keys($ids, new AccountPermission(AclActionsInterface::ACCOUNT_SEARCH)));
 
         $this->accountToTagRepository
             ->expects(exactly($numResults))
@@ -137,13 +134,17 @@ class AccountSearchDataTest extends UnitaryTestCase
             ->with($this->context->getUserData()->id);
 
         $this->accountCacheService
-            ->expects(exactly($numResults))
-            ->method('getCacheForAccount')
-            ->willReturn(new AccountCacheDto(0, [], []));
+            ->expects(once())
+            ->method('getForAccounts')
+            ->willReturnCallback(static fn(array $ids): array => array_fill_keys($ids, new AccountCacheDto(0, [], [])));
 
         $this->accountAclService
-            ->expects(exactly($numResults))
-            ->method('getAcl');
+            ->expects(once())
+            ->method('getForSearch')
+            ->willReturnCallback(static fn(array $accounts, array $grants): array => array_fill_keys(
+                array_keys($grants),
+                new AccountPermission(AclActionsInterface::ACCOUNT_SEARCH)
+            ));
 
         $this->accountToTagRepository
             ->expects(exactly($numResults))
@@ -163,6 +164,45 @@ class AccountSearchDataTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws SPException
      */
+    #[Test]
+    public function searchLoadsMembershipsOnceAndRedactsDeniedRows(): void
+    {
+        $memberships = $this->createMock(UserToUserGroupService::class);
+        $memberships->expects(self::once())->method('getGroupsForUser')
+            ->with($this->context->getUserData()->id)
+            ->willReturn([['userGroupId' => 101]]);
+        $acl = new AccountAcl(
+            $this->config,
+            $this->eventDispatcherStub,
+            $this->context,
+            $this->createStub(AclInterface::class),
+            $memberships,
+            $this->appPaths,
+            $this->fileSystem
+        );
+        $presenter = new AccountSearchData(
+            $this->context,
+            $acl,
+            $this->accountToTagRepository,
+            $this->accountToFavoriteService,
+            $this->accountCacheService,
+            $this->createStub(FileCacheService::class),
+            $this->config->getConfigData(),
+            $this->createStub(UriContextInterface::class)
+        );
+        $this->accountToTagRepository->method('getTagsByAccountId')->willReturn(new QueryResult());
+        $this->accountCacheService->expects(self::once())->method('getForAccounts')->with([1, 2])
+            ->willReturn([1 => new AccountCacheDto(1, [], []), 2 => new AccountCacheDto(2, [], [])]);
+
+        $rows = $presenter->buildFrom(new QueryResult([
+            new AccountSearchView(['id' => 1, 'clientId' => 1, 'userId' => 100, 'userGroupId' => 101, 'login' => 'visible']),
+            new AccountSearchView(['id' => 2, 'clientId' => 1, 'userId' => 100, 'userGroupId' => 102, 'login' => 'hidden']),
+        ]))->getDataAsArray();
+
+        self::assertSame('visible', $rows[0]->getAccountSearchView()->getLogin());
+        self::assertNull($rows[1]->getAccountSearchView()->getLogin());
+    }
+
     #[Test]
     public function testBuildFromRedactsDiscoveryRowsWhenResultViewIsFalse(): void
     {
@@ -184,10 +224,10 @@ class AccountSearchDataTest extends UnitaryTestCase
         ]);
 
         $this->accountToFavoriteService->method('getForUserId')->willReturn([42 => 1]);
-        $this->accountCacheService->method('getCacheForAccount')
-            ->willReturn(new AccountCacheDto(42, [new Item(['id' => 200])], [new Item(['id' => 300])]));
-        $this->accountAclService->method('getAcl')
-            ->willReturn(new \SP\Domain\Account\Adapters\AccountPermission(AclActionsInterface::ACCOUNT_SEARCH));
+        $this->accountCacheService->method('getForAccounts')
+            ->willReturn([42 => new AccountCacheDto(42, [new Item(['id' => 200])], [new Item(['id' => 300])])]);
+        $this->accountAclService->method('getForSearch')
+            ->willReturn([42 => new AccountPermission(AclActionsInterface::ACCOUNT_SEARCH)]);
         $this->accountToTagRepository->method('getTagsByAccountId')
             ->willReturn(new QueryResult([new Item(['id' => 1, 'name' => 'tag1'])]));
 

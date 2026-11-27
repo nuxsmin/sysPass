@@ -1,3 +1,4 @@
+// Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org
 import type { Request as PlaywrightRequest } from '@playwright/test';
 
 import { FIXTURE } from '../src/fixture';
@@ -218,6 +219,8 @@ test('Category delete displays a synthetic ERROR and reloads the active tab', as
 test('Custom field delete displays a synthetic ERROR and reloads the active tab', async ({ sessionPage: { page, context, session } }) => {
   const tracker = new ActionTracker(page, context, { sessionEstablished: false });
   const name = `E2E FIELD DELETE ${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  let cleanupId: string | null = null;
+  let cleanupSk = '';
   const envelope = { status: 'ERROR', description: 'Synthetic custom field delete error', messages: [], data: null };
   const refreshes: PlaywrightRequest[] = [];
   const onRequest = (request: PlaywrightRequest) => {
@@ -230,6 +233,7 @@ test('Custom field delete displays a synthetic ERROR and reloads the active tab'
       const app = (0, eval)('sysPassApp');
       return { sk: app.sk.get(), csrf: app.config.CSRF };
     });
+    cleanupSk = security.sk;
     const formResponse = await page.request.get(`/index.php?r=customField/create&sk=${encodeURIComponent(security.sk)}&isAjax=1`);
     expect(formResponse.status()).toBe(200);
     const formBody = await formResponse.json();
@@ -237,7 +241,8 @@ test('Custom field delete displays a synthetic ERROR and reloads the active tab'
     const choices = await page.evaluate((html) => {
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const value = (selector: string) => Array.from(doc.querySelectorAll<HTMLOptionElement>(`${selector} option`)).find((option) => Number(option.value) > 0)?.value;
-      return { type: value('#sel-type'), module: value('#sel-module') };
+      const type = value('#sel-type');
+      return { type, module: value('#sel-module'), typeName: doc.querySelector<HTMLOptionElement>(`#sel-type option[value="${type}"]`)?.textContent?.trim() };
     }, formBody.data.html);
     expect(choices.type).toBeTruthy();
     expect(choices.module).toBeTruthy();
@@ -249,6 +254,11 @@ test('Custom field delete displays a synthetic ERROR and reloads the active tab'
     expect((await created.json()).status).toBe('OK');
 
     await runTierBIndex(page, tracker, session, TIER_B_INDEX_CASES.itemManager);
+    const tabHrefs = await page.locator('#tabsHeader a[href^="#tabs-"]').evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+    expect(new Set(tabHrefs).size).toBe(tabHrefs.length);
+    expect(tabHrefs.length).toBeGreaterThan(0);
+    for (const href of tabHrefs) await expect(page.locator(href!)).toHaveCount(1);
+    await expect(page.locator('body')).not.toContainText('Internal Server Error');
     const grid = page.locator('#data-table-tblCustomFields');
     const panel = grid.locator('xpath=ancestor::*[starts-with(@id,"tabs-")][1]');
     const panelId = await panel.getAttribute('id');
@@ -256,8 +266,10 @@ test('Custom field delete displays a synthetic ERROR and reloads the active tab'
     await page.locator(`#tabsHeader a[href="#${panelId}"]`).click();
     const row = grid.locator('tr').filter({ hasText: name });
     await expect(row).toHaveCount(1);
+    await expect(row.locator('td.cell-data').nth(2)).toHaveText(choices.typeName!);
     const id = await row.getAttribute('data-item-id');
     expect(id).toMatch(/^\d+$/);
+    cleanupId = id;
     const control = row.locator('[data-onclick="appMgmt/delete"]');
     await expect(control).toHaveAttribute('data-action-route', 'customField/delete');
     await expect(control).toHaveAttribute('data-item-id', id!);
@@ -298,6 +310,10 @@ test('Custom field delete displays a synthetic ERROR and reloads the active tab'
   } finally {
     page.off('request', onRequest);
     await page.unroute('**/index.php?**');
+    if (cleanupId) {
+      const cleanup = await page.request.get(`/index.php?r=customField/delete/${cleanupId}&sk=${encodeURIComponent(cleanupSk)}&isAjax=1`);
+      expect((await cleanup.json()).status).toBe('OK');
+    }
     tracker.dispose();
   }
 });

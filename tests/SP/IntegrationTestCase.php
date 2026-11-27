@@ -55,6 +55,7 @@ use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigService;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
@@ -206,16 +207,18 @@ abstract class IntegrationTestCase extends TestCase
         $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId) => (string)$actionId);
 
         $accountAcl = self::createStub(AccountAclService::class);
-        $accountAcl->method('getAcl')
-                   ->willReturnCallback(static function (int $actionId) {
-                       $accountPermission = new AccountPermission($actionId);
-                       $accountPermission->setCompiledAccountAccess(true);
-                       $accountPermission->setCompiledShowAccess(true);
-                       $accountPermission->setResultView(true);
-                       $accountPermission->setResultEdit(true);
-
-                       return $accountPermission;
-                   });
+        $allowAccount = static fn(int $actionId): AccountPermission => (new AccountPermission($actionId))
+            ->setCompiledAccountAccess(true)
+            ->setCompiledShowAccess(true)
+            ->setResultView(true)
+            ->setResultEdit(true);
+        $accountAcl->method('getAcl')->willReturnCallback($allowAccount);
+        $accountAcl->method('getForSearch')->willReturnCallback(
+            static fn(array $accounts, array $grants): array => array_fill_keys(
+                array_keys($grants),
+                $allowAccount(AclActionsInterface::ACCOUNT_SEARCH)
+            )
+        );
 
         return [
             ConfigFileService::class => $configFileService,

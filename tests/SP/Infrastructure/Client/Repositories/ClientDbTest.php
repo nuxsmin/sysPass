@@ -126,7 +126,7 @@ final class ClientDbTest extends DatabaseRepositoryTestCase
     }
 
     #[Test]
-    public function getAllForFilterReturnsUnusedAndGlobalClients(): void
+    public function getAllForFilterReturnsVisibleUnusedAndGlobalClients(): void
     {
         $ids = array_map(
             static fn($client) => (int)$client->id,
@@ -135,7 +135,18 @@ final class ClientDbTest extends DatabaseRepositoryTestCase
 
         sort($ids);
 
-        self::assertSame([3, 4], $ids);
+        self::assertSame([1, 2, 3, 4], $ids);
+    }
+
+    #[Test]
+    public function eligibilityAllowsGlobalAndUnusedClientsButRejectsClientsWithoutVisibleAccounts(): void
+    {
+        $filter = $this->buildAccountFilter(true);
+        self::assertFalse($this->client->isEligibleForAccount(1, $filter));
+        self::assertFalse($this->client->isEligibleForAccount(2, $filter));
+        self::assertTrue($this->client->isEligibleForAccount(3, $filter));
+        self::assertTrue($this->client->isEligibleForAccount(4, $filter));
+        self::assertFalse($this->client->isEligibleForAccount(99999, $filter));
     }
 
     #[Test]
@@ -217,10 +228,10 @@ final class ClientDbTest extends DatabaseRepositoryTestCase
         ]);
     }
 
-    private function buildAccountFilter(): AccountFilterBuilder
+    private function buildAccountFilter(bool $denyAccounts = false): AccountFilterBuilder
     {
-        return new class($this->queryFactory) implements AccountFilterBuilder {
-            public function __construct(private readonly QueryFactory $queryFactory)
+        return new class($this->queryFactory, $denyAccounts) implements AccountFilterBuilder {
+            public function __construct(private readonly QueryFactory $queryFactory, private readonly bool $denyAccounts)
             {
             }
 
@@ -235,7 +246,8 @@ final class ClientDbTest extends DatabaseRepositoryTestCase
                 bool $useGlobalSearch = false,
                 ?SelectInterface $query = null
             ): SelectInterface {
-                return ($query ?? $this->queryFactory->newSelect())->from('Account');
+                $select = ($query ?? $this->queryFactory->newSelect())->from('Account');
+                return $this->denyAccounts ? $select->where('Account.id = -1') : $select;
             }
 
             public function isGlobalDiscoveryActive(bool $useGlobalSearch): bool

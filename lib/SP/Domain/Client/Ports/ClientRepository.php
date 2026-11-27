@@ -126,6 +126,9 @@ interface ClientRepository extends Repository
      */
     public function getAllForFilter(AccountFilterBuilder $accountFilterUser): QueryResult;
 
+    /** Returns whether the client is eligible for selection by the current user. */
+    public function isEligibleForAccount(int $clientId, AccountFilterBuilder $accountFilterUser): bool;
+
     /**
      * Returns all the items
      *
