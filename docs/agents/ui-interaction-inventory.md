@@ -1,4 +1,13 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # UI interaction inventory
+
+Evidence note: links into `tests/ui/summaries/` identify historical, gitignored
+local artifacts. They are unavailable in a clean checkout and are not durable
+verification evidence. Preserve run IDs for provenance; reproduce the scenario
+or obtain a retained sanitized CI artifact before relying on those results.
+Source and spec links remain independently inspectable. Snapshot branch and
+working-tree descriptions below refer to the original survey, not this checkout.
 
 Status: living document. Last verified: 2026-11-12.
 

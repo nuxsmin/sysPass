@@ -1,41 +1,29 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # Domain Docs
 
-How the engineering skills should consume this repo's domain documentation when exploring the codebase.
+Use this guide when exploring domain behavior or changing its documentation.
 
 ## Before exploring, read these
 
-- **`CONTEXT.md`** at the repo root, or
-- **`CONTEXT-MAP.md`** at the repo root if it exists: it points at one `CONTEXT.md` per context. Read each one relevant to the topic.
-- **`docs/adr/`**: read ADRs that touch the area you're about to work in. In multi-context repos, also check `src/<context>/docs/adr/` for context-scoped decisions.
+- Read **`CONTEXT.md`** at the repository root for shared vocabulary.
+- Read relevant decisions in **`docs/adr/`** and verify their implementation status against current source.
 
-If any of these files don't exist, **proceed silently**. Don't flag their absence; don't suggest creating them upfront. The `/domain-modeling` skill (reached via `/grill-with-docs` and `/improve-codebase-architecture`) creates them lazily when terms or decisions actually get resolved.
+If required context is missing, record the gap and use source evidence. Follow [documentation maintenance](documentation.md) for updates.
 
 ## File structure
 
-Single-context repo (most repos):
+Repository layout:
 
 ```
 /
 ├── CONTEXT.md
 ├── docs/adr/
-│   ├── 0001-event-sourced-orders.md
-│   └── 0002-postgres-for-write-model.md
-└── src/
-```
-
-Multi-context repo (presence of `CONTEXT-MAP.md` at the root):
-
-```
-/
-├── CONTEXT-MAP.md
-├── docs/adr/                          ← system-wide decisions
-└── src/
-    ├── ordering/
-    │   ├── CONTEXT.md
-    │   └── docs/adr/                  ← context-specific decisions
-    └── billing/
-        ├── CONTEXT.md
-        └── docs/adr/
+│   └── numbered architecture decisions
+├── lib/SP/Domain/                 # domain contexts
+├── lib/SP/Infrastructure/         # driven adapters
+├── lib/SP/Core/Definitions/       # composition root
+└── app/modules/                  # Web, API and CLI adapters
 ```
 
 ## Use the glossary's vocabulary
@@ -48,4 +36,4 @@ If the concept you need isn't in the glossary yet, that's a signal: either you'r
 
 If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
 
-> _Contradicts ADR-0007 (event-sourced orders), but worth reopening because…_
+Name the actual decision, the conflicting behavior and the reason to reconsider it.

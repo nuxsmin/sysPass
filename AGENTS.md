@@ -61,6 +61,8 @@ Prefer enabled MCP servers over CLI equivalents for operations they cover. Use t
 
 ## Development Workflows
 
+- For every implementation and documentation review, follow [Documentation maintenance](docs/agents/documentation.md). Update affected guidance in the same change and report verification or why no documentation update was needed.
+
 - When creating or modifying a file, add or update its copyright notice to match [index.php](index.php), using the file's comment syntax and preserving existing third-party attribution.
 - Before changing behavior or fixing a bug, read [Testing](docs/agents/testing.md) and follow its red-green workflow. Read it before verification of refactors as well.
 - Before creating a commit, read [Commits](docs/agents/commits.md). Use Conventional Commits; create or amend commits only when explicitly requested.

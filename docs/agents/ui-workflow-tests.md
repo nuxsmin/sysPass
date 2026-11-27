@@ -1,4 +1,11 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # UI Workflow Tests observation
+
+Run commands from the repository root. AI sessions follow `.ai-cli/README.md`
+and obtain approval before isolated Docker provisioning. Observation counts and
+run statements below are dated records; determine current qualification from
+retained evidence and repository settings rather than elapsed time alone.
 
 ## Purpose and non-goals
 
@@ -8,7 +15,7 @@ JavaScript-to-backend wiring contracts accepted by ADR-0012:
 | Selection | Check name | Contract |
 | --- | --- | --- |
 | WIRING | `UI Workflow (navigation wiring, reporting-only)` | Five ACL-gated administrator menu controls dispatch their expected `getContent` Action and render route-specific content. |
-| WRITE | `UI Workflow (account creation and delete, reporting-only)` | The Account create and delete flows dispatch their expected writes: create posts `account/saveCreate` and persists the account through an independent authorized read; delete confirms through the dialog, posts the form-body route `account/saveDelete/<id>`, receives the `OK`/`data: null` envelope and disappears from an independent authorized search read. |
+| WRITE | `UI Workflow (account creation and delete, reporting-only)` | The explicit WRITE selection checks account creation, editing and deletion, files, tokens, metadata, notifications and user/group/profile wiring. The check name retains its original wording; the selected specs and their individual assertions define coverage. |
 
 Non-goals: these checks are not merge-required, not Tier A or Tier B evidence,
 not installer evidence and not a replacement for unit, HTTP integration or
@@ -26,8 +33,12 @@ TESTS_UI_ENABLED=true SP_UI_TIER=WRITE ./scripts/ui-smoke.sh
 ```
 
 The selections are independent. `WIRING` runs only
-`specs/adminNavigation.wiring.spec.ts`; `WRITE` runs
-`specs/accountCreate.write.spec.ts` and `specs/accountDelete.write.spec.ts`.
+`specs/adminNavigation.wiring.spec.ts`; `WRITE` runs the explicit
+`TIER_WRITE_SPECS` list in [tiers.mjs](../../tests/ui/src/tiers.mjs).
+That list includes account editing, files, manager deletion, API tokens,
+metadata, notifications and user/group/profile operations as well as account
+creation and deletion. A `*.write.spec.ts` filename alone does not select a
+spec; consult the list before claiming full selection coverage.
 Lower-case tier tokens are accepted and normalized by the shared runner. A
 partial, filtered or explicit-subset run is never a complete observation.
 
@@ -58,7 +69,8 @@ The stable check names are carried by one-step mirror jobs:
 - `UI Workflow (account creation and delete, reporting-only)`
 
 Each mirror requires its corresponding workload result to be `success`. Mirrors
-do not use `continue-on-error`, and a skipped workload skips its mirror. Neither
+do not use `continue-on-error`. When the repository switch is enabled, mirrors
+run with `always()` and fail if their workload was skipped or unsuccessful. Neither
 check is qualified for required-check promotion by this workflow.
 
 ## Isolation, reset and cleanup
@@ -187,10 +199,10 @@ Baseline as of 2026-11-12: **0 complete runs** for each selection. Observation i
 **not started**, both checks are **not qualified** and both are
 **reporting-only**.
 
-The WRITE selection now also includes `specs/accountDelete.write.spec.ts`
-(#2150). That spec has not executed in a scheduled or manual run, so the WRITE
-observation count remains 0; the account delete interaction is reporting-only
-with a live run pending and is not marked Covered in the interaction inventory.
+This table preserves the original observation baseline, not a current run count.
+Later local WRITE evidence is recorded in the interaction inventory, including
+account deletion. Local subset runs do not qualify the complete CI selection.
+Reconcile retained complete-run summaries before updating qualification counts.
 
 | Date | Selection | Run ID | Commit | Complete | First attempts/retries | Failures/skips | Duration | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
