@@ -73,6 +73,37 @@ class AccountCacheTest extends UnitaryTestCase
     }
 
     #[Test]
+    public function chunksLargeGrantLookupsWithoutDroppingOrReorderingAccounts(): void
+    {
+        $firstBatch = range(1, 1000);
+        $lastBatch = [1001];
+        $user = new AccountItem(['accountId' => 1001, 'id' => 7]);
+        $group = new AccountItem(['accountId' => 1, 'id' => 9]);
+        $userBatches = [];
+        $groupBatches = [];
+
+        $this->accountToUserRepository->method('getUsersByAccountIds')
+            ->willReturnCallback(static function (array $ids) use (&$userBatches, $lastBatch, $user): QueryResult {
+                $userBatches[] = $ids;
+                return new QueryResult($ids === $lastBatch ? [$user] : []);
+            });
+        $this->accountToUserGroupRepository->method('getUserGroupsByAccountIds')
+            ->willReturnCallback(static function (array $ids) use (&$groupBatches, $firstBatch, $group): QueryResult {
+                $groupBatches[] = $ids;
+                return new QueryResult($ids === $firstBatch ? [$group] : []);
+            });
+
+        $grants = $this->accountCache->getForAccounts([...$firstBatch, 1, ...$lastBatch]);
+
+        self::assertSame([$firstBatch, $lastBatch], $userBatches);
+        self::assertSame([$firstBatch, $lastBatch], $groupBatches);
+        self::assertSame(range(1, 1001), array_keys($grants));
+        self::assertSame([$group], $grants[1]->getUserGroups());
+        self::assertSame([], $grants[1000]->getUsers());
+        self::assertSame([$user], $grants[1001]->getUsers());
+    }
+
+    #[Test]
     public function batchedGrantsAreRefreshedAfterConcurrentRevocation(): void
     {
         $user = new AccountItem(['accountId' => 41, 'id' => 7, 'isEdit' => 0]);

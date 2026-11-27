@@ -27,6 +27,8 @@ namespace SP\Domain\Account\Ports;
 
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
+use SP\Domain\Account\Dtos\AccountCacheDto;
+use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Dtos\UserDto;
@@ -61,6 +63,17 @@ interface AccountAclService
      * @throws QueryException
      */
     public function getAcl(int $actionId, AccountAclDto $accountAclDto, bool $isHistory = false): AccountPermission;
+
+    /**
+     * Compile the ACLs for one search result set.
+     *
+     * @param AccountSearchView[] $accounts
+     * @param array<int, AccountCacheDto> $grants Grants keyed by account ID.
+     * @return array<int, AccountPermission> ACLs keyed by account ID.
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getForSearch(array $accounts, array $grants): array;
 
     /**
      * Resturns an stored ACL

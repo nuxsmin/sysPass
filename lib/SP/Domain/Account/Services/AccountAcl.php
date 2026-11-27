@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Services;
 
+use Closure;
 use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\Event;
@@ -87,6 +88,37 @@ final class AccountAcl extends Service implements AccountAclService
      */
     public function getAcl(int $actionId, AccountAclDto $accountAclDto, bool $isHistory = false): AccountPermission
     {
+        return $this->evaluateAcl($actionId, $accountAclDto, $isHistory, $this->loadUserGroups(...));
+    }
+
+    public function getForSearch(array $accounts, array $grants): array
+    {
+        $userGroups = null;
+        $loadUserGroups = function () use (&$userGroups): array {
+            return $userGroups ??= $this->loadUserGroups();
+        };
+
+        $permissions = [];
+        foreach ($accounts as $account) {
+            $accountId = (int)$account->getId();
+            $grant = $grants[$accountId];
+            $permissions[$accountId] = $this->evaluateAcl(
+                AclActionsInterface::ACCOUNT_SEARCH,
+                AccountAclDto::makeFromAccountSearch($account, $grant->getUsers(), $grant->getUserGroups()),
+                false,
+                $loadUserGroups
+            );
+        }
+
+        return $permissions;
+    }
+
+    private function evaluateAcl(
+        int $actionId,
+        AccountAclDto $accountAclDto,
+        bool $isHistory,
+        Closure $loadUserGroups
+    ): AccountPermission {
         $this->userData = $this->context->getUserData();
         $this->accountPermission = new AccountPermission($actionId, $isHistory);
         $this->accountPermission->setShowPermission(
@@ -103,7 +135,7 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountPermission->setAccountId($accountAclDto->getAccountId());
 
-        return $this->buildAcl();
+        return $this->buildAcl($loadUserGroups);
     }
 
     /**
@@ -141,9 +173,9 @@ final class AccountAcl extends Service implements AccountAclService
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function buildAcl(): AccountPermission
+    private function buildAcl(Closure $loadUserGroups): AccountPermission
     {
-        $this->compileAccountAccess();
+        $this->compileAccountAccess($loadUserGroups);
         $this->accountPermission->setCompiledAccountAccess(true);
 
         $this->compileShowAccess();
@@ -158,7 +190,7 @@ final class AccountAcl extends Service implements AccountAclService
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function compileAccountAccess(): void
+    private function compileAccountAccess(Closure $loadUserGroups): void
     {
         $this->accountPermission->setResultView(false);
         $this->accountPermission->setResultEdit(false);
@@ -188,10 +220,7 @@ final class AccountAcl extends Service implements AccountAclService
 
         // Analyze user's groups
         // Groups in which the user is listed in
-        $userGroups = array_map(
-            static fn($value) => (int)($value['userGroupId'] ?? 0),
-            $this->userToUserGroupService->getGroupsForUser($this->userData->id)
-        );
+        $userGroups = $loadUserGroups();
 
         // Check out if user's secondary groups match account's main group before secondary user grants
         if ($this->getUserGroupsInMainGroup($userGroups)) {
@@ -244,6 +273,15 @@ final class AccountAcl extends Service implements AccountAclService
 
             $this->accountPermission->setResultEdit($canEdit);
         }
+    }
+
+    /** @return int[] */
+    private function loadUserGroups(): array
+    {
+        return array_map(
+            static fn($value) => (int)($value['userGroupId'] ?? 0),
+            $this->userToUserGroupService->getGroupsForUser($this->userData->id)
+        );
     }
 
     /**

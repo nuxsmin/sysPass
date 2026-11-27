@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Api\Controllers\Account;
 
-use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountAclService;
@@ -66,21 +65,11 @@ final class SearchController extends ControllerBase
             static fn(AccountSearchView $item): int => (int)$item->getId(),
             $items
         ));
+        $permissions = $this->accountAclService->getForSearch($items, $grants);
 
         $sanitized = array_map(
-            function (AccountSearchView $item) use ($grants): AccountSearchView {
-                $cache = $grants[(int)$item->getId()];
-
-                $accountAcl = $this->accountAclService->getAcl(
-                    AclActionsInterface::ACCOUNT_SEARCH,
-                    AccountAclDto::makeFromAccountSearch(
-                        $item,
-                        $cache->getUsers(),
-                        $cache->getUserGroups()
-                    )
-                );
-
-                if ($accountAcl->isResultView()) {
+            static function (AccountSearchView $item) use ($permissions): AccountSearchView {
+                if ($permissions[(int)$item->getId()]->isResultView()) {
                     return $item;
                 }
 

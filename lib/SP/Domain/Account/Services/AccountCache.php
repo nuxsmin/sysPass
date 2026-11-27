@@ -42,6 +42,8 @@ use SP\Domain\Core\Exceptions\SPException;
  */
 final class AccountCache extends Service implements AccountCacheService
 {
+    private const GRANT_BATCH_SIZE = 1000;
+
     public function __construct(
         ConfigFileService $config,
         EventDispatcherInterface $eventDispatcher,
@@ -76,25 +78,25 @@ final class AccountCache extends Service implements AccountCacheService
     public function getForAccounts(array $accountIds): array
     {
         $accountIds = array_values(array_unique($accountIds));
-        if ($accountIds === []) {
-            return [];
-        }
-        $users = [];
-        $groups = [];
-        foreach ($this->accountToUserRepository->getUsersByAccountIds($accountIds)->getDataAsArray() as $item) {
-            if ($item->getAccountId() !== null) {
-                $users[$item->getAccountId()][] = $item;
-            }
-        }
-        foreach ($this->accountToUserGroupRepository->getUserGroupsByAccountIds($accountIds)->getDataAsArray() as $item) {
-            if ($item->getAccountId() !== null) {
-                $groups[$item->getAccountId()][] = $item;
-            }
-        }
         $result = [];
-        foreach ($accountIds as $id) {
-            $result[$id] = new AccountCacheDto($id, $users[$id] ?? [], $groups[$id] ?? []);
+        foreach (array_chunk($accountIds, self::GRANT_BATCH_SIZE) as $batch) {
+            $users = [];
+            $groups = [];
+            foreach ($this->accountToUserRepository->getUsersByAccountIds($batch)->getDataAsArray() as $item) {
+                if ($item->getAccountId() !== null) {
+                    $users[$item->getAccountId()][] = $item;
+                }
+            }
+            foreach ($this->accountToUserGroupRepository->getUserGroupsByAccountIds($batch)->getDataAsArray() as $item) {
+                if ($item->getAccountId() !== null) {
+                    $groups[$item->getAccountId()][] = $item;
+                }
+            }
+            foreach ($batch as $id) {
+                $result[$id] = new AccountCacheDto($id, $users[$id] ?? [], $groups[$id] ?? []);
+            }
         }
+
         return $result;
     }
 }
