@@ -1,3 +1,5 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # Static analysis and formatting
 
 Use PHP 8.3–8.5 with the extensions required by `composer.json` and Composer.
@@ -17,7 +19,9 @@ index before checking them. Warnings and files outside `lib/` are not CI's
 PHPCS gate. Review formatting in those files using the surrounding conventions.
 
 Set `PHP_RUNNER` to a PHP executable when needed. AI sessions must use the
-Docker-backed `$PHP_BIN` described in `.ai-cli/README.md`. To format a selected
+Docker-backed `$PHP_BIN` described in `.ai-cli/README.md`; set
+`PHP_RUNNER="$PHP_BIN"` when invoking `scripts/lint.sh` in an AI session.
+To format a selected
 file on a standard PHP installation, run:
 
 ```sh

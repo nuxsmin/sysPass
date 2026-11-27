@@ -1,10 +1,19 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # Issue tracker: GitHub
 
-Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
+Issues and specs live in GitHub. Prefer enabled GitHub MCP tools. If unavailable
+or insufficient, source `.ai-cli/env.sh` and invoke the CLI as `"$GH_BIN"`.
+All `gh` snippets below describe subcommands, not literal executable invocations:
+replace `gh` with `"$GH_BIN"`, and run mutations through `.ai-cli/bin/ai-run --`.
+Follow `.ai-cli/README.md` and the allowlist; request approval for uncovered
+operations, including dependency and sub-issue API writes and issue-body edits.
+Sending comments or publishing issues requires authorization from the user or
+an explicitly invoked workflow. Reading this guide alone grants no authorization.
 
 ## Conventions
 
-- **Create an issue**: `gh issue create --title "..." --body "..."`. Use a heredoc for multi-line bodies.
+- **Create an issue**: use the create template with `--title` and `--body-file`. Store multiline text in a file and preserve its literal newlines; use `--body-file` for comments as well.
 - **Read an issue**: `gh issue view <number> --comments`, filtering comments by `jq` and also fetching labels.
 - **List issues**: `gh issue list --state open --json number,title,body,labels,comments --jq '[.[] | {number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'` with appropriate `--label` and `--state` filters.
 - **Comment on an issue**: `gh issue comment <number> --body "..."`
@@ -27,7 +36,7 @@ GitHub shares one number space across issues and PRs, so a bare `#42` may be eit
 
 ## When a skill says "publish to the issue tracker"
 
-Create a GitHub issue.
+Create a GitHub issue only within the user's authorized task and execution rules.
 
 ## When a skill says "fetch the relevant ticket"
 

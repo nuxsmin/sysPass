@@ -1,4 +1,10 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # Contributing
+
+Read [AGENTS.md](AGENTS.md) for architecture and contributor responsibilities,
+[testing](docs/agents/testing.md) before behavior changes, and
+[documentation maintenance](docs/agents/documentation.md) for every implementation.
 
 For the CI static-analysis checks and PHP formatting instructions, see the
 [linting guide](docs/agents/linting.md).

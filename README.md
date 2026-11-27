@@ -1,3 +1,5 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 ## sysPass - Systems Password Manager
 
 [![Build & Test](https://github.com/nuxsmin/sysPass/actions/workflows/feature.yaml/badge.svg?branch=master)](https://github.com/nuxsmin/sysPass/actions/workflows/feature.yaml)  [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nuxsmin/sysPass/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nuxsmin/sysPass/?branch=master) [![Backers on Open Collective](https://opencollective.com/sysPass/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/sysPass/sponsors/badge.svg)](#sponsors)
@@ -23,10 +25,25 @@ PHP web based Password Manager for business and personal use.
 
 ## Requirements
 
-- PHP 8.3, 8.4 or 8.5 (`>=8.3 <8.6`), with the `mbstring`, `intl`, `gd`, `ldap`, `gettext` and `pdo_mysql` extensions.
+- PHP 8.3, 8.4 or 8.5 (`>=8.3 <8.6`). Composer requires `pdo`, `dom`, `gd`, `json`, `gettext`, `fileinfo`, `zlib`, `libxml` and `mbstring`. The MySQL/MariaDB connection also needs `pdo_mysql`; LDAP authentication needs `ldap`. The supplied development image and CI additionally enable `intl`. See `composer.json` for authoritative dependency constraints.
 - MySQL or MariaDB.
 
 Installation instructions and documentation at Doc https://doc.syspass.org
+
+## Contributor documentation
+
+Use the [documentation index](docs/README.md) to find operational, contributor
+and historical material, including audit verification limits.
+
+Start with [AGENTS.md](AGENTS.md), [domain vocabulary](CONTEXT.md) and the
+[architecture decisions](docs/adr/). For verification, read the
+[testing workflow](docs/agents/testing.md), [test environment](docs/agents/testing-environment.md)
+and [linting guide](docs/agents/linting.md). Keep guidance current using the
+[documentation maintenance workflow](docs/agents/documentation.md).
+
+Accepted ADRs include migration targets. Verify current code before describing
+them as shipped behavior: `composer.json` still requires Klein and does not yet
+require the Latte renderer selected by ADR-0011.
 
 ----
 

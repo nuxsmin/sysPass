@@ -1,3 +1,5 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # UI smoke harness
 
 See `docs/agents/ui-smoke-suite.md` for prerequisites and the execution model.
@@ -5,12 +7,19 @@ See `docs/agents/ui-workflow-tests.md` for the WIRING/WRITE CI observation,
 qualification criteria, check names and durable run table.
 
 ```sh
+cd tests/ui
 npm ci
 PLAYWRIGHT_BROWSERS_PATH="$PWD/.browsers" ./node_modules/.bin/playwright install chromium
 npm run typecheck
 npm run test:unit
 npm run test:preflight
+cd ../..
 ```
+
+Run the shared `./scripts/ui-smoke.sh` examples below from the repository root.
+AI sessions must follow `.ai-cli/README.md`; provisioning requires approval.
+Historical verification paragraphs below record their stated dates, not the
+current checkout's dependency availability or browser results.
 
 `npm run test:unit` runs the detector, redaction, reporter, retention and canary
 tests. `scripts/ui-smoke.sh` runs the same suite before Playwright, so a

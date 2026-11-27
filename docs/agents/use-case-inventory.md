@@ -1,4 +1,11 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # sysPass use-case inventory for BDD
+
+Read implementation notes and test counts with their stated date and branch.
+They record historical evidence, not fresh verification of this checkout.
+Recheck affected rows against source and tests before implementation; preserve
+approved target decisions separately from observations and outstanding work.
 
 Status: maintained application use-case catalog. Source survey: 2026-11-16.
 

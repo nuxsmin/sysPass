@@ -7,9 +7,15 @@
 > for the current operational guidance. The alternatives below describe the
 > earlier, broader atomicity requirement.
 
-## Question and current code
+## Question and historical code
 
-Can sysPass rotate its master password atomically without granting `TRIGGER` to its ordinary database account? The current rotation transaction calls `lockAndVerifyCurrentPassword()` and `assertTransactional()` before updating account, history, custom-field and configuration data (`lib/SP/Domain/Crypt/Services/MasterPass.php`). `MasterPasswordStorageGuard` verifies storage engines and rejects visible triggers; `MasterPasswordLockRow` also checks trigger visibility for first-time coordination-row creation and opportunistic hash upgrades. `docs/master-password-change.md` describes those operational preconditions. These observations refer to the current worktree, which contains unfinished changes.
+The research asked whether rotation could be atomic without granting `TRIGGER`
+to the ordinary database account. Its original prototype inspected triggers in
+the storage guard and coordination-row setup. Those observations are historical:
+the selected policy delegates custom-trigger safety to operators and checks
+transactional storage without requiring trigger visibility. Follow
+[current rotation guidance](master-password-change.md) and inspect the current
+guard and lock-row implementations before applying the alternatives below.
 
 ## Database facts
 

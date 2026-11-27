@@ -1,3 +1,5 @@
+<!-- Copyright 2012-2026, Rubén Domínguez nuxsmin@$syspass.org -->
+
 # .ai-cli — AI session command kit
 
 Minimal, reproducible CLI setup for AI sessions in this repo.
@@ -54,8 +56,8 @@ See `command-templates/`:
 - `aws-read.sh <service> <operation> [args...]` — read-only AWS verbs only, JSON output
 - `docker-read.sh <subcommand> [args...]` — read-only docker subcommands only (ps, images, logs, inspect, compose ps/logs/config, ...)
 
-All templates call `$HOME/.local/bin/gh` explicitly (aws/terraform/docker run on the
-host via `$HOST_SPAWN`, see `env.sh` -> `$AWS_BIN`, `$TERRAFORM_BIN`, `$DOCKER_BIN`).
+Use the executable paths exported by `env.sh`; inspect the wrappers for host
+dispatch behavior rather than assuming a fixed installation path.
 
 ## 4. aws / terraform / docker
 
