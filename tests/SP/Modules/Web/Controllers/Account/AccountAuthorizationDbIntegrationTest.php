@@ -31,6 +31,8 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use SP\Core\Acl\Acl;
 use SP\Domain\Account\Adapters\AccountPermission;
+use SP\Domain\Account\Dtos\AccountCacheDto;
+use SP\Domain\Account\Models\AccountItem;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Common\Adapters\Serde;
@@ -44,6 +46,7 @@ use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Core\Crypt\Vault;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Infrastructure\File\FileCache;
 use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
@@ -76,6 +79,47 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
                 'getPublinksMaxViews' => 3,
             ]
         );
+    }
+
+    #[Test]
+    public function sharedFileCacheCannotReuseAnotherAccountsPermission(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true);
+        $viewer = $this->seedUser($pdo, 'cross_cache_viewer', 5, $profile);
+        $owner = $this->seedUser($pdo, 'cross_cache_owner', 6, $profile);
+        $allowedId = $this->seedAccount($pdo, 'Cache Allowed Account', $viewer->id, 5, 'allowed');
+        $deniedId = $this->seedAccount($pdo, 'Cache Denied Account', $owner->id, 6, 'denied', 1, 0);
+        $cache = new FileCache();
+
+        $allowed = $this->dispatchAsUser('get', 'account/view/' . $allowedId, $viewer, $profile, [], [], [], $cache);
+        self::assertStringContainsString('Cache Allowed Account', $allowed['body']);
+        $denied = $this->dispatchAsUser('get', 'account/view/' . $deniedId, $viewer, $profile, [], [], [], $cache);
+        self::assertStringContainsString(self::DENIED_ACCOUNT, $denied['body']);
+        self::assertStringNotContainsString('Cache Denied Account', $denied['body']);
+    }
+
+    #[Test]
+    public function globalSearchRedactsRevokedAccountWithStaleSessionGrant(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true)->setAccGlobalSearch(true);
+        $viewer = $this->seedUser($pdo, 'stale_search_viewer', 5, $profile);
+        $owner = $this->seedUser($pdo, 'stale_search_owner', 6, $profile);
+        $id = $this->seedAccount($pdo, 'Stale Search Account', $owner->id, 6, 'private-synthetic-login');
+        $pdo->prepare('UPDATE Account SET dateEdit = DATE_SUB(NOW(), INTERVAL 1 HOUR) WHERE id = ?')->execute([$id]);
+        $context = $this->buildSessionContext($viewer, $profile);
+        $context->setAccountsCache([$id => new AccountCacheDto($id, [new AccountItem(['id' => $viewer->id, 'isEdit' => 0])], [])]);
+
+        $result = $this->dispatchAsUser('post', 'account/search', $viewer, $profile, [], [
+            'search' => 'Stale Search Account', 'gsearch' => '1', 'isAjax' => '1',
+            'start' => '0', 'skey' => '0', 'sorder' => '0',
+        ], ['isGlobalSearch' => true], null, $context);
+        $html = (string)($this->assertJsonOk($result)['data']['html'] ?? '');
+        self::assertStringContainsString('Stale Search Account', $html);
+        self::assertStringNotContainsString('private-synthetic-login', $html);
+        self::assertStringContainsString('data-action-route="account/requestAccess"', $html);
+        self::assertStringNotContainsString('data-action-route="account/view"', $html);
     }
 
     #[Test]
@@ -1250,9 +1294,10 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
         array       $paramsGet = [],
         array       $paramsPost = [],
         array       $configOverrides = [],
-        ?FileCacheService $fileCache = null
+        ?FileCacheService $fileCache = null,
+        ?SessionContext $sessionContext = null
     ): array {
-        $context = $this->buildSessionContext($user, $profile);
+        $context = $sessionContext ?? $this->buildSessionContext($user, $profile);
         $configData = self::createConfiguredStub(
             ConfigDataInterface::class,
             array_merge($this->getConfigData(), $configOverrides)

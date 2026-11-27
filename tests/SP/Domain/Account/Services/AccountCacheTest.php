@@ -102,7 +102,7 @@ class AccountCacheTest extends UnitaryTestCase
     }
 
     #[Test]
-    public function testGetCacheForAccountWithCacheHit()
+    public function staleSessionGrantsAreReloadedRegardlessOfClockSkew(): void
     {
         $accountId = self::$faker->randomNumber();
 
@@ -111,16 +111,35 @@ class AccountCacheTest extends UnitaryTestCase
         $this->context->setAccountsCache([$accountId => $accountCacheDto]);
 
         $this->accountToUserRepository
-            ->expects(self::never())
-            ->method('getUsersByAccountId');
+            ->expects(self::once())
+            ->method('getUsersByAccountId')->willReturn(new QueryResult([]));
 
         $this->accountToUserGroupRepository
-            ->expects(self::never())
-            ->method('getUserGroupsByAccountId');
+            ->expects(self::once())
+            ->method('getUserGroupsByAccountId')->willReturn(new QueryResult([]));
 
         $out = $this->accountCache->getCacheForAccount($accountId, $accountCacheDto->getTime() - 1);
 
-        $this->assertEquals($accountCacheDto, $out);
+        self::assertSame([], $out->getUsers());
+        self::assertSame([], $out->getUserGroups());
+    }
+
+    #[Test]
+    public function concurrentRevocationDoesNotPersistAnEarlierGrant(): void
+    {
+        $revoked = false;
+        $this->accountToUserRepository->expects(self::exactly(2))->method('getUsersByAccountId')
+            ->willReturnCallback(static function () use (&$revoked): QueryResult {
+                $snapshot = $revoked ? [] : [123];
+                // A revocation commits after this read but before the first lookup returns.
+                $revoked = true;
+                return new QueryResult($snapshot);
+            });
+        $this->accountToUserGroupRepository->expects(self::exactly(2))->method('getUserGroupsByAccountId')
+            ->willReturn(new QueryResult([]));
+
+        self::assertSame([123], $this->accountCache->getCacheForAccount(42, 1)->getUsers());
+        self::assertSame([], $this->accountCache->getCacheForAccount(42, 1)->getUsers());
     }
 
     protected function setUp(): void

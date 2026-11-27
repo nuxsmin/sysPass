@@ -47,7 +47,6 @@ use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Ports\UserToUserGroupService;
-use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class AccountAcl
@@ -58,16 +57,17 @@ final class AccountAcl extends Service implements AccountAclService
     private ?AccountPermission $accountPermission = null;
     private UserDto $userData;
 
-    public function __construct(
+    // Legacy cache dependencies remain accepted for existing callers; authorization no longer uses them.
+    public function __construct( // @phpstan-ignore-line
         ConfigFileService $config,
         EventDispatcherInterface $eventDispatcher,
         Context $context,
         private readonly AclInterface           $acl,
         private readonly UserToUserGroupService $userToUserGroupService,
-        private readonly AppPaths               $appPaths,
-        private readonly FileSystemService      $fileSystem,
-        private readonly ?FileCacheService      $fileCache = null,
-        private readonly LoggerInterface        $logger = new NullLogger()
+        AppPaths $appPaths,
+        FileSystemService $fileSystem,
+        ?FileCacheService $fileCache = null,
+        LoggerInterface $logger = new NullLogger()
     ) {
         parent::__construct($config, $eventDispatcher, $context);
 
@@ -95,31 +95,7 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountAclDto = $accountAclDto;
 
-        // History timestamps do not track changes to the live ACL; old both-private grants may also be stale.
-        $bypassCache = $isHistory
-            || ($accountAclDto->isPrivate() && $accountAclDto->isPrivateGroup());
-
-        if (null !== $this->fileCache && !$bypassCache) {
-            $accountAcl = $this->getAclFromCache($accountAclDto->getAccountId(), $actionId);
-
-            if (null !== $accountAcl) {
-                // Edit and cache timestamps have one-second resolution, so equality can mean a later change.
-                $isModified = $accountAclDto->getDateEdit() >= $accountAcl->getTime()
-                              || $this->userData->lastUpdate >= $accountAcl->getTime();
-
-                if (!$isModified) {
-                    $this->eventDispatcher->notify(
-                        'get.acl',
-                        new Event($this, EventMessage::build()->addDescription('Account ACL HIT'))
-                    );
-
-                    return $accountAcl;
-                }
-
-                $this->accountPermission->setModified(true);
-            }
-        }
-
+        // A cache timestamp cannot establish which authorization state was read.
         $this->eventDispatcher->notify(
             'get.acl',
             new Event($this, EventMessage::build()->addDescription('Account ACL MISS'))
@@ -127,7 +103,7 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountPermission->setAccountId($accountAclDto->getAccountId());
 
-        return $this->buildAcl(!$bypassCache);
+        return $this->buildAcl();
     }
 
     /**
@@ -155,37 +131,8 @@ final class AccountAcl extends Service implements AccountAclService
      */
     public function getAclFromCache(int $accountId, int $actionId): ?AccountPermission
     {
-        try {
-            $acl = $this->fileCache->load($this->getCacheFileForAcl($accountId, $actionId));
-
-            if ($acl instanceof AccountPermission) {
-                return $acl;
-            }
-        } catch (FileException $e) {
-            $this->logger->error($e->getMessage());
-        }
-
+        // Kept for callers of the port; cached permissions are no longer trusted.
         return null;
-    }
-
-    /**
-     * @param int $accountId
-     * @param int $actionId
-     *
-     * @return string
-     */
-    private function getCacheFileForAcl(int $accountId, int $actionId): string
-    {
-        $userId = $this->context->getUserData()->id;
-
-        return $this->fileSystem->buildPath(
-            $this->appPaths->getCachePath(),
-            'accountAcl',
-            (string)$userId,
-            (string)$accountId,
-            md5($userId . $accountId . $actionId),
-            '.cache'
-        );
     }
 
     /**
@@ -194,7 +141,7 @@ final class AccountAcl extends Service implements AccountAclService
      * @throws ConstraintException
      * @throws QueryException
      */
-    private function buildAcl(bool $cacheResult): AccountPermission
+    private function buildAcl(): AccountPermission
     {
         $this->compileAccountAccess();
         $this->accountPermission->setCompiledAccountAccess(true);
@@ -203,10 +150,6 @@ final class AccountAcl extends Service implements AccountAclService
         $this->accountPermission->setCompiledShowAccess(true);
 
         $this->accountPermission->setTime(time());
-
-        if ($cacheResult) {
-            $this->saveAclInCache($this->accountPermission);
-        }
 
         return $this->accountPermission;
     }
@@ -401,28 +344,5 @@ final class AccountAcl extends Service implements AccountAclService
 
         // Mostrar acción de copiar cuenta
         $this->accountPermission->setShowCopy($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_COPY));
-    }
-
-    /**
-     * Saves the ACL
-     *
-     * @param AccountPermission $accountAcl
-     *
-     * @return void
-     */
-    private function saveAclInCache(AccountPermission $accountAcl): void
-    {
-        if (null === $this->fileCache) {
-            return;
-        }
-
-        try {
-            $this->fileCache->save(
-                $accountAcl,
-                $this->getCacheFileForAcl($accountAcl->getAccountId(), $accountAcl->getActionId())
-            );
-        } catch (FileException $e) {
-            $this->logger->error($e->getMessage());
-        }
     }
 }

@@ -65,22 +65,11 @@ final class AccountCache extends Service implements AccountCacheService
      */
     public function getCacheForAccount(int $accountId, int $dateEdit): AccountCacheDto
     {
-        $cache = $this->context->getAccountsCache();
-
-        $cacheMiss = $cache === null
-                     || !isset($cache[$accountId])
-                     || $cache[$accountId]->getTime() <= $dateEdit;
-
-        if ($cacheMiss) {
-            $cache[$accountId] = new AccountCacheDto(
-                $accountId,
-                $this->accountToUserRepository->getUsersByAccountId($accountId)->getDataAsArray(),
-                $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountId)->getDataAsArray()
-            );
-
-            $this->context->setAccountsCache($cache);
-        }
-
-        return $cache[$accountId];
+        // Session timestamps cannot prove grants are current after concurrent updates or clock skew.
+        return new AccountCacheDto(
+            $accountId,
+            $this->accountToUserRepository->getUsersByAccountId($accountId)->getDataAsArray(),
+            $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountId)->getDataAsArray()
+        );
     }
 }
