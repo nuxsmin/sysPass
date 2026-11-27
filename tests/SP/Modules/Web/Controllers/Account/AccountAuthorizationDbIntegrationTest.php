@@ -30,6 +30,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use SP\Core\Acl\Acl;
+use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Ports\AccountAclService;
 use SP\Domain\Account\Services\AccountAcl;
 use SP\Domain\Common\Adapters\Serde;
@@ -41,6 +42,8 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\Crypt;
 use SP\Domain\Core\Crypt\Vault;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Crypt\Services\Hash;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
@@ -73,6 +76,34 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
                 'getPublinksMaxViews' => 3,
             ]
         );
+    }
+
+    #[Test]
+    public function equalTimestampCachedGrantCannotBypassLivePrivacyTransitions(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true);
+        $owner = $this->seedUser($pdo, 'cache_transition_owner', 5, $profile);
+        $viewer = $this->seedUser($pdo, 'cache_transition_viewer', 6, $profile);
+        $accountId = $this->seedAccount($pdo, 'Cache Transition Account', $owner->id, 5, 'synthetic');
+        $pdo->prepare('INSERT INTO AccountToUser (accountId, userId, isEdit) VALUES (?, ?, 0)')
+            ->execute([$accountId, $viewer->id]);
+        $timestamp = time() - 20;
+        $pdo->prepare('UPDATE Account SET dateEdit = FROM_UNIXTIME(?) WHERE id = ?')->execute([$timestamp, $accountId]);
+        $stale = new AccountPermission(AclActionsInterface::ACCOUNT_VIEW);
+        $stale->setCompiledAccountAccess(true)->setResultView(true)->setTime($timestamp);
+        $cache = $this->createStub(FileCacheService::class);
+        $cache->method('load')->willReturn($stale);
+
+        $allowed = $this->dispatchAsUser('get', 'account/view/' . $accountId, $viewer, $profile, [], [], [], $cache);
+        self::assertStringContainsString('Cache Transition Account', $allowed['body']);
+        foreach ([[1, 0], [0, 1]] as [$private, $privateGroup]) {
+            $pdo->prepare('UPDATE Account SET isPrivate = ?, isPrivateGroup = ? WHERE id = ?')
+                ->execute([$private, $privateGroup, $accountId]);
+            $denied = $this->dispatchAsUser('get', 'account/view/' . $accountId, $viewer, $profile, [], [], [], $cache);
+            self::assertStringContainsString(self::DENIED_ACCOUNT, $denied['body']);
+            self::assertStringNotContainsString('Cache Transition Account', $denied['body']);
+        }
     }
 
     #[Test]
@@ -392,11 +423,15 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
     public function bothPrivacyFlagsRequireOwnerAndPrimaryGroupForWebAccountAccess(): void
     {
         $pdo = getDbHandler()->getConnection();
-        $profile = (new ProfileData())->setAccView(true)->setAccEdit(true);
+        $profile = (new ProfileData())->setAccView(true)->setAccEdit(true)->setAccGlobalSearch(true);
         $owner = $this->seedUser($pdo, 'web_both_private_owner', 5, $profile);
         $peer = $this->seedUser($pdo, 'web_both_private_peer', 6, $profile);
         $matching = $this->seedAccount($pdo, 'Both Flags Matching', $owner->id, 5, 'matching', 1, 1);
         $mismatching = $this->seedAccount($pdo, 'Both Flags Mismatch', $owner->id, 6, 'mismatch', 1, 1);
+        foreach ([$matching, $mismatching] as $id) {
+            $pdo->prepare('INSERT INTO AccountToTag (accountId, tagId) VALUES (?, 1)')->execute([$id]);
+            $pdo->prepare('INSERT INTO AccountToFavorite (accountId, userId) VALUES (?, ?)')->execute([$id, $owner->id]);
+        }
 
         $allowed = $this->dispatchAsUser('get', 'account/view/' . $matching, $owner, $profile);
         $this->assertResponseWasDispatched($allowed);
@@ -408,6 +443,18 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
         $searchHtml = (string)($searchJson['data']['html'] ?? '');
         self::assertStringContainsString('Both Flags Matching', $searchHtml);
         self::assertStringNotContainsString('Both Flags Mismatch', $searchHtml);
+
+        foreach (['is:private client:Google category:Web op:or', 'is:private client:Google category:Web op:and'] as $term) {
+            foreach ([false, true] as $global) {
+                $filtered = $this->dispatchAsUser('post', 'account/search', $owner, $profile, [], [
+                    'search' => $term, 'tags' => ['1'], 'searchfav' => '1', 'gsearch' => $global ? '1' : '0',
+                    'isAjax' => '1', 'start' => '0', 'skey' => '0', 'sorder' => '0',
+                ], ['isGlobalSearch' => true]);
+                $html = (string)($this->assertJsonOk($filtered)['data']['html'] ?? '');
+                self::assertStringContainsString('Both Flags Matching', $html, $term);
+                self::assertStringNotContainsString('Both Flags Mismatch', $html, $term);
+            }
+        }
 
         foreach ([[$owner, $mismatching], [$peer, $mismatching]] as [$actor, $id]) {
             $view = $this->dispatchAsUser('get', 'account/view/' . $id, $actor, $profile);
@@ -1202,7 +1249,8 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
         ProfileData $profile,
         array       $paramsGet = [],
         array       $paramsPost = [],
-        array       $configOverrides = []
+        array       $configOverrides = [],
+        ?FileCacheService $fileCache = null
     ): array {
         $context = $this->buildSessionContext($user, $profile);
         $configData = self::createConfiguredStub(
@@ -1224,7 +1272,7 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
                 AclInterface::class => autowire(Acl::class)
                     ->constructorParameter('actions', get(ActionsInterface::class)),
                 AccountAclService::class => autowire(AccountAcl::class)
-                    ->constructorParameter('fileCache', null),
+                    ->constructorParameter('fileCache', $fileCache),
             ]
         );
     }

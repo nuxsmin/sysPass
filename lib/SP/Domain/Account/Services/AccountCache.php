@@ -69,7 +69,7 @@ final class AccountCache extends Service implements AccountCacheService
 
         $cacheMiss = $cache === null
                      || !isset($cache[$accountId])
-                     || $cache[$accountId]->getTime() < $dateEdit;
+                     || $cache[$accountId]->getTime() <= $dateEdit;
 
         if ($cacheMiss) {
             $cache[$accountId] = new AccountCacheDto(

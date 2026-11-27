@@ -86,6 +86,22 @@ class AccountCacheTest extends UnitaryTestCase
      * @throws SPException
      */
     #[Test]
+    public function equalTimestampReloadsAccountGrants(): void
+    {
+        $accountId = 42;
+        $cached = new AccountCacheDto($accountId, [1], [2]);
+        $this->context->setAccountsCache([$accountId => $cached]);
+        $this->accountToUserRepository->expects(self::once())->method('getUsersByAccountId')
+            ->with($accountId)->willReturn(new QueryResult([]));
+        $this->accountToUserGroupRepository->expects(self::once())->method('getUserGroupsByAccountId')
+            ->with($accountId)->willReturn(new QueryResult([]));
+
+        $result = $this->accountCache->getCacheForAccount($accountId, $cached->getTime());
+        self::assertSame([], $result->getUsers());
+        self::assertSame([], $result->getUserGroups());
+    }
+
+    #[Test]
     public function testGetCacheForAccountWithCacheHit()
     {
         $accountId = self::$faker->randomNumber();
@@ -102,7 +118,7 @@ class AccountCacheTest extends UnitaryTestCase
             ->expects(self::never())
             ->method('getUserGroupsByAccountId');
 
-        $out = $this->accountCache->getCacheForAccount($accountId, $accountCacheDto->getTime());
+        $out = $this->accountCache->getCacheForAccount($accountId, $accountCacheDto->getTime() - 1);
 
         $this->assertEquals($accountCacheDto, $out);
     }

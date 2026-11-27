@@ -150,11 +150,14 @@ final class AccountBoundaryTest extends TestCase
     public function bothPrivacyFlagsRequireOwnerAndPrimaryGroupForApiAccess(): void
     {
         $pdo = getDbHandler()->getConnection();
-        $profile = (new ProfileData())->setAccView(true)->setAccEdit(true);
+        $profile = (new ProfileData())->setAccView(true)->setAccEdit(true)->setAccGlobalSearch(true);
         $ownerId = $this->insertUserWithGroup($pdo, 'api_both_private_owner', 5, $profile);
         $peerId = $this->insertUserWithGroup($pdo, 'api_both_private_peer', 6, $profile);
         $matching = $this->seedAccount($pdo, 'API Both Matching', $ownerId, 5, 'both-matching', 1, 1);
         $mismatch = $this->seedAccount($pdo, 'API Both Mismatch', $ownerId, 6, 'both-mismatch', 1, 1);
+        foreach ([$matching, $mismatch] as $id) {
+            $pdo->prepare('INSERT INTO AccountToTag (accountId, tagId) VALUES (?, 1)')->execute([$id]);
+        }
         $ownerView = $this->seedTokenForUser($ownerId, AclActionsInterface::ACCOUNT_VIEW);
         $peerView = $this->seedTokenForUser($peerId, AclActionsInterface::ACCOUNT_VIEW);
         $ownerEdit = $this->seedTokenForUser($ownerId, AclActionsInterface::ACCOUNT_EDIT);
@@ -180,6 +183,21 @@ final class AccountBoundaryTest extends TestCase
         $privateNames = array_column($privateSearch['json']['result']['result'] ?? [], 'name');
         self::assertContains('API Both Matching', $privateNames);
         self::assertNotContains('API Both Mismatch', $privateNames);
+
+        foreach (['is:private client:Google category:Web op:or', 'is:private client:Google category:Web op:and'] as $term) {
+            foreach ([false, true] as $global) {
+                $filtered = $this->dispatchJsonRpc([
+                    'jsonrpc' => '2.0', 'method' => 'account/search', 'id' => 806,
+                    'params' => ['authToken' => $ownerSearch->getToken(), 'text' => $term,
+                        'tagsId' => [1], 'globalSearch' => (int)$global, 'categoryId' => 1, 'clientId' => 1,
+                        'op' => str_ends_with($term, 'op:or') ? 'or' : 'and'],
+                ], $global);
+                self::assertSame(0, $filtered['json']['result']['resultCode'] ?? null);
+                $names = array_column($filtered['json']['result']['result'] ?? [], 'name');
+                self::assertContains('API Both Matching', $names, $term);
+                self::assertNotContains('API Both Mismatch', $names, $term);
+            }
+        }
 
         foreach ([$ownerView, $peerView] as $token) {
             $denied = $this->dispatchJsonRpc([

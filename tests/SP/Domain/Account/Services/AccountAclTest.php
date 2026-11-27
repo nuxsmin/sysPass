@@ -768,6 +768,54 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     #[Test]
+    public function equalTimestampPrivacyTransitionsRejectCachedGrants(): void
+    {
+        $this->context->getUserProfile()->setAccView(true);
+        $this->context->setUserData(UserDto::fromModel(new User([
+            'id' => 200, 'userGroupId' => 51, 'isAdminApp' => false, 'isAdminAcc' => false,
+        ])));
+        $timestamp = time();
+        $stale = new AccountPermission(AclActionsInterface::ACCOUNT_VIEW);
+        $stale->setCompiledAccountAccess(true)->setResultView(true)->setTime($timestamp);
+        $cache = $this->createStub(FileCacheService::class);
+        $cache->method('load')->willReturn($stale);
+        $groups = $this->createStub(UserToUserGroupService::class);
+        $groups->method('getGroupsForUser')->willReturn([]);
+        $service = new AccountAcl(
+            $this->config, $this->eventDispatcherStub, $this->context, $this->acl,
+            $groups, $this->appPaths, $this->fileSystem, $cache
+        );
+
+        foreach ([[true, false], [false, true]] as [$private, $privateGroup]) {
+            $dto = new AccountAclDto(42, 100, [], 50, [], $timestamp, $private, $privateGroup);
+            self::assertFalse($service->getAcl(AclActionsInterface::ACCOUNT_VIEW, $dto)->isResultView());
+        }
+    }
+
+    #[Test]
+    public function equalTimestampUserUpdateRejectsCachedGrant(): void
+    {
+        $timestamp = time() - 30;
+        $this->context->getUserProfile()->setAccView(true);
+        $this->context->setUserData(UserDto::fromModel(new User([
+            'id' => 200, 'userGroupId' => 51, 'isAdminApp' => false, 'isAdminAcc' => false,
+            'lastUpdate' => date('Y-m-d H:i:s', $timestamp),
+        ])));
+        $stale = new AccountPermission(AclActionsInterface::ACCOUNT_VIEW);
+        $stale->setCompiledAccountAccess(true)->setResultView(true)->setTime($timestamp);
+        $cache = $this->createStub(FileCacheService::class);
+        $cache->method('load')->willReturn($stale);
+        $groups = $this->createStub(UserToUserGroupService::class);
+        $groups->method('getGroupsForUser')->willReturn([]);
+        $service = new AccountAcl(
+            $this->config, $this->eventDispatcherStub, $this->context, $this->acl,
+            $groups, $this->appPaths, $this->fileSystem, $cache
+        );
+        $dto = new AccountAclDto(42, 100, [], 50, [], $timestamp - 1);
+        self::assertFalse($service->getAcl(AclActionsInterface::ACCOUNT_VIEW, $dto)->checkAccountAccess(AclActionsInterface::ACCOUNT_VIEW));
+    }
+
+    #[Test]
     public function testCacheIsUsedWithHit(): void
     {
         $dto = new AccountAclDto(
@@ -784,7 +832,7 @@ class AccountAclTest extends UnitaryTestCase
         $fileCache = $this->createMock(FileCacheService::class);
         $actions = $this->createMock(ActionsInterface::class);
 
-        $lastUpdate = DateTime::createFromFormat('U', (string)($dto->getDateEdit() + 10))->format('Y-m-d H:i:s');
+        $lastUpdate = DateTime::createFromFormat('U', (string)($dto->getDateEdit() + 9))->format('Y-m-d H:i:s');
 
         $this->context->setUserData(
             UserDto::fromModel(

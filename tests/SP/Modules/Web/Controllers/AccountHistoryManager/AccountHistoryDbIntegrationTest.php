@@ -86,7 +86,7 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
     public function historyAccessTracksLivePrivacyAcrossTransitionsDespiteCachedGrant(): void
     {
         $pdo = getDbHandler()->getConnection();
-        $profile = (new ProfileData())->setAccView(true)->setAccViewHistory(true);
+        $profile = (new ProfileData())->setAccView(true)->setAccViewPass(true)->setAccViewHistory(true);
         $viewer = $this->seedUser($pdo, 'history_privacy_viewer', 5, $profile);
         $owner = $this->seedUser($pdo, 'history_privacy_owner', 5, $profile);
         $accountId = $this->seedAccount($pdo, 'History Privacy Live', $owner->id, 5, null, 0, 1);
@@ -100,6 +100,11 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
         $allowed = $this->dispatchAsUser('get', 'account/viewHistory/' . $historyId, $viewer, $profile, [], [], $cache);
         $this->assertResponseWasDispatched($allowed);
         self::assertStringContainsString('Synthetic History Privacy', $allowed['body']);
+        foreach (['viewPassHistory', 'copyPassHistory'] as $action) {
+            $pass = $this->dispatchAsUser('post', 'account/' . $action . '/' . $historyId, $viewer, $profile);
+            self::assertSame('OK', $this->decodeJson($pass['body'])['status'] ?? null);
+            self::assertStringContainsString('synthetic-pass', $pass['body']);
+        }
 
         foreach ([[1, 1], [1, 0]] as [$isPrivate, $isPrivateGroup]) {
             $pdo->prepare('UPDATE Account SET isPrivate = ?, isPrivateGroup = ? WHERE id = ?')
@@ -107,6 +112,21 @@ final class AccountHistoryDbIntegrationTest extends DatabaseIntegrationTestCase
             $denied = $this->dispatchAsUser('get', 'account/viewHistory/' . $historyId, $viewer, $profile, [], [], $cache);
             self::assertStringContainsString(self::DENIED_ACCOUNT, $denied['body']);
             self::assertStringNotContainsString('Synthetic History Privacy', $denied['body']);
+            foreach (['viewPassHistory', 'copyPassHistory'] as $action) {
+                $pass = $this->dispatchAsUser('post', 'account/' . $action . '/' . $historyId, $viewer, $profile);
+                self::assertSame('ERROR', $this->decodeJson($pass['body'])['status'] ?? null);
+                self::assertStringNotContainsString('synthetic-pass', $pass['body']);
+            }
+        }
+
+        $deletedId = $this->seedAccountHistory($pdo, null, 9912, 'Deleted Privacy Snapshot', $owner->id, 5, 'synthetic-deleted-pass', 0, 1, null, 1, 0);
+        foreach (['viewPassHistory', 'copyPassHistory'] as $action) {
+            $denied = $this->dispatchAsUser('post', 'account/' . $action . '/' . $deletedId, $viewer, $profile);
+            self::assertSame('ERROR', $this->decodeJson($denied['body'])['status'] ?? null);
+            self::assertStringNotContainsString('synthetic-deleted-pass', $denied['body']);
+            $allowed = $this->dispatchAsUser('post', 'account/' . $action . '/' . $deletedId, $owner, $profile);
+            self::assertSame('OK', $this->decodeJson($allowed['body'])['status'] ?? null);
+            self::assertStringContainsString('synthetic-deleted-pass', $allowed['body']);
         }
     }
 

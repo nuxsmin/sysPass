@@ -103,8 +103,9 @@ final class AccountAcl extends Service implements AccountAclService
             $accountAcl = $this->getAclFromCache($accountAclDto->getAccountId(), $actionId);
 
             if (null !== $accountAcl) {
-                $isModified = $accountAclDto->getDateEdit() > $accountAcl->getTime()
-                              || $this->userData->lastUpdate > $accountAcl->getTime();
+                // Edit and cache timestamps have one-second resolution, so equality can mean a later change.
+                $isModified = $accountAclDto->getDateEdit() >= $accountAcl->getTime()
+                              || $this->userData->lastUpdate >= $accountAcl->getTime();
 
                 if (!$isModified) {
                     $this->eventDispatcher->notify(
