@@ -947,6 +947,44 @@ class AccountAclTest extends UnitaryTestCase
     }
 
     #[Test]
+    public function bothPrivateFlagsRequireOwnerAndPrimaryGroup(): void
+    {
+        $this->context->getUserProfile()->setAccView(true)->setAccEdit(true);
+        $acl = new AccountAcl(
+            $this->config, $this->eventDispatcherStub, $this->context, $this->acl,
+            $this->userToUserGroupService, $this->appPaths, $this->fileSystem
+        );
+        $dto = new AccountAclDto(10, 100, [], 50, [], time(), true, true);
+        foreach ([[100, 50, false, true], [100, 51, false, false], [101, 50, false, false], [101, 51, false, false], [101, 50, true, false], [100, 51, true, false]] as [$userId, $groupId, $admin, $allowed]) {
+            $this->context->setUserData(UserDto::fromModel(new User([
+                'id' => $userId, 'userGroupId' => $groupId, 'isAdminApp' => $admin, 'isAdminAcc' => $admin,
+            ])));
+            foreach ([false, true] as $isHistory) {
+                $permission = $acl->getAcl(AclActionsInterface::ACCOUNT_VIEW, $dto, $isHistory);
+                self::assertSame($allowed, $permission->isResultView(), "user $userId, group $groupId, history " . (int)$isHistory);
+                self::assertSame($allowed, $permission->isResultEdit(), "user $userId, group $groupId, history " . (int)$isHistory);
+            }
+        }
+    }
+
+    #[Test]
+    public function bothPrivateFlagsDoNotUsePreviouslyCachedPermissions(): void
+    {
+        $this->context->getUserProfile()->setAccView(true);
+        $this->context->setUserData(UserDto::fromModel(new User([
+            'id' => 100, 'userGroupId' => 51, 'isAdminApp' => false, 'isAdminAcc' => false,
+        ])));
+        $cache = $this->createMock(FileCacheService::class);
+        $cache->expects(self::never())->method('load');
+        $acl = new AccountAcl(
+            $this->config, $this->eventDispatcherStub, $this->context, $this->acl,
+            $this->userToUserGroupService, $this->appPaths, $this->fileSystem, $cache
+        );
+        $permission = $acl->getAcl(AclActionsInterface::ACCOUNT_VIEW, new AccountAclDto(10, 100, [], 50, [], time(), true, true));
+        self::assertFalse($permission->isResultView());
+    }
+
+    #[Test]
     public function testPrivateAccountDeniesNonOwnerIncludingAdminAndGrants(): void
     {
         $this->context->getUserProfile()->setAccView(true)->setAccEdit(true)->setAccDelete(true);

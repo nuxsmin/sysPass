@@ -95,7 +95,9 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountAclDto = $accountAclDto;
 
-        $bypassCache = $isHistory && $accountAclDto->getDateEdit() === null;
+        // Existing cache entries can contain grants computed before both privacy restrictions were combined.
+        $bypassCache = ($isHistory && $accountAclDto->getDateEdit() === null)
+            || ($accountAclDto->isPrivate() && $accountAclDto->isPrivateGroup());
 
         if (null !== $this->fileCache && !$bypassCache) {
             $accountAcl = $this->getAclFromCache($accountAclDto->getAccountId(), $actionId);
@@ -217,17 +219,10 @@ final class AccountAcl extends Service implements AccountAclService
         $this->accountPermission->setResultView(false);
         $this->accountPermission->setResultEdit(false);
 
-        if ($this->accountAclDto->isPrivate()) {
-            if ($this->userData->id === $this->accountAclDto->getUserId()) {
-                $this->accountPermission->setResultView(true);
-                $this->accountPermission->setResultEdit(true);
-            }
-
-            return;
-        }
-
-        if ($this->accountAclDto->isPrivateGroup()) {
-            if ($this->userData->userGroupId === $this->accountAclDto->getUserGroupId()) {
+        if ($this->accountAclDto->isPrivate() || $this->accountAclDto->isPrivateGroup()) {
+            if ((!$this->accountAclDto->isPrivate() || $this->userData->id === $this->accountAclDto->getUserId())
+                && (!$this->accountAclDto->isPrivateGroup() || $this->userData->userGroupId === $this->accountAclDto->getUserGroupId())
+            ) {
                 $this->accountPermission->setResultView(true);
                 $this->accountPermission->setResultEdit(true);
             }

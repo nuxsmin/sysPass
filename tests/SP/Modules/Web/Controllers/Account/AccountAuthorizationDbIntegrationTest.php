@@ -389,6 +389,32 @@ final class AccountAuthorizationDbIntegrationTest extends DatabaseIntegrationTes
     }
 
     #[Test]
+    public function bothPrivacyFlagsRequireOwnerAndPrimaryGroupForWebAccountAccess(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true)->setAccEdit(true);
+        $owner = $this->seedUser($pdo, 'web_both_private_owner', 5, $profile);
+        $peer = $this->seedUser($pdo, 'web_both_private_peer', 6, $profile);
+        $matching = $this->seedAccount($pdo, 'Both Flags Matching', $owner->id, 5, 'matching', 1, 1);
+        $mismatching = $this->seedAccount($pdo, 'Both Flags Mismatch', $owner->id, 6, 'mismatch', 1, 1);
+
+        $allowed = $this->dispatchAsUser('get', 'account/view/' . $matching, $owner, $profile);
+        $this->assertResponseWasDispatched($allowed);
+        self::assertStringContainsString('Both Flags Matching', $allowed['body']);
+
+        foreach ([[$owner, $mismatching], [$peer, $mismatching]] as [$actor, $id]) {
+            $view = $this->dispatchAsUser('get', 'account/view/' . $id, $actor, $profile);
+            self::assertStringContainsString(self::DENIED_ACCOUNT, $view['body']);
+            self::assertStringNotContainsString('Both Flags Mismatch', $view['body']);
+            $edit = $this->dispatchAsUser('post', 'account/saveEdit/' . $id, $actor, $profile, [], [
+                'name' => 'Denied Privacy Change', 'client_id' => '1', 'category_id' => '1',
+            ]);
+            $this->assertJsonDenied($edit, self::DENIED_ACCOUNT);
+        }
+        self::assertSame('Both Flags Mismatch', $this->fetchValue('SELECT name FROM Account WHERE id = ' . $mismatching));
+    }
+
+    #[Test]
     public function privateAndPrivateGroupEnforceOwnerAndPrimaryGroupAcrossAllWebEndpoints(): void
     {
         $pdo = getDbHandler()->getConnection();

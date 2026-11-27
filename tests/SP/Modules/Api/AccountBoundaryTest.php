@@ -147,6 +147,49 @@ final class AccountBoundaryTest extends TestCase
     }
 
     #[Test]
+    public function bothPrivacyFlagsRequireOwnerAndPrimaryGroupForApiAccess(): void
+    {
+        $pdo = getDbHandler()->getConnection();
+        $profile = (new ProfileData())->setAccView(true)->setAccEdit(true);
+        $ownerId = $this->insertUserWithGroup($pdo, 'api_both_private_owner', 5, $profile);
+        $peerId = $this->insertUserWithGroup($pdo, 'api_both_private_peer', 6, $profile);
+        $matching = $this->seedAccount($pdo, 'API Both Matching', $ownerId, 5, 'both-matching', 1, 1);
+        $mismatch = $this->seedAccount($pdo, 'API Both Mismatch', $ownerId, 6, 'both-mismatch', 1, 1);
+        $ownerView = $this->seedTokenForUser($ownerId, AclActionsInterface::ACCOUNT_VIEW);
+        $peerView = $this->seedTokenForUser($peerId, AclActionsInterface::ACCOUNT_VIEW);
+        $ownerEdit = $this->seedTokenForUser($ownerId, AclActionsInterface::ACCOUNT_EDIT);
+        $ownerSearch = $this->seedTokenForUser($ownerId, AclActionsInterface::ACCOUNT_SEARCH);
+
+        $allowed = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/view', 'id' => 801,
+            'params' => ['authToken' => $ownerView->getToken(), 'id' => $matching],
+        ]);
+        self::assertSame(0, $allowed['json']['result']['resultCode'] ?? null);
+        $search = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/search', 'id' => 804,
+            'params' => ['authToken' => $ownerSearch->getToken(), 'text' => 'API Both'],
+        ]);
+        self::assertSame(0, $search['json']['result']['resultCode'] ?? null);
+        self::assertCount(1, $search['json']['result']['result'] ?? []);
+        self::assertSame('API Both Matching', $search['json']['result']['result'][0]['name'] ?? null);
+
+        foreach ([$ownerView, $peerView] as $token) {
+            $denied = $this->dispatchJsonRpc([
+                'jsonrpc' => '2.0', 'method' => 'account/view', 'id' => 802,
+                'params' => ['authToken' => $token->getToken(), 'id' => $mismatch],
+            ], true);
+            self::assertSame("You don't have permission to access this account", $denied['json']['error']['message'] ?? null);
+        }
+        $edit = $this->dispatchJsonRpc([
+            'jsonrpc' => '2.0', 'method' => 'account/edit', 'id' => 803,
+            'params' => ['authToken' => $ownerEdit->getToken(), 'tokenPass' => self::TOKEN_PASS,
+                'id' => $mismatch, 'name' => 'Denied Both Flags', 'clientId' => 1, 'categoryId' => 1],
+        ], true);
+        self::assertSame("You don't have permission to access this account", $edit['json']['error']['message'] ?? null);
+        self::assertSame('API Both Mismatch', $pdo->query('SELECT name FROM Account WHERE id = ' . $mismatch)->fetchColumn());
+    }
+
+    #[Test]
     public function readOnlyAccountToUserAndGroupAreRejectedByApiEditEditPassAndDelete(): void
     {
         $pdo = getDbHandler()->getConnection();
